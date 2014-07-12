@@ -1,5 +1,7 @@
 package com.alorma.github.sdk.bean.dto.response;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class User {
@@ -35,6 +37,7 @@ public class User {
 
 	private int totalPrivateRepos;
 
+    @SerializedName("avatar_url")
 	private String avatarUrl;
 
 	private String blog;

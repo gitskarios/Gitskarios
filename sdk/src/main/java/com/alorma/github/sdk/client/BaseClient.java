@@ -28,11 +28,7 @@ public abstract class BaseClient<K> implements Callback<K> {
             @Override
             public void intercept(RequestFacade request) {
                 request.addHeader("Accept", "application/vnd.github.v3.full+json");
-                request.addHeader("Authorization", "Basic " + Base64.encodeToString(getAuth().getBytes(), Base64.DEFAULT));
-            }
-
-            public String getAuth() {
-                return getAuthUser() + ":" + getAuthPass();
+                request.addHeader("Authorization", "Basic " + storeCredentials.restoreToken());
             }
         };
 
@@ -42,14 +38,6 @@ public abstract class BaseClient<K> implements Callback<K> {
                 .build();
 
         executeService(restAdapter);
-    }
-
-    private String getAuthUser() {
-        return storeCredentials.restoreUser();
-    }
-
-    private String getAuthPass() {
-        return storeCredentials.restorePass();
     }
 
     protected abstract void executeService(RestAdapter restAdapter);

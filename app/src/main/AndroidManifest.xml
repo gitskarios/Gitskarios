@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:name=".GistsApplication">
         <activity
-            android:name=".ui.activity.GistsFragment"/>
+            android:name=".ui.fragment.GistsFragment"/>
         <activity
             android:name=".ui.activity.MainActivity">
             <intent-filter>

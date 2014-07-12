@@ -10,16 +10,18 @@ import com.alorma.github.R;
 /**
  * Created by Bernat on 12/07/2014.
  */
-public class NavigatedFragment extends Fragment {
+public abstract class NavigatedFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getActionBar() != null) {
-            getActionBar().setTitle("User gists");
+            getActionBar().setTitle(getTitle());
         }
     }
+
+    protected abstract int getTitle();
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();

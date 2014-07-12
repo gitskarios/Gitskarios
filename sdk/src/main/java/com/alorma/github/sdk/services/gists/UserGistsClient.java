@@ -1,9 +1,10 @@
-package com.alorma.github.sdk.client;
+package com.alorma.github.sdk.services.gists;
 
 import android.content.Context;
 
 import com.alorma.github.sdk.bean.dto.response.ListGists;
-import com.alorma.github.sdk.services.GistsService;
+import com.alorma.github.sdk.client.BaseClient;
+import com.alorma.github.sdk.services.gists.GistsService;
 
 import retrofit.RestAdapter;
 

@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.ListGists;
 import com.alorma.github.sdk.client.BaseClient;
-import com.alorma.github.sdk.client.UserGistsClient;
+import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.adapter.UserGistsAdapter;
 
 import java.util.ArrayList;
