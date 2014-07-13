@@ -34,19 +34,24 @@ public class MainActivity extends NavigationActivity {
         switch (position) {
             case 0:
                 setContainerFragment(GistsFragment.newInstance());
+                int rgb = getResources().getColor(R.color.accent);
+                ColorDrawable cd = new ColorDrawable(rgb);
+                if (getActionBar() != null) {
+                    getActionBar().setBackgroundDrawable(cd);
+                }
                 break;
             case 1:
-                setContainerFragment(ProfileFragment.newInstance("alorma"));
+                setContainerFragment(ProfileFragment.newInstance());
+                break;
+            case 2:
+                setContainerFragment(ProfileFragment.newInstance("kix2902"));
+                break;
+            case 3:
+                setContainerFragment(ProfileFragment.newInstance("octocats"));
                 break;
             default:
                 setContainerFragment(new ListFragment());
                 break;
-        }
-
-        int rgb = getResources().getColor(R.color.accent);
-        ColorDrawable cd = new ColorDrawable(rgb);
-        if (getActionBar() != null) {
-            getActionBar().setBackgroundDrawable(cd);
         }
     }
 }

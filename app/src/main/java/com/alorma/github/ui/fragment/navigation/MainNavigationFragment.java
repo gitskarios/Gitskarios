@@ -33,6 +33,8 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
 
         items = new String[]{
                 getString(R.string.navigation_gists),
+                getString(R.string.navigation_profile),
+                getString(R.string.navigation_profile),
                 getString(R.string.navigation_profile)
         };
 

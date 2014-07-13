@@ -5,27 +5,33 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
+import android.support.v7.widget.LinearLayoutManager;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.NumericTitle;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.client.BaseClient;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.user.BaseUsersClient;
+import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.fragment.navigation.NavigatedFragment;
 import com.squareup.picasso.Picasso;
@@ -33,21 +39,31 @@ import com.squareup.picasso.Target;
 
 import retrofit.RetrofitError;
 
-/**
- * Created by Bernat on 12/07/2014.
- */
 public class ProfileFragment extends NavigatedFragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
     private static final String USERNAME = "USERNAME";
+    private static final long DURATION = 300;
     private User user;
     private ImageView avatarImage;
     private TextView userText;
     private int rgbAbColor;
-    private int i = 0;
-    private String[] names = {"alorma", "octocats", "JakeWharton", "gabrielemariotti", "kix2902"};
+    private Bitmap avatartBitmap;
+    private View content1;
+    private TextView typeText;
+    private NumericTitle num1Text;
+    private NumericTitle num2Text;
+    private NumericTitle num3Text;
+    private NumericTitle num4Text;
+    private LinearLayout content2;
+    private TextView joinedText;
+
+    public static ProfileFragment newInstance() {
+        return new ProfileFragment();
+    }
 
     public static ProfileFragment newInstance(String username) {
         Bundle bundle = new Bundle();
         bundle.putString(USERNAME, username);
+
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setArguments(bundle);
         return profileFragment;
@@ -62,14 +78,15 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        BaseUsersClient<User> requestClient;
         if (getArguments() != null) {
             String username = getArguments().getString(USERNAME);
-            RequestUserClient requestUserClient = new RequestUserClient(getActivity(), names[i++]);
-            requestUserClient.setOnResultCallback(this);
-            requestUserClient.execute();
+            requestClient = new RequestUserClient(getActivity(), username);
         } else {
-            Toast.makeText(getActivity(), "No username provided", Toast.LENGTH_SHORT).show();
+            requestClient = new RequestAutenticatedUserClient(getActivity());
         }
+        requestClient.setOnResultCallback(this);
+        requestClient.execute();
     }
 
     @Override
@@ -86,8 +103,19 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
 
         avatarImage = (ImageView) view.findViewById(R.id.imageView);
         userText = (TextView) view.findViewById(R.id.user);
+        typeText = (TextView) view.findViewById(R.id.type);
+        joinedText = (TextView) view.findViewById(R.id.joined);
 
-        updateData();
+        num1Text = (NumericTitle) view.findViewById(R.id.num1);
+        num2Text = (NumericTitle) view.findViewById(R.id.num2);
+        num3Text = (NumericTitle) view.findViewById(R.id.num3);
+        num4Text = (NumericTitle) view.findViewById(R.id.num4);
+
+        content1 = view.findViewById(R.id.content1);
+        content2 = (LinearLayout) view.findViewById(R.id.content2);
+
+        content1.setBackgroundColor(getResources().getColor(R.color.gray_github));
+        content2.setBackgroundColor(getResources().getColor(R.color.gray_github));
     }
 
     @Override
@@ -98,9 +126,30 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
 
     private void updateData() {
         if (isAdded() && user != null) {
-            Picasso.with(getActivity()).load(user.getAvatarUrl()).into(this);
-            userText.setText(user.getLogin());
+            Picasso.with(getActivity()).load(user.avatar_url).into(this);
+            if (getActivity().getActionBar() != null) {
+                getActivity().getActionBar().setTitle(user.login);
+            }
+            userText.setText(user.name);
+            typeText.setText(user.type.toString());
+
+            CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
+
+            joinedText.setText("Joined on " + format);
+
+            updateNums();
         }
+    }
+
+    private void updateNums() {
+        num1Text.setCustomNumber(user.public_repos);
+        num1Text.setCustomText(R.string.public_repos);
+        num2Text.setCustomNumber(user.public_gists);
+        num2Text.setCustomText(R.string.public_gists);
+        num3Text.setCustomNumber(user.followers);
+        num3Text.setCustomText(R.string.followers);
+        num4Text.setCustomNumber(user.following);
+        num4Text.setCustomText(R.string.following);
     }
 
     @Override
@@ -111,6 +160,13 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
         Palette.generateAsync(bitmap, this);
+        this.avatartBitmap = bitmap;
+
+        PropertyValuesHolder ph = PropertyValuesHolder.ofFloat("alpha", 0f, 1f);
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(avatarImage, ph);
+        animator.setDuration(DURATION);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.start();
     }
 
     @Override
@@ -138,23 +194,29 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
             PaletteItem darkMutedColor = palette.getDarkMutedColor();
             if (vibrantColor != null) {
                 setUpFromPaletteItem(vibrantColor);
-                Log.i("PALETTE", "vibrantColor");
+            } else if (darkVibrantColor != null) {
+                setUpFromPaletteItem(darkVibrantColor);
             } else if (lightVibrantColor != null) {
                 setUpFromPaletteItem(lightVibrantColor);
-                Log.i("PALETTE", "lightVibrantColor");
-            }else if (darkVibrantColor != null) {
-                setUpFromPaletteItem(darkVibrantColor);
-                Log.i("PALETTE", "darkVibrantColor");
-            }else if (darkMutedColor != null) {
+                content1.setBackgroundColor(lightVibrantColor.getRgb());
+            } else if (darkMutedColor != null) {
                 setUpFromPaletteItem(darkMutedColor);
-                Log.i("PALETTE", "darkMutedColor");
-            }else if (lightMutedColor != null) {
+            } else if (lightMutedColor != null) {
                 setUpFromPaletteItem(lightMutedColor);
-                Log.i("PALETTE", "lightMutedColor");
-            }else if (mutedColor != null) {
+                content1.setBackgroundColor(lightMutedColor.getRgb());
+            } else if (mutedColor != null) {
                 setUpFromPaletteItem(mutedColor);
-                Log.i("PALETTE", "mutedColor");
             }
+
+            if (lightMutedColor != null) {
+                content1.setBackgroundColor(lightMutedColor.getRgb());
+                content2.setBackgroundColor(lightMutedColor.getRgb());
+            } else if (lightVibrantColor != null) {
+                content1.setBackgroundColor(lightVibrantColor.getRgb());
+                content2.setBackgroundColor(lightVibrantColor.getRgb());
+            }
+
+            aphaImage(avatartBitmap);
         }
     }
 
@@ -171,10 +233,15 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         this.rgbAbColor = rgb;
         ValueAnimator animator = ValueAnimator.ofObject(new ArgbEvaluator(), GistsApplication.AB_COLOR, rgb);
         animator.addUpdateListener(this);
-        animator.setDuration(300);
+        animator.setDuration(DURATION);
         animator.setInterpolator(new LinearInterpolator());
         animator.addListener(this);
         animator.start();
+    }
+
+    private void aphaImage(Bitmap bitmap) {
+        avatarImage.setAlpha(0f);
+        avatarImage.setImageBitmap(bitmap);
     }
 
     @Override
@@ -193,14 +260,6 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     @Override
     public void onAnimationEnd(Animator animator) {
         GistsApplication.AB_COLOR = rgbAbColor;
-
-        if (i < names.length) {
-            RequestUserClient requestUserClient = new RequestUserClient(getActivity(), names[i++]);
-            requestUserClient.setOnResultCallback(this);
-            requestUserClient.execute();
-        }
-
-        Picasso.with(getActivity()).load(user.getAvatarUrl()).into(avatarImage);
     }
 
     @Override

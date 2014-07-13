@@ -1,7 +1,7 @@
-package com.alorma.github.sdk.services;
+package com.alorma.github.sdk.services.login;
 
+import com.alorma.github.sdk.bean.dto.request.RequestTokenDTO;
 import com.alorma.github.sdk.bean.dto.response.Token;
-import com.alorma.github.sdk.bean.request.dto.RequestTokenDTO;
 
 import retrofit.Callback;
 import retrofit.http.Body;

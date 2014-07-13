@@ -1,10 +1,7 @@
-package com.alorma.github.sdk.client;
+package com.alorma.github.sdk.services.client;
 
 import android.content.Context;
-import android.util.Base64;
-import android.util.Log;
 
-import com.alorma.github.sdk.exception.OAuthApiException;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 

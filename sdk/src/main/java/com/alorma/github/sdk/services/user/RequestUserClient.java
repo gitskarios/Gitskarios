@@ -3,14 +3,11 @@ package com.alorma.github.sdk.services.user;
 import android.content.Context;
 
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.client.BaseClient;
-
-import retrofit.RestAdapter;
 
 /**
  * Created by Bernat on 12/07/2014.
  */
-public class RequestUserClient extends BaseClient<User>{
+public class RequestUserClient extends BaseUsersClient<User>{
 
     private String username;
 
@@ -20,8 +17,7 @@ public class RequestUserClient extends BaseClient<User>{
     }
 
     @Override
-    protected void executeService(RestAdapter restAdapter) {
-        UsersService usersService = restAdapter.create(UsersService.class);
+    protected void executeService(UsersService usersService) {
         usersService.getSingleUser(username, this);
     }
 }

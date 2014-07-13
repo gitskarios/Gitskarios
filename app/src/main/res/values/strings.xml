@@ -17,5 +17,9 @@
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
+    <string name="public_repos">Repos</string>
+    <string name="public_gists">Gists</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
 
 </resources>
