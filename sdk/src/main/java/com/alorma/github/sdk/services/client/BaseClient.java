@@ -1,6 +1,7 @@
 package com.alorma.github.sdk.services.client;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
@@ -11,7 +12,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor {
+public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, RestAdapter.Log {
 
     private final StoreCredentials storeCredentials;
     private OnResultCallback<K> onResultCallback;
@@ -25,6 +26,8 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ApiConstants.API_URL)
                 .setRequestInterceptor(this)
+                .setLogLevel(RestAdapter.LogLevel.HEADERS)
+                .setLog(this)
                 .build();
 
         executeService(restAdapter);
@@ -35,7 +38,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor {
     @Override
     public void success(K k, Response response) {
         if (onResultCallback != null) {
-            onResultCallback.onResponseOk(k);
+            onResultCallback.onResponseOk(k, response);
         }
     }
 
@@ -60,8 +63,13 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor {
         request.addHeader("Authorization", "token " + storeCredentials.token());
     }
 
+    @Override
+    public void log(String message) {
+
+    }
+
     public interface OnResultCallback<K> {
-        void onResponseOk(K k);
+        void onResponseOk(K k, Response r);
         void onFail(RetrofitError error);
     }
 }

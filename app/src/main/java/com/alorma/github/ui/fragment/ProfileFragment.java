@@ -5,20 +5,20 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,9 +37,15 @@ import com.alorma.github.ui.fragment.navigation.NavigatedFragment;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import retrofit.RetrofitError;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class ProfileFragment extends NavigatedFragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+import retrofit.RetrofitError;
+import retrofit.client.Header;
+import retrofit.client.Response;
+
+public class ProfileFragment extends NavigatedFragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
     private static final String USERNAME = "USERNAME";
     private static final long DURATION = 300;
     private User user;
@@ -55,6 +61,7 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     private NumericTitle num4Text;
     private LinearLayout content2;
     private TextView joinedText;
+    private String username;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -80,7 +87,7 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
 
         BaseUsersClient<User> requestClient;
         if (getArguments() != null) {
-            String username = getArguments().getString(USERNAME);
+            username = getArguments().getString(USERNAME);
             requestClient = new RequestUserClient(getActivity(), username);
         } else {
             requestClient = new RequestAutenticatedUserClient(getActivity());
@@ -96,7 +103,6 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         return inflater.inflate(R.layout.profile_fragment, null, false);
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -111,15 +117,36 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         num3Text = (NumericTitle) view.findViewById(R.id.num3);
         num4Text = (NumericTitle) view.findViewById(R.id.num4);
 
+        num1Text.setOnClickListener(this);
+        num2Text.setOnClickListener(this);
+        num3Text.setOnClickListener(this);
+        num4Text.setOnClickListener(this);
+
         content1 = view.findViewById(R.id.content1);
         content2 = (LinearLayout) view.findViewById(R.id.content2);
 
         content1.setBackgroundColor(getResources().getColor(R.color.gray_github));
         content2.setBackgroundColor(getResources().getColor(R.color.gray_github));
+
+        if (username == null) {
+            Fragment fragment = UserPublicGistsFragment.newInstance();
+            replaceContent(fragment);
+        } else {
+            Fragment fragment = UserPublicGistsFragment.newInstance(username);
+            replaceContent(fragment);
+        }
+    }
+
+    private void replaceContent(Fragment fragment) {
+        if (fragment != null) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.content3, fragment);
+            ft.commit();
+        }
     }
 
     @Override
-    public void onResponseOk(User user) {
+    public void onResponseOk(User user, Response r) {
         this.user = user;
         updateData();
     }
@@ -175,6 +202,16 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ColorDrawable cd = new ColorDrawable(getResources().getColor(R.color.gray_github_dark));
+        if (getActivity().getActionBar() != null) {
+            getActivity().getActionBar().setBackgroundDrawable(cd);
+            GistsApplication.AB_COLOR = getResources().getColor(R.color.gray_github_dark);
+        }
+    }
+
+    @Override
     public void onPrepareLoad(Drawable placeHolderDrawable) {
 
     }
@@ -208,13 +245,13 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
                 setUpFromPaletteItem(mutedColor);
             }
 
-            if (lightMutedColor != null) {
+            /*if (lightMutedColor != null) {
                 content1.setBackgroundColor(lightMutedColor.getRgb());
                 content2.setBackgroundColor(lightMutedColor.getRgb());
             } else if (lightVibrantColor != null) {
                 content1.setBackgroundColor(lightVibrantColor.getRgb());
                 content2.setBackgroundColor(lightVibrantColor.getRgb());
-            }
+            }*/
 
             aphaImage(avatartBitmap);
         }
@@ -270,5 +307,26 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     @Override
     public void onAnimationRepeat(Animator animator) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        Fragment fragment = null;
+        switch (view.getId()) {
+            case R.id.num1:
+
+                break;
+            case R.id.num2:
+                fragment = UserPublicGistsFragment.newInstance(username);
+                break;
+            case R.id.num3:
+
+                break;
+            case R.id.num4:
+
+                break;
+        }
+
+        replaceContent(fragment);
     }
 }

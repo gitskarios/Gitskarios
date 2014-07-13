@@ -21,6 +21,7 @@ import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class LoginActivity extends Activity {
 
@@ -129,7 +130,7 @@ public class LoginActivity extends Activity {
         }
 
         @Override
-        public void onResponseOk(Token token) {
+        public void onResponseOk(Token token, Response r) {
             if (token.access_token != null) {
                 Toast.makeText(LoginActivity.this, token.access_token, Toast.LENGTH_LONG).show();
                 endAcces(token.access_token);

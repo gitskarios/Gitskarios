@@ -3,4 +3,5 @@
     <color name="accent">#ff0082ff</color>
     <color name="accentDark">#ff0069d0</color>
     <color name="gray_github">#f3f3f3</color>
+    <color name="gray_github_dark">#737373</color>
 </resources>
