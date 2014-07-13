@@ -50,7 +50,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
-        selectItem(4);
+        selectItem(1);
 
         return mDrawerListView;
     }

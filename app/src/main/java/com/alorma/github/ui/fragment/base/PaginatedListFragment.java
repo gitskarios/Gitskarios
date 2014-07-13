@@ -1,15 +1,12 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.app.Activity;
 import android.app.ListFragment;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.Link;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -27,12 +24,6 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
     protected static final String USERNAME = "USERNAME";
 
     private Link bottomLink;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        restoreActionBar();
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -95,14 +86,6 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void restoreActionBar() {
-        int rgb = getResources().getColor(R.color.accent);
-        ColorDrawable cd = new ColorDrawable(rgb);
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setBackgroundDrawable(cd);
         }
     }
 }

@@ -46,7 +46,7 @@ public class NumericTitle extends TextView {
     private void init() {
         isInEditMode();
 
-        rgb = getResources().getColor(R.color.accent);
+        rgb = getResources().getColor(R.color.gray_github_dark);
 
         rect = new Rect();
 
