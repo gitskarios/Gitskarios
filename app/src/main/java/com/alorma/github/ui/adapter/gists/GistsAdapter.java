@@ -1,7 +1,6 @@
-package com.alorma.github.ui.adapter;
+package com.alorma.github.ui.adapter.gists;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +19,10 @@ public class GistsAdapter extends ArrayAdapter<Gist> {
 
     private final LayoutInflater mInflater;
     private Context context;
-    private List<Gist> gists;
 
     public GistsAdapter(Context context, List<Gist> gists) {
         super(context, 0, 0, gists);
         this.context = context;
-        this.gists = gists;
         this.mInflater = LayoutInflater.from(context);
     }
 
@@ -34,20 +31,15 @@ public class GistsAdapter extends ArrayAdapter<Gist> {
         View v = mInflater.inflate(android.R.layout.simple_list_item_2, viewGroup, false);
         GistsHolder gistsHolder = new GistsHolder(v);
 
-        Gist gist = gists.get(position);
+        Gist gist = getItem(position);
 
-        String description = gist.getDescription();
+        String description = gist.description;
         if (TextUtils.isEmpty(description)) {
             description = context.getResources().getString(R.string.no_gist_description);
         }
         gistsHolder.text1.setText(description);
-        gistsHolder.text2.setText("Num files: " + gist.getFiles().size());
+        gistsHolder.text2.setText("Num files: " + gist.files.size());
 
         return v;
-    }
-
-
-    public interface BottomReachedListener {
-        void onBotomReached();
     }
 }

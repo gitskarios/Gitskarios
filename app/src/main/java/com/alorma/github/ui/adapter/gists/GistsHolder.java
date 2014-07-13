@@ -1,4 +1,4 @@
-package com.alorma.github.ui.adapter;
+package com.alorma.github.ui.adapter.gists;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -31,7 +31,7 @@ public abstract class NavigationActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
-            setUpNavigation();
+        setUpNavigation();
 
     }
 
@@ -52,7 +52,6 @@ public abstract class NavigationActivity extends Activity
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setHomeButtonEnabled(true);
-                actionBar.setTitle(getActivityTitle());
             }
 
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_ab_drawer, 0, 0) {
@@ -106,8 +105,6 @@ public abstract class NavigationActivity extends Activity
     }
 
     protected abstract NavigationDrawerFragment getNavigationFragment();
-
-    protected abstract CharSequence getActivityTitle();
 
     protected void setContainerFragment(Fragment fragment) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
