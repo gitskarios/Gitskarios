@@ -8,6 +8,7 @@ import android.net.Uri;
 public class ApiConstants {
     public static String CLIENT_ID;
     public static String CLIENT_SECRET;
+    public static String CLIENT_CALLBACK;
 
     public static final String API_URL = "https://api.github.com";
 

@@ -14,5 +14,8 @@
     <string name="title_profile">Profile</string>
     <string name="title_gists">Gists</string>
     <string name="navigation_profile">Profile</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Login</string>
 
 </resources>

@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -14,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.security.StoreCredentials;
+import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
 
 public abstract class NavigationActivity extends Activity
@@ -28,7 +31,8 @@ public abstract class NavigationActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
-        setUpNavigation();
+            setUpNavigation();
+
     }
 
     public void setUpNavigation() {
@@ -40,32 +44,34 @@ public abstract class NavigationActivity extends Activity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        ActionBar actionBar = getActionBar();
+            ActionBar actionBar = getActionBar();
 
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setTitle(getActivityTitle());
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeButtonEnabled(true);
+                actionBar.setTitle(getActivityTitle());
+            }
+
+            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_ab_drawer, 0, 0) {
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+                    invalidateOptionsMenu();
+                }
+
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    invalidateOptionsMenu();
+                }
+            };
+
+            mDrawerToggle.syncState();
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
         }
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_ab_drawer, 0, 0) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-
-        mDrawerToggle.syncState();
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     @Override
@@ -94,7 +100,9 @@ public abstract class NavigationActivity extends Activity
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if (mDrawerToggle != null) {
+            mDrawerToggle.syncState();
+        }
     }
 
     protected abstract NavigationDrawerFragment getNavigationFragment();

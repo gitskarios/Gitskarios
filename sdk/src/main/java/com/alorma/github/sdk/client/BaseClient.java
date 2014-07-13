@@ -14,7 +14,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public abstract class BaseClient<K> implements Callback<K> {
+public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor {
 
     private final StoreCredentials storeCredentials;
     private OnResultCallback<K> onResultCallback;
@@ -24,17 +24,10 @@ public abstract class BaseClient<K> implements Callback<K> {
     }
 
     public void execute() {
-        RequestInterceptor interceptor = new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                request.addHeader("Accept", "application/vnd.github.v3.full+json");
-                request.addHeader("Authorization", "Basic " + storeCredentials.restoreToken());
-            }
-        };
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ApiConstants.API_URL)
-                .setRequestInterceptor(interceptor)
+                .setRequestInterceptor(this)
                 .build();
 
         executeService(restAdapter);
@@ -62,6 +55,12 @@ public abstract class BaseClient<K> implements Callback<K> {
 
     public void setOnResultCallback(OnResultCallback<K> onResultCallback) {
         this.onResultCallback = onResultCallback;
+    }
+
+    @Override
+    public void intercept(RequestFacade request) {
+        request.addHeader("Accept", "application/vnd.github.v3.full+json");
+        request.addHeader("Authorization", "token " + storeCredentials.token());
     }
 
     public interface OnResultCallback<K> {
