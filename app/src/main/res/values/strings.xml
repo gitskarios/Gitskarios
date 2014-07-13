@@ -11,8 +11,15 @@
     <string name="action_settings">Settings</string>
     <string name="no_gist_description">No description</string>
     <string name="navigation_gists">Gists</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_gists">Gists</string>
+    <string name="navigation_profile">Profile</string>
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
+    <string name="public_repos">Repos</string>
+    <string name="public_gists">Gists</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
 
 </resources>

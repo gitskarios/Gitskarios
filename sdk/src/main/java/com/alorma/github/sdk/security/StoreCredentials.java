@@ -17,7 +17,7 @@ public class StoreCredentials {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = preferences.edit();
     }
-
+    
     public void storeToken(String accessToken) {
         editor.putString(USER_TOKEN, accessToken);
         editor.apply();

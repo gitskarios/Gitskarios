@@ -15,19 +15,18 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
-import com.alorma.github.sdk.client.BaseClient;
-import com.alorma.github.sdk.client.RequestTokenClient;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.login.RequestTokenClient;
+import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class LoginActivity extends Activity {
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
-    public static String OAUTH_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token";
 
-    public static String CLIENT_ID = "5dbfca95aa4de59f4a1c";
-    public static String CLIENT_SECRET = "b3688437884ec6978884abafdce798d8781314d1";
     private StoreCredentials credentials;
     private ProgressDialog progress;
 
@@ -44,8 +43,9 @@ public class LoginActivity extends Activity {
         credentials = new StoreCredentials(this);
         if (credentials.token() != null) {
              MainActivity.startActivity(this);
+            finish();
         } else {
-            String url = OAUTH_URL + "?client_id=" + CLIENT_ID;
+            String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
 
             url = url + "&scope=gist,user,repo,notifications";
 
@@ -130,7 +130,7 @@ public class LoginActivity extends Activity {
         }
 
         @Override
-        public void onResponseOk(Token token) {
+        public void onResponseOk(Token token, Response r) {
             if (token.access_token != null) {
                 Toast.makeText(LoginActivity.this, token.access_token, Toast.LENGTH_LONG).show();
                 endAcces(token.access_token);
@@ -141,7 +141,6 @@ public class LoginActivity extends Activity {
 
         @Override
         public void onFail(RetrofitError error) {
-            Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
             if (error.getResponse() != null) {
                 Log.e("RETROFIT", "Response error body: " + error.getResponse().getBody());
             }
