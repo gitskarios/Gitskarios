@@ -33,15 +33,17 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
-import com.alorma.github.ui.fragment.navigation.NavigatedFragment;
 import com.joanzapata.android.iconify.Iconify;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ProfileFragment extends NavigatedFragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
+public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
     private static final String USERNAME = "USERNAME";
     private static final long DURATION = 300;
     private User user;
@@ -56,6 +58,7 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     private EnhancedTextView mailText;
     private EnhancedTextView blogText;
     private EnhancedTextView joinedText;
+    private PaletteItem usedPalette;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -68,11 +71,6 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setArguments(bundle);
         return profileFragment;
-    }
-
-    @Override
-    protected int getTitle() {
-        return R.string.title_profile;
     }
 
     @Override
@@ -120,11 +118,12 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         num3Text.setOnClickListener(this);
         num4Text.setOnClickListener(this);
 
+        num1Text.setSelected(true);
         if (username == null) {
-            Fragment fragment = GistsFragment.newInstance();
+            Fragment fragment = ReposFragment.newInstance();
             replaceContent(fragment);
         } else {
-            Fragment fragment = GistsFragment.newInstance(username);
+            Fragment fragment = ReposFragment.newInstance(username);
             replaceContent(fragment);
         }
     }
@@ -268,10 +267,13 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
     }
 
     private void setUpFromPaletteItem(PaletteItem paletteItem) {
+        this.usedPalette = paletteItem;
         int rgb = paletteItem.getRgb();
         if (getActivity().getActionBar() != null) {
             animateChange(rgb);
         }
+
+        selectButton(null);
 
         mailText.setPrefixColor(rgb);
         blogText.setPrefixColor(rgb);
@@ -327,15 +329,19 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         switch (view.getId()) {
             case R.id.num1:
                 fragment = ReposFragment.newInstance(username);
+                selectButton(num1Text);
                 break;
             case R.id.num2:
                 fragment = GistsFragment.newInstance(username);
+                selectButton(num2Text);
                 break;
             case R.id.num3:
                 fragment = FollowersFragment.newInstance(username);
+                selectButton(num3Text);
                 break;
             case R.id.num4:
                 fragment = FollowingFragment.newInstance(username);
+                selectButton(num4Text);
                 break;
             case R.id.mail:
                 if (user.email != null) {
@@ -353,5 +359,23 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         }
 
         replaceContent(fragment);
+    }
+
+    private void selectButton(NumericTitle numText) {
+        List<NumericTitle> numericTitles = new ArrayList<NumericTitle>();
+        numericTitles.add(num1Text);
+        numericTitles.add(num2Text);
+        numericTitles.add(num3Text);
+        numericTitles.add(num4Text);
+
+        for (NumericTitle numericTitle : numericTitles) {
+            if (numText != null) {
+                numericTitle.setSelected(numericTitle == numText);
+            }
+
+            if (usedPalette != null) {
+                numericTitle.setRgb(usedPalette.getRgb());
+            }
+        }
     }
 }

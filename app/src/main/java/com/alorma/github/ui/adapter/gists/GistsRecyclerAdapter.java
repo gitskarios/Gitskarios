@@ -1,4 +1,4 @@
-package com.alorma.github.ui.adapter;
+package com.alorma.github.ui.adapter.gists;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +35,7 @@ public class GistsRecyclerAdapter extends RecyclerView.Adapter<GistsHolder> {
 
     @Override
     public void onBindViewHolder(GistsHolder gistsHolder, int i) {
-        String description = gists.get(i).getDescription();
+        String description = gists.get(i).description;
         if (TextUtils.isEmpty(description)) {
             description = context.getResources().getString(R.string.no_gist_description);
         }

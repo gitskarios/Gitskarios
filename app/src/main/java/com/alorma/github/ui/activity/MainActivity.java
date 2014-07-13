@@ -25,16 +25,14 @@ public class MainActivity extends NavigationActivity {
     }
 
     @Override
-    protected CharSequence getActivityTitle() {
-        return "Main";
-    }
-
-    @Override
     public void onNavigationDrawerItemSelected(int position) {
         switch (position) {
             case 0:
                 setContainerFragment(GistsFragment.newInstance());
                 restoreActionBar();
+                if (getActionBar() != null) {
+                    getActionBar().setTitle(R.string.title_gists);
+                }
                 break;
             case 1:
                 setContainerFragment(ProfileFragment.newInstance());
@@ -59,7 +57,6 @@ public class MainActivity extends NavigationActivity {
         ColorDrawable cd = new ColorDrawable(rgb);
         if (getActionBar() != null) {
             getActionBar().setBackgroundDrawable(cd);
-            getActionBar().setTitle(getActivityTitle());
             getActionBar().setSubtitle("");
         }
     }
