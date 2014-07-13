@@ -53,8 +53,6 @@ public class GistsFragment extends ListFragment implements BaseClient.OnResultCa
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setUpList();
-
         UserGistsClient client;
 
         if (getArguments() != null) {
@@ -89,6 +87,11 @@ public class GistsFragment extends ListFragment implements BaseClient.OnResultCa
         }
 
         if (getActivity() != null) {
+
+            if (gistsAdapter == null) {
+                setUpList();
+            }
+
             gistsAdapter.addAll(gists);
         }
     }

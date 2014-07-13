@@ -326,16 +326,16 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         Fragment fragment = null;
         switch (view.getId()) {
             case R.id.num1:
-
+                fragment = ReposFragment.newInstance(username);
                 break;
             case R.id.num2:
                 fragment = GistsFragment.newInstance(username);
                 break;
             case R.id.num3:
-
+                fragment = FollowersFragment.newInstance(username);
                 break;
             case R.id.num4:
-
+                fragment = FollowingFragment.newInstance(username);
                 break;
             case R.id.mail:
                 if (user.email != null) {
