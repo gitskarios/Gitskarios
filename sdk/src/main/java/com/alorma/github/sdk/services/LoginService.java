@@ -5,9 +5,7 @@ import com.alorma.github.sdk.bean.request.dto.RequestTokenDTO;
 
 import retrofit.Callback;
 import retrofit.http.Body;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
-import retrofit.http.Part;
 
 /**
  * Created by Bernat on 13/07/2014.
