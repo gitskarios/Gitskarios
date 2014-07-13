@@ -7,8 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.NavigationActivity;
+import com.alorma.github.ui.fragment.GistsFragment;
 import com.alorma.github.ui.fragment.ProfileFragment;
-import com.alorma.github.ui.fragment.UserPublicGistsFragment;
 import com.alorma.github.ui.fragment.navigation.MainNavigationFragment;
 import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
 
@@ -33,12 +33,8 @@ public class MainActivity extends NavigationActivity {
     public void onNavigationDrawerItemSelected(int position) {
         switch (position) {
             case 0:
-                setContainerFragment(UserPublicGistsFragment.newInstance());
-                int rgb = getResources().getColor(R.color.accent);
-                ColorDrawable cd = new ColorDrawable(rgb);
-                if (getActionBar() != null) {
-                    getActionBar().setBackgroundDrawable(cd);
-                }
+                setContainerFragment(GistsFragment.newInstance());
+                restoreActionBar();
                 break;
             case 1:
                 setContainerFragment(ProfileFragment.newInstance());
@@ -55,6 +51,16 @@ public class MainActivity extends NavigationActivity {
             default:
                 setContainerFragment(new ListFragment());
                 break;
+        }
+    }
+
+    private void restoreActionBar() {
+        int rgb = getResources().getColor(R.color.accent);
+        ColorDrawable cd = new ColorDrawable(rgb);
+        if (getActionBar() != null) {
+            getActionBar().setBackgroundDrawable(cd);
+            getActionBar().setTitle(getActivityTitle());
+            getActionBar().setSubtitle("");
         }
     }
 }

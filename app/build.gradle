@@ -21,10 +21,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:recyclerview-v7:+'
     compile project(':sdk')
     compile 'com.android.support:palette-v7:+'
     compile 'com.squareup.picasso:picasso:2.3.+'
+    compile project (':libraries:enhanced-edittext')
 }

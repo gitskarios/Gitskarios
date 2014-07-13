@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/avatar_size"
-        android:id="@+id/content1">
+        android:background="@color/gray_github">
 
         <ImageView
             android:layout_width="@dimen/avatar_size"
@@ -20,32 +20,33 @@
             android:layout_alignParentStart="true"
             android:layout_marginRight="8dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/user"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@+id/imageView"
-            android:layout_toEndOf="@+id/imageView"/>
-        <TextView
+        <android.widget.EnhancedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearance"
-            android:id="@+id/type"
+            android:id="@+id/mail"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_below="@+id/user"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-        <TextView
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+        <android.widget.EnhancedTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearance"
+            android:id="@+id/blog"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_below="@+id/mail"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="8dp" />
+        <android.widget.EnhancedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearance"
             android:id="@+id/joined"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_below="@+id/type"
+            android:layout_below="@+id/blog"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
@@ -54,7 +55,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:id="@+id/content2">
+        android:background="@color/gray_github">
 
         <NumericTitle
             android:layout_width="match_parent"

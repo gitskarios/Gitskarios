@@ -40,7 +40,7 @@ public class GistsAdapter extends ArrayAdapter<Gist> {
         if (TextUtils.isEmpty(description)) {
             description = context.getResources().getString(R.string.no_gist_description);
         }
-        gistsHolder.text1.setText(position + " //// " + description);
+        gistsHolder.text1.setText(description);
         gistsHolder.text2.setText("Num files: " + gist.getFiles().size());
 
         return v;

@@ -1,1 +1,1 @@
-include ':app', ':sdk', ':retrofit'
+include ':app', ':sdk', ':libraries:enhanced-edittext'

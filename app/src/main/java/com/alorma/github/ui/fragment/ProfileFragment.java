@@ -8,22 +8,22 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.EnhancedTextView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.NumericTitle;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
@@ -34,34 +34,28 @@ import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.fragment.navigation.NavigatedFragment;
+import com.joanzapata.android.iconify.Iconify;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import retrofit.RetrofitError;
-import retrofit.client.Header;
 import retrofit.client.Response;
 
 public class ProfileFragment extends NavigatedFragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
     private static final String USERNAME = "USERNAME";
     private static final long DURATION = 300;
     private User user;
-    private ImageView avatarImage;
-    private TextView userText;
     private int rgbAbColor;
     private Bitmap avatartBitmap;
-    private View content1;
-    private TextView typeText;
     private NumericTitle num1Text;
     private NumericTitle num2Text;
     private NumericTitle num3Text;
     private NumericTitle num4Text;
-    private LinearLayout content2;
-    private TextView joinedText;
     private String username;
+    private ImageView avatarImage;
+    private EnhancedTextView mailText;
+    private EnhancedTextView blogText;
+    private EnhancedTextView joinedText;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -108,9 +102,13 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         super.onViewCreated(view, savedInstanceState);
 
         avatarImage = (ImageView) view.findViewById(R.id.imageView);
-        userText = (TextView) view.findViewById(R.id.user);
-        typeText = (TextView) view.findViewById(R.id.type);
-        joinedText = (TextView) view.findViewById(R.id.joined);
+
+        mailText = (EnhancedTextView) view.findViewById(R.id.mail);
+        blogText = (EnhancedTextView) view.findViewById(R.id.blog);
+        joinedText = (EnhancedTextView) view.findViewById(R.id.joined);
+
+        mailText.setOnClickListener(this);
+        blogText.setOnClickListener(this);
 
         num1Text = (NumericTitle) view.findViewById(R.id.num1);
         num2Text = (NumericTitle) view.findViewById(R.id.num2);
@@ -122,17 +120,11 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
         num3Text.setOnClickListener(this);
         num4Text.setOnClickListener(this);
 
-        content1 = view.findViewById(R.id.content1);
-        content2 = (LinearLayout) view.findViewById(R.id.content2);
-
-        content1.setBackgroundColor(getResources().getColor(R.color.gray_github));
-        content2.setBackgroundColor(getResources().getColor(R.color.gray_github));
-
         if (username == null) {
-            Fragment fragment = UserPublicGistsFragment.newInstance();
+            Fragment fragment = GistsFragment.newInstance();
             replaceContent(fragment);
         } else {
-            Fragment fragment = UserPublicGistsFragment.newInstance(username);
+            Fragment fragment = GistsFragment.newInstance(username);
             replaceContent(fragment);
         }
     }
@@ -157,12 +149,35 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
             if (getActivity().getActionBar() != null) {
                 getActivity().getActionBar().setTitle(user.login);
             }
-            userText.setText(user.name);
-            typeText.setText(user.type.toString());
 
-            CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
+            if (user.name != null) {
+                if (getActivity().getActionBar() != null) {
+                    getActivity().getActionBar().setSubtitle(user.name);
+                }
+            }
 
-            joinedText.setText("Joined on " + format);
+            if (user.email != null) {
+                mailText.setText(user.email);
+                mailText.setPrefixIcon(Iconify.IconValue.fa_envelope_o);
+            } else {
+                mailText.setVisibility(View.GONE);
+            }
+
+            if (user.blog != null) {
+                blogText.setText(user.blog);
+                blogText.setPrefixIcon(Iconify.IconValue.fa_link);
+            } else {
+                blogText.setVisibility(View.GONE);
+            }
+
+            if (user.created_at != null) {
+                CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
+
+                joinedText.setText("Joined on " + format);
+                joinedText.setPrefixIcon(Iconify.IconValue.fa_clock_o);
+            } else {
+                joinedText.setVisibility(View.GONE);
+            }
 
             updateNums();
         }
@@ -229,41 +244,38 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
             PaletteItem mutedColor = palette.getMutedColor();
             PaletteItem lightMutedColor = palette.getLightMutedColor();
             PaletteItem darkMutedColor = palette.getDarkMutedColor();
+            PaletteItem item = null;
             if (vibrantColor != null) {
-                setUpFromPaletteItem(vibrantColor);
+                item = vibrantColor;
             } else if (darkVibrantColor != null) {
-                setUpFromPaletteItem(darkVibrantColor);
+                item = darkVibrantColor;
             } else if (lightVibrantColor != null) {
-                setUpFromPaletteItem(lightVibrantColor);
-                content1.setBackgroundColor(lightVibrantColor.getRgb());
+                item = lightVibrantColor;
             } else if (darkMutedColor != null) {
-                setUpFromPaletteItem(darkMutedColor);
+                item = darkMutedColor;
             } else if (lightMutedColor != null) {
-                setUpFromPaletteItem(lightMutedColor);
-                content1.setBackgroundColor(lightMutedColor.getRgb());
+                item = lightMutedColor;
             } else if (mutedColor != null) {
-                setUpFromPaletteItem(mutedColor);
+                item = mutedColor;
             }
 
-            /*if (lightMutedColor != null) {
-                content1.setBackgroundColor(lightMutedColor.getRgb());
-                content2.setBackgroundColor(lightMutedColor.getRgb());
-            } else if (lightVibrantColor != null) {
-                content1.setBackgroundColor(lightVibrantColor.getRgb());
-                content2.setBackgroundColor(lightVibrantColor.getRgb());
-            }*/
+            if (item != null) {
+                setUpFromPaletteItem(item);
+            }
 
             aphaImage(avatartBitmap);
         }
     }
 
     private void setUpFromPaletteItem(PaletteItem paletteItem) {
-        if (paletteItem != null) {
-            int rgb = paletteItem.getRgb();
-            if (getActivity().getActionBar() != null) {
-                animateChange(rgb);
-            }
+        int rgb = paletteItem.getRgb();
+        if (getActivity().getActionBar() != null) {
+            animateChange(rgb);
         }
+
+        mailText.setPrefixColor(rgb);
+        blogText.setPrefixColor(rgb);
+        joinedText.setPrefixColor(rgb);
     }
 
     private void animateChange(int rgb) {
@@ -317,13 +329,26 @@ public class ProfileFragment extends NavigatedFragment implements BaseClient.OnR
 
                 break;
             case R.id.num2:
-                fragment = UserPublicGistsFragment.newInstance(username);
+                fragment = GistsFragment.newInstance(username);
                 break;
             case R.id.num3:
 
                 break;
             case R.id.num4:
 
+                break;
+            case R.id.mail:
+                if (user.email != null) {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + user.email));
+                    startActivity(Intent.createChooser(intent, "Send Email..."));
+                }
+                break;
+            case R.id.blog:
+                if (user.blog != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse(user.blog), "text/html");
+                    startActivity(Intent.createChooser(intent, "Open with..."));
+                }
                 break;
         }
 
