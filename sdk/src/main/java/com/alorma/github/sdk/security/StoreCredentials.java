@@ -9,8 +9,7 @@ import android.preference.PreferenceManager;
  */
 public class StoreCredentials {
 
-    private static final String USER_KEY = StoreCredentials.class.getSimpleName() + ".USER_KEY";
-    private static final String USER_PASS = StoreCredentials.class.getSimpleName() + ".USER_PASS";
+    private static final String USER_TOKEN = StoreCredentials.class.getSimpleName() + ".USER_TOKEN";
     private final SharedPreferences.Editor editor;
     private final SharedPreferences preferences;
 
@@ -19,19 +18,12 @@ public class StoreCredentials {
         editor = preferences.edit();
     }
 
-    public void storeUser(String user) {
-        editor.putString(USER_KEY, user);
-        editor.apply();
-    }
-    public void storePass(String pass) {
-        editor.putString(USER_PASS, pass);
+    public void storeToken(String accessToken) {
+        editor.putString(USER_TOKEN, accessToken);
         editor.apply();
     }
 
-    public String restoreUser() {
-        return preferences.getString(USER_KEY, null);
-    }
-    public String restorePass() {
-        return preferences.getString(USER_PASS, null);
+    public String token() {
+        return preferences.getString(USER_TOKEN, null);
     }
 }

@@ -16,9 +16,6 @@ public class GistsApplication extends Application{
 
         ApiConstants.CLIENT_ID = "5dbfca95aa4de59f4a1c";
         ApiConstants.CLIENT_SECRET = "b3688437884ec6978884abafdce798d8781314d1";
-
-        StoreCredentials storeCredentials = new StoreCredentials(this);
-        storeCredentials.storeUser("alorma");
-        storeCredentials.storePass("casameva243");
+        ApiConstants.CLIENT_CALLBACK = "http://bernatborras.net/giskarios";
     }
 }
