@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
@@ -15,9 +16,10 @@ import java.util.List;
 /**
  * Created by Bernat on 14/07/2014.
  */
-public class UsersAdapter extends ArrayAdapter<User>{
+public class UsersAdapter extends ArrayAdapter<User> {
 
     private final LayoutInflater mInflater;
+    private int scrollState;
 
     public UsersAdapter(Context context, List<User> users) {
         super(context, 0, 0, users);
@@ -28,6 +30,7 @@ public class UsersAdapter extends ArrayAdapter<User>{
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         View v = mInflater.inflate(R.layout.user_row, viewGroup, false);
         UsersHolder userHolder = new UsersHolder(v);
+
 
         User user = getItem(position);
 

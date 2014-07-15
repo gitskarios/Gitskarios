@@ -36,7 +36,7 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
     protected abstract void executeRequest();
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int i) {
+    public void onScrollStateChanged(AbsListView absListView, int state) {
 
     }
 

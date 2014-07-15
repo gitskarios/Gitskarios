@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <CircularImageView
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:src="@drawable/ic_contact_picture"/>
 
     <TextView
         android:layout_width="match_parent"

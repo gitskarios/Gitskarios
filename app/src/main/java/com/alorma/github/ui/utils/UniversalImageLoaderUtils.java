@@ -12,13 +12,15 @@ public class UniversalImageLoaderUtils {
 
     public static ImageLoaderConfiguration getImageLoaderConfiguration(Context context) {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .defaultDisplayImageOptions(getDisplayImageOptions())
                 .build();
-
         return config;
     }
 
-    public static DisplayImageOptions getDisplayImageOptions(Context context){
+    public static DisplayImageOptions getDisplayImageOptions(){
         DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
                 .build();
         return options;
 
