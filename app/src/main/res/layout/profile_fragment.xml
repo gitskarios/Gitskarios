@@ -50,6 +50,7 @@
             android:layout_below="@+id/mail"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             app:prefixColor="@color/accent" />
 
@@ -62,6 +63,7 @@
             android:layout_below="@+id/blog"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
             app:prefixColor="@color/accent" />
     </RelativeLayout>
 

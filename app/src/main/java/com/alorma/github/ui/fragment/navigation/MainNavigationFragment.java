@@ -67,7 +67,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
 
         ArrayAdapter adapter = new ArrayAdapter<String>(
                 getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
+                R.layout.row_navigation,
                 android.R.id.text1,
                 items
         );

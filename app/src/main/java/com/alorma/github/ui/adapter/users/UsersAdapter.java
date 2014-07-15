@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
@@ -28,7 +27,7 @@ public class UsersAdapter extends ArrayAdapter<User> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View v = mInflater.inflate(R.layout.user_row, viewGroup, false);
+        View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
         UsersHolder userHolder = new UsersHolder(v);
 
 

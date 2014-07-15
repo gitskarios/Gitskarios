@@ -26,7 +26,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View v = mInflater.inflate(android.R.layout.simple_list_item_2, viewGroup, false);
+        View v = mInflater.inflate(R.layout.row_repo, viewGroup, false);
         ReposHolder reposHolder = new ReposHolder(v);
 
         Repo repo = getItem(position);

@@ -45,10 +45,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
                 android:id="@+id/joined"
-                android:layout_toEndOf="@+id/avatarParent"
-                android:layout_below="@+id/blog"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
                 app:prefixColor="#FFFFFF"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
