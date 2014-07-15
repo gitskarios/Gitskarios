@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.NavigationActivity;
@@ -11,8 +12,16 @@ import com.alorma.github.ui.fragment.GistsFragment;
 import com.alorma.github.ui.fragment.ProfileFragment;
 import com.alorma.github.ui.fragment.navigation.MainNavigationFragment;
 import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MainActivity extends NavigationActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+    }
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -37,19 +46,7 @@ public class MainActivity extends NavigationActivity {
                 restoreActionBar();
                 break;
             case 1:
-                setContainerFragment(ProfileFragment.newInstance());
-                break;
-            case 2:
-                setContainerFragment(ProfileFragment.newInstance("kix2902"));
-                break;
-            case 3:
-                setContainerFragment(ProfileFragment.newInstance("octocats"));
-                break;
-            case 4:
                 setContainerFragment(ProfileFragment.newInstance("JakeWharton"));
-                break;
-            default:
-                setContainerFragment(new ListFragment());
                 break;
         }
     }
