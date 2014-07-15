@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class UsersAdapter extends ArrayAdapter<User>{
             userHolder.textView.setText(user.login);
         }
 
-        Picasso.with(getContext()).load(user.avatar_url).into(userHolder.imageView);
+        ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.imageView);
 
         return v;
     }

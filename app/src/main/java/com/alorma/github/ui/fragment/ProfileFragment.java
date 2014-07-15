@@ -2,8 +2,6 @@ package com.alorma.github.ui.fragment;
 
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,7 +9,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
@@ -21,10 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.CircularImageView;
 import android.widget.EnhancedTextView;
-import android.widget.ImageView;
 import android.widget.NumericTitle;
-import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
@@ -33,9 +29,10 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
+import com.alorma.github.ui.utils.PaletteUtils;
 import com.joanzapata.android.iconify.Iconify;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,18 +40,18 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Target, Palette.PaletteAsyncListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
+public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener,
+        ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
     private static final String USERNAME = "USERNAME";
     private static final long DURATION = 300;
     private User user;
     private int rgbAbColor;
-    private Bitmap avatartBitmap;
     private NumericTitle num1Text;
     private NumericTitle num2Text;
     private NumericTitle num3Text;
     private NumericTitle num4Text;
     private String username;
-    private ImageView avatarImage;
+    private CircularImageView avatarImage;
     private EnhancedTextView mailText;
     private EnhancedTextView blogText;
     private EnhancedTextView joinedText;
@@ -99,7 +96,8 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        avatarImage = (ImageView) view.findViewById(R.id.imageView);
+        avatarImage = (CircularImageView) view.findViewById(R.id.imageView);
+        avatarImage.setBackgroundColor(getResources().getColor(R.color.gray_github));
 
         mailText = (EnhancedTextView) view.findViewById(R.id.mail);
         blogText = (EnhancedTextView) view.findViewById(R.id.blog);
@@ -144,10 +142,18 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
     private void updateData() {
         if (isAdded() && user != null) {
-            Picasso.with(getActivity()).load(user.avatar_url).into(this);
             if (getActivity().getActionBar() != null) {
                 getActivity().getActionBar().setTitle(user.login);
             }
+
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.loadImage(user.avatar_url, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    avatarImage.setImageBitmap(loadedImage);
+                    Palette.generateAsync(loadedImage, ProfileFragment.this);
+                }
+            });
 
             if (user.name != null) {
                 if (getActivity().getActionBar() != null) {
@@ -195,23 +201,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
     @Override
     public void onFail(RetrofitError error) {
-        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-        Palette.generateAsync(bitmap, this);
-        this.avatartBitmap = bitmap;
-
-        PropertyValuesHolder ph = PropertyValuesHolder.ofFloat("alpha", 0f, 1f);
-        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(avatarImage, ph);
-        animator.setDuration(DURATION);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.start();
-    }
-
-    @Override
-    public void onBitmapFailed(Drawable errorDrawable) {
 
     }
 
@@ -226,43 +215,17 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     }
 
     @Override
-    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-    }
-
-    @Override
     public void onGenerated(Palette palette) {
         setUpFromPalette(palette);
     }
 
     public void setUpFromPalette(Palette palette) {
         if (palette != null) {
-            PaletteItem vibrantColor = palette.getVibrantColor();
-            PaletteItem lightVibrantColor = palette.getLightVibrantColor();
-            PaletteItem darkVibrantColor = palette.getDarkVibrantColor();
-            PaletteItem mutedColor = palette.getMutedColor();
-            PaletteItem lightMutedColor = palette.getLightMutedColor();
-            PaletteItem darkMutedColor = palette.getDarkMutedColor();
-            PaletteItem item = null;
-            if (vibrantColor != null) {
-                item = vibrantColor;
-            } else if (darkVibrantColor != null) {
-                item = darkVibrantColor;
-            } else if (lightVibrantColor != null) {
-                item = lightVibrantColor;
-            } else if (darkMutedColor != null) {
-                item = darkMutedColor;
-            } else if (lightMutedColor != null) {
-                item = lightMutedColor;
-            } else if (mutedColor != null) {
-                item = mutedColor;
-            }
+            PaletteItem item = PaletteUtils.getPaletteItem(palette);
 
             if (item != null) {
                 setUpFromPaletteItem(item);
             }
-
-            aphaImage(avatartBitmap);
         }
     }
 
@@ -273,6 +236,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             animateChange(rgb);
         }
 
+        avatarImage.setBorderColor(rgb);
         selectButton(null);
 
         mailText.setPrefixColor(rgb);
@@ -288,11 +252,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         animator.setInterpolator(new LinearInterpolator());
         animator.addListener(this);
         animator.start();
-    }
-
-    private void aphaImage(Bitmap bitmap) {
-        avatarImage.setAlpha(0f);
-        avatarImage.setImageBitmap(bitmap);
     }
 
     @Override
