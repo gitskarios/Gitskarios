@@ -42,7 +42,7 @@ import retrofit.client.Response;
 
 public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener,
         ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
-    private static final String USERNAME = "USERNAME";
+    public static final String USERNAME = "USERNAME";
     private static final long DURATION = 300;
     private User user;
     private int rgbAbColor;

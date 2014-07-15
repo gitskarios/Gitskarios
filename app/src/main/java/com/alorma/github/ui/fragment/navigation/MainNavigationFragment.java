@@ -59,8 +59,10 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
         mDrawerListView.setOnItemClickListener(this);
 
         items = new String[]{
+                getString(R.string.navigation_repos),
                 getString(R.string.navigation_gists),
-                "JakeWharton"
+                getString(R.string.navigation_following),
+                getString(R.string.navigation_followers)
         };
 
         ArrayAdapter adapter = new ArrayAdapter<String>(
@@ -73,7 +75,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
-        selectItem(1);
+        selectItem(0);
 
         return v;
     }

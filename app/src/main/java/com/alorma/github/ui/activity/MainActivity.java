@@ -8,8 +8,11 @@ import android.os.Bundle;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.NavigationActivity;
+import com.alorma.github.ui.fragment.FollowersFragment;
+import com.alorma.github.ui.fragment.FollowingFragment;
 import com.alorma.github.ui.fragment.GistsFragment;
 import com.alorma.github.ui.fragment.ProfileFragment;
+import com.alorma.github.ui.fragment.ReposFragment;
 import com.alorma.github.ui.fragment.navigation.MainNavigationFragment;
 import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
@@ -37,14 +40,32 @@ public class MainActivity extends NavigationActivity {
     public void onNavigationDrawerItemSelected(int position) {
         switch (position) {
             case 0:
+                setContainerFragment(ReposFragment.newInstance());
+                restoreActionBar();
+                if (getActionBar() != null) {
+                    getActionBar().setTitle(R.string.title_repos);
+                }
+                break;
+            case 1:
                 setContainerFragment(GistsFragment.newInstance());
                 restoreActionBar();
                 if (getActionBar() != null) {
                     getActionBar().setTitle(R.string.title_gists);
                 }
                 break;
-            case 1:
-                setContainerFragment(ProfileFragment.newInstance("JakeWharton"));
+            case 2:
+                setContainerFragment(FollowingFragment.newInstance());
+                restoreActionBar();
+                if (getActionBar() != null) {
+                    getActionBar().setTitle(R.string.title_following);
+                }
+                break;
+            case 3:
+                setContainerFragment(FollowersFragment.newInstance());
+                restoreActionBar();
+                if (getActionBar() != null) {
+                    getActionBar().setTitle(R.string.title_followers);
+                }
                 break;
         }
     }

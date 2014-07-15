@@ -1,14 +1,17 @@
 package com.alorma.github.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ListView;
 
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.UserFollowersClient;
+import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 
@@ -34,11 +37,6 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
             followersFragment.setArguments(bundle);
         }
         return followersFragment;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -73,6 +71,17 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
     private void setUpList() {
         usersAdapter = new UsersAdapter(getActivity(), new ArrayList<User>());
         setListAdapter(usersAdapter);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        if (usersAdapter != null && usersAdapter.getItem(position) != null) {
+            String login = usersAdapter.getItem(position).login;
+            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), login);
+            startActivity(launcherIntent);
+        }
     }
 }
 
