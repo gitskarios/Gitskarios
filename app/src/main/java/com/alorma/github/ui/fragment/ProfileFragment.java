@@ -116,19 +116,22 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
         num1Text.setSelected(true);
 
+        String username = null;
         BaseUsersClient<User> requestClient = null;
         if (getArguments() != null) {
             if (getArguments().containsKey(USER)) {
                 User user = getArguments().getParcelable(USER);
                 this.user = user;
                 updateData();
+            } else if (getArguments().containsKey(USERNAME)) {
+                username = getArguments().getString(USERNAME);
             }
-        } else {
-
         }
 
         if (user != null) {
             requestClient = new RequestUserClient(getActivity(), user.login);
+        } else if (username != null) {
+            requestClient = new RequestUserClient(getActivity(), username);
         } else {
             requestClient = new RequestAutenticatedUserClient(getActivity());
         }
@@ -187,7 +190,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             }
         }
 
-        if (user.email != null) {
+        if (user.email != null && !user.email.isEmpty()) {
             mailText.setText(user.email);
             mailText.setPrefixIcon(Iconify.IconValue.fa_envelope_o);
             mailText.setVisibility(View.VISIBLE);
@@ -195,7 +198,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             mailText.setVisibility(View.GONE);
         }
 
-        if (user.blog != null) {
+        if (user.blog != null && !user.blog.isEmpty()) {
             blogText.setText(user.blog);
             blogText.setPrefixIcon(Iconify.IconValue.fa_link);
             blogText.setVisibility(View.VISIBLE);
@@ -257,7 +260,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                 if (currentFragment != null) {
                     if (currentFragment instanceof ReposFragment) {
                         ((ReposFragment) currentFragment).setTextColor(darkPaletteItem.getRgb());
-                        ;
                     }
                 }
             }

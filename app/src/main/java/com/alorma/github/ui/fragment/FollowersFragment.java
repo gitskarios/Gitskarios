@@ -75,7 +75,8 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
         super.onListItemClick(l, v, position, id);
 
         if (usersAdapter != null && usersAdapter.getItem(position) != null) {
-            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
+            String login = usersAdapter.getItem(position).login;
+            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), login);
             startActivity(launcherIntent);
         }
     }
