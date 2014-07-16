@@ -25,6 +25,8 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/repoTypeIcon"
         android:layout_toEndOf="@id/repoTypeIcon"
+        android:layout_toLeftOf="@+id/details"
+        android:layout_toStartOf="@+id/details"
         android:layout_marginLeft="8dp"
         android:paddingTop="0dp"
         android:textSize="20sp"
