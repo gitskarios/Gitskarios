@@ -77,7 +77,7 @@ public class FollowingFragment extends PaginatedListFragment<ListUsers>{
 
         if (usersAdapter != null && usersAdapter.getItem(position) != null) {
             String login = usersAdapter.getItem(position).login;
-            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), login);
+            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
             startActivity(launcherIntent);
         }
     }

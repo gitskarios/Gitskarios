@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.UserFollowersClient;
@@ -76,8 +75,7 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
         super.onListItemClick(l, v, position, id);
 
         if (usersAdapter != null && usersAdapter.getItem(position) != null) {
-            String login = usersAdapter.getItem(position).login;
-            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), login);
+            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
             startActivity(launcherIntent);
         }
     }
