@@ -45,13 +45,13 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
     public static final String USERNAME = "USERNAME";
     private static final long DURATION = 300;
+    public static final String USER = "USER";
     private User user;
     private int rgbAbColor;
     private NumericTitle num1Text;
     private NumericTitle num2Text;
     private NumericTitle num3Text;
     private NumericTitle num4Text;
-    private String username;
     private CircularImageView avatarImage;
     private EnhancedTextView mailText;
     private EnhancedTextView blogText;
@@ -74,19 +74,13 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         return profileFragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static ProfileFragment newInstance(User user) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(USER, user);
 
-        BaseUsersClient<User> requestClient;
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-            requestClient = new RequestUserClient(getActivity(), username);
-        } else {
-            requestClient = new RequestAutenticatedUserClient(getActivity());
-        }
-        requestClient.setOnResultCallback(this);
-        requestClient.execute();
+        ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.setArguments(bundle);
+        return profileFragment;
     }
 
     @Override
@@ -121,13 +115,29 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         num4Text.setOnClickListener(this);
 
         num1Text.setSelected(true);
-        if (username == null) {
-            Fragment fragment = ReposFragment.newInstance();
-            replaceContent(fragment);
-        } else {
-            Fragment fragment = ReposFragment.newInstance(username, getResources().getColor(R.color.gray_github_dark));
-            replaceContent(fragment);
+
+        String username = null;
+        BaseUsersClient<User> requestClient = null;
+        if (getArguments() != null) {
+            if (getArguments().containsKey(USER)) {
+                User user = getArguments().getParcelable(USER);
+                this.user = user;
+                updateData();
+            } else if (getArguments().containsKey(USERNAME)) {
+                username = getArguments().getString(USERNAME);
+            }
         }
+
+        if (user != null) {
+            requestClient = new RequestUserClient(getActivity(), user.login);
+        } else if (username != null) {
+            requestClient = new RequestUserClient(getActivity(), username);
+        } else {
+            requestClient = new RequestAutenticatedUserClient(getActivity());
+        }
+
+        requestClient.setOnResultCallback(this);
+        requestClient.execute();
     }
 
     private void replaceContent(Fragment fragment) {
@@ -142,58 +152,71 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     @Override
     public void onResponseOk(User user, Response r) {
         this.user = user;
-        updateData();
+        if (isAdded()) {
+            if (user != null) {
+                updateData();
+            }
+        }
     }
 
     private void updateData() {
-        if (isAdded() && user != null) {
-            if (getActivity().getActionBar() != null) {
-                getActivity().getActionBar().setTitle(user.login);
-            }
-
-            if (!ImageLoader.getInstance().isInited()) {
-                ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(getActivity()));
-            }
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.loadImage(user.avatar_url, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    avatarImage.setImageBitmap(loadedImage);
-                    Palette.generateAsync(loadedImage, ProfileFragment.this);
-                }
-            });
-
-            if (user.name != null) {
-                if (getActivity().getActionBar() != null) {
-                    getActivity().getActionBar().setSubtitle(user.name);
-                }
-            }
-
-            if (user.email != null) {
-                mailText.setText(user.email);
-                mailText.setPrefixIcon(Iconify.IconValue.fa_envelope_o);
-            } else {
-                mailText.setVisibility(View.GONE);
-            }
-
-            if (user.blog != null) {
-                blogText.setText(user.blog);
-                blogText.setPrefixIcon(Iconify.IconValue.fa_link);
-            } else {
-                blogText.setVisibility(View.GONE);
-            }
-
-            if (user.created_at != null) {
-                CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
-
-                joinedText.setText("Joined on " + format);
-                joinedText.setPrefixIcon(Iconify.IconValue.fa_clock_o);
-            } else {
-                joinedText.setVisibility(View.GONE);
-            }
-
-            updateNums();
+        if (getActivity().getActionBar() != null) {
+            getActivity().getActionBar().setTitle(user.login);
         }
+
+        if (user.login == null) {
+            Fragment fragment = ReposFragment.newInstance();
+            replaceContent(fragment);
+        } else {
+            Fragment fragment = ReposFragment.newInstance(user.login, getResources().getColor(R.color.gray_github_dark));
+            replaceContent(fragment);
+        }
+
+        if (!ImageLoader.getInstance().isInited()) {
+            ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(getActivity()));
+        }
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.loadImage(user.avatar_url, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                avatarImage.setImageBitmap(loadedImage);
+                Palette.generateAsync(loadedImage, ProfileFragment.this);
+            }
+        });
+
+        if (user.name != null) {
+            if (getActivity().getActionBar() != null) {
+                getActivity().getActionBar().setSubtitle(user.name);
+            }
+        }
+
+        if (user.email != null && !user.email.isEmpty()) {
+            mailText.setText(user.email);
+            mailText.setPrefixIcon(Iconify.IconValue.fa_envelope_o);
+            mailText.setVisibility(View.VISIBLE);
+        } else {
+            mailText.setVisibility(View.GONE);
+        }
+
+        if (user.blog != null && !user.blog.isEmpty()) {
+            blogText.setText(user.blog);
+            blogText.setPrefixIcon(Iconify.IconValue.fa_link);
+            blogText.setVisibility(View.VISIBLE);
+        } else {
+            blogText.setVisibility(View.GONE);
+        }
+
+        if (user.created_at != null) {
+            CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
+
+            joinedText.setText("Joined on " + format);
+            joinedText.setPrefixIcon(Iconify.IconValue.fa_clock_o);
+            joinedText.setVisibility(View.VISIBLE);
+        } else {
+            joinedText.setVisibility(View.GONE);
+        }
+
+        updateNums();
     }
 
     private void updateNums() {
@@ -236,7 +259,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             if (darkPaletteItem != null) {
                 if (currentFragment != null) {
                     if (currentFragment instanceof ReposFragment) {
-                        ((ReposFragment) currentFragment).setTextColor(darkPaletteItem.getRgb());;
+                        ((ReposFragment) currentFragment).setTextColor(darkPaletteItem.getRgb());
                     }
                 }
             }
@@ -312,22 +335,22 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                 }
 
                 if (darkPaletteItem == null) {
-                    fragment = ReposFragment.newInstance(username, getResources().getColor(R.color.gray_github_dark));
+                    fragment = ReposFragment.newInstance(user.login, getResources().getColor(R.color.gray_github_dark));
                 } else {
-                    fragment = ReposFragment.newInstance(username, darkPaletteItem.getRgb());
+                    fragment = ReposFragment.newInstance(user.login, darkPaletteItem.getRgb());
                 }
                 selectButton(num1Text);
                 break;
             case R.id.num2:
-                fragment = GistsFragment.newInstance(username);
+                fragment = GistsFragment.newInstance(user.login);
                 selectButton(num2Text);
                 break;
             case R.id.num3:
-                fragment = FollowersFragment.newInstance(username);
+                fragment = FollowersFragment.newInstance(user.login);
                 selectButton(num3Text);
                 break;
             case R.id.num4:
-                fragment = FollowingFragment.newInstance(username);
+                fragment = FollowingFragment.newInstance(user.login);
                 selectButton(num4Text);
                 break;
             case R.id.mail:
@@ -340,7 +363,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                 if (user.blog != null) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     String blog = user.blog;
-                    if (blog != null && !blog.contains("http")) {
+                    if (blog != null && !blog.contains("http://")) {
                         blog = "http://" + blog;
                     }
                     intent.setDataAndType(Uri.parse(blog), "text/html");
