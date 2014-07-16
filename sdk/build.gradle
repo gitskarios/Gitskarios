@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion MAX_VERSION
     buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "com.alorma.github.sdk"
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion MAX_VERSION
         versionCode 1
         versionName "1.0"
     }

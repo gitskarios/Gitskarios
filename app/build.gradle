@@ -1,20 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion MAX_VERSION
     buildToolsVersion '20.0.0'
 
     defaultConfig {
         applicationId "com.alorma.github"
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion MAX_VERSION
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        playStore {
+            storeFile file("keystore/app.keystore.jks")
+            storePassword "android"
+            keyAlias "alorma"
+            keyPassword "DKALFARN8ERCX"
+        }
+    }
+
     buildTypes {
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.playStore
         }
     }
 }
@@ -25,6 +33,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:+'
     compile project(':sdk')
     compile 'com.android.support:palette-v7:+'
-    compile project (':libraries:enhanced-edittext')
+    compile project(':libraries:enhanced-edittext')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
 }
