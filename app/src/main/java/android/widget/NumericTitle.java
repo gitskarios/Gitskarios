@@ -38,11 +38,6 @@ public class NumericTitle extends TextView {
         init();
     }
 
-    public NumericTitle(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
     private void init() {
         isInEditMode();
 
