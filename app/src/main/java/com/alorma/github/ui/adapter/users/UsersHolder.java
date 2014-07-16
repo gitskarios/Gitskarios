@@ -17,6 +17,6 @@ public class UsersHolder extends RecyclerView.ViewHolder{
     public UsersHolder(View v) {
         super(v);
         this.imageView = (ImageView) v.findViewById(R.id.imageView);
-        this.textView = (TextView) v.findViewById(R.id.textView);
+        this.textView = (TextView) v.findViewById(R.id.forkNameRepo);
     }
 }

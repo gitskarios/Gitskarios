@@ -35,4 +35,19 @@ public class PaletteUtils {
 
         return null;
     }
+
+    public static PaletteItem getDarkPaletteItem(Palette palette) {
+        PaletteItem darkVibrantColor = palette.getDarkVibrantColor();
+        PaletteItem darkMutedColor = palette.getDarkMutedColor();
+        PaletteItem vibrantColor = palette.getVibrantColor();
+
+        if (darkVibrantColor != null) {
+            return darkVibrantColor;
+        } else if (darkMutedColor != null) {
+            return darkMutedColor;
+        } else {
+            return null;
+        }
+
+    }
 }

@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textView"
+        android:id="@+id/forkNameRepo"
         android:layout_marginLeft="16dp"
         android:gravity="center_vertical" />
 </LinearLayout>

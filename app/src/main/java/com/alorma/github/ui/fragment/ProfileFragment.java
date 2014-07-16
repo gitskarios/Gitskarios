@@ -30,6 +30,7 @@ import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.utils.PaletteUtils;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -56,6 +57,9 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private EnhancedTextView blogText;
     private EnhancedTextView joinedText;
     private PaletteItem usedPalette;
+    private Palette palette;
+    private PaletteItem darkPaletteItem;
+    private Fragment currentFragment;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -121,13 +125,14 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             Fragment fragment = ReposFragment.newInstance();
             replaceContent(fragment);
         } else {
-            Fragment fragment = ReposFragment.newInstance(username);
+            Fragment fragment = ReposFragment.newInstance(username, getResources().getColor(R.color.gray_github_dark));
             replaceContent(fragment);
         }
     }
 
     private void replaceContent(Fragment fragment) {
         if (fragment != null) {
+            this.currentFragment = fragment;
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.content3, fragment);
             ft.commit();
@@ -146,6 +151,9 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                 getActivity().getActionBar().setTitle(user.login);
             }
 
+            if (!ImageLoader.getInstance().isInited()) {
+                ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(getActivity()));
+            }
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.loadImage(user.avatar_url, new SimpleImageLoadingListener() {
                 @Override
@@ -220,7 +228,19 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     }
 
     public void setUpFromPalette(Palette palette) {
+        this.palette = palette;
         if (palette != null) {
+
+            darkPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
+
+            if (darkPaletteItem != null) {
+                if (currentFragment != null) {
+                    if (currentFragment instanceof ReposFragment) {
+                        ((ReposFragment) currentFragment).setTextColor(darkPaletteItem.getRgb());;
+                    }
+                }
+            }
+
             PaletteItem item = PaletteUtils.getPaletteItem(palette);
 
             if (item != null) {
@@ -287,7 +307,15 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         Fragment fragment = null;
         switch (view.getId()) {
             case R.id.num1:
-                fragment = ReposFragment.newInstance(username);
+                if (darkPaletteItem == null) {
+                    darkPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
+                }
+
+                if (darkPaletteItem == null) {
+                    fragment = ReposFragment.newInstance(username, getResources().getColor(R.color.gray_github_dark));
+                } else {
+                    fragment = ReposFragment.newInstance(username, darkPaletteItem.getRgb());
+                }
                 selectButton(num1Text);
                 break;
             case R.id.num2:
@@ -311,7 +339,11 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             case R.id.blog:
                 if (user.blog != null) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse(user.blog), "text/html");
+                    String blog = user.blog;
+                    if (blog != null && !blog.contains("http")) {
+                        blog = "http://" + blog;
+                    }
+                    intent.setDataAndType(Uri.parse(blog), "text/html");
                     startActivity(Intent.createChooser(intent, "Open with..."));
                 }
                 break;

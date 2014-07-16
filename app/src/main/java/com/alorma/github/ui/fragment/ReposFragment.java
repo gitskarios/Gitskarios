@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment;
 
 import android.os.Bundle;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.ListGists;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
@@ -15,8 +16,11 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import java.util.ArrayList;
 
 public class ReposFragment extends PaginatedListFragment<ListRepos> {
+    private static final String COLOR = "COLOR";
+
     private String username;
     private ReposAdapter reposAdapter;
+    private int textColor = -1;
 
     public static ReposFragment newInstance() {
         return new ReposFragment();
@@ -32,6 +36,17 @@ public class ReposFragment extends PaginatedListFragment<ListRepos> {
         }
         return reposFragment;
     }
+    public static ReposFragment newInstance(String username, int color) {
+        ReposFragment reposFragment = new ReposFragment();
+        if (username != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(USERNAME, username);
+            bundle.putInt(COLOR, color);
+
+            reposFragment.setArguments(bundle);
+        }
+        return reposFragment;
+    }
 
     @Override
     protected void executeRequest() {
@@ -39,6 +54,7 @@ public class ReposFragment extends PaginatedListFragment<ListRepos> {
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
+            textColor = getArguments().getInt(COLOR);
         }
 
         client = new UserReposClient(getActivity(), username);
@@ -63,8 +79,20 @@ public class ReposFragment extends PaginatedListFragment<ListRepos> {
     }
 
     private void setUpList() {
-        reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
+        if (textColor != -1) {
+            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>(), textColor);
+        } else {
+            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
+        }
         setListAdapter(reposAdapter);
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+
+        if (reposAdapter != null) {
+            reposAdapter.setTextTitleColor(textColor);
+        }
     }
 
 }
