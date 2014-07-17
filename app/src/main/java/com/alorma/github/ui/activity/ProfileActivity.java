@@ -8,12 +8,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.ProfileFragment;
 
 /**
  * Created by Bernat on 15/07/2014.
  */
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends BackActivity {
 
     public static Intent createLauncherIntent(Context context, String username) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -30,10 +31,6 @@ public class ProfileActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         if (getIntent().getExtras() != null) {
             if (getIntent().getExtras().containsKey(ProfileFragment.USER)) {
@@ -52,13 +49,5 @@ public class ProfileActivity extends Activity {
         } else {
             finish();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

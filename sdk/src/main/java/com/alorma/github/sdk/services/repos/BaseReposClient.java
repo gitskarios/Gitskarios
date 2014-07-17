@@ -30,18 +30,18 @@ public abstract class BaseReposClient extends BaseClient<ListRepos> {
 
     @Override
     protected void executeService(RestAdapter restAdapter) {
-        ReposService usersService = restAdapter.create(ReposService.class);
+        ReposService reposService = restAdapter.create(ReposService.class);
         if (page == 0) {
             if (username == null) {
-                executeUserFirstPage(usersService);
+                executeUserFirstPage(reposService);
             } else {
-                executeFirstPageByUsername(username, usersService);
+                executeFirstPageByUsername(username, reposService);
             }
         } else {
             if (username == null) {
-                executeUserPaginated(page, usersService);
+                executeUserPaginated(page, reposService);
             } else {
-                executePaginatedByUsername(username, page, usersService);
+                executePaginatedByUsername(username, page, reposService);
             }
         }
     }

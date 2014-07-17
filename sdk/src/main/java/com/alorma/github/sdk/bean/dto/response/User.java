@@ -145,4 +145,45 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id=").append(id);
+        sb.append(", login='").append(login).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", company='").append(company).append('\'');
+        sb.append(", created_at=").append(created_at);
+        sb.append(", updated_at=").append(updated_at);
+        sb.append(", hireable=").append(hireable);
+        sb.append(", avatar_url='").append(avatar_url).append('\'');
+        sb.append(", gravatar_id='").append(gravatar_id).append('\'');
+        sb.append(", blog='").append(blog).append('\'');
+        sb.append(", bio='").append(bio).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", html_url='").append(html_url).append('\'');
+        sb.append(", followers_url='").append(followers_url).append('\'');
+        sb.append(", following_url='").append(following_url).append('\'');
+        sb.append(", gists_url='").append(gists_url).append('\'');
+        sb.append(", starred_url='").append(starred_url).append('\'');
+        sb.append(", subscriptions_url='").append(subscriptions_url).append('\'');
+        sb.append(", organizations_url='").append(organizations_url).append('\'');
+        sb.append(", repos_url='").append(repos_url).append('\'');
+        sb.append(", events_url='").append(events_url).append('\'');
+        sb.append(", received_events_url='").append(received_events_url).append('\'');
+        sb.append(", type=").append(type);
+        sb.append(", site_admin=").append(site_admin);
+        sb.append(", public_repos=").append(public_repos);
+        sb.append(", public_gists=").append(public_gists);
+        sb.append(", owned_public_repos=").append(owned_public_repos);
+        sb.append(", total_public_repos=").append(total_public_repos);
+        sb.append(", followers=").append(followers);
+        sb.append(", following=").append(following);
+        sb.append(", collaborators=").append(collaborators);
+        sb.append(", disk_usage=").append(disk_usage);
+        sb.append(", plan=").append(plan);
+        sb.append('}');
+        return sb.toString();
+    }
 }

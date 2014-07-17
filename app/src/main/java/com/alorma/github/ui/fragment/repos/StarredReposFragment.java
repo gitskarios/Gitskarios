@@ -3,21 +3,13 @@ package com.alorma.github.ui.fragment.repos;
 import android.os.Bundle;
 
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.StarredReposClient;
-import com.alorma.github.sdk.services.repos.UserReposClient;
-import com.alorma.github.ui.adapter.repos.ReposAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 
-import java.util.ArrayList;
-
-public class StarredReposFragment extends PaginatedListFragment<ListRepos> {
+public class StarredReposFragment extends BaseReposListFragment {
     private static final String COLOR = "COLOR";
 
     private String username;
-    private ReposAdapter reposAdapter;
-    private int textColor = -1;
 
     public static StarredReposFragment newInstance() {
         return new StarredReposFragment();
@@ -75,15 +67,6 @@ public class StarredReposFragment extends PaginatedListFragment<ListRepos> {
         reposAdapter.addAll(repos);
     }
 
-    private void setUpList() {
-        if (textColor != -1) {
-            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>(), textColor);
-        } else {
-            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
-        }
-        setListAdapter(reposAdapter);
-    }
-
     public void setTextColor(int textColor) {
         this.textColor = textColor;
 
@@ -91,5 +74,4 @@ public class StarredReposFragment extends PaginatedListFragment<ListRepos> {
             reposAdapter.setTextTitleColor(textColor);
         }
     }
-
 }
