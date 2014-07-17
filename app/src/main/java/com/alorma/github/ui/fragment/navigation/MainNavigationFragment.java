@@ -136,7 +136,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
     @Override
     public void onGenerated(Palette palette) {
         if (palette != null) {
-            PaletteItem item = PaletteUtils.getPaletteItem(palette);
+            PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
             if (item != null){
                 profileLy.setBackgroundColor(item.getRgb());
             }

@@ -8,7 +8,7 @@ import android.support.v7.graphics.PaletteItem;
  */
 public class PaletteUtils {
 
-    public static PaletteItem getPaletteItem(Palette palette) {
+    public static PaletteItem getProfilePaletteItem(Palette palette) {
         if (palette != null) {
             PaletteItem vibrantColor = palette.getVibrantColor();
             PaletteItem lightVibrantColor = palette.getLightVibrantColor();
@@ -27,7 +27,7 @@ public class PaletteUtils {
                 item = lightVibrantColor;
             } else if (darkMutedColor != null) {
                 item = darkMutedColor;
-            }else if (mutedColor != null) {
+            } else if (mutedColor != null) {
                 item = mutedColor;
             }
             return item;

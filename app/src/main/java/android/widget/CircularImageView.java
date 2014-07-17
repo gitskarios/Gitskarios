@@ -207,6 +207,9 @@ public class CircularImageView extends ImageView {
 
             paint.setColorFilter(null);
             canvas.drawCircle(center + outerWidth, center + outerWidth, ((canvasSize - (outerWidth * 2)) / 2) + outerWidth - 4.0f, paintBorder);
+
+            paintBorder.setColor(Color.WHITE);
+            canvas.drawCircle(center + outerWidth, center + outerWidth, ((canvasSize - (outerWidth * 2)) / 2) - 4.0f, paintBorder);
         } else {// Clear the color filter if no selector nor border were drawn
             paint.setColorFilter(null);
         }

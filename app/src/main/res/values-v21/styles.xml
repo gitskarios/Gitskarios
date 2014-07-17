@@ -2,6 +2,7 @@
 <resources>
     <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:colorAccent">@color/complementary</item>
+        <item name="android:windowContentOverlay">@null</item>
         <item name="android:colorPrimary">@color/accent</item>
         <item name="android:colorPrimaryDark">@color/accentDark</item>
     </style>

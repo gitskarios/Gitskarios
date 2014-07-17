@@ -59,7 +59,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private EnhancedTextView joinedText;
     private PaletteItem usedPalette;
     private Palette palette;
-    private PaletteItem darkPaletteItem;
+    private PaletteItem adapterPaletteItem;
     private Fragment currentFragment;
 
     public static ProfileFragment newInstance() {
@@ -96,7 +96,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         super.onViewCreated(view, savedInstanceState);
 
         avatarImage = (CircularImageView) view.findViewById(R.id.imageView);
-        avatarImage.setBackgroundColor(getResources().getColor(R.color.gray_github));
 
         mailText = (EnhancedTextView) view.findViewById(R.id.mail);
         blogText = (EnhancedTextView) view.findViewById(R.id.blog);
@@ -116,6 +115,8 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         num4Text.setOnClickListener(this);
 
         num1Text.setSelected(true);
+
+        setUpFromPaletteItem(null);
 
         String username = null;
         BaseUsersClient<User> requestClient = null;
@@ -255,27 +256,30 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         this.palette = palette;
         if (palette != null) {
 
-            darkPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
+            adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
 
-            if (darkPaletteItem != null) {
+            if (adapterPaletteItem != null) {
                 if (currentFragment != null) {
                     if (currentFragment instanceof ReposFragment) {
-                        ((ReposFragment) currentFragment).setTextColor(darkPaletteItem.getRgb());
+                        ((ReposFragment) currentFragment).setTextColor(adapterPaletteItem.getRgb());
                     }
                 }
             }
 
-            PaletteItem item = PaletteUtils.getPaletteItem(palette);
+            PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
 
-            if (item != null) {
-                setUpFromPaletteItem(item);
-            }
+            setUpFromPaletteItem(item);
         }
     }
 
     private void setUpFromPaletteItem(PaletteItem paletteItem) {
         this.usedPalette = paletteItem;
-        int rgb = paletteItem.getRgb();
+
+        int rgb = getResources().getColor(R.color.accent);
+        if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
+            rgb = paletteItem.getRgb();
+        }
+
         if (getActivity().getActionBar() != null) {
             animateChange(rgb);
         }
@@ -331,14 +335,14 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         Fragment fragment = null;
         switch (view.getId()) {
             case R.id.num1:
-                if (darkPaletteItem == null) {
-                    darkPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
+                if (adapterPaletteItem == null) {
+                    adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
                 }
 
-                if (darkPaletteItem == null) {
+                if (adapterPaletteItem == null) {
                     fragment = ReposFragment.newInstance(user.login, getResources().getColor(R.color.gray_github_dark));
                 } else {
-                    fragment = ReposFragment.newInstance(user.login, darkPaletteItem.getRgb());
+                    fragment = ReposFragment.newInstance(user.login, adapterPaletteItem.getRgb());
                 }
                 selectButton(num1Text);
                 break;
@@ -388,7 +392,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                 numericTitle.setSelected(numericTitle == numText);
             }
 
-            if (usedPalette != null) {
+            if (usedPalette != null && usedPalette.getRgb() != 0x000000) {
                 numericTitle.setRgb(usedPalette.getRgb());
             }
         }
