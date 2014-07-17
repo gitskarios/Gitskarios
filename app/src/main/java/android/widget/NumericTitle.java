@@ -14,7 +14,7 @@ import com.alorma.github.R;
 /**
  * Created by Bernat on 13/07/2014.
  */
-public class NumericTitle extends TextView {
+public class NumericTitle extends TabTitle {
 
     private int number = 0;
     private int text = 0;
@@ -84,25 +84,5 @@ public class NumericTitle extends TextView {
         stringBuilder.append(textS);
 
         setText(Html.fromHtml(stringBuilder.toString()));
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        paint.setColor(rgb);
-        rect.left = canvas.getClipBounds().left;
-        rect.right = canvas.getClipBounds().right;
-        rect.bottom = canvas.getClipBounds().bottom;
-        if (isSelected()) {
-            rect.top = (int) (canvas.getClipBounds().bottom - size);
-        } else {
-            rect.top = (int) (canvas.getClipBounds().bottom - size / 3 );
-        }
-        canvas.drawRect(rect, paint);
-    }
-
-    public void setRgb(int rgb) {
-        this.rgb = rgb;
-        invalidate();
     }
 }

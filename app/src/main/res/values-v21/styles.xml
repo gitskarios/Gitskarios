@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
-        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorAccent">@color/complementary</item>
         <item name="android:colorPrimary">@color/accent</item>
         <item name="android:colorPrimaryDark">@color/accentDark</item>
-        <item name="android:windowContentOverlay">@null</item>
     </style>
 </resources>

@@ -1,33 +1,30 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 
-import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Gist;
-import com.alorma.github.sdk.bean.dto.response.ListGists;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.services.gists.UserGistsClient;
+import com.alorma.github.sdk.services.repos.BaseReposClient;
+import com.alorma.github.sdk.services.repos.StarredReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
-import com.alorma.github.ui.adapter.gists.GistsAdapter;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 
 import java.util.ArrayList;
 
-public class ReposFragment extends PaginatedListFragment<ListRepos> {
+public class StarredReposFragment extends PaginatedListFragment<ListRepos> {
     private static final String COLOR = "COLOR";
 
     private String username;
     private ReposAdapter reposAdapter;
     private int textColor = -1;
 
-    public static ReposFragment newInstance() {
-        return new ReposFragment();
+    public static StarredReposFragment newInstance() {
+        return new StarredReposFragment();
     }
 
-    public static ReposFragment newInstance(String username) {
-        ReposFragment reposFragment = new ReposFragment();
+    public static StarredReposFragment newInstance(String username) {
+        StarredReposFragment reposFragment = new StarredReposFragment();
         if (username != null) {
             Bundle bundle = new Bundle();
             bundle.putString(USERNAME, username);
@@ -36,8 +33,8 @@ public class ReposFragment extends PaginatedListFragment<ListRepos> {
         }
         return reposFragment;
     }
-    public static ReposFragment newInstance(String username, int color) {
-        ReposFragment reposFragment = new ReposFragment();
+    public static StarredReposFragment newInstance(String username, int color) {
+        StarredReposFragment reposFragment = new StarredReposFragment();
         if (username != null) {
             Bundle bundle = new Bundle();
             bundle.putString(USERNAME, username);
@@ -50,14 +47,14 @@ public class ReposFragment extends PaginatedListFragment<ListRepos> {
 
     @Override
     protected void executeRequest() {
-        UserReposClient client;
+        BaseReposClient client;
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
             textColor = getArguments().getInt(COLOR);
         }
 
-        client = new UserReposClient(getActivity(), username);
+        client = new StarredReposClient(getActivity(), username);
 
         client.setOnResultCallback(this);
         client.execute();
@@ -65,7 +62,7 @@ public class ReposFragment extends PaginatedListFragment<ListRepos> {
 
     @Override
     protected void executePaginatedRequest(int page) {
-        UserReposClient client = new UserReposClient(getActivity(), username, page);
+        StarredReposClient client = new StarredReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
     }

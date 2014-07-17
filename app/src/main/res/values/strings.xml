@@ -29,5 +29,8 @@
     <string name="title_repos">Repos</string>
     <string name="star_icon_text">{fa_star} %1$d</string>
     <string name="fork_icon_text">{fa_code_fork} %1$d</string>
+    <string name="tab_repos">Repos</string>
+    <string name="tab_watched_repos">Watched</string>
+    <string name="tab_starred_repos">Starred</string>
 
 </resources>

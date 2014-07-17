@@ -2,37 +2,42 @@ package com.alorma.github.sdk.services.repos;
 
 import android.content.Context;
 
-public class UserReposClient extends BaseReposClient {
+/**
+ * Created by Bernat on 17/07/2014.
+ */
+public class StarredReposClient extends BaseReposClient{
 
-    public UserReposClient(Context context) {
+    public StarredReposClient(Context context) {
         super(context);
     }
 
-    public UserReposClient(Context context, String username) {
+    public StarredReposClient(Context context, String username) {
         super(context, username);
     }
 
-    public UserReposClient(Context context, String username, int page) {
+    public StarredReposClient(Context context, String username, int page) {
         super(context, username, page);
     }
 
     @Override
     protected void executeUserFirstPage(ReposService usersService) {
-        usersService.userReposList(this);
+        usersService.userStarredReposList(this);
     }
 
     @Override
     protected void executeFirstPageByUsername(String username, ReposService usersService) {
-        usersService.userReposList(username, this);
+        usersService.userStarredReposList(username, this);
     }
 
     @Override
     protected void executeUserPaginated(int page, ReposService usersService) {
-        usersService.userReposList(page, this);
+        usersService.userStarredReposList(page, this);
     }
 
     @Override
     protected void executePaginatedByUsername(String username, int page, ReposService usersService) {
-        usersService.userReposList(username, page, this);
+        usersService.userStarredReposList(username, page, this);
     }
+
+
 }
