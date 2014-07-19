@@ -57,11 +57,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
-        Log.i("ALORMA-REPO", "Repo: " + repo);
+
     }
 
     @Override
     public void onFail(RetrofitError error) {
-        Log.e("ALORMA-REPO", "Repo error: ", error.getCause());
+
     }
 }
