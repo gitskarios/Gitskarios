@@ -1,8 +1,6 @@
 package com.alorma.github.ui.fragment.base;
 
 import android.app.ListFragment;
-import android.graphics.Outline;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +33,7 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
         Button fab = (Button) view.findViewById(R.id.fabbutton);
 
         if (BuildConfig.PRO_VERSION && useFab) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 Outline mOutlineCircle;
                 int shapeSize = getResources().getDimensionPixelSize(R.dimen.shape_size);
                 mOutlineCircle = new Outline();
@@ -43,7 +41,7 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
 
                 fab.setOutline(mOutlineCircle);
                 fab.setClipToOutline(true);
-            }
+            }*/
             fab.setOnClickListener(this);
         } else {
             fab.setVisibility(View.GONE);
