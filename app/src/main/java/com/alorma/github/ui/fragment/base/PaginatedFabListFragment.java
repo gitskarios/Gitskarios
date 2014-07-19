@@ -2,14 +2,11 @@ package com.alorma.github.ui.fragment.base;
 
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.Link;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -22,7 +19,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K> extends ListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedFabListFragment<K> extends FabListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
 
     protected static final String USERNAME = "USERNAME";
 
