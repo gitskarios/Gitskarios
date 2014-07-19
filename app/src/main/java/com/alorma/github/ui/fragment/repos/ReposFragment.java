@@ -13,12 +13,10 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 
 import java.util.ArrayList;
 
-public class ReposFragment extends PaginatedFabListFragment<ListRepos> {
+public class ReposFragment extends BaseReposListFragment {
     private static final String COLOR = "COLOR";
 
     private String username;
-    private ReposAdapter reposAdapter;
-    private int textColor = -1;
 
     public static ReposFragment newInstance() {
         return new ReposFragment();
@@ -80,15 +78,6 @@ public class ReposFragment extends PaginatedFabListFragment<ListRepos> {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    private void setUpList() {
-        if (textColor != -1) {
-            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>(), textColor);
-        } else {
-            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
-        }
-        setListAdapter(reposAdapter);
     }
 
     public void setTextColor(int textColor) {
