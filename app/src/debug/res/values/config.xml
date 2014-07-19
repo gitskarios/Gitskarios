@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="client_id">60f30c819ae20252ab74</string>
+    <string name="client_secret">c46258762edf73a3ef2b695545950ec962c171ec</string>
+    <string name="client_callback">http://bernatborras.net/giskarios</string>
+
+</resources>
