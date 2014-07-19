@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 
 /**
@@ -33,7 +34,7 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
 
         Button fab = (Button) view.findViewById(R.id.fabbutton);
 
-        if (useFab) {
+        if (BuildConfig.PRO_VERSION && useFab) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 Outline mOutlineCircle;
                 int shapeSize = getResources().getDimensionPixelSize(R.dimen.shape_size);

@@ -18,8 +18,8 @@ public class GistsApplication extends Application{
 
         AB_COLOR = getResources().getColor(R.color.accent);
         
-        ApiConstants.CLIENT_ID = "5dbfca95aa4de59f4a1c";
-        ApiConstants.CLIENT_SECRET = "b3688437884ec6978884abafdce798d8781314d1";
-        ApiConstants.CLIENT_CALLBACK = "http://bernatborras.net/giskarios";
+        ApiConstants.CLIENT_ID = getString(R.string.client_id);
+        ApiConstants.CLIENT_SECRET = getString(R.string.client_secret);
+        ApiConstants.CLIENT_CALLBACK = getString(R.string.client_callback);
     }
 }
