@@ -19,7 +19,7 @@ import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
 
-public abstract class NavigationActivity extends Activity
+public abstract class NavigationActivity extends BaseActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private ActionBarDrawerToggle mDrawerToggle;

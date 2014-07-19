@@ -1,10 +1,15 @@
 package com.alorma.github.sdk.services.client;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
+import com.alorma.github.sdk.security.UnAuthIntent;
+
+import java.net.Proxy;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -15,9 +20,11 @@ import retrofit.client.Response;
 public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, RestAdapter.Log {
 
     private final StoreCredentials storeCredentials;
+    private final Context context;
     private OnResultCallback<K> onResultCallback;
 
     public BaseClient(Context context) {
+        this.context = context;
         storeCredentials = new StoreCredentials(context);
     }
 
@@ -44,8 +51,14 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     @Override
     public void failure(RetrofitError error) {
-        if (onResultCallback != null) {
-            onResultCallback.onFail(error);
+        if (error.getResponse().getStatus() == 401) {
+            storeCredentials.clear();
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+            manager.sendBroadcast(new UnAuthIntent());
+        } else {
+            if (onResultCallback != null) {
+                onResultCallback.onFail(error);
+            }
         }
     }
 
@@ -70,6 +83,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     public interface OnResultCallback<K> {
         void onResponseOk(K k, Response r);
+
         void onFail(RetrofitError error);
     }
 }

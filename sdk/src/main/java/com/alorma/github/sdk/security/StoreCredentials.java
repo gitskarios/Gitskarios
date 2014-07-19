@@ -26,4 +26,9 @@ public class StoreCredentials {
     public String token() {
         return preferences.getString(USER_TOKEN, null);
     }
+
+    public void clear() {
+        editor.clear();
+        editor.apply();
+    }
 }

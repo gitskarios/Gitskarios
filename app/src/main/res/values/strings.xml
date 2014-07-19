@@ -28,5 +28,6 @@
     <string name="tab_repos">Repos</string>
     <string name="tab_watched_repos">Watched</string>
     <string name="tab_starred_repos">Starred</string>
+    <string name="unauthorized">Unauthorized acces</string>
 
 </resources>
