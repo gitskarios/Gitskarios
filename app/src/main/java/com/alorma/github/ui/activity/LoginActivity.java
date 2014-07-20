@@ -19,6 +19,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
+import com.bugsense.trace.BugSenseHandler;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
@@ -35,6 +36,7 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(LoginActivity.this, "77b1f1f6");
         setContentView(R.layout.activity_login);
 
         bar = (SmoothProgressBar) findViewById(R.id.smoothBar);

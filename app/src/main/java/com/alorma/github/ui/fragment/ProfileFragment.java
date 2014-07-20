@@ -50,7 +50,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private User user;
     private int rgbAbColor;
     private NumericTitle num1Text;
-    private NumericTitle num2Text;
+    //private NumericTitle num2Text;
     private NumericTitle num3Text;
     private NumericTitle num4Text;
     private CircularImageView avatarImage;
@@ -105,12 +105,12 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         blogText.setOnClickListener(this);
 
         num1Text = (NumericTitle) view.findViewById(R.id.num1);
-        num2Text = (NumericTitle) view.findViewById(R.id.num2);
+        //num2Text = (NumericTitle) view.findViewById(R.id.num2);
         num3Text = (NumericTitle) view.findViewById(R.id.num3);
         num4Text = (NumericTitle) view.findViewById(R.id.num4);
 
         num1Text.setOnClickListener(this);
-        num2Text.setOnClickListener(this);
+        //num2Text.setOnClickListener(this);
         num3Text.setOnClickListener(this);
         num4Text.setOnClickListener(this);
 
@@ -224,8 +224,8 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private void updateNums() {
         num1Text.setCustomNumber(user.public_repos);
         num1Text.setCustomText(R.string.public_repos);
-        num2Text.setCustomNumber(user.public_gists);
-        num2Text.setCustomText(R.string.public_gists);
+        //num2Text.setCustomNumber(user.public_gists);
+        //num2Text.setCustomText(R.string.public_gists);
         num3Text.setCustomNumber(user.followers);
         num3Text.setCustomText(R.string.followers);
         num4Text.setCustomNumber(user.following);
@@ -346,10 +346,10 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                 }
                 selectButton(num1Text);
                 break;
-            case R.id.num2:
+           /* case R.id.num2:
                 fragment = GistsFragment.newInstance(user.login);
                 selectButton(num2Text);
-                break;
+                break;*/
             case R.id.num3:
                 fragment = FollowersFragment.newInstance(user.login);
                 selectButton(num3Text);
@@ -383,7 +383,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private void selectButton(NumericTitle numText) {
         List<NumericTitle> numericTitles = new ArrayList<NumericTitle>();
         numericTitles.add(num1Text);
-        numericTitles.add(num2Text);
+        //numericTitles.add(num2Text);
         numericTitles.add(num3Text);
         numericTitles.add(num4Text);
 

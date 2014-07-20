@@ -44,21 +44,21 @@ public class MainActivity extends NavigationActivity {
                     getActionBar().setTitle(R.string.title_repos);
                 }
                 break;
-            case 1:
+            /*case 1:
                 setContainerFragment(GistsFragment.newInstance());
                 restoreActionBar();
                 if (getActionBar() != null) {
                     getActionBar().setTitle(R.string.title_gists);
                 }
-                break;
-            case 2:
+                break;*/
+            case 1:
                 setContainerFragment(FollowingFragment.newInstance());
                 restoreActionBar();
                 if (getActionBar() != null) {
                     getActionBar().setTitle(R.string.title_following);
                 }
                 break;
-            case 3:
+            case 2:
                 setContainerFragment(FollowersFragment.newInstance());
                 restoreActionBar();
                 if (getActionBar() != null) {

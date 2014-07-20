@@ -29,6 +29,8 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.repo.GetRepoIssuesClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.popup.PopUpContributors;
+import com.bugsense.trace.BugSense;
+import com.bugsense.trace.BugSenseHandler;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -254,6 +256,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
             executeNextClient();
         } else {
             smoothBar.progressiveStop();
+        }
+
+        if (error != null && error.getMessage() != null) {
+            BugSenseHandler.addCrashExtraData(tag, error.getMessage());
+            BugSenseHandler.flush(getActivity());
         }
     }
 }
