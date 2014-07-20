@@ -7,37 +7,15 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class RepositoryUiInfo {
 
-    private Iconify.IconValue icon;
-    private int num;
-    private String text;
+    public int id;
+    public Iconify.IconValue icon;
+    public int num;
+    public int text;
 
-    public RepositoryUiInfo(Iconify.IconValue icon, int num, String text) {
+    public RepositoryUiInfo(int id, Iconify.IconValue icon, int num, int text) {
+        this.id = id;
         this.icon = icon;
         this.num = num;
-        this.text = text;
-    }
-
-    public Iconify.IconValue getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Iconify.IconValue icon) {
-        this.icon = icon;
-    }
-
-    public int getNum() {
-        return num;
-    }
-
-    public void setNum(int num) {
-        this.num = num;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
         this.text = text;
     }
 }

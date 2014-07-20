@@ -1,21 +1,21 @@
 package android.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.bean.RepositoryUiInfo;
 
-import com.joanzapata.android.iconify.Iconify;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Bernat on 19/07/2014.
  */
-public class RepositoryInfo extends ViewGroup {
+public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
+
+    public void setOnRepoInfoListener(OnRepoInfoListener onRepoInfoListener) {
+        this.onRepoInfoListener = onRepoInfoListener;
+    }
+
+    public OnRepoInfoListener onRepoInfoListener;
 
     public RepositoryInfo(Context context) {
         super(context);
@@ -34,18 +34,6 @@ public class RepositoryInfo extends ViewGroup {
 
     private void init() {
         isInEditMode();
-
-        List<RepositoryUiInfo> infos = new ArrayList<RepositoryUiInfo>();
-        infos.add(new RepositoryUiInfo(Iconify.IconValue.fa_adn, 7, "ADN"));
-        infos.add(new RepositoryUiInfo(Iconify.IconValue.fa_book, 3, "BOOK"));
-        infos.add(new RepositoryUiInfo(Iconify.IconValue.fa_book, 3, "BOOK"));
-        infos.add(new RepositoryUiInfo(Iconify.IconValue.fa_book, 3, "BOOK"));
-        infos.add(new RepositoryUiInfo(Iconify.IconValue.fa_book, 3, "BOOK"));
-        infos.add(new RepositoryUiInfo(Iconify.IconValue.fa_bars, 1, "BARS"));
-
-        for (RepositoryUiInfo info : infos) {
-            addView(new RepositoryInfoField(getContext(), info));
-        }
     }
 
     @Override
@@ -78,6 +66,30 @@ public class RepositoryInfo extends ViewGroup {
         int size = getChildCount();
         int itemHeight = (int) (48 * getResources().getDisplayMetrics().density);
         setMeasuredDimension(width, itemHeight * (Math.round(size / 2) + size % 2));
+    }
+
+    public void addRepoInfoField(RepositoryUiInfo info) {
+        View v = new RepositoryInfoField(getContext(), info);
+        v.setOnClickListener(this);
+        addView(v);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (onRepoInfoListener != null) {
+            if (view instanceof RepositoryInfoField) {
+                RepositoryInfoField field = (RepositoryInfoField) view;
+                RepositoryUiInfo info = field.repoInfo;
+                int id = info.id;
+
+                onRepoInfoListener.onRepoInfoFieldClick(id, field, info);
+            }
+
+        }
+    }
+
+    public interface OnRepoInfoListener {
+        void onRepoInfoFieldClick(int id, RepositoryInfoField view, RepositoryUiInfo info);
     }
 }
 

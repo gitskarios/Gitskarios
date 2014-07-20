@@ -12,11 +12,15 @@ import retrofit.RestAdapter;
  * Created by Bernat on 13/07/2014.
  */
 public abstract class BaseRepoClient<K> extends BaseClient<K> {
+    public String owner;
+    public String repo;
     private String username;
     private int page;
 
-    public BaseRepoClient(Context context) {
+    public BaseRepoClient(Context context, String owner, String repo) {
         super(context);
+        this.owner = owner;
+        this.repo = repo;
     }
 
     @Override

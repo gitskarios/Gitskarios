@@ -16,7 +16,7 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class RepositoryInfoField extends TextView {
 
-    private RepositoryUiInfo repoInfo;
+    public RepositoryUiInfo repoInfo;
     private Rect rect;
     private Paint paint;
 
@@ -42,20 +42,19 @@ public class RepositoryInfoField extends TextView {
     }
 
     private void init() {
-        if (isInEditMode()) {
-            repoInfo = new RepositoryUiInfo(Iconify.IconValue.fa_adn, 8, "ADN");
-        }
         rect = new Rect();
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        setPadding(getPaddingLeft(), (int) (12 * getResources().getDisplayMetrics().density), getPaddingRight(), getPaddingBottom());
+        int pL = (int) (24 * getResources().getDisplayMetrics().density);
+        int pT = (int) (18 * getResources().getDisplayMetrics().density);
+        setPadding(pL, pT, getPaddingRight(), getPaddingBottom());
         setCustomText();
     }
 
     private void setCustomText() {
         if (repoInfo != null) {
-            String customText = "{" + repoInfo.getIcon() + "} " + "<b>" + repoInfo.getNum() + "</b> " + repoInfo.getText();
+            String pluralText = getResources().getQuantityString(repoInfo.text, repoInfo.num, repoInfo.num);
+            String customText = "{" + repoInfo.icon + "} " + pluralText;
             setText(Html.fromHtml(customText));
             Iconify.addIcons(this);
         }
