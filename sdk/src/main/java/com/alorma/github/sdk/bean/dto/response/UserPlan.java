@@ -14,7 +14,7 @@ public class UserPlan  {
 	private String name;
 
 	/**
-	 * @return collaborators
+	 * @return contributors
 	 */
 	public long getCollaborators() {
 		return collaborators;

@@ -30,7 +30,6 @@ public class UsersAdapter extends ArrayAdapter<User> {
         View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
         UsersHolder userHolder = new UsersHolder(v);
 
-
         User user = getItem(position);
 
         if (user.name != null) {

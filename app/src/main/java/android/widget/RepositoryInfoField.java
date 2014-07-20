@@ -1,12 +1,8 @@
 package android.widget;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.widget.bean.RepositoryUiInfo;
 
 import com.joanzapata.android.iconify.Iconify;
@@ -16,9 +12,7 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class RepositoryInfoField extends TextView {
 
-    private RepositoryUiInfo repoInfo;
-    private Rect rect;
-    private Paint paint;
+    public RepositoryUiInfo repoInfo;
 
     public RepositoryInfoField(Context context) {
         super(context);
@@ -42,23 +36,23 @@ public class RepositoryInfoField extends TextView {
     }
 
     private void init() {
-        if (isInEditMode()) {
-            repoInfo = new RepositoryUiInfo(Iconify.IconValue.fa_adn, 8, "ADN");
-        }
-        rect = new Rect();
-        paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        setPadding(getPaddingLeft(), (int) (12 * getResources().getDisplayMetrics().density), getPaddingRight(), getPaddingBottom());
+        int pL = (int) (24 * getResources().getDisplayMetrics().density);
+        int pT = (int) (18 * getResources().getDisplayMetrics().density);
+        setPadding(pL, pT, getPaddingRight(), getPaddingBottom());
         setCustomText();
     }
 
     private void setCustomText() {
-        if (repoInfo != null) {
-            String customText = "{" + repoInfo.getIcon() + "} " + "<b>" + repoInfo.getNum() + "</b> " + repoInfo.getText();
+        if (isInfoValid()) {
+            String pluralText = getResources().getQuantityString(repoInfo.text, repoInfo.num, repoInfo.num);
+            String customText = "{" + repoInfo.icon + "} " + pluralText;
             setText(Html.fromHtml(customText));
             Iconify.addIcons(this);
         }
+    }
+
+    private boolean isInfoValid() {
+        return repoInfo != null && repoInfo.text > 0 && repoInfo.icon != null;
     }
 
     @Override
@@ -67,4 +61,14 @@ public class RepositoryInfoField extends TextView {
         int height = (int) (48 * getResources().getDisplayMetrics().density);
         setMeasuredDimension(widthMeasureSpec, height);
     }
+
+    public void updateRepoInfo(RepositoryUiInfo info) {
+        this.repoInfo = info;
+        setCustomText();
+    }
+
+    public void notifyDataSetChanged() {
+        setCustomText();
+    }
+
 }

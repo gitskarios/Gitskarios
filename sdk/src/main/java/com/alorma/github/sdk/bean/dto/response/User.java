@@ -180,7 +180,7 @@ public class User implements Parcelable {
         sb.append(", total_public_repos=").append(total_public_repos);
         sb.append(", followers=").append(followers);
         sb.append(", following=").append(following);
-        sb.append(", collaborators=").append(collaborators);
+        sb.append(", contributors=").append(collaborators);
         sb.append(", disk_usage=").append(disk_usage);
         sb.append(", plan=").append(plan);
         sb.append('}');
