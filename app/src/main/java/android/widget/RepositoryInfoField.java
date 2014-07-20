@@ -52,7 +52,7 @@ public class RepositoryInfoField extends TextView {
     }
 
     private void setCustomText() {
-        if (repoInfo != null) {
+        if (isInfoValid()) {
             String pluralText = getResources().getQuantityString(repoInfo.text, repoInfo.num, repoInfo.num);
             String customText = "{" + repoInfo.icon + "} " + pluralText;
             setText(Html.fromHtml(customText));
@@ -60,10 +60,23 @@ public class RepositoryInfoField extends TextView {
         }
     }
 
+    private boolean isInfoValid() {
+        return repoInfo != null && repoInfo.text > 0 && repoInfo.icon != null;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int height = (int) (48 * getResources().getDisplayMetrics().density);
         setMeasuredDimension(widthMeasureSpec, height);
+    }
+
+    public void updateRepoInfo(RepositoryUiInfo info) {
+        this.repoInfo = info;
+        setCustomText();
+    }
+
+    public void notifyDataSetChanged() {
+        setCustomText();
     }
 }

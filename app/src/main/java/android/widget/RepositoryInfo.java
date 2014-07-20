@@ -1,15 +1,26 @@
 package android.widget;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.bean.RepositoryUiInfo;
 
+import com.alorma.github.R;
+import com.joanzapata.android.iconify.Iconify;
+
 /**
  * Created by Bernat on 19/07/2014.
  */
 public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
+
+    public static final int INFO_CONTRIBUTORS = 0;
+    public static final int INFO_BRANCHES = 1;
+    public static final int INFO_RELEASES = 2;
+    public static final int INFO_ISSUES = 3;
+
+    private ArrayMap<Integer, RepositoryInfoField> set;
 
     public void setOnRepoInfoListener(OnRepoInfoListener onRepoInfoListener) {
         this.onRepoInfoListener = onRepoInfoListener;
@@ -34,6 +45,11 @@ public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
 
     private void init() {
         isInEditMode();
+
+        addRepoInfoField(new RepositoryUiInfo(INFO_CONTRIBUTORS, Iconify.IconValue.fa_group, 0, R.plurals.contributors));
+        addRepoInfoField(new RepositoryUiInfo(INFO_BRANCHES, Iconify.IconValue.fa_code_fork, 0, R.plurals.branches));
+        addRepoInfoField(new RepositoryUiInfo(INFO_RELEASES, Iconify.IconValue.fa_download, 0, R.plurals.releases));
+        addRepoInfoField(new RepositoryUiInfo(INFO_ISSUES, Iconify.IconValue.fa_info, 0, R.plurals.issues));
     }
 
     @Override
@@ -69,9 +85,26 @@ public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
     }
 
     public void addRepoInfoField(RepositoryUiInfo info) {
-        View v = new RepositoryInfoField(getContext(), info);
-        v.setOnClickListener(this);
-        addView(v);
+        if (set == null) {
+            set = new ArrayMap<Integer, RepositoryInfoField>();
+        }
+        if (info != null) {
+            RepositoryInfoField v = new RepositoryInfoField(getContext(), info);
+            v.setOnClickListener(this);
+            set.put(info.id, v);
+            addView(v);
+        }
+    }
+
+    public void addRepoInfoFieldNum(int id, int num) {
+        if (set == null) {
+            set = new ArrayMap<Integer, RepositoryInfoField>();
+        }
+        RepositoryInfoField v = set.get(id);
+        if (v != null) {
+            v.repoInfo.num = num;
+            v.notifyDataSetChanged();
+        }
     }
 
     @Override

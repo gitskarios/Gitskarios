@@ -38,10 +38,6 @@ import retrofit.client.Response;
 public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>,RepositoryInfo.OnRepoInfoListener {
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
-    private static final int INFO_CONTRIBUTORS = 0;
-    private static final int INFO_BRANCHES = 1;
-    private static final int INFO_RELEASES = 2;
-    private static final int INFO_ISSUES = 3;
     private RepositoryInfo infoFields;
     private String owner;
     private String repo;
@@ -161,7 +157,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
                 if (contributors.size() == 1) {
                     iconValue = Iconify.IconValue.fa_user;
                 }
-                infoFields.addRepoInfoField(new RepositoryUiInfo(INFO_CONTRIBUTORS, iconValue, contributors.size(), R.plurals.contributors));
+                infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_CONTRIBUTORS, contributors.size());
             }
             executeNextClient();
         }
@@ -177,7 +173,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         public void onResponseOk(ListBranches branches, Response r) {
             if (branches != null) {
                 Iconify.IconValue iconValue = Iconify.IconValue.fa_code_fork;
-                infoFields.addRepoInfoField(new RepositoryUiInfo(INFO_BRANCHES, iconValue, branches.size(), R.plurals.branches));
+                infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_BRANCHES,branches.size());
             }
             executeNextClient();
         }
@@ -192,8 +188,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         @Override
         public void onResponseOk(ListReleases releases, Response r) {
             if (releases != null) {
-                Iconify.IconValue iconValue = Iconify.IconValue.fa_download;
-                infoFields.addRepoInfoField(new RepositoryUiInfo(INFO_RELEASES, iconValue, releases.size(), R.plurals.releases));
+                infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_RELEASES, releases.size());
             }
             executeNextClient();
         }
@@ -209,7 +204,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         public void onResponseOk(ListIssues issues, Response r) {
             if (issues != null) {
                 Iconify.IconValue iconValue = Iconify.IconValue.fa_info_circle;
-                infoFields.addRepoInfoField(new RepositoryUiInfo(INFO_ISSUES, iconValue, issues.size(), R.plurals.issues));
+                infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_ISSUES, issues.size());
             }
             executeNextClient();
         }
