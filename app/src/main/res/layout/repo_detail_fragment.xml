@@ -22,7 +22,8 @@
     <android.widget.RepositoryInfo
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/repoInfoFields" />
+        android:id="@+id/repoInfoFields"
+        android:background="@color/gray_github" />
 
     <FrameLayout
         android:layout_width="fill_parent"

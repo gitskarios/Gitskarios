@@ -1,6 +1,7 @@
 package android.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v4.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.View;

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListPopupWindow;
 import android.widget.RepositoryInfo;
 import android.widget.RepositoryInfoField;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.repo.GetRepoIssuesClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
+import com.alorma.github.ui.popup.PopUpContributors;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -47,6 +49,8 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     private LinkedBlockingQueue<BaseRepoClient> clients;
     private boolean reIntent = false;
     private SmoothProgressBar smoothBar;
+    private ListContributors contributors;
+    private ListPopupWindow currentPopup;
 
     public static RepoDetailFragment newInstance(String owner, String repo) {
         Bundle bundle = new Bundle();
@@ -162,13 +166,22 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
 
     @Override
     public void onRepoInfoFieldClick(int id, RepositoryInfoField view, RepositoryUiInfo info) {
-
+        if (id == RepositoryInfo.INFO_CONTRIBUTORS) {
+            if (currentPopup != null) {
+                currentPopup.dismiss();
+            } else {
+                currentPopup = new PopUpContributors(getActivity(), this.contributors);
+                currentPopup.setAnchorView(infoFields);
+                currentPopup.show();
+            }
+        }
     }
 
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
             if (contributors != null) {
+                RepoDetailFragment.this.contributors = contributors;
                 Iconify.IconValue iconValue = Iconify.IconValue.fa_group;
                 if (contributors.size() == 1) {
                     iconValue = Iconify.IconValue.fa_user;

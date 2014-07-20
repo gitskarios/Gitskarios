@@ -1,12 +1,8 @@
 package android.widget;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.widget.bean.RepositoryUiInfo;
 
 import com.joanzapata.android.iconify.Iconify;
@@ -17,8 +13,6 @@ import com.joanzapata.android.iconify.Iconify;
 public class RepositoryInfoField extends TextView {
 
     public RepositoryUiInfo repoInfo;
-    private Rect rect;
-    private Paint paint;
 
     public RepositoryInfoField(Context context) {
         super(context);
@@ -42,9 +36,6 @@ public class RepositoryInfoField extends TextView {
     }
 
     private void init() {
-        rect = new Rect();
-        paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
         int pL = (int) (24 * getResources().getDisplayMetrics().density);
         int pT = (int) (18 * getResources().getDisplayMetrics().density);
         setPadding(pL, pT, getPaddingRight(), getPaddingBottom());
@@ -79,4 +70,5 @@ public class RepositoryInfoField extends TextView {
     public void notifyDataSetChanged() {
         setCustomText();
     }
+
 }
