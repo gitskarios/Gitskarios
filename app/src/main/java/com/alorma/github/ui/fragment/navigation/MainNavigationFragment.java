@@ -60,7 +60,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
 
         items = new String[]{
                 getString(R.string.navigation_repos),
-                getString(R.string.navigation_gists),
+                //getString(R.string.navigation_gists),
                 getString(R.string.navigation_following),
                 getString(R.string.navigation_followers)
         };
