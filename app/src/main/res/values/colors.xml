@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gray_github">#f3f3f3</color>
+    <color name="gray_github_dark">#737373</color>
+    <color name="gray_github_medium">#ffaaaaaa</color>
+    <color name="white">#FFFFFF</color>
+    
+    <integer-array name="colorsSmooth">
+        <item>@color/accent</item>
+        <item>@color/complementary</item>
+        <item>@color/accentDark</item>
+        <item>@color/gray_github_dark</item>
+    </integer-array>
+</resources>

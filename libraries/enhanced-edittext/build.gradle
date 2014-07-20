@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '20.0.0'
+
+    defaultConfig {
+        applicationId "fr.dvilleneuve.android"
+        minSdkVersion 15
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+    compile 'com.joanzapata.android:android-iconify:1.0.6'
+}
