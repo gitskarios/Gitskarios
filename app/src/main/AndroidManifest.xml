@@ -25,6 +25,7 @@
         <activity android:name=".ui.activity.MainActivity" />
         <activity android:name=".ui.activity.ProfileActivity" />
         <activity android:name=".ui.activity.RepoDetailActivity" />
+        <activity android:name=".ui.activity.FileActivity" />
     </application>
 
 </manifest>

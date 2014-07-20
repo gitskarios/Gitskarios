@@ -17,7 +17,8 @@
         app:spb_stroke_separator_length="4dp"
         app:spb_reversed="true"
         app:spb_mirror_mode="true"
-        android:id="@+id/smoothBar"/>
+        android:id="@+id/smoothBar"
+        android:background="@color/gray_github"/>
 
     <android.widget.RepositoryInfo
         android:layout_width="match_parent"
@@ -28,6 +29,6 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/filesTree"></FrameLayout>
+        android:id="@+id/filesTree" />
 
 </LinearLayout>

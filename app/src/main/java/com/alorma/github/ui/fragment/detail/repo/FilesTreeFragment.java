@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
+import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.repos.RepoContentAdapter;
 
 import java.util.ArrayList;
@@ -82,6 +84,10 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                 GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
                 repoContentsClient.setOnResultCallback(this);
                 repoContentsClient.execute();
+            } else {
+                String url = item._links.html;
+                Intent intent = FileActivity.createLauncherIntent(getActivity(), url);
+                startActivity(intent);
             }
         }
     }

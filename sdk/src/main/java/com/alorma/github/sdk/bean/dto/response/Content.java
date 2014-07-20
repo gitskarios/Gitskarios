@@ -10,5 +10,5 @@ public class Content extends ShaUrl{
     public String path;
     public String git_url;
     public String html_url;
-    public Link _links;
+    public Links _links;
 }

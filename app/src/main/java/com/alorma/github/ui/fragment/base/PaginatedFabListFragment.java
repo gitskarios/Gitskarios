@@ -1,13 +1,12 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
-import com.alorma.github.sdk.bean.Link;
+import com.alorma.github.sdk.bean.PaginationLink;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
 
@@ -23,7 +22,7 @@ public abstract class PaginatedFabListFragment<K> extends FabListFragment implem
 
     protected static final String USERNAME = "USERNAME";
 
-    private Link bottomLink;
+    private PaginationLink bottomPaginationLink;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -43,9 +42,9 @@ public abstract class PaginatedFabListFragment<K> extends FabListFragment implem
     @Override
     public void onScroll(AbsListView absListView, int first, int last, int total) {
         if (total > 0 && first + last == total) {
-            if (bottomLink != null && bottomLink.rel == RelType.next) {
-                executePaginatedRequest(bottomLink.page);
-                bottomLink = null;
+            if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
+                executePaginatedRequest(bottomPaginationLink.page);
+                bottomPaginationLink = null;
             }
         }
     }
@@ -82,7 +81,7 @@ public abstract class PaginatedFabListFragment<K> extends FabListFragment implem
         if (link != null) {
             String[] parts = link.split(",");
             try {
-                bottomLink = new Link(parts[0]);
+                bottomPaginationLink = new PaginationLink(parts[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
