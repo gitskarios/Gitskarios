@@ -1,6 +1,7 @@
 package com.alorma.github.sdk.services.repo;
 
 import com.alorma.github.sdk.bean.dto.response.ListBranches;
+import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.bean.dto.response.ListReleases;
@@ -26,6 +27,12 @@ public interface RepoService {
 
     @GET("/repos/{owner}/{repo}/issues")
     void issues(@Path("owner") String owner, @Path("repo") String repo, Callback<ListIssues> callback);
+
+    @GET("/repos/{owner}/{repo}/contents")
+    void contents(@Path("owner") String owner, @Path("repo") String repo, Callback<ListContents> callback);
+
+    @GET("/repos/{owner}/{repo}/contents/{path}")
+    void contents(@Path("owner") String owner, @Path("repo") String repo, @Path("path") String path, Callback<ListContents> callback);
 
     @GET("/repos/{owner}/{repo}/stats/contributors")
     void contributors(@Path("owner") String owner, @Path("repo") String repo, Callback<ListContributors> callback);

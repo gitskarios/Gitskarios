@@ -1,7 +1,9 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.joanzapata.android.iconify.Iconify;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -43,6 +46,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     private String repo;
     private LinkedBlockingQueue<BaseRepoClient> clients;
     private boolean reIntent = false;
+    private SmoothProgressBar smoothBar;
 
     public static RepoDetailFragment newInstance(String owner, String repo) {
         Bundle bundle = new Bundle();
@@ -75,20 +79,28 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
                 getActivity().getActionBar().setTitle(owner + "/" + repo);
             }
 
+            infoFields = (RepositoryInfo) view.findViewById(R.id.repoInfoFields);
+            infoFields.setOnRepoInfoListener(this);
+
+            smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
+
             configureClients();
-
             executeNextClient();
+        } else {
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         }
-
-        infoFields = (RepositoryInfo) view.findViewById(R.id.repoInfoFields);
-        infoFields.setOnRepoInfoListener(this);
-
     }
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
 
         executeNextClient();
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.filesTree, FilesTreeFragment.newInstance(this.owner, this.repo));
+        ft.commit();
 
     }
 
@@ -140,7 +152,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
             BaseRepoClient poll = clients.poll();
             if (poll != null) {
                 poll.execute();
+            } else {
+                smoothBar.progressiveStop();
             }
+        } else {
+            smoothBar.progressiveStop();
         }
     }
 
@@ -158,6 +174,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
                     iconValue = Iconify.IconValue.fa_user;
                 }
                 infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_CONTRIBUTORS, contributors.size());
+                infoFields.addRepoInfoFieldIcon(RepositoryInfo.INFO_CONTRIBUTORS, iconValue);
             }
             executeNextClient();
         }
@@ -172,8 +189,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         @Override
         public void onResponseOk(ListBranches branches, Response r) {
             if (branches != null) {
-                Iconify.IconValue iconValue = Iconify.IconValue.fa_code_fork;
-                infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_BRANCHES,branches.size());
+                infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_BRANCHES, branches.size());
             }
             executeNextClient();
         }
@@ -203,10 +219,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         @Override
         public void onResponseOk(ListIssues issues, Response r) {
             if (issues != null) {
-                Iconify.IconValue iconValue = Iconify.IconValue.fa_info_circle;
                 infoFields.addRepoInfoFieldNum(RepositoryInfo.INFO_ISSUES, issues.size());
             }
             executeNextClient();
+
+            smoothBar.progressiveStop();
         }
 
         @Override
@@ -222,6 +239,8 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         }
         if (executeNext) {
             executeNextClient();
+        } else {
+            smoothBar.progressiveStop();
         }
     }
 }

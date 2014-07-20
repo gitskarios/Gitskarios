@@ -47,6 +47,8 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
             fab.setVisibility(View.GONE);
             fab.setOnClickListener(null);
         }
+
+
     }
 
     public void setUseFab(boolean useFab) {

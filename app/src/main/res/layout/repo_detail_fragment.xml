@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:spb_sections_count="4"
+        app:spb_colors="@array/colorsSmooth"
+        app:spb_speed="2.0"
+        app:spb_stroke_width="4dp"
+        app:spb_stroke_separator_length="4dp"
+        app:spb_reversed="true"
+        app:spb_mirror_mode="true"
+        android:id="@+id/smoothBar"/>
 
     <android.widget.RepositoryInfo
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/repoInfoFields"/>
+        android:id="@+id/repoInfoFields" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button" />
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/filesTree"></FrameLayout>
 
 </LinearLayout>
