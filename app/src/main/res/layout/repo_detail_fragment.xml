@@ -6,25 +6,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:spb_sections_count="4"
-        app:spb_colors="@array/colorsSmooth"
-        app:spb_speed="2.0"
-        app:spb_stroke_width="4dp"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_reversed="true"
-        app:spb_mirror_mode="true"
-        android:id="@+id/smoothBar"
-        android:background="@color/gray_github"/>
+        android:layout_height="wrap_content">
 
-    <android.widget.RepositoryInfo
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/repoInfoFields"
-        android:background="@color/gray_github" />
+        <android.widget.RepositoryInfo
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repoInfoFields"
+            android:background="@color/gray_github"
+            android:paddingBottom="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:spb_sections_count="4"
+            app:spb_colors="@array/colorsSmooth"
+            app:spb_speed="2.0"
+            app:spb_stroke_width="4dp"
+            app:spb_stroke_separator_length="4dp"
+            app:spb_reversed="true"
+            app:spb_mirror_mode="true"
+            android:id="@+id/smoothBar"
+            android:background="@color/gray_github"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="fill_parent"

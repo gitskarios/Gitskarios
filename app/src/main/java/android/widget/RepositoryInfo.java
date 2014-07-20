@@ -47,6 +47,8 @@ public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
     private void init() {
         isInEditMode();
 
+        setBackgroundColor(getResources().getColor(R.color.gray_github));
+
         addRepoInfoField(new RepositoryUiInfo(INFO_CONTRIBUTORS, Iconify.IconValue.fa_group, 0, R.plurals.contributors));
         addRepoInfoField(new RepositoryUiInfo(INFO_BRANCHES, Iconify.IconValue.fa_code_fork, 0, R.plurals.branches));
         addRepoInfoField(new RepositoryUiInfo(INFO_RELEASES, Iconify.IconValue.fa_download, 0, R.plurals.releases));
@@ -82,7 +84,8 @@ public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int size = getChildCount();
         int itemHeight = (int) (48 * getResources().getDisplayMetrics().density);
-        setMeasuredDimension(width, itemHeight * (Math.round(size / 2) + size % 2));
+        setMeasuredDimension(width + getPaddingLeft() + getPaddingRight(),
+                itemHeight * (Math.round(size / 2) + size % 2) + getPaddingBottom() + getPaddingLeft());
     }
 
     public void addRepoInfoField(RepositoryUiInfo info) {
