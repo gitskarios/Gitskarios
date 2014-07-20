@@ -67,17 +67,4 @@ public class RepositoryInfoField extends TextView {
         int height = (int) (48 * getResources().getDisplayMetrics().density);
         setMeasuredDimension(widthMeasureSpec, height);
     }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        canvas.getClipBounds(rect);
-        rect.left = rect.left + 5;
-        rect.top = rect.top + 5;
-        rect.right = rect.right - 5;
-        rect.bottom = rect.bottom - 5;
-
-        canvas.drawRect(rect, paint);
-    }
 }
