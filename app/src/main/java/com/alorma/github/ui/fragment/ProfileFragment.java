@@ -273,23 +273,25 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     }
 
     private void setUpFromPaletteItem(PaletteItem paletteItem) {
-        this.usedPalette = paletteItem;
+        if (isAdded()) {
+            this.usedPalette = paletteItem;
 
-        int rgb = getResources().getColor(R.color.accent);
-        if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
-            rgb = paletteItem.getRgb();
+            int rgb = getResources().getColor(R.color.accent);
+            if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
+                rgb = paletteItem.getRgb();
+            }
+
+            if (getActivity().getActionBar() != null) {
+                animateChange(rgb);
+            }
+
+            avatarImage.setBorderColor(rgb);
+            selectButton(null);
+
+            mailText.setPrefixColor(rgb);
+            blogText.setPrefixColor(rgb);
+            joinedText.setPrefixColor(rgb);
         }
-
-        if (getActivity().getActionBar() != null) {
-            animateChange(rgb);
-        }
-
-        avatarImage.setBorderColor(rgb);
-        selectButton(null);
-
-        mailText.setPrefixColor(rgb);
-        blogText.setPrefixColor(rgb);
-        joinedText.setPrefixColor(rgb);
     }
 
     private void animateChange(int rgb) {
