@@ -7,8 +7,10 @@ public class Content extends ShaUrl{
     public ContentType type;
     public int size;
     public String name;
+    public String content;
     public String path;
     public String git_url;
     public String html_url;
     public Links _links;
+    public String encoding;
 }

@@ -60,6 +60,8 @@ public class LoginActivity extends Activity {
             webview.clearMatches();
             webview.clearSslPreferences();
 
+            webview.getSettings().setUseWideViewPort(true);
+
             webview.loadUrl(url);
         }
     }
