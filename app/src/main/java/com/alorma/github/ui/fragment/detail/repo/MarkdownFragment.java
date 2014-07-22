@@ -1,6 +1,8 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -95,6 +97,8 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
             return true;
         }
 
