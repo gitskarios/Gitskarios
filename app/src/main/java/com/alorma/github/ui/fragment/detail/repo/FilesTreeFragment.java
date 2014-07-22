@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
@@ -46,6 +47,8 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        view.setBackgroundColor(getResources().getColor(R.color.gray_github));
 
         if (getArguments() != null) {
             owner = getArguments().getString(OWNER);

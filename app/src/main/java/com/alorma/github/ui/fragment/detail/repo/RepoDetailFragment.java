@@ -3,9 +3,11 @@ package com.alorma.github.ui.fragment.detail.repo;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListPopupWindow;
@@ -29,8 +31,8 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.repo.GetRepoIssuesClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.popup.PopUpContributors;
-import com.bugsense.trace.BugSense;
 import com.bugsense.trace.BugSenseHandler;
+import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -42,7 +44,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>,RepositoryInfo.OnRepoInfoListener {
+public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>, RepositoryInfo.OnRepoInfoListener {
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     private RepositoryInfo infoFields;
@@ -53,6 +55,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     private SmoothProgressBar smoothBar;
     private ListContributors contributors;
     private ListPopupWindow currentPopup;
+    private Fragment currentFragment;
 
     public static RepoDetailFragment newInstance(String owner, String repo) {
         Bundle bundle = new Bundle();
@@ -62,6 +65,13 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         RepoDetailFragment f = new RepoDetailFragment();
         f.setArguments(bundle);
         return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -100,14 +110,63 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.repo_detail_fragment, menu);
+
+        if (menu != null) {
+            MenuItem item = menu.findItem(R.id.mode);
+            if (item != null) {
+                IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_folder);
+                drawable.actionBarSize();
+                drawable.colorRes(R.color.white);
+                item.setIcon(drawable);
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.mode) {
+            if (currentFragment != null) {
+                if (currentFragment instanceof MarkdownFragment) {
+                    currentFragment = FilesTreeFragment.newInstance(owner, repo);
+                    IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_file_text);
+                    drawable.actionBarSize();
+                    drawable.colorRes(R.color.white);
+                    item.setIcon(drawable);
+                } else if (currentFragment instanceof FilesTreeFragment) {
+                    currentFragment = MarkdownFragment.newInstance(owner, repo);
+                    IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_folder);
+                    drawable.actionBarSize();
+                    drawable.colorRes(R.color.white);
+                    item.setIcon(drawable);
+                }
+
+                showDetailFragment(currentFragment);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public void onResponseOk(Repo repo, Response r) {
 
         executeNextClient();
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.filesTree, FilesTreeFragment.newInstance(this.owner, this.repo));
-        ft.commit();
+        currentFragment = MarkdownFragment.newInstance(this.owner, this.repo);
+        showDetailFragment(currentFragment);
+    }
 
+    private void showDetailFragment(Fragment currentFragment) {
+        if (currentFragment != null) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.filesTree, currentFragment);
+            ft.commit();
+        }
     }
 
     @Override
@@ -123,7 +182,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         }
     }
 
-    private void configureClients(){
+    private void configureClients() {
         clients = new LinkedBlockingQueue<BaseRepoClient>();
 
         GetRepoClient repoClient = new GetRepoClient(getActivity(), this.owner, this.repo);
