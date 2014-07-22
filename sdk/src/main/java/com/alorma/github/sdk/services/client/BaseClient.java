@@ -20,7 +20,7 @@ import retrofit.client.Response;
 public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, RestAdapter.Log {
 
     private final StoreCredentials storeCredentials;
-    private final Context context;
+    protected final Context context;
     private OnResultCallback<K> onResultCallback;
 
     public BaseClient(Context context) {

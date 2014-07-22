@@ -1,5 +1,6 @@
 package com.alorma.github.sdk.services.repo;
 
+import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
@@ -30,6 +31,9 @@ public interface RepoService {
 
     @GET("/repos/{owner}/{repo}/contents")
     void contents(@Path("owner") String owner, @Path("repo") String repo, Callback<ListContents> callback);
+
+    @GET("/repos/{owner}/{repo}/readme")
+    void readme(@Path("owner") String owner, @Path("repo") String repo, Callback<Content> callback);
 
     @GET("/repos/{owner}/{repo}/contents/{path}")
     void contents(@Path("owner") String owner, @Path("repo") String repo, @Path("path") String path, Callback<ListContents> callback);

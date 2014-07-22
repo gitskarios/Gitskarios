@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
@@ -14,6 +15,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.repos.RepoContentAdapter;
+import com.bugsense.trace.BugSenseHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +49,8 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        view.setBackgroundColor(getResources().getColor(R.color.gray_github));
+
         if (getArguments() != null) {
             owner = getArguments().getString(OWNER);
             repo = getArguments().getString(REPO);
@@ -59,14 +63,19 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
 
     @Override
     public void onResponseOk(ListContents contents, Response r) {
-        if (contentAdapter == null) {
-            contentAdapter = new RepoContentAdapter(getActivity(), new ArrayList<Content>());
-            setListAdapter(contentAdapter);
-        }
+        try {
+            if (contentAdapter == null) {
+                contentAdapter = new RepoContentAdapter(getActivity(), new ArrayList<Content>());
+                setListAdapter(contentAdapter);
+            }
 
-        Collections.sort(contents, ListContents.SORT.TYPE);
-        contentAdapter.clear();
-        contentAdapter.addAll(contents);
+            Collections.sort(contents, ListContents.SORT.TYPE);
+            contentAdapter.clear();
+            contentAdapter.addAll(contents);
+        } catch (Exception e) {
+            BugSenseHandler.addCrashExtraData("FilesTreeFragment", e.getMessage());
+            BugSenseHandler.flush(getActivity());
+        }
     }
 
     @Override
