@@ -15,6 +15,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.repos.RepoContentAdapter;
+import com.bugsense.trace.BugSenseHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,14 +63,19 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
 
     @Override
     public void onResponseOk(ListContents contents, Response r) {
-        if (contentAdapter == null) {
-            contentAdapter = new RepoContentAdapter(getActivity(), new ArrayList<Content>());
-            setListAdapter(contentAdapter);
-        }
+        try {
+            if (contentAdapter == null) {
+                contentAdapter = new RepoContentAdapter(getActivity(), new ArrayList<Content>());
+                setListAdapter(contentAdapter);
+            }
 
-        Collections.sort(contents, ListContents.SORT.TYPE);
-        contentAdapter.clear();
-        contentAdapter.addAll(contents);
+            Collections.sort(contents, ListContents.SORT.TYPE);
+            contentAdapter.clear();
+            contentAdapter.addAll(contents);
+        } catch (Exception e) {
+            BugSenseHandler.addCrashExtraData("FilesTreeFragment", e.getMessage());
+            BugSenseHandler.flush(getActivity());
+        }
     }
 
     @Override
