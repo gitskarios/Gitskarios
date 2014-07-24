@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 import android.widget.RepositoryInfo;
 import android.widget.RepositoryInfoField;
 import android.widget.Toast;
@@ -47,7 +48,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>, RepositoryInfo.OnRepoInfoListener, View.OnClickListener, RefreshListener {
+public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>, RepositoryInfo.OnRepoInfoListener, View.OnClickListener, RefreshListener, PopupWindow.OnDismissListener {
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     private RepositoryInfo infoFields;
@@ -199,6 +200,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
                 currentPopup = null;
             } else {
                 currentPopup = new PopUpContributors(getActivity(), this.contributors);
+                currentPopup.setOnDismissListener(this);
                 currentPopup.setAnchorView(infoFields);
                 currentPopup.show();
             }
@@ -230,6 +232,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     @Override
     public void cancelRefresh() {
         smoothBar.progressiveStop();
+    }
+
+    @Override
+    public void onDismiss() {
+        currentPopup = null;
     }
 
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {

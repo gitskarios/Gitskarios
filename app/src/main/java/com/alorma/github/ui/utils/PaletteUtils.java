@@ -23,12 +23,12 @@ public class PaletteUtils {
                 item = darkVibrantColor;
             } else if (lightMutedColor != null) {
                 item = lightMutedColor;
-            } else if (lightVibrantColor != null) {
-                item = lightVibrantColor;
             } else if (darkMutedColor != null) {
                 item = darkMutedColor;
             } else if (mutedColor != null) {
                 item = mutedColor;
+            } else if (lightVibrantColor != null) {
+                item = lightVibrantColor;
             }
             return item;
         }
