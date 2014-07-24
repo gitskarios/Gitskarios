@@ -61,7 +61,7 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
             String owner = getArguments().getString(OWNER);
             String repo = getArguments().getString(REPO);
             webview = (WebView) view;
-            webview.setPadding(0, 16, 0, 0);
+            webview.setPadding(0, 24, 0, 0);
             webview.getSettings().setJavaScriptEnabled(true);
             webview.setWebViewClient(new WebViewCustomClient());
 
