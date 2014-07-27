@@ -30,4 +30,7 @@
     <string name="tab_starred_repos">Starred</string>
     <string name="unauthorized">Unauthorized acces</string>
     <string name="change_mode">Change mode</string>
+    <string name="Readme">readme</string>
+    <string name="Source">source</string>
+    <string name="Info">info</string>
 </resources>
