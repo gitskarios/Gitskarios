@@ -73,7 +73,7 @@ public class MainActivity extends NavigationActivity {
         ColorDrawable cd = new ColorDrawable(rgb);
         if (getActionBar() != null) {
             getActionBar().setBackgroundDrawable(cd);
-            getActionBar().setSubtitle("");
+            getActionBar().setSubtitle(null);
         }
     }
 }
