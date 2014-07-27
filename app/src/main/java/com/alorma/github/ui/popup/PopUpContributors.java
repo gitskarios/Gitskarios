@@ -41,6 +41,7 @@ public class PopUpContributors extends ListPopupWindow implements AdapterView.On
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (users != null && users.size() >= i) {
+            dismiss();
             Intent launcherIntent = ProfileActivity.createLauncherIntent(context, users.get(i));
             context.startActivity(launcherIntent);
         }

@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -36,7 +37,11 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BugSenseHandler.initAndStartSession(LoginActivity.this, "77b1f1f6");
+
+        if (!BuildConfig.DEBUG) {
+            BugSenseHandler.initAndStartSession(LoginActivity.this, "77b1f1f6");
+        }
+
         setContentView(R.layout.activity_login);
 
         bar = (SmoothProgressBar) findViewById(R.id.smoothBar);

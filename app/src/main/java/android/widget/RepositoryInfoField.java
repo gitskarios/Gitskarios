@@ -1,6 +1,7 @@
 package android.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.bean.RepositoryUiInfo;
@@ -36,10 +37,13 @@ public class RepositoryInfoField extends TextView {
     }
 
     private void init() {
-        int pL = (int) (24 * getResources().getDisplayMetrics().density);
-        int pT = (int) (18 * getResources().getDisplayMetrics().density);
-        setPadding(pL, pT, getPaddingRight(), getPaddingBottom());
-        setCustomText();
+        if (!isInEditMode()) {
+            int pL = (int) (24 * getResources().getDisplayMetrics().density);
+            int pT = (int) (18 * getResources().getDisplayMetrics().density);
+            setPadding(pL, pT, getPaddingRight(), getPaddingBottom());
+            setCustomText();
+        }
+        setTextColor(Color.WHITE);
     }
 
     private void setCustomText() {
