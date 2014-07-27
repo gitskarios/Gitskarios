@@ -19,21 +19,6 @@ android {
         }
     }
 
-    productFlavors {
-        def BOOLEAN = "boolean"
-        def TRUE = "true"
-        def FALSE = "false"
-        def PRO_VERSION = "PRO_VERSION"
-        free {
-            buildConfigField BOOLEAN, PRO_VERSION, FALSE
-            applicationId "com.alorma.github"
-        }
-        pro {
-            buildConfigField BOOLEAN, PRO_VERSION, TRUE
-            applicationId "com.alorma.github.pro"
-        }
-    }
-
     buildTypes {
         debug {
             applicationIdSuffix ".debug"

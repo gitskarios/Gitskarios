@@ -32,7 +32,7 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
 
         Button fab = (Button) view.findViewById(R.id.fabbutton);
 
-        if (BuildConfig.PRO_VERSION && useFab) {
+        if (useFab) {
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 Outline mOutlineCircle;
                 int shapeSize = getResources().getDimensionPixelSize(R.dimen.shape_size);
@@ -43,12 +43,7 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
                 fab.setClipToOutline(true);
             }*/
             fab.setOnClickListener(this);
-        } else {
-            fab.setVisibility(View.GONE);
-            fab.setOnClickListener(null);
         }
-
-
     }
 
     public void setUseFab(boolean useFab) {
