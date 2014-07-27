@@ -13,4 +13,11 @@ public class Content extends ShaUrl{
     public String html_url;
     public Links _links;
     public String encoding;
+
+    public boolean isDir() {
+        return ContentType.dir.equals(type);
+    }
+    public boolean isFile() {
+        return ContentType.file.equals(type);
+    }
 }
