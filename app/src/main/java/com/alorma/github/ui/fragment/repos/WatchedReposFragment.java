@@ -82,4 +82,8 @@ public class WatchedReposFragment extends BaseReposListFragment {
         }
     }
 
+    @Override
+    protected boolean useFab() {
+        return false;
+    }
 }

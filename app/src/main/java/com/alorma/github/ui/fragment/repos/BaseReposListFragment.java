@@ -23,12 +23,6 @@ public abstract class BaseReposListFragment extends PaginatedFabListFragment<Lis
 
     protected int textColor = -1;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setUseFab(false);
-    }
-
     protected void setUpList() {
         if (textColor != -1) {
             reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>(), textColor);
