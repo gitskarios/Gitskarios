@@ -10,6 +10,7 @@ import com.alorma.github.ui.activity.base.NavigationActivity;
 import com.alorma.github.ui.fragment.FollowersFragment;
 import com.alorma.github.ui.fragment.FollowingFragment;
 import com.alorma.github.ui.fragment.GistsFragment;
+import com.alorma.github.ui.fragment.ProfileFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.navigation.MainNavigationFragment;
 import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
@@ -66,6 +67,13 @@ public class MainActivity extends NavigationActivity {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void profileSelected() {
+        closeDrawer();
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(this);
+        startActivity(launcherIntent);
     }
 
     private void restoreActionBar() {

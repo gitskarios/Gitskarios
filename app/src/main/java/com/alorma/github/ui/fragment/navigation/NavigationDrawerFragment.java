@@ -14,6 +14,10 @@ import android.os.Bundle;
  */
 public abstract class NavigationDrawerFragment extends Fragment {
 
+    public NavigationDrawerCallbacks getmCallbacks() {
+        return mCallbacks;
+    }
+
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -72,5 +76,7 @@ public abstract class NavigationDrawerFragment extends Fragment {
         void onNavigationDrawerItemSelected(int position);
 
         void closeDrawer();
+
+        void profileSelected();
     }
 }

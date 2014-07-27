@@ -15,6 +15,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.repos.RepoContentAdapter;
+import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
 
 import java.util.ArrayList;
@@ -34,13 +35,15 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     private String owner;
     private String repo;
     private RepoContentAdapter contentAdapter;
+    private RefreshListener refreshListener;
 
-    public static FilesTreeFragment newInstance(String owner, String repo) {
+    public static FilesTreeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
         bundle.putString(OWNER, owner);
         bundle.putString(REPO, repo);
 
         FilesTreeFragment f = new FilesTreeFragment();
+        f.setRefreshListener(refreshListener);
         f.setArguments(bundle);
         return f;
     }
@@ -58,6 +61,10 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
             GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
             repoContentsClient.setOnResultCallback(this);
             repoContentsClient.execute();
+
+            if (refreshListener != null) {
+                refreshListener.showRefresh();
+            }
         }
     }
 
@@ -76,11 +83,17 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
             BugSenseHandler.addCrashExtraData("FilesTreeFragment", e.getMessage());
             BugSenseHandler.flush(getActivity());
         }
+        if (refreshListener != null) {
+            refreshListener.cancelRefresh();
+        }
     }
 
     @Override
     public void onFail(RetrofitError error) {
         Log.e("FILES", "Error", error);
+        if (refreshListener != null) {
+            refreshListener.cancelRefresh();
+        }
     }
 
     @Override
@@ -88,6 +101,9 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
         super.onListItemClick(l, v, position, id);
 
         if (contentAdapter != null && contentAdapter.getCount() >= position) {
+            if (refreshListener != null) {
+                refreshListener.showRefresh();
+            }
             Content item = contentAdapter.getItem(position);
             if (ContentType.dir.equals(item.type)) {
                 GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
@@ -99,5 +115,13 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                 startActivity(intent);
             }
         }
+    }
+
+    public RefreshListener getRefreshListener() {
+        return refreshListener;
+    }
+
+    public void setRefreshListener(RefreshListener refreshListener) {
+        this.refreshListener = refreshListener;
     }
 }

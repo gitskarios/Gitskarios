@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 import android.widget.RepositoryInfo;
 import android.widget.RepositoryInfoField;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.repo.GetRepoIssuesClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
+import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.popup.PopUpContributors;
 import com.bugsense.trace.BugSenseHandler;
 import com.joanzapata.android.iconify.IconDrawable;
@@ -44,7 +48,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>, RepositoryInfo.OnRepoInfoListener {
+public class RepoDetailFragment extends Fragment implements BaseClient.OnResultCallback<Repo>, RepositoryInfo.OnRepoInfoListener, View.OnClickListener, RefreshListener, PopupWindow.OnDismissListener {
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     private RepositoryInfo infoFields;
@@ -56,6 +60,7 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     private ListContributors contributors;
     private ListPopupWindow currentPopup;
     private Fragment currentFragment;
+    private ImageButton floatButton;
 
     public static RepoDetailFragment newInstance(String owner, String repo) {
         Bundle bundle = new Bundle();
@@ -98,6 +103,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
             infoFields = (RepositoryInfo) view.findViewById(R.id.repoInfoFields);
             infoFields.setOnRepoInfoListener(this);
 
+            floatButton = (ImageButton) view.findViewById(R.id.floatButton);
+            floatButton.setOnClickListener(this);
+
+            floatButton.setImageDrawable(getIconFolder());
+
             smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
 
             configureClients();
@@ -110,54 +120,11 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.repo_detail_fragment, menu);
-
-        if (menu != null) {
-            MenuItem item = menu.findItem(R.id.mode);
-            if (item != null) {
-                IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_folder);
-                drawable.actionBarSize();
-                drawable.colorRes(R.color.white);
-                item.setIcon(drawable);
-            }
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        if (item.getItemId() == R.id.mode) {
-            if (currentFragment != null) {
-                if (currentFragment instanceof MarkdownFragment) {
-                    currentFragment = FilesTreeFragment.newInstance(owner, repo);
-                    IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_file_text);
-                    drawable.actionBarSize();
-                    drawable.colorRes(R.color.white);
-                    item.setIcon(drawable);
-                } else if (currentFragment instanceof FilesTreeFragment) {
-                    currentFragment = MarkdownFragment.newInstance(owner, repo);
-                    IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_folder);
-                    drawable.actionBarSize();
-                    drawable.colorRes(R.color.white);
-                    item.setIcon(drawable);
-                }
-
-                showDetailFragment(currentFragment);
-            }
-        }
-
-        return true;
-    }
-
-    @Override
     public void onResponseOk(Repo repo, Response r) {
 
         executeNextClient();
 
-        currentFragment = MarkdownFragment.newInstance(this.owner, this.repo);
+        currentFragment = MarkdownFragment.newInstance(this.owner, this.repo, this);
         showDetailFragment(currentFragment);
     }
 
@@ -230,12 +197,46 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
         if (id == RepositoryInfo.INFO_CONTRIBUTORS) {
             if (currentPopup != null) {
                 currentPopup.dismiss();
+                currentPopup = null;
             } else {
                 currentPopup = new PopUpContributors(getActivity(), this.contributors);
+                currentPopup.setOnDismissListener(this);
                 currentPopup.setAnchorView(infoFields);
                 currentPopup.show();
             }
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.floatButton) {
+            if (currentFragment != null) {
+                if (currentFragment instanceof MarkdownFragment) {
+                    currentFragment = FilesTreeFragment.newInstance(owner, repo, this);
+                    floatButton.setImageDrawable(getIconText());
+                } else if (currentFragment instanceof FilesTreeFragment) {
+                    currentFragment = MarkdownFragment.newInstance(owner, repo, this);
+                    floatButton.setImageDrawable(getIconFolder());
+                }
+
+                showDetailFragment(currentFragment);
+            }
+        }
+    }
+
+    @Override
+    public void showRefresh() {
+        smoothBar.progressiveStart();
+    }
+
+    @Override
+    public void cancelRefresh() {
+        smoothBar.progressiveStop();
+    }
+
+    @Override
+    public void onDismiss() {
+        currentPopup = null;
     }
 
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
@@ -321,5 +322,19 @@ public class RepoDetailFragment extends Fragment implements BaseClient.OnResultC
             BugSenseHandler.addCrashExtraData(tag, error.getMessage());
             BugSenseHandler.flush(getActivity());
         }
+    }
+
+    private Drawable getIconText() {
+        IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_file_text);
+        drawable.actionBarSize();
+        drawable.colorRes(R.color.white);
+        return  drawable;
+    }
+
+    private Drawable getIconFolder() {
+        IconDrawable drawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_folder);
+        drawable.actionBarSize();
+        drawable.colorRes(R.color.white);
+        return drawable;
     }
 }

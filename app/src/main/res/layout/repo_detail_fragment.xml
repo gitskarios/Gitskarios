@@ -1,44 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MyActivity"
+    android:orientation="vertical"
+    android:background="@color/accent">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="96dp">
 
         <android.widget.RepositoryInfo
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="96dp"
             android:id="@+id/repoInfoFields"
-            android:background="@color/gray_github"
-            android:paddingBottom="8dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:paddingBottom="8dp" />
 
         <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="4dp"
             android:indeterminate="true"
             app:spb_sections_count="4"
-            app:spb_colors="@array/colorsSmooth"
+            app:spb_color="@color/complementary"
             app:spb_speed="2.0"
             app:spb_stroke_width="4dp"
             app:spb_stroke_separator_length="4dp"
             app:spb_reversed="true"
             app:spb_mirror_mode="true"
-            android:id="@+id/smoothBar"
-            android:background="@color/gray_github"
-            android:layout_alignParentTop="true" />
-    </RelativeLayout>
+            android:id="@+id/smoothBar" />
+    </FrameLayout>
 
     <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/filesTree" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/filesTree"
+            android:layout_marginTop="30dp"
+            android:background="@color/gray_github"/>
+
+        <ImageButton
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            style="@style/fab_inv"
+            android:id="@+id/floatButton"
+            android:gravity="center"
+            android:paddingTop="12dp"
+            android:layout_gravity="top|right"
+            android:layout_marginRight="16dp"
+            android:scaleType="centerInside"/>
+
+    </FrameLayout>
 
 </LinearLayout>

@@ -32,6 +32,7 @@ import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.bugsense.trace.BugSenseHandler;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -306,9 +307,13 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
     @Override
     public void onAnimationUpdate(ValueAnimator valueAnimator) {
-        ColorDrawable cd = new ColorDrawable((Integer) valueAnimator.getAnimatedValue());
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setBackgroundDrawable(cd);
+        try {
+            ColorDrawable cd = new ColorDrawable((Integer) valueAnimator.getAnimatedValue());
+            if (getActivity().getActionBar() != null) {
+                getActivity().getActionBar().setBackgroundDrawable(cd);
+            }
+        } catch (Exception e) {
+            BugSenseHandler.addCrashExtraData("onAnimationUpdate", e.getMessage());
         }
     }
 

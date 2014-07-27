@@ -45,14 +45,12 @@ public class RepositoryInfo extends ViewGroup implements View.OnClickListener {
     }
 
     private void init() {
-        isInEditMode();
-
-        setBackgroundColor(getResources().getColor(R.color.gray_github));
-
-        addRepoInfoField(new RepositoryUiInfo(INFO_CONTRIBUTORS, Iconify.IconValue.fa_group, 0, R.plurals.contributors));
-        addRepoInfoField(new RepositoryUiInfo(INFO_BRANCHES, Iconify.IconValue.fa_code_fork, 0, R.plurals.branches));
-        addRepoInfoField(new RepositoryUiInfo(INFO_RELEASES, Iconify.IconValue.fa_download, 0, R.plurals.releases));
-        addRepoInfoField(new RepositoryUiInfo(INFO_ISSUES, Iconify.IconValue.fa_info_circle, 0, R.plurals.issues));
+        if (!isInEditMode()) {
+            addRepoInfoField(new RepositoryUiInfo(INFO_CONTRIBUTORS, Iconify.IconValue.fa_group, 0, R.plurals.contributors));
+            addRepoInfoField(new RepositoryUiInfo(INFO_BRANCHES, Iconify.IconValue.fa_code_fork, 0, R.plurals.branches));
+            addRepoInfoField(new RepositoryUiInfo(INFO_RELEASES, Iconify.IconValue.fa_download, 0, R.plurals.releases));
+            addRepoInfoField(new RepositoryUiInfo(INFO_ISSUES, Iconify.IconValue.fa_info_circle, 0, R.plurals.issues));
+        }
     }
 
     @Override

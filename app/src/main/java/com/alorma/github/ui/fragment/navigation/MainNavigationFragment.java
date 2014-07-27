@@ -20,6 +20,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
+import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -32,7 +33,7 @@ import retrofit.client.Response;
  * Created by Bernat on 12/07/2014.
  */
 public class MainNavigationFragment extends NavigationDrawerFragment implements AdapterView.OnItemClickListener,
-        BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener {
+        BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener, View.OnClickListener {
 
     private ListView mDrawerListView;
 
@@ -51,9 +52,19 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_navigation_drawer, null, false);
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View v, Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
+
         profileLy = v.findViewById(R.id.profileLy);
-        mDrawerListView = (ListView) v.findViewById(R.id.list);
+        profileLy.setOnClickListener(this);
         circularImage = (CircularImageView) v.findViewById(R.id.circular);
+        circularImage.setOnClickListener(this);
+        mDrawerListView = (ListView) v.findViewById(R.id.list);
         nameText = (TextView) v.findViewById(R.id.name);
         joinedText = (EnhancedTextView) v.findViewById(R.id.joined);
         mDrawerListView.setOnItemClickListener(this);
@@ -76,8 +87,6 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
         selectItem(0);
-
-        return v;
     }
 
     @Override
@@ -137,9 +146,21 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
     public void onGenerated(Palette palette) {
         if (palette != null) {
             PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
-            if (item != null){
+            if (item != null) {
                 profileLy.setBackgroundColor(item.getRgb());
             }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.profileLy:
+            case R.id.circular:
+                if (getmCallbacks() != null) {
+                    getmCallbacks().profileSelected();
+                }
+                break;
         }
     }
 }

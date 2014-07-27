@@ -16,6 +16,11 @@ import com.alorma.github.ui.fragment.ProfileFragment;
  */
 public class ProfileActivity extends BackActivity {
 
+    public static Intent createLauncherIntent(Context context) {
+        Intent intent = new Intent(context, ProfileActivity.class);
+        return intent;
+    }
+
     public static Intent createLauncherIntent(Context context, String username) {
         Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(ProfileFragment.USERNAME, username);
@@ -47,7 +52,9 @@ public class ProfileActivity extends BackActivity {
                 finish();
             }
         } else {
-            finish();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(android.R.id.content, ProfileFragment.newInstance());
+            ft.commit();
         }
     }
 }
