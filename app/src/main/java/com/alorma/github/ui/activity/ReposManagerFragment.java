@@ -62,12 +62,12 @@ public class ReposManagerFragment extends Fragment implements View.OnClickListen
         tab2.setOnClickListener(this);
         tab3.setOnClickListener(this);
 
+        selectButton(tab1);
+
         pager = (ViewPager) view.findViewById(R.id.content);
         pager.setOnPageChangeListener(this);
         pager.setOffscreenPageLimit(3);
         pager.setAdapter(new ReposPagerAdapter(getFragmentManager()));
-
-        tab1.performClick();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ReposManagerFragment extends Fragment implements View.OnClickListen
                 pager.setCurrentItem(0);
                 break;
             case R.id.tab2:
-                pager.setCurrentItem(3);
+                pager.setCurrentItem(1);
                 selectButton(tab2);
                 break;
             case R.id.tab3:
