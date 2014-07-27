@@ -9,18 +9,16 @@ import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.FileActivity;
-import com.alorma.github.ui.adapter.repos.RepoContentAdapter;
+import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -36,6 +34,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     private String repo;
     private RepoContentAdapter contentAdapter;
     private RefreshListener refreshListener;
+    private Content currentContent = null;
 
     public static FilesTreeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -101,11 +100,11 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
         super.onListItemClick(l, v, position, id);
 
         if (contentAdapter != null && contentAdapter.getCount() >= position) {
-            if (refreshListener != null) {
-                refreshListener.showRefresh();
-            }
             Content item = contentAdapter.getItem(position);
-            if (ContentType.dir.equals(item.type)) {
+            if (item.isDir()) {
+                if (refreshListener != null) {
+                    refreshListener.showRefresh();
+                }
                 GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
                 repoContentsClient.setOnResultCallback(this);
                 repoContentsClient.execute();

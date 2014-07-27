@@ -1,17 +1,19 @@
 package com.alorma.github.ui.activity;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumericTitle;
 import android.widget.TabTitle;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.adapter.repos.ReposPagerAdapter;
 import com.alorma.github.ui.fragment.repos.RepoFragmentType;
 import com.alorma.github.ui.fragment.repos.ReposFragmentFactory;
 
@@ -21,12 +23,13 @@ import java.util.List;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class ReposManagerFragment extends Fragment implements View.OnClickListener {
+public class ReposManagerFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
     private List<TabTitle> tabs;
     private TabTitle tab1;
     private TabTitle tab2;
     private TabTitle tab3;
+    private ViewPager pager;
 
     public static Fragment newInstance() {
         return new ReposManagerFragment();
@@ -59,7 +62,12 @@ public class ReposManagerFragment extends Fragment implements View.OnClickListen
         tab2.setOnClickListener(this);
         tab3.setOnClickListener(this);
 
-        tab1.performClick();
+        selectButton(tab1);
+
+        pager = (ViewPager) view.findViewById(R.id.content);
+        pager.setOnPageChangeListener(this);
+        pager.setOffscreenPageLimit(3);
+        pager.setAdapter(new ReposPagerAdapter(getFragmentManager()));
     }
 
     @Override
@@ -67,23 +75,17 @@ public class ReposManagerFragment extends Fragment implements View.OnClickListen
         switch (view.getId()) {
             case R.id.tab1:
                 selectButton(tab1);
-                setContainerFragment(ReposFragmentFactory.getFragment(RepoFragmentType.REPO));
+                pager.setCurrentItem(0);
                 break;
             case R.id.tab2:
-                setContainerFragment(ReposFragmentFactory.getFragment(RepoFragmentType.WATCHED));
+                pager.setCurrentItem(1);
                 selectButton(tab2);
                 break;
             case R.id.tab3:
-                setContainerFragment(ReposFragmentFactory.getFragment(RepoFragmentType.STARRED));
+                pager.setCurrentItem(2);
                 selectButton(tab3);
                 break;
         }
-    }
-
-    protected void setContainerFragment(Fragment fragment) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content, fragment);
-        ft.commit();
     }
 
     private void selectButton(TabTitle tabSelected) {
@@ -92,5 +94,30 @@ public class ReposManagerFragment extends Fragment implements View.OnClickListen
                 tab.setSelected(tab == tabSelected);
             }
         }
+    }
+
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        switch (i) {
+            case 0:
+                selectButton(tab1);
+                break;
+            case 1:
+                selectButton(tab2);
+                break;
+            case 2:
+                selectButton(tab3);
+                break;
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
     }
 }

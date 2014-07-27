@@ -1,4 +1,4 @@
-package com.alorma.github.ui.adapter.repos;
+package com.alorma.github.ui.adapter.detail.repo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -54,7 +54,7 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
             iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_file);
         }
 
-        iconDrawable.sizeDp(32);
+        iconDrawable.sizeDp(28);
         iconDrawable.colorRes(R.color.accent);
 
         image.setImageDrawable(iconDrawable);
