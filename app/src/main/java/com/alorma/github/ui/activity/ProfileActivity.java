@@ -26,6 +26,12 @@ public class ProfileActivity extends BackActivity {
         intent.putExtra(ProfileFragment.USERNAME, username);
         return intent;
     }
+    public static Intent createIntentFilterLauncherActivity(Context context, String username) {
+        Intent intent = new Intent(context, ProfileActivity.class);
+        intent.putExtra(ProfileFragment.USERNAME, username);
+        intent.putExtra(ProfileFragment.FROM_INTENT_FILTER, true);
+        return intent;
+    }
 
     public static Intent createLauncherIntent(Context context, User user) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -45,8 +51,9 @@ public class ProfileActivity extends BackActivity {
                 ft.commit();
             } else if (getIntent().getExtras().containsKey(ProfileFragment.USERNAME)) {
                 String username = getIntent().getStringExtra(ProfileFragment.USERNAME);
+                boolean fromIntentFilter = getIntent().getBooleanExtra(ProfileFragment.FROM_INTENT_FILTER, false);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(android.R.id.content, ProfileFragment.newInstance(username));
+                ft.replace(android.R.id.content, ProfileFragment.newInstance(username, fromIntentFilter));
                 ft.commit();
             } else {
                 finish();

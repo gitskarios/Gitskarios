@@ -83,7 +83,7 @@ public class ReposFragment extends BaseReposListFragment {
 
     @Override
     protected boolean useFab() {
-        return username == null;
+        return false && username == null;
     }
 
     @Override

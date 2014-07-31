@@ -24,8 +24,31 @@
         </activity>
         <activity android:name=".ui.activity.MainActivity" />
         <activity android:name=".ui.activity.ProfileActivity" />
-        <activity android:name=".ui.activity.RepoDetailActivity" />
+        <activity android:name=".ui.activity.RepoDetailActivity"/>
         <activity android:name=".ui.activity.FileActivity" />
+
+        <activity android:name=".ui.activity.InterceptorActivity"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data
+                    android:host="github.com"
+                    android:scheme="http" />
+                <data
+                    android:host="github.com"
+                    android:scheme="https" />
+
+                <data android:pathPattern=".*" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

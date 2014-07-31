@@ -46,6 +46,7 @@ import retrofit.client.Response;
 public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener,
         ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
     public static final String USERNAME = "USERNAME";
+    public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
     private static final long DURATION = 300;
     public static final String USER = "USER";
     private User user;
@@ -62,6 +63,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private Palette palette;
     private PaletteItem adapterPaletteItem;
     private Fragment currentFragment;
+    private boolean fromIntentFilter;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -70,6 +72,16 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     public static ProfileFragment newInstance(String username) {
         Bundle bundle = new Bundle();
         bundle.putString(USERNAME, username);
+
+        ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.setArguments(bundle);
+        return profileFragment;
+    }
+
+    public static ProfileFragment newInstance(String username, boolean fromIntentFilter) {
+        Bundle bundle = new Bundle();
+        bundle.putString(USERNAME, username);
+        bundle.putBoolean(FROM_INTENT_FILTER, fromIntentFilter);
 
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setArguments(bundle);
@@ -122,10 +134,11 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         String username = null;
         BaseUsersClient<User> requestClient = null;
         if (getArguments() != null) {
+            fromIntentFilter = getArguments().getBoolean(FROM_INTENT_FILTER, false);
+
             if (getArguments().containsKey(USER)) {
-                User user = getArguments().getParcelable(USER);
-                this.user = user;
-                updateData();
+                this.user = getArguments().getParcelable(USER);
+                setData();
             } else if (getArguments().containsKey(USERNAME)) {
                 username = getArguments().getString(USERNAME);
             }
@@ -157,12 +170,12 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         this.user = user;
         if (isAdded()) {
             if (user != null) {
-                updateData();
+                setData();
             }
         }
     }
 
-    private void updateData() {
+    private void setData() {
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setTitle(user.login);
         }
@@ -235,7 +248,9 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
     @Override
     public void onFail(RetrofitError error) {
-
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
