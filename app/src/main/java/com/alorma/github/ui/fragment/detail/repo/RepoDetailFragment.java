@@ -3,10 +3,13 @@ package com.alorma.github.ui.fragment.detail.repo;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabTitle;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -39,6 +42,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private TabTitle tabInfo;
     private List<TabTitle> tabs;
     private boolean fromIntentFilter;
+    private TextView textDescription;
 
     public static RepoDetailFragment newInstance(String owner, String repo) {
         Bundle bundle = new Bundle();
@@ -96,6 +100,8 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             repoClient.execute();
 
             smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
+
+            textDescription = (TextView) view.findViewById(R.id.textDescription);
 
             tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
             tabSource = (TabTitle) view.findViewById(R.id.tabSource);
@@ -187,7 +193,13 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
-
+        if (textDescription != null) {
+            if (TextUtils.isEmpty(repo.description)) {
+                textDescription.setVisibility(View.GONE);
+            } else {
+                textDescription.setText(Html.fromHtml(repo.description));
+            }
+        }
     }
 
     @Override
