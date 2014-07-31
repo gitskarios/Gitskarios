@@ -26,28 +26,44 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <android.widget.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/complementary"
-                android:text="@string/Readme"
-                android:id="@+id/tabReadme" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="96dp"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:id="@+id/textDescription"
+                android:ellipsize="end"
+                android:maxLines="4" />
 
-            <android.widget.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/complementary"
-                android:text="@string/Source"
-                android:id="@+id/tabSource" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal">
 
-            <android.widget.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/complementary"
-                android:text="@string/Info"
-                android:id="@+id/tabInfo"
-                android:visibility="gone" />
+                <android.widget.TabTitle
+                    style="@style/tab_repos"
+                    app:barColor="@color/complementary"
+                    android:text="@string/Readme"
+                    android:id="@+id/tabReadme" />
 
+                <android.widget.TabTitle
+                    style="@style/tab_repos"
+                    app:barColor="@color/complementary"
+                    android:text="@string/Source"
+                    android:id="@+id/tabSource" />
+
+                <android.widget.TabTitle
+                    style="@style/tab_repos"
+                    app:barColor="@color/complementary"
+                    android:text="@string/Info"
+                    android:id="@+id/tabInfo"
+                    android:visibility="gone" />
+
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 
