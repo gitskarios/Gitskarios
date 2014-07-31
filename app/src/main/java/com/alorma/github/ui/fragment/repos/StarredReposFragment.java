@@ -74,4 +74,9 @@ public class StarredReposFragment extends BaseReposListFragment {
             reposAdapter.setTextTitleColor(textColor);
         }
     }
+
+    @Override
+    protected boolean useFab() {
+        return false;
+    }
 }

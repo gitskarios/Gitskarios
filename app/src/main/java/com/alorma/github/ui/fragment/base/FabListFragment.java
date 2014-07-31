@@ -15,8 +15,6 @@ import com.alorma.github.R;
  */
 public abstract class FabListFragment extends ListFragment implements View.OnClickListener {
 
-    private boolean useFab = false;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -32,7 +30,7 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
 
         Button fab = (Button) view.findViewById(R.id.fabbutton);
 
-        if (BuildConfig.PRO_VERSION && useFab) {
+        if (useFab()) {
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 Outline mOutlineCircle;
                 int shapeSize = getResources().getDimensionPixelSize(R.dimen.shape_size);
@@ -47,13 +45,9 @@ public abstract class FabListFragment extends ListFragment implements View.OnCli
             fab.setVisibility(View.GONE);
             fab.setOnClickListener(null);
         }
-
-
     }
 
-    public void setUseFab(boolean useFab) {
-        this.useFab = useFab;
-    }
+    protected abstract boolean useFab();
 
     @Override
     public void onClick(View view) {

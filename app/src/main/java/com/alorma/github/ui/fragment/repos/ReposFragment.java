@@ -4,14 +4,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
-import com.alorma.github.ui.adapter.repos.ReposAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedFabListFragment;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-
-import java.util.ArrayList;
 
 public class ReposFragment extends BaseReposListFragment {
     private static final String COLOR = "COLOR";
@@ -52,7 +46,6 @@ public class ReposFragment extends BaseReposListFragment {
             username = getArguments().getString(USERNAME);
             textColor = getArguments().getInt(COLOR);
         }
-        setUseFab(username == null);
     }
 
     @Override
@@ -86,6 +79,11 @@ public class ReposFragment extends BaseReposListFragment {
         if (reposAdapter != null) {
             reposAdapter.setTextTitleColor(textColor);
         }
+    }
+
+    @Override
+    protected boolean useFab() {
+        return false && username == null;
     }
 
     @Override
