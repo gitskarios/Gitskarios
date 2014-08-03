@@ -13,20 +13,22 @@ import com.alorma.github.ui.fragment.detail.repo.RepoDetailFragment;
  */
 public class RepoDetailActivity extends BackActivity {
 
-    public static Intent createLauncherActivity(Context context, String owner, String repo) {
+    public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
         Bundle bundle = new Bundle();
         bundle.putString(RepoDetailFragment.OWNER, owner);
         bundle.putString(RepoDetailFragment.REPO, repo);
+        bundle.putString(RepoDetailFragment.DESCRIPTION, description);
         bundle.putBoolean(RepoDetailFragment.FROM_INTENT_FILTER, false);
 
         Intent intent = new Intent(context, RepoDetailActivity.class);
         intent.putExtras(bundle);
         return intent;
     }
-    public static Intent createIntentFilterLauncherActivity(Context context, String owner, String repo) {
+    public static Intent createIntentFilterLauncherActivity(Context context, String owner, String repo, String description) {
         Bundle bundle = new Bundle();
         bundle.putString(RepoDetailFragment.OWNER, owner);
         bundle.putString(RepoDetailFragment.REPO, repo);
+        bundle.putString(RepoDetailFragment.DESCRIPTION, description);
         bundle.putBoolean(RepoDetailFragment.FROM_INTENT_FILTER, true);
 
         Intent intent = new Intent(context, RepoDetailActivity.class);
@@ -41,10 +43,11 @@ public class RepoDetailActivity extends BackActivity {
         if (getIntent().getExtras() != null) {
             String owner = getIntent().getExtras().getString(RepoDetailFragment.OWNER);
             String repo = getIntent().getExtras().getString(RepoDetailFragment.REPO);
+            String description = getIntent().getExtras().getString(RepoDetailFragment.DESCRIPTION);
             boolean from = getIntent().getExtras().getBoolean(RepoDetailFragment.FROM_INTENT_FILTER);
 
             FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(android.R.id.content, RepoDetailFragment.newInstance(owner, repo, from));
+            ft.replace(android.R.id.content, RepoDetailFragment.newInstance(owner, repo, description, from));
             ft.commit();
         } else {
             finish();

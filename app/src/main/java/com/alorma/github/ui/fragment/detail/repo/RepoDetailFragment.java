@@ -32,6 +32,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
+    public static final String DESCRIPTION = "DESCRIPTION";
 
     private String owner;
     private String repo;
@@ -43,21 +44,24 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private List<TabTitle> tabs;
     private boolean fromIntentFilter;
     private TextView textDescription;
+    private String description;
 
-    public static RepoDetailFragment newInstance(String owner, String repo) {
+    public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();
         bundle.putString(OWNER, owner);
         bundle.putString(REPO, repo);
+        bundle.putString(DESCRIPTION, description);
 
         RepoDetailFragment f = new RepoDetailFragment();
         f.setArguments(bundle);
         return f;
     }
 
-    public static RepoDetailFragment newInstance(String owner, String repo, boolean fromIntentFilter) {
+    public static RepoDetailFragment newInstance(String owner, String repo, String description, boolean fromIntentFilter) {
         Bundle bundle = new Bundle();
         bundle.putString(OWNER, owner);
         bundle.putString(REPO, repo);
+        bundle.putString(DESCRIPTION, description);
         bundle.putBoolean(FROM_INTENT_FILTER, fromIntentFilter);
 
         RepoDetailFragment f = new RepoDetailFragment();
@@ -88,6 +92,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         if (getArguments() != null) {
             owner = getArguments().getString(OWNER);
             repo = getArguments().getString(REPO);
+            description = getArguments().getString(DESCRIPTION);
             fromIntentFilter = getArguments().getBoolean(FROM_INTENT_FILTER, false);
 
             if (getActivity() != null && getActivity().getActionBar() != null) {
@@ -102,6 +107,12 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
 
             textDescription = (TextView) view.findViewById(R.id.textDescription);
+
+            if (TextUtils.isEmpty(description)) {
+                textDescription.setVisibility(View.GONE);
+            } else {
+                textDescription.setText(Html.fromHtml(description));
+            }
 
             tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
             tabSource = (TabTitle) view.findViewById(R.id.tabSource);

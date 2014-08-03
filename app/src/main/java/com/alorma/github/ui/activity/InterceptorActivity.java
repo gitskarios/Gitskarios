@@ -30,7 +30,7 @@ public class InterceptorActivity extends Activity {
                         String owner = pathSegments.get(0);
                         String repo = pathSegments.get(1);
 
-                        Intent repoIntent = RepoDetailActivity.createIntentFilterLauncherActivity(this, owner, repo);
+                        Intent repoIntent = RepoDetailActivity.createIntentFilterLauncherActivity(this, owner, repo, null);
                         startActivity(repoIntent);
                         finish();
                         break;
