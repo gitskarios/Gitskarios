@@ -45,19 +45,23 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
             textSha.setText(item.sha);
         }
 
-        IconDrawable iconDrawable;
+        IconDrawable iconDrawable = null;
         if (ContentType.dir.equals(item.type)) {
             iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_folder);
         } else if (ContentType.submodule.equals(item.type)) {
             iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_code_fork);
-        } else {
+        } else if (ContentType.file.equals(item.type)) {
             iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_file);
+        } else if (ContentType.up.equals(item.type)) {
+            iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_arrow_circle_o_left);
         }
 
-        iconDrawable.sizeDp(28);
-        iconDrawable.colorRes(R.color.accent);
+        if (iconDrawable != null) {
+            iconDrawable.sizeDp(28);
+            iconDrawable.colorRes(R.color.accent);
 
-        image.setImageDrawable(iconDrawable);
+            image.setImageDrawable(iconDrawable);
+        }
 
         return v;
     }
