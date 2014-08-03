@@ -52,6 +52,8 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
             iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_code_fork);
         } else if (ContentType.file.equals(item.type)) {
             iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_file);
+        } else if (ContentType.up.equals(item.type)) {
+            iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_arrow_circle_o_left);
         }
 
         if (iconDrawable != null) {
