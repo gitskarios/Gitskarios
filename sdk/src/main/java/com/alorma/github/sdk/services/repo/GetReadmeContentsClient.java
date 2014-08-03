@@ -22,14 +22,17 @@ public class GetReadmeContentsClient extends BaseRepoClient<String>{
 
     private OnResultCallback<String> callback;
 
-    public GetReadmeContentsClient(Context context, String owner, String repo, OnResultCallback<String> callback) {
+    public GetReadmeContentsClient(Context context, String owner, String repo) {
         super(context, owner, repo);
-        this.callback = callback;
     }
 
     @Override
     protected void executeService(RepoService repoService) {
             repoService.readme(owner, repo, new ContentCallback());
+    }
+
+    public void setCallback(OnResultCallback<String> callback) {
+        this.callback = callback;
     }
 
     private class ContentCallback implements Callback<Content> {

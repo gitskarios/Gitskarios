@@ -75,7 +75,8 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
             if (refreshListener != null) {
                 refreshListener.showRefresh();
             }
-            GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo, this);
+            GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
+            repoMarkdownClient.setCallback(this);
             repoMarkdownClient.execute();
         }
     }
@@ -93,10 +94,6 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
     @Override
     public void onFail(RetrofitError error) {
         onError("README", error);
-    }
-
-    public RefreshListener getRefreshListener() {
-        return refreshListener;
     }
 
     public void setRefreshListener(RefreshListener refreshListener) {
