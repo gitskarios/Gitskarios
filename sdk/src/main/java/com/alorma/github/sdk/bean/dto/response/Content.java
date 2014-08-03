@@ -13,6 +13,8 @@ public class Content extends ShaUrl{
     public String html_url;
     public Links _links;
     public String encoding;
+    public ListContents children;
+    public Content parent;
 
     public boolean isDir() {
         return ContentType.dir.equals(type);
