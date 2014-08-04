@@ -18,8 +18,11 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
+import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
@@ -35,6 +38,7 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
 
     private WebView webview;
     private RefreshListener refreshListener;
+    private Bus bus;
 
     public static MarkdownFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -140,5 +144,29 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         if (refreshListener != null) {
             refreshListener.cancelRefresh();
         }
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        bus = new Bus();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bus.unregister(this);
+    }
+
+    @Subscribe
+    public void colorReceived(ColorEvent event) {
+
     }
 }

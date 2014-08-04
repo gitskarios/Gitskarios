@@ -8,7 +8,6 @@ import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
 
 public class ReposFragment extends BaseReposListFragment {
-    private static final String COLOR = "COLOR";
 
     private String username;
 
@@ -27,24 +26,11 @@ public class ReposFragment extends BaseReposListFragment {
         return reposFragment;
     }
 
-    public static ReposFragment newInstance(String username, int color) {
-        ReposFragment reposFragment = new ReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-            bundle.putInt(COLOR, color);
-
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
-            textColor = getArguments().getInt(COLOR);
         }
     }
 
@@ -71,14 +57,6 @@ public class ReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-
-        if (reposAdapter != null) {
-            reposAdapter.setTextTitleColor(textColor);
-        }
     }
 
     @Override

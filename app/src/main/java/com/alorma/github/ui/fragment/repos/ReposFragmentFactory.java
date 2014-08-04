@@ -30,17 +30,4 @@ public class ReposFragmentFactory {
             return ReposFragment.newInstance(username);
         }
     }
-
-    public static Fragment getFragment(RepoFragmentType type, String username, int color) {
-        if (RepoFragmentType.REPO == type) {
-            return ReposFragment.newInstance(username, color);
-        } else if (RepoFragmentType.STARRED == type) {
-            return StarredReposFragment.newInstance(username, color);
-        } else if (RepoFragmentType.WATCHED == type) {
-            return WatchedReposFragment.newInstance(username, color);
-        } else {
-            return ReposFragment.newInstance(username, color);
-        }
-    }
-
 }

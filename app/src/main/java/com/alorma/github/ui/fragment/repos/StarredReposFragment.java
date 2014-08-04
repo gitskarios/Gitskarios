@@ -7,7 +7,6 @@ import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.StarredReposClient;
 
 public class StarredReposFragment extends BaseReposListFragment {
-    private static final String COLOR = "COLOR";
 
     private String username;
 
@@ -25,17 +24,6 @@ public class StarredReposFragment extends BaseReposListFragment {
         }
         return reposFragment;
     }
-    public static StarredReposFragment newInstance(String username, int color) {
-        StarredReposFragment reposFragment = new StarredReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-            bundle.putInt(COLOR, color);
-
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
 
     @Override
     protected void executeRequest() {
@@ -43,7 +31,6 @@ public class StarredReposFragment extends BaseReposListFragment {
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
-            textColor = getArguments().getInt(COLOR);
         }
 
         client = new StarredReposClient(getActivity(), username);
@@ -65,14 +52,6 @@ public class StarredReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-
-        if (reposAdapter != null) {
-            reposAdapter.setTextTitleColor(textColor);
-        }
     }
 
     @Override

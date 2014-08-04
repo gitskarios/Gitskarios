@@ -21,14 +21,10 @@ public abstract class BaseReposListFragment extends PaginatedFabListFragment<Lis
 
     protected ReposAdapter reposAdapter;
 
-    protected int textColor = -1;
-
     protected void setUpList() {
-        if (textColor != -1) {
-            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>(), textColor);
-        } else {
-            reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
-        }
+
+        reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
+
         setListAdapter(reposAdapter);
     }
 
@@ -49,5 +45,21 @@ public abstract class BaseReposListFragment extends PaginatedFabListFragment<Lis
     @Override
     protected void onFabClick() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (reposAdapter != null) {
+            reposAdapter.registerBus();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (reposAdapter != null) {
+            reposAdapter.unregisterBus();
+        }
     }
 }

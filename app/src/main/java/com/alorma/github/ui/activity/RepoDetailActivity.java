@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.alorma.github.GistsApplication;
+import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.detail.repo.RepoDetailFragment;
 
@@ -39,6 +41,8 @@ public class RepoDetailActivity extends BackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setUpActionBarColor(GistsApplication.AB_COLOR);
 
         if (getIntent().getExtras() != null) {
             String owner = getIntent().getExtras().getString(RepoDetailFragment.OWNER);

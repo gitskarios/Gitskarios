@@ -14,7 +14,6 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import java.util.ArrayList;
 
 public class WatchedReposFragment extends BaseReposListFragment {
-    private static final String COLOR = "COLOR";
 
     private String username;
 
@@ -32,17 +31,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
         }
         return reposFragment;
     }
-    public static WatchedReposFragment newInstance(String username, int color) {
-        WatchedReposFragment reposFragment = new WatchedReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-            bundle.putInt(COLOR, color);
-
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
 
     @Override
     protected void executeRequest() {
@@ -50,7 +38,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
-            textColor = getArguments().getInt(COLOR);
         }
 
         client = new WatchedReposClient(getActivity(), username);
@@ -72,14 +59,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-
-        if (reposAdapter != null) {
-            reposAdapter.setTextTitleColor(textColor);
-        }
     }
 
     @Override
