@@ -9,7 +9,9 @@ import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
+import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
+import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.FileActivity;
@@ -17,8 +19,9 @@ import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -34,7 +37,9 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     private String repo;
     private RepoContentAdapter contentAdapter;
     private RefreshListener refreshListener;
-    private Content currentContent = null;
+    private Map<Content, ListContents> treeContent;
+    private Content rootContent = new Content();
+    private Content currentSelectedContent = rootContent;
 
     public static FilesTreeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -61,6 +66,9 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
             repoContentsClient.setOnResultCallback(this);
             repoContentsClient.execute();
 
+            treeContent = new HashMap<Content, ListContents>();
+            treeContent.put(currentSelectedContent, null);
+
             if (refreshListener != null) {
                 refreshListener.showRefresh();
             }
@@ -69,21 +77,42 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
 
     @Override
     public void onResponseOk(ListContents contents, Response r) {
-        try {
-            if (contentAdapter == null) {
-                contentAdapter = new RepoContentAdapter(getActivity(), new ArrayList<Content>());
-                setListAdapter(contentAdapter);
-            }
 
-            Collections.sort(contents, ListContents.SORT.TYPE);
-            contentAdapter.clear();
-            contentAdapter.addAll(contents);
-        } catch (Exception e) {
-            BugSenseHandler.addCrashExtraData("FilesTreeFragment", e.getMessage());
-            BugSenseHandler.flush(getActivity());
-        }
-        if (refreshListener != null) {
-            refreshListener.cancelRefresh();
+        displayContent(contents);
+    }
+
+    private void displayContent(ListContents contents) {
+        if (contents != null) {
+            try {
+                ListContents currentContents = treeContent.get(currentSelectedContent);
+
+                if (currentContents == null) {
+                    int size = contents.size() + (currentSelectedContent.parent != null ? 1 : 0);
+                    currentContents = new ListContents(size);
+                    treeContent.put(currentSelectedContent, currentContents);
+                    if (currentSelectedContent.parent != null) {
+                        Content up = new UpContent();
+                        up.parent = currentSelectedContent.parent;
+                        currentContents.add(up);
+                    }
+
+                    Collections.sort(contents, ListContents.SORT.TYPE);
+                    currentContents.addAll(contents);
+
+                    contentAdapter = new RepoContentAdapter(getActivity(), currentContents);
+                } else {
+                    contentAdapter = new RepoContentAdapter(getActivity(), contents);
+                }
+
+                setListAdapter(contentAdapter);
+
+                if (refreshListener != null) {
+                    refreshListener.cancelRefresh();
+                }
+            } catch (Exception e) {
+                BugSenseHandler.addCrashExtraData("FilesTreeFragment", e.getMessage());
+                BugSenseHandler.flush(getActivity());
+            }
         }
     }
 
@@ -105,19 +134,31 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                 if (refreshListener != null) {
                     refreshListener.showRefresh();
                 }
-                GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
-                repoContentsClient.setOnResultCallback(this);
-                repoContentsClient.execute();
-            } else {
+
+                if (treeContent.get(item) == null) {
+                    item.parent = currentSelectedContent;
+
+                    currentSelectedContent = item;
+                    treeContent.put(item, null);
+
+                    GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
+                    repoContentsClient.setOnResultCallback(this);
+                    repoContentsClient.execute();
+                } else {
+                    displayContent(treeContent.get(item));
+                }
+
+            } else if (item.isFile()) {
                 String url = item._links.html;
                 Intent intent = FileActivity.createLauncherIntent(getActivity(), url);
                 startActivity(intent);
+            } else if (ContentType.up.equals(item.type)) {
+                if (item.parent != null) {
+                    currentSelectedContent = item.parent;
+                    displayContent(treeContent.get(currentSelectedContent));
+                }
             }
         }
-    }
-
-    public RefreshListener getRefreshListener() {
-        return refreshListener;
     }
 
     public void setRefreshListener(RefreshListener refreshListener) {

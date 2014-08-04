@@ -40,7 +40,7 @@ public abstract class BaseReposListFragment extends PaginatedFabListFragment<Lis
             if (item != null) {
                 String repo = item.name;
                 String owner = item.owner.login;
-                Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, repo);
+                Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, repo, item.description);
                 startActivity(launcherActivity);
             }
         }
