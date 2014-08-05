@@ -8,15 +8,20 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumericTitle;
 import android.widget.TabTitle;
 import android.widget.TextView;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
+import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,8 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private boolean fromIntentFilter;
     private TextView textDescription;
     private String description;
+    private Bus bus;
+    private View repoDetailInfo;
 
     public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();
@@ -72,8 +79,20 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        bus = new Bus();
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bus.unregister(this);
     }
 
     @Override
@@ -113,6 +132,10 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             } else {
                 textDescription.setText(Html.fromHtml(description));
             }
+
+            repoDetailInfo = view.findViewById(R.id.repoDetailInfo);
+
+            repoDetailInfo.setBackgroundColor(GistsApplication.AB_COLOR);
 
             tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
             tabSource = (TabTitle) view.findViewById(R.id.tabSource);
@@ -218,5 +241,10 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         if (getActivity() != null) {
             getActivity().finish();
         }
+    }
+
+    @Subscribe
+    public void colorReceived(ColorEvent event) {
+        repoDetailInfo.setBackgroundColor(event.getRgb());
     }
 }

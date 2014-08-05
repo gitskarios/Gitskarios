@@ -63,4 +63,9 @@ public class GistsFragment extends PaginatedListFragment<ListGists> {
         client.setOnResultCallback(this);
         client.execute();
     }
+
+    @Override
+    protected void onQueryFail() {
+
+    }
 }

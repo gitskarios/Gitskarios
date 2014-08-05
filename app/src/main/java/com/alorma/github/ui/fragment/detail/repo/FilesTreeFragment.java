@@ -18,6 +18,7 @@ import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
+import com.squareup.otto.Bus;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -158,6 +159,22 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                     displayContent(treeContent.get(currentSelectedContent));
                 }
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (contentAdapter != null) {
+            contentAdapter.registerBus();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (contentAdapter != null) {
+            contentAdapter.unregisterBus();
         }
     }
 

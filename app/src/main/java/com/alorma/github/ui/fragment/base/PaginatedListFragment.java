@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
@@ -19,7 +18,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K> extends ListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedListFragment<K> extends LoadingListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
 
     protected static final String USERNAME = "USERNAME";
 
@@ -55,6 +54,9 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
     @Override
     public void onResponseOk(K k, Response r) {
         if (getActivity() != null && isAdded()) {
+            if (swipe != null) {
+                swipe.setRefreshing(false);
+            }
             onResponse(k);
 
             getLinkData(r);
@@ -63,10 +65,17 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
 
     @Override
     public void onFail(RetrofitError error) {
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(getActivity(), "failed: " + error, Toast.LENGTH_SHORT).show();
+        if (swipe != null) {
+            swipe.setRefreshing(false);
         }
+
+        if (getActivity() != null && isAdded()) {
+            onQueryFail();
+        }
+
     }
+
+    protected abstract void onQueryFail();
 
     protected abstract void onResponse(K k);
 
@@ -86,6 +95,14 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        executeRequest();
+        if (emptyLy != null) {
+            emptyLy.setVisibility(View.GONE);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.UserFollowersClient;
@@ -12,6 +13,8 @@ import com.alorma.github.sdk.services.user.UserFollowingClient;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 
@@ -41,6 +44,11 @@ public class FollowingFragment extends PaginatedListFragment<ListUsers>{
     protected void executeRequest() {
         UserFollowingClient client;
 
+        if (usersAdapter != null) {
+            usersAdapter.clear();
+        }
+
+
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
         }
@@ -59,9 +67,26 @@ public class FollowingFragment extends PaginatedListFragment<ListUsers>{
     }
 
     @Override
+    protected void onQueryFail() {
+        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_group);
+        iconDrawable.colorRes(R.color.gray_github_medium);
+        emptyIcon.setImageDrawable(iconDrawable);
+
+        emptyText.setText(R.string.no_followings);
+
+        emptyLy.setVisibility(View.VISIBLE);
+        if (swipe != null) {
+            swipe.setRefreshing(false);
+        }
+    }
+
+    @Override
     protected void onResponse(ListUsers repos) {
         if (usersAdapter == null) {
             setUpList();
+        }
+        if (swipe != null) {
+            swipe.setRefreshing(false);
         }
         usersAdapter.addAll(repos);
     }
@@ -76,7 +101,6 @@ public class FollowingFragment extends PaginatedListFragment<ListUsers>{
         super.onListItemClick(l, v, position, id);
 
         if (usersAdapter != null && usersAdapter.getItem(position) != null) {
-            String login = usersAdapter.getItem(position).login;
             Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
             startActivity(launcherIntent);
         }

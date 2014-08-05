@@ -2,12 +2,12 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.StarredReposClient;
 
 public class StarredReposFragment extends BaseReposListFragment {
-    private static final String COLOR = "COLOR";
 
     private String username;
 
@@ -25,25 +25,21 @@ public class StarredReposFragment extends BaseReposListFragment {
         }
         return reposFragment;
     }
-    public static StarredReposFragment newInstance(String username, int color) {
-        StarredReposFragment reposFragment = new StarredReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-            bundle.putInt(COLOR, color);
-
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
 
     @Override
     protected void executeRequest() {
         BaseReposClient client;
 
+        if (reposAdapter != null) {
+            reposAdapter.clear();
+        }
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
+        }
+
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
-            textColor = getArguments().getInt(COLOR);
         }
 
         client = new StarredReposClient(getActivity(), username);
@@ -54,6 +50,11 @@ public class StarredReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
+        }
+
         StarredReposClient client = new StarredReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
@@ -67,16 +68,8 @@ public class StarredReposFragment extends BaseReposListFragment {
         reposAdapter.addAll(repos);
     }
 
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-
-        if (reposAdapter != null) {
-            reposAdapter.setTextTitleColor(textColor);
-        }
-    }
-
     @Override
-    protected boolean useFab() {
-        return false;
+    protected int getNoDataText() {
+        return R.string.no_starred_repositories;
     }
 }

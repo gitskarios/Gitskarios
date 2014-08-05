@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
@@ -26,6 +27,13 @@ public class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
+    }
+
+    protected void setUpActionBarColor(int color) {
+        if (getActionBar() != null) {
+            ColorDrawable cd = new ColorDrawable(color);
+            getActionBar().setBackgroundDrawable(cd);
+        }
     }
 
     @Override

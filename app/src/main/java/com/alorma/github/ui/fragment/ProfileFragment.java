@@ -1,9 +1,5 @@
 package com.alorma.github.ui.fragment;
 
-import android.animation.Animator;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -17,7 +13,6 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.CircularImageView;
 import android.widget.EnhancedTextView;
 import android.widget.NumericTitle;
@@ -29,13 +24,15 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
+import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.bugsense.trace.BugSenseHandler;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +41,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener,
-        ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener, View.OnClickListener {
-    public static final String USERNAME = "USERNAME";
+        View.OnClickListener {
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
-    private static final long DURATION = 300;
     public static final String USER = "USER";
     private User user;
-    private int rgbAbColor;
     private NumericTitle num1Text;
-    //private NumericTitle num2Text;
     private NumericTitle num3Text;
     private NumericTitle num4Text;
     private CircularImageView avatarImage;
@@ -62,25 +55,16 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private PaletteItem usedPalette;
     private Palette palette;
     private PaletteItem adapterPaletteItem;
-    private Fragment currentFragment;
-    private boolean fromIntentFilter;
+    private Bus bus;
+    private ArrayList<NumericTitle> numericTitles;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
     }
 
-    public static ProfileFragment newInstance(String username) {
+    public static ProfileFragment newInstance(User user, boolean fromIntentFilter) {
         Bundle bundle = new Bundle();
-        bundle.putString(USERNAME, username);
-
-        ProfileFragment profileFragment = new ProfileFragment();
-        profileFragment.setArguments(bundle);
-        return profileFragment;
-    }
-
-    public static ProfileFragment newInstance(String username, boolean fromIntentFilter) {
-        Bundle bundle = new Bundle();
-        bundle.putString(USERNAME, username);
+        bundle.putParcelable(USER, user);
         bundle.putBoolean(FROM_INTENT_FILTER, fromIntentFilter);
 
         ProfileFragment profileFragment = new ProfileFragment();
@@ -88,13 +72,23 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         return profileFragment;
     }
 
-    public static ProfileFragment newInstance(User user) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(USER, user);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        ProfileFragment profileFragment = new ProfileFragment();
-        profileFragment.setArguments(bundle);
-        return profileFragment;
+        bus = new Bus();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bus.unregister(this);
     }
 
     @Override
@@ -129,26 +123,27 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
         num1Text.setSelected(true);
 
+        numericTitles = new ArrayList<NumericTitle>();
+        numericTitles.add(num1Text);
+        //numericTitles.add(num2Text);
+        numericTitles.add(num3Text);
+        numericTitles.add(num4Text);
+
         setUpFromPaletteItem(null);
 
         String username = null;
         BaseUsersClient<User> requestClient = null;
         if (getArguments() != null) {
-            fromIntentFilter = getArguments().getBoolean(FROM_INTENT_FILTER, false);
 
             if (getArguments().containsKey(USER)) {
                 this.user = getArguments().getParcelable(USER);
                 setData();
-            } else if (getArguments().containsKey(USERNAME)) {
-                username = getArguments().getString(USERNAME);
             }
         }
 
         if (user != null) {
             requestClient = new RequestUserClient(getActivity(), user.login);
-        } else if (username != null) {
-            requestClient = new RequestUserClient(getActivity(), username);
-        } else {
+        }else {
             requestClient = new RequestAutenticatedUserClient(getActivity());
         }
 
@@ -158,7 +153,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
     private void replaceContent(Fragment fragment) {
         if (fragment != null) {
-            this.currentFragment = fragment;
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.content3, fragment);
             ft.commit();
@@ -178,13 +172,14 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private void setData() {
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setTitle(user.login);
+            getActivity().getActionBar().setTitle(user.name);
         }
 
         if (user.login == null) {
             Fragment fragment = ReposFragment.newInstance();
             replaceContent(fragment);
         } else {
-            Fragment fragment = ReposFragment.newInstance(user.login, getResources().getColor(R.color.gray_github_dark));
+            Fragment fragment = ReposFragment.newInstance(user.login);
             replaceContent(fragment);
         }
 
@@ -254,16 +249,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ColorDrawable cd = new ColorDrawable(getResources().getColor(R.color.gray_github_dark));
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setBackgroundDrawable(cd);
-            GistsApplication.AB_COLOR = getResources().getColor(R.color.gray_github_dark);
-        }
-    }
-
-    @Override
     public void onGenerated(Palette palette) {
         setUpFromPalette(palette);
     }
@@ -273,14 +258,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         if (palette != null) {
 
             adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
-
-            if (adapterPaletteItem != null) {
-                if (currentFragment != null) {
-                    if (currentFragment instanceof ReposFragment) {
-                        ((ReposFragment) currentFragment).setTextColor(adapterPaletteItem.getRgb());
-                    }
-                }
-            }
 
             PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
 
@@ -293,63 +270,14 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             this.usedPalette = paletteItem;
 
             int rgb = getResources().getColor(R.color.accent);
+
             if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
                 rgb = paletteItem.getRgb();
             }
 
-            if (getActivity().getActionBar() != null) {
-                animateChange(rgb);
-            }
-
-            avatarImage.setBorderColor(rgb);
-            selectButton(null);
-
-            mailText.setPrefixColor(rgb);
-            blogText.setPrefixColor(rgb);
-            joinedText.setPrefixColor(rgb);
+            GistsApplication.AB_COLOR = rgb;
+            bus.post(new ColorEvent(rgb));
         }
-    }
-
-    private void animateChange(int rgb) {
-        this.rgbAbColor = rgb;
-        ValueAnimator animator = ValueAnimator.ofObject(new ArgbEvaluator(), GistsApplication.AB_COLOR, rgb);
-        animator.addUpdateListener(this);
-        animator.setDuration(DURATION);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.addListener(this);
-        animator.start();
-    }
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-        try {
-            ColorDrawable cd = new ColorDrawable((Integer) valueAnimator.getAnimatedValue());
-            if (getActivity().getActionBar() != null) {
-                getActivity().getActionBar().setBackgroundDrawable(cd);
-            }
-        } catch (Exception e) {
-            BugSenseHandler.addCrashExtraData("onAnimationUpdate", e.getMessage());
-        }
-    }
-
-    @Override
-    public void onAnimationStart(Animator animator) {
-
-    }
-
-    @Override
-    public void onAnimationEnd(Animator animator) {
-        GistsApplication.AB_COLOR = rgbAbColor;
-    }
-
-    @Override
-    public void onAnimationCancel(Animator animator) {
-
-    }
-
-    @Override
-    public void onAnimationRepeat(Animator animator) {
-
     }
 
     @Override
@@ -361,11 +289,8 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
                     adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
                 }
 
-                if (adapterPaletteItem == null) {
-                    fragment = ReposFragment.newInstance(user.login, getResources().getColor(R.color.gray_github_dark));
-                } else {
-                    fragment = ReposFragment.newInstance(user.login, adapterPaletteItem.getRgb());
-                }
+                fragment = ReposFragment.newInstance(user.login);
+
                 selectButton(num1Text);
                 break;
            /* case R.id.num2:
@@ -403,12 +328,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     }
 
     private void selectButton(NumericTitle numText) {
-        List<NumericTitle> numericTitles = new ArrayList<NumericTitle>();
-        numericTitles.add(num1Text);
-        //numericTitles.add(num2Text);
-        numericTitles.add(num3Text);
-        numericTitles.add(num4Text);
-
         for (NumericTitle numericTitle : numericTitles) {
             if (numText != null) {
                 numericTitle.setSelected(numericTitle == numText);
@@ -417,6 +336,28 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             if (usedPalette != null && usedPalette.getRgb() != 0x000000) {
                 numericTitle.setRgb(usedPalette.getRgb());
             }
+        }
+    }
+
+    @Subscribe
+    public void colorReceived(ColorEvent event) {
+        int rgb = event.getRgb();
+
+        GistsApplication.AB_COLOR = rgb;
+
+        avatarImage.setBorderColor(rgb);
+
+        mailText.setPrefixColor(rgb);
+        blogText.setPrefixColor(rgb);
+        joinedText.setPrefixColor(rgb);
+
+        for (NumericTitle numericTitle : numericTitles) {
+            numericTitle.setRgb(rgb);
+        }
+
+        if (getActivity() != null && getActivity().getActionBar() != null) {
+            ColorDrawable cd = new ColorDrawable(rgb);
+            getActivity().getActionBar().setBackgroundDrawable(cd);
         }
     }
 }

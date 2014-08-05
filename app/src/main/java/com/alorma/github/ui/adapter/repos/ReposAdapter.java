@@ -9,32 +9,33 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EnhancedTextDelegate;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.ui.events.ColorEvent;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
 public class ReposAdapter extends ArrayAdapter<Repo> {
 
     private final LayoutInflater mInflater;
+    private final Bus bus;
 
     private int textTitleColor;
 
     public ReposAdapter(Context context, List<Repo> repos) {
         super(context, 0, 0, repos);
         this.mInflater = LayoutInflater.from(context);
-        this.textTitleColor = context.getResources().getColor(R.color.accentDark);
+        this.textTitleColor = GistsApplication.AB_COLOR;
+
+        bus = new Bus();
+        bus.register(this);
     }
-    public ReposAdapter(Context context, List<Repo> repos, int color) {
-        super(context, 0, 0, repos);
-        this.mInflater = LayoutInflater.from(context);
-        if (color == -1) {
-            color = context.getResources().getColor(R.color.accentDark);
-        }
-        this.textTitleColor = color;
-    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
@@ -71,8 +72,21 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         return v;
     }
 
-    public void setTextTitleColor(int textTitleColor) {
-        this.textTitleColor = textTitleColor;
+    public void registerBus() {
+        if (bus != null) {
+            bus.register(this);
+        }
+    }
+
+    public void unregisterBus() {
+        if (bus != null) {
+            bus.unregister(this);
+        }
+    }
+
+    @Subscribe
+    public void colorReceived(ColorEvent event) {
+        this.textTitleColor = event.getRgb();
         notifyDataSetChanged();
     }
 }

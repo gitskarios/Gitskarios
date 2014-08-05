@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
@@ -14,7 +15,6 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import java.util.ArrayList;
 
 public class WatchedReposFragment extends BaseReposListFragment {
-    private static final String COLOR = "COLOR";
 
     private String username;
 
@@ -32,25 +32,21 @@ public class WatchedReposFragment extends BaseReposListFragment {
         }
         return reposFragment;
     }
-    public static WatchedReposFragment newInstance(String username, int color) {
-        WatchedReposFragment reposFragment = new WatchedReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-            bundle.putInt(COLOR, color);
-
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
 
     @Override
     protected void executeRequest() {
         WatchedReposClient client;
 
+        if (reposAdapter != null) {
+            reposAdapter.clear();
+        }
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
+        }
+
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
-            textColor = getArguments().getInt(COLOR);
         }
 
         client = new WatchedReposClient(getActivity(), username);
@@ -61,6 +57,11 @@ public class WatchedReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
+        }
+
         WatchedReposClient client = new WatchedReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
@@ -74,16 +75,8 @@ public class WatchedReposFragment extends BaseReposListFragment {
         reposAdapter.addAll(repos);
     }
 
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-
-        if (reposAdapter != null) {
-            reposAdapter.setTextTitleColor(textColor);
-        }
-    }
-
     @Override
-    protected boolean useFab() {
-        return false;
+    protected int getNoDataText() {
+        return R.string.no_watched_repositories;
     }
 }
