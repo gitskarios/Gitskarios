@@ -36,6 +36,10 @@ public class WatchedReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         WatchedReposClient client;
 
+        if (progressBar != null) {
+            progressBar.show();
+        }
+
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
         }
@@ -48,6 +52,11 @@ public class WatchedReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
+
+        if (progressBar != null) {
+            progressBar.show();
+        }
+
         WatchedReposClient client = new WatchedReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
@@ -59,10 +68,5 @@ public class WatchedReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    @Override
-    protected boolean useFab() {
-        return false;
     }
 }

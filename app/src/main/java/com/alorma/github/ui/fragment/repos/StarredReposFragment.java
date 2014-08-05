@@ -29,6 +29,10 @@ public class StarredReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         BaseReposClient client;
 
+        if (progressBar != null) {
+            progressBar.show();
+        }
+
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
         }
@@ -41,6 +45,11 @@ public class StarredReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
+
+        if (progressBar != null) {
+            progressBar.show();
+        }
+
         StarredReposClient client = new StarredReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
@@ -52,10 +61,5 @@ public class StarredReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    @Override
-    protected boolean useFab() {
-        return false;
     }
 }

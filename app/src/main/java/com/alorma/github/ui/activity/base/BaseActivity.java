@@ -1,8 +1,5 @@
 package com.alorma.github.ui.activity.base;
 
-import android.animation.Animator;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,17 +8,12 @@ import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.UnAuthIntent;
 import com.alorma.github.ui.activity.LoginActivity;
-import com.alorma.github.ui.events.ColorEvent;
 import com.bugsense.trace.BugSenseHandler;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Created by Bernat on 19/07/2014.
@@ -35,7 +27,6 @@ public class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
-
     }
 
     protected void setUpActionBarColor(int color) {

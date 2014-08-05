@@ -2,11 +2,14 @@ package com.alorma.github.ui.fragment.base;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.PaginationLink;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -15,11 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.castorflex.android.smoothprogressbar.ContentLoadingSmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K> extends ListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedListFragment<K> extends LoadingListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
 
     protected static final String USERNAME = "USERNAME";
 
@@ -55,6 +59,9 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
     @Override
     public void onResponseOk(K k, Response r) {
         if (getActivity() != null && isAdded()) {
+            if (progressBar != null) {
+                progressBar.hide();
+            }
             onResponse(k);
 
             getLinkData(r);
@@ -63,6 +70,9 @@ public abstract class PaginatedListFragment<K> extends ListFragment implements B
 
     @Override
     public void onFail(RetrofitError error) {
+        if (progressBar != null) {
+            progressBar.hide();
+        }
         if (BuildConfig.DEBUG) {
             Toast.makeText(getActivity(), "failed: " + error, Toast.LENGTH_SHORT).show();
         }

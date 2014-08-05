@@ -38,6 +38,10 @@ public class ReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         BaseReposClient client;
 
+        if (progressBar != null) {
+            progressBar.show();
+        }
+
         client = new UserReposClient(getActivity(), username);
 
         client.setOnResultCallback(this);
@@ -46,6 +50,11 @@ public class ReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
+
+        if (progressBar != null) {
+            progressBar.show();
+        }
+
         UserReposClient client = new UserReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
@@ -57,15 +66,5 @@ public class ReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
-    }
-
-    @Override
-    protected boolean useFab() {
-        return false && username == null;
-    }
-
-    @Override
-    protected void onFabClick() {
-        Toast.makeText(getActivity(), "Hello FAB", Toast.LENGTH_SHORT).show();
     }
 }

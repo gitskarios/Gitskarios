@@ -35,6 +35,7 @@ public class MainActivity extends NavigationActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        GistsApplication.AB_COLOR = getResources().getColor(R.color.accent);
         bus.register(this);
     }
 

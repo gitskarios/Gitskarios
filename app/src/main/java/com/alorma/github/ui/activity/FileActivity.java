@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.ui.activity.base.BackActivity;
 
 /**
@@ -27,6 +28,8 @@ public class FileActivity extends BackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setUpActionBarColor(GistsApplication.AB_COLOR);
 
         WebView webView = new WebView(this);
 
