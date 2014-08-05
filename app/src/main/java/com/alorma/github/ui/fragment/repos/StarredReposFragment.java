@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.StarredReposClient;
@@ -29,8 +30,12 @@ public class StarredReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         BaseReposClient client;
 
-        if (progressBar != null) {
-            progressBar.show();
+        if (reposAdapter != null) {
+            reposAdapter.clear();
+        }
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
         }
 
         if (getArguments() != null) {
@@ -46,8 +51,8 @@ public class StarredReposFragment extends BaseReposListFragment {
     @Override
     protected void executePaginatedRequest(int page) {
 
-        if (progressBar != null) {
-            progressBar.show();
+        if (swipe != null) {
+            swipe.setRefreshing(true);
         }
 
         StarredReposClient client = new StarredReposClient(getActivity(), username, page);
@@ -61,5 +66,10 @@ public class StarredReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
+    }
+
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_starred_repositories;
     }
 }

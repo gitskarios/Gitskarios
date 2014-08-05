@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 
@@ -55,4 +58,17 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
             reposAdapter.unregisterBus();
         }
     }
+
+    @Override
+    protected void onQueryFail() {
+        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_code);
+        iconDrawable.colorRes(R.color.gray_github_medium);
+        emptyIcon.setImageDrawable(iconDrawable);
+
+        emptyText.setText(getNoDataText());
+
+        emptyLy.setVisibility(View.VISIBLE);
+    }
+
+    protected abstract int getNoDataText();
 }

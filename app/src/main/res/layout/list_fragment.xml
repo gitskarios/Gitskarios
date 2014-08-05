@@ -5,33 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@android:id/list" />
+        android:layout_height="match_parent"
+        android:id="@+id/swipe">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@android:id/list" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <fr.castorflex.android.smoothprogressbar.ContentLoadingSmoothProgressBar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:spb_sections_count="4"
-        app:spb_colors="@array/colorsSmooth"
-        app:spb_speed="1.4"
-        app:spb_stroke_width="4dp"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_reversed="false"
-        app:spb_mirror_mode="true"
-        app:spb_progressiveStart_activated="true"
-        app:spb_progressiveStart_speed="1.5"
-        app:spb_progressiveStop_speed="3.4"
+        android:id="@+id/emptyLayout"
         android:layout_gravity="center"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:indeterminate="true"
-        android:id="@+id/progress" />
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_launcher"
+            android:id="@+id/emptyIcon"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emptyText"
+            android:layout_below="@id/emptyIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="HODOR"
+            android:textSize="24sp"
+            android:textColor="@color/gray_github_medium" />
+
+
+    </RelativeLayout>
 </FrameLayout>

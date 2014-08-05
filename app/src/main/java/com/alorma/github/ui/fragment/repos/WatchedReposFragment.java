@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
@@ -36,8 +37,12 @@ public class WatchedReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         WatchedReposClient client;
 
-        if (progressBar != null) {
-            progressBar.show();
+        if (reposAdapter != null) {
+            reposAdapter.clear();
+        }
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
         }
 
         if (getArguments() != null) {
@@ -53,8 +58,8 @@ public class WatchedReposFragment extends BaseReposListFragment {
     @Override
     protected void executePaginatedRequest(int page) {
 
-        if (progressBar != null) {
-            progressBar.show();
+        if (swipe != null) {
+            swipe.setRefreshing(true);
         }
 
         WatchedReposClient client = new WatchedReposClient(getActivity(), username, page);
@@ -68,5 +73,10 @@ public class WatchedReposFragment extends BaseReposListFragment {
             setUpList();
         }
         reposAdapter.addAll(repos);
+    }
+
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_watched_repositories;
     }
 }
