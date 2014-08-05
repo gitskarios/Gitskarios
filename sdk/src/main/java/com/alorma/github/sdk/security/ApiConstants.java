@@ -11,5 +11,6 @@ public class ApiConstants {
     public static String CLIENT_CALLBACK;
 
     public static final String API_URL = "https://api.github.com";
+    public static final String WEB_URL = "http://github.com";
 
 }

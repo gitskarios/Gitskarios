@@ -41,4 +41,5 @@
     <string name="no_repositories">No repositories found</string>
     <string name="no_watched_repositories">No watched repositories found</string>
     <string name="no_starred_repositories">No starred repositories found</string>
+    <string name="action_share_repo">Share</string>
 </resources>
