@@ -20,10 +20,10 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/name"
-        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
         android:layout_toRightOf="@+id/icon"
         android:layout_toEndOf="@+id/icon" />
 
@@ -34,6 +34,6 @@
         android:id="@+id/sha"
         android:layout_toRightOf="@+id/icon"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/gray_github_medium"/>
+        android:textColor="@color/gray_github_medium"
+        android:layout_below="@+id/name"/>
 </RelativeLayout>
