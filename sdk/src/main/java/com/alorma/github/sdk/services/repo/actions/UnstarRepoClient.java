@@ -1,4 +1,4 @@
-package com.alorma.github.sdk.services.star;
+package com.alorma.github.sdk.services.repo.actions;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class UnstarRepoClient extends BaseClient<Object> {
 
     @Override
     protected void executeService(RestAdapter restAdapter) {
-        restAdapter.create(StarService.class).unstarRepo(owner, repo, this);
+        restAdapter.create(ActionsService.class).unstarRepo(owner, repo, this);
     }
 }

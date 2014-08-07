@@ -1,4 +1,4 @@
-package com.alorma.github.sdk.services.star;
+package com.alorma.github.sdk.services.repo.actions;
 
 import android.content.Context;
 
@@ -21,7 +21,7 @@ public class CheckRepoStarredClient extends BaseClient<Object> {
 
     @Override
     protected void executeService(RestAdapter restAdapter) {
-        StarService starService = restAdapter.create(StarService.class);
-        starService.checkIfRepoIsStarred(owner, repo, this);
+        ActionsService actionsService = restAdapter.create(ActionsService.class);
+        actionsService.checkIfRepoIsStarred(owner, repo, this);
     }
 }
