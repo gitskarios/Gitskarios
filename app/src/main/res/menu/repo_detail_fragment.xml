@@ -2,8 +2,17 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/change_mode"
-        android:id="@+id/mode"
-        android:showAsAction="always"/>
+    <item
+        android:title="@string/show_parent"
+        android:id="@+id/action_show_parent"
+        android:showAsAction="never" />
+    <item
+        android:title="@string/menu_star"
+        android:id="@+id/action_star"
+        android:showAsAction="never" />
+    <item
+        android:title="@string/menu_watch"
+        android:id="@+id/action_watch"
+        android:showAsAction="never" />
 
 </menu>
