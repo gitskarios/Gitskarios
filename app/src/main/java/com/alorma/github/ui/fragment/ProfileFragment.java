@@ -131,7 +131,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
         setUpFromPaletteItem(null);
 
-        String username = null;
         BaseUsersClient<User> requestClient = null;
         if (getArguments() != null) {
 
@@ -243,9 +242,7 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
 
     @Override
     public void onFail(RetrofitError error) {
-        if (getActivity() != null) {
-            getActivity().finish();
-        }
+
     }
 
     @Override

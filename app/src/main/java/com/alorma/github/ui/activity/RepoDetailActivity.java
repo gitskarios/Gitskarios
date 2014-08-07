@@ -39,6 +39,7 @@ public class RepoDetailActivity extends BackActivity {
         intent.putExtras(bundle);
         return intent;
     }
+
     public static Intent createIntentFilterLauncherActivity(Context context, String owner, String repo, String description) {
         Bundle bundle = new Bundle();
         bundle.putString(RepoDetailFragment.OWNER, owner);
@@ -101,14 +102,14 @@ public class RepoDetailActivity extends BackActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
+        super.onPrepareOptionsMenu(menu);
         if (menu != null) {
             MenuItem item = menu.findItem(R.id.share_repo);
             if (item != null) {
                 item.setVisible(shareUri != null);
             }
         }
-        return super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -125,6 +126,6 @@ public class RepoDetailActivity extends BackActivity {
             startActivity(Intent.createChooser(intent, "Share repository!"));
         }
 
-        return true;
+        return false;
     }
 }

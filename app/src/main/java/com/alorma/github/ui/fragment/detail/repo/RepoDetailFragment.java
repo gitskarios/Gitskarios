@@ -6,17 +6,26 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumericTitle;
 import android.widget.TabTitle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
+import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
+import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
+import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
+import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
+import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
+import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
 import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -52,6 +61,8 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private String description;
     private Bus bus;
     private View repoDetailInfo;
+    private boolean repoStarred;
+    private boolean repoWatched;
 
     public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();
@@ -123,6 +134,14 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             repoClient.setOnResultCallback(this);
             repoClient.execute();
 
+            CheckRepoStarredClient starredClient = new CheckRepoStarredClient(getActivity(), owner, repo);
+            starredClient.setOnResultCallback(new StarredResult());
+            starredClient.execute();
+
+            CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(getActivity(), owner, repo);
+            watcheClien.setOnResultCallback(new WatchedResult());
+            watcheClien.execute();
+
             smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
 
             textDescription = (TextView) view.findViewById(R.id.textDescription);
@@ -161,6 +180,69 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 getActivity().finish();
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.repo_detail_fragment, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem starItem = menu.findItem(R.id.action_star);
+
+        if (starItem != null) {
+            if (repoStarred) {
+                starItem.setTitle(R.string.menu_unstar);
+            } else {
+                starItem.setTitle(R.string.menu_star);
+            }
+        }
+
+        MenuItem watchItem = menu.findItem(R.id.action_watch);
+
+        if (watchItem != null) {
+            if (repoWatched) {
+                watchItem.setTitle(R.string.menu_unwatch);
+            } else {
+                watchItem.setTitle(R.string.menu_watch);
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.action_star) {
+            if (repoStarred) {
+                UnstarRepoClient unstarRepoClient = new UnstarRepoClient(getActivity(), owner, repo);
+                unstarRepoClient.setOnResultCallback(new UnstarActionResult());
+                unstarRepoClient.execute();
+            } else {
+                StarRepoClient starRepoClient = new StarRepoClient(getActivity(), owner, repo);
+                starRepoClient.setOnResultCallback(new StarActionResult());
+                starRepoClient.execute();
+            }
+            showRefresh();
+        } else
+        if (item.getItemId() == R.id.action_watch) {
+            if (repoWatched) {
+                UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(getActivity(), owner, repo);
+                unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
+                unwatchRepoClient.execute();
+            } else {
+                WatchRepoClient watchRepoClient = new WatchRepoClient(getActivity(), owner, repo);
+                watchRepoClient.setOnResultCallback(new WatchActionResult());
+                watchRepoClient.execute();
+            }
+            showRefresh();
+        }
+
+        return false;
     }
 
     @Override
@@ -227,6 +309,13 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
+        if (repo != null) {
+            if (getActivity() != null && getActivity().getActionBar() != null) {
+                if (repo.parent != null) {
+                    getActivity().getActionBar().setSubtitle("fork of " + repo.parent.full_name);
+                }
+            }
+        }
         if (textDescription != null) {
             if (TextUtils.isEmpty(repo.description)) {
                 textDescription.setVisibility(View.GONE);
@@ -234,6 +323,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 textDescription.setText(Html.fromHtml(repo.description));
             }
         }
+        cancelRefresh();
     }
 
     @Override
@@ -241,10 +331,140 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         if (getActivity() != null) {
             getActivity().finish();
         }
+        cancelRefresh();
     }
 
     @Subscribe
     public void colorReceived(ColorEvent event) {
         repoDetailInfo.setBackgroundColor(event.getRgb());
+    }
+
+    /**
+     * Results for STAR
+     */
+    private class StarredResult implements BaseClient.OnResultCallback<Object> {
+
+        @Override
+        public void onResponseOk(Object o, Response r) {
+            if (r != null && r.getStatus() == 204) {
+                repoStarred = true;
+                getActivity().invalidateOptionsMenu();
+            }
+            cancelRefresh();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            if (error != null) {
+                if (error.getResponse().getStatus() == 404) {
+                    repoStarred = false;
+                    getActivity().invalidateOptionsMenu();
+                }
+            }
+            cancelRefresh();
+        }
+    }
+
+    private class UnstarActionResult implements BaseClient.OnResultCallback<Object> {
+
+        @Override
+        public void onResponseOk(Object o, Response r) {
+            if (r != null && r.getStatus() == 204) {
+                repoStarred = false;
+                Toast.makeText(getActivity(), "Repo unstarred", Toast.LENGTH_SHORT).show();
+                getActivity().invalidateOptionsMenu();
+            }
+            cancelRefresh();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            cancelRefresh();
+        }
+    }
+
+    private class StarActionResult implements BaseClient.OnResultCallback<Object> {
+
+        @Override
+        public void onResponseOk(Object o, Response r) {
+            if (r != null && r.getStatus() == 204) {
+                repoStarred = true;
+                Toast.makeText(getActivity(), "Repo starred", Toast.LENGTH_SHORT).show();
+                getActivity().invalidateOptionsMenu();
+            }
+            cancelRefresh();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
+            }
+            cancelRefresh();
+        }
+    }
+
+    /**
+     * RESULTS FOR WATCH
+     */
+
+    private class WatchedResult implements BaseClient.OnResultCallback<Object> {
+
+        @Override
+        public void onResponseOk(Object o, Response r) {
+            if (r != null && r.getStatus() == 204) {
+                repoWatched = true;
+                getActivity().invalidateOptionsMenu();
+            }
+            cancelRefresh();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            if (error != null) {
+                if (error.getResponse().getStatus() == 404) {
+                    repoWatched = false;
+                    getActivity().invalidateOptionsMenu();
+                }
+            }
+            cancelRefresh();
+        }
+    }
+
+    private class UnwatchActionResult implements BaseClient.OnResultCallback<Object> {
+
+        @Override
+        public void onResponseOk(Object o, Response r) {
+            if (r != null && r.getStatus() == 204) {
+                repoWatched = false;
+                Toast.makeText(getActivity(), "Not watching repo", Toast.LENGTH_SHORT).show();
+                getActivity().invalidateOptionsMenu();
+            }
+            cancelRefresh();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            cancelRefresh();
+        }
+    }
+
+    private class WatchActionResult implements BaseClient.OnResultCallback<Object> {
+
+        @Override
+        public void onResponseOk(Object o, Response r) {
+            if (r != null && r.getStatus() == 204) {
+                repoWatched = true;
+                Toast.makeText(getActivity(), "Watching repo", Toast.LENGTH_SHORT).show();
+                getActivity().invalidateOptionsMenu();
+            }
+            cancelRefresh();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
+            }
+            cancelRefresh();
+        }
     }
 }

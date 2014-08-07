@@ -28,13 +28,18 @@ public class ProfileActivity extends BackActivity {
 
     public static Intent createLauncherIntent(Context context, User user) {
         Intent intent = new Intent(context, ProfileActivity.class);
-        intent.putExtra(ProfileFragment.USER, user);
+        if (user != null) {
+            intent.putExtra(ProfileFragment.USER, user);
+        }
         return intent;
     }
+
     public static Intent createIntentFilterLauncherActivity(Context context, User user) {
         Intent intent = new Intent(context, ProfileActivity.class);
-        intent.putExtra(ProfileFragment.USER, user);
-        intent.putExtra(ProfileFragment.FROM_INTENT_FILTER, true);
+        if (user != null) {
+            intent.putExtra(ProfileFragment.USER, user);
+            intent.putExtra(ProfileFragment.FROM_INTENT_FILTER, true);
+        }
         return intent;
     }
 
@@ -52,7 +57,7 @@ public class ProfileActivity extends BackActivity {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(android.R.id.content, ProfileFragment.newInstance(user, fromIntentFilter));
                 ft.commit();
-            }else {
+            } else {
                 finish();
             }
         } else {
