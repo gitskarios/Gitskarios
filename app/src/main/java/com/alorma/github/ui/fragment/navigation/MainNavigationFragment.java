@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
@@ -23,7 +22,6 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
-import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.google.gson.Gson;
 import com.joanzapata.android.iconify.Iconify;
@@ -48,6 +46,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
     private View profileLy;
     private EnhancedTextView joinedText;
     private TextView nameText;
+    private User currentUser;
 
     public static MainNavigationFragment newInstance() {
         return new MainNavigationFragment();
@@ -128,6 +127,9 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
 
     @Override
     public void onResponseOk(User user, Response r) {
+
+        this.currentUser = user;
+
         if (user != null) {
 
             Gson gson = new Gson();
@@ -183,7 +185,7 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
             case R.id.profileLy:
             case R.id.circular:
                 if (getmCallbacks() != null) {
-                    getmCallbacks().profileSelected();
+                    getmCallbacks().profileSelected(currentUser);
                 }
                 break;
         }

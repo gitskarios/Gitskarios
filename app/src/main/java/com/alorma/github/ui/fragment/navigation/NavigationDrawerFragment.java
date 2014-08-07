@@ -7,6 +7,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.alorma.github.sdk.bean.dto.response.User;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -77,6 +79,6 @@ public abstract class NavigationDrawerFragment extends Fragment {
 
         void closeDrawer();
 
-        void profileSelected();
+        void profileSelected(User user);
     }
 }

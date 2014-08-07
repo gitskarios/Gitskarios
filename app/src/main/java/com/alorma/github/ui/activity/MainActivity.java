@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.base.NavigationActivity;
 import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.fragment.FollowersFragment;
@@ -94,9 +95,9 @@ public class MainActivity extends NavigationActivity {
     }
 
     @Override
-    public void profileSelected() {
+    public void profileSelected(User user) {
         closeDrawer();
-        Intent launcherIntent = ProfileActivity.createLauncherIntent(this);
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(this, user);
         startActivity(launcherIntent);
     }
 
