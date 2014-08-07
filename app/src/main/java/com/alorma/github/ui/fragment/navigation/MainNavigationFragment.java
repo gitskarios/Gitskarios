@@ -1,8 +1,11 @@
 package com.alorma.github.ui.fragment.navigation;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
 import android.text.format.DateFormat;
@@ -22,6 +25,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.utils.PaletteUtils;
+import com.google.gson.Gson;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -35,6 +39,7 @@ import retrofit.client.Response;
 public class MainNavigationFragment extends NavigationDrawerFragment implements AdapterView.OnItemClickListener,
         BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener, View.OnClickListener {
 
+    private static final String KEY_USER = "KEY_USER";
     private ListView mDrawerListView;
 
     private int mCurrentSelectedPosition = 0;
@@ -87,6 +92,17 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
         selectItem(0);
+
+        Gson gson = new Gson();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (preferences.contains(KEY_USER)) {
+            try {
+                User user = gson.fromJson(preferences.getString(KEY_USER, ""), User.class);
+                onResponseOk(user, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -113,6 +129,15 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
     @Override
     public void onResponseOk(User user, Response r) {
         if (user != null) {
+
+            Gson gson = new Gson();
+            String userJson = gson.toJson(user);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor edit = preferences.edit();
+            edit.putString(KEY_USER, userJson);
+            edit.apply();
+
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.loadImage(user.avatar_url, new SimpleImageLoadingListener() {
                 @Override
