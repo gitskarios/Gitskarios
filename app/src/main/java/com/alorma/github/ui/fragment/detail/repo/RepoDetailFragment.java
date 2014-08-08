@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -26,6 +27,7 @@ import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
 import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -63,6 +65,8 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private View repoDetailInfo;
     private boolean repoStarred;
     private boolean repoWatched;
+    private Repo currentRepo;
+    private boolean showParentMenu;
 
     public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();
@@ -211,6 +215,11 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 watchItem.setTitle(R.string.menu_watch);
             }
         }
+
+        if (currentRepo != null && currentRepo.parent == null && !showParentMenu) {
+            showParentMenu = true;
+            menu.removeItem(R.id.action_show_parent);
+        }
     }
 
     @Override
@@ -228,8 +237,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 starRepoClient.execute();
             }
             showRefresh();
-        } else
-        if (item.getItemId() == R.id.action_watch) {
+        } else if (item.getItemId() == R.id.action_watch) {
             if (repoWatched) {
                 UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(getActivity(), owner, repo);
                 unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
@@ -240,6 +248,16 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 watchRepoClient.execute();
             }
             showRefresh();
+        } else if (item.getItemId() == R.id.action_show_parent) {
+            if (currentRepo != null && currentRepo.parent != null) {
+                String parentFullName = currentRepo.parent.full_name;
+                String[] split = parentFullName.split("/");
+                String owner = split[0];
+                String name = split[1];
+
+                Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, name, currentRepo.parent.description);
+                startActivity(launcherActivity);
+            }
         }
 
         return false;
@@ -310,6 +328,10 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onResponseOk(Repo repo, Response r) {
         if (repo != null) {
+            this.currentRepo = repo;
+
+            getActivity().invalidateOptionsMenu();
+
             if (getActivity() != null && getActivity().getActionBar() != null) {
                 if (repo.parent != null) {
                     getActivity().getActionBar().setSubtitle("fork of " + repo.parent.full_name);
