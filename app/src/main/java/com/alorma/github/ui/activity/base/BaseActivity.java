@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.UnAuthIntent;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.bugsense.trace.BugSenseHandler;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 /**
  * Created by Bernat on 19/07/2014.
@@ -25,6 +28,16 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get tracker.
+        Tracker t = ((GistsApplication) getApplication()).getTracker();
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(this.getClass().getSimpleName());
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
 
         BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
     }

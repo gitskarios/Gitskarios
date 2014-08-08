@@ -484,8 +484,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
         @Override
         public void onFail(RetrofitError error) {
-            if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-            }
             cancelRefresh();
         }
     }
