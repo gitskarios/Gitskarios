@@ -15,12 +15,15 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -49,6 +52,22 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         f.setRefreshListener(refreshListener);
         f.setArguments(bundle);
         return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Get tracker.
+        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(getClass().getSimpleName());
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        bus = new Bus();
     }
 
     @Nullable
@@ -144,13 +163,6 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         if (refreshListener != null) {
             refreshListener.cancelRefresh();
         }
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        bus = new Bus();
     }
 
     @Override

@@ -46,4 +46,6 @@
     <string name="menu_unstar">Unstar</string>
     <string name="menu_watch">Watch</string>
     <string name="menu_unwatch">Unwatch</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search repos</string>
 </resources>

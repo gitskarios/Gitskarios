@@ -23,12 +23,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.MainActivity" />
+        <activity android:name=".ui.activity.MainActivity">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable_repos" />
+        </activity>
         <activity android:name=".ui.activity.ProfileActivity" />
-        <activity android:name=".ui.activity.RepoDetailActivity"/>
+        <activity android:name=".ui.activity.RepoDetailActivity" />
         <activity android:name=".ui.activity.FileActivity" />
+        <activity android:name=".ui.activity.search.SearchReposActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
 
-        <activity android:name=".ui.activity.InterceptorActivity"
+        <activity
+            android:name=".ui.activity.InterceptorActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
 
@@ -51,7 +61,8 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.gms.version"
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
     </application>
 

@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 /**
  * Created by Bernat on 05/08/2014.
@@ -20,6 +23,21 @@ public abstract class LoadingListFragment extends ListFragment implements SwipeR
     protected ImageView emptyIcon;
     protected View emptyLy;
     protected SwipeRefreshLayout swipe;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Get tracker.
+        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(getClass().getSimpleName());
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

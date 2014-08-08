@@ -6,7 +6,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
-import com.alorma.github.ui.fragment.detail.repo.RepoInfosFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
 /**
@@ -31,8 +30,6 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
                 return MarkdownFragment.newInstance(owner, repo, listener);
             case 1:
                 return FilesTreeFragment.newInstance(owner, repo, listener);
-            case 2:
-                return RepoInfosFragment.newInstance(owner, repo, listener);
         }
         return null;
     }

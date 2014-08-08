@@ -31,6 +31,8 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
 import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -94,8 +96,18 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get tracker.
+        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(getClass().getSimpleName());
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
         bus = new Bus();
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -189,14 +201,14 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.repo_detail_fragment, menu);
+        //inflater.inflate(R.menu.repo_detail_fragment, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        MenuItem starItem = menu.findItem(R.id.action_star);
+        /*MenuItem starItem = menu.findItem(R.id.action_star);
 
         if (starItem != null) {
             if (repoStarred) {
@@ -219,7 +231,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         if (currentRepo != null && currentRepo.parent == null && !showParentMenu) {
             showParentMenu = true;
             menu.removeItem(R.id.action_show_parent);
-        }
+        }*/
     }
 
     @Override
