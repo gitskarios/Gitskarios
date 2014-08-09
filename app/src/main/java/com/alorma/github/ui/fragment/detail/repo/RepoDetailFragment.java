@@ -68,7 +68,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private boolean repoStarred;
     private boolean repoWatched;
     private Repo currentRepo;
-    private boolean showParentMenu;
 
     public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();

@@ -135,10 +135,12 @@ public class MainNavigationFragment extends NavigationDrawerFragment implements 
             Gson gson = new Gson();
             String userJson = gson.toJson(user);
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            SharedPreferences.Editor edit = preferences.edit();
-            edit.putString(KEY_USER, userJson);
-            edit.apply();
+            if (getActivity() != null) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor edit = preferences.edit();
+                edit.putString(KEY_USER, userJson);
+                edit.apply();
+            }
 
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.loadImage(user.avatar_url, new SimpleImageLoadingListener() {
