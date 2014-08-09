@@ -29,15 +29,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <android.support.v4.view.ViewPager
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="96dp"
-                android:padding="16dp"
-                android:textColor="@color/white"
-                android:id="@+id/textDescription"
-                android:ellipsize="end"
-                android:maxLines="4" />
+                android:layout_height="96dp"
+                android:id="@+id/smallPager"
+                android:layout_margin="16dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

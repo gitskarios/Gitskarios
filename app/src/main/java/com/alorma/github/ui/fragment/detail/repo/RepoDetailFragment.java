@@ -18,8 +18,10 @@ import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -29,6 +31,7 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
+import com.alorma.github.ui.adapter.detail.repo.RepoDetailSmallPagerAdapter;
 import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.google.android.gms.analytics.HitBuilders;
@@ -61,13 +64,15 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private TabTitle tabInfo;
     private List<TabTitle> tabs;
     private boolean fromIntentFilter;
-    private TextView textDescription;
     private String description;
     private Bus bus;
     private View repoDetailInfo;
     private boolean repoStarred;
     private boolean repoWatched;
     private Repo currentRepo;
+    private ViewPager smallPager;
+    private RepoDetailSmallPagerAdapter smallPagerAdapter;
+    private boolean showParentMenu;
 
     public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();
@@ -106,7 +111,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         // Send a screen view.
         t.send(new HitBuilders.AppViewBuilder().build());
         bus = new Bus();
-        //setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -159,14 +164,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
             smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
 
-            textDescription = (TextView) view.findViewById(R.id.textDescription);
-
-            if (TextUtils.isEmpty(description)) {
-                textDescription.setVisibility(View.GONE);
-            } else {
-                textDescription.setText(Html.fromHtml(description));
-            }
-
             repoDetailInfo = view.findViewById(R.id.repoDetailInfo);
 
             repoDetailInfo.setBackgroundColor(GistsApplication.AB_COLOR);
@@ -190,6 +187,16 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             pager.setAdapter(new RepoDetailPagerAdapter(getFragmentManager(), owner, repo, this));
 
             selectButton(tabReadme);
+
+            smallPager = (ViewPager) view.findViewById(R.id.smallPager);
+
+            smallPagerAdapter = new RepoDetailSmallPagerAdapter(getFragmentManager());
+
+            if (!TextUtils.isEmpty(description)) {
+                smallPagerAdapter = new RepoDetailSmallPagerAdapter(getFragmentManager(), description);
+            }
+
+            smallPager.setAdapter(smallPagerAdapter);
         } else {
             if (getActivity() != null) {
                 getActivity().finish();
@@ -200,14 +207,14 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        //inflater.inflate(R.menu.repo_detail_fragment, menu);
+        inflater.inflate(R.menu.repo_detail_fragment, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        /*MenuItem starItem = menu.findItem(R.id.action_star);
+        MenuItem starItem = menu.findItem(R.id.action_star);
 
         if (starItem != null) {
             if (repoStarred) {
@@ -230,7 +237,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         if (currentRepo != null && currentRepo.parent == null && !showParentMenu) {
             showParentMenu = true;
             menu.removeItem(R.id.action_show_parent);
-        }*/
+        }
     }
 
     @Override
@@ -340,6 +347,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     public void onResponseOk(Repo repo, Response r) {
         if (repo != null) {
             this.currentRepo = repo;
+            this.description = currentRepo.description;
 
             getActivity().invalidateOptionsMenu();
 
@@ -348,14 +356,18 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                     getActivity().getActionBar().setSubtitle("fork of " + repo.parent.full_name);
                 }
             }
-        }
-        if (textDescription != null) {
-            if (TextUtils.isEmpty(repo.description)) {
-                textDescription.setVisibility(View.GONE);
-            } else {
-                textDescription.setText(Html.fromHtml(repo.description));
+            if (smallPagerAdapter != null) {
+                if (!TextUtils.isEmpty(repo.description)) {
+                    smallPagerAdapter.setTextDescription(repo.description);
+                }
             }
+
+            GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(getActivity(), repo.owner.login, repo.name);
+            branchesClient.setOnResultCallback(new BranchesResult());
+            branchesClient.execute();
+
         }
+
         cancelRefresh();
     }
 
@@ -381,7 +393,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -391,7 +405,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (error != null) {
                 if (error.getResponse().getStatus() == 404) {
                     repoStarred = false;
-                    getActivity().invalidateOptionsMenu();
+                    if (getActivity() != null) {
+                        getActivity().invalidateOptionsMenu();
+                    }
                 }
             }
             cancelRefresh();
@@ -405,7 +421,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoStarred = false;
                 Toast.makeText(getActivity(), "Repo unstarred", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -423,7 +441,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
                 Toast.makeText(getActivity(), "Repo starred", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -446,7 +466,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -456,7 +478,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (error != null) {
                 if (error.getResponse().getStatus() == 404) {
                     repoWatched = false;
-                    getActivity().invalidateOptionsMenu();
+                    if (getActivity() != null) {
+                        getActivity().invalidateOptionsMenu();
+                    }
                 }
             }
             cancelRefresh();
@@ -470,7 +494,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoWatched = false;
                 Toast.makeText(getActivity(), "Not watching repo", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -488,7 +514,10 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
                 Toast.makeText(getActivity(), "Watching repo", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -496,6 +525,23 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         @Override
         public void onFail(RetrofitError error) {
             cancelRefresh();
+        }
+    }
+
+    private class BranchesResult implements BaseClient.OnResultCallback<ListBranches> {
+
+        @Override
+        public void onResponseOk(ListBranches branches, Response r) {
+            if (branches.size() > 0) {
+                smallPagerAdapter.setBranches(branches);
+            } else if (TextUtils.isEmpty(description)) {
+                smallPager.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+
         }
     }
 }
