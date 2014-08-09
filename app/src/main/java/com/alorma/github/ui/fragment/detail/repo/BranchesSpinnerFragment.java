@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.ListBranches;
@@ -66,7 +67,7 @@ public class BranchesSpinnerFragment extends Fragment implements BaseClient.OnRe
 
         spinner = (Spinner) view.findViewById(R.id.spinner);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            spinner.setPopupBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.accentDark)));
+            spinner.setPopupBackgroundDrawable(new ColorDrawable(GistsApplication.AB_COLOR));
         }
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -96,32 +97,34 @@ public class BranchesSpinnerFragment extends Fragment implements BaseClient.OnRe
 
     @Override
     public void onResponseOk(ListBranches branches, Response r) {
-        if (branches != null && branches.size() > 0) {
+        if (getActivity() != null) {
+            if (branches != null && branches.size() > 0) {
 
-            ListBranches newBranchesList = new ListBranches(branches.size());
+                ListBranches newBranchesList = new ListBranches(branches.size());
 
-            for (Branch branch : branches) {
-                if (defaultBranch != null && defaultBranch.equals(branch.name)) {
-                    newBranchesList.add(branch);
+                for (Branch branch : branches) {
+                    if (defaultBranch != null && defaultBranch.equals(branch.name)) {
+                        newBranchesList.add(branch);
+                    }
                 }
-            }
 
-            for (Branch branch : branches) {
-                if (defaultBranch != null && !defaultBranch.equals(branch.name)) {
-                    newBranchesList.add(branch);
+                for (Branch branch : branches) {
+                    if (defaultBranch != null && !defaultBranch.equals(branch.name)) {
+                        newBranchesList.add(branch);
+                    }
                 }
-            }
 
-            text.setVisibility(View.GONE);
-            spinner.setVisibility(View.VISIBLE);
-            adapter = new BranchesSpinnerAdapter(getActivity(), newBranchesList);
-            spinner.setAdapter(adapter);
-            if (onBranchesListener != null) {
-                onBranchesListener.onBranches(branches.size());
-            }
-        } else {
-            if (onBranchesListener != null) {
-                onBranchesListener.onNoBranches();
+                text.setVisibility(View.GONE);
+                spinner.setVisibility(View.VISIBLE);
+                adapter = new BranchesSpinnerAdapter(getActivity(), newBranchesList);
+                spinner.setAdapter(adapter);
+                if (onBranchesListener != null) {
+                    onBranchesListener.onBranches(branches.size());
+                }
+            } else {
+                if (onBranchesListener != null) {
+                    onBranchesListener.onNoBranches();
+                }
             }
         }
     }
