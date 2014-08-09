@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Base64;
 
 import com.alorma.github.sdk.bean.dto.request.RequestReadmeDTO;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -18,9 +19,10 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class GetReadmeContentsClient extends BaseRepoClient<String>{
+public class GetReadmeContentsClient extends BaseRepoClient<String> {
 
     private OnResultCallback<String> callback;
+    private Branch currentBranch;
 
     public GetReadmeContentsClient(Context context, String owner, String repo) {
         super(context, owner, repo);
@@ -28,11 +30,19 @@ public class GetReadmeContentsClient extends BaseRepoClient<String>{
 
     @Override
     protected void executeService(RepoService repoService) {
+        if (currentBranch == null) {
             repoService.readme(owner, repo, new ContentCallback());
+        } else {
+            repoService.readme(owner, repo, currentBranch.name, new ContentCallback());
+        }
     }
 
     public void setCallback(OnResultCallback<String> callback) {
         this.callback = callback;
+    }
+
+    public void setCurrentBranch(Branch currentBranch) {
+        this.currentBranch = currentBranch;
     }
 
     private class ContentCallback implements Callback<Content> {

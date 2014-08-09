@@ -48,4 +48,5 @@
     <string name="menu_unwatch">Unwatch</string>
     <string name="search">Search</string>
     <string name="search_hint">Search repos</string>
+    <string name="branches">Branches</string>
 </resources>

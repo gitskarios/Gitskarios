@@ -11,6 +11,7 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Bernat on 17/07/2014.
@@ -32,11 +33,20 @@ public interface RepoService {
     @GET("/repos/{owner}/{repo}/contents")
     void contents(@Path("owner") String owner, @Path("repo") String repo, Callback<ListContents> callback);
 
+    @GET("/repos/{owner}/{repo}/contents")
+    void contentsByRef(@Path("owner") String owner, @Path("repo") String repo, @Query("ref") String ref, Callback<ListContents> callback);
+
     @GET("/repos/{owner}/{repo}/readme")
     void readme(@Path("owner") String owner, @Path("repo") String repo, Callback<Content> callback);
 
+    @GET("/repos/{owner}/{repo}/readme")
+    void readme(@Path("owner") String owner, @Path("repo") String repo, @Query("ref") String ref, Callback<Content> callback);
+
     @GET("/repos/{owner}/{repo}/contents/{path}")
     void contents(@Path("owner") String owner, @Path("repo") String repo, @Path("path") String path, Callback<ListContents> callback);
+
+    @GET("/repos/{owner}/{repo}/contents/{path}")
+    void contentsByRef(@Path("owner") String owner, @Path("repo") String repo, @Path("path") String path, @Query("ref") String ref,  Callback<ListContents> callback);
 
     @GET("/repos/{owner}/{repo}/stats/contributors")
     void contributors(@Path("owner") String owner, @Path("repo") String repo, Callback<ListContributors> callback);

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.events.ColorEvent;
@@ -34,7 +35,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class MarkdownFragment extends Fragment implements BaseClient.OnResultCallback<String> {
+public class MarkdownFragment extends Fragment implements BaseClient.OnResultCallback<String>, BranchManager {
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
@@ -42,6 +43,8 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
     private WebView webview;
     private RefreshListener refreshListener;
     private Bus bus;
+    private String owner;
+    private String repo;
 
     public static MarkdownFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -81,8 +84,9 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            String owner = getArguments().getString(OWNER);
-            String repo = getArguments().getString(REPO);
+            owner = getArguments().getString(OWNER);
+            repo = getArguments().getString(REPO);
+
             webview = (WebView) view;
             webview.setPadding(0, 24, 0, 0);
             webview.getSettings().setJavaScriptEnabled(true);
@@ -121,6 +125,14 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
 
     public void setRefreshListener(RefreshListener refreshListener) {
         this.refreshListener = refreshListener;
+    }
+
+    @Override
+    public void setCurrentBranch(Branch branch) {
+        GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
+        repoMarkdownClient.setCurrentBranch(branch);
+        repoMarkdownClient.setCallback(this);
+        repoMarkdownClient.execute();
     }
 
     private class WebViewCustomClient extends WebViewClient {

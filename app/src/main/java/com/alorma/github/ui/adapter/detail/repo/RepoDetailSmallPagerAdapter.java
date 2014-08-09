@@ -3,11 +3,10 @@ package com.alorma.github.ui.adapter.detail.repo;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 
-import com.alorma.github.sdk.bean.dto.response.Branch;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
+import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.ui.fragment.detail.repo.BranchesSpinnerFragment;
 import com.alorma.github.ui.fragment.detail.repo.TextDescriptionFragment;
 
 /**
@@ -15,22 +14,15 @@ import com.alorma.github.ui.fragment.detail.repo.TextDescriptionFragment;
  */
 public class RepoDetailSmallPagerAdapter extends FragmentPagerAdapter {
 
-    private ListBranches branches;
-    private String textDescription;
-    private TextDescriptionFragment fragmentSpinner;
+    private BranchesSpinnerFragment fragmentSpinner;
     private TextDescriptionFragment fragmentText;
+    private Repo repo;
+    private BranchesSpinnerFragment.OnBranchesListener onBranchesListener;
 
-    public RepoDetailSmallPagerAdapter(FragmentManager fm) {
+    public RepoDetailSmallPagerAdapter(FragmentManager fm, Repo repo, BranchesSpinnerFragment.OnBranchesListener onBranchesListener) {
         super(fm);
-        this.branches = new ListBranches();
-        Branch master = new Branch();
-        master.name = "master";
-        branches.add(master);
-    }
-
-    public RepoDetailSmallPagerAdapter(FragmentManager fm, String textDescription) {
-        this(fm);
-        this.textDescription = textDescription;
+        this.repo = repo;
+        this.onBranchesListener = onBranchesListener;
     }
 
     @Override
@@ -39,7 +31,7 @@ public class RepoDetailSmallPagerAdapter extends FragmentPagerAdapter {
 
         switch (i) {
             case 0:
-                if (TextUtils.isEmpty(textDescription)) {
+                if (TextUtils.isEmpty(repo.description)) {
                     f = getFragmentSpinner();
                 } else {
                     f = getFragmentText();
@@ -54,35 +46,35 @@ public class RepoDetailSmallPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return TextUtils.isEmpty(textDescription) ? 1 : 2;
+        return TextUtils.isEmpty(repo.description) ? 1 : 2;
     }
 
-    public void setTextDescription(String description) {
-        this.textDescription = description;
-        getFragmentText().setText(textDescription);
-        notifyDataSetChanged();
-    }
-
-    public void setBranches(ListBranches branches) {
-        this.branches = branches;
-        getFragmentSpinner().setText("Branches: " + branches.size());
-        notifyDataSetChanged();
-    }
-
-    public TextDescriptionFragment getFragmentSpinner() {
+    public BranchesSpinnerFragment getFragmentSpinner() {
         if (fragmentSpinner == null) {
-            fragmentSpinner = TextDescriptionFragment.newInstance("Branches: " + branches.size());
+            String owner = this.repo.owner.login;
+            String repo = this.repo.name;
+            fragmentSpinner = BranchesSpinnerFragment.newInstance(owner, repo, this.repo.default_branch);
         }
+
+        fragmentSpinner.setUseDivider(!TextUtils.isEmpty(repo.description));
+
+        fragmentSpinner.setOnBranchesListener(onBranchesListener);
 
         return fragmentSpinner;
     }
 
     public TextDescriptionFragment getFragmentText() {
         if (fragmentText == null) {
-            fragmentText = TextDescriptionFragment.newInstance(textDescription);
+            fragmentText = TextDescriptionFragment.newInstance(repo.description);
         }
 
-        fragmentText.setText(textDescription);
+        fragmentText.setText(repo.description);
         return fragmentText;
     }
+
+    public void setRepo(Repo repo) {
+        this.repo = repo;
+        notifyDataSetChanged();
+    }
+
 }

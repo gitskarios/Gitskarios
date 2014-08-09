@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
@@ -30,7 +32,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FilesTreeFragment extends ListFragment implements BaseClient.OnResultCallback<ListContents> {
+public class FilesTreeFragment extends ListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager{
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
@@ -41,6 +43,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     private Map<Content, ListContents> treeContent;
     private Content rootContent = new Content();
     private Content currentSelectedContent = rootContent;
+    private Branch currentBranch;
 
     public static FilesTreeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -63,9 +66,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
             owner = getArguments().getString(OWNER);
             repo = getArguments().getString(REPO);
 
-            GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
-            repoContentsClient.setOnResultCallback(this);
-            repoContentsClient.execute();
+            getContent();
 
             treeContent = new HashMap<Content, ListContents>();
             treeContent.put(currentSelectedContent, null);
@@ -120,6 +121,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     @Override
     public void onFail(RetrofitError error) {
         Log.e("FILES", "Error", error);
+        Toast.makeText(getActivity(), "Error: " + error, Toast.LENGTH_SHORT).show();
         if (refreshListener != null) {
             refreshListener.cancelRefresh();
         }
@@ -142,9 +144,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                     currentSelectedContent = item;
                     treeContent.put(item, null);
 
-                    GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
-                    repoContentsClient.setOnResultCallback(this);
-                    repoContentsClient.execute();
+                    getPathContent(item);
                 } else {
                     displayContent(treeContent.get(item));
                 }
@@ -180,5 +180,40 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
 
     public void setRefreshListener(RefreshListener refreshListener) {
         this.refreshListener = refreshListener;
+    }
+
+    @Override
+    public void setCurrentBranch(Branch branch) {
+        this.currentBranch = branch;
+
+        rootContent = new Content();
+        currentSelectedContent = rootContent;
+
+        treeContent = new HashMap<Content, ListContents>();
+        treeContent.put(currentSelectedContent, null);
+
+        contentAdapter.clear();
+
+        contentAdapter = null;
+
+        getContent();
+
+        if (refreshListener != null) {
+            refreshListener.showRefresh();
+        }
+    }
+
+    private void getContent() {
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
+        repoContentsClient.setOnResultCallback(this);
+        repoContentsClient.setCurrentBranch(currentBranch);
+        repoContentsClient.execute();
+    }
+
+    private void getPathContent(Content item) {
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
+        repoContentsClient.setOnResultCallback(this);
+        repoContentsClient.setCurrentBranch(currentBranch);
+        repoContentsClient.execute();
     }
 }
