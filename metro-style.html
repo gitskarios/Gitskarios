@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Window 8 metro style</title>
+		<meta content="text/html; charset=utf-8" http-equiv="content-type">
+		<meta name="description" content="Window 8 metro style" />
+		<meta name="keywords" content="javascript, dynamic, grid, layout, jquery plugin, nested grid, metro style, window 8 metro style"/>
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" href="css/metro-style.css" />
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="../freewall.js"></script>
+		<style type="text/css">
+			html,body {
+				margin: 0px;
+				width: 100%;
+				height: 100%;
+				padding: 0px;
+			}
+			.layout {
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				margin: 4em 2%;
+			}
+			.head {
+				margin: 1em 4em;
+			}
+			.free-wall {
+				height: 100%;
+				margin: auto;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="layout">
+			<div id="freewall" class="free-wall">
+				<div class="item size21 level1">
+					<div class="padding">
+						<h2>Window 8 metro style</h2>
+						<div>Freewall is a cross-browser and responsive jQuery plugin to help you create many types of grid layouts.</div>
+					</div>	
+				</div>
+				
+				<div class="size22 level1" data-fixSize=0 data-nested=".size11" data-cellW=150 data-cellH=150 data-gutterX=10 >
+					<div class="item size11"><i class="img-demo1"></i></div>
+					<div class="item size11"><i class="img-demo2"></i></div>
+					<div class="item size11"><i class="img-demo3"></i></div>
+					<div class="item size11"><i class="img-demo4"></i></div>
+					<div class="item size11"><i class="img-demo5"></i></div>
+					<div class="item size11"><i class="img-demo6"></i></div>
+				</div>
+
+				<div class="item size21 level1"><i class="layout-demo1"></i></div>
+				
+				<div class="item size21 level1"><i class="layout-demo2"></i></div>
+
+				<div class="item size21 level1 desktop-box">
+					<div class="wallpaper">
+						<div class="text-bottom">
+							<h1><a href="http://vnjs.net/www/project/freewall/">Free Wall</a></h1>
+						</div>
+					</div>
+				</div>
+				
+				<div class="size22 level1" data-nested=".size11" data-cellW=150 data-cellH=150 data-gutterX=10 >
+					<div class="item size11"><i class="icon-user icon-4x"></i></div>
+					
+					<div class="size11" data-fixSize=0 data-nested=".size2-2" data-cellW=70 data-cellH=70 >
+						<div class="item size2-2"><i class="icon-facebook icon-2x"></i></div>
+						<div class="item size2-2"><i class="icon-twitter icon-2x"></i></div>
+						<div class="item size2-2"><i class="icon-linkedin icon-2x"></i></div>
+						<div class="item size2-2"><i class="icon-google-plus icon-2x"></i></div>
+					</div>
+					
+					<div class="item size11"><i class="icon-coffee icon-4x"></i></div>
+					
+					<div class="item size11"><i class="icon-comments icon-4x"></i></div>
+
+					<div class="item size11"><i class="icon-headphones icon-4x"></i></div>
+					
+					<div class="item size11"><i class="icon-facetime-video icon-4x"></i></div>
+
+				</div>
+
+				<div class="item size21 level1"><i class="layout-demo3"></i></div>
+
+				<div class="item size22 level1"><div class="map"></div></div>
+
+				<div class="item size21 level1"><div class="freewall"></div></div>
+				
+				<div class="size22 level1" data-nested=".size11" data-cellW=150 data-cellH=150 data-gutterX=10 >
+					<div class="item size11"><i class="icon-user icon-4x"></i></div>
+					
+					<div class="item size11"><i class="icon-coffee icon-4x"></i></div>
+					
+					<div class="size11" data-fixSize=0 data-nested=".size2-2" data-cellW=70 data-cellH=70 >
+						<div class="item size2-2"><i class="img-demo7"></i></div>
+						<div class="item size2-2"><i class="img-demo9"></i></div>
+						<div class="item size2-2"><i class="img-demo10"></i></div>
+						<div class="item size2-2"><i class="img-demo8"></i></div>
+						<div class="item size2-2"><i class="img-demo11"></i></div>
+						<div class="item size2-2"><i class="img-demo12"></i></div>
+					</div>
+					
+					<div class="item size11"><i class="icon-comments icon-4x"></i></div>
+				</div>
+
+				<div class="item size21 level1"><i class="layout-demo5"></i></div>
+				
+				<div class="size21 level1" data-nested=".size11" data-cellW=150 data-cellH=150 data-gutterX=10>
+					<div class="item size11"><i class="icon-calendar icon-4x"></i></div>
+					<div class="item size11"><i class="icon-windows icon-4x"></i></div>
+				</div>
+
+				<div class="item size21 level1"><i class="layout-demo6"></i></div>
+				
+			</div> <!-- freewall -->
+		</div> <!-- layout -->
+
+		<script type="text/javascript">
+			
+			var colour = [
+				"rgb(142, 68, 173)",
+				"rgb(243, 156, 18)",
+				"rgb(211, 84, 0)",
+				"rgb(0, 106, 63)",
+				"rgb(41, 128, 185)",
+				"rgb(192, 57, 43)",
+				"rgb(135, 0, 0)",
+				"rgb(39, 174, 96)"
+			];
+			
+			$(".free-wall .item").each(function() {
+				var backgroundColor = colour[colour.length * Math.random() << 0];
+				$(this).css({
+					backgroundColor: backgroundColor
+				});
+			});
+
+			$(function() {
+				var wall = new freewall("#freewall");
+				wall.reset({
+					selector: '.level1',
+					cellW: 320,
+					cellH: 160,
+					fixSize: 0,
+					gutterX: 20,
+					gutterY: 10,
+					onResize: function() {
+						wall.fitZone();
+					}
+				});
+				wall.fitZone();
+				$(window).trigger("resize");
+			});
+
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,147 @@
+body {
+	background: rgb(32, 27, 27) url(../i/freewall.jpg) no-repeat center fixed ;
+	font-family: "Segoe UI", arial, tahoma;
+	background-size: cover;
+}
+
+.text-bottom {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	color: white;
+}
+
+.icontest:before {
+	font-family: "Segoe UI Symbol";
+	content: "U+E2A4";
+	display: inline-block;
+
+}
+
+.padding {
+	padding: 10px;
+}
+
+.size11 {
+	line-height: 184px;
+	text-align: center;
+}
+
+.size2-2 {
+	line-height: 85px;
+}
+/***********************img-demo***************************/
+
+.wallpaper {
+	height: 100%;
+	background: url(../i/wallpaper.png) no-repeat center;
+	background-size: cover;
+}
+
+.map {
+	height: 100%;
+	background: url(../i/map.png) no-repeat center;
+	background-size: 100% auto;
+}
+
+.freewall {
+	height: 100%;
+	background: url(../i/photo/12.jpg) no-repeat center;
+	background-size: 100% auto;
+}
+
+.img-demo1 {
+	background: url(../i/photo/1.jpg) no-repeat center;
+}
+
+.img-demo2 {
+	background: url(../i/photo/2.jpg) no-repeat center;
+}
+
+.img-demo3 {
+	background: url(../i/photo/3.jpg) no-repeat center;
+}
+
+.img-demo4 {
+	background: url(../i/photo/4.jpg) no-repeat center;
+}
+
+.img-demo5 {
+	background: url(../i/photo/5.jpg) no-repeat center;
+}
+
+.img-demo6 {
+	background: url(../i/photo/6.jpg) no-repeat center;
+}
+
+.img-demo7 {
+	background: url(../i/photo/21.jpg) no-repeat center;
+}
+
+.img-demo8 {
+	background: url(../i/photo/22.jpg) no-repeat center;
+}
+
+.img-demo9 {
+	background: url(../i/photo/37.jpg) no-repeat center;
+}
+
+.img-demo10 {
+	background: url(../i/photo/38.jpg) no-repeat center;
+}
+
+.img-demo11 {
+	background: url(../i/photo/30.jpg) no-repeat center;
+}
+
+.img-demo12 {
+	background: url(../i/photo/32.jpg) no-repeat center;
+}
+
+[class^="img-demo"] {
+	background-size: cover;
+	width: 100%; height: 100%;
+	display: block;
+}
+
+/**************************layout****************************/
+
+[class^="layout-demo"] {
+	background: url(../i/layout.png) no-repeat;
+	background-size: 70px auto;
+	width: 70px; height: 70px;
+	display: block;
+	margin: 35px auto;
+}
+
+.layout-demo1 {
+	background-position: top center;
+}
+
+.layout-demo2 {
+	background-position: center -70px;
+}
+
+.layout-demo3 {
+	background-position: center -140px;
+}
+
+.layout-demo4 {
+	background-position: center -210px;
+}
+
+.layout-demo5 {
+	background-position: center -280px;
+}
+
+.layout-demo6 {
+	background-position: center -350px;
+}
+
+.layout-demo7 {
+	background-position: center -420px;
+}
+
+.layout-demo8 {
+	background-position: center -490px;
+}
