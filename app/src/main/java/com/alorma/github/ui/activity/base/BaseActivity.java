@@ -14,9 +14,11 @@ import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.UnAuthIntent;
 import com.alorma.github.ui.activity.LoginActivity;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.bugsense.trace.BugSenseHandler;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 19/07/2014.
@@ -40,6 +42,8 @@ public class BaseActivity extends Activity {
         t.send(new HitBuilders.AppViewBuilder().build());
 
         BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
+
+        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
     }
 
     @Override

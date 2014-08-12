@@ -16,7 +16,6 @@ import android.widget.CircularImageView;
 import android.widget.EnhancedTextView;
 import android.widget.NumericTitle;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -27,8 +26,6 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -80,7 +77,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        avatarImage = (CircularImageView) view.findViewById(R.id.imageView);
+        avatarImage = (CircularImageView) view.findViewById(R.id.chevron);
 
         mailText = (EnhancedTextView) view.findViewById(R.id.mail);
         blogText = (EnhancedTextView) view.findViewById(R.id.blog);

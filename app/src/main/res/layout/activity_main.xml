@@ -3,26 +3,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_main"
+    android:showDividers="middle">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/gray_github_light">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/searchIcon"
-            android:layout_toStartOf="@+id/searchIcon"
-            android:id="@+id/currentState"
-            android:text="Repositories"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingStart="16dp"
-            android:textSize="20sp"
-            android:singleLine="true"
-            android:fontFamily="sans-serif-condesed7" />
+        android:layout_height="56dp">
 
         <ImageView
             style="?android:buttonBarButtonStyle"
@@ -35,11 +22,53 @@
             android:id="@+id/searchIcon"
             android:src="@drawable/ic_search" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray_divider"
+            android:id="@+id/divider"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/searchIcon"
+            android:layout_toStartOf="@id/searchIcon" />
+
+        <RelativeLayout
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/divider"
+            android:layout_toStartOf="@id/divider"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/chevron"
+                android:id="@+id/currentState"
+                android:text="Repositories"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
+                android:textSize="20sp"
+                android:singleLine="true"
+                android:fontFamily="sans-serif-condesed"
+                android:layout_toLeftOf="@+id/chevron" />
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:id="@+id/chevron"
+                android:padding="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@android:id/content"/>
+        android:id="@+id/content" />
 
 </LinearLayout>

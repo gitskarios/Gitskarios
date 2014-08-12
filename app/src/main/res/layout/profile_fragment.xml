@@ -22,7 +22,7 @@
             <CircularImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/imageView"
+                android:id="@+id/chevron"
                 android:layout_margin="8dp"
                 app:border_color="@color/accent"
                 app:border_width="4dp"

@@ -3,8 +3,11 @@ package com.alorma.github.ui.fragment.base;
 import android.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 
 import com.alorma.github.GistsApplication;
+import com.alorma.github.R;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -26,5 +29,16 @@ public class BaseListFragment extends ListFragment {
 
         // Send a screen view.
         t.send(new HitBuilders.AppViewBuilder().build());
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ListView listView = getListView();
+
+        if (listView != null) {
+            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
+        }
     }
 }
