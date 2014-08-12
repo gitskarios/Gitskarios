@@ -31,7 +31,7 @@
         <activity android:name=".ui.activity.ProfileActivity" />
         <activity android:name=".ui.activity.RepoDetailActivity" />
         <activity android:name=".ui.activity.FileActivity" />
-        <activity android:name=".ui.activity.search.SearchReposActivity">
+        <activity android:name=".ui.activity.SearchReposActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

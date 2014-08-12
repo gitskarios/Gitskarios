@@ -1,4 +1,4 @@
-package com.alorma.github.ui.activity.search;
+package com.alorma.github.ui.activity;
 
 import android.app.FragmentTransaction;
 import android.app.SearchManager;

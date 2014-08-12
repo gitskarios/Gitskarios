@@ -42,13 +42,6 @@ public class BaseActivity extends Activity {
         BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
     }
 
-    protected void setUpActionBarColor(int color) {
-        if (getActionBar() != null) {
-            ColorDrawable cd = new ColorDrawable(color);
-            getActionBar().setBackgroundDrawable(cd);
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();

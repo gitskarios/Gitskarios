@@ -56,8 +56,6 @@ public class RepoDetailActivity extends BackActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setUpActionBarColor(GistsApplication.AB_COLOR);
-
         if (getIntent().getExtras() != null) {
             owner = getIntent().getExtras().getString(RepoDetailFragment.OWNER);
             repo = getIntent().getExtras().getString(RepoDetailFragment.REPO);

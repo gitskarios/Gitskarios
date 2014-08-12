@@ -18,9 +18,9 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
+import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
-import com.squareup.otto.Bus;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FilesTreeFragment extends ListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager{
+public class FilesTreeFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager{
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
@@ -60,7 +60,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.setBackgroundColor(getResources().getColor(R.color.gray_github));
+        view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
 
         if (getArguments() != null) {
             owner = getArguments().getString(OWNER);
@@ -159,22 +159,6 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                     displayContent(treeContent.get(currentSelectedContent));
                 }
             }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (contentAdapter != null) {
-            contentAdapter.registerBus();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (contentAdapter != null) {
-            contentAdapter.unregisterBus();
         }
     }
 

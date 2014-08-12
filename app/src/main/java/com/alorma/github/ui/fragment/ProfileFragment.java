@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
@@ -24,7 +23,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
-import com.alorma.github.ui.events.ColorEvent;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
@@ -33,16 +32,13 @@ import com.google.android.gms.analytics.Tracker;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ProfileFragment extends Fragment implements BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener,
+public class ProfileFragment extends BaseFragment implements BaseClient.OnResultCallback<User>, Palette.PaletteAsyncListener,
         View.OnClickListener {
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
     public static final String USER = "USER";
@@ -57,7 +53,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
     private PaletteItem usedPalette;
     private Palette palette;
     private PaletteItem adapterPaletteItem;
-    private Bus bus;
     private ArrayList<NumericTitle> numericTitles;
 
     public static ProfileFragment newInstance() {
@@ -72,34 +67,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setArguments(bundle);
         return profileFragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Get tracker.
-        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
-
-        // Set screen name.
-        // Where path is a String representing the screen name.
-        t.setScreenName(this.getClass().getSimpleName());
-
-        // Send a screen view.
-        t.send(new HitBuilders.AppViewBuilder().build());
-        bus = new Bus();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        bus.unregister(this);
     }
 
     @Override
@@ -282,9 +249,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
                 rgb = paletteItem.getRgb();
             }
-
-            GistsApplication.AB_COLOR = rgb;
-            bus.post(new ColorEvent(rgb));
         }
     }
 
@@ -344,28 +308,6 @@ public class ProfileFragment extends Fragment implements BaseClient.OnResultCall
             if (usedPalette != null && usedPalette.getRgb() != 0x000000) {
                 numericTitle.setRgb(usedPalette.getRgb());
             }
-        }
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-        int rgb = event.getRgb();
-
-        GistsApplication.AB_COLOR = rgb;
-
-        avatarImage.setBorderColor(rgb);
-
-        mailText.setPrefixColor(rgb);
-        blogText.setPrefixColor(rgb);
-        joinedText.setPrefixColor(rgb);
-
-        for (NumericTitle numericTitle : numericTitles) {
-            numericTitle.setRgb(rgb);
-        }
-
-        if (getActivity() != null && getActivity().getActionBar() != null) {
-            ColorDrawable cd = new ColorDrawable(rgb);
-            getActivity().getActionBar().setBackgroundDrawable(cd);
         }
     }
 }

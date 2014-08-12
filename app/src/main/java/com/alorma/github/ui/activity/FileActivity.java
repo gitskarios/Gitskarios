@@ -29,8 +29,6 @@ public class FileActivity extends BackActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setUpActionBarColor(GistsApplication.AB_COLOR);
-
         WebView webView = new WebView(this);
 
         webView.setWebViewClient(new WebViewClient() {
