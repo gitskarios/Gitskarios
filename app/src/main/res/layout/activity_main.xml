@@ -9,12 +9,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp">
+        android:layout_height="@dimen/icon56dp">
 
         <ImageView
             style="?android:buttonBarButtonStyle"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/icon56dp"
+            android:layout_height="@dimen/icon56dp"
             android:padding="10dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
@@ -38,7 +38,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/divider"
             android:layout_toStartOf="@id/divider"
-            android:clickable="true">
+            android:clickable="true"
+            android:id="@+id/chevronLy">
 
             <TextView
                 android:layout_width="match_parent"
@@ -55,8 +56,8 @@
                 android:layout_toLeftOf="@+id/chevron" />
 
             <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="@dimen/icon56dp"
+                android:layout_height="@dimen/icon56dp"
                 android:id="@+id/chevron"
                 android:padding="20dp"
                 android:layout_alignParentTop="true"
@@ -68,7 +69,17 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content" />
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/content" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/menuContent"/>
+    </FrameLayout>
 
 </LinearLayout>

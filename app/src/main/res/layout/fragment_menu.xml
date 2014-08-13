@@ -51,11 +51,5 @@
 
     </LinearLayout>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:id="@+id/list" />
+    <include layout="@android:layout/list_content" />
 </LinearLayout>

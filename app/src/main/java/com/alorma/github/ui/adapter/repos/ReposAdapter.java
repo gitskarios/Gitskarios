@@ -37,6 +37,9 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         if (repo.fork) {
             typeDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork);
         }
+
+        typeDrawable.sizeDp(40);
+
         typeDrawable.colorRes(R.color.gray_github_medium);
         reposHolder.imageRepoType.setImageDrawable(typeDrawable);
 
