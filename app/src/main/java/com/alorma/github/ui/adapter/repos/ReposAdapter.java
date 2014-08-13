@@ -31,7 +31,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
         reposHolder.textTitle.setText(repo.name);
 
-        reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.accentDark));
+        reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.accent));
 
         IconDrawable typeDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_book);
         if (repo.fork) {

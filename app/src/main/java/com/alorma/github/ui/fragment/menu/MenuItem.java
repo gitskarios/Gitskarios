@@ -1,5 +1,9 @@
 package com.alorma.github.ui.fragment.menu;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+
 import com.joanzapata.android.iconify.Iconify;
 
 /**
@@ -11,7 +15,7 @@ public class MenuItem {
     public int id;
     public Iconify.IconValue icon;
 
-    public MenuItem(int id, int text, int color, Iconify.IconValue icon) {
+    public MenuItem(int id, @StringRes int text, @ColorRes int color, @NonNull Iconify.IconValue icon) {
         this.text = text;
         this.color = color;
         this.id = id;
