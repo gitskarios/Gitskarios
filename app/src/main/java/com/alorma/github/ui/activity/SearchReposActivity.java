@@ -2,6 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,6 +15,10 @@ import com.alorma.github.ui.fragment.search.SearchReposFragment;
  * Created by Bernat on 08/08/2014.
  */
 public class SearchReposActivity extends BackActivity implements SearchReposFragment.OnSearchReposListener {
+
+    public static Intent createLauncherIntent(Context context) {
+        return new Intent(context, SearchReposActivity.class);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

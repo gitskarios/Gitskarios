@@ -1,19 +1,12 @@
 package com.alorma.github.ui.activity;
 
-import android.animation.IntEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +14,7 @@ import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.animations.HeightEvaluator;
 import com.alorma.github.ui.animations.WidthEvaluator;
-import com.alorma.github.ui.fragment.MenuFragment;
+import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -62,6 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         menuFragmentLy = findViewById(R.id.menuContent);
 
         searchIcon = findViewById(R.id.searchIcon);
+        searchIcon.setOnClickListener(this);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content, ReposFragment.newInstance());
@@ -78,10 +72,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     showMenu();
                 }
                 break;
+            case R.id.searchIcon:
+                Intent search = SearchReposActivity.createLauncherIntent(this);
+                startActivity(search);
         }
     }
 
     private void showMenu() {
+        IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
+        chevronUp.colorRes(R.color.gray_github_dark);
+        chevron.setImageDrawable(chevronUp);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         menuFragment = MenuFragment.newInstance();
         ft.replace(R.id.menuContent, menuFragment);
@@ -94,6 +94,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void hideMenu() {
         if (menuFragment != null) {
+            IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
+            chevronDown.colorRes(R.color.gray_github_dark);
+            chevron.setImageDrawable(chevronDown);
+
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.remove(menuFragment);
             ft.commit();
