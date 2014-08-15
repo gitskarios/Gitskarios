@@ -8,9 +8,7 @@
     <color name="white">#FFFFFF</color>
     
     <integer-array name="colorsSmooth">
+        <item>@color/accent</item>
         <item>@color/accentDark</item>
-        <item>@color/complementary</item>
-        <item>@color/accentDark</item>
-        <item>@color/gray_github_dark</item>
     </integer-array>
 </resources>

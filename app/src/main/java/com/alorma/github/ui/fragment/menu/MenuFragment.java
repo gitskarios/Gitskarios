@@ -49,14 +49,14 @@ public class MenuFragment extends ListFragment {
 
         adapter.add(new CategoryMenuItem(-1, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
 
-        adapter.add(new MenuItem(0, R.string.navigation_repos, color, Iconify.IconValue.fa_code));
-        adapter.add(new MenuItem(1, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
-        adapter.add(new MenuItem(2, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
+        adapter.add(new MenuItem(1, R.string.navigation_repos, color, Iconify.IconValue.fa_code));
+        adapter.add(new MenuItem(2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
+        adapter.add(new MenuItem(3, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
 
         adapter.add(new CategoryMenuItem(-2, R.string.tab_people_parent, color, Iconify.IconValue.fa_code));
 
-        adapter.add(new MenuItem(3, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
-        adapter.add(new MenuItem(4, R.string.navigation_following, color, Iconify.IconValue.fa_user));
+        adapter.add(new MenuItem(4, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
+        adapter.add(new MenuItem(5, R.string.navigation_following, color, Iconify.IconValue.fa_user));
 
         if (onMenuItemSelectedListener != null) {
             onMenuItemSelectedListener.onMenuItemSelected(adapter.getItem(1));
@@ -72,30 +72,32 @@ public class MenuFragment extends ListFragment {
         if (checkItem(item)) {
             currentSelectedItemId = item.id;
             switch (item.id) {
-                case 0:
+                case 1:
                     onMenuItemSelectedListener.onReposSelected();
                     break;
-                case 1:
+                case 2:
                     onMenuItemSelectedListener.onStarredSelected();
                     break;
-                case 2:
+                case 3:
                     onMenuItemSelectedListener.onWatchedSelected();
                     break;
-                case 3:
+                case 4:
                     onMenuItemSelectedListener.onFollowersSelected();
                     break;
-                case 4:
+                case 5:
                     onMenuItemSelectedListener.onFollowingSelected();
                     break;
             }
             onMenuItemSelectedListener.onMenuItemSelected(item);
         } else {
-            onMenuItemSelectedListener.closeMenu();
+            if (item != null && item.id > 0) {
+                onMenuItemSelectedListener.closeMenu();
+            }
         }
     }
 
     private boolean checkItem(MenuItem item) {
-        return item != null && onMenuItemSelectedListener != null && item.id != currentSelectedItemId;
+        return item != null && item.id > 0 && onMenuItemSelectedListener != null && item.id != currentSelectedItemId;
     }
 
     public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {

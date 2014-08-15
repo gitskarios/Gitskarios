@@ -54,7 +54,6 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
     private ViewPager pager;
     private TabTitle tabReadme;
     private TabTitle tabSource;
-    private TabTitle tabInfo;
     private List<TabTitle> tabs;
     private boolean fromIntentFilter;
     private String description;
@@ -135,16 +134,13 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
 
             tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
             tabSource = (TabTitle) view.findViewById(R.id.tabSource);
-            tabInfo = (TabTitle) view.findViewById(R.id.tabInfo);
 
             tabReadme.setOnClickListener(this);
             tabSource.setOnClickListener(this);
-            tabInfo.setOnClickListener(this);
 
             tabs = new ArrayList<TabTitle>();
             tabs.add(tabReadme);
             tabs.add(tabSource);
-            tabs.add(tabInfo);
 
             pager = (ViewPager) view.findViewById(R.id.pager);
             pager.setOffscreenPageLimit(3);
@@ -267,10 +263,6 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
                 pager.setCurrentItem(1);
                 selectButton(tabSource);
                 break;
-            case R.id.tabInfo:
-                pager.setCurrentItem(2);
-                selectButton(tabInfo);
-                break;
         }
     }
 
@@ -287,9 +279,6 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
                 break;
             case 1:
                 selectButton(tabSource);
-                break;
-            case 2:
-                selectButton(tabInfo);
                 break;
         }
     }

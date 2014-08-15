@@ -12,7 +12,7 @@
     <dimen name="shape_half_inv">-23dp</dimen>
     <dimen name="button_press">2dp</dimen>
     <dimen name="button_press_elevation">4dp</dimen>
-    <dimen name="icon56dp">48dp</dimen>
+    <dimen name="menuSize">48dp</dimen>
 
     <!-- http://developer.android.com/design/style/metrics-grids.html -->
     <dimen name="gapSmall">4dp</dimen>

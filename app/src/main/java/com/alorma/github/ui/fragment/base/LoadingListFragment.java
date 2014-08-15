@@ -42,9 +42,9 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
         emptyLy = view.findViewById(R.id.emptyLayout);
 
         swipe.setColorSchemeResources(R.color.accentDark,
-                R.color.complementary,
+                R.color.accent,
                 R.color.accentDark,
-                R.color.gray_github_dark);
+                R.color.accent);
         swipe.setOnRefreshListener(this);
 
     }

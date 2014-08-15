@@ -9,12 +9,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/icon56dp">
+        android:layout_height="@dimen/menuSize">
 
         <ImageView
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="@dimen/icon56dp"
-            android:layout_height="@dimen/icon56dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="@dimen/menuSize"
+            android:layout_height="@dimen/menuSize"
             android:padding="12dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
@@ -33,7 +33,7 @@
             android:layout_toStartOf="@id/searchIcon" />
 
         <RelativeLayout
-            style="?android:buttonBarButtonStyle"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -55,8 +55,8 @@
                 android:layout_toLeftOf="@+id/chevron" />
 
             <ImageView
-                android:layout_width="@dimen/icon56dp"
-                android:layout_height="@dimen/icon56dp"
+                android:layout_width="@dimen/menuSize"
+                android:layout_height="@dimen/menuSize"
                 android:id="@+id/chevron"
                 android:padding="@dimen/gapLarge"
                 android:layout_alignParentTop="true"

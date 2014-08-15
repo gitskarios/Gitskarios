@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         isMenuOpen = true;
 
-        Float dimension = getResources().getDimension(R.dimen.icon56dp);
+        Float dimension = getResources().getDimension(R.dimen.menuSize);
         ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), dimension.intValue(), 0);
         searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
         searchIconAnimator.start();
@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             isMenuOpen = false;
 
-            Float dimension = getResources().getDimension(R.dimen.icon56dp);
+            Float dimension = getResources().getDimension(R.dimen.menuSize);
             ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), 0, dimension.intValue());
             searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
             searchIconAnimator.start();

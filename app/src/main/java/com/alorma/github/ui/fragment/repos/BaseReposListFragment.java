@@ -55,4 +55,11 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
     }
 
     protected abstract int getNoDataText();
+
+    @Override
+    protected void onResponse(ListRepos repos) {
+        if (repos == null || repos.size() == 0) {
+            onQueryFail();
+        }
+    }
 }

@@ -23,6 +23,5 @@
         android:paddingStart="@dimen/gapMedium"
         android:paddingEnd="@dimen/gapMedium"
         android:textSize="@dimen/textSizeLarge"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:fontFamily="sans-serif-light"/>
 </LinearLayout>

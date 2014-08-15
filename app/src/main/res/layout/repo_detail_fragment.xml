@@ -17,12 +17,12 @@
             android:layout_height="4dp"
             android:indeterminate="true"
             app:spb_sections_count="4"
-            app:spb_color="@color/complementary"
+            app:spb_color="@color/white"
             app:spb_speed="2.0"
             app:spb_stroke_width="4dp"
             app:spb_stroke_separator_length="4dp"
-            app:spb_reversed="true"
-            app:spb_mirror_mode="true"
+            app:spb_reversed="false"
+            app:spb_mirror_mode="false"
             android:id="@+id/smoothBar" />
 
         <LinearLayout
@@ -48,22 +48,15 @@
 
                 <android.widget.TabTitle
                     style="@style/tab_repos"
-                    app:barColor="@color/complementary"
+                    app:barColor="@color/white"
                     android:text="@string/Readme"
                     android:id="@+id/tabReadme" />
 
                 <android.widget.TabTitle
                     style="@style/tab_repos"
-                    app:barColor="@color/complementary"
+                    app:barColor="@color/white"
                     android:text="@string/Source"
                     android:id="@+id/tabSource" />
-
-                <android.widget.TabTitle
-                    style="@style/tab_repos"
-                    app:barColor="@color/complementary"
-                    android:text="@string/Info"
-                    android:id="@+id/tabInfo"
-                    android:visibility="gone" />
 
             </LinearLayout>
         </LinearLayout>
