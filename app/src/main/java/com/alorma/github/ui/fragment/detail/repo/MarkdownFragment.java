@@ -20,29 +20,25 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
-import com.alorma.github.ui.events.ColorEvent;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class MarkdownFragment extends Fragment implements BaseClient.OnResultCallback<String>, BranchManager {
+public class MarkdownFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager {
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
 
     private WebView webview;
     private RefreshListener refreshListener;
-    private Bus bus;
     private String owner;
     private String repo;
 
@@ -55,22 +51,6 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         f.setRefreshListener(refreshListener);
         f.setArguments(bundle);
         return f;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Get tracker.
-        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
-
-        // Set screen name.
-        // Where path is a String representing the screen name.
-        t.setScreenName(getClass().getSimpleName());
-
-        // Send a screen view.
-        t.send(new HitBuilders.AppViewBuilder().build());
-        bus = new Bus();
     }
 
     @Nullable
@@ -98,7 +78,7 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
             webview.clearMatches();
             webview.clearSslPreferences();
             webview.getSettings().setUseWideViewPort(false);
-            webview.setBackgroundColor(getResources().getColor(R.color.gray_github));
+            webview.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
             if (refreshListener != null) {
                 refreshListener.showRefresh();
             }
@@ -175,22 +155,5 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         if (refreshListener != null) {
             refreshListener.cancelRefresh();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-
     }
 }

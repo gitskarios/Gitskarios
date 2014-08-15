@@ -1,25 +1,18 @@
 package com.alorma.github.ui.activity;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.events.ColorEvent;
 import com.alorma.github.ui.fragment.ProfileFragment;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity {
-
-    private Bus bus;
 
     public static Intent createLauncherIntent(Context context) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -47,9 +40,6 @@ public class ProfileActivity extends BackActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bus = new Bus();
-        bus.register(this);
-
         if (getIntent().getExtras() != null) {
             if (getIntent().getExtras().containsKey(ProfileFragment.USER)) {
                 User user = getIntent().getParcelableExtra(ProfileFragment.USER);
@@ -67,20 +57,4 @@ public class ProfileActivity extends BackActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-        setUpActionBarColor(event.getRgb());
-    }
 }

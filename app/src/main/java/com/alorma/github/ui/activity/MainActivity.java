@@ -1,55 +1,48 @@
 package com.alorma.github.ui.activity;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.ui.activity.base.NavigationActivity;
-import com.alorma.github.ui.events.ColorEvent;
+import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.animations.HeightEvaluator;
+import com.alorma.github.ui.animations.WidthEvaluator;
 import com.alorma.github.ui.fragment.FollowersFragment;
 import com.alorma.github.ui.fragment.FollowingFragment;
-import com.alorma.github.ui.fragment.GistsFragment;
-import com.alorma.github.ui.fragment.ProfileFragment;
+import com.alorma.github.ui.fragment.menu.MenuFragment;
+import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
-import com.alorma.github.ui.fragment.navigation.MainNavigationFragment;
-import com.alorma.github.ui.fragment.navigation.NavigationDrawerFragment;
-import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import com.alorma.github.ui.fragment.repos.StarredReposFragment;
+import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
-public class MainActivity extends NavigationActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener {
 
-    private Bus bus;
+    private static final long MENU_ANIMATION_TIME = 200;
+    private TextView currentState;
+    private ImageView chevron;
+    private View chevronLy;
+    private boolean isMenuOpen = false;
+    private MenuFragment menuFragment;
+    private View menuFragmentLy;
+    private View searchIcon;
+    private int menuHeight = -1;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        bus = new Bus();
-        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        GistsApplication.AB_COLOR = getResources().getColor(R.color.accent);
-        bus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-        setUpActionBarColor(event.getRgb());
-    }
+    private ReposFragment reposFragment;
+    private StarredReposFragment starredFragment;
+    private WatchedReposFragment watchedFragment;
+    private FollowersFragment followersFragment;
+    private FollowingFragment followingFragment;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -57,56 +50,155 @@ public class MainActivity extends NavigationActivity {
     }
 
     @Override
-    protected NavigationDrawerFragment getNavigationFragment() {
-        return MainNavigationFragment.newInstance();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        currentState = (TextView) findViewById(R.id.currentState);
+
+        IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
+        chevronDown.colorRes(R.color.gray_github_dark);
+
+        chevron = (ImageView) findViewById(R.id.chevron);
+        chevron.setImageDrawable(chevronDown);
+
+        chevronLy = findViewById(R.id.chevronLy);
+        chevronLy.setOnClickListener(this);
+
+        menuFragmentLy = findViewById(R.id.menuContent);
+
+        searchIcon = findViewById(R.id.searchIcon);
+        //searchIcon.setOnClickListener(this);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content, ReposFragment.newInstance());
+        menuFragment = MenuFragment.newInstance();
+        menuFragment.setOnMenuItemSelectedListener(this);
+        ft.replace(R.id.menuContent, menuFragment);
+        ft.commit();
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        switch (position) {
-            case 0:
-                setContainerFragment(ReposManagerFragment.newInstance());
-                if (getActionBar() != null) {
-                    getActionBar().setTitle(R.string.title_repos);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.chevronLy:
+                if (isMenuOpen) {
+                    hideMenu();
+                } else {
+                    showMenu();
                 }
                 break;
-            /*case 1:
-                setContainerFragment(GistsFragment.newInstance());
-                restoreActionBar();
-                if (getActionBar() != null) {
-                    getActionBar().setTitle(R.string.title_gists);
-                }
-                break;*/
-            case 1:
-                setContainerFragment(FollowingFragment.newInstance());
-                if (getActionBar() != null) {
-                    getActionBar().setTitle(R.string.title_following);
-                }
-                break;
-            case 2:
-                setContainerFragment(FollowersFragment.newInstance());
-                if (getActionBar() != null) {
-                    getActionBar().setTitle(R.string.title_followers);
-                }
-                break;
+            case R.id.searchIcon:
+                Intent search = SearchReposActivity.createLauncherIntent(this);
+                startActivity(search);
+        }
+    }
+
+    private void showMenu() {
+
+        menuFragmentLy.setVisibility(View.VISIBLE);
+
+        IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
+        chevronUp.colorRes(R.color.gray_github_dark);
+        chevron.setImageDrawable(chevronUp);
+
+        isMenuOpen = true;
+
+        Float dimension = getResources().getDimension(R.dimen.icon56dp);
+        ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), dimension.intValue(), 0);
+        searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
+        searchIconAnimator.start();
+
+        if (menuHeight == -1) {
+            menuHeight = menuFragmentLy.getHeight();
         }
 
-        restoreActionBar();
+        ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, true), 0, menuHeight);
+        valueAnimator.setDuration(MENU_ANIMATION_TIME);
+        valueAnimator.setInterpolator(new LinearInterpolator());
+        valueAnimator.start();
+    }
+
+    private void hideMenu() {
+        if (menuFragment != null) {
+            IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
+            chevronDown.colorRes(R.color.gray_github_dark);
+            chevron.setImageDrawable(chevronDown);
+
+            isMenuOpen = false;
+
+            Float dimension = getResources().getDimension(R.dimen.icon56dp);
+            ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), 0, dimension.intValue());
+            searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
+            searchIconAnimator.start();
+
+            ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, false), menuHeight, 0);
+            valueAnimator.setDuration(MENU_ANIMATION_TIME);
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.start();
+        }
+    }
+
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fragment);
+        ft.commit();
+
+        hideMenu();
     }
 
     @Override
-    public void profileSelected(User user) {
-        closeDrawer();
-        Intent launcherIntent = ProfileActivity.createLauncherIntent(this, user);
-        startActivity(launcherIntent);
-    }
-
-    private void restoreActionBar() {
-        GistsApplication.AB_COLOR = getResources().getColor(R.color.accent);
-        if (getActionBar() != null) {
-            getActionBar().setSubtitle(null);
+    public void onReposSelected() {
+        if (reposFragment == null) {
+            reposFragment = ReposFragment.newInstance();
         }
 
-        bus.post(new ColorEvent(GistsApplication.AB_COLOR));
+        setFragment(reposFragment);
+    }
+
+    @Override
+    public void onStarredSelected() {
+        if (starredFragment == null) {
+            starredFragment = StarredReposFragment.newInstance();
+        }
+
+        setFragment(starredFragment);
+    }
+
+    @Override
+    public void onWatchedSelected() {
+        if (watchedFragment == null) {
+            watchedFragment = WatchedReposFragment.newInstance();
+        }
+
+        setFragment(watchedFragment);
+    }
+
+    @Override
+    public void onFollowersSelected() {
+        if (followersFragment == null) {
+            followersFragment = FollowersFragment.newInstance();
+        }
+
+        setFragment(followersFragment);
+    }
+
+    @Override
+    public void onFollowingSelected() {
+        if (followingFragment == null) {
+            followingFragment = FollowingFragment.newInstance();
+        }
+
+        setFragment(followingFragment);
+    }
+
+    @Override
+    public void onMenuItemSelected(@NonNull MenuItem item) {
+        currentState.setText(item.text);
+    }
+
+    @Override
+    public void closeMenu() {
+        hideMenu();
     }
 }

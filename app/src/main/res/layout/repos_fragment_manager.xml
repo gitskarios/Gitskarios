@@ -14,19 +14,19 @@
 
         <android.widget.TabTitle
             android:id="@+id/tab1"
-            android:text="@string/tab_repos"
+            android:text="@string/navigation_repos"
             style="@style/tab_repos"
             app:barColor="@color/complementary"/>
 
         <android.widget.TabTitle
             android:id="@+id/tab2"
-            android:text="@string/tab_watched_repos"
+            android:text="@string/navigation_watched_repos"
             style="@style/tab_repos"
             app:barColor="@color/complementary" />
 
         <android.widget.TabTitle
             android:id="@+id/tab3"
-            android:text="@string/tab_starred_repos"
+            android:text="@string/navigation_starred_repos"
             style="@style/tab_repos"
             app:barColor="@color/complementary"/>
     </LinearLayout>

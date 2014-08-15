@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/avatar_size"
-        android:background="@color/gray_github"
+        android:background="@color/gray_github_light"
         android:padding="8dp">
 
         <LinearLayout
@@ -22,7 +22,7 @@
             <CircularImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/imageView"
+                android:id="@+id/chevron"
                 android:layout_margin="8dp"
                 app:border_color="@color/accent"
                 app:border_width="4dp"
@@ -69,7 +69,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@color/gray_github">
+        android:background="@color/gray_github_light">
 
         <NumericTitle
             android:layout_width="match_parent"

@@ -4,8 +4,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,16 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabTitle;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Branch;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -32,13 +26,10 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
-import com.alorma.github.ui.adapter.detail.repo.RepoDetailSmallPagerAdapter;
-import com.alorma.github.ui.events.ColorEvent;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +41,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailFragment extends Fragment implements RefreshListener, View.OnClickListener,
-        ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo>,BranchesSpinnerFragment.OnBranchesListener {
+public class RepoDetailFragment extends BaseFragment implements RefreshListener, View.OnClickListener,
+        ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo> {
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
@@ -67,13 +58,10 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private List<TabTitle> tabs;
     private boolean fromIntentFilter;
     private String description;
-    private Bus bus;
     private View repoDetailInfo;
     private boolean repoStarred;
     private boolean repoWatched;
     private Repo currentRepo;
-    private ViewPager smallPager;
-    private RepoDetailSmallPagerAdapter smallPagerAdapter;
     private boolean showParentMenu;
     private RepoDetailPagerAdapter pagerAdapter;
 
@@ -103,32 +91,8 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Get tracker.
-        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
-
-        // Set screen name.
-        // Where path is a String representing the screen name.
-        t.setScreenName(getClass().getSimpleName());
-
-        // Send a screen view.
-        t.send(new HitBuilders.AppViewBuilder().build());
-        bus = new Bus();
         setHasOptionsMenu(true);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -169,8 +133,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
             repoDetailInfo = view.findViewById(R.id.repoDetailInfo);
 
-            repoDetailInfo.setBackgroundColor(GistsApplication.AB_COLOR);
-
             tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
             tabSource = (TabTitle) view.findViewById(R.id.tabSource);
             tabInfo = (TabTitle) view.findViewById(R.id.tabInfo);
@@ -191,8 +153,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             pager.setAdapter(pagerAdapter);
 
             selectButton(tabReadme);
-
-            smallPager = (ViewPager) view.findViewById(R.id.smallPager);
         } else {
             if (getActivity() != null) {
                 getActivity().finish();
@@ -352,13 +312,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                     getActivity().getActionBar().setSubtitle("fork of " + repo.parent.full_name);
                 }
             }
-
-            if (repo.description != null) {
-                smallPagerAdapter = new RepoDetailSmallPagerAdapter(getFragmentManager(), repo, this);
-
-                smallPager.setAdapter(smallPagerAdapter);
-                smallPager.setVisibility(View.VISIBLE);
-            }
         }
 
         cancelRefresh();
@@ -370,32 +323,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             getActivity().finish();
         }
         cancelRefresh();
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-        repoDetailInfo.setBackgroundColor(event.getRgb());
-    }
-
-    @Override
-    public void onNoBranches() {
-        if (smallPager != null && currentRepo != null && TextUtils.isEmpty(currentRepo.description)) {
-            smallPager.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onBranches(int size) {
-        if (smallPager != null && currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
-            smallPager.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onBranchSelected(Branch branch) {
-        if (pagerAdapter != null) {
-            pagerAdapter.setCurrentBranch(branch);
-        }
     }
 
     /**

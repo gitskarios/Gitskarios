@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 
 /**
  * Created by Bernat on 09/08/2014.
  */
-public class TextDescriptionFragment extends Fragment {
+public class TextDescriptionFragment extends BaseFragment {
 
     private TextView tv;
 
