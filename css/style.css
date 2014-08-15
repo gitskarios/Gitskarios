@@ -104,17 +104,7 @@ table {
 .header {
 	padding: 14px 0;
 	background-color: rgb(19, 17, 17);
-	background-color: #006a3f;
-	background-image:	
-					radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
-					radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
-					radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), 
-					radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);
-	background-image:	
-					-webkit-radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
-					-webkit-radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
-					-webkit-radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), 
-					-webkit-radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);
+	background-color: #4183C4;
     background-position: 0 0px, 4px 4px, 0 1px, 4px 5px;
     background-size: 8px 8px;
 	border-bottom: 1px solid rgb(41, 41, 41);

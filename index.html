@@ -1,19 +1,17 @@
 ﻿<!DOCTYPE html>
 <html>
 	<head>
-		<title>Append block</title>
+		<title>Gitskarios</title>
 		<meta content="text/html; charset=utf-8" http-equiv="content-type">
-		<meta name="description" content="Append block" />
+		<meta name="description" content="Centering grid content" />
 		<meta name="keywords" content="javascript, dynamic, grid, layout, jquery plugin, flex layouts"/>
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
 		<script type="text/javascript" src="../freewall.js"></script>
+		<script type="text/javascript" src="../plugin/centering.js"></script>
 		<style type="text/css">
 			.free-wall {
-				margin: 15px;
-			}
-			.add-more {
 				margin: 15px;
 			}
 		</style>
@@ -22,30 +20,24 @@
 		<div class='header'>
 			<div class="clearfix">
 				<div class="float-left">
-						<h1><a href="http://vnjs.net/www/project/freewall/">Free Wall</a></h1>
-						<div class='target'>Creating dynamic grid layouts.</div>
+						<h1>Gitskarios</h1>
+						<div class='target'>Fresh and clean github repository browser app.</div>
 				</div>
 			</div>
 		</div>
 		<div id="freewall" class="free-wall">
 			<div class="brick size32"> 
 				<div class='cover'>
-					<h2>Click on 'Add more ++' block to see this demo</h2>
+					<h2>Centering grid content</h2>
 				</div>
 			</div>	
-			<div class="brick size21">
+			<div class="brick size12 add-more">
 				<div class='cover'>
-					<h2>Copyright</h2>
-					<p> © 2013 Minh Nguyen </p>
-					<p> Released under the MIT license</p>
-				</div>	
+					<h2>Add more block</h2>
+				</div>
 			</div>
 		</div>
-		<div class="brick size11 add-more">
-			<div class='cover'>
-				<h2>Add more ++</h2>
-			</div>
-		</div>
+		
 		<script type="text/javascript">
 			
 			var colour = [
@@ -76,15 +68,13 @@
 					}
 				});
 				wall.fitWidth();
+				
 				var temp = '<div class="brick {size}" style="background-color: {color}"><div class="cover"></div></div>';
-				var size = "size33 size32 size31 size23 size22 size21 size13 size12 size11".split(" ");
+				var size = "size23 size22 size21 size13 size12 size11".split(" ");
 				$(".add-more").click(function() {
-					var html = "";
-					for (var i = 0; i < 1; ++i) {
-						html += temp.replace('{size}', size[size.length * Math.random() << 0])
+					var	html = temp.replace('{size}', size[size.length * Math.random() << 0])
 									.replace('{color}', colour[colour.length * Math.random() << 0]);
-					}
-					wall.appendBlock(html);
+					wall.prepend(html);
 				});
 			});
 		</script>
