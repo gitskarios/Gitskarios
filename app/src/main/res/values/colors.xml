@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="gray_github_light">#f3f3f3</color>
+    <color name="gray_github_light_selected">#ffdedede</color>
     <color name="gray_github_dark">#737373</color>
     <color name="gray_github_medium">#ffaaaaaa</color>
     <color name="gray_divider">#9fd2d2d2</color>

@@ -210,9 +210,9 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         //num2Text.setCustomNumber(user.public_gists);
         //num2Text.setCustomText(R.string.public_gists);
         num3Text.setCustomNumber(user.followers);
-        num3Text.setCustomText(R.string.followers);
+        num3Text.setCustomText(R.string.navigation_followers);
         num4Text.setCustomNumber(user.following);
-        num4Text.setCustomText(R.string.following);
+        num4Text.setCustomText(R.string.navigation_following);
     }
 
     @Override
@@ -246,6 +246,8 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
             if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
                 rgb = paletteItem.getRgb();
             }
+
+            avatarImage.setBorderColor(rgb);
         }
     }
 

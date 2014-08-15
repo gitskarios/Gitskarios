@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.fragment.menu.CategoryMenuItem;
 import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 
@@ -26,17 +27,29 @@ public class MenuItemsAdapter extends ArrayAdapter<MenuItem>{
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (getItem(position) instanceof CategoryMenuItem) {
+            return R.layout.row_menu_category;
+        } else {
+            return R.layout.row_menu;
+        }
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        View v = mInflater.inflate(R.layout.row_menu, parent, false);
-
-        ImageView image = (ImageView) v.findViewById(android.R.id.icon);
-        TextView text = (TextView) v.findViewById(android.R.id.text1);
+        View v = mInflater.inflate(getItemViewType(position), parent, false);
 
         MenuItem item = getItem(position);
 
-        image.setImageDrawable(new IconDrawable(getContext(), item.icon).color(item.color));
+        TextView text = (TextView) v.findViewById(android.R.id.text1);
         text.setText(item.text);
+        if (getItem(position) instanceof CategoryMenuItem) {
+
+        } else {
+            ImageView image = (ImageView) v.findViewById(android.R.id.icon);
+
+            image.setImageDrawable(new IconDrawable(getContext(), item.icon).color(item.color));
+        }
 
         return v;
     }

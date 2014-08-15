@@ -13,21 +13,23 @@
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
-    <string name="public_repos">Repos</string>
+    <string name="public_repos">Repositories</string>
     <string name="public_gists">Gists</string>
-    <string name="followers">Followers</string>
-    <string name="following">Following</string>
-    <string name="navigation_repos">Repos</string>
+
+    <string name="tab_repos_parent">Repositories</string>
+    <string name="navigation_repos">My Repositories</string>
+    <string name="navigation_watched_repos">Watched</string>
+    <string name="navigation_starred_repos">Starred</string>
+
+    <string name="tab_people_parent">People</string>
     <string name="navigation_following">Following</string>
     <string name="navigation_followers">Followers</string>
+
     <string name="title_followers">Followers</string>
     <string name="title_following">Following</string>
     <string name="title_repos">Repos</string>
     <string name="star_icon_text">{fa_star} %1$d</string>
     <string name="fork_icon_text">{fa_code_fork} %1$d</string>
-    <string name="tab_repos">Repos</string>
-    <string name="navigation_watched_repos">Watched</string>
-    <string name="navigation_starred_repos">Starred</string>
     <string name="unauthorized">Unauthorized acces</string>
     <string name="Readme">readme</string>
     <string name="Source">source</string>

@@ -5,14 +5,8 @@
     android:orientation="horizontal"
     android:background="@drawable/list_selector">
 
-    <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="@dimen/gapLarge"
-        android:id="@android:id/icon"
-        android:padding="@dimen/gapMedium"/>
-    
     <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +16,7 @@
         android:paddingRight="@dimen/gapMedium"
         android:paddingStart="@dimen/gapMedium"
         android:paddingEnd="@dimen/gapMedium"
-        android:textSize="@dimen/textSizeLarge"
+        android:textSize="@dimen/textSizeMedium"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:fontFamily="sans-serif-light"/>
 </LinearLayout>

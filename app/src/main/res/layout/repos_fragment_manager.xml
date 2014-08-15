@@ -14,7 +14,7 @@
 
         <android.widget.TabTitle
             android:id="@+id/tab1"
-            android:text="@string/tab_repos"
+            android:text="@string/navigation_repos"
             style="@style/tab_repos"
             app:barColor="@color/complementary"/>
 

@@ -15,7 +15,7 @@
             style="?android:buttonBarButtonStyle"
             android:layout_width="@dimen/icon56dp"
             android:layout_height="@dimen/icon56dp"
-            android:padding="@dimen/gapMedium"
+            android:padding="12dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -47,13 +47,11 @@
                 android:layout_height="match_parent"
                 android:layout_toStartOf="@+id/chevron"
                 android:id="@+id/currentState"
-                android:text="Repositories"
                 android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingStart="16dp"
-                android:textSize="20sp"
-                android:singleLine="true"
-                android:fontFamily="sans-serif-condesed"
+                android:paddingLeft="@dimen/gapLarge"
+                android:paddingStart="@dimen/gapLarge"
+                android:textSize="@dimen/textSizeLarge"
+                android:fontFamily="sans-serif-light"
                 android:layout_toLeftOf="@+id/chevron" />
 
             <ImageView
@@ -80,7 +78,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/menuContent"/>
+            android:id="@+id/menuContent"
+            android:visibility="invisible"/>
     </FrameLayout>
 
 </LinearLayout>

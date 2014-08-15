@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private View menuFragmentLy;
     private View searchIcon;
     private int menuHeight = -1;
+
     private ReposFragment reposFragment;
     private StarredReposFragment starredFragment;
     private WatchedReposFragment watchedFragment;
@@ -67,10 +68,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         menuFragmentLy = findViewById(R.id.menuContent);
 
         searchIcon = findViewById(R.id.searchIcon);
-        searchIcon.setOnClickListener(this);
+        //searchIcon.setOnClickListener(this);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content, ReposFragment.newInstance());
+        menuFragment = MenuFragment.newInstance();
+        menuFragment.setOnMenuItemSelectedListener(this);
+        ft.replace(R.id.menuContent, menuFragment);
         ft.commit();
     }
 
@@ -92,13 +96,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private void showMenu() {
 
-        if (menuFragment == null) {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            menuFragment = MenuFragment.newInstance();
-            menuFragment.setOnMenuItemSelectedListener(this);
-            ft.replace(R.id.menuContent, menuFragment);
-            ft.commit();
-        }
+        menuFragmentLy.setVisibility(View.VISIBLE);
 
         IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
         chevronUp.colorRes(R.color.gray_github_dark);
@@ -126,7 +124,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
             chevronDown.colorRes(R.color.gray_github_dark);
             chevron.setImageDrawable(chevronDown);
-            
+
             isMenuOpen = false;
 
             Float dimension = getResources().getDimension(R.dimen.icon56dp);
