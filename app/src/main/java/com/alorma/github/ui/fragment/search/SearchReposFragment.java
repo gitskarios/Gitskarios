@@ -40,6 +40,9 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
     @Override
     protected void executeRequest() {
         if (query != null) {
+            if (swipe != null) {
+                swipe.setRefreshing(true);
+            }
             RepoSearchClient client = new RepoSearchClient(getActivity(), query);
             client.setOnResultCallback(this);
             client.execute();
@@ -62,6 +65,11 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
 
     @Override
     protected void onResponse(ReposSearch reposSearch) {
+
+        if (swipe != null) {
+            swipe.setRefreshing(true);
+        }
+
         if (reposAdapter == null) {
             reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
             setListAdapter(reposAdapter);

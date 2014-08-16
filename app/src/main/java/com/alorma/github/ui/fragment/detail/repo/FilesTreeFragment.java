@@ -1,12 +1,9 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
@@ -16,6 +13,7 @@ import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
 import com.alorma.github.ui.fragment.base.BaseListFragment;
@@ -121,8 +119,7 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
     @Override
     public void onFail(RetrofitError error) {
         if (getActivity() != null) {
-            Log.e("FILES", "Error", error);
-            Toast.makeText(getActivity(), "Error: " + error, Toast.LENGTH_SHORT).show();
+            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
             if (refreshListener != null) {
                 refreshListener.cancelRefresh();
             }

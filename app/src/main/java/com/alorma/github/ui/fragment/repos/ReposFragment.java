@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;

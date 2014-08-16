@@ -15,6 +15,7 @@
     <dimen name="menuSize">48dp</dimen>
 
     <!-- http://developer.android.com/design/style/metrics-grids.html -->
+    <dimen name="gapMicro">2dp</dimen>
     <dimen name="gapSmall">4dp</dimen>
     <dimen name="gapMedium">8dp</dimen>
     <dimen name="gapLarge">16dp</dimen>

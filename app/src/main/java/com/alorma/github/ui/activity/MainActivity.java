@@ -68,7 +68,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         menuFragmentLy = findViewById(R.id.menuContent);
 
         searchIcon = findViewById(R.id.searchIcon);
-        //searchIcon.setOnClickListener(this);
+        searchIcon.setOnClickListener(this);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content, ReposFragment.newInstance());

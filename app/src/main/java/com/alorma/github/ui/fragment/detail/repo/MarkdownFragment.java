@@ -1,30 +1,24 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.alorma.github.BuildConfig;
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -142,10 +136,8 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
     }
 
     private void onError(String tag, RetrofitError error) {
-        Log.e(tag, "Error", error);
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(getActivity(), "Error: " + tag, Toast.LENGTH_SHORT).show();
-        }
+
+        ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment", error);
 
         if (error != null && error.getMessage() != null) {
             BugSenseHandler.addCrashExtraData(tag, error.getMessage());

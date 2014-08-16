@@ -1,19 +1,15 @@
 package com.alorma.github;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.UriMatcher;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
