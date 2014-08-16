@@ -146,6 +146,7 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 
         if (refreshListener != null) {
             refreshListener.cancelRefresh();
+            refreshListener.onError(error);
         }
     }
 }

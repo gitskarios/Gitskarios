@@ -50,4 +50,9 @@
     <string name="menu_unwatch">Unwatch</string>
     <string name="search">Search</string>
     <string name="branches">Branches</string>
+    <string name="fork_of">fork of %1$s</string>
+    <string name="error_loading_repo_detail">Sorry</string>
+    <string name="error_loading_repo_detail_message">It seems this repo is unable to be loaded.</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
 </resources>
