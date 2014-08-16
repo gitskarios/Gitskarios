@@ -36,9 +36,8 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".ui.activity.InterceptorActivity"
+            android:name=".Interceptor"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
 

@@ -120,10 +120,12 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 
     @Override
     public void onFail(RetrofitError error) {
-        Log.e("FILES", "Error", error);
-        Toast.makeText(getActivity(), "Error: " + error, Toast.LENGTH_SHORT).show();
-        if (refreshListener != null) {
-            refreshListener.cancelRefresh();
+        if (getActivity() != null) {
+            Log.e("FILES", "Error", error);
+            Toast.makeText(getActivity(), "Error: " + error, Toast.LENGTH_SHORT).show();
+            if (refreshListener != null) {
+                refreshListener.cancelRefresh();
+            }
         }
     }
 
