@@ -1,10 +1,11 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabTitle;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alorma.github.GistsApplication;
@@ -26,11 +26,13 @@ import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
+import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
-import com.alorma.github.ui.events.ColorEvent;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailFragment extends Fragment implements RefreshListener, View.OnClickListener, ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo> {
+public class RepoDetailFragment extends BaseFragment implements RefreshListener, View.OnClickListener,
+        ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo> {
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
@@ -54,15 +57,19 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     private ViewPager pager;
     private TabTitle tabReadme;
     private TabTitle tabSource;
-    private TabTitle tabInfo;
     private List<TabTitle> tabs;
     private boolean fromIntentFilter;
-    private TextView textDescription;
     private String description;
-    private Bus bus;
     private View repoDetailInfo;
     private boolean repoStarred;
     private boolean repoWatched;
+    private Repo currentRepo;
+    private boolean showParentMenu;
+    private RepoDetailPagerAdapter pagerAdapter;
+    private Integer refreshItems = null;
+    private ArrayList<RetrofitError> errorsList;
+    private View view;
+    private int loadRetries = 0;
 
     public static RepoDetailFragment newInstance(String owner, String repo, String description) {
         Bundle bundle = new Bundle();
@@ -90,20 +97,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bus = new Bus();
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        bus.unregister(this);
     }
 
     @Override
@@ -117,69 +111,62 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        this.view = view;
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            owner = getArguments().getString(OWNER);
-            repo = getArguments().getString(REPO);
-            description = getArguments().getString(DESCRIPTION);
-            fromIntentFilter = getArguments().getBoolean(FROM_INTENT_FILTER, false);
-
-            if (getActivity() != null && getActivity().getActionBar() != null) {
-                getActivity().getActionBar().setTitle(owner + "/" + repo);
-                getActivity().getActionBar().setDisplayHomeAsUpEnabled(!fromIntentFilter);
-            }
-
-            GetRepoClient repoClient = new GetRepoClient(getActivity(), owner, repo);
-            repoClient.setOnResultCallback(this);
-            repoClient.execute();
-
-            CheckRepoStarredClient starredClient = new CheckRepoStarredClient(getActivity(), owner, repo);
-            starredClient.setOnResultCallback(new StarredResult());
-            starredClient.execute();
-
-            CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(getActivity(), owner, repo);
-            watcheClien.setOnResultCallback(new WatchedResult());
-            watcheClien.execute();
-
-            smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
-
-            textDescription = (TextView) view.findViewById(R.id.textDescription);
-
-            if (TextUtils.isEmpty(description)) {
-                textDescription.setVisibility(View.GONE);
-            } else {
-                textDescription.setText(Html.fromHtml(description));
-            }
-
-            repoDetailInfo = view.findViewById(R.id.repoDetailInfo);
-
-            repoDetailInfo.setBackgroundColor(GistsApplication.AB_COLOR);
-
-            tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
-            tabSource = (TabTitle) view.findViewById(R.id.tabSource);
-            tabInfo = (TabTitle) view.findViewById(R.id.tabInfo);
-
-            tabReadme.setOnClickListener(this);
-            tabSource.setOnClickListener(this);
-            tabInfo.setOnClickListener(this);
-
-            tabs = new ArrayList<TabTitle>();
-            tabs.add(tabReadme);
-            tabs.add(tabSource);
-            tabs.add(tabInfo);
-
-            pager = (ViewPager) view.findViewById(R.id.pager);
-            pager.setOffscreenPageLimit(3);
-            pager.setOnPageChangeListener(this);
-            pager.setAdapter(new RepoDetailPagerAdapter(getFragmentManager(), owner, repo, this));
-
-            selectButton(tabReadme);
+            load();
         } else {
             if (getActivity() != null) {
                 getActivity().finish();
             }
         }
+    }
+
+    private void load() {
+        owner = getArguments().getString(OWNER);
+        repo = getArguments().getString(REPO);
+        description = getArguments().getString(DESCRIPTION);
+        fromIntentFilter = getArguments().getBoolean(FROM_INTENT_FILTER, false);
+
+        if (getActivity() != null && getActivity().getActionBar() != null) {
+            getActivity().getActionBar().setTitle(owner + "/" + repo);
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(!fromIntentFilter);
+        }
+
+        GetRepoClient repoClient = new GetRepoClient(getActivity(), owner, repo);
+        repoClient.setOnResultCallback(this);
+        repoClient.execute();
+
+        CheckRepoStarredClient starredClient = new CheckRepoStarredClient(getActivity(), owner, repo);
+        starredClient.setOnResultCallback(new StarredResult());
+        starredClient.execute();
+
+        CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(getActivity(), owner, repo);
+        watcheClien.setOnResultCallback(new WatchedResult());
+        watcheClien.execute();
+
+        smoothBar = (SmoothProgressBar) view.findViewById(R.id.smoothBar);
+
+        repoDetailInfo = view.findViewById(R.id.repoDetailInfo);
+
+        tabReadme = (TabTitle) view.findViewById(R.id.tabReadme);
+        tabSource = (TabTitle) view.findViewById(R.id.tabSource);
+
+        tabReadme.setOnClickListener(this);
+        tabSource.setOnClickListener(this);
+
+        tabs = new ArrayList<TabTitle>();
+        tabs.add(tabReadme);
+        tabs.add(tabSource);
+
+        pager = (ViewPager) view.findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);
+        pager.setOnPageChangeListener(this);
+        pagerAdapter = new RepoDetailPagerAdapter(getFragmentManager(), owner, repo, this);
+        pager.setAdapter(pagerAdapter);
+
+        selectButton(tabReadme);
     }
 
     @Override
@@ -211,6 +198,11 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 watchItem.setTitle(R.string.menu_watch);
             }
         }
+
+        if (currentRepo != null && currentRepo.parent == null && !showParentMenu) {
+            showParentMenu = true;
+            menu.removeItem(R.id.action_show_parent);
+        }
     }
 
     @Override
@@ -228,8 +220,7 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 starRepoClient.execute();
             }
             showRefresh();
-        } else
-        if (item.getItemId() == R.id.action_watch) {
+        } else if (item.getItemId() == R.id.action_watch) {
             if (repoWatched) {
                 UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(getActivity(), owner, repo);
                 unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
@@ -240,6 +231,16 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 watchRepoClient.execute();
             }
             showRefresh();
+        } else if (item.getItemId() == R.id.action_show_parent) {
+            if (currentRepo != null && currentRepo.parent != null) {
+                String parentFullName = currentRepo.parent.full_name;
+                String[] split = parentFullName.split("/");
+                String owner = split[0];
+                String name = split[1];
+
+                Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, name, currentRepo.parent.description);
+                startActivity(launcherActivity);
+            }
         }
 
         return false;
@@ -247,12 +248,71 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
     @Override
     public void showRefresh() {
-        smoothBar.progressiveStart();
+        if (refreshItems == null) {
+            smoothBar.progressiveStart();
+            refreshItems = 1;
+        } else {
+            refreshItems++;
+        }
     }
 
     @Override
     public void cancelRefresh() {
-        smoothBar.progressiveStop();
+        if (refreshItems != null) {
+            refreshItems--;
+
+            if (refreshItems == 0) {
+                refreshItems = null;
+            }
+        }
+        if (refreshItems == null) {
+            smoothBar.progressiveStop();
+        }
+    }
+
+    @Override
+    public void onError(RetrofitError error) {
+        /*if (errorsList == null) {
+            errorsList = new ArrayList<RetrofitError>();
+        }
+
+        errorsList.add(error);
+
+        if (errorsList.size() >= 2) {
+            if (loadRetries < 3) {
+                showErrorAlertDialog();
+            } else {
+                Toast.makeText(getActivity(), "Unabel to load repository", Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+        }*/
+    }
+
+    private void showErrorAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.error_loading_repo_detail);
+        builder.setMessage(R.string.error_loading_repo_detail_message);
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getActivity().finish();
+            }
+        });
+        builder.setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                retryLoad();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void retryLoad() {
+        if (getActivity() != null) {
+            loadRetries++;
+            load();
+        }
     }
 
 
@@ -275,10 +335,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
                 pager.setCurrentItem(1);
                 selectButton(tabSource);
                 break;
-            case R.id.tabInfo:
-                pager.setCurrentItem(2);
-                selectButton(tabInfo);
-                break;
         }
     }
 
@@ -296,9 +352,6 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             case 1:
                 selectButton(tabSource);
                 break;
-            case 2:
-                selectButton(tabInfo);
-                break;
         }
     }
 
@@ -309,34 +362,31 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
-        if (repo != null) {
-            if (getActivity() != null && getActivity().getActionBar() != null) {
-                if (repo.parent != null) {
-                    getActivity().getActionBar().setSubtitle("fork of " + repo.parent.full_name);
+        if (getActivity() != null) {
+            if (repo != null) {
+                this.currentRepo = repo;
+                this.description = currentRepo.description;
+
+                getActivity().invalidateOptionsMenu();
+
+                if (getActivity() != null && getActivity().getActionBar() != null) {
+                    if (repo.parent != null) {
+                        getActivity().getActionBar().setSubtitle(getResources().getString(R.string.fork_of, repo.parent.full_name));
+                    }
                 }
             }
+
+            cancelRefresh();
         }
-        if (textDescription != null) {
-            if (TextUtils.isEmpty(repo.description)) {
-                textDescription.setVisibility(View.GONE);
-            } else {
-                textDescription.setText(Html.fromHtml(repo.description));
-            }
-        }
-        cancelRefresh();
     }
 
     @Override
     public void onFail(RetrofitError error) {
+        ErrorHandler.onRetrofitError(getActivity(), "RepoDetailFragment", error);
         if (getActivity() != null) {
             getActivity().finish();
         }
         cancelRefresh();
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-        repoDetailInfo.setBackgroundColor(event.getRgb());
     }
 
     /**
@@ -348,7 +398,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -358,7 +410,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (error != null) {
                 if (error.getResponse().getStatus() == 404) {
                     repoStarred = false;
-                    getActivity().invalidateOptionsMenu();
+                    if (getActivity() != null) {
+                        getActivity().invalidateOptionsMenu();
+                    }
                 }
             }
             cancelRefresh();
@@ -372,7 +426,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoStarred = false;
                 Toast.makeText(getActivity(), "Repo unstarred", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -390,7 +446,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
                 Toast.makeText(getActivity(), "Repo starred", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -413,7 +471,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -423,7 +483,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (error != null) {
                 if (error.getResponse().getStatus() == 404) {
                     repoWatched = false;
-                    getActivity().invalidateOptionsMenu();
+                    if (getActivity() != null) {
+                        getActivity().invalidateOptionsMenu();
+                    }
                 }
             }
             cancelRefresh();
@@ -437,7 +499,9 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoWatched = false;
                 Toast.makeText(getActivity(), "Not watching repo", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
@@ -455,15 +519,16 @@ public class RepoDetailFragment extends Fragment implements RefreshListener, Vie
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
                 Toast.makeText(getActivity(), "Watching repo", Toast.LENGTH_SHORT).show();
-                getActivity().invalidateOptionsMenu();
+
+                if (getActivity() != null) {
+                    getActivity().invalidateOptionsMenu();
+                }
             }
             cancelRefresh();
         }
 
         @Override
         public void onFail(RetrofitError error) {
-            if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-            }
             cancelRefresh();
         }
     }

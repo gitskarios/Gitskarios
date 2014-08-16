@@ -18,8 +18,7 @@
         app:spb_reversed="true"
         app:spb_mirror_mode="true"
         android:id="@+id/smoothBar"
-        android:background="@color/gray_github"/>
-
+        android:background="@color/gray_github_light"/>
 
     <WebView
         android:hint="@string/login_username"

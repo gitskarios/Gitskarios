@@ -1,24 +1,24 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
+import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
-import com.squareup.otto.Bus;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FilesTreeFragment extends ListFragment implements BaseClient.OnResultCallback<ListContents> {
+public class FilesTreeFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager{
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
@@ -41,6 +41,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     private Map<Content, ListContents> treeContent;
     private Content rootContent = new Content();
     private Content currentSelectedContent = rootContent;
+    private Branch currentBranch;
 
     public static FilesTreeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -57,15 +58,13 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.setBackgroundColor(getResources().getColor(R.color.gray_github));
+        view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
 
         if (getArguments() != null) {
             owner = getArguments().getString(OWNER);
             repo = getArguments().getString(REPO);
 
-            GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
-            repoContentsClient.setOnResultCallback(this);
-            repoContentsClient.execute();
+            getContent();
 
             treeContent = new HashMap<Content, ListContents>();
             treeContent.put(currentSelectedContent, null);
@@ -78,7 +77,6 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
 
     @Override
     public void onResponseOk(ListContents contents, Response r) {
-
         displayContent(contents);
     }
 
@@ -119,9 +117,12 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
 
     @Override
     public void onFail(RetrofitError error) {
-        Log.e("FILES", "Error", error);
-        if (refreshListener != null) {
-            refreshListener.cancelRefresh();
+        if (getActivity() != null) {
+            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
+            if (refreshListener != null) {
+                refreshListener.cancelRefresh();
+                refreshListener.onError(error);
+            }
         }
     }
 
@@ -142,9 +143,7 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
                     currentSelectedContent = item;
                     treeContent.put(item, null);
 
-                    GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
-                    repoContentsClient.setOnResultCallback(this);
-                    repoContentsClient.execute();
+                    getPathContent(item);
                 } else {
                     displayContent(treeContent.get(item));
                 }
@@ -162,23 +161,42 @@ public class FilesTreeFragment extends ListFragment implements BaseClient.OnResu
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (contentAdapter != null) {
-            contentAdapter.registerBus();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (contentAdapter != null) {
-            contentAdapter.unregisterBus();
-        }
-    }
-
     public void setRefreshListener(RefreshListener refreshListener) {
         this.refreshListener = refreshListener;
+    }
+
+    @Override
+    public void setCurrentBranch(Branch branch) {
+        this.currentBranch = branch;
+
+        rootContent = new Content();
+        currentSelectedContent = rootContent;
+
+        treeContent = new HashMap<Content, ListContents>();
+        treeContent.put(currentSelectedContent, null);
+
+        contentAdapter.clear();
+
+        contentAdapter = null;
+
+        getContent();
+
+        if (refreshListener != null) {
+            refreshListener.showRefresh();
+        }
+    }
+
+    private void getContent() {
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
+        repoContentsClient.setOnResultCallback(this);
+        repoContentsClient.setCurrentBranch(currentBranch);
+        repoContentsClient.execute();
+    }
+
+    private void getPathContent(Content item) {
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
+        repoContentsClient.setOnResultCallback(this);
+        repoContentsClient.setCurrentBranch(currentBranch);
+        repoContentsClient.execute();
     }
 }

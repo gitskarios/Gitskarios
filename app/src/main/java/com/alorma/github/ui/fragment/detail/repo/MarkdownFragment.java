@@ -1,44 +1,40 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
-import com.alorma.github.ui.events.ColorEvent;
+import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class MarkdownFragment extends Fragment implements BaseClient.OnResultCallback<String> {
+public class MarkdownFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager {
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
 
     private WebView webview;
     private RefreshListener refreshListener;
-    private Bus bus;
+    private String owner;
+    private String repo;
 
     public static MarkdownFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
         Bundle bundle = new Bundle();
@@ -62,8 +58,9 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            String owner = getArguments().getString(OWNER);
-            String repo = getArguments().getString(REPO);
+            owner = getArguments().getString(OWNER);
+            repo = getArguments().getString(REPO);
+
             webview = (WebView) view;
             webview.setPadding(0, 24, 0, 0);
             webview.getSettings().setJavaScriptEnabled(true);
@@ -75,7 +72,7 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
             webview.clearMatches();
             webview.clearSslPreferences();
             webview.getSettings().setUseWideViewPort(false);
-            webview.setBackgroundColor(getResources().getColor(R.color.gray_github));
+            webview.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
             if (refreshListener != null) {
                 refreshListener.showRefresh();
             }
@@ -102,6 +99,14 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
 
     public void setRefreshListener(RefreshListener refreshListener) {
         this.refreshListener = refreshListener;
+    }
+
+    @Override
+    public void setCurrentBranch(Branch branch) {
+        GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
+        repoMarkdownClient.setCurrentBranch(branch);
+        repoMarkdownClient.setCallback(this);
+        repoMarkdownClient.execute();
     }
 
     private class WebViewCustomClient extends WebViewClient {
@@ -131,10 +136,8 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
     }
 
     private void onError(String tag, RetrofitError error) {
-        Log.e(tag, "Error", error);
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(getActivity(), "Error: " + tag, Toast.LENGTH_SHORT).show();
-        }
+
+        ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment", error);
 
         if (error != null && error.getMessage() != null) {
             BugSenseHandler.addCrashExtraData(tag, error.getMessage());
@@ -143,30 +146,7 @@ public class MarkdownFragment extends Fragment implements BaseClient.OnResultCal
 
         if (refreshListener != null) {
             refreshListener.cancelRefresh();
+            refreshListener.onError(error);
         }
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        bus = new Bus();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        bus.unregister(this);
-    }
-
-    @Subscribe
-    public void colorReceived(ColorEvent event) {
-
     }
 }

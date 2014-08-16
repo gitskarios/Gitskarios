@@ -4,9 +4,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
-import com.alorma.github.ui.fragment.detail.repo.RepoInfosFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
 /**
@@ -16,6 +16,8 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
     private String owner;
     private String repo;
     private RefreshListener listener;
+    private MarkdownFragment markDownFragment;
+    private FilesTreeFragment filesTreeFragment;
 
     public RepoDetailPagerAdapter(FragmentManager fm, String owner, String repo, RefreshListener listener) {
         super(fm);
@@ -28,17 +30,26 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                return MarkdownFragment.newInstance(owner, repo, listener);
+                if (markDownFragment == null) {
+                    markDownFragment = MarkdownFragment.newInstance(owner, repo, listener);
+                }
+                return markDownFragment;
             case 1:
-                return FilesTreeFragment.newInstance(owner, repo, listener);
-            case 2:
-                return RepoInfosFragment.newInstance(owner, repo, listener);
+                if (filesTreeFragment == null) {
+                    filesTreeFragment = FilesTreeFragment.newInstance(owner, repo, listener);
+                }
+                return filesTreeFragment;
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
+    }
+
+    public void setCurrentBranch(Branch currentBranch) {
+        markDownFragment.setCurrentBranch(currentBranch);
+        filesTreeFragment.setCurrentBranch(currentBranch);
     }
 }

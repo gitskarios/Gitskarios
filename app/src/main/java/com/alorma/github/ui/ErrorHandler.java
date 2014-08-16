@@ -1,6 +1,7 @@
 package com.alorma.github.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,12 +18,14 @@ public class ErrorHandler {
     public static void onRetrofitError(Context context, String tag, RetrofitError error) {
         Log.e(tag, "Error", error);
         if (BuildConfig.DEBUG) {
-            Toast.makeText(context, "Error: " + tag, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error: " + tag + "\n" + error, Toast.LENGTH_SHORT).show();
         }
 
-        if (error != null && error.getMessage() != null) {
-            BugSenseHandler.addCrashExtraData(tag, error.getMessage());
-            BugSenseHandler.flush(context);
+        if (!BuildConfig.DEBUG) {
+            if (error != null && error.getMessage() != null) {
+                BugSenseHandler.addCrashExtraData(tag, error.getMessage());
+                BugSenseHandler.flush(context);
+            }
         }
     }
 

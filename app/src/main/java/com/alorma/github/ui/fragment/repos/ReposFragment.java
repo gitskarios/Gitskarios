@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
@@ -67,6 +66,7 @@ public class ReposFragment extends BaseReposListFragment {
 
     @Override
     protected void onResponse(ListRepos repos) {
+        super.onResponse(repos);
         if (reposAdapter == null) {
             setUpList();
         }

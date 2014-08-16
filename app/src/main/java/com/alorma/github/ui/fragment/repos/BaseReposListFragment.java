@@ -44,22 +44,6 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (reposAdapter != null) {
-            reposAdapter.registerBus();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (reposAdapter != null) {
-            reposAdapter.unregisterBus();
-        }
-    }
-
-    @Override
     protected void onQueryFail() {
         IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_code);
         iconDrawable.colorRes(R.color.gray_github_medium);
@@ -71,4 +55,11 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
     }
 
     protected abstract int getNoDataText();
+
+    @Override
+    protected void onResponse(ListRepos repos) {
+        if (repos == null || repos.size() == 0) {
+            onQueryFail();
+        }
+    }
 }

@@ -58,7 +58,6 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
                 swipe.setRefreshing(false);
             }
             onResponse(k);
-
             getLinkData(r);
         }
     }

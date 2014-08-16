@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="reservedKeys">
+        <item>notifications</item>
+        <item>showcases</item>
+        <item>settings</item>
+        <item>blog</item>
+        <item>explore</item>
+        <item>dashboard</item>
+        <item>repositories</item>
+        <item>#</item>
+        <item>site</item>
+        <item>security</item>
+        <item>contact</item>
+        <item>about</item>
+        <item>orgs</item>
+    </string-array>
+</resources>

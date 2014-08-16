@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 /**
  * Created by Bernat on 05/08/2014.
  */
-public abstract class LoadingListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class LoadingListFragment extends BaseListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     protected TextView emptyText;
     protected ImageView emptyIcon;
@@ -39,9 +42,9 @@ public abstract class LoadingListFragment extends ListFragment implements SwipeR
         emptyLy = view.findViewById(R.id.emptyLayout);
 
         swipe.setColorSchemeResources(R.color.accentDark,
-                R.color.complementary,
+                R.color.accent,
                 R.color.accentDark,
-                R.color.gray_github_dark);
+                R.color.accent);
         swipe.setOnRefreshListener(this);
 
     }

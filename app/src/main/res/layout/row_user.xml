@@ -10,7 +10,7 @@
     <CircularImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:id="@+id/imageView"
+        android:id="@+id/chevron"
         android:src="@drawable/ic_contact_picture"
         android:layout_margin="16dp" />
 

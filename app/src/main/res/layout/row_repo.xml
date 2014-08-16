@@ -3,17 +3,17 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeightLarge"
     android:padding="8dp">
 
     <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:id="@+id/repoTypeIcon"
-        android:layout_alignParentTop="true"
+        android:padding="8dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -28,6 +28,7 @@
         android:layout_toLeftOf="@+id/details"
         android:layout_toStartOf="@+id/details"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:paddingTop="0dp"
         android:textSize="20sp"
         android:textColor="@color/accentDark" />
@@ -35,7 +36,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
         android:layout_toRightOf="@id/repoTypeIcon"
         android:layout_toEndOf="@id/repoTypeIcon"
         android:layout_below="@id/repoName"
@@ -43,17 +43,9 @@
         android:layout_toStartOf="@+id/details"
         tools:text="New Text"
         android:id="@+id/descriptionText"
-        android:padding="8dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        tools:text="Small Text"
-        android:id="@+id/dateText"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/repoTypeIcon" />
-
+        android:padding="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"/>
 
     <LinearLayout
         android:orientation="vertical"
