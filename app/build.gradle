@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 13
-        versionName "1.0.13"
+        versionCode 110
+        versionName "1.1.0"
     }
     signingConfigs {
         playStore {
@@ -31,7 +31,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services:5.2.08'
+    compile 'com.google.android.gms:play-services:5.0+'
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.android.support:support-v13:20.0.0'
     compile 'com.android.support:recyclerview-v7:21.0.0-rc1'
