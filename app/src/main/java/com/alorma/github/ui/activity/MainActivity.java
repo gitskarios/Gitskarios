@@ -201,4 +201,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void closeMenu() {
         hideMenu();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (isMenuOpen) {
+            closeMenu();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
