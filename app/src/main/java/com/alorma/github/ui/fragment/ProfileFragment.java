@@ -51,7 +51,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
     private EnhancedTextView joinedText;
     private PaletteItem usedPalette;
     private Palette palette;
-    private PaletteItem adapterPaletteItem;
     private ArrayList<NumericTitle> numericTitles;
 
     public static ProfileFragment newInstance() {
@@ -125,6 +124,14 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 
         requestClient.setOnResultCallback(this);
         requestClient.execute();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (avatarImage != null && usedPalette != null) {
+            avatarImage.setBorderColor(usedPalette.getRgb());
+        }
     }
 
     private void replaceContent(Fragment fragment) {
@@ -232,9 +239,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
     public void setUpFromPalette(Palette palette) {
         this.palette = palette;
         if (palette != null) {
-
-            adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
-
             PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
 
             setUpFromPaletteItem(item);
@@ -260,10 +264,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         Fragment fragment = null;
         switch (view.getId()) {
             case R.id.num1:
-                if (adapterPaletteItem == null) {
-                    adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
-                }
-
                 fragment = ReposFragment.newInstance(user.login);
 
                 selectButton(num1Text);
