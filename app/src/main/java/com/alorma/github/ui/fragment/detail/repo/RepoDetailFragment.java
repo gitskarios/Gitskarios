@@ -408,7 +408,7 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
         @Override
         public void onFail(RetrofitError error) {
             if (error != null) {
-                if (error.getResponse().getStatus() == 404) {
+                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
                     repoStarred = false;
                     if (getActivity() != null) {
                         getActivity().invalidateOptionsMenu();
@@ -481,7 +481,7 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
         @Override
         public void onFail(RetrofitError error) {
             if (error != null) {
-                if (error.getResponse().getStatus() == 404) {
+                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
                     repoWatched = false;
                     if (getActivity() != null) {
                         getActivity().invalidateOptionsMenu();
