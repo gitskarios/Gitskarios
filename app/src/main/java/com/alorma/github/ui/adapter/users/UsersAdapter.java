@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.ListRepos;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -44,15 +46,10 @@ public class UsersAdapter extends ArrayAdapter<User> {
         return v;
     }
 
-    @Override
-    public void addAll(Collection<? extends User> collection) {
-        clear();
+    public void addAll(Collection<? extends User> collection, boolean paging) {
+        if (!paging) {
+            clear();
+        }
         super.addAll(collection);
-    }
-
-    @Override
-    public void addAll(User... items) {
-        clear();
-        super.addAll(items);
     }
 }

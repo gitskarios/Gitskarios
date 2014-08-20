@@ -24,6 +24,8 @@ import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
+import com.alorma.github.ui.fragment.users.FollowersFragment;
+import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.joanzapata.android.iconify.Iconify;

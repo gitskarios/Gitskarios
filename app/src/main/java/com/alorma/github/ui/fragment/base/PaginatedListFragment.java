@@ -23,6 +23,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
     protected static final String USERNAME = "USERNAME";
 
     private PaginationLink bottomPaginationLink;
+    protected boolean paging;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
     public void onScroll(AbsListView absListView, int first, int last, int total) {
         if (total > 0 && first + last == total) {
             if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
+                paging = true;
                 executePaginatedRequest(bottomPaginationLink.page);
                 bottomPaginationLink = null;
             }
@@ -58,7 +60,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
                 swipe.setRefreshing(false);
             }
 
-            if (k instanceof List) {
+            if (!paging && k instanceof List) {
                 if (emptyLy != null && k != null && ((List) k).size() > 0) {
                     emptyLy.setVisibility(View.GONE);
                 }

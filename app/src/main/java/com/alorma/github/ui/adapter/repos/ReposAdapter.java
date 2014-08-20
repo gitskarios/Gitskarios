@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -58,15 +59,10 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         return v;
     }
 
-    @Override
-    public void addAll(Collection<? extends Repo> collection) {
-        clear();
+    public void addAll(Collection<? extends Repo> collection, boolean paging) {
+        if (!paging) {
+            clear();
+        }
         super.addAll(collection);
-    }
-
-    @Override
-    public void addAll(Repo... items) {
-        clear();
-        super.addAll(items);
     }
 }

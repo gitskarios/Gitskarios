@@ -57,15 +57,6 @@ public class StarredReposFragment extends BaseReposListFragment {
     }
 
     @Override
-    protected void onResponse(ListRepos repos) {
-        super.onResponse(repos);
-        if (reposAdapter == null) {
-            setUpList();
-        }
-        reposAdapter.addAll(repos);
-    }
-
-    @Override
     protected int getNoDataText() {
         return R.string.no_starred_repositories;
     }
