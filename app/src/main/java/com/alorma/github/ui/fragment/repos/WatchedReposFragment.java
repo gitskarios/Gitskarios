@@ -37,10 +37,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         WatchedReposClient client;
 
-        if (reposAdapter != null) {
-            reposAdapter.clear();
-        }
-
         if (swipe != null) {
             swipe.setRefreshing(true);
         }
@@ -65,15 +61,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
         WatchedReposClient client = new WatchedReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
-    }
-
-    @Override
-    protected void onResponse(ListRepos repos) {
-        super.onResponse(repos);
-        if (reposAdapter == null) {
-            setUpList();
-        }
-        reposAdapter.addAll(repos);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.users;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,49 +20,9 @@ import java.util.ArrayList;
 /**
  * Created by Bernat on 13/07/2014.
  */
-public class FollowersFragment extends PaginatedListFragment<ListUsers> {
-    private String username;
+public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUsers> {
+
     private UsersAdapter usersAdapter;
-
-    public static FollowersFragment newInstance() {
-        return new FollowersFragment();
-    }
-
-    public static FollowersFragment newInstance(String username) {
-        FollowersFragment followersFragment = new FollowersFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-
-            followersFragment.setArguments(bundle);
-        }
-        return followersFragment;
-    }
-
-    @Override
-    protected void executeRequest() {
-        UserFollowersClient client;
-
-        if (usersAdapter != null) {
-            usersAdapter.clear();
-        }
-
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
-
-        client = new UserFollowersClient(getActivity(), username);
-
-        client.setOnResultCallback(this);
-        client.execute();
-    }
-
-    @Override
-    protected void executePaginatedRequest(int page) {
-        UserFollowersClient client = new UserFollowersClient(getActivity(), username, page);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
 
     @Override
     protected void onQueryFail() {
@@ -70,7 +30,7 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
         iconDrawable.colorRes(R.color.gray_github_medium);
         emptyIcon.setImageDrawable(iconDrawable);
 
-        emptyText.setText(R.string.no_followers);
+        emptyText.setText(emptyText());
 
         emptyLy.setVisibility(View.VISIBLE);
         if (swipe != null) {
@@ -88,7 +48,7 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
                 if (usersAdapter == null) {
                     setUpList();
                 }
-                usersAdapter.addAll(users);
+                usersAdapter.addAll(users, paging);
             } else {
                 onQueryFail();
             }
@@ -109,5 +69,7 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
             startActivity(launcherIntent);
         }
     }
+
+    public abstract int emptyText();
 }
 

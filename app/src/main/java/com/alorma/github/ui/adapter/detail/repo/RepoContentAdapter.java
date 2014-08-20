@@ -23,7 +23,6 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
 
     private final LayoutInflater inflater;
     private Context context;
-    private int rgb;
 
     public RepoContentAdapter(Context context, List<Content> objects) {
         super(context, 0, objects);
@@ -59,7 +58,7 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
 
         if (iconDrawable != null) {
             iconDrawable.sizeDp(28);
-            iconDrawable.color(rgb);
+            iconDrawable.colorRes(R.color.gray_github_medium);
 
             image.setImageDrawable(iconDrawable);
         }

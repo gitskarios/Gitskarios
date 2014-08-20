@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+    <string name="action_donate">Donate</string>
     <string name="no_gist_description">No description</string>
     <string name="navigation_gists">Gists</string>
     <string name="title_profile">Profile</string>

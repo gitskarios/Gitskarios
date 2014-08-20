@@ -37,11 +37,6 @@ public class ReposFragment extends BaseReposListFragment {
     @Override
     protected void executeRequest() {
         BaseReposClient client;
-
-        if (reposAdapter != null) {
-            reposAdapter.clear();
-        }
-
         if (swipe != null) {
             swipe.setRefreshing(true);
         }
@@ -62,15 +57,6 @@ public class ReposFragment extends BaseReposListFragment {
         UserReposClient client = new UserReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
-    }
-
-    @Override
-    protected void onResponse(ListRepos repos) {
-        super.onResponse(repos);
-        if (reposAdapter == null) {
-            setUpList();
-        }
-        reposAdapter.addAll(repos);
     }
 
     @Override
