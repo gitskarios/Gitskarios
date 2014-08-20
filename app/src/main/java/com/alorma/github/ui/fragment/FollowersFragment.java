@@ -43,10 +43,6 @@ public class FollowersFragment extends PaginatedListFragment<ListUsers> {
     protected void executeRequest() {
         UserFollowersClient client;
 
-        if (usersAdapter != null) {
-            usersAdapter.clear();
-        }
-
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
         }

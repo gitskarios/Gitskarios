@@ -37,10 +37,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         WatchedReposClient client;
 
-        if (reposAdapter != null) {
-            reposAdapter.clear();
-        }
-
         if (swipe != null) {
             swipe.setRefreshing(true);
         }

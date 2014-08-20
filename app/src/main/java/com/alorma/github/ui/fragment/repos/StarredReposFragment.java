@@ -30,10 +30,6 @@ public class StarredReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         BaseReposClient client;
 
-        if (reposAdapter != null) {
-            reposAdapter.clear();
-        }
-
         if (swipe != null) {
             swipe.setRefreshing(true);
         }

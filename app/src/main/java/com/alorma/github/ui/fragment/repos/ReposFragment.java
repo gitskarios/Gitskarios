@@ -37,11 +37,6 @@ public class ReposFragment extends BaseReposListFragment {
     @Override
     protected void executeRequest() {
         BaseReposClient client;
-
-        if (reposAdapter != null) {
-            reposAdapter.clear();
-        }
-
         if (swipe != null) {
             swipe.setRefreshing(true);
         }

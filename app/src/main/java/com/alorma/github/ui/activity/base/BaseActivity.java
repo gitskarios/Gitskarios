@@ -43,9 +43,8 @@ public class BaseActivity extends Activity {
             t.send(new HitBuilders.AppViewBuilder().build());
 
             BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
-
-            ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
         }
+        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
     }
 
     @Override

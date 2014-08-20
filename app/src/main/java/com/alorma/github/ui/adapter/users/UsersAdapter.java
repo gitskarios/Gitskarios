@@ -10,6 +10,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,5 +42,17 @@ public class UsersAdapter extends ArrayAdapter<User> {
         ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.imageView);
 
         return v;
+    }
+
+    @Override
+    public void addAll(Collection<? extends User> collection) {
+        clear();
+        super.addAll(collection);
+    }
+
+    @Override
+    public void addAll(User... items) {
+        clear();
+        super.addAll(items);
     }
 }

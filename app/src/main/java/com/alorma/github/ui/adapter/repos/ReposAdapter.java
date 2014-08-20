@@ -11,6 +11,7 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ReposAdapter extends ArrayAdapter<Repo> {
@@ -55,5 +56,17 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
         reposHolder.textLanguage.setText(repo.language);
         return v;
+    }
+
+    @Override
+    public void addAll(Collection<? extends Repo> collection) {
+        clear();
+        super.addAll(collection);
+    }
+
+    @Override
+    public void addAll(Repo... items) {
+        clear();
+        super.addAll(items);
     }
 }
