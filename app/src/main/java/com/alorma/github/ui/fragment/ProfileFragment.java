@@ -178,6 +178,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         if (user.email != null && !user.email.isEmpty()) {
             mailText.setText(user.email);
             mailText.setPrefixIcon(Iconify.IconValue.fa_envelope_o);
+            mailText.setPrefixColorRes(R.color.accent);
             mailText.setVisibility(View.VISIBLE);
         } else {
             mailText.setVisibility(View.GONE);
@@ -186,6 +187,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         if (user.blog != null && !user.blog.isEmpty()) {
             blogText.setText(user.blog);
             blogText.setPrefixIcon(Iconify.IconValue.fa_link);
+            blogText.setPrefixColorRes(R.color.accent);
             blogText.setVisibility(View.VISIBLE);
         } else {
             blogText.setVisibility(View.GONE);
@@ -193,9 +195,9 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 
         if (user.created_at != null) {
             CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
-
             joinedText.setText("Joined on " + format);
             joinedText.setPrefixIcon(Iconify.IconValue.fa_clock_o);
+            joinedText.setPrefixColorRes(R.color.accent);
             joinedText.setVisibility(View.VISIBLE);
         } else {
             joinedText.setVisibility(View.GONE);
