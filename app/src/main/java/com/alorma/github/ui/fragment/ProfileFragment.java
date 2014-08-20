@@ -307,10 +307,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
             if (numText != null) {
                 numericTitle.setSelected(numericTitle == numText);
             }
-
-            if (usedPalette != null && usedPalette.getRgb() != 0x000000) {
-                numericTitle.setRgb(usedPalette.getRgb());
-            }
         }
     }
 }
