@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.ListRepos;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,5 +44,12 @@ public class UsersAdapter extends ArrayAdapter<User> {
         ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.imageView);
 
         return v;
+    }
+
+    public void addAll(Collection<? extends User> collection, boolean paging) {
+        if (!paging) {
+            clear();
+        }
+        super.addAll(collection);
     }
 }

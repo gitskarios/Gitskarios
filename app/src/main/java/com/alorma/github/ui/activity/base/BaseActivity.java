@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.UnAuthIntent;
@@ -30,19 +31,19 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!BuildConfig.DEBUG) {
+            // Get tracker.
+            Tracker t = ((GistsApplication) getApplication()).getTracker();
 
-        // Get tracker.
-        Tracker t = ((GistsApplication) getApplication()).getTracker();
+            // Set screen name.
+            // Where path is a String representing the screen name.
+            t.setScreenName(this.getClass().getSimpleName());
 
-        // Set screen name.
-        // Where path is a String representing the screen name.
-        t.setScreenName(this.getClass().getSimpleName());
+            // Send a screen view.
+            t.send(new HitBuilders.AppViewBuilder().build());
 
-        // Send a screen view.
-        t.send(new HitBuilders.AppViewBuilder().build());
-
-        BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
-
+            BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
+        }
         ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
     }
 

@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TabTitle;
 import android.widget.Toast;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -31,8 +29,6 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -369,13 +365,12 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
 
                 getActivity().invalidateOptionsMenu();
 
-                if (getActivity() != null && getActivity().getActionBar() != null) {
+                if (getActivity().getActionBar() != null) {
                     if (repo.parent != null) {
                         getActivity().getActionBar().setSubtitle(getResources().getString(R.string.fork_of, repo.parent.full_name));
                     }
                 }
             }
-
             cancelRefresh();
         }
     }

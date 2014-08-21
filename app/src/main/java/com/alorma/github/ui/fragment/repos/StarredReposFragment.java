@@ -30,10 +30,6 @@ public class StarredReposFragment extends BaseReposListFragment {
     protected void executeRequest() {
         BaseReposClient client;
 
-        if (reposAdapter != null) {
-            reposAdapter.clear();
-        }
-
         if (swipe != null) {
             swipe.setRefreshing(true);
         }
@@ -58,15 +54,6 @@ public class StarredReposFragment extends BaseReposListFragment {
         StarredReposClient client = new StarredReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
-    }
-
-    @Override
-    protected void onResponse(ListRepos repos) {
-        super.onResponse(repos);
-        if (reposAdapter == null) {
-            setUpList();
-        }
-        reposAdapter.addAll(repos);
     }
 
     @Override

@@ -24,6 +24,8 @@ import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
+import com.alorma.github.ui.fragment.users.FollowersFragment;
+import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.joanzapata.android.iconify.Iconify;
@@ -49,7 +51,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
     private EnhancedTextView joinedText;
     private PaletteItem usedPalette;
     private Palette palette;
-    private PaletteItem adapterPaletteItem;
     private ArrayList<NumericTitle> numericTitles;
 
     public static ProfileFragment newInstance() {
@@ -125,6 +126,14 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         requestClient.execute();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (avatarImage != null && usedPalette != null) {
+            avatarImage.setBorderColor(usedPalette.getRgb());
+        }
+    }
+
     private void replaceContent(Fragment fragment) {
         if (fragment != null) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -178,6 +187,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         if (user.email != null && !user.email.isEmpty()) {
             mailText.setText(user.email);
             mailText.setPrefixIcon(Iconify.IconValue.fa_envelope_o);
+            mailText.setPrefixColorRes(R.color.accent);
             mailText.setVisibility(View.VISIBLE);
         } else {
             mailText.setVisibility(View.GONE);
@@ -186,6 +196,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         if (user.blog != null && !user.blog.isEmpty()) {
             blogText.setText(user.blog);
             blogText.setPrefixIcon(Iconify.IconValue.fa_link);
+            blogText.setPrefixColorRes(R.color.accent);
             blogText.setVisibility(View.VISIBLE);
         } else {
             blogText.setVisibility(View.GONE);
@@ -193,9 +204,9 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 
         if (user.created_at != null) {
             CharSequence format = DateFormat.format("MMM dd, yyyy", user.created_at);
-
             joinedText.setText("Joined on " + format);
             joinedText.setPrefixIcon(Iconify.IconValue.fa_clock_o);
+            joinedText.setPrefixColorRes(R.color.accent);
             joinedText.setVisibility(View.VISIBLE);
         } else {
             joinedText.setVisibility(View.GONE);
@@ -228,9 +239,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
     public void setUpFromPalette(Palette palette) {
         this.palette = palette;
         if (palette != null) {
-
-            adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
-
             PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
 
             setUpFromPaletteItem(item);
@@ -256,10 +264,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         Fragment fragment = null;
         switch (view.getId()) {
             case R.id.num1:
-                if (adapterPaletteItem == null) {
-                    adapterPaletteItem = PaletteUtils.getDarkPaletteItem(palette);
-                }
-
                 fragment = ReposFragment.newInstance(user.login);
 
                 selectButton(num1Text);
@@ -302,10 +306,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
         for (NumericTitle numericTitle : numericTitles) {
             if (numText != null) {
                 numericTitle.setSelected(numericTitle == numText);
-            }
-
-            if (usedPalette != null && usedPalette.getRgb() != 0x000000) {
-                numericTitle.setRgb(usedPalette.getRgb());
             }
         }
     }
