@@ -263,11 +263,6 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
         }
     }
 
-    @Override
-    public void onError(RetrofitError error) {
-        ErrorHandler.onRetrofitError(getActivity(), "RepoDetailFragment", error);
-    }
-
     private void selectButton(TabTitle tabSelected) {
         for (TabTitle tab : tabs) {
             if (tab != null) {

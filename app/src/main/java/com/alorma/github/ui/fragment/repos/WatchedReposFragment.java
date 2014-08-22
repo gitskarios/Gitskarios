@@ -35,11 +35,8 @@ public class WatchedReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executeRequest() {
+        super.executeRequest();
         WatchedReposClient client;
-
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
@@ -53,11 +50,7 @@ public class WatchedReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
-
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
-
+        super.executePaginatedRequest(page);
         WatchedReposClient client = new WatchedReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();

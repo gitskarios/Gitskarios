@@ -44,27 +44,15 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
     }
 
     @Override
-    protected void onQueryFail() {
-        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_code);
-        iconDrawable.colorRes(R.color.gray_github_medium);
-        emptyIcon.setImageDrawable(iconDrawable);
-
-        emptyText.setText(getNoDataText());
-
-        emptyLy.setVisibility(View.VISIBLE);
+    protected void onResponse(ListRepos repos) {
+        if (reposAdapter == null) {
+            setUpList();
+        }
+        reposAdapter.addAll(repos, paging);
     }
 
-    protected abstract int getNoDataText();
-
     @Override
-    protected void onResponse(ListRepos repos) {
-        if (repos == null || repos.size() == 0) {
-            onQueryFail();
-        } else {
-            if (reposAdapter == null) {
-                setUpList();
-            }
-            reposAdapter.addAll(repos, paging);
-        }
+    protected Iconify.IconValue getNoDataIcon() {
+        return Iconify.IconValue.fa_code;
     }
 }

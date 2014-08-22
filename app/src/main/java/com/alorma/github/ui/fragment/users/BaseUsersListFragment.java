@@ -25,34 +25,11 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
     private UsersAdapter usersAdapter;
 
     @Override
-    protected void onQueryFail() {
-        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_group);
-        iconDrawable.colorRes(R.color.gray_github_medium);
-        emptyIcon.setImageDrawable(iconDrawable);
-
-        emptyText.setText(emptyText());
-
-        emptyLy.setVisibility(View.VISIBLE);
-        if (swipe != null) {
-            swipe.setRefreshing(false);
-        }
-    }
-
-    @Override
     protected void onResponse(ListUsers users) {
-        if (users != null) {
-            if (swipe != null) {
-                swipe.setRefreshing(false);
-            }
-            if (users.size() > 0) {
-                if (usersAdapter == null) {
-                    setUpList();
-                }
-                usersAdapter.addAll(users, paging);
-            } else {
-                onQueryFail();
-            }
+        if (usersAdapter == null) {
+            setUpList();
         }
+        usersAdapter.addAll(users, paging);
     }
 
     private void setUpList() {
@@ -70,6 +47,9 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
         }
     }
 
-    public abstract int emptyText();
+    @Override
+    protected Iconify.IconValue getNoDataIcon() {
+        return Iconify.IconValue.fa_group;
+    }
 }
 

@@ -7,6 +7,7 @@ import com.alorma.github.sdk.bean.dto.response.ListGists;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.adapter.gists.GistsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 
@@ -32,13 +33,7 @@ public class GistsFragment extends PaginatedListFragment<ListGists> {
 
     @Override
     protected void executeRequest() {
-        UserGistsClient client;
-
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
-
-        client = new UserGistsClient(getActivity(), username);
+        UserGistsClient client = new UserGistsClient(getActivity(), username);
 
         client.setOnResultCallback(this);
         client.execute();
@@ -65,12 +60,19 @@ public class GistsFragment extends PaginatedListFragment<ListGists> {
     }
 
     @Override
-    protected void onQueryFail() {
-
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            username = getArguments().getString(USERNAME);
+        }
     }
 
     @Override
-    protected void loadArguments() {
+    protected Iconify.IconValue getNoDataIcon() {
+        return null;
+    }
 
+    @Override
+    protected int getNoDataText() {
+        return 0;
     }
 }

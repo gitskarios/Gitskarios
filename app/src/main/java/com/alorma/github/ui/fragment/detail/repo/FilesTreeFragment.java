@@ -126,7 +126,6 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
             ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
             if (refreshListener != null) {
                 refreshListener.cancelRefresh();
-                refreshListener.onError(error);
             }
         }
     }

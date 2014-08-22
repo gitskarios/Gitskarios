@@ -9,6 +9,7 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.sdk.bean.PaginationLink;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.ui.ErrorHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
         executeRequest();
     }
 
-    protected abstract void executeRequest();
+    protected void executeRequest() {
+        startRefresh();
+    }
 
     @Override
     public void onScrollStateChanged(AbsListView absListView, int state) {
@@ -51,42 +54,36 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
         }
     }
 
-    protected abstract void executePaginatedRequest(int page);
+    protected void executePaginatedRequest(int page) {
+        startRefresh();
+    }
 
     @Override
     public void onResponseOk(K k, Response r) {
         if (getActivity() != null && isAdded()) {
-            if (swipe != null) {
-                swipe.setRefreshing(false);
-            }
+            stopRefresh();
 
-            if (!paging && k != null &&  k instanceof List) {
+            if (!paging && k != null && k instanceof List) {
                 if (emptyLy != null && ((List) k).size() > 0) {
                     emptyLy.setVisibility(View.GONE);
+
+                    getLinkData(r);
+                    onResponse(k);
                 } else {
-                    if (swipe != null) {
-                        swipe.setRefreshing(false);
-                    }
+                    setEmpty();
                 }
+            } else {
+                setEmpty();
             }
-            onResponse(k);
-            getLinkData(r);
         }
     }
 
     @Override
     public void onFail(RetrofitError error) {
-        if (swipe != null) {
-            swipe.setRefreshing(false);
-        }
-
-        if (getActivity() != null && isAdded()) {
-            onQueryFail();
-        }
-
+        stopRefresh();
+        setEmpty();
+        ErrorHandler.onRetrofitError(getActivity(), this.getClass().getSimpleName(), error);
     }
-
-    protected abstract void onQueryFail();
 
     protected abstract void onResponse(K k);
 

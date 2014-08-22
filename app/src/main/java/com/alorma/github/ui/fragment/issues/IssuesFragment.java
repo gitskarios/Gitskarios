@@ -10,7 +10,9 @@ import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.BaseListFragment;
+import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.joanzapata.android.iconify.Iconify;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -18,9 +20,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListIssues> {
+public class IssuesFragment extends PaginatedListFragment<ListIssues> {
 
-    private RefreshListener refreshListener;
     private String owner;
     private String repository;
 
@@ -36,12 +37,8 @@ public class IssuesFragment extends BaseListFragment implements BaseClient.OnRes
     }
 
     protected void executeRequest() {
+        super.executeRequest();
         if (owner != null && repository != null) {
-
-            if (refreshListener != null) {
-                refreshListener.showRefresh();
-            }
-
             GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), owner, repository);
             issuesClient.setOnResultCallback(this);
             issuesClient.execute();
@@ -49,25 +46,21 @@ public class IssuesFragment extends BaseListFragment implements BaseClient.OnRes
     }
 
     @Override
-    public void onResponseOk(ListIssues issues, Response response) {
+    protected void onResponse(ListIssues issues) {
         if (issues != null && issues.size() > 0) {
-
-            if (refreshListener != null) {
-                refreshListener.cancelRefresh();
-            }
-
             IssuesAdapter adapter = new IssuesAdapter(getActivity(), issues);
             setListAdapter(adapter);
         }
     }
 
     @Override
-    public void onFail(RetrofitError error) {
-        ErrorHandler.onRetrofitError(getActivity(), "IssuesFragment", error);
+    protected Iconify.IconValue getNoDataIcon() {
+        return null;
     }
 
-    public void setRefreshListener(RefreshListener listener) {
-        this.refreshListener = listener;
+    @Override
+    protected int getNoDataText() {
+        return 0;
     }
 
     @Override
@@ -77,5 +70,10 @@ public class IssuesFragment extends BaseListFragment implements BaseClient.OnRes
             this.repository = getArguments().getString("REPO");
         }
         executeRequest();
+    }
+
+    @Override
+    protected boolean useInnerSwipeRefresh() {
+        return false;
     }
 }
