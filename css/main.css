@@ -94,7 +94,7 @@ dark-bar {
 
 
 }
-@media (min-width: 401px) and (max-width: 1600px) {
+@media (min-width: 401px) and (max-width: 1024px) {
     .navbar-default .navbar-nav  a  {
         background-image: none !important;
         border-top: 3px solid rgba(0,0,0,0);
@@ -136,5 +136,79 @@ dark-bar {
     .google-play {
         margin-top: 60px;
         margin-left: 40%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .navbar-default .navbar-nav  a  {
+        background-image: none !important;
+        border-top: 3px solid rgba(0,0,0,0);
+        box-shadow: none;
+    }
+
+    .navbar-default .navbar-nav > .active > a  {
+        background-image: none !important;
+        border-top: 3px solid #fff;
+        box-shadow: none;
+    }
+
+    .container {
+       margin: 0 0 0 0!important;
+       width: 100%;
+    }
+    .first.row {
+        height: 550px !important;
+    }
+    .first.row h2 {
+        margin-bottom: 40px;
+        margin-top: 40px;
+    }
+    .first.row p {
+        font-size: 16px;
+        margin-bottom: 40px;
+    }
+    .dark-bar {
+        width: 105%;
+        height: 50px;
+        background-color: #0B417F;
+        color: #fff;
+    }
+    div.carousel {
+        text-align: center;
+        margin-top: 50px
+    }
+    div.carousel div {
+        display: inline;
+        text-align: center;
+    }
+    .google-play {
+        margin-top: 60px;
+        margin-left: 45%;
+    }
+    .image img {
+        height: 300px !important;
+        -webkit-transition: all 750ms ease;
+        -moz-transition: all 750ms ease;
+        -ms-transition: all 750ms ease;
+        -o-transition: all 750ms ease;
+        transition: all 750ms ease;
+    }
+    .image img:hover {
+        height: 400px !important;
+    }
+    .image-2 img {
+        height: 400px !important;
+    }
+    .feature-image {
+        height: 500px;
+        background-image: url(/img/htc-repos.png);
+        background-position: center 5px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        -webkit-transition: all 750ms ease-in;
+        -moz-transition: all 750ms ease-in;
+        -ms-transition: all 750ms ease-in;
+        -o-transition: all 750ms ease-in;
+        transition: all 750ms ease-in;
     }
 }

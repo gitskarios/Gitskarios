@@ -41,7 +41,8 @@ $(document).ready(function () {
                     }
                 ]
         });
-        $.ajax({
+
+    } $.ajax({
             url: 'https://api.github.com/repos/alorma/Gitskarios',
             dataType: 'jsonp',
             method: 'get',
@@ -50,5 +51,4 @@ $(document).ready(function () {
                 $('#follow-count').html(data.data.watchers_count);
             }
         });
-    }
 });
