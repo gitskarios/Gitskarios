@@ -1,0 +1,69 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
+* {
+    font-family: "Open sans", "Calibri";
+}
+
+.dark-bar {
+    height: 50px;
+    width: 100%;
+    background-color: #0B417F;
+}
+.dark-bar div {
+    width: 100%;
+    text-align: center;
+    padding-top: 15px;
+}
+.dark-bar span.glyphicon {
+    color: #97c5ff;
+    margin-right: 10px;
+
+}
+.dark-bar span:not(.glyphicon) {
+    margin-right: 15px;
+
+}
+.feature-image {
+    height: 150px;
+    background-image: url(/img/htc-repos.png);
+    background-position: center 5px;
+    background-size: 200px;
+    background-repeat: no-repeat;
+}
+.carousel div img{
+    height: 375px;
+    margin: 0 auto;
+}
+.google-play {
+    margin: 20px auto 20px 25%;
+}
+
+
+.navbar {
+    border-width: 0;
+    box-shadow: none;
+}
+.navbar * {
+    background-color: #224C7F !important;
+    text-shadow: none;
+}
+.navbar .icon-bar {
+    background-color: #fff !important;
+}
+.navbar a {
+
+    color: #ffffff !important;
+}
+
+.first.row {
+    background-color: #224C7F !important;
+    color: #fff;
+}
+
+
+
