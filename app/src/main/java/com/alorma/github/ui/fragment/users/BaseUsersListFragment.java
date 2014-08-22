@@ -33,17 +33,11 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
         emptyText.setText(emptyText());
 
         emptyLy.setVisibility(View.VISIBLE);
-        if (swipe != null) {
-            swipe.setRefreshing(false);
-        }
     }
 
     @Override
     protected void onResponse(ListUsers users) {
         if (users != null) {
-            if (swipe != null) {
-                swipe.setRefreshing(false);
-            }
             if (users.size() > 0) {
                 if (usersAdapter == null) {
                     setUpList();

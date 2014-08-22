@@ -28,6 +28,7 @@ public class FollowersFragment extends BaseUsersListFragment {
 
     @Override
     protected void executeRequest() {
+        super.executeRequest();
         UserFollowersClient client;
 
         if (getArguments() != null) {
@@ -42,6 +43,7 @@ public class FollowersFragment extends BaseUsersListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
         UserFollowersClient client = new UserFollowersClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();

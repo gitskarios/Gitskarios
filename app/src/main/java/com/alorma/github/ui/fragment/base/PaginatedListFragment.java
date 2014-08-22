@@ -33,7 +33,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
         executeRequest();
     }
 
-    protected abstract void executeRequest();
+    protected void executeRequest() {
+        startRefresh();
+    }
 
     @Override
     public void onScrollStateChanged(AbsListView absListView, int state) {
@@ -51,17 +53,17 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
         }
     }
 
-    protected abstract void executePaginatedRequest(int page);
+    protected void executePaginatedRequest(int page) {
+        startRefresh();
+    }
 
     @Override
     public void onResponseOk(K k, Response r) {
         if (getActivity() != null && isAdded()) {
-            if (swipe != null) {
-                swipe.setRefreshing(false);
-            }
+            stopRefresh();
 
-            if (!paging && k instanceof List) {
-                if (emptyLy != null && k != null && ((List) k).size() > 0) {
+            if (!paging && k != null && k instanceof List) {
+                if (emptyLy != null && ((List) k).size() > 0) {
                     emptyLy.setVisibility(View.GONE);
                 }
             }
@@ -72,9 +74,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
     @Override
     public void onFail(RetrofitError error) {
-        if (swipe != null) {
-            swipe.setRefreshing(false);
-        }
+        stopRefresh();
 
         if (getActivity() != null && isAdded()) {
             onQueryFail();

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
+import com.alorma.github.ui.listeners.RefreshListener;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -22,7 +23,8 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
     protected TextView emptyText;
     protected ImageView emptyIcon;
     protected View emptyLy;
-    protected SwipeRefreshLayout swipe;
+    private SwipeRefreshLayout swipe;
+    private RefreshListener refreshListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,11 +43,38 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
         emptyText = (TextView) view.findViewById(R.id.emptyText);
         emptyLy = view.findViewById(R.id.emptyLayout);
 
-        swipe.setColorSchemeResources(R.color.accentDark,
-                R.color.accent,
-                R.color.accentDark,
-                R.color.accent);
-        swipe.setOnRefreshListener(this);
+        if (useInnerSwipeRefresh()) {
+            swipe.setColorSchemeResources(R.color.accent,
+                    R.color.white,
+                    R.color.accentDark,
+                    R.color.white);
+            swipe.setOnRefreshListener(this);
+        } else {
+            swipe.setVisibility(View.GONE);
+        }
+    }
 
+    protected boolean useInnerSwipeRefresh() {
+        return true;
+    }
+
+    public void setRefreshListener(RefreshListener refreshListener) {
+        this.refreshListener = refreshListener;
+    }
+
+    protected void startRefresh() {
+        if (useInnerSwipeRefresh() && swipe != null) {
+            swipe.setRefreshing(true);
+        } else if (refreshListener != null) {
+            refreshListener.showRefresh();
+        }
+    }
+
+    protected void stopRefresh() {
+        if (useInnerSwipeRefresh() && swipe != null) {
+            swipe.setRefreshing(false);
+        } else if (refreshListener != null) {
+            refreshListener.cancelRefresh();
+        }
     }
 }

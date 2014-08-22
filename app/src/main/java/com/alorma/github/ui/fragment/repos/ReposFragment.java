@@ -36,11 +36,8 @@ public class ReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executeRequest() {
+        super.executeRequest();
         BaseReposClient client;
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
-
         client = new UserReposClient(getActivity(), username);
 
         client.setOnResultCallback(this);
@@ -49,11 +46,7 @@ public class ReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
-
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
-
+        super.executePaginatedRequest(page);
         UserReposClient client = new UserReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();

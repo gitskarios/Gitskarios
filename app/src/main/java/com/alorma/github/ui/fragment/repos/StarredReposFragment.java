@@ -28,11 +28,8 @@ public class StarredReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executeRequest() {
+        super.executeRequest();
         BaseReposClient client;
-
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
@@ -46,11 +43,7 @@ public class StarredReposFragment extends BaseReposListFragment {
 
     @Override
     protected void executePaginatedRequest(int page) {
-
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
-
+        super.executePaginatedRequest(page);
         StarredReposClient client = new StarredReposClient(getActivity(), username, page);
         client.setOnResultCallback(this);
         client.execute();
