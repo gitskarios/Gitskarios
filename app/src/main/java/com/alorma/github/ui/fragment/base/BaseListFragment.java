@@ -14,7 +14,7 @@ import com.google.android.gms.analytics.Tracker;
 /**
  * Created by Bernat on 12/08/2014.
  */
-public class BaseListFragment extends ListFragment {
+public abstract class BaseListFragment extends ListFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,5 +40,11 @@ public class BaseListFragment extends ListFragment {
         if (listView != null) {
             listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
         }
+        
+        loadArguments();
     }
+
+    protected abstract void loadArguments();
+
+
 }

@@ -76,6 +76,11 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
     }
 
     @Override
+    protected void loadArguments() {
+
+    }
+
+    @Override
     public void onResponseOk(ListContents contents, Response r) {
         displayContent(contents);
     }

@@ -68,4 +68,9 @@ public class GistsFragment extends PaginatedListFragment<ListGists> {
     protected void onQueryFail() {
 
     }
+
+    @Override
+    protected void loadArguments() {
+
+    }
 }

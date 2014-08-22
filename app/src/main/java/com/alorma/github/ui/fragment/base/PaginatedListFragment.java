@@ -60,9 +60,13 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
                 swipe.setRefreshing(false);
             }
 
-            if (!paging && k instanceof List) {
-                if (emptyLy != null && k != null && ((List) k).size() > 0) {
+            if (!paging && k != null &&  k instanceof List) {
+                if (emptyLy != null && ((List) k).size() > 0) {
                     emptyLy.setVisibility(View.GONE);
+                } else {
+                    if (swipe != null) {
+                        swipe.setRefreshing(false);
+                    }
                 }
             }
             onResponse(k);

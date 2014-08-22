@@ -51,5 +51,10 @@ public class FollowersFragment extends BaseUsersListFragment {
     public int emptyText() {
         return R.string.no_followers;
     }
+
+    @Override
+    protected void loadArguments() {
+
+    }
 }
 

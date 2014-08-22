@@ -35,6 +35,11 @@ public class ReposFragment extends BaseReposListFragment {
     }
 
     @Override
+    protected void loadArguments() {
+
+    }
+
+    @Override
     protected void executeRequest() {
         BaseReposClient client;
         if (swipe != null) {

@@ -38,6 +38,11 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
     }
 
     @Override
+    protected void loadArguments() {
+
+    }
+
+    @Override
     protected void executeRequest() {
         if (query != null) {
             if (swipe != null) {

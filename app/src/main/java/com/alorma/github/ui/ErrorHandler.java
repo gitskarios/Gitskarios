@@ -19,9 +19,7 @@ public class ErrorHandler {
         Log.e(tag, "Error", error);
         if (BuildConfig.DEBUG) {
             Toast.makeText(context, "Error: " + tag + "\n" + error, Toast.LENGTH_SHORT).show();
-        }
-
-        if (!BuildConfig.DEBUG) {
+        } else {
             if (error != null && error.getMessage() != null) {
                 BugSenseHandler.addCrashExtraData(tag, error.getMessage());
                 BugSenseHandler.flush(context);

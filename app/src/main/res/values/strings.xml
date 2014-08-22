@@ -30,8 +30,9 @@
     <string name="star_icon_text">{fa_star} %1$d</string>
     <string name="fork_icon_text">{fa_code_fork} %1$d</string>
     <string name="unauthorized">Unauthorized acces</string>
-    <string name="Readme">readme</string>
-    <string name="Source">source</string>
+    <string name="readme">Readme</string>
+    <string name="source">Source</string>
+    <string name="issues">Issues</string>
     <string name="Info">info</string>
     <string name="client_id">60f30c819ae20252ab74</string>
     <string name="client_secret">c46258762edf73a3ef2b695545950ec962c171ec</string>

@@ -49,14 +49,20 @@
                 <android.widget.TabTitle
                     style="@style/tab_repos"
                     app:barColor="@color/white"
-                    android:text="@string/Readme"
+                    android:text="@string/readme"
                     android:id="@+id/tabReadme" />
 
                 <android.widget.TabTitle
                     style="@style/tab_repos"
                     app:barColor="@color/white"
-                    android:text="@string/Source"
+                    android:text="@string/source"
                     android:id="@+id/tabSource" />
+
+                <android.widget.TabTitle
+                    style="@style/tab_repos"
+                    app:barColor="@color/white"
+                    android:text="@string/issues"
+                    android:id="@+id/tabIssues" />
 
             </LinearLayout>
         </LinearLayout>

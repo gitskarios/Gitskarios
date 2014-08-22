@@ -7,6 +7,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
+import com.alorma.github.ui.fragment.issues.IssuesFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
 /**
@@ -18,6 +19,7 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
     private RefreshListener listener;
     private MarkdownFragment markDownFragment;
     private FilesTreeFragment filesTreeFragment;
+    private IssuesFragment issuesFragment;
 
     public RepoDetailPagerAdapter(FragmentManager fm, String owner, String repo, RefreshListener listener) {
         super(fm);
@@ -39,13 +41,18 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
                     filesTreeFragment = FilesTreeFragment.newInstance(owner, repo, listener);
                 }
                 return filesTreeFragment;
+            case 2:
+                if (issuesFragment == null) {
+                    issuesFragment = IssuesFragment.newInstance(owner, repo, listener);
+                }
+                return issuesFragment;
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     public void setCurrentBranch(Branch currentBranch) {
