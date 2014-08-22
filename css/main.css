@@ -51,7 +51,7 @@
 }
 .feature-image {
     height: 400px;
-    background-image: url(img/htc-repos.png);
+    background-image: url(../img/htc-repos.png);
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -75,7 +75,7 @@ dark-bar {
 
     .feature-image {
         height: 150px;
-        background-image: url(img/htc-repos.png);
+        background-image: url(../img/htc-repos.png);
         background-position: center 5px;
         background-size: 200px;
         background-repeat: no-repeat;
@@ -201,7 +201,7 @@ dark-bar {
     }
     .feature-image {
         height: 500px;
-        background-image: url(img/htc-repos.png);
+        background-image: url(../img/htc-repos.png);
         background-position: center 5px;
         background-size: contain;
         background-repeat: no-repeat;
