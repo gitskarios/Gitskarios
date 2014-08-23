@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
@@ -25,6 +26,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private String owner;
     private String repo;
     private boolean pushAcces;
+    private View pushAccesLayout;
 
     public static Intent createLauncherIntent(Context context, String owner, String repo, boolean pushAcces) {
         Bundle bundle = new Bundle();
@@ -46,19 +48,36 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             repo = getIntent().getExtras().getString(RepoDetailFragment.REPO);
             pushAcces = getIntent().getExtras().getBoolean(PUSH, false);
 
-            IssueRequest issue = new IssueRequest();
-            issue.title = "Test issue from android Gitsarios app";
-            issue.body = "This is the body of issue";
-            issue.assignee = "alorma";
-            //issue.milestone = 1;
-            issue.labels = new String[]{"TEST", "ANDROID", "CHECK"};
+            findViews();
 
-            PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, owner, repo, issue);
-            postNewIssueClient.setOnResultCallback(this);
-            postNewIssueClient.execute();
+            if (!pushAcces) {
+                pushAccesLayout.setVisibility(View.GONE);
+            }
         } else {
             finish();
         }
+    }
+
+    private void findViews() {
+        pushAccesLayout = findViewById(R.id.pushAccessLayout);
+
+    }
+
+    private void checkDataAndCreateIssue() {
+        IssueRequest issue = new IssueRequest();
+        issue.title = "Test issue from android Gitsarios app";
+        issue.body = "This is the body of issue";
+        issue.assignee = "alorma";
+        //issue.milestone = 1;
+        issue.labels = new String[]{"TEST", "ANDROID", "CHECK"};
+
+        createIssue(issue);
+    }
+
+    private void createIssue(IssueRequest issue) {
+        PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, owner, repo, issue);
+        postNewIssueClient.setOnResultCallback(this);
+        postNewIssueClient.execute();
     }
 
     @Override

@@ -56,5 +56,10 @@
     <string name="issue_created_by"><![CDATA[Creates by <b>%1$s</b>]]></string>
     <string name="title_activity_new_issue">New issue</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title">Title</string>
+    <string name="leave_a_comment">Leave a comment</string>
+    <string name="milestone">Milestone</string>
+    <string name="assignee">Assignee</string>
+    <string name="labels">Labels, separated with comma</string>
 
 </resources>
