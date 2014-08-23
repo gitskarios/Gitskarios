@@ -27,7 +27,6 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.owner = owner;
         this.repo = repo;
-
     }
 
     @Override

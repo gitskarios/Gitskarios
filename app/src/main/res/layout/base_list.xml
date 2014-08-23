@@ -35,6 +35,7 @@
             android:layout_height="200dp"
             android:src="@drawable/ic_launcher"
             android:id="@+id/emptyIcon"
+            android:scaleType="centerInside"
             android:layout_centerHorizontal="true" />
 
         <TextView

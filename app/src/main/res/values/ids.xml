@@ -2,4 +2,7 @@
 <resources>
     <item name="action_donate" type="id">action_done</item>
     <item name="fabButton" type="id">fabButton</item>
+    <item name="avatarAuthor" type="id">avatarAuthor</item>
+    <item name="pager" type="id">pager</item>
+    <item name="smoothBar" type="id">smoothBar</item>
 </resources>

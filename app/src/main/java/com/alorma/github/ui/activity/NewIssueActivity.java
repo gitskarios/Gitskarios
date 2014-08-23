@@ -23,7 +23,6 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
-import com.alorma.github.ui.fragment.detail.repo.RepoDetailFragment;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -67,8 +66,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         setContentView(R.layout.activity_new_issue);
 
         if (getIntent().getExtras() != null) {
-            owner = getIntent().getExtras().getString(RepoDetailFragment.OWNER);
-            repo = getIntent().getExtras().getString(RepoDetailFragment.REPO);
+            owner = getIntent().getExtras().getString(OWNER);
+            repo = getIntent().getExtras().getString(REPO);
 
             if (getActionBar() != null) {
                 getActionBar().setSubtitle(owner + "/" + repo);

@@ -7,16 +7,17 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AbsListView;
+import android.widget.ListView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
+import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.ActionRepoListener;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.fragment.detail.repo.RepoDetailFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -96,7 +97,6 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
             this.owner = getArguments().getString("OWNER");
             this.repository = getArguments().getString("REPO");
         }
-        executeRequest();
     }
 
     @Override
@@ -157,4 +157,15 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
         onRefresh();
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Issue item = adapter.getItem(position);
+
+        if (item != null) {
+            Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), owner, repository, item.number);
+            startActivity(intent);
+        }
+    }
 }

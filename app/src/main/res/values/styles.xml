@@ -22,6 +22,7 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:background">@color/accent</item>
     </style>
 
     <style name="fab">
