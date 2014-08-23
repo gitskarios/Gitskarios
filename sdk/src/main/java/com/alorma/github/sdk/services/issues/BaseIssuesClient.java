@@ -39,7 +39,7 @@ public abstract class BaseIssuesClient extends BaseClient<ListIssues> {
     }
 
     protected abstract void executeRepoFirstPage(String owner, String repository, IssuesService issuesService);
-;
+
     protected abstract void executeRepoPaginated(String owner, String repository, int page, IssuesService issuesService);
 
     @Override

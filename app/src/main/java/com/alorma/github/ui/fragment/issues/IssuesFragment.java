@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AbsListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
@@ -81,12 +82,12 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
     @Override
     protected Iconify.IconValue getNoDataIcon() {
-        return null;
+        return Iconify.IconValue.fa_info_circle;
     }
 
     @Override
     protected int getNoDataText() {
-        return 0;
+        return R.string.no_issues_found;
     }
 
     @Override

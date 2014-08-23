@@ -60,9 +60,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
             if (k != null && k instanceof List) {
                 if (emptyLy != null && ((List) k).size() > 0) {
                     emptyLy.setVisibility(View.GONE);
-
                     getLinkData(r);
                     onResponse(k, refreshing);
+                    paging = false;
                     refreshing = false;
                 } else {
                     setEmpty();
