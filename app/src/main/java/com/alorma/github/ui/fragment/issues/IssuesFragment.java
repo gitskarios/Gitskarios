@@ -134,7 +134,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
         if (actionRepoListener != null) {
             if (actionRepoListener.hasPermissionPull()) {
-                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repository);
+                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repository, actionRepoListener.hasPermissionPush());
                 startActivityForResult(intent, ISSUE_REQUEST);
             }
         }

@@ -21,13 +21,16 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
+    public static final String PUSH = "PUSH";
     private String owner;
     private String repo;
+    private boolean pushAcces;
 
-    public static Intent createLauncherIntent(Context context, String owner, String repo) {
+    public static Intent createLauncherIntent(Context context, String owner, String repo, boolean pushAcces) {
         Bundle bundle = new Bundle();
         bundle.putString(OWNER, owner);
         bundle.putString(REPO, repo);
+        bundle.putBoolean(PUSH, pushAcces);
         Intent intent =  new Intent(context, NewIssueActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -41,6 +44,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         if (getIntent().getExtras() != null) {
             owner = getIntent().getExtras().getString(RepoDetailFragment.OWNER);
             repo = getIntent().getExtras().getString(RepoDetailFragment.REPO);
+            pushAcces = getIntent().getExtras().getBoolean(PUSH, false);
 
             IssueRequest issue = new IssueRequest();
             issue.title = "Test issue from android Gitsarios app";
