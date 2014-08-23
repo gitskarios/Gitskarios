@@ -46,7 +46,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             issue.title = "Test issue from android Gitsarios app";
             issue.body = "This is the body of issue";
             issue.assignee = "alorma";
-            issue.milestone = 1;
+            //issue.milestone = 1;
             issue.labels = new String[]{"TEST", "ANDROID", "CHECK"};
 
             PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, owner, repo, issue);
@@ -60,7 +60,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     @Override
     public void onResponseOk(Issue issue, Response r) {
         if (issue != null) {
-            Log.i("ALORMA", "Issue: " + issue);
             setResult(RESULT_OK);
             finish();
         }
