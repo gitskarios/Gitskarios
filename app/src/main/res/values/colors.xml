@@ -6,7 +6,9 @@
     <color name="gray_github_medium">#ffaaaaaa</color>
     <color name="gray_divider">#9fd2d2d2</color>
     <color name="white">#FFFFFF</color>
-    
+    <color name="issue_state_open">#54A141</color>
+    <color name="issue_state_close">#ffd67a4c</color>
+
     <integer-array name="colorsSmooth">
         <item>@color/accent</item>
         <item>@color/accentDark</item>

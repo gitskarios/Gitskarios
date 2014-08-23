@@ -18,9 +18,6 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public abstract class LoadingListFragment extends BaseListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected TextView emptyText;
-    protected ImageView emptyIcon;
-    protected View emptyLy;
     private SwipeRefreshLayout swipe;
     private RefreshListener refreshListener;
 
@@ -37,15 +34,12 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
-        emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
-        emptyText = (TextView) view.findViewById(R.id.emptyText);
-        emptyLy = view.findViewById(R.id.emptyLayout);
 
         if (useInnerSwipeRefresh()) {
             swipe.setColorSchemeResources(R.color.accent,
-                    R.color.white,
+                    R.color.gray_github_light,
                     R.color.accentDark,
-                    R.color.white);
+                    R.color.gray_github_light);
         } else {
             swipe.setColorSchemeResources(R.color.gray_github_light,
                     R.color.gray_github_light,
@@ -78,22 +72,4 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
             refreshListener.cancelRefresh();
         }
     }
-
-    public void setEmpty() {
-        if (emptyText != null && emptyIcon != null) {
-            if (getNoDataIcon() != null && getNoDataText() > 0) {
-                IconDrawable iconDrawable = new IconDrawable(getActivity(), getNoDataIcon());
-                iconDrawable.colorRes(R.color.gray_github_medium);
-                emptyIcon.setImageDrawable(iconDrawable);
-
-                emptyText.setText(getNoDataText());
-
-                emptyLy.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    protected abstract Iconify.IconValue getNoDataIcon();
-
-    protected abstract int getNoDataText();
 }

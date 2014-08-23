@@ -56,4 +56,5 @@
     <string name="cancel">Cancel</string>
     <string name="retry">Retry</string>
     <string name="no_results">No results</string>
+    <string name="issue_created_by"><![CDATA[Creates by <b>%1$s</b>]]></string>
 </resources>

@@ -1,5 +1,7 @@
 package com.alorma.github.ui.fragment.issues;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,15 +14,17 @@ import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import fr.dvilleneuve.android.TextDrawable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesFragment extends PaginatedListFragment<ListIssues> {
+public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener {
 
     private String owner;
     private String repository;
@@ -75,5 +79,28 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> {
     @Override
     protected boolean useInnerSwipeRefresh() {
         return false;
+    }
+
+    @Override
+    protected boolean useFAB() {
+        return true;
+    }
+
+    @Override
+    protected Drawable fabDrawable() {
+        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_plus);
+        iconDrawable.color(Color.WHITE);
+        iconDrawable.sizeDp(16);
+        return iconDrawable;
+    }
+
+    @Override
+    protected View.OnClickListener fabListener() {
+        return this;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }
