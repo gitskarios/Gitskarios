@@ -1,5 +1,7 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -28,6 +30,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
 import com.alorma.github.ui.fragment.ActionRepoListener;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.fragment.issues.IssuesFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
 import java.util.ArrayList;
@@ -43,7 +46,7 @@ import retrofit.client.Response;
 public class RepoDetailFragment extends BaseFragment implements RefreshListener, View.OnClickListener,
         ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo>,ActionRepoListener {
 
-    private static final int ISSUE_REQUEST = 1234;
+    public static final int ISSUE_REQUEST = 1234;
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
@@ -346,11 +349,16 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
     }
 
     @Override
-    public void createNewIssue() {
-        if (currentRepo != null && currentRepo.canPull()) {
-            Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repo);
-            startActivityForResult(intent, ISSUE_REQUEST);
-        }
+    public boolean hasPermissionPull() {
+        return currentRepo != null && currentRepo.canPull();
+    }
+    @Override
+    public boolean hasPermissionPush() {
+        return currentRepo != null && currentRepo.canPush();
+    }
+    @Override
+    public boolean hasPermissionAdmin() {
+        return currentRepo != null && currentRepo.canAdmin();
     }
 
     /**
@@ -495,10 +503,5 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
         public void onFail(RetrofitError error) {
             cancelRefresh();
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

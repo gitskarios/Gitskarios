@@ -31,4 +31,9 @@ public class PostNewIssueClient extends BaseClient<Issue> {
         IssuesService service = restAdapter.create(IssuesService.class);
         service.create(owner, repo, issue, this);
     }
+
+    @Override
+    public String getAcceptHeader() {
+        return "application/vnd.github.v3.text+json";
+    }
 }

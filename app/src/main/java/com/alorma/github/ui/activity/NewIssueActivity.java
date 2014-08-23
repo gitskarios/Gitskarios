@@ -61,6 +61,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     public void onResponseOk(Issue issue, Response r) {
         if (issue != null) {
             Log.i("ALORMA", "Issue: " + issue);
+            setResult(RESULT_OK);
+            finish();
         }
     }
 

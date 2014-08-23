@@ -24,6 +24,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class IssuesAdapter extends ArrayAdapter<Issue>{
     private final LayoutInflater mInflater;
+    private boolean lazyLoading;
 
     public IssuesAdapter(Context context, ListIssues issues) {
         super(context, 0, issues);
@@ -72,5 +73,13 @@ public class IssuesAdapter extends ArrayAdapter<Issue>{
         }
 
         return v;
+    }
+
+    public void setLazyLoading(boolean lazyLoading) {
+        this.lazyLoading = lazyLoading;
+    }
+
+    public boolean isLazyLoading() {
+        return lazyLoading;
     }
 }

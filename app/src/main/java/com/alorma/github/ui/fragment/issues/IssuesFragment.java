@@ -1,6 +1,8 @@
 package com.alorma.github.ui.fragment.issues;
 
 import android.animation.PropertyValuesHolder;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,9 +11,11 @@ import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
+import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.ActionRepoListener;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoDetailFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -21,6 +25,7 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener {
 
+    private static final int ISSUE_REQUEST = 1234;
     private ActionRepoListener actionRepoListener;
     private String owner;
     private String repository;
@@ -52,6 +57,8 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
+        adapter.setLazyLoading(true);
+
         if (owner != null && repository != null) {
             GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), owner, repository, page);
             issuesClient.setOnResultCallback(this);
@@ -65,7 +72,8 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
             if (adapter == null || refreshing) {
                 adapter = new IssuesAdapter(getActivity(), issues);
                 setListAdapter(adapter);
-            } else {
+            } else if (adapter.isLazyLoading()) {
+                adapter.setLazyLoading(false);
                 adapter.addAll(issues);
             }
         }
@@ -110,16 +118,14 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
     @Override
     protected PropertyValuesHolder showAnimator() {
-        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
-        return pvh;
+        return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
     }
 
     @Override
     protected PropertyValuesHolder hideAnimator() {
         fabOldY = fab.getY();
         fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
-        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
-        return pvh;
+        return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
     }
 
     @Override
@@ -127,11 +133,27 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
         super.fabClick();
 
         if (actionRepoListener != null) {
-            actionRepoListener.createNewIssue();
+            if (actionRepoListener.hasPermissionPull()) {
+                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repository);
+                startActivityForResult(intent, ISSUE_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
+            invalidate();
         }
     }
 
     public void setActionRepoListener(ActionRepoListener actionRepoListener) {
         this.actionRepoListener = actionRepoListener;
     }
+
+    public void invalidate() {
+        onRefresh();
+    }
+
 }

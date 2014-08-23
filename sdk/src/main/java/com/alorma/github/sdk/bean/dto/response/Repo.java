@@ -119,4 +119,11 @@ public class Repo {
     public boolean canPull() {
         return permissions != null && permissions.pull;
     }
+
+    public boolean canPush() {
+        return permissions != null && permissions.push;
+    }
+    public boolean canAdmin() {
+        return permissions != null && permissions.admin;
+    }
 }
