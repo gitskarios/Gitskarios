@@ -14,16 +14,13 @@
     <string name="login_button">Login</string>
     <string name="public_repos">Repositories</string>
     <string name="public_gists">Gists</string>
-
     <string name="tab_repos_parent">Repositories</string>
     <string name="navigation_repos">My Repositories</string>
     <string name="navigation_watched_repos">Watched</string>
     <string name="navigation_starred_repos">Starred</string>
-
     <string name="tab_people_parent">People</string>
     <string name="navigation_following">Following</string>
     <string name="navigation_followers">Followers</string>
-
     <string name="title_followers">Followers</string>
     <string name="title_following">Following</string>
     <string name="title_repos">Repos</string>
@@ -57,4 +54,7 @@
     <string name="retry">Retry</string>
     <string name="no_results">No results</string>
     <string name="issue_created_by"><![CDATA[Creates by <b>%1$s</b>]]></string>
+    <string name="title_activity_new_issue">New issue</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

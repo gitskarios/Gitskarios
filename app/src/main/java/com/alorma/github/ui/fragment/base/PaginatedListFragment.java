@@ -28,7 +28,6 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getListView().setOnScrollListener(this);
 
         executeRequest();
     }
@@ -38,12 +37,8 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int state) {
-
-    }
-
-    @Override
     public void onScroll(AbsListView absListView, int first, int last, int total) {
+        super.onScroll(absListView, first, last, total);
         if (total > 0 && first + last == total) {
             if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
                 paging = true;

@@ -36,7 +36,7 @@ public class DirectionalScrollListener implements AbsListView.OnScrollListener {
             handlerScroll.onScrollStateChanged(view, scrollState);
         }
 
-        enabled = scrollState == SCROLL_STATE_TOUCH_SCROLL;
+        enabled = (scrollState == SCROLL_STATE_FLING || scrollState == SCROLL_STATE_TOUCH_SCROLL);
 
         if (scrollState == SCROLL_STATE_IDLE && countdownStop > -1) {
             new CountDownTimer(countdownStop, 10) {

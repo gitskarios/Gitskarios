@@ -1,15 +1,17 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.app.Fragment;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.ListFragment;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.AbsListView;
+import android.widget.DirectionalScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,16 +23,18 @@ import com.google.android.gms.analytics.Tracker;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
-import fr.dvilleneuve.android.TextDrawable;
-
 /**
  * Created by Bernat on 12/08/2014.
  */
-public abstract class BaseListFragment extends ListFragment {
+public abstract class BaseListFragment extends ListFragment implements AbsListView.OnScrollListener,DirectionalScrollListener.OnDetectScrollListener, DirectionalScrollListener.OnCancelableDetectScrollListener, View.OnClickListener {
 
+    private static final long FAB_ANIM_DURATION = 400;
     protected TextView emptyText;
     protected ImageView emptyIcon;
     protected View emptyLy;
+    protected ImageView fab;
+    private ValueAnimator animator;
+    private boolean fabVisible;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,8 @@ public abstract class BaseListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getListView().setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+
         emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
         emptyText = (TextView) view.findViewById(R.id.emptyText);
         emptyLy = view.findViewById(R.id.emptyLayout);
@@ -67,14 +73,15 @@ public abstract class BaseListFragment extends ListFragment {
             listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
         }
 
-        ImageView image = (ImageView) view.findViewById(R.id.fabButton);
+        fab = (ImageView) view.findViewById(R.id.fabButton);
 
-        if (image != null) {
+        if (fab != null) {
             if (useFAB() && fabDrawable() != null) {
-                image.setImageDrawable(fabDrawable());
-                image.setOnClickListener(fabListener());
+                fabVisible = true;
+                fab.setImageDrawable(fabDrawable());
+                fab.setOnClickListener(this);
             } else {
-                image.setVisibility(View.GONE);
+                fab.setVisibility(View.GONE);
             }
         }
 
@@ -82,10 +89,6 @@ public abstract class BaseListFragment extends ListFragment {
     }
 
     protected Drawable fabDrawable() {
-        return null;
-    }
-
-    protected View.OnClickListener fabListener() {
         return null;
     }
 
@@ -112,4 +115,75 @@ public abstract class BaseListFragment extends ListFragment {
     protected abstract Iconify.IconValue getNoDataIcon();
 
     protected abstract int getNoDataText();
+
+    private void showFab() {
+        if (!fabVisible) {
+            fabVisible = true;
+            PropertyValuesHolder pvh = showAnimator();
+            startAnimator(pvh);
+        }
+    }
+
+    private void hideFab() {
+        if (fabVisible & (animator == null || !animator.isRunning())) {
+            fabVisible = false;
+            PropertyValuesHolder pvh = hideAnimator();
+            startAnimator(pvh);
+        }
+    }
+
+    private void startAnimator(PropertyValuesHolder pvh) {
+        if (pvh != null) {
+            animator = ObjectAnimator.ofPropertyValuesHolder(fab, pvh);
+            animator.setDuration(FAB_ANIM_DURATION);
+            animator.setRepeatCount(0);
+            animator.start();
+        }
+    }
+
+    protected PropertyValuesHolder showAnimator() {
+        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f);
+        return pvh;
+    }
+
+    protected PropertyValuesHolder hideAnimator() {
+        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
+        return pvh;
+    }
+
+    @Override
+    public void onUpScrolling() {
+        hideFab();
+    }
+
+    @Override
+    public void onDownScrolling() {
+        hideFab();
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+
+    @Override
+    public void onScrollStop() {
+        showFab();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.fabButton) {
+            fabClick();
+        }
+    }
+
+    protected void fabClick() {
+
+    }
 }

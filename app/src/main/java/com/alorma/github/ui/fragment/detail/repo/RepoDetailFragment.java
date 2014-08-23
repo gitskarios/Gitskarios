@@ -483,4 +483,9 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
             cancelRefresh();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

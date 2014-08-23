@@ -63,7 +63,11 @@ public class IssuesAdapter extends ArrayAdapter<Issue>{
 
         if (item.pullRequest != null) {
             IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork);
-            iconDrawable.colorRes(R.color.gray_github_light);
+            iconDrawable.colorRes(R.color.gray_github_medium);
+            pullRequest.setImageDrawable(iconDrawable);
+        } else {
+            IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_info_circle);
+            iconDrawable.colorRes(R.color.gray_github_light_selected);
             pullRequest.setImageDrawable(iconDrawable);
         }
 

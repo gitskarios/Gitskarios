@@ -1,12 +1,16 @@
 package com.alorma.github.ui.fragment.issues;
 
+import android.animation.PropertyValuesHolder;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
+import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -18,9 +22,12 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener {
 
+    private static final int ISSUE_REQUEST = 1234;
     private String owner;
     private String repository;
     private IssuesAdapter adapter;
+    private float fabNewY;
+    private float fabOldY;
 
     public static IssuesFragment newInstance(String owner, String repo, RefreshListener listener) {
         Bundle bundle = new Bundle();
@@ -103,12 +110,23 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
     }
 
     @Override
-    protected View.OnClickListener fabListener() {
-        return this;
+    protected PropertyValuesHolder showAnimator() {
+        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
+        return pvh;
     }
 
     @Override
-    public void onClick(View v) {
+    protected PropertyValuesHolder hideAnimator() {
+        fabOldY = fab.getY();
+        fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
+        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
+        return pvh;
+    }
 
+    @Override
+    protected void fabClick() {
+        super.fabClick();
+        Intent intent = NewIssueActivity.createLauncherIntent(getActivity());
+        startActivityForResult(intent, ISSUE_REQUEST);
     }
 }
