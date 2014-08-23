@@ -24,6 +24,6 @@ public class GetIssuesClient extends BaseIssuesClient {
 
     @Override
     protected void executeRepoPaginated(String owner, String repository, int page, IssuesService issuesService) {
-        issuesService.issues(owner, repository, this);
+        issuesService.issues(owner, repository, page, this);
     }
 }

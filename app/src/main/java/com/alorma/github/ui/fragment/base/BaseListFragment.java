@@ -37,21 +37,6 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
     private boolean fabVisible;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Get tracker.
-        Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
-
-        // Set screen name.
-        // Where path is a String representing the screen name.
-        t.setScreenName(getClass().getSimpleName());
-
-        // Send a screen view.
-        t.send(new HitBuilders.AppViewBuilder().build());
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(R.layout.base_list, null);

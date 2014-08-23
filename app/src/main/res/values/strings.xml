@@ -53,7 +53,7 @@
     <string name="cancel">Cancel</string>
     <string name="retry">Retry</string>
     <string name="no_results">No results</string>
-    <string name="issue_created_by"><![CDATA[Creates by <b>%1$s</b>]]></string>
+    <string name="issue_created_by"><![CDATA[Created by <b>%1$s</b>]]></string>
     <string name="title_activity_new_issue">New issue</string>
     <string name="hello_world">Hello world!</string>
     <string name="title">Title</string>
@@ -64,5 +64,6 @@
     <string name="issue_title_mandatory">Title is mandatory</string>
     <string name="action_send_issue">Send issue</string>
     <string name="create_issue_error">Error creating issue</string>
+    <string name="no_issues_found">No issues found</string>
 
 </resources>
