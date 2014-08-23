@@ -24,7 +24,7 @@ public class UsersAdapter extends ArrayAdapter<User> {
     private int scrollState;
 
     public UsersAdapter(Context context, List<User> users) {
-        super(context, 0, 0, users);
+        super(context, 0, users);
         this.mInflater = LayoutInflater.from(context);
     }
 
@@ -51,5 +51,10 @@ public class UsersAdapter extends ArrayAdapter<User> {
             clear();
         }
         super.addAll(collection);
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        return getView(position, convertView, parent);
     }
 }

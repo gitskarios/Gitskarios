@@ -1,59 +1,86 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.alorma.github.ui.activity.NewIssueActivity"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:hint="@string/title"
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:lines="5"
-        android:hint="@string/leave_a_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/gapLarge" />
+        android:layout_height="4dp"
+        android:indeterminate="true"
+        app:spb_sections_count="4"
+        app:spb_color="@color/accent"
+        app:spb_speed="2.0"
+        app:spb_stroke_width="4dp"
+        app:spb_stroke_separator_length="4dp"
+        app:spb_reversed="false"
+        app:spb_mirror_mode="false"
+        android:id="@+id/smoothBar"
+        android:layout_gravity="top" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/gapLarge"
-        android:id="@+id/pushAccessLayout">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/assignee"/>
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="@dimen/gapLarge" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/milestone"
-            android:layout_marginTop="@dimen/gapLarge" />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="@dimen/gapLarge" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context="com.alorma.github.ui.activity.NewIssueActivity"
+        android:orientation="vertical">
 
         <EditText
+            android:hint="@string/title"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="@string/labels"
-            android:layout_marginTop="@dimen/gapLarge" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/editTitle" />
 
-</LinearLayout>
+        <EditText
+            android:lines="4"
+            android:hint="@string/leave_a_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gapLarge"
+            android:gravity="top"
+            android:id="@+id/editBody" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/gapLarge"
+            android:id="@+id/pushAccessLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="?android:attr/listPreferredItemHeightLarge"
+                    android:layout_marginTop="@dimen/gapLarge"
+                    android:id="@+id/spinnerAssignee" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/milestone"
+                    android:layout_marginTop="@dimen/gapLarge"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="@dimen/gapLarge"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="@string/labels"
+                    android:layout_marginTop="@dimen/gapLarge"
+                    android:id="@+id/editLabels" />
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</FrameLayout>
