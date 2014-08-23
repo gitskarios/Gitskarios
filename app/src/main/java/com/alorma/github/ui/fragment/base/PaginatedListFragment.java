@@ -3,9 +3,7 @@ package com.alorma.github.ui.fragment.base;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.Toast;
 
-import com.alorma.github.BuildConfig;
 import com.alorma.github.sdk.bean.PaginationLink;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -25,6 +23,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
     private PaginationLink bottomPaginationLink;
     protected boolean paging;
+    private boolean refreshing;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -68,7 +67,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
                     emptyLy.setVisibility(View.GONE);
 
                     getLinkData(r);
-                    onResponse(k);
+                    onResponse(k, refreshing);
                 } else {
                     setEmpty();
                 }
@@ -85,7 +84,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
         ErrorHandler.onRetrofitError(getActivity(), this.getClass().getSimpleName(), error);
     }
 
-    protected abstract void onResponse(K k);
+    protected abstract void onResponse(K k, boolean refreshing);
 
     private void getLinkData(Response r) {
         List<Header> headers = r.getHeaders();
@@ -108,6 +107,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
     @Override
     public void onRefresh() {
+        refreshing = true;
         executeRequest();
     }
 }

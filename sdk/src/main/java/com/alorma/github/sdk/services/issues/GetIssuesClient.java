@@ -6,27 +6,24 @@ import android.content.Context;
  * Created by Bernat on 22/08/2014.
  */
 public class GetIssuesClient extends BaseIssuesClient {
+    private int page;
+
     public GetIssuesClient(Context context, String owner, String repository) {
         super(context, owner, repository);
+        this.page = 0;
+    }
+
+    public GetIssuesClient(Context context, String owner, String repository, int page) {
+        super(context, owner, repository, page);
     }
 
     @Override
-    protected void executeRepoFirstPage(IssuesService issuesService, String owner, String repository) {
+    protected void executeRepoFirstPage(String owner, String repository, IssuesService issuesService) {
         issuesService.issues(owner, repository, this);
     }
 
     @Override
-    protected void executeFirstPageByRepo(String username, IssuesService issuesService) {
-
-    }
-
-    @Override
-    protected void executeRepoPaginated(int page, IssuesService issuesService) {
-
-    }
-
-    @Override
-    protected void executePaginatedByRepo(String username, int page, IssuesService issuesService) {
-
+    protected void executeRepoPaginated(String owner, String repository, int page, IssuesService issuesService) {
+        issuesService.issues(owner, repository, this);
     }
 }

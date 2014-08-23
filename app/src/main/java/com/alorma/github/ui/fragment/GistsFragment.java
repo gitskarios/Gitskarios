@@ -40,7 +40,7 @@ public class GistsFragment extends PaginatedListFragment<ListGists> {
     }
 
     @Override
-    protected void onResponse(ListGists gists) {
+    protected void onResponse(ListGists gists, boolean refreshing) {
         if (gistsAdapter == null) {
             setUpList();
         }

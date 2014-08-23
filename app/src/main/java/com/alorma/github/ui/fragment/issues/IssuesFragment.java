@@ -3,23 +3,15 @@ package com.alorma.github.ui.fragment.issues;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
-import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
-import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
-import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
-
-import fr.dvilleneuve.android.TextDrawable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/08/2014.
@@ -28,6 +20,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
     private String owner;
     private String repository;
+    private IssuesAdapter adapter;
 
     public static IssuesFragment newInstance(String owner, String repo, RefreshListener listener) {
         Bundle bundle = new Bundle();
@@ -50,10 +43,25 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
     }
 
     @Override
-    protected void onResponse(ListIssues issues) {
+    protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
+
+        if (owner != null && repository != null) {
+            GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), owner, repository, page);
+            issuesClient.setOnResultCallback(this);
+            issuesClient.execute();
+        }
+    }
+
+    @Override
+    protected void onResponse(ListIssues issues, boolean refreshing) {
         if (issues != null && issues.size() > 0) {
-            IssuesAdapter adapter = new IssuesAdapter(getActivity(), issues);
-            setListAdapter(adapter);
+            if (adapter == null || refreshing) {
+                adapter = new IssuesAdapter(getActivity(), issues);
+                setListAdapter(adapter);
+            } else {
+                adapter.addAll(issues);
+            }
         }
     }
 
@@ -88,7 +96,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
     @Override
     protected Drawable fabDrawable() {
-        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_plus);
+        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_send);
         iconDrawable.color(Color.WHITE);
         iconDrawable.sizeDp(16);
         return iconDrawable;

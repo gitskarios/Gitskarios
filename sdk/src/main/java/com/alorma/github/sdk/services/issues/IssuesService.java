@@ -14,4 +14,7 @@ public interface IssuesService {
 
     @GET("/repos/{owner}/{repo}/issues?state=all&sort=updated")
     void issues(@Path("owner") String owner, @Path("repo") String repo, Callback<ListIssues> callback);
+
+    @GET("/repos/{owner}/{repo}/issues?state=all&sort=updated")
+    void issues(@Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, Callback<ListIssues> callback);
 }

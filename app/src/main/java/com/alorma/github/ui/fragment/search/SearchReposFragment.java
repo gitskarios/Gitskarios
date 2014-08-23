@@ -71,7 +71,7 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
     }
 
     @Override
-    protected void onResponse(ReposSearch reposSearch) {
+    protected void onResponse(ReposSearch reposSearch, boolean refreshing) {
         if (reposAdapter == null) {
             reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
             setListAdapter(reposAdapter);
