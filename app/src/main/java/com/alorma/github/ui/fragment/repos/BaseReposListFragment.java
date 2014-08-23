@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
@@ -44,27 +42,15 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
     }
 
     @Override
-    protected void onQueryFail() {
-        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_code);
-        iconDrawable.colorRes(R.color.gray_github_medium);
-        emptyIcon.setImageDrawable(iconDrawable);
-
-        emptyText.setText(getNoDataText());
-
-        emptyLy.setVisibility(View.VISIBLE);
+    protected void onResponse(ListRepos repos, boolean refreshing) {
+        if (reposAdapter == null) {
+            setUpList();
+        }
+        reposAdapter.addAll(repos, paging);
     }
 
-    protected abstract int getNoDataText();
-
     @Override
-    protected void onResponse(ListRepos repos) {
-        if (repos == null || repos.size() == 0) {
-            onQueryFail();
-        } else {
-            if (reposAdapter == null) {
-                setUpList();
-            }
-            reposAdapter.addAll(repos, paging);
-        }
+    protected Iconify.IconValue getNoDataIcon() {
+        return Iconify.IconValue.fa_code;
     }
 }

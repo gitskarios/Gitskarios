@@ -53,4 +53,9 @@ public class StarredReposFragment extends BaseReposListFragment {
     protected int getNoDataText() {
         return R.string.no_starred_repositories;
     }
+
+    @Override
+    protected void loadArguments() {
+
+    }
 }

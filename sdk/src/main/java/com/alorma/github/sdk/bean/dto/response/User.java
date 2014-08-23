@@ -49,7 +49,9 @@ public class User implements Parcelable {
 
     public UserPlan plan;
 
+    public User() {
 
+    }
 
     protected User(Parcel in) {
         id = in.readInt();

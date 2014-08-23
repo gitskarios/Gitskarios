@@ -1,18 +1,14 @@
 package com.alorma.github.ui.fragment.users;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.services.user.UserFollowersClient;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
@@ -25,28 +21,11 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
     private UsersAdapter usersAdapter;
 
     @Override
-    protected void onQueryFail() {
-        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_group);
-        iconDrawable.colorRes(R.color.gray_github_medium);
-        emptyIcon.setImageDrawable(iconDrawable);
-
-        emptyText.setText(emptyText());
-
-        emptyLy.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onResponse(ListUsers users) {
-        if (users != null) {
-            if (users.size() > 0) {
-                if (usersAdapter == null) {
-                    setUpList();
-                }
-                usersAdapter.addAll(users, paging);
-            } else {
-                onQueryFail();
-            }
+    protected void onResponse(ListUsers users, boolean refreshing) {
+        if (usersAdapter == null) {
+            setUpList();
         }
+        usersAdapter.addAll(users, paging);
     }
 
     private void setUpList() {
@@ -64,6 +43,9 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
         }
     }
 
-    public abstract int emptyText();
+    @Override
+    protected Iconify.IconValue getNoDataIcon() {
+        return Iconify.IconValue.fa_group;
+    }
 }
 

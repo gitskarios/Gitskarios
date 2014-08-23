@@ -19,6 +19,7 @@ import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
 import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.bugsense.trace.BugSenseHandler;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,6 +77,21 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
     }
 
     @Override
+    protected void loadArguments() {
+
+    }
+
+    @Override
+    protected Iconify.IconValue getNoDataIcon() {
+        return null;
+    }
+
+    @Override
+    protected int getNoDataText() {
+        return 0;
+    }
+
+    @Override
     public void onResponseOk(ListContents contents, Response r) {
         displayContent(contents);
     }
@@ -121,7 +137,6 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
             ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
             if (refreshListener != null) {
                 refreshListener.cancelRefresh();
-                refreshListener.onError(error);
             }
         }
     }

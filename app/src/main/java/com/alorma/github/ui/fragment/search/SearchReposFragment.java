@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.search.ReposSearch;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,21 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
     }
 
     @Override
+    protected Iconify.IconValue getNoDataIcon() {
+        return Iconify.IconValue.fa_search;
+    }
+
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_results;
+    }
+
+    @Override
+    protected void loadArguments() {
+
+    }
+
+    @Override
     protected void executeRequest() {
         if (query != null) {
             super.executeRequest();
@@ -54,12 +71,7 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
     }
 
     @Override
-    protected void onQueryFail() {
-
-    }
-
-    @Override
-    protected void onResponse(ReposSearch reposSearch) {
+    protected void onResponse(ReposSearch reposSearch, boolean refreshing) {
         if (reposAdapter == null) {
             reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
             setListAdapter(reposAdapter);

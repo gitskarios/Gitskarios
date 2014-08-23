@@ -35,15 +35,11 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
         View v = inflater.inflate(R.layout.row_content, parent, false);
 
         TextView textName = (TextView) v.findViewById(R.id.name);
-        TextView textSha = (TextView) v.findViewById(R.id.sha);
         ImageView image = (ImageView) v.findViewById(R.id.icon);
 
         Content item = getItem(position);
 
         textName.setText(item.name);
-        if (item.sha != null) {
-            textSha.setText(item.sha);
-        }
 
         IconDrawable iconDrawable = null;
         if (ContentType.dir.equals(item.type)) {

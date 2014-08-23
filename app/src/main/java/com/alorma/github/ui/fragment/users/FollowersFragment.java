@@ -29,13 +29,7 @@ public class FollowersFragment extends BaseUsersListFragment {
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        UserFollowersClient client;
-
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
-
-        client = new UserFollowersClient(getActivity(), username);
+        UserFollowersClient client = new UserFollowersClient(getActivity(), username);
 
         client.setOnResultCallback(this);
         client.execute();
@@ -50,7 +44,14 @@ public class FollowersFragment extends BaseUsersListFragment {
     }
 
     @Override
-    public int emptyText() {
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            username = getArguments().getString(USERNAME);
+        }
+    }
+
+    @Override
+    protected int getNoDataText() {
         return R.string.no_followers;
     }
 }

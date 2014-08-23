@@ -6,6 +6,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
+import com.joanzapata.android.iconify.Iconify;
 
 public class ReposFragment extends BaseReposListFragment {
 
@@ -32,6 +33,11 @@ public class ReposFragment extends BaseReposListFragment {
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
         }
+    }
+
+    @Override
+    protected void loadArguments() {
+
     }
 
     @Override

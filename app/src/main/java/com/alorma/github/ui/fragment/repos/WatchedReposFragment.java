@@ -60,4 +60,9 @@ public class WatchedReposFragment extends BaseReposListFragment {
     protected int getNoDataText() {
         return R.string.no_watched_repositories;
     }
+
+    @Override
+    protected void loadArguments() {
+
+    }
 }

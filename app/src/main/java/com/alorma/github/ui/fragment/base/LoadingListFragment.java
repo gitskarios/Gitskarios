@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -9,20 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 05/08/2014.
  */
 public abstract class LoadingListFragment extends BaseListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected TextView emptyText;
-    protected ImageView emptyIcon;
-    protected View emptyLy;
     private SwipeRefreshLayout swipe;
     private RefreshListener refreshListener;
 
@@ -39,19 +34,19 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
-        emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
-        emptyText = (TextView) view.findViewById(R.id.emptyText);
-        emptyLy = view.findViewById(R.id.emptyLayout);
 
         if (useInnerSwipeRefresh()) {
             swipe.setColorSchemeResources(R.color.accent,
-                    R.color.white,
+                    R.color.gray_github_light,
                     R.color.accentDark,
-                    R.color.white);
-            swipe.setOnRefreshListener(this);
+                    R.color.gray_github_light);
         } else {
-            swipe.setVisibility(View.GONE);
+            swipe.setColorSchemeResources(R.color.gray_github_light,
+                    R.color.gray_github_light,
+                    R.color.gray_github_light,
+                    R.color.gray_github_light);
         }
+        swipe.setOnRefreshListener(this);
     }
 
     protected boolean useInnerSwipeRefresh() {

@@ -28,4 +28,5 @@
     <dimen name="textSizeSmall">14sp</dimen>
     <dimen name="textSizeMedium">18sp</dimen>
     <dimen name="textSizeLarge">22sp</dimen>
+    <dimen name="fab">56dp</dimen>
 </resources>

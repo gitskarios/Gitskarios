@@ -33,7 +33,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ApiConstants.API_URL)
                 .setRequestInterceptor(this)
-                .setLogLevel(RestAdapter.LogLevel.HEADERS)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setLog(this)
                 .build();
 
@@ -72,13 +72,17 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     @Override
     public void intercept(RequestFacade request) {
-        request.addHeader("Accept", "application/vnd.github.v3.full+json");
+        request.addHeader("Accept", getAcceptHeader());
         request.addHeader("Authorization", "token " + storeCredentials.token());
     }
 
     @Override
     public void log(String message) {
+        Log.v("RETROFIT_LOG", message);
+    }
 
+    public String getAcceptHeader() {
+        return "application/vnd.github.v3.full+json";
     }
 
     public interface OnResultCallback<K> {

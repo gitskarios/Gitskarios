@@ -3,12 +3,11 @@ package com.alorma.github.ui.fragment.base;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.Toast;
 
-import com.alorma.github.BuildConfig;
 import com.alorma.github.sdk.bean.PaginationLink;
 import com.alorma.github.sdk.bean.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.ui.ErrorHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +23,11 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
     private PaginationLink bottomPaginationLink;
     protected boolean paging;
+    private boolean refreshing;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getListView().setOnScrollListener(this);
 
         executeRequest();
     }
@@ -38,12 +37,8 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int state) {
-
-    }
-
-    @Override
     public void onScroll(AbsListView absListView, int first, int last, int total) {
+        super.onScroll(absListView, first, last, total);
         if (total > 0 && first + last == total) {
             if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
                 paging = true;
@@ -65,26 +60,26 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
             if (!paging && k != null && k instanceof List) {
                 if (emptyLy != null && ((List) k).size() > 0) {
                     emptyLy.setVisibility(View.GONE);
+
+                    getLinkData(r);
+                    onResponse(k, refreshing);
+                } else {
+                    setEmpty();
                 }
+            } else {
+                setEmpty();
             }
-            onResponse(k);
-            getLinkData(r);
         }
     }
 
     @Override
     public void onFail(RetrofitError error) {
         stopRefresh();
-
-        if (getActivity() != null && isAdded()) {
-            onQueryFail();
-        }
-
+        setEmpty();
+        ErrorHandler.onRetrofitError(getActivity(), this.getClass().getSimpleName(), error);
     }
 
-    protected abstract void onQueryFail();
-
-    protected abstract void onResponse(K k);
+    protected abstract void onResponse(K k, boolean refreshing);
 
     private void getLinkData(Response r) {
         List<Header> headers = r.getHeaders();
@@ -107,6 +102,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
     @Override
     public void onRefresh() {
+        refreshing = true;
         executeRequest();
     }
 }
