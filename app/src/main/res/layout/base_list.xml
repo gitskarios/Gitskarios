@@ -17,14 +17,11 @@
             android:drawSelectorOnTop="false" />
     </FrameLayout>
 
-    <ImageView
+    <include layout="@layout/fab"
         android:layout_width="@dimen/fab"
         android:layout_height="@dimen/fab"
-        android:layout_gravity="bottom|right|end"
         android:layout_margin="@dimen/gapLarge"
-        android:id="@id/fabButton"
-        android:padding="@dimen/gapLarge"
-        android:background="@drawable/fab_button" />
+        android:layout_gravity="bottom|right|end" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

@@ -22,14 +22,11 @@
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
-    <ImageView
+    <include layout="@layout/fab"
         android:layout_width="@dimen/fab"
         android:layout_height="@dimen/fab"
-        android:layout_gravity="bottom|right|end"
         android:layout_margin="@dimen/gapLarge"
-        android:padding="@dimen/gapLarge"
-        android:id="@id/fabButton"
-        android:background="@drawable/fab_button" />
+        android:layout_gravity="bottom|right|end" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
