@@ -1,7 +1,5 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -25,8 +23,10 @@ import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
+import com.alorma.github.ui.fragment.ActionRepoListener;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
@@ -41,7 +41,10 @@ import retrofit.client.Response;
  * Created by Bernat on 17/07/2014.
  */
 public class RepoDetailFragment extends BaseFragment implements RefreshListener, View.OnClickListener,
-        ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo> {
+        ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo>,ActionRepoListener {
+
+    private static final int ISSUE_REQUEST = 1234;
+
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
@@ -156,7 +159,9 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
         pager = (ViewPager) view.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
         pager.setOnPageChangeListener(this);
-        pagerAdapter = new RepoDetailPagerAdapter(getFragmentManager(), owner, repo, this);
+        pagerAdapter = new RepoDetailPagerAdapter(getFragmentManager(), owner, repo);
+        pagerAdapter.setRefreshListener(this);
+        pagerAdapter.setActionRepoListener(this);
         pager.setAdapter(pagerAdapter);
 
         selectButton(tabReadme);
@@ -338,6 +343,14 @@ public class RepoDetailFragment extends BaseFragment implements RefreshListener,
             getActivity().finish();
         }
         cancelRefresh();
+    }
+
+    @Override
+    public void createNewIssue() {
+        if (currentRepo != null && currentRepo.canPull()) {
+            Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repo);
+            startActivityForResult(intent, ISSUE_REQUEST);
+        }
     }
 
     /**

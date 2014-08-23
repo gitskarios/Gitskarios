@@ -33,7 +33,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ApiConstants.API_URL)
                 .setRequestInterceptor(this)
-                .setLogLevel(RestAdapter.LogLevel.HEADERS)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setLog(this)
                 .build();
 
@@ -78,7 +78,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     @Override
     public void log(String message) {
-
+        Log.v("RETROFIT_LOG", message);
     }
 
     public String getAcceptHeader() {

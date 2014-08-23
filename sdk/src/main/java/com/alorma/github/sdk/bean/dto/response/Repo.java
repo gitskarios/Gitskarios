@@ -115,4 +115,8 @@ public class Repo {
         sb.append('}');
         return sb.toString();
     }
+
+    public boolean canPull() {
+        return permissions != null && permissions.pull;
+    }
 }

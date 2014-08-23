@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.issues;
 
 import android.animation.PropertyValuesHolder;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,8 +9,8 @@ import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
-import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
+import com.alorma.github.ui.fragment.ActionRepoListener;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
@@ -22,7 +21,7 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener {
 
-    private static final int ISSUE_REQUEST = 1234;
+    private ActionRepoListener actionRepoListener;
     private String owner;
     private String repository;
     private IssuesAdapter adapter;
@@ -126,7 +125,13 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
     @Override
     protected void fabClick() {
         super.fabClick();
-        Intent intent = NewIssueActivity.createLauncherIntent(getActivity());
-        startActivityForResult(intent, ISSUE_REQUEST);
+
+        if (actionRepoListener != null) {
+            actionRepoListener.createNewIssue();
+        }
+    }
+
+    public void setActionRepoListener(ActionRepoListener actionRepoListener) {
+        this.actionRepoListener = actionRepoListener;
     }
 }
