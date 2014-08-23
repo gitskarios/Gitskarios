@@ -22,6 +22,8 @@ import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import fr.dvilleneuve.android.TextDrawable;
+
 /**
  * Created by Bernat on 22/08/2014.
  */
@@ -111,10 +113,10 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
     @Override
     protected Drawable fabDrawable() {
-        IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_send);
-        iconDrawable.color(Color.WHITE);
-        iconDrawable.sizeDp(16);
-        return iconDrawable;
+        TextDrawable drawable = new TextDrawable(getActivity(), "+");
+        drawable.color(Color.WHITE);
+        drawable.sizeDp(30);
+        return drawable;
     }
 
     @Override

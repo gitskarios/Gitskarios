@@ -7,12 +7,13 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.alorma.github.ui.fragment.ActionRepoListener;
 import com.alorma.github.ui.fragment.detail.issue.IssueDetailInfoFragment;
+import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
 /**
  * Created by Bernat on 23/08/2014.
  */
-public class IssueDetailPagerAdapter extends FragmentStatePagerAdapter{
+public class IssueDetailPagerAdapter extends FragmentStatePagerAdapter {
 
     private String owner;
     private String repo;
@@ -25,6 +26,7 @@ public class IssueDetailPagerAdapter extends FragmentStatePagerAdapter{
         super(fm);
         this.owner = owner;
         this.repo = repo;
+        this.num = num;
     }
 
     @Override

@@ -12,8 +12,12 @@ import android.widget.TabTitle;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.detail.issue.IssueDetailPagerAdapter;
+import com.alorma.github.ui.fragment.ActionRepoListener;
+import com.alorma.github.ui.listeners.RefreshListener;
 
-public class IssueDetailActivity extends BackActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+
+public class IssueDetailActivity extends BackActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, ActionRepoListener, RefreshListener {
 
     private static final String NUMBER = "NUMBER";
     public static final String OWNER = "OWNER";
@@ -25,6 +29,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     private TabTitle tabDiscussion;
     private ViewPager pager;
     private IssueDetailPagerAdapter pagerAdapter;
+    private SmoothProgressBar smoothBar;
 
     public static Intent createLauncherIntent(Context context, String owner, String repo, int number) {
         Bundle bundle = new Bundle();
@@ -56,6 +61,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     private void findViews() {
         tabInfo = (TabTitle) findViewById(R.id.tabInfo);
         tabDiscussion = (TabTitle) findViewById(R.id.tabDiscussion);
+        smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 
         pager = (ViewPager) findViewById(R.id.pager);
 
@@ -71,6 +77,8 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
         }
 
         pagerAdapter = new IssueDetailPagerAdapter(getFragmentManager(), owner, repo, number);
+        pagerAdapter.setRefreshListener(this);
+        pagerAdapter.setActionRepoListener(this);
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(this);
     }
@@ -121,10 +129,12 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
             case R.id.tabInfo:
                 tabInfo.setSelected(true);
                 tabDiscussion.setSelected(false);
+                pager.setCurrentItem(0);
                 break;
             case R.id.tabDiscussion:
                 tabInfo.setSelected(false);
                 tabDiscussion.setSelected(true);
+                pager.setCurrentItem(1);
                 break;
         }
     }
@@ -151,5 +161,34 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     @Override
     public void onPageScrollStateChanged(int i) {
 
+    }
+
+    @Override
+    public void showRefresh() {
+        if (smoothBar != null) {
+            smoothBar.progressiveStart();
+        }
+    }
+
+    @Override
+    public void cancelRefresh() {
+        if (smoothBar != null) {
+            smoothBar.progressiveStop();
+        }
+    }
+
+    @Override
+    public boolean hasPermissionPull() {
+        return false;
+    }
+
+    @Override
+    public boolean hasPermissionPush() {
+        return false;
+    }
+
+    @Override
+    public boolean hasPermissionAdmin() {
+        return false;
     }
 }

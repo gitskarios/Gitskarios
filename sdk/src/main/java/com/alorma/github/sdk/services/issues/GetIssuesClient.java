@@ -2,10 +2,12 @@ package com.alorma.github.sdk.services.issues;
 
 import android.content.Context;
 
+import com.alorma.github.sdk.bean.dto.response.ListIssues;
+
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class GetIssuesClient extends BaseIssuesClient {
+public class GetIssuesClient extends BaseIssuesClient<ListIssues> {
     private int page;
 
     public GetIssuesClient(Context context, String owner, String repository) {
@@ -18,12 +20,12 @@ public class GetIssuesClient extends BaseIssuesClient {
     }
 
     @Override
-    protected void executeRepoFirstPage(String owner, String repository, IssuesService issuesService) {
+    protected void executeFirstPage(String owner, String repository, IssuesService issuesService) {
         issuesService.issues(owner, repository, this);
     }
 
     @Override
-    protected void executeRepoPaginated(String owner, String repository, int page, IssuesService issuesService) {
+    protected void executePaginated(String owner, String repository, int page, IssuesService issuesService) {
         issuesService.issues(owner, repository, page, this);
     }
 }
