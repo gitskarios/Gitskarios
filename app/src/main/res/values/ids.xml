@@ -5,4 +5,6 @@
     <item name="avatarAuthor" type="id">avatarAuthor</item>
     <item name="pager" type="id">pager</item>
     <item name="smoothBar" type="id">smoothBar</item>
+    <item name="top" type="id">top</item>
+    <item name="issueDetailInfo" type="id">issueDetailInfo</item>
 </resources>

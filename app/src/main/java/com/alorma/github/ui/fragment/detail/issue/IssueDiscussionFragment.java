@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.DirectionalScrollListener;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
@@ -44,6 +46,9 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
         if (getListView() != null) {
             getListView().setDivider(null);
+            int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
+            getListView().setPadding(0, int16, 0, 0);
+            getListView().setClipToPadding(false);
         }
     }
 

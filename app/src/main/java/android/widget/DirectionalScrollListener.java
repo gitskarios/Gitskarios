@@ -31,7 +31,6 @@ public class DirectionalScrollListener implements AbsListView.OnScrollListener {
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
         if (handlerScroll != null) {
             handlerScroll.onScrollStateChanged(view, scrollState);
         }

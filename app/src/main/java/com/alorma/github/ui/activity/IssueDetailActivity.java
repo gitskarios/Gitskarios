@@ -1,23 +1,29 @@
 package com.alorma.github.ui.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TabTitle;
+import android.widget.FABCenterLayout;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.detail.issue.IssueDetailPagerAdapter;
 import com.alorma.github.ui.fragment.ActionRepoListener;
+import com.alorma.github.ui.fragment.detail.issue.IssueDetailInfoFragment;
+import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import fr.dvilleneuve.android.TextDrawable;
 
-public class IssueDetailActivity extends BackActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, ActionRepoListener, RefreshListener {
+public class IssueDetailActivity extends BackActivity implements ActionRepoListener, RefreshListener {
 
     private static final String NUMBER = "NUMBER";
     public static final String OWNER = "OWNER";
@@ -25,11 +31,18 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     private String owner;
     private String repo;
     private int number;
-    private TabTitle tabInfo;
-    private TabTitle tabDiscussion;
-    private ViewPager pager;
-    private IssueDetailPagerAdapter pagerAdapter;
     private SmoothProgressBar smoothBar;
+    private FABCenterLayout fabLayout;
+    private IssueDiscussionFragment issueDiscussionFragment;
+    private IssueDetailInfoFragment issueInfoFragment;
+    private View headerView;
+    private int mActionBarHeight;
+
+    private TypedValue mTypedValue = new TypedValue();
+    private float headerViewHeight;
+    private View discussionView;
+    private float discussionViewHeight;
+    private float mHeaderTransformFactor;
 
     public static Intent createLauncherIntent(Context context, String owner, String repo, int number) {
         Bundle bundle = new Bundle();
@@ -59,55 +72,39 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     }
 
     private void findViews() {
-        tabInfo = (TabTitle) findViewById(R.id.tabInfo);
-        tabDiscussion = (TabTitle) findViewById(R.id.tabDiscussion);
         smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
+        fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+        fabLayout.setFabClickListener(new FabClickListener());
 
-        pager = (ViewPager) findViewById(R.id.pager);
+        headerView = findViewById(R.id.top);
+        discussionView = findViewById(R.id.discussionFeed);
 
-        tabInfo.setOnClickListener(this);
-        tabDiscussion.setOnClickListener(this);
+        TextDrawable drawable = new TextDrawable(this, "+");
+        drawable.color(Color.WHITE);
+        drawable.sizeDp(30);
+        fabLayout.setFABDrawable(drawable);
 
-        tabInfo.setSelected(true);
     }
 
     private void setPreviewData() {
         if (getActionBar() != null) {
-            getActionBar().setTitle(getString(R.string.issue_detail_title, repo, number));
+            getActionBar().setTitle(repo);
+            getActionBar().setSubtitle(Html.fromHtml(getString(R.string.issue_detail_title, number)));
         }
 
-        pagerAdapter = new IssueDetailPagerAdapter(getFragmentManager(), owner, repo, number);
-        pagerAdapter.setRefreshListener(this);
-        pagerAdapter.setActionRepoListener(this);
-        pager.setAdapter(pagerAdapter);
-        pager.setOnPageChangeListener(this);
-    }
-
-    private void setData() {
-        /*
-        if (user != null) {
-            autorTv.setText(Html.fromHtml(getString(R.string.issue_created_by, user.login)));
-            ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(user.avatar_url, avatarIv);
+        if (issueInfoFragment == null) {
+            issueInfoFragment = new IssueDetailInfoFragment();
         }
 
-        int colorState = getResources().getColor(R.color.issue_state_close);
-        if (IssueState.open == issueState) {
-            colorState = getResources().getColor(R.color.issue_state_open);
+        if (issueDiscussionFragment == null) {
+            issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, number);
+            issueDiscussionFragment.setRefreshListener(this);
         }
 
-        stateV.setBackgroundColor(colorState);
-        numTv.setTextColor(colorState);
-
-        if (isPullRequest) {
-            IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_code_fork);
-            iconDrawable.colorRes(R.color.gray_github_medium);
-            pullRequestIv.setImageDrawable(iconDrawable);
-        } else {
-            IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_info_circle);
-            iconDrawable.colorRes(R.color.gray_github_light_selected);
-            pullRequestIv.setImageDrawable(iconDrawable);
-        }*/
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.issueDetailInfo, issueInfoFragment);
+        ft.replace(R.id.discussionFeed, issueDiscussionFragment);
+        ft.commit();
     }
 
     @Override
@@ -121,46 +118,6 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
         super.onOptionsItemSelected(item);
 
         return true;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tabInfo:
-                tabInfo.setSelected(true);
-                tabDiscussion.setSelected(false);
-                pager.setCurrentItem(0);
-                break;
-            case R.id.tabDiscussion:
-                tabInfo.setSelected(false);
-                tabDiscussion.setSelected(true);
-                pager.setCurrentItem(1);
-                break;
-        }
-    }
-
-    @Override
-    public void onPageScrolled(int i, float v, int i2) {
-
-    }
-
-    @Override
-    public void onPageSelected(int i) {
-        switch (i) {
-            case 0:
-                tabInfo.setSelected(true);
-                tabDiscussion.setSelected(false);
-                break;
-            case 1:
-                tabInfo.setSelected(false);
-                tabDiscussion.setSelected(true);
-                break;
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int i) {
-
     }
 
     @Override
@@ -190,5 +147,12 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     @Override
     public boolean hasPermissionAdmin() {
         return false;
+    }
+
+    private class FabClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+        }
     }
 }

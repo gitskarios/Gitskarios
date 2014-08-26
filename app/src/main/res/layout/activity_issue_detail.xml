@@ -1,35 +1,19 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.FABCenterLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.alorma.github.ui.activity.IssueDetailActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:top_id="@id/top"
+    android:id="@+id/fabLayout">
 
     <FrameLayout
-        android:id="@+id/repoDetailInfo"
+        android:id="@id/top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal">
-
-            <android.widget.TabTitle
-                style="@style/tab_repos"
-                tab:barColor="@color/white"
-                android:text="@string/info"
-                android:id="@+id/tabInfo" />
-
-            <android.widget.TabTitle
-                style="@style/tab_repos"
-                tab:barColor="@color/white"
-                android:text="@string/discussion"
-                android:id="@+id/tabDiscussion" />
-
-        </LinearLayout>
+        android:layout_height="wrap_content"
+        android:minHeight="140dp"
+        android:layout_alignParentTop="true">
 
         <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
             android:layout_width="match_parent"
@@ -43,12 +27,22 @@
             app:spb_reversed="false"
             app:spb_mirror_mode="false"
             android:id="@id/smoothBar" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@id/issueDetailInfo"
+            android:background="@color/accent">
+
+        </FrameLayout>
+
     </FrameLayout>
 
-    <android.support.v4.view.ViewPager
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:id="@id/pager" />
+        android:id="@+id/discussionFeed"
+        android:layout_below="@id/top"
+        android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</android.widget.FABCenterLayout>

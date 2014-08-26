@@ -41,10 +41,10 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
                     R.color.accentDark,
                     R.color.gray_github_light);
         } else {
-            swipe.setColorSchemeResources(R.color.gray_github_light,
-                    R.color.gray_github_light,
-                    R.color.gray_github_light,
-                    R.color.gray_github_light);
+            swipe.setColorSchemeResources(android.R.color.transparent,
+                    android.R.color.transparent,
+                    android.R.color.transparent,
+                    android.R.color.transparent);
         }
         swipe.setOnRefreshListener(this);
     }

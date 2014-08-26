@@ -67,7 +67,7 @@
     <string name="no_issues_found">No issues found</string>
     <string name="title_activity_issue_detail">IssueDetailActivity</string>
     <string name="discussion">discussion</string>
-    <string name="issue_detail_title">%1$s issue # %2$d</string>
+    <string name="issue_detail_title"><![CDATA[Issue <b>#%1$d</b>]]></string>
     <string name="no_comments">No comments</string>
 
 </resources>

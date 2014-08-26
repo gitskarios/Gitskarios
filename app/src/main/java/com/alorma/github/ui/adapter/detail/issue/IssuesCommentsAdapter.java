@@ -42,7 +42,7 @@ public class IssuesCommentsAdapter extends ArrayAdapter<IssueComment>{
 
         vh.webContainer.removeAllViews();
         vh.webContainer.addView(vh.webview);
-        
+
         IssueComment item = getItem( position );
 
         vh.webview.loadData(item.body_html, "text/html", "UTF-8");
