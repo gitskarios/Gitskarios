@@ -39,6 +39,15 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getListView() != null) {
+            getListView().setDivider(null);
+        }
+    }
+
+    @Override
     protected void loadArguments() {
         if (getArguments() != null) {
             this.owner = getArguments().getString("OWNER");
@@ -101,7 +110,7 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
     @Override
     protected boolean useFAB() {
-        return true;
+        return false;
     }
 
     @Override

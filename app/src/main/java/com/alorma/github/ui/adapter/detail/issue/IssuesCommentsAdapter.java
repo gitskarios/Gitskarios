@@ -1,18 +1,19 @@
 package com.alorma.github.ui.adapter.detail.issue;
 
-import android.app.Activity;
 import android.content.Context;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 23/08/2014.
@@ -28,15 +29,29 @@ public class IssuesCommentsAdapter extends ArrayAdapter<IssueComment>{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = mInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+        final ViewHolder vh;
+        if ( convertView == null ) {
+            View view = mInflater.inflate( R.layout.row_issue_discussion, parent, false );
+            vh = ViewHolder.create( (LinearLayout)view );
+            vh.webview = new WebView(getContext());
+            vh.webview.getSettings().setUseWideViewPort(false);
+            view.setTag(vh);
+        } else {
+            vh = (ViewHolder)convertView.getTag();
+        }
 
-        IssueComment item = getItem(position);
+        vh.webContainer.removeAllViews();
+        vh.webContainer.addView(vh.webview);
+        
+        IssueComment item = getItem( position );
 
-        TextView text1 = (TextView) v.findViewById(android.R.id.text1);
+        vh.webview.loadData(item.body_html, "text/html", "UTF-8");
 
-        text1.setText(Html.fromHtml("" + item.body_html));
+        ImageLoader.getInstance().displayImage(item.user.avatar_url, vh.avatar);
 
-        return v;
+        vh.textAuthor.setText(item.user.login);
+
+        return vh.rootView;
     }
 
     public void setLazyLoading(boolean lazyLoading) {
@@ -45,5 +60,26 @@ public class IssuesCommentsAdapter extends ArrayAdapter<IssueComment>{
 
     public boolean isLazyLoading() {
         return lazyLoading;
+    }
+    private static class ViewHolder {
+        public final LinearLayout rootView;
+        public WebView webview;
+        public final ViewGroup webContainer;
+        public final ImageView avatar;
+        public final TextView textAuthor;
+
+        private ViewHolder(LinearLayout rootView, ViewGroup webContainer, ImageView avatar, TextView textAuthor) {
+            this.rootView = rootView;
+            this.webContainer = webContainer;
+            this.avatar = avatar;
+            this.textAuthor = textAuthor;
+        }
+
+        public static ViewHolder create(LinearLayout rootView) {
+            ViewGroup webContainer = (ViewGroup) rootView.findViewById(R.id.webContainer);
+            ImageView avatar = (ImageView) rootView.findViewById(R.id.avatarAuthor);
+            TextView textAuthor = (TextView) rootView.findViewById(R.id.textAuthor);
+            return new ViewHolder( rootView, webContainer, avatar, textAuthor);
+        }
     }
 }
