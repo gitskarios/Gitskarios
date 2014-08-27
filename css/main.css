@@ -61,11 +61,16 @@ dark-bar {
   background-color: #0B417F;
 }
 
+    blockquote {
+        font-size: 14px;
+    }
 @media (min-width: 200px) and (max-width: 400px) {
     #download {
         width: 100%;
     }
-
+    .first-panel {
+        margin-top: 20px;
+    }
     .dark-bar {
         width: 111%;
         height: 50px;
@@ -154,6 +159,10 @@ dark-bar {
         background-image: none !important;
         border-top: 3px solid #fff;
         box-shadow: none;
+    }
+    .panel {
+        width: 50%;
+        margin: 25px auto;
     }
 
     .container {
