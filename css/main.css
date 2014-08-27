@@ -1,0 +1,239 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
+* {
+    font-family: "Open sans", "Calibri";
+}
+
+.dark-bar div {
+    padding-top: 15px;
+    width: 100%;
+    text-align: center;
+}
+.dark-bar span.glyphicon {
+    margin-right: 10px;
+    color: #97c5ff;
+}
+.dark-bar span:not(.glyphicon) {
+    margin-right: 15px;
+}
+.carousel div img{
+    margin: 0 auto;
+    height: 375px;
+}
+.google-play {
+    margin: 20px auto 20px 25%;
+}
+
+
+.navbar {
+    border-width: 0;
+    box-shadow: none;
+}
+.navbar * {
+    background-color: #224C7F !important;
+    text-shadow: none;
+}
+.navbar .icon-bar {
+    background-color: #fff !important;
+}
+.navbar a {
+    color: #ffffff !important;
+}
+
+.first.row {
+    background-color: #224C7F !important;
+    color: #fff;
+}
+.feature-image {
+    height: 400px;
+    background-image: url(../img/htc-repos.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+dark-bar {
+  width: 100%;
+  height: 50px;
+  background-color: #0B417F;
+}
+
+    blockquote {
+        font-size: 14px;
+    }
+@media (min-width: 200px) and (max-width: 400px) {
+    #download {
+        width: 100%;
+    }
+    .about.row {
+        width: 95%;
+        margin: 30px auto;
+    }
+    .first-panel {
+        margin-top: 20px;
+    }
+    .dark-bar {
+        width: 111%;
+        height: 50px;
+        background-color: #0B417F;
+        color: #fff;
+    }
+
+    .feature-image {
+        height: 150px;
+        background-image: url(../img/htc-repos.png);
+        background-position: center 5px;
+        background-size: 200px;
+        background-repeat: no-repeat;
+    }
+    .navbar-default .navbar-nav {
+        margin-top: 0;
+    }
+    .navbar-default .navbar-nav  a  {
+        background-image: none !important;
+        background-color: #1b3d65 !important;
+        border-left: 3px solid rgba(0,0,0,0);
+        box-shadow: none;
+    }
+
+    .navbar-default .navbar-nav > .active > a  {
+        background-image: none !important;
+        border-left: 3px solid #fff;
+        box-shadow: none;
+    }
+
+
+}
+@media (min-width: 401px) and (max-width: 1024px) {
+    .navbar-default .navbar-nav  a  {
+        background-image: none !important;
+        border-top: 3px solid rgba(0,0,0,0);
+        box-shadow: none;
+    }
+    .about.row {
+        width: 95%;
+        margin: 30px auto;
+    }
+
+    .navbar-default .navbar-nav > .active > a  {
+        background-image: none !important;
+        border-top: 3px solid #fff;
+        box-shadow: none;
+    }
+
+    .container {
+       margin: 0 0 0 0!important;
+       width: 100%;
+    }
+    .first.row h2 {
+        margin-bottom: 40px;
+        margin-top: 40px;
+    }
+    .first.row p {
+        font-size: 16px;
+        margin-bottom: 40px;
+    }
+    .dark-bar {
+        width: 105%;
+        height: 50px;
+        background-color: #0B417F;
+        color: #fff;
+    }
+    div.carousel {
+        text-align: center;
+        margin-top: 50px
+    }
+    div.carousel div {
+        display: inline;
+        text-align: center;
+    }
+    .google-play {
+        margin-top: 60px;
+        margin-left: 40%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .navbar-default .navbar-nav  a  {
+        background-image: none !important;
+        border-top: 3px solid rgba(0,0,0,0);
+        box-shadow: none;
+    }
+
+    .about.row {
+        width: 75%;
+        margin: 30px auto;
+    }
+    .navbar-default .navbar-nav > .active > a  {
+        background-image: none !important;
+        border-top: 3px solid #fff;
+        box-shadow: none;
+    }
+    .panel {
+        width: 50%;
+        margin: 25px auto;
+    }
+
+    .container {
+       margin: 0 0 0 0!important;
+       width: 100%;
+    }
+    .first.row {
+        height: 550px !important;
+    }
+    .first.row h2 {
+        margin-bottom: 40px;
+        margin-top: 40px;
+    }
+    .first.row p {
+        font-size: 16px;
+        margin-bottom: 40px;
+    }
+    .dark-bar {
+        width: 105%;
+        height: 50px;
+        background-color: #0B417F;
+        color: #fff;
+    }
+    div.carousel {
+        text-align: center;
+        margin-top: 50px
+    }
+    div.carousel div {
+        display: inline;
+        text-align: center;
+    }
+    .google-play {
+        margin-top: 60px;
+        margin-left: 45%;
+    }
+    .image img {
+        height: 300px !important;
+        -webkit-transition: all 750ms ease;
+        -moz-transition: all 750ms ease;
+        -ms-transition: all 750ms ease;
+        -o-transition: all 750ms ease;
+        transition: all 750ms ease;
+    }
+    .image img:hover {
+        height: 400px !important;
+    }
+    .image-2 img {
+        height: 400px !important;
+    }
+    .feature-image {
+        height: 500px;
+        background-image: url(../img/htc-repos.png);
+        background-position: center 5px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        -webkit-transition: all 750ms ease-in;
+        -moz-transition: all 750ms ease-in;
+        -ms-transition: all 750ms ease-in;
+        -o-transition: all 750ms ease-in;
+        transition: all 750ms ease-in;
+    }
+}
