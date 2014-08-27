@@ -68,6 +68,10 @@ dark-bar {
     #download {
         width: 100%;
     }
+    .about.row {
+        width: 95%;
+        margin: 30px auto;
+    }
     .first-panel {
         margin-top: 20px;
     }
@@ -108,6 +112,10 @@ dark-bar {
         background-image: none !important;
         border-top: 3px solid rgba(0,0,0,0);
         box-shadow: none;
+    }
+    .about.row {
+        width: 95%;
+        margin: 30px auto;
     }
 
     .navbar-default .navbar-nav > .active > a  {
@@ -155,6 +163,10 @@ dark-bar {
         box-shadow: none;
     }
 
+    .about.row {
+        width: 75%;
+        margin: 30px auto;
+    }
     .navbar-default .navbar-nav > .active > a  {
         background-image: none !important;
         border-top: 3px solid #fff;
