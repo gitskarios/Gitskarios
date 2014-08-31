@@ -18,34 +18,34 @@ import java.util.ArrayList;
  */
 public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUsers> {
 
-    private UsersAdapter usersAdapter;
+	private UsersAdapter usersAdapter;
 
-    @Override
-    protected void onResponse(ListUsers users, boolean refreshing) {
-        if (usersAdapter == null) {
-            setUpList();
-        }
-        usersAdapter.addAll(users, paging);
-    }
+	@Override
+	protected void onResponse(ListUsers users, boolean refreshing) {
+		if (usersAdapter == null) {
+			setUpList();
+		}
+		usersAdapter.addAll(users, paging);
+	}
 
-    private void setUpList() {
-        usersAdapter = new UsersAdapter(getActivity(), new ArrayList<User>());
-        setListAdapter(usersAdapter);
-    }
+	private void setUpList() {
+		usersAdapter = new UsersAdapter(getActivity(), new ArrayList<User>());
+		setListAdapter(usersAdapter);
+	}
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
 
-        if (usersAdapter != null && usersAdapter.getItem(position) != null) {
-            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
-            startActivity(launcherIntent);
-        }
-    }
+		if (usersAdapter != null && usersAdapter.getItem(position) != null) {
+			Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
+			startActivity(launcherIntent);
+		}
+	}
 
-    @Override
-    protected Iconify.IconValue getNoDataIcon() {
-        return Iconify.IconValue.fa_group;
-    }
+	@Override
+	protected Iconify.IconValue getNoDataIcon() {
+		return Iconify.IconValue.fa_group;
+	}
 }
 

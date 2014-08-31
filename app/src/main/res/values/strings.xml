@@ -69,5 +69,7 @@
     <string name="discussion">discussion</string>
     <string name="issue_detail_title"><![CDATA[Issue <b>#%1$d</b>]]></string>
     <string name="no_comments">No comments</string>
+    <string name="addComment">Add comment</string>
+    <string name="closeIssue">Close issue</string>
 
 </resources>

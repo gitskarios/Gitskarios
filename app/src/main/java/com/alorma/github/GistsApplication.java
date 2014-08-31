@@ -15,35 +15,35 @@ import com.google.android.gms.analytics.Tracker;
  */
 public class GistsApplication extends Application {
 
-    private GoogleAnalytics analytics;
-    private Tracker tracker;
+	private GoogleAnalytics analytics;
+	private Tracker tracker;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+	@Override
+	public void onCreate() {
+		super.onCreate();
 
-        if (BuildConfig.DEBUG) {
-            int enabled = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+		if (BuildConfig.DEBUG) {
+			int enabled = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
 
-            ComponentName component = new ComponentName(this,
-                    Interceptor.class);
+			ComponentName component = new ComponentName(this,
+					Interceptor.class);
 
-            getPackageManager().setComponentEnabledSetting(component, enabled,
-                    PackageManager.DONT_KILL_APP);
-        }
+			getPackageManager().setComponentEnabledSetting(component, enabled,
+					PackageManager.DONT_KILL_APP);
+		}
 
-        ApiConstants.CLIENT_ID = getString(R.string.client_id);
-        ApiConstants.CLIENT_SECRET = getString(R.string.client_secret);
-        ApiConstants.CLIENT_CALLBACK = getString(R.string.client_callback);
+		ApiConstants.CLIENT_ID = getString(R.string.client_id);
+		ApiConstants.CLIENT_SECRET = getString(R.string.client_secret);
+		ApiConstants.CLIENT_CALLBACK = getString(R.string.client_callback);
 
-        analytics = GoogleAnalytics.getInstance(this);
-    }
+		analytics = GoogleAnalytics.getInstance(this);
+	}
 
-    public Tracker getTracker() {
-        if (tracker == null) {
-            tracker = analytics.newTracker(R.xml.global_tracker);
-        }
+	public Tracker getTracker() {
+		if (tracker == null) {
+			tracker = analytics.newTracker(R.xml.global_tracker);
+		}
 
-        return tracker;
-    }
+		return tracker;
+	}
 }

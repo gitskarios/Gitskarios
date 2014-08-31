@@ -7,4 +7,5 @@
     <item name="smoothBar" type="id">smoothBar</item>
     <item name="top" type="id">top</item>
     <item name="issueDetailInfo" type="id">issueDetailInfo</item>
+    <item name="action_add_comment" type="id">action_add_comment</item>
 </resources>

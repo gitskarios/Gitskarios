@@ -22,64 +22,64 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesAdapter extends ArrayAdapter<Issue>{
-    private final LayoutInflater mInflater;
-    private boolean lazyLoading;
+public class IssuesAdapter extends ArrayAdapter<Issue> {
+	private final LayoutInflater mInflater;
+	private boolean lazyLoading;
 
-    public IssuesAdapter(Context context, ListIssues issues) {
-        super(context, 0, issues);
-        mInflater = LayoutInflater.from(context);
-    }
+	public IssuesAdapter(Context context, ListIssues issues) {
+		super(context, 0, issues);
+		mInflater = LayoutInflater.from(context);
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = mInflater.inflate(R.layout.row_issue, parent, false);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View v = mInflater.inflate(R.layout.row_issue, parent, false);
 
-        TextView title = (TextView) v.findViewById(R.id.textTitle);
-        TextView num = (TextView) v.findViewById(R.id.textNum);
-        TextView autor = (TextView) v.findViewById(R.id.textAuthor);
-        ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
-        ImageView pullRequest = (ImageView) v.findViewById(R.id.pullRequest);
-        View state = v.findViewById(R.id.state);
+		TextView title = (TextView) v.findViewById(R.id.textTitle);
+		TextView num = (TextView) v.findViewById(R.id.textNum);
+		TextView autor = (TextView) v.findViewById(R.id.textAuthor);
+		ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
+		ImageView pullRequest = (ImageView) v.findViewById(R.id.pullRequest);
+		View state = v.findViewById(R.id.state);
 
-        Issue item = getItem(position);
+		Issue item = getItem(position);
 
-        title.setText(item.title);
+		title.setText(item.title);
 
-        num.setText("#" + item.number);
+		num.setText("#" + item.number);
 
-        if (item.user != null) {
-            autor.setText(Html.fromHtml(getContext().getString(R.string.issue_created_by, item.user.login)));
-            ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(item.user.avatar_url, avatar);
-        }
+		if (item.user != null) {
+			autor.setText(Html.fromHtml(getContext().getString(R.string.issue_created_by, item.user.login)));
+			ImageLoader instance = ImageLoader.getInstance();
+			instance.displayImage(item.user.avatar_url, avatar);
+		}
 
-        int colorState = getContext().getResources().getColor(R.color.issue_state_close);
-        if (IssueState.open == item.state) {
-            colorState = getContext().getResources().getColor(R.color.issue_state_open);
-        }
+		int colorState = getContext().getResources().getColor(R.color.issue_state_close);
+		if (IssueState.open == item.state) {
+			colorState = getContext().getResources().getColor(R.color.issue_state_open);
+		}
 
-        state.setBackgroundColor(colorState);
-        num.setTextColor(colorState);
+		state.setBackgroundColor(colorState);
+		num.setTextColor(colorState);
 
-        if (item.pullRequest != null) {
-            IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork);
-            iconDrawable.colorRes(R.color.gray_github_medium);
-            pullRequest.setImageDrawable(iconDrawable);
-        } else {
-            IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_info_circle);
-            iconDrawable.colorRes(R.color.gray_github_light_selected);
-            pullRequest.setImageDrawable(iconDrawable);
-        }
+		if (item.pullRequest != null) {
+			IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork);
+			iconDrawable.colorRes(R.color.gray_github_medium);
+			pullRequest.setImageDrawable(iconDrawable);
+		} else {
+			IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_info_circle);
+			iconDrawable.colorRes(R.color.gray_github_light_selected);
+			pullRequest.setImageDrawable(iconDrawable);
+		}
 
-        return v;
-    }
+		return v;
+	}
 
-    public void setLazyLoading(boolean lazyLoading) {
-        this.lazyLoading = lazyLoading;
-    }
+	public boolean isLazyLoading() {
+		return lazyLoading;
+	}
 
-    public boolean isLazyLoading() {
-        return lazyLoading;
-    }
+	public void setLazyLoading(boolean lazyLoading) {
+		this.lazyLoading = lazyLoading;
+	}
 }

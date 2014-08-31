@@ -5,8 +5,6 @@ import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
-import com.alorma.github.ui.fragment.ActionRepoListener;
-import com.alorma.github.ui.fragment.detail.issue.IssueDetailInfoFragment;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 
@@ -15,46 +13,40 @@ import com.alorma.github.ui.listeners.RefreshListener;
  */
 public class IssueDetailPagerAdapter extends FragmentStatePagerAdapter {
 
-    private String owner;
-    private String repo;
-    private int num;
-    private ActionRepoListener actionRepoListener;
-    private RefreshListener refreshListener;
-    private IssueDiscussionFragment issueDiscussionFragment;
+	private String owner;
+	private String repo;
+	private int num;
+	private RefreshListener refreshListener;
+	private IssueDiscussionFragment issueDiscussionFragment;
 
-    public IssueDetailPagerAdapter(FragmentManager fm, String owner, String repo, int num) {
-        super(fm);
-        this.owner = owner;
-        this.repo = repo;
-        this.num = num;
-    }
+	public IssueDetailPagerAdapter(FragmentManager fm, String owner, String repo, int num) {
+		super(fm);
+		this.owner = owner;
+		this.repo = repo;
+		this.num = num;
+	}
 
-    @Override
-    public Fragment getItem(int i) {
-        switch (i) {
-            case 0:
-                return new ListFragment();
-            case 1:
-                if (issueDiscussionFragment == null) {
-                    issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, num);
-                    issueDiscussionFragment.setRefreshListener(refreshListener);
-                }
-                return issueDiscussionFragment;
-        }
-        return null;
-    }
+	@Override
+	public Fragment getItem(int i) {
+		switch (i) {
+			case 0:
+				return new ListFragment();
+			case 1:
+				if (issueDiscussionFragment == null) {
+					issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, num);
+					issueDiscussionFragment.setRefreshListener(refreshListener);
+				}
+				return issueDiscussionFragment;
+		}
+		return null;
+	}
 
-    @Override
-    public int getCount() {
-        return 2;
-    }
+	@Override
+	public int getCount() {
+		return 2;
+	}
 
-
-    public void setActionRepoListener(ActionRepoListener actionRepoListener) {
-        this.actionRepoListener = actionRepoListener;
-    }
-
-    public void setRefreshListener(RefreshListener refreshListener) {
-        this.refreshListener = refreshListener;
-    }
+	public void setRefreshListener(RefreshListener refreshListener) {
+		this.refreshListener = refreshListener;
+	}
 }

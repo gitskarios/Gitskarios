@@ -12,34 +12,34 @@ import retrofit.RestAdapter;
 public abstract class BaseIssuesClient<K> extends BaseClient<K> {
     private String owner;
     private String repository;
-    private int page;
+	private int num;
+	private int page;
 
-    public BaseIssuesClient(Context context, String owner, String repository) {
+    public BaseIssuesClient(Context context, String owner, String repository, int num) {
         super(context);
         this.owner = owner;
         this.repository = repository;
-    }
+		this.num = num;
+	}
 
-    public BaseIssuesClient(Context context, String owner, String repository, int page) {
-        super(context);
-        this.owner = owner;
-        this.repository = repository;
-        this.page = page;
-    }
+	public BaseIssuesClient(Context context, String owner, String repository, int num, int page) {
+		this(context, owner, repository, num);
+		this.page = page;
+	}
 
     @Override
     protected void executeService(RestAdapter restAdapter) {
         IssuesService issuesService = restAdapter.create(IssuesService.class);
         if (page == 0) {
-            executeFirstPage(owner, repository, issuesService);
+            executeFirstPage(owner, repository, num, issuesService);
         } else {
-            executePaginated(owner, repository, page, issuesService);
+            executePaginated(owner, repository, num, page, issuesService);
         }
     }
 
-    protected abstract void executeFirstPage(String owner, String repository, IssuesService issuesService);
+    protected abstract void executeFirstPage(String owner, String repository, int num, IssuesService issuesService);
 
-    protected abstract void executePaginated(String owner, String repository, int page, IssuesService issuesService);
+    protected abstract void executePaginated(String owner, String repository, int num, int page, IssuesService issuesService);
 
     @Override
     public String getAcceptHeader() {

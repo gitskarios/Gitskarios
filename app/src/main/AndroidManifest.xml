@@ -69,6 +69,10 @@
             android:name=".ui.activity.IssueDetailActivity"
             android:label="@string/title_activity_issue_detail" >
         </activity>
+        <activity
+            android:name=".ui.activity.PullRequestDetailActivity"
+            android:label="@string/title_activity_issue_detail" >
+        </activity>
     </application>
 
 </manifest>
