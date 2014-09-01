@@ -14,11 +14,15 @@ import android.widget.FABCenterLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.detail.issue.IssueDetailInfoFragment;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
@@ -29,8 +33,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import fr.dvilleneuve.android.TextDrawable;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import uk.me.lewisdeane.ldialogs.CustomDialog;
 
-public class IssueDetailActivity extends BackActivity implements RefreshListener {
+public class IssueDetailActivity extends BackActivity implements RefreshListener, BaseClient.OnResultCallback<Issue> {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -53,6 +60,8 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private String desctiption;
 	private ImageView avatarAuthor;
 	private TextView issueTitle;
+	private Issue issue;
+	private boolean shouldRefreshOnBack;
 
 	public static Intent createLauncherIntent(Context context, Issue issue) {
 		Bundle bundle = new Bundle();
@@ -83,6 +92,12 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 			creator = getIntent().getExtras().getParcelable(CREATOR);
 
+			String state = getIntent().getExtras().getString(STATE);
+
+			this.issueState = IssueState.open;
+			if (IssueState.closed.toString().equals(state)) {
+				issueState = IssueState.closed;
+			}
 			findViews();
 			setPreviewData();
 			checkForState();
@@ -90,12 +105,9 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	}
 
 	protected void checkForState() {
-		String state = getIntent().getExtras().getString(STATE);
 
 		int color = R.color.issue_state_open;
-		issueState = IssueState.open;
-		if (IssueState.closed.toString().equals(state)) {
-			issueState = IssueState.closed;
+		if (IssueState.closed == issueState) {
 			color = R.color.issue_state_close;
 		}
 
@@ -103,13 +115,14 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			if (permissions.push) {
 				fabLayout.setFABDrawable(new TextDrawable(this, "x").color(Color.WHITE));
 				fabLayout.setFabClickListener(new FabCloseIssueClickListener(), getString(R.string.closeIssue));
+				fabLayout.setFabVisible(permissions.push || permissions.pull);
 			} else {
-				fabLayout.setFABDrawable(new TextDrawable(this, "+").color(Color.WHITE));
-				fabLayout.setFabClickListener(new FabAddCommentIssueClickListener(), getString(R.string.addComment));
+				fabLayout.setFabVisible(false);
 			}
-			fabLayout.setFabVisible(permissions.push || permissions.pull);
-			invalidateOptionsMenu();
+		} else {
+			fabLayout.setFabVisible(false);
 		}
+		invalidateOptionsMenu();
 
 		setColor(color);
 	}
@@ -173,10 +186,12 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 
-		if (permissions.push) {
-			menu.add(0, R.id.action_add_comment, 0, getString(R.string.addComment));
-			menu.findItem(R.id.action_add_comment).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).actionBarSize().colorRes(R.color.white));
-			menu.findItem(R.id.action_add_comment).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		if (BuildConfig.DEBUG) {
+			if (permissions.pull && issueState == IssueState.open) {
+				menu.add(0, R.id.action_add_comment, 0, getString(R.string.addComment));
+				menu.findItem(R.id.action_add_comment).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).actionBarSize().colorRes(R.color.white));
+				menu.findItem(R.id.action_add_comment).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			}
 		}
 
 		return true;
@@ -184,9 +199,13 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
+		//super.onOptionsItemSelected(item);
 
 		switch (item.getItemId()) {
+			case android.R.id.home:
+				setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
+				finish();
+				break;
 			case R.id.action_add_comment:
 				new FabAddCommentIssueClickListener().onClick(fabLayout);
 				break;
@@ -212,14 +231,70 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private class FabCloseIssueClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			//Toast.makeText(v.getContext(), "Close issue", Toast.LENGTH_SHORT).show();
+			String title = getString(R.string.closeIssue);
+			String accept = getString(R.string.accept);
+			String cancel = getString(R.string.cancel);
+			CustomDialog.Builder builder = new CustomDialog.Builder(v.getContext(), title, accept);
+			builder.darkTheme(false);
+			builder.positiveColor(getString(R.string.accentDark));
+			builder.darkTheme(false);
+			builder.negativeText(cancel);
+			builder.negativeColor(getString(R.string.complementary));
+			builder.darkTheme(true);
+			CustomDialog customDialog = builder.build();
+			customDialog.setClickListener(new CustomDialog.ClickListener() {
+				@Override
+				public void onConfirmClick() {
+					closeIssue();
+				}
+
+				@Override
+				public void onCancelClick() {
+					// Do nothing
+				}
+			});
+			customDialog.show();
 		}
+	}
+
+	private void closeIssue() {
+		CloseIssueClient closeIssueClient = new CloseIssueClient(this, owner, repo, number);
+		closeIssueClient.setOnResultCallback(this);
+		closeIssueClient.execute();
+
+		if (smoothBar != null && !smoothBar.isActivated()) {
+			smoothBar.progressiveStart();
+		}
+	}
+
+	@Override
+	public void onResponseOk(Issue issue, Response r) {
+		if (issue != null) {
+			if (smoothBar != null && smoothBar.isActivated()) {
+				smoothBar.progressiveStop();
+			}
+			this.issue = issue;
+			this.issueState = issue.state;
+			checkForState();
+			shouldRefreshOnBack = true;
+		}
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+		ErrorHandler.onRetrofitError(this, "Closing issue: ", error);
 	}
 
 	private class FabAddCommentIssueClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			//Toast.makeText(v.getContext(), "Add comment", Toast.LENGTH_SHORT).show();
+
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
+		finish();
 	}
 }

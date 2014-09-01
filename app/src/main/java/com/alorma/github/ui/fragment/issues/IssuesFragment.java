@@ -78,7 +78,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	protected void onResponse(ListIssues issues, boolean refreshing) {
 		if (issues != null && issues.size() > 0) {
 
-			if (issuesAdapter == null) {
+			if (issuesAdapter == null || refreshing) {
 				issuesAdapter = new IssuesAdapter(getActivity(), issues);
 				setListAdapter(issuesAdapter);
 			}
@@ -153,7 +153,9 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
+		if (resultCode == Activity.RESULT_FIRST_USER) {
+			invalidate();
+		} else if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
 			invalidate();
 		}
 	}
@@ -185,4 +187,6 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 	}
+
+
 }

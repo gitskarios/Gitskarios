@@ -2,6 +2,7 @@ package com.alorma.github.ui.adapter.detail.repo;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.alorma.github.sdk.bean.dto.response.Branch;

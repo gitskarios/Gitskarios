@@ -71,5 +71,6 @@
     <string name="no_comments">No comments</string>
     <string name="addComment">Add comment</string>
     <string name="closeIssue">Close issue</string>
+    <string name="accept">Accept</string>
 
 </resources>

@@ -496,4 +496,9 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			cancelRefresh();
 		}
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }
