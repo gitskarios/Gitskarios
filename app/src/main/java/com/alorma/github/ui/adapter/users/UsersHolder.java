@@ -10,13 +10,13 @@ import com.alorma.github.R;
 /**
  * Created by Bernat on 14/07/2014.
  */
-public class UsersHolder extends RecyclerView.ViewHolder{
-    public final ImageView imageView;
-    public final TextView textView;
+public class UsersHolder extends RecyclerView.ViewHolder {
+	public final ImageView imageView;
+	public final TextView textView;
 
-    public UsersHolder(View v) {
-        super(v);
-        this.imageView = (ImageView) v.findViewById(R.id.chevron);
-        this.textView = (TextView) v.findViewById(R.id.forkNameRepo);
-    }
+	public UsersHolder(View v) {
+		super(v);
+		this.imageView = (ImageView) v.findViewById(R.id.chevron);
+		this.textView = (TextView) v.findViewById(R.id.forkNameRepo);
+	}
 }

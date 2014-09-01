@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accent">#4183C4</string>
+    <string name="accentDark">#4141C5</string>
+    <string name="complementary">#A18E41</string>
+</resources>

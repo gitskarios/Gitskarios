@@ -26,86 +26,86 @@ import com.joanzapata.android.iconify.IconDrawable;
  */
 public class SearchReposActivity extends BackActivity implements SearchReposFragment.OnSearchReposListener, View.OnClickListener, TextView.OnEditorActionListener, TextWatcher {
 
-    private EditText searchEdit;
-    private View searchIcon;
-    private View cleanIcon;
+	private EditText searchEdit;
+	private View searchIcon;
+	private View cleanIcon;
 
-    public static Intent createLauncherIntent(Context context) {
-        return new Intent(context, SearchReposActivity.class);
-    }
+	public static Intent createLauncherIntent(Context context) {
+		return new Intent(context, SearchReposActivity.class);
+	}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_search);
 
-        searchEdit = (EditText) findViewById(R.id.edit);
-        searchEdit.setOnEditorActionListener(this);
-        searchEdit.addTextChangedListener(this);
+		searchEdit = (EditText) findViewById(R.id.edit);
+		searchEdit.setOnEditorActionListener(this);
+		searchEdit.addTextChangedListener(this);
 
-        searchIcon = findViewById(R.id.searchIcon);
-        cleanIcon = findViewById(R.id.cleanIcon);
+		searchIcon = findViewById(R.id.searchIcon);
+		cleanIcon = findViewById(R.id.cleanIcon);
 
-        searchIcon.setOnClickListener(this);
-    }
+		searchIcon.setOnClickListener(this);
+	}
 
-    private void onQuery(String query) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        SearchReposFragment fragment = SearchReposFragment.newInstance();
-        fragment.setQuery(query);
-        fragment.setOnSearchReposListener(this);
-        ft.replace(R.id.content, fragment);
-        ft.commit();
-    }
+	private void onQuery(String query) {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		SearchReposFragment fragment = SearchReposFragment.newInstance();
+		fragment.setQuery(query);
+		fragment.setOnSearchReposListener(this);
+		ft.replace(R.id.content, fragment);
+		ft.commit();
+	}
 
-    @Override
-    public void onRepoItemSelected(Repo repo) {
-        Intent intent = RepoDetailActivity.createLauncherActivity(this, repo.owner.login, repo.name, repo.description);
-        startActivity(intent);
-    }
+	@Override
+	public void onRepoItemSelected(Repo repo) {
+		Intent intent = RepoDetailActivity.createLauncherActivity(this, repo.owner.login, repo.name, repo.description);
+		startActivity(intent);
+	}
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.cleanIcon:
-                searchEdit.getText().clear();
-                break;
-            case R.id.searchIcon:
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
-                onQuery(String.valueOf(searchEdit.getText()));
-                break;
-        }
-    }
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.cleanIcon:
+				searchEdit.getText().clear();
+				break;
+			case R.id.searchIcon:
+				InputMethodManager imm = (InputMethodManager) getSystemService(
+						Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
+				onQuery(String.valueOf(searchEdit.getText()));
+				break;
+		}
+	}
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-            onQuery(String.valueOf(v.getText()));
-        }
+	@Override
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		if (actionId == EditorInfo.IME_ACTION_DONE) {
+			onQuery(String.valueOf(v.getText()));
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    }
+	}
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (searchEdit.getText().length() > 0) {
-            cleanIcon.setVisibility(View.VISIBLE);
-            cleanIcon.setOnClickListener(this);
-        } else {
-            cleanIcon.setVisibility(View.INVISIBLE);
-            cleanIcon.setOnClickListener(null);
-        }
-    }
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		if (searchEdit.getText().length() > 0) {
+			cleanIcon.setVisibility(View.VISIBLE);
+			cleanIcon.setOnClickListener(this);
+		} else {
+			cleanIcon.setVisibility(View.INVISIBLE);
+			cleanIcon.setOnClickListener(null);
+		}
+	}
 
-    @Override
-    public void afterTextChanged(Editable s) {
+	@Override
+	public void afterTextChanged(Editable s) {
 
-    }
+	}
 }

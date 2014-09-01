@@ -5,4 +5,5 @@
     android:layout_height="@dimen/fab"
     android:id="@id/fabButton"
     android:padding="@dimen/gapLarge"
+    android:scaleType="centerInside"
     android:background="@drawable/fab_button" />

@@ -25,4 +25,5 @@ public class Issue extends ShaUrl{
     public String updatedAt;
     @SerializedName("closed_at")
     public String closedAt;
+	public Repo repository;
 }

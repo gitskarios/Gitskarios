@@ -4,19 +4,19 @@
 
     <item android:state_selected="true">
         <shape android:shape="oval">
-            <solid android:color="@color/complementary" />
+            <solid android:color="@color/accentDark" />
         </shape>
     </item>
 
     <item android:state_pressed="true">
         <shape android:shape="oval">
-            <solid android:color="@color/complementary" />
+            <solid android:color="@color/accentDark" />
         </shape>
     </item>
 
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/accentDark" />
+            <solid android:color="@color/complementary" />
         </shape>
     </item>
 

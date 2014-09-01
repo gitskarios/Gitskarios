@@ -30,7 +30,7 @@
     <string name="readme">Readme</string>
     <string name="source">Source</string>
     <string name="issues">Issues</string>
-    <string name="Info">info</string>
+    <string name="info">info</string>
     <string name="client_id">60f30c819ae20252ab74</string>
     <string name="client_secret">c46258762edf73a3ef2b695545950ec962c171ec</string>
     <string name="client_callback">http://bernatborras.net/giskarios</string>
@@ -65,5 +65,12 @@
     <string name="action_send_issue">Send issue</string>
     <string name="create_issue_error">Error creating issue</string>
     <string name="no_issues_found">No issues found</string>
+    <string name="title_activity_issue_detail">IssueDetailActivity</string>
+    <string name="discussion">discussion</string>
+    <string name="issue_detail_title"><![CDATA[Issue <b>#%1$d</b>]]></string>
+    <string name="no_comments">No comments</string>
+    <string name="addComment">Add comment</string>
+    <string name="closeIssue">Close issue</string>
+    <string name="accept">Accept</string>
 
 </resources>

@@ -20,41 +20,41 @@ import java.util.List;
  */
 public class UsersAdapter extends ArrayAdapter<User> {
 
-    private final LayoutInflater mInflater;
-    private int scrollState;
+	private final LayoutInflater mInflater;
+	private int scrollState;
 
-    public UsersAdapter(Context context, List<User> users) {
-        super(context, 0, users);
-        this.mInflater = LayoutInflater.from(context);
-    }
+	public UsersAdapter(Context context, List<User> users) {
+		super(context, 0, users);
+		this.mInflater = LayoutInflater.from(context);
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
-        UsersHolder userHolder = new UsersHolder(v);
+	@Override
+	public View getView(int position, View convertView, ViewGroup viewGroup) {
+		View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
+		UsersHolder userHolder = new UsersHolder(v);
 
-        User user = getItem(position);
+		User user = getItem(position);
 
-        if (user.name != null) {
-            userHolder.textView.setText(user.name);
-        } else if (user.login != null) {
-            userHolder.textView.setText(user.login);
-        }
+		if (user.name != null) {
+			userHolder.textView.setText(user.name);
+		} else if (user.login != null) {
+			userHolder.textView.setText(user.login);
+		}
 
-        ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.imageView);
+		ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.imageView);
 
-        return v;
-    }
+		return v;
+	}
 
-    public void addAll(Collection<? extends User> collection, boolean paging) {
-        if (!paging) {
-            clear();
-        }
-        super.addAll(collection);
-    }
+	public void addAll(Collection<? extends User> collection, boolean paging) {
+		if (!paging) {
+			clear();
+		}
+		super.addAll(collection);
+	}
 
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return getView(position, convertView, parent);
-    }
+	@Override
+	public View getDropDownView(int position, View convertView, ViewGroup parent) {
+		return getView(position, convertView, parent);
+	}
 }

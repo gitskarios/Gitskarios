@@ -14,37 +14,37 @@ import com.alorma.github.ui.activity.base.BackActivity;
  */
 public class FileActivity extends BackActivity {
 
-    private static final String URL = "URL";
+	private static final String URL = "URL";
 
-    public static Intent createLauncherIntent(Context context, String url) {
-        Bundle bundle = new Bundle();
-        bundle.putString(URL, url);
+	public static Intent createLauncherIntent(Context context, String url) {
+		Bundle bundle = new Bundle();
+		bundle.putString(URL, url);
 
-        Intent intent = new Intent(context, FileActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
+		Intent intent = new Intent(context, FileActivity.class);
+		intent.putExtras(bundle);
+		return intent;
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        WebView webView = new WebView(this);
+		WebView webView = new WebView(this);
 
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return true;
-            }
-        });
+		webView.setWebViewClient(new WebViewClient() {
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				return true;
+			}
+		});
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(URL)) {
-            String url = getIntent().getExtras().getString(URL);
-            webView.loadUrl(url);
-        } else {
-            finish();
-        }
+		if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(URL)) {
+			String url = getIntent().getExtras().getString(URL);
+			webView.loadUrl(url);
+		} else {
+			finish();
+		}
 
-        setContentView(webView);
-    }
+		setContentView(webView);
+	}
 }

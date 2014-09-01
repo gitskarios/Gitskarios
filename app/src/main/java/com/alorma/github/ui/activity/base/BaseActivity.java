@@ -26,53 +26,53 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class BaseActivity extends Activity {
 
-    private AuthReceiver authReceiver;
+	private AuthReceiver authReceiver;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (!BuildConfig.DEBUG) {
-            // Get tracker.
-            Tracker t = ((GistsApplication) getApplication()).getTracker();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (!BuildConfig.DEBUG) {
+			// Get tracker.
+			Tracker t = ((GistsApplication) getApplication()).getTracker();
 
-            // Set screen name.
-            // Where path is a String representing the screen name.
-            t.setScreenName(this.getClass().getSimpleName());
+			// Set screen name.
+			// Where path is a String representing the screen name.
+			t.setScreenName(this.getClass().getSimpleName());
 
-            // Send a screen view.
-            t.send(new HitBuilders.AppViewBuilder().build());
+			// Send a screen view.
+			t.send(new HitBuilders.AppViewBuilder().build());
 
-            BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
-        }
-        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
-    }
+			BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
+		}
+		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-        authReceiver = new AuthReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(UnAuthIntent.ACTION);
-        manager.registerReceiver(authReceiver, intentFilter);
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+		authReceiver = new AuthReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(UnAuthIntent.ACTION);
+		manager.registerReceiver(authReceiver, intentFilter);
+	}
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-        manager.unregisterReceiver(authReceiver);
-    }
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+		manager.unregisterReceiver(authReceiver);
+	}
 
-    private class AuthReceiver extends BroadcastReceiver {
+	private class AuthReceiver extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, R.string.unauthorized, Toast.LENGTH_SHORT).show();
-            Intent loginIntent = new Intent(context, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(loginIntent);
-            finish();
-        }
-    }
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Toast.makeText(context, R.string.unauthorized, Toast.LENGTH_SHORT).show();
+			Intent loginIntent = new Intent(context, LoginActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(loginIntent);
+			finish();
+		}
+	}
 }

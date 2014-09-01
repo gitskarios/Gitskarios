@@ -41,7 +41,7 @@
     <ImageView
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:id="@+id/avatarAuthor"
+        android:id="@id/avatarAuthor"
         android:layout_alignTop="@+id/textAuthor"
         android:layout_alignLeft="@+id/textTitle"
         android:layout_alignStart="@+id/textTitle"
@@ -56,8 +56,8 @@
         android:layout_marginLeft="@dimen/gapMedium"
         android:layout_marginStart="@dimen/gapMedium"
         android:layout_below="@+id/textTitle"
-        android:layout_toRightOf="@+id/avatarAuthor"
-        android:layout_toEndOf="@+id/avatarAuthor"
+        android:layout_toRightOf="@id/avatarAuthor"
+        android:layout_toEndOf="@id/avatarAuthor"
         android:layout_alignRight="@+id/textTitle"
         android:layout_alignEnd="@+id/textTitle"
         android:textColor="@color/gray_github_medium"  />

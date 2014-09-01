@@ -18,58 +18,58 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public abstract class LoadingListFragment extends BaseListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private SwipeRefreshLayout swipe;
-    private RefreshListener refreshListener;
+	private SwipeRefreshLayout swipe;
+	private RefreshListener refreshListener;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
 
-        View v = inflater.inflate(R.layout.list_fragment, null, false);
+		View v = inflater.inflate(R.layout.list_fragment, null, false);
 
-        return v;
-    }
+		return v;
+	}
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
-        if (useInnerSwipeRefresh()) {
-            swipe.setColorSchemeResources(R.color.accent,
-                    R.color.gray_github_light,
-                    R.color.accentDark,
-                    R.color.gray_github_light);
-        } else {
-            swipe.setColorSchemeResources(R.color.gray_github_light,
-                    R.color.gray_github_light,
-                    R.color.gray_github_light,
-                    R.color.gray_github_light);
-        }
-        swipe.setOnRefreshListener(this);
-    }
+		if (useInnerSwipeRefresh()) {
+			swipe.setColorSchemeResources(R.color.accent,
+					R.color.gray_github_light,
+					R.color.accentDark,
+					R.color.gray_github_light);
+		} else {
+			swipe.setColorSchemeResources(android.R.color.transparent,
+					android.R.color.transparent,
+					android.R.color.transparent,
+					android.R.color.transparent);
+		}
+		swipe.setOnRefreshListener(this);
+	}
 
-    protected boolean useInnerSwipeRefresh() {
-        return true;
-    }
+	protected boolean useInnerSwipeRefresh() {
+		return true;
+	}
 
-    public void setRefreshListener(RefreshListener refreshListener) {
-        this.refreshListener = refreshListener;
-    }
+	public void setRefreshListener(RefreshListener refreshListener) {
+		this.refreshListener = refreshListener;
+	}
 
-    protected void startRefresh() {
-        if (useInnerSwipeRefresh() && swipe != null) {
-            swipe.setRefreshing(true);
-        } else if (refreshListener != null) {
-            refreshListener.showRefresh();
-        }
-    }
+	protected void startRefresh() {
+		if (useInnerSwipeRefresh() && swipe != null) {
+			swipe.setRefreshing(true);
+		} else if (refreshListener != null) {
+			refreshListener.showRefresh();
+		}
+	}
 
-    protected void stopRefresh() {
-        if (useInnerSwipeRefresh() && swipe != null) {
-            swipe.setRefreshing(false);
-        } else if (refreshListener != null) {
-            refreshListener.cancelRefresh();
-        }
-    }
+	protected void stopRefresh() {
+		if (useInnerSwipeRefresh() && swipe != null) {
+			swipe.setRefreshing(false);
+		} else if (refreshListener != null) {
+			refreshListener.cancelRefresh();
+		}
+	}
 }

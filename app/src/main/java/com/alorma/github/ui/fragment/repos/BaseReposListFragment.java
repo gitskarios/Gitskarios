@@ -18,39 +18,39 @@ import java.util.ArrayList;
  */
 public abstract class BaseReposListFragment extends PaginatedListFragment<ListRepos> {
 
-    protected ReposAdapter reposAdapter;
+	protected ReposAdapter reposAdapter;
 
-    protected void setUpList() {
+	protected void setUpList() {
 
-        reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
+		reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
 
-        setListAdapter(reposAdapter);
-    }
+		setListAdapter(reposAdapter);
+	}
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (reposAdapter != null && reposAdapter.getCount() >= position) {
-            Repo item = reposAdapter.getItem(position);
-            if (item != null) {
-                String repo = item.name;
-                String owner = item.owner.login;
-                Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, repo, item.description);
-                startActivity(launcherActivity);
-            }
-        }
-    }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		if (reposAdapter != null && reposAdapter.getCount() >= position) {
+			Repo item = reposAdapter.getItem(position);
+			if (item != null) {
+				String repo = item.name;
+				String owner = item.owner.login;
+				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, repo, item.description);
+				startActivity(launcherActivity);
+			}
+		}
+	}
 
-    @Override
-    protected void onResponse(ListRepos repos, boolean refreshing) {
-        if (reposAdapter == null) {
-            setUpList();
-        }
-        reposAdapter.addAll(repos, paging);
-    }
+	@Override
+	protected void onResponse(ListRepos repos, boolean refreshing) {
+		if (reposAdapter == null) {
+			setUpList();
+		}
+		reposAdapter.addAll(repos, paging);
+	}
 
-    @Override
-    protected Iconify.IconValue getNoDataIcon() {
-        return Iconify.IconValue.fa_code;
-    }
+	@Override
+	protected Iconify.IconValue getNoDataIcon() {
+		return Iconify.IconValue.fa_code;
+	}
 }

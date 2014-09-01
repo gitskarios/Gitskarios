@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/listContentFL">
+    android:id="@+id/listContentFL"
+    android:background="@color/gray_github_light">
 
     <FrameLayout
         android:id="@+id/listContainer"
@@ -26,6 +27,7 @@
         android:layout_width="@dimen/fab"
         android:layout_height="@dimen/fab"
         android:layout_margin="@dimen/gapLarge"
+        android:scaleType="centerInside"
         android:layout_gravity="bottom|right|end" />
 
     <RelativeLayout

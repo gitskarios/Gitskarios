@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alorma.github"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.alorma.github" >
 
     <uses-sdk tools:node="replace" />
 
@@ -64,6 +64,14 @@
         <activity
             android:name=".ui.activity.NewIssueActivity"
             android:label="@string/title_activity_new_issue" >
+        </activity>
+        <activity
+            android:name=".ui.activity.IssueDetailActivity"
+            android:label="@string/title_activity_issue_detail" >
+        </activity>
+        <activity
+            android:name=".ui.activity.PullRequestDetailActivity"
+            android:label="@string/title_activity_issue_detail" >
         </activity>
     </application>
 

@@ -19,93 +19,92 @@ import retrofit.client.Response;
 
 public abstract class PaginatedListFragment<K> extends LoadingListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
 
-    protected static final String USERNAME = "USERNAME";
+	protected static final String USERNAME = "USERNAME";
+	protected boolean paging;
+	private PaginationLink bottomPaginationLink;
+	private boolean refreshing;
 
-    private PaginationLink bottomPaginationLink;
-    protected boolean paging;
-    private boolean refreshing;
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+		executeRequest();
+	}
 
-        executeRequest();
-    }
+	protected void executeRequest() {
+		startRefresh();
+	}
 
-    protected void executeRequest() {
-        startRefresh();
-    }
+	@Override
+	public void onScroll(AbsListView absListView, int first, int last, int total) {
+		super.onScroll(absListView, first, last, total);
+		if (total > 0 && first + last == total) {
+			if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
+				paging = true;
+				executePaginatedRequest(bottomPaginationLink.page);
+				bottomPaginationLink = null;
+			}
+		}
+	}
 
-    @Override
-    public void onScroll(AbsListView absListView, int first, int last, int total) {
-        super.onScroll(absListView, first, last, total);
-        if (total > 0 && first + last == total) {
-            if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
-                paging = true;
-                executePaginatedRequest(bottomPaginationLink.page);
-                bottomPaginationLink = null;
-            }
-        }
-    }
+	protected void executePaginatedRequest(int page) {
+		startRefresh();
+	}
 
-    protected void executePaginatedRequest(int page) {
-        startRefresh();
-    }
+	@Override
+	public void onResponseOk(K k, Response r) {
+		if (getActivity() != null && isAdded()) {
+			stopRefresh();
 
-    @Override
-    public void onResponseOk(K k, Response r) {
-        if (getActivity() != null && isAdded()) {
-            stopRefresh();
+			if (k != null && k instanceof List) {
+				if (emptyLy != null && ((List) k).size() > 0) {
+					emptyLy.setVisibility(View.GONE);
+					getLinkData(r);
+					onResponse(k, refreshing);
+					paging = false;
+					refreshing = false;
+				} else {
+					setEmpty();
+				}
+			} else {
+				setEmpty();
+			}
+		}
+	}
 
-            if (k != null && k instanceof List) {
-                if (emptyLy != null && ((List) k).size() > 0) {
-                    emptyLy.setVisibility(View.GONE);
-                    getLinkData(r);
-                    onResponse(k, refreshing);
-                    paging = false;
-                    refreshing = false;
-                } else {
-                    setEmpty();
-                }
-            } else {
-                setEmpty();
-            }
-        }
-    }
+	@Override
+	public void onFail(RetrofitError error) {
+		stopRefresh();
+		if (getListAdapter() == null || getListAdapter().getCount() == 0) {
+			setEmpty();
+		}
+		ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
+	}
 
-    @Override
-    public void onFail(RetrofitError error) {
-        stopRefresh();
-        if (getListAdapter() == null || getListAdapter().getCount() == 0) {
-            setEmpty();
-        }
-        ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
-    }
+	protected abstract void onResponse(K k, boolean refreshing);
 
-    protected abstract void onResponse(K k, boolean refreshing);
+	private void getLinkData(Response r) {
+		List<Header> headers = r.getHeaders();
+		Map<String, String> headersMap = new HashMap<String, String>(headers.size());
+		for (Header header : headers) {
+			headersMap.put(header.getName(), header.getValue());
+		}
 
-    private void getLinkData(Response r) {
-        List<Header> headers = r.getHeaders();
-        Map<String, String> headersMap = new HashMap<String, String>(headers.size());
-        for (Header header : headers) {
-            headersMap.put(header.getName(), header.getValue());
-        }
+		String link = headersMap.get("Link");
 
-        String link = headersMap.get("Link");
+		if (link != null) {
+			String[] parts = link.split(",");
+			try {
+				bottomPaginationLink = new PaginationLink(parts[0]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-        if (link != null) {
-            String[] parts = link.split(",");
-            try {
-                bottomPaginationLink = new PaginationLink(parts[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onRefresh() {
-        refreshing = true;
-        executeRequest();
-    }
+	@Override
+	public void onRefresh() {
+		refreshing = true;
+		executeRequest();
+	}
 }

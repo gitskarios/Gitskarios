@@ -10,56 +10,56 @@ import com.joanzapata.android.iconify.Iconify;
 
 public class ReposFragment extends BaseReposListFragment {
 
-    private String username;
+	private String username;
 
-    public static ReposFragment newInstance() {
-        return new ReposFragment();
-    }
+	public static ReposFragment newInstance() {
+		return new ReposFragment();
+	}
 
-    public static ReposFragment newInstance(String username) {
-        ReposFragment reposFragment = new ReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
+	public static ReposFragment newInstance(String username) {
+		ReposFragment reposFragment = new ReposFragment();
+		if (username != null) {
+			Bundle bundle = new Bundle();
+			bundle.putString(USERNAME, username);
 
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
+			reposFragment.setArguments(bundle);
+		}
+		return reposFragment;
+	}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (getArguments() != null) {
+			username = getArguments().getString(USERNAME);
+		}
+	}
 
-    @Override
-    protected void loadArguments() {
+	@Override
+	protected void loadArguments() {
 
-    }
+	}
 
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
-        BaseReposClient client;
-        client = new UserReposClient(getActivity(), username);
+	@Override
+	protected void executeRequest() {
+		super.executeRequest();
+		BaseReposClient client;
+		client = new UserReposClient(getActivity(), username);
 
-        client.setOnResultCallback(this);
-        client.execute();
-    }
+		client.setOnResultCallback(this);
+		client.execute();
+	}
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
-        UserReposClient client = new UserReposClient(getActivity(), username, page);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
+	@Override
+	protected void executePaginatedRequest(int page) {
+		super.executePaginatedRequest(page);
+		UserReposClient client = new UserReposClient(getActivity(), username, page);
+		client.setOnResultCallback(this);
+		client.execute();
+	}
 
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_repositories;
-    }
+	@Override
+	protected int getNoDataText() {
+		return R.string.no_repositories;
+	}
 }
