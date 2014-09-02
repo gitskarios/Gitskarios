@@ -13,4 +13,10 @@
         <item>@color/accent</item>
         <item>@color/accentDark</item>
     </integer-array>
+
+    <color name="lDialogPositve">#ffffffff</color>
+    <color name="lDialogNegative">#ff808080</color>
+
+    <string name="lDialogPositve">#ffffffff</string>
+    <string name="lDialogNegative">#ff808080</string>
 </resources>

@@ -24,7 +24,6 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.detail.issue.IssueDetailInfoFragment;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
@@ -53,7 +52,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private SmoothProgressBar smoothBar;
 	protected FABCenterLayout fabLayout;
 	private IssueDiscussionFragment issueDiscussionFragment;
-	private IssueDetailInfoFragment issueInfoFragment;
 	private IssueState issueState;
 	private Permissions permissions;
 	private User creator;
@@ -98,6 +96,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			if (IssueState.closed.toString().equals(state)) {
 				issueState = IssueState.closed;
 			}
+
 			findViews();
 			setPreviewData();
 			checkForState();
@@ -112,7 +111,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		}
 
 		if (issueState == IssueState.open) {
-			if (permissions.push) {
+			if (permissions != null && permissions.push) {
 				fabLayout.setFABDrawable(new TextDrawable(this, "x").color(Color.WHITE));
 				fabLayout.setFabClickListener(new FabCloseIssueClickListener(), getString(R.string.closeIssue));
 				fabLayout.setFabVisible(permissions.push || permissions.pull);
@@ -152,10 +151,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			getActionBar().setSubtitle(Html.fromHtml(getString(R.string.issue_detail_title, number)));
 		}
 
-		if (issueInfoFragment == null) {
-			issueInfoFragment = new IssueDetailInfoFragment();
-		}
-
 		if (issueDiscussionFragment == null) {
 			issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, number);
 			issueDiscussionFragment.setRefreshListener(this);
@@ -164,7 +159,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		setTopData();
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.issueDetailInfo, issueInfoFragment);
 		ft.replace(R.id.discussionFeed, issueDiscussionFragment);
 		ft.commit();
 	}
@@ -236,10 +230,10 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			String cancel = getString(R.string.cancel);
 			CustomDialog.Builder builder = new CustomDialog.Builder(v.getContext(), title, accept);
 			builder.darkTheme(false);
-			builder.positiveColor(getString(R.string.accentDark));
+			builder.positiveColor(getString(R.string.lDialogPositve));
 			builder.darkTheme(false);
 			builder.negativeText(cancel);
-			builder.negativeColor(getString(R.string.complementary));
+			builder.negativeColor(getString(R.string.lDialogNegative));
 			builder.darkTheme(true);
 			CustomDialog customDialog = builder.build();
 			customDialog.setClickListener(new CustomDialog.ClickListener() {

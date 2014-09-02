@@ -55,6 +55,7 @@
                 android:layout_alignBottom="@id/avatarAuthor"
                 android:layout_alignTop="@id/avatarAuthor"
                 android:layout_marginRight="@dimen/gapLarge"
+                android:layout_marginEnd="@dimen/gapLarge"
                 android:textColor="@color/white"/>
         </RelativeLayout>
 
