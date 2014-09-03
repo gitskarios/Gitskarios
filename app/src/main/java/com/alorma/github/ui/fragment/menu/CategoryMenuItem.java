@@ -11,6 +11,6 @@ import com.joanzapata.android.iconify.Iconify;
  */
 public class CategoryMenuItem extends MenuItem {
 	public CategoryMenuItem(int id, @StringRes int text, @ColorRes int color, @NonNull Iconify.IconValue icon) {
-		super(id, text, color, icon);
+		super(id, 0, text, color, icon);
 	}
 }
