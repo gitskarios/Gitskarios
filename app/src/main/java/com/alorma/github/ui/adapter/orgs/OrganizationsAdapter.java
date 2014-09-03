@@ -16,6 +16,7 @@ import com.alorma.github.ui.adapter.users.UsersHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,5 +46,17 @@ public class OrganizationsAdapter extends ArrayAdapter<Organization> {
 		ImageLoader.getInstance().displayImage(organization.avatar_url, userHolder.imageView);
 
 		return v;
+	}
+
+	public void addAll(Collection<? extends Organization> collection, boolean paging) {
+		if (!paging) {
+			clear();
+		}
+		super.addAll(collection);
+	}
+
+	@Override
+	public View getDropDownView(int position, View convertView, ViewGroup parent) {
+		return getView(position, convertView, parent);
 	}
 }

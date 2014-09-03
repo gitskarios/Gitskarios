@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
+import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.repos.OrgsReposClient;
 import com.alorma.github.sdk.services.user.UserFollowersClient;
@@ -11,6 +12,8 @@ import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.joanzapata.android.iconify.Iconify;
+
+import java.util.ArrayList;
 
 import retrofit.client.Response;
 
@@ -55,11 +58,14 @@ public class OrganzationsFragment extends PaginatedListFragment<ListOrganization
 	@Override
 	protected void onResponse(ListOrganizations organizations, boolean refreshing) {
 		if (adapter == null) {
-			adapter = new OrganizationsAdapter(getActivity(), organizations);
-			setListAdapter(adapter);
-		} else {
-			adapter.addAll(organizations);
+			setUpList();
 		}
+		adapter.addAll(organizations, paging);
+	}
+
+	private void setUpList() {
+		adapter = new OrganizationsAdapter(getActivity(), new ArrayList<Organization>());
+		setListAdapter(adapter);
 	}
 
 	@Override
