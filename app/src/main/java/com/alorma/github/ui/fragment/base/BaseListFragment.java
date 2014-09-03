@@ -84,15 +84,17 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	}
 
 	public void setEmpty() {
-		if (emptyText != null && emptyIcon != null) {
-			if (getNoDataIcon() != null && getNoDataText() > 0) {
-				IconDrawable iconDrawable = new IconDrawable(getActivity(), getNoDataIcon());
-				iconDrawable.colorRes(R.color.gray_github_medium);
-				emptyIcon.setImageDrawable(iconDrawable);
+		if (getActivity() != null) {
+			if (emptyText != null && emptyIcon != null) {
+				if (getNoDataIcon() != null && getNoDataText() > 0) {
+					IconDrawable iconDrawable = new IconDrawable(getActivity(), getNoDataIcon());
+					iconDrawable.colorRes(R.color.gray_github_medium);
+					emptyIcon.setImageDrawable(iconDrawable);
 
-				emptyText.setText(getNoDataText());
+					emptyText.setText(getNoDataText());
 
-				emptyLy.setVisibility(View.VISIBLE);
+					emptyLy.setVisibility(View.VISIBLE);
+				}
 			}
 		}
 	}
