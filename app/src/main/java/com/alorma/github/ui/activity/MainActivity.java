@@ -24,6 +24,7 @@ import com.alorma.github.inapp.Purchase;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.animations.HeightEvaluator;
 import com.alorma.github.ui.animations.WidthEvaluator;
+import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
@@ -55,6 +56,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private FollowingFragment followingFragment;
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
+	private OrganzationsFragment organizationsFragmet;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -284,7 +286,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onOrganizationsSelected() {
-		setFragment(ReposFragment.newInstance());
+		if (organizationsFragmet == null) {
+			organizationsFragmet = OrganzationsFragment.newInstance();
+		}
+		setFragment(organizationsFragmet);
 	}
 
 	@Override

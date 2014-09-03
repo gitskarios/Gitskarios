@@ -75,5 +75,6 @@
     <string name="row_private_repo">PRIVATE</string>
     <string name="tab_user_parent">User</string>
     <string name="menu_organizations">Organizations</string>
+    <string name="no_organizations">There isn\'t organizations</string>
 
 </resources>
