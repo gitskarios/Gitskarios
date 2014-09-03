@@ -73,5 +73,7 @@
     <string name="closeIssue">Close issue</string>
     <string name="accept">Accept</string>
     <string name="row_private_repo">PRIVATE</string>
+    <string name="tab_user_parent">User</string>
+    <string name="menu_organizations">Organizations</string>
 
 </resources>

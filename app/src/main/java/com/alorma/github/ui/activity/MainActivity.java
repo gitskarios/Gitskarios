@@ -283,6 +283,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
+	public void onOrganizationsSelected() {
+		setFragment(ReposFragment.newInstance());
+	}
+
+	@Override
 	public void onBackPressed() {
 		if (isMenuOpen) {
 			closeMenu();
