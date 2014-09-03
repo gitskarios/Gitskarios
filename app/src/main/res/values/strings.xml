@@ -72,5 +72,6 @@
     <string name="addComment">Add comment</string>
     <string name="closeIssue">Close issue</string>
     <string name="accept">Accept</string>
+    <string name="row_private_repo">PRIVATE</string>
 
 </resources>

@@ -74,11 +74,13 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
 	@Override
 	public void onFail(RetrofitError error) {
-		stopRefresh();
-		if (getListAdapter() == null || getListAdapter().getCount() == 0) {
-			setEmpty();
+		if (getActivity() != null) {
+			stopRefresh();
+			if (getListAdapter() == null || getListAdapter().getCount() == 0) {
+				setEmpty();
+			}
+			ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
 		}
-		ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
 	}
 
 	protected abstract void onResponse(K k, boolean refreshing);

@@ -14,6 +14,7 @@ public class ReposHolder extends RecyclerView.ViewHolder {
 
 	public ImageView imageRepoType;
 	public TextView textTitle;
+	public TextView repoPrivate;
 	public TextView textDescription;
 	public TextView textForks;
 	public TextView textStarts;
@@ -24,6 +25,7 @@ public class ReposHolder extends RecyclerView.ViewHolder {
 		if (itemView != null) {
 			imageRepoType = (ImageView) itemView.findViewById(R.id.repoTypeIcon);
 			textTitle = (TextView) itemView.findViewById(R.id.repoName);
+			repoPrivate = (TextView) itemView.findViewById(R.id.repoPrivate);
 			textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
 			textStarts = (TextView) itemView.findViewById(R.id.starsIcon);
 			textForks = (TextView) itemView.findViewById(R.id.forksIcon);

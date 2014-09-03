@@ -31,6 +31,8 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 		Repo repo = getItem(position);
 
+		int iconsColor = R.color.gray_github_medium;
+
 		reposHolder.textTitle.setText(repo.name);
 
 		reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.accent));
@@ -42,7 +44,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 		typeDrawable.sizeDp(40);
 
-		typeDrawable.colorRes(R.color.gray_github_medium);
+		typeDrawable.colorRes(iconsColor);
 		reposHolder.imageRepoType.setImageDrawable(typeDrawable);
 
 		reposHolder.textDescription.setText(repo.description);
@@ -56,6 +58,9 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		reposHolder.textDescription.setText(repo.description);
 
 		reposHolder.textLanguage.setText(repo.language);
+
+		reposHolder.repoPrivate.setVisibility(repo.isPrivate ? View.VISIBLE : View.GONE);
+
 		return v;
 	}
 
