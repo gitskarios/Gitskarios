@@ -9,55 +9,53 @@ import com.alorma.github.sdk.services.repos.StarredReposClient;
 
 public class StarredReposFragment extends BaseReposListFragment {
 
-    private String username;
+	private String username;
 
-    public static StarredReposFragment newInstance() {
-        return new StarredReposFragment();
-    }
+	public static StarredReposFragment newInstance() {
+		return new StarredReposFragment();
+	}
 
-    public static StarredReposFragment newInstance(String username) {
-        StarredReposFragment reposFragment = new StarredReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
+	public static StarredReposFragment newInstance(String username) {
+		StarredReposFragment reposFragment = new StarredReposFragment();
+		if (username != null) {
+			Bundle bundle = new Bundle();
+			bundle.putString(USERNAME, username);
 
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
+			reposFragment.setArguments(bundle);
+		}
+		return reposFragment;
+	}
 
-    @Override
-    protected void executeRequest() {
-        BaseReposClient client;
+	@Override
+	protected void executeRequest() {
+		super.executeRequest();
+		BaseReposClient client;
 
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
+		if (getArguments() != null) {
+			username = getArguments().getString(USERNAME);
+		}
 
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
+		client = new StarredReposClient(getActivity(), username);
 
-        client = new StarredReposClient(getActivity(), username);
+		client.setOnResultCallback(this);
+		client.execute();
+	}
 
-        client.setOnResultCallback(this);
-        client.execute();
-    }
+	@Override
+	protected void executePaginatedRequest(int page) {
+		super.executePaginatedRequest(page);
+		StarredReposClient client = new StarredReposClient(getActivity(), username, page);
+		client.setOnResultCallback(this);
+		client.execute();
+	}
 
-    @Override
-    protected void executePaginatedRequest(int page) {
+	@Override
+	protected int getNoDataText() {
+		return R.string.no_starred_repositories;
+	}
 
-        if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
+	@Override
+	protected void loadArguments() {
 
-        StarredReposClient client = new StarredReposClient(getActivity(), username, page);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
-
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_starred_repositories;
-    }
+	}
 }

@@ -6,9 +6,25 @@
     <color name="gray_github_medium">#ffaaaaaa</color>
     <color name="gray_divider">#9fd2d2d2</color>
     <color name="white">#FFFFFF</color>
-    
+    <color name="issue_state_open">#54A141</color>
+    <color name="issue_state_close">#ffd67a4c</color>
+
     <integer-array name="colorsSmooth">
         <item>@color/accent</item>
         <item>@color/accentDark</item>
     </integer-array>
+
+    <integer-array name="colorsSmoothWhite">
+        <item>@color/gray_github_light</item>
+        <item>@color/gray_github_medium</item>
+        <item>@color/gray_github_dark</item>
+    </integer-array>
+
+    <color name="lDialogPositve">#ffffffff</color>
+    <color name="lDialogNegative">#ff808080</color>
+    <color name="privateRepo">#a1882b</color>
+    <color name="privateRepoBackground">#f8eeca</color>
+
+    <string name="lDialogPositve">#ffffffff</string>
+    <string name="lDialogNegative">#ff808080</string>
 </resources>

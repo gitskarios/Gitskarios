@@ -12,22 +12,24 @@ import com.alorma.github.R;
  */
 public class ReposHolder extends RecyclerView.ViewHolder {
 
-    public ImageView imageRepoType;
-    public TextView textTitle;
-    public TextView textDescription;
-    public TextView textForks;
-    public TextView textStarts;
-    public TextView textLanguage;
+	public ImageView imageRepoType;
+	public TextView textTitle;
+	public TextView repoPrivate;
+	public TextView textDescription;
+	public TextView textForks;
+	public TextView textStarts;
+	public TextView textLanguage;
 
-    public ReposHolder(View itemView) {
-        super(itemView);
-        if (itemView != null) {
-            imageRepoType = (ImageView) itemView.findViewById(R.id.repoTypeIcon);
-            textTitle = (TextView) itemView.findViewById(R.id.repoName);
-            textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
-            textStarts = (TextView) itemView.findViewById(R.id.starsIcon);
-            textForks = (TextView) itemView.findViewById(R.id.forksIcon);
-            textLanguage = (TextView) itemView.findViewById(R.id.languageText);
-        }
-    }
+	public ReposHolder(View itemView) {
+		super(itemView);
+		if (itemView != null) {
+			imageRepoType = (ImageView) itemView.findViewById(R.id.repoTypeIcon);
+			textTitle = (TextView) itemView.findViewById(R.id.repoName);
+			repoPrivate = (TextView) itemView.findViewById(R.id.repoPrivate);
+			textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
+			textStarts = (TextView) itemView.findViewById(R.id.starsIcon);
+			textForks = (TextView) itemView.findViewById(R.id.forksIcon);
+			textLanguage = (TextView) itemView.findViewById(R.id.languageText);
+		}
+	}
 }

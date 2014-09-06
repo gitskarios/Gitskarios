@@ -6,4 +6,10 @@ import java.util.ArrayList;
  * Created by Bernat on 20/07/2014.
  */
 public class ListIssues extends ArrayList<Issue>{
+	public ListIssues() {
+
+	}
+	public ListIssues(ListIssues issues) {
+		super(issues);
+	}
 }

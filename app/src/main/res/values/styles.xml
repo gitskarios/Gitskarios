@@ -5,6 +5,15 @@
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+    <!-- Base application theme. -->
+    <style name="AppTheme.Dialog" parent="android:Theme.Holo.Dialog">
+        <item name="android:windowBackground">@color/gray_github_light</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/accent</item>
         <item name="android:textColor">#FFFFFF</item>
@@ -22,6 +31,7 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:background">@color/accent</item>
     </style>
 
     <style name="fab">

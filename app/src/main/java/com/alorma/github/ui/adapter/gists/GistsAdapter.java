@@ -17,29 +17,29 @@ import java.util.List;
  */
 public class GistsAdapter extends ArrayAdapter<Gist> {
 
-    private final LayoutInflater mInflater;
-    private Context context;
+	private final LayoutInflater mInflater;
+	private Context context;
 
-    public GistsAdapter(Context context, List<Gist> gists) {
-        super(context, 0, 0, gists);
-        this.context = context;
-        this.mInflater = LayoutInflater.from(context);
-    }
+	public GistsAdapter(Context context, List<Gist> gists) {
+		super(context, 0, 0, gists);
+		this.context = context;
+		this.mInflater = LayoutInflater.from(context);
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View v = mInflater.inflate(android.R.layout.simple_list_item_2, viewGroup, false);
-        GistsHolder gistsHolder = new GistsHolder(v);
+	@Override
+	public View getView(int position, View convertView, ViewGroup viewGroup) {
+		View v = mInflater.inflate(android.R.layout.simple_list_item_2, viewGroup, false);
+		GistsHolder gistsHolder = new GistsHolder(v);
 
-        Gist gist = getItem(position);
+		Gist gist = getItem(position);
 
-        String description = gist.description;
-        if (TextUtils.isEmpty(description)) {
-            description = context.getResources().getString(R.string.no_gist_description);
-        }
-        gistsHolder.text1.setText(description);
-        gistsHolder.text2.setText("Num files: " + gist.files.size());
+		String description = gist.description;
+		if (TextUtils.isEmpty(description)) {
+			description = context.getResources().getString(R.string.no_gist_description);
+		}
+		gistsHolder.text1.setText(description);
+		gistsHolder.text2.setText("Num files: " + gist.files.size());
 
-        return v;
-    }
+		return v;
+	}
 }

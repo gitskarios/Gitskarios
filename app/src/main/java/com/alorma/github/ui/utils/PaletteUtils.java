@@ -8,46 +8,46 @@ import android.support.v7.graphics.PaletteItem;
  */
 public class PaletteUtils {
 
-    public static PaletteItem getProfilePaletteItem(Palette palette) {
-        if (palette != null) {
-            PaletteItem vibrantColor = palette.getVibrantColor();
-            PaletteItem lightVibrantColor = palette.getLightVibrantColor();
-            PaletteItem darkVibrantColor = palette.getDarkVibrantColor();
-            PaletteItem mutedColor = palette.getMutedColor();
-            PaletteItem lightMutedColor = palette.getLightMutedColor();
-            PaletteItem darkMutedColor = palette.getDarkMutedColor();
-            PaletteItem item = null;
-            if (vibrantColor != null) {
-                item = vibrantColor;
-            } else if (darkVibrantColor != null) {
-                item = darkVibrantColor;
-            } else if (lightMutedColor != null) {
-                item = lightMutedColor;
-            } else if (darkMutedColor != null) {
-                item = darkMutedColor;
-            } else if (mutedColor != null) {
-                item = mutedColor;
-            } else if (lightVibrantColor != null) {
-                item = lightVibrantColor;
-            }
-            return item;
-        }
+	public static PaletteItem getProfilePaletteItem(Palette palette) {
+		if (palette != null) {
+			PaletteItem vibrantColor = palette.getVibrantColor();
+			PaletteItem lightVibrantColor = palette.getLightVibrantColor();
+			PaletteItem darkVibrantColor = palette.getDarkVibrantColor();
+			PaletteItem mutedColor = palette.getMutedColor();
+			PaletteItem lightMutedColor = palette.getLightMutedColor();
+			PaletteItem darkMutedColor = palette.getDarkMutedColor();
+			PaletteItem item = null;
+			if (vibrantColor != null) {
+				item = vibrantColor;
+			} else if (darkVibrantColor != null) {
+				item = darkVibrantColor;
+			} else if (lightMutedColor != null) {
+				item = lightMutedColor;
+			} else if (darkMutedColor != null) {
+				item = darkMutedColor;
+			} else if (mutedColor != null) {
+				item = mutedColor;
+			} else if (lightVibrantColor != null) {
+				item = lightVibrantColor;
+			}
+			return item;
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    public static PaletteItem getDarkPaletteItem(Palette palette) {
-        PaletteItem darkVibrantColor = palette.getDarkVibrantColor();
-        PaletteItem darkMutedColor = palette.getDarkMutedColor();
-        PaletteItem vibrantColor = palette.getVibrantColor();
+	public static PaletteItem getDarkPaletteItem(Palette palette) {
+		PaletteItem darkVibrantColor = palette.getDarkVibrantColor();
+		PaletteItem darkMutedColor = palette.getDarkMutedColor();
+		PaletteItem vibrantColor = palette.getVibrantColor();
 
-        if (darkVibrantColor != null) {
-            return darkVibrantColor;
-        } else if (darkMutedColor != null) {
-            return darkMutedColor;
-        } else {
-            return null;
-        }
+		if (darkVibrantColor != null) {
+			return darkVibrantColor;
+		} else if (darkMutedColor != null) {
+			return darkMutedColor;
+		} else {
+			return null;
+		}
 
-    }
+	}
 }

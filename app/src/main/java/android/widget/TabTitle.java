@@ -18,75 +18,75 @@ import com.alorma.github.R;
  */
 public class TabTitle extends TextView {
 
-    private int rgb;
-    private Rect rect;
-    private float size;
-    private Paint paint;
+	private int rgb;
+	private Rect rect;
+	private float size;
+	private Paint paint;
 
-    private ColorStateList barColors;
+	private ColorStateList barColors;
 
-    public TabTitle(Context context) {
-        super(context);
-        init(context, null, 0);
-    }
+	public TabTitle(Context context) {
+		super(context);
+		init(context, null, 0);
+	}
 
-    public TabTitle(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0);
-    }
+	public TabTitle(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init(context, attrs, 0);
+	}
 
-    public TabTitle(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
-    }
+	public TabTitle(Context context, AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		init(context, attrs, defStyleAttr);
+	}
 
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.TabTitle, defStyle, 0);
+	private void init(Context context, AttributeSet attrs, int defStyle) {
+		TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.TabTitle, defStyle, 0);
 
-        if (attr.hasValue(R.styleable.TabTitle_barColor)) {
-            barColors = attr.getColorStateList(R.styleable.TabTitle_barColor);
-        } else {
-            barColors = getTextColors();
-        }
+		if (attr.hasValue(R.styleable.TabTitle_barColor)) {
+			barColors = attr.getColorStateList(R.styleable.TabTitle_barColor);
+		} else {
+			barColors = getTextColors();
+		}
 
-        isInEditMode();
+		isInEditMode();
 
-        setGravity(Gravity.CENTER);
+		setGravity(Gravity.CENTER);
 
-        rgb = getResources().getColor(R.color.accent);
+		rgb = getResources().getColor(R.color.accent);
 
-        rect = new Rect();
+		rect = new Rect();
 
-        size = 5 * getResources().getDisplayMetrics().density;
+		size = 5 * getResources().getDisplayMetrics().density;
 
-        paint = new Paint();
+		paint = new Paint();
 
-        paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.FILL);
+		paint.setAntiAlias(true);
+		paint.setStyle(Paint.Style.FILL);
 
-        setRgb(getCurrentDrawableColor(barColors));
-    }
+		setRgb(getCurrentDrawableColor(barColors));
+	}
 
-    protected int getCurrentDrawableColor(ColorStateList colors) {
-        return colors.getColorForState(getDrawableState(), getCurrentTextColor());
-    }
+	protected int getCurrentDrawableColor(ColorStateList colors) {
+		return colors.getColorForState(getDrawableState(), getCurrentTextColor());
+	}
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        paint.setColor(rgb);
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		paint.setColor(rgb);
 
-        canvas.getClipBounds(rect);
-        if (isSelected()) {
-            rect.top = (int) (rect.bottom - size);
-        } else {
-            rect.top = (int) (rect.bottom - size / 2);
-        }
-        canvas.drawRect(rect, paint);
-    }
+		canvas.getClipBounds(rect);
+		if (isSelected()) {
+			rect.top = (int) (rect.bottom - size);
+		} else {
+			rect.top = (int) (rect.bottom - size / 2);
+		}
+		canvas.drawRect(rect, paint);
+	}
 
-    public void setRgb(int rgb) {
-        this.rgb = rgb;
-        invalidate();
-    }
+	public void setRgb(int rgb) {
+		this.rgb = rgb;
+		invalidate();
+	}
 }

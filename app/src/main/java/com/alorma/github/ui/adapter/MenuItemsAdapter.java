@@ -18,39 +18,39 @@ import java.util.List;
 /**
  * Created by Bernat on 13/08/2014.
  */
-public class MenuItemsAdapter extends ArrayAdapter<MenuItem>{
-    private final LayoutInflater mInflater;
+public class MenuItemsAdapter extends ArrayAdapter<MenuItem> {
+	private final LayoutInflater mInflater;
 
-    public MenuItemsAdapter(Context context, List<MenuItem> objects) {
-        super(context, 0, objects);
-        mInflater = LayoutInflater.from(context);
-    }
+	public MenuItemsAdapter(Context context, List<MenuItem> objects) {
+		super(context, 0, objects);
+		mInflater = LayoutInflater.from(context);
+	}
 
-    @Override
-    public int getItemViewType(int position) {
-        if (getItem(position) instanceof CategoryMenuItem) {
-            return R.layout.row_menu_category;
-        } else {
-            return R.layout.row_menu;
-        }
-    }
+	@Override
+	public int getItemViewType(int position) {
+		if (getItem(position) instanceof CategoryMenuItem) {
+			return R.layout.row_menu_category;
+		} else {
+			return R.layout.row_menu;
+		}
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = mInflater.inflate(getItemViewType(position), parent, false);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View v = mInflater.inflate(getItemViewType(position), parent, false);
 
-        MenuItem item = getItem(position);
+		MenuItem item = getItem(position);
 
-        TextView text = (TextView) v.findViewById(android.R.id.text1);
-        text.setText(item.text);
-        if (getItem(position) instanceof CategoryMenuItem) {
+		TextView text = (TextView) v.findViewById(android.R.id.text1);
+		text.setText(item.text);
+		if (getItem(position) instanceof CategoryMenuItem) {
 
-        } else {
-            ImageView image = (ImageView) v.findViewById(android.R.id.icon);
+		} else {
+			ImageView image = (ImageView) v.findViewById(android.R.id.icon);
 
-            image.setImageDrawable(new IconDrawable(getContext(), item.icon).color(item.color));
-        }
+			image.setImageDrawable(new IconDrawable(getContext(), item.icon).color(item.color));
+		}
 
-        return v;
-    }
+		return v;
+	}
 }

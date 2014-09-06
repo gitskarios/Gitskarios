@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="action_donate" type="id">action_done</item>
+    <item name="fabButton" type="id">fabButton</item>
+    <item name="avatarAuthor" type="id">avatarAuthor</item>
+    <item name="pager" type="id">pager</item>
+    <item name="smoothBar" type="id">smoothBar</item>
+    <item name="top" type="id">top</item>
+    <item name="issueDetailInfo" type="id">issueDetailInfo</item>
+    <item name="action_add_comment" type="id">action_add_comment</item>
 </resources>

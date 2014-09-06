@@ -20,103 +20,135 @@ import java.util.ArrayList;
  */
 public class MenuFragment extends ListFragment {
 
-    private OnMenuItemSelectedListener onMenuItemSelectedListener;
-    private MenuItemsAdapter adapter;
-    private int currentSelectedItemId;
+	private OnMenuItemSelectedListener onMenuItemSelectedListener;
+	private MenuItemsAdapter adapter;
+	private int currentSelectedItemId;
+	private MenuItem currentSelectedItem;
 
-    public static MenuFragment newInstance() {
-        return new MenuFragment();
-    }
+	public static MenuFragment newInstance() {
+		return new MenuFragment();
+	}
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.custom_list_fragment, null);
-    }
+	@Nullable
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		return inflater.inflate(R.layout.custom_list_fragment, null);
+	}
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 
-        adapter = new MenuItemsAdapter(getActivity(), new ArrayList<MenuItem>());
+		adapter = new MenuItemsAdapter(getActivity(), new ArrayList<MenuItem>());
 
-        setListAdapter(adapter);
+		setListAdapter(adapter);
 
-        int color = getResources().getColor(R.color.accent);
+		int color = getResources().getColor(R.color.accent);
 
-        currentSelectedItemId = 0;
+		currentSelectedItemId = 0;
 
-        adapter.add(new CategoryMenuItem(-1, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
+		adapter.add(new CategoryMenuItem(-1, R.string.tab_user_parent, color, Iconify.IconValue.fa_group));
 
-        adapter.add(new MenuItem(1, R.string.navigation_repos, color, Iconify.IconValue.fa_code));
-        adapter.add(new MenuItem(2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
-        adapter.add(new MenuItem(3, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
+		adapter.add(new MenuItem(0, -1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
 
-        adapter.add(new CategoryMenuItem(-2, R.string.tab_people_parent, color, Iconify.IconValue.fa_code));
+		adapter.add(new CategoryMenuItem(-2, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
+		currentSelectedItem = new MenuItem(0, -2, R.string.navigation_repos, color, Iconify.IconValue.fa_code);
+		adapter.add(currentSelectedItem);
+		adapter.add(new MenuItem(1, -2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
+		adapter.add(new MenuItem(2, -2, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
 
-        adapter.add(new MenuItem(4, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
-        adapter.add(new MenuItem(5, R.string.navigation_following, color, Iconify.IconValue.fa_user));
+		adapter.add(new CategoryMenuItem(-3, R.string.tab_people_parent, color, Iconify.IconValue.fa_code));
 
-        if (onMenuItemSelectedListener != null) {
-            onMenuItemSelectedListener.onMenuItemSelected(adapter.getItem(1));
-        }
-    }
+		adapter.add(new MenuItem(0, -3, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
+		adapter.add(new MenuItem(1, -3, R.string.navigation_following, color, Iconify.IconValue.fa_user));
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+		if (onMenuItemSelectedListener != null) {
+			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem);
+		}
+	}
 
-        MenuItem item = adapter.getItem(position);
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
 
-        if (checkItem(item)) {
-            currentSelectedItemId = item.id;
-            switch (item.id) {
-                case 1:
-                    onMenuItemSelectedListener.onReposSelected();
-                    break;
-                case 2:
-                    onMenuItemSelectedListener.onStarredSelected();
-                    break;
-                case 3:
-                    onMenuItemSelectedListener.onWatchedSelected();
-                    break;
-                case 4:
-                    onMenuItemSelectedListener.onFollowersSelected();
-                    break;
-                case 5:
-                    onMenuItemSelectedListener.onFollowingSelected();
-                    break;
-            }
-            onMenuItemSelectedListener.onMenuItemSelected(item);
-        } else {
-            if (item != null && item.id > 0) {
-                onMenuItemSelectedListener.closeMenu();
-            }
-        }
-    }
+		MenuItem item = adapter.getItem(position);
 
-    private boolean checkItem(MenuItem item) {
-        return item != null && item.id > 0 && onMenuItemSelectedListener != null && item.id != currentSelectedItemId;
-    }
+		if (item != null && onMenuItemSelectedListener != null) {
+			if (item.id > -1) {
+				currentSelectedItemId = item.id;
+				switch (item.parentId) {
+					case -1:
+						itemUser(item);
+						break;
+					case -2:
+						itemRepositories(item);
+						break;
+					case -3:
+						itemPeople(item);
+						break;
+				}
+				onMenuItemSelectedListener.onMenuItemSelected(item);
+			}
+		}
+	}
 
-    public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
-        this.onMenuItemSelectedListener = onMenuItemSelectedListener;
-    }
+	private void itemUser(MenuItem item) {
+		switch (item.id) {
+			case 0:
+				onMenuItemSelectedListener.onOrganizationsSelected();
+				break;
+		}
+	}
 
-    public interface OnMenuItemSelectedListener {
-        void onReposSelected();
+	private void itemRepositories(MenuItem item) {
+		switch (item.id) {
+			case 0:
+				onMenuItemSelectedListener.onReposSelected();
+				break;
+			case 1:
+				onMenuItemSelectedListener.onStarredSelected();
+				break;
+			case 2:
+				onMenuItemSelectedListener.onWatchedSelected();
+				break;
+		}
+	}
 
-        void onStarredSelected();
+	private void itemPeople(MenuItem item) {
+		switch (item.id) {
+			case 0:
+				onMenuItemSelectedListener.onFollowersSelected();
+				break;
+			case 1:
+				onMenuItemSelectedListener.onFollowingSelected();
+				break;
+		}
+	}
 
-        void onWatchedSelected();
+	private boolean checkItem(MenuItem item) {
+		return item != null && onMenuItemSelectedListener != null;
+	}
 
-        void onFollowersSelected();
+	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
+		this.onMenuItemSelectedListener = onMenuItemSelectedListener;
+	}
 
-        void onFollowingSelected();
+	public interface OnMenuItemSelectedListener {
+		void onReposSelected();
 
-        void onMenuItemSelected(@NonNull MenuItem item);
+		void onStarredSelected();
 
-        void closeMenu();
-    }
+		void onWatchedSelected();
+
+		void onFollowersSelected();
+
+		void onFollowingSelected();
+
+		void onMenuItemSelected(@NonNull MenuItem item);
+
+		void closeMenu();
+
+		void onOrganizationsSelected();
+	}
 }

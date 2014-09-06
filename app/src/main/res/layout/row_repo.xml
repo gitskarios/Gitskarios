@@ -20,6 +20,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/repoPrivate"
+        android:layout_marginTop="@dimen/gapSmall"
+        android:padding="@dimen/gapSmall"
+        android:textSize="@dimen/textSizeXMicro"
+        android:layout_alignLeft="@+id/repoTypeIcon"
+        android:layout_alignStart="@+id/repoTypeIcon"
+        android:layout_alignRight="@+id/repoTypeIcon"
+        android:layout_alignEnd="@+id/repoTypeIcon"
+        android:layout_below="@+id/repoTypeIcon"
+        android:textColor="@color/privateRepo"
+        android:visibility="gone"
+        android:text="@string/row_private_repo"
+        android:gravity="center"
+        android:background="@drawable/private_repo"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:text="Large Text"
         android:id="@+id/repoName"
         android:layout_alignParentTop="true"

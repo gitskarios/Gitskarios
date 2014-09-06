@@ -17,35 +17,35 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
  */
 public class TextDescriptionFragment extends BaseFragment {
 
-    private TextView tv;
+	private TextView tv;
 
-    public static TextDescriptionFragment newInstance(String text) {
-        Bundle args = new Bundle();
-        args.putString("TEXT", text);
+	public static TextDescriptionFragment newInstance(String text) {
+		Bundle args = new Bundle();
+		args.putString("TEXT", text);
 
-        TextDescriptionFragment fragment = new TextDescriptionFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+		TextDescriptionFragment fragment = new TextDescriptionFragment();
+		fragment.setArguments(args);
+		return fragment;
+	}
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.small_pager_text, null, false);
-    }
+	@Nullable
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.small_pager_text, null, false);
+	}
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        tv = (TextView) view.findViewById(R.id.text);
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		tv = (TextView) view.findViewById(R.id.text);
 
-        String text = getArguments().getString("TEXT");
-        tv.setText(text);
-    }
+		String text = getArguments().getString("TEXT");
+		tv.setText(text);
+	}
 
-    public void setText(String text) {
-        if (tv != null) {
-            tv.setText(text);
-        }
-    }
+	public void setText(String text) {
+		if (tv != null) {
+			tv.setText(text);
+		}
+	}
 }

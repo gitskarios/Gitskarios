@@ -24,8 +24,12 @@
     <dimen name="gapXXXLarge">128dp</dimen>
 
     <!-- http://developer.android.com/design/style/typography.html -->
+    <dimen name="textSizeXMicro">10sp</dimen>
     <dimen name="textSizeMicro">12sp</dimen>
     <dimen name="textSizeSmall">14sp</dimen>
     <dimen name="textSizeMedium">18sp</dimen>
     <dimen name="textSizeLarge">22sp</dimen>
+    <dimen name="fab">56dp</dimen>
+    <dimen name="floattingActivityWidth">300dp</dimen>
+    <dimen name="floattingActivityHeight">400dp</dimen>
 </resources>
