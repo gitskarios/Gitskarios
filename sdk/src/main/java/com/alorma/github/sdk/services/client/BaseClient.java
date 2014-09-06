@@ -15,6 +15,7 @@ import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 import retrofit.client.Response;
 
 public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, RestAdapter.Log {
@@ -31,6 +32,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
     public void execute() {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
+				.setClient(new OkClient())
                 .setEndpoint(ApiConstants.API_URL)
                 .setRequestInterceptor(this)
                 .setLogLevel(RestAdapter.LogLevel.FULL)

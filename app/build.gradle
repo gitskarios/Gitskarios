@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 125
-        versionName "1.2.5"
+        versionCode 126
+        versionName "1.2.6"
     }
     signingConfigs {
         playStore {
@@ -34,8 +34,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:5.0+'
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.android.support:support-v13:20.0.0'
-    compile 'com.android.support:recyclerview-v7:21.0.0-rc1'
-    compile 'com.android.support:cardview-v7:21.0.0-rc1'
     compile 'com.android.support:palette-v7:21.0.0-rc1'
     compile project(':sdk')
     compile project(':libraries:enhanced-edittext')
@@ -49,4 +47,12 @@ repositories{
     flatDir{
         dirs 'libs'
     }
+}
+
+import java.text.SimpleDateFormat
+
+def dateApk() {
+    def date = new Date()
+    sdf = new SimpleDateFormat("dd_MM_yyyy")
+    return sdf.format(date)
 }
