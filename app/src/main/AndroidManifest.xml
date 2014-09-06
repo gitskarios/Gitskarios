@@ -30,6 +30,8 @@
         </activity>
         <activity android:name=".ui.activity.ProfileActivity" />
         <activity android:name=".ui.activity.RepoDetailActivity" />
+        <activity android:name=".ui.dialog.NewCommentDialog"
+            android:theme="@style/AppTheme.Dialog"/>
         <activity android:name=".ui.activity.FileActivity" />
         <activity android:name=".ui.activity.SearchReposActivity" >
             <intent-filter>

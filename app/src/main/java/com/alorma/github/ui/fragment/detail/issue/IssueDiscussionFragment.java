@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -144,6 +145,14 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 		drawable.color(Color.WHITE);
 		drawable.sizeDp(30);
 		return drawable;
+	}
+
+	public void addComment(IssueComment issueComment) {
+		if (adapter != null) {
+			ListIssueComments listIssueComments = new ListIssueComments();
+			listIssueComments.add(issueComment);
+			onResponse(listIssueComments, false);
+		}
 	}
 
 	private class EventsResultCallback implements BaseClient.OnResultCallback<ListEvents> {

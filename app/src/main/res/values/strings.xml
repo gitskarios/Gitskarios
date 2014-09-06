@@ -76,5 +76,7 @@
     <string name="tab_user_parent">User</string>
     <string name="menu_organizations">Organizations</string>
     <string name="no_organizations">There isn\'t organizations</string>
+    <string name="title_activity_comment_issue">CommentIssueActivity</string>
+    <string name="add_comment">Add comment</string>
 
 </resources>

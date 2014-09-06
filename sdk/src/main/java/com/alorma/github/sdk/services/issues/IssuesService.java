@@ -2,6 +2,7 @@ package com.alorma.github.sdk.services.issues;
 
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
@@ -45,4 +46,7 @@ public interface IssuesService {
 
 	@PATCH("/repos/{owner}/{repo}/issues/{num}")
 	void closeIssue(@Path("owner") String owner, @Path("repo") String repo, @Path("num") int num, @Body IssueRequest issueRequest, Callback<Issue> callback);
+
+	@POST("/repos/{owner}/{repo}/issues/{num}/comments")
+	void addComment(@Path("owner") String owner, @Path("repo") String repo, @Path("num") int num, @Body IssueComment comment, Callback<IssueComment> callback);
 }

@@ -14,6 +14,12 @@
         <item>@color/accentDark</item>
     </integer-array>
 
+    <integer-array name="colorsSmoothWhite">
+        <item>@color/gray_github_light</item>
+        <item>@color/gray_github_medium</item>
+        <item>@color/gray_github_dark</item>
+    </integer-array>
+
     <color name="lDialogPositve">#ffffffff</color>
     <color name="lDialogNegative">#ff808080</color>
     <color name="privateRepo">#a1882b</color>

@@ -17,13 +17,16 @@ import android.widget.TextView;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.sdk.services.issues.IssueInfo;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.dialog.NewCommentDialog;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
@@ -45,6 +48,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	public static final String PERMISSIONS = "PERMS";
 	public static final String CREATOR = "CREATOR";
 	private static final String DESCRIPTION = "DESCRIPTION";
+	private static final int NEW_COMMENT_REQUEST = 1243;
 
 	private String owner;
 	private String repo;
@@ -181,7 +185,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		menu.clear();
 
 		if (BuildConfig.DEBUG) {
-			if (permissions.pull && issueState == IssueState.open) {
+			if (permissions != null && permissions.pull && issueState == IssueState.open) {
 				menu.add(0, R.id.action_add_comment, 0, getString(R.string.addComment));
 				menu.findItem(R.id.action_add_comment).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).actionBarSize().colorRes(R.color.white));
 				menu.findItem(R.id.action_add_comment).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -282,7 +286,13 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private class FabAddCommentIssueClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-
+			IssueInfo issueInfo = new IssueInfo();
+			issueInfo.owner = owner;
+			issueInfo.repo = repo;
+			issueInfo.num = number;
+			smoothBar.progressiveStart();
+			Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
+			startActivityForResult(intent, NEW_COMMENT_REQUEST);
 		}
 	}
 
@@ -290,5 +300,21 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	public void onBackPressed() {
 		setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
 		finish();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			if (requestCode == NEW_COMMENT_REQUEST) {
+				smoothBar.progressiveStop();
+				issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, number);
+				issueDiscussionFragment.setRefreshListener(IssueDetailActivity.this);
+
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				ft.replace(R.id.discussionFeed, issueDiscussionFragment);
+				ft.commit();
+			}
+		}
 	}
 }
