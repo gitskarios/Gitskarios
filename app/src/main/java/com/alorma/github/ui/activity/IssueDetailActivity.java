@@ -184,12 +184,10 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 
-		if (BuildConfig.DEBUG) {
-			if (permissions != null && permissions.pull && issueState == IssueState.open) {
-				menu.add(0, R.id.action_add_comment, 0, getString(R.string.addComment));
-				menu.findItem(R.id.action_add_comment).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).actionBarSize().colorRes(R.color.white));
-				menu.findItem(R.id.action_add_comment).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-			}
+		if (permissions != null && permissions.pull && issueState == IssueState.open) {
+			menu.add(0, R.id.action_add_comment, 0, getString(R.string.addComment));
+			menu.findItem(R.id.action_add_comment).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).actionBarSize().colorRes(R.color.white));
+			menu.findItem(R.id.action_add_comment).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 
 		return true;
