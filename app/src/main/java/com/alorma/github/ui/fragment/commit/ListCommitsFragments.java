@@ -60,6 +60,7 @@ public class ListCommitsFragments extends PaginatedListFragment<ListCommit> {
 	@Override
 	protected void executePaginatedRequest(int page) {
 		super.executePaginatedRequest(page);
+		commitsAdapter.setLazyLoading(true);
 		ListCommitsClient client = new ListCommitsClient(getActivity(), info, page);
 		client.setOnResultCallback(this);
 		client.execute();
