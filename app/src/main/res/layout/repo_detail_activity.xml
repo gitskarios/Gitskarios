@@ -15,23 +15,29 @@
             android:layout_height="48dp"
             android:orientation="horizontal">
 
-            <android.widget.TabTitle
+            <com.alorma.github.ui.view.TabTitle
                 style="@style/tab_repos"
                 app:barColor="@color/white"
                 android:text="@string/readme"
                 android:id="@+id/tabReadme" />
 
-            <android.widget.TabTitle
+            <com.alorma.github.ui.view.TabTitle
                 style="@style/tab_repos"
                 app:barColor="@color/white"
                 android:text="@string/source"
                 android:id="@+id/tabSource" />
 
-            <android.widget.TabTitle
+            <com.alorma.github.ui.view.TabTitle
                 style="@style/tab_repos"
                 app:barColor="@color/white"
                 android:text="@string/issues"
                 android:id="@+id/tabIssues" />
+
+<!--            <com.alorma.github.ui.view.TabTitle
+                style="@style/tab_repos"
+                app:barColor="@color/white"
+                android:text="@string/commits"
+                android:id="@+id/tabCommits" />-->
 
         </LinearLayout>
 

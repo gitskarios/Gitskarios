@@ -92,7 +92,6 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 		}
 	}
 
-
 	@Override
 	protected Iconify.IconValue getNoDataIcon() {
 		return Iconify.IconValue.fa_info_circle;

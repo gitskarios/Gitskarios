@@ -12,8 +12,12 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Bernat on 14/07/2014.
@@ -21,7 +25,6 @@ import java.util.List;
 public class UsersAdapter extends ArrayAdapter<User> {
 
 	private final LayoutInflater mInflater;
-	private int scrollState;
 
 	public UsersAdapter(Context context, List<User> users) {
 		super(context, 0, users);
@@ -35,15 +38,20 @@ public class UsersAdapter extends ArrayAdapter<User> {
 
 		User user = getItem(position);
 
-		if (user.name != null) {
-			userHolder.textView.setText(user.name);
-		} else if (user.login != null) {
-			userHolder.textView.setText(user.login);
+		userHolder.authorLogin.setText(user.login);
+
+		ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.authorAvatar);
+
+		if (user.created_at != null) {
+			userHolder.authorDate.setText(getDate(user.created_at));
 		}
 
-		ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.imageView);
-
 		return v;
+	}
+
+	private String getDate(Date created_at) {
+		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+		return sdf.format(created_at);
 	}
 
 	public void addAll(Collection<? extends User> collection, boolean paging) {

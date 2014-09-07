@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -11,15 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.DirectionalScrollListener;
+import com.alorma.github.ui.view.DirectionalScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.R;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -47,6 +43,9 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 		super.onViewCreated(view, savedInstanceState);
 
 		getListView().setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+
+		getListView().setDivider(null);
+		getListView().setDividerHeight(0);
 
 		emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
 		emptyText = (TextView) view.findViewById(R.id.emptyText);

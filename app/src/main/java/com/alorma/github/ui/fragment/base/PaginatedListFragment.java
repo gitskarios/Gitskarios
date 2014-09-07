@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
 
-import com.alorma.github.sdk.bean.PaginationLink;
-import com.alorma.github.sdk.bean.RelType;
+import com.alorma.github.sdk.bean.info.PaginationLink;
+import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.ui.ErrorHandler;
 

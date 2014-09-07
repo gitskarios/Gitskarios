@@ -11,8 +11,10 @@ import com.alorma.github.R;
  */
 public class ReposHolder {
 
-	public ImageView imageRepoType;
+	public ImageView authorAvatar;
 	public TextView textTitle;
+	public TextView authorName;
+	public TextView authorDate;
 	public TextView repoPrivate;
 	public TextView textDescription;
 	public TextView textForks;
@@ -21,8 +23,10 @@ public class ReposHolder {
 
 	public ReposHolder(View itemView) {
 		if (itemView != null) {
-			imageRepoType = (ImageView) itemView.findViewById(R.id.repoTypeIcon);
+			authorAvatar = (ImageView) itemView.findViewById(R.id.authorAvatar);
 			textTitle = (TextView) itemView.findViewById(R.id.repoName);
+			authorName = (TextView) itemView.findViewById(R.id.authorName);
+			authorDate = (TextView) itemView.findViewById(R.id.authorDate);
 			repoPrivate = (TextView) itemView.findViewById(R.id.repoPrivate);
 			textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
 			textStarts = (TextView) itemView.findViewById(R.id.starsIcon);

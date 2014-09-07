@@ -13,7 +13,7 @@ import com.google.android.gms.analytics.Tracker;
 /**
  * Created by Bernat on 08/07/2014.
  */
-public class GistsApplication extends Application {
+public class GitskariosApplication extends Application {
 
 	private GoogleAnalytics analytics;
 	private Tracker tracker;
@@ -37,6 +37,12 @@ public class GistsApplication extends Application {
 		ApiConstants.CLIENT_CALLBACK = getString(R.string.client_callback);
 
 		analytics = GoogleAnalytics.getInstance(this);
+
+		int flag = PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+		ComponentName componentName = new ComponentName(this, Interceptor.class);
+		getPackageManager().setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
+
 	}
 
 	public Tracker getTracker() {

@@ -1,4 +1,4 @@
-package com.alorma.github.sdk.bean;
+package com.alorma.github.sdk.bean.info;
 
 import android.net.Uri;
 

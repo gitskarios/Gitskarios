@@ -7,6 +7,7 @@
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="avatar_size">114dp</dimen>
+    <dimen name="avatar_size_list">48dp</dimen>
     <dimen name="shape_size">56dp</dimen>
     <dimen name="shape_half">23dp</dimen>
     <dimen name="shape_half_inv">-23dp</dimen>
@@ -29,6 +30,7 @@
     <dimen name="textSizeSmall">14sp</dimen>
     <dimen name="textSizeMedium">18sp</dimen>
     <dimen name="textSizeLarge">22sp</dimen>
+    <dimen name="textSizeXLarge">24sp</dimen>
     <dimen name="fab">56dp</dimen>
     <dimen name="floattingActivityWidth">300dp</dimen>
     <dimen name="floattingActivityHeight">400dp</dimen>
