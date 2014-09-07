@@ -66,6 +66,7 @@ public class OrganzationsFragment extends PaginatedListFragment<ListOrganization
 	private void setUpList() {
 		adapter = new OrganizationsAdapter(getActivity(), new ArrayList<Organization>());
 		setListAdapter(adapter);
+		getListView().setDivider(null);
 	}
 
 	@Override
