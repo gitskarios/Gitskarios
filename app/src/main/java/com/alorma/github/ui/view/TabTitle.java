@@ -1,4 +1,4 @@
-package android.widget;
+package com.alorma.github.ui.view;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 

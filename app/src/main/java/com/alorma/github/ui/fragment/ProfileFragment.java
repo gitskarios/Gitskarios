@@ -12,9 +12,9 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CircularImageView;
+import com.alorma.github.ui.view.CircularImageView;
 import android.widget.EnhancedTextView;
-import android.widget.NumericTitle;
+import com.alorma.github.ui.view.NumericTitle;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;

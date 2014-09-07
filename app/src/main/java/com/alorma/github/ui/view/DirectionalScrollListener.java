@@ -1,8 +1,9 @@
-package android.widget;
+package com.alorma.github.ui.view;
 
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 
 /**
  * Created by a557114 on 20/06/2014.

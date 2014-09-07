@@ -9,11 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TabTitle;
+import com.alorma.github.ui.view.TabTitle;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
@@ -43,8 +44,6 @@ import retrofit.client.Response;
 public class RepoDetailActivity extends BackActivity implements RefreshListener, View.OnClickListener,
 		ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo> {
 
-	public static final int ISSUE_REQUEST = 1234;
-
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
 	public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
@@ -52,8 +51,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 	private Uri shareUri;
 	private String description;
-	private String owner;
-	private String repo;
+	private RepoInfo repoInfo;
 	private boolean fromIntentFilter;
 	private boolean repoStarred;
 	private boolean repoWatched;
@@ -67,6 +65,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private boolean showParentMenu;
 	private RepoDetailPagerAdapter pagerAdapter;
 	private Integer refreshItems;
+	private TabTitle tabCommits;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -98,10 +97,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		setContentView(R.layout.repo_detail_activity);
 
 		if (getIntent().getExtras() != null) {
-			owner = getIntent().getExtras().getString(OWNER);
-			repo = getIntent().getExtras().getString(REPO);
+			repoInfo = new RepoInfo();
+			repoInfo.owner = getIntent().getExtras().getString(OWNER);
+			repoInfo.repo = getIntent().getExtras().getString(REPO);
 
-			setUpShare(owner, repo);
+			setUpShare(repoInfo);
 
 			description = getIntent().getExtras().getString(DESCRIPTION);
 			fromIntentFilter = getIntent().getExtras().getBoolean(FROM_INTENT_FILTER);
@@ -114,19 +114,19 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 	private void load() {
 		if (getActionBar() != null) {
-			getActionBar().setTitle(owner + "/" + repo);
+			getActionBar().setTitle(repoInfo.owner + "/" + repoInfo.repo);
 			getActionBar().setDisplayHomeAsUpEnabled(!fromIntentFilter);
 		}
 
-		GetRepoClient repoClient = new GetRepoClient(this, owner, repo);
+		GetRepoClient repoClient = new GetRepoClient(this, repoInfo.owner, repoInfo.repo);
 		repoClient.setOnResultCallback(this);
 		repoClient.execute();
 
-		CheckRepoStarredClient starredClient = new CheckRepoStarredClient(this, owner, repo);
+		CheckRepoStarredClient starredClient = new CheckRepoStarredClient(this, repoInfo.owner, repoInfo.repo);
 		starredClient.setOnResultCallback(new StarredResult());
 		starredClient.execute();
 
-		CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(this, owner, repo);
+		CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(this, repoInfo.owner, repoInfo.repo);
 		watcheClien.setOnResultCallback(new WatchedResult());
 		watcheClien.execute();
 
@@ -135,29 +135,32 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		tabReadme = (TabTitle) findViewById(R.id.tabReadme);
 		tabSource = (TabTitle) findViewById(R.id.tabSource);
 		tabIssues = (TabTitle) findViewById(R.id.tabIssues);
+		tabCommits = (TabTitle) findViewById(R.id.tabCommits);
 
 		tabReadme.setOnClickListener(this);
 		tabSource.setOnClickListener(this);
 		tabIssues.setOnClickListener(this);
+		tabCommits.setOnClickListener(this);
 
 		tabs = new ArrayList<TabTitle>();
 		tabs.add(tabReadme);
 		tabs.add(tabSource);
 		tabs.add(tabIssues);
+		tabs.add(tabCommits);
 
 		pager = (ViewPager) findViewById(R.id.pager);
-		pager.setOffscreenPageLimit(3);
+		pager.setOffscreenPageLimit(tabs.size());
 		pager.setOnPageChangeListener(this);
-		pagerAdapter = new RepoDetailPagerAdapter(getFragmentManager(), owner, repo);
+		pagerAdapter = new RepoDetailPagerAdapter(getFragmentManager(), repoInfo.owner, repoInfo.repo);
 		pagerAdapter.setRefreshListener(this);
 		pager.setAdapter(pagerAdapter);
 
 		selectButton(tabReadme);
 	}
 
-	private void setUpShare(String owner, String repo) {
+	private void setUpShare(RepoInfo info) {
 		shareUri = Uri.parse(ApiConstants.WEB_URL);
-		shareUri = shareUri.buildUpon().appendPath(owner).appendPath(repo).build();
+		shareUri = shareUri.buildUpon().appendPath(info.owner).appendPath(info.repo).build();
 
 		invalidateOptionsMenu();
 	}
@@ -226,7 +229,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setData(shareUri);
 			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, owner + "/" + repo);
+			intent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.repo);
 			intent.putExtra(Intent.EXTRA_TEXT, description + "\n\n" + shareUri);
 
 			startActivity(Intent.createChooser(intent, "Share repository!"));
@@ -234,22 +237,22 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 		if (item.getItemId() == R.id.action_star) {
 			if (repoStarred) {
-				UnstarRepoClient unstarRepoClient = new UnstarRepoClient(this, owner, repo);
+				UnstarRepoClient unstarRepoClient = new UnstarRepoClient(this, repoInfo.owner, repoInfo.repo);
 				unstarRepoClient.setOnResultCallback(new UnstarActionResult());
 				unstarRepoClient.execute();
 			} else {
-				StarRepoClient starRepoClient = new StarRepoClient(this, owner, repo);
+				StarRepoClient starRepoClient = new StarRepoClient(this, repoInfo.owner, repoInfo.repo);
 				starRepoClient.setOnResultCallback(new StarActionResult());
 				starRepoClient.execute();
 			}
 			showRefresh();
 		} else if (item.getItemId() == R.id.action_watch) {
 			if (repoWatched) {
-				UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(this, owner, repo);
+				UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(this, repoInfo.owner, repoInfo.repo);
 				unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
 				unwatchRepoClient.execute();
 			} else {
-				WatchRepoClient watchRepoClient = new WatchRepoClient(this, owner, repo);
+				WatchRepoClient watchRepoClient = new WatchRepoClient(this, repoInfo.owner, repoInfo.repo);
 				watchRepoClient.setOnResultCallback(new WatchActionResult());
 				watchRepoClient.execute();
 			}
@@ -315,6 +318,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			case R.id.tabIssues:
 				pager.setCurrentItem(2);
 				selectButton(tabIssues);
+				break;
+			case R.id.tabCommits:
+				pager.setCurrentItem(3);
+				selectButton(tabCommits);
 				break;
 		}
 	}

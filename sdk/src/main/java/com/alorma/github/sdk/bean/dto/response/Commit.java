@@ -6,4 +6,10 @@ public class Commit extends ShaUrl{
     public User author;
     public ListShaUrl parents;
     public User committer;
+	public String message;
+
+	@Override
+	public String toString() {
+		return commit != null ? commit.message : "No message";
+	}
 }

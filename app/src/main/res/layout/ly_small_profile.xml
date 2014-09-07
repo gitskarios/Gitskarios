@@ -8,7 +8,7 @@
     android:id="@+id/profileLy"
     android:background="@color/gray_github_dark">
 
-    <CircularImageView
+    <com.alorma.github.ui.view.CircularImageView
         android:layout_width="?android:attr/listPreferredItemHeightLarge"
         android:layout_height="?android:attr/listPreferredItemHeightLarge"
         circular:border_color="#EEEEEE"

@@ -1,4 +1,4 @@
-package android.widget;
+package com.alorma.github.ui.view;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -10,6 +10,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 

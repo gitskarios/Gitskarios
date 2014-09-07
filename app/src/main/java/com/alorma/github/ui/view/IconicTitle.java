@@ -1,4 +1,4 @@
-package android.widget;
+package com.alorma.github.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

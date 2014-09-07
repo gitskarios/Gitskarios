@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.alorma.github.GistsApplication;
 import com.alorma.github.ui.activity.base.BackActivity;
 
 /**

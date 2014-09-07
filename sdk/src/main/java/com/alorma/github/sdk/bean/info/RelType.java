@@ -1,4 +1,4 @@
-package com.alorma.github.sdk.bean;
+package com.alorma.github.sdk.bean.info;
 
 /**
  * Created by Bernat on 13/07/2014.
