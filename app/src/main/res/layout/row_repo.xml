@@ -1,107 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeightLarge"
-    android:padding="8dp">
-
-    <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:id="@+id/repoTypeIcon"
-        android:padding="8dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/repoPrivate"
-        android:layout_marginTop="@dimen/gapSmall"
-        android:padding="@dimen/gapSmall"
-        android:textSize="@dimen/textSizeXMicro"
-        android:layout_alignLeft="@+id/repoTypeIcon"
-        android:layout_alignStart="@+id/repoTypeIcon"
-        android:layout_alignRight="@+id/repoTypeIcon"
-        android:layout_alignEnd="@+id/repoTypeIcon"
-        android:layout_below="@+id/repoTypeIcon"
-        android:textColor="@color/privateRepo"
-        android:visibility="gone"
-        android:text="@string/row_private_repo"
-        android:gravity="center"
-        android:background="@drawable/private_repo"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Large Text"
-        android:id="@+id/repoName"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/repoTypeIcon"
-        android:layout_toEndOf="@id/repoTypeIcon"
-        android:layout_toLeftOf="@+id/details"
-        android:layout_toStartOf="@+id/details"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:paddingTop="0dp"
-        android:textSize="20sp"
-        android:textColor="@color/accentDark" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/repoTypeIcon"
-        android:layout_toEndOf="@id/repoTypeIcon"
-        android:layout_below="@id/repoName"
-        android:layout_toLeftOf="@+id/details"
-        android:layout_toStartOf="@+id/details"
-        tools:text="New Text"
-        android:id="@+id/descriptionText"
-        android:padding="8dp"
-        android:ellipsize="end"
-        android:maxLines="2"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|right"
-        android:id="@+id/details"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true">
+        android:background="@drawable/shape_card"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginRight="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_marginEnd="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_marginBottom="@dimen/gapSmall">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="Java"
-            android:id="@+id/languageText"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp"
-            android:textColor="@color/gray_github_medium" />
+            android:padding="8dp">
 
-        <IconTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/star_icon_text"
-            android:id="@+id/starsIcon"
-            android:drawablePadding="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp"
-            android:textColor="@color/gray_github_medium" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/repoPrivate"
+                android:padding="@dimen/gapSmall"
+                android:textSize="@dimen/textSizeXMicro"
+                android:textColor="@color/privateRepo"
+                android:visibility="visible"
+                android:text="@string/row_private_repo"
+                android:gravity="center"
+                android:background="@drawable/private_repo"
+                android:layout_marginTop="@dimen/gapMedium"
+                android:layout_marginRight="@dimen/gapMedium"
+                android:layout_marginEnd="@dimen/gapMedium"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
 
-        <IconTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fork_icon_text"
-            android:drawablePadding="4dp"
-            android:id="@+id/forksIcon"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp"
-            android:textColor="@color/gray_github_medium" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Large Text"
+                android:id="@+id/repoName"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/gapMedium"
+                android:layout_marginStart="@dimen/gapMedium"
+                android:paddingTop="0dp"
+                android:textSize="@dimen/textSizeXLarge"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/accentDark"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/repoName"
+                tools:text="Description"
+                android:id="@+id/descriptionText"
+                android:padding="@dimen/gapMedium"
+                android:ellipsize="end"
+                android:maxLines="2"/>
+
+            <com.alorma.github.ui.view.CircularImageView
+                android:layout_width="@dimen/avatar_size_list"
+                android:layout_height="@dimen/avatar_size_list"
+                android:layout_below="@id/descriptionText"
+                tools:text="Description"
+                android:id="@+id/authorAvatar"
+                android:padding="@dimen/gapMedium"
+                android:ellipsize="end"
+                android:maxLines="2"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-condensed"
+                android:id="@+id/authorName"
+                android:layout_toEndOf="@id/authorAvatar"
+                android:layout_alignTop="@id/authorAvatar"
+                android:layout_toRightOf="@id/authorAvatar"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/gapMedium"
+                android:layout_marginStart="@dimen/gapMedium"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-light"
+                android:id="@+id/authorDate"
+                android:layout_toRightOf="@id/authorAvatar"
+                android:layout_toEndOf="@id/authorAvatar"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/gapMedium"
+                android:layout_marginStart="@dimen/gapMedium"
+                android:textSize="@dimen/textSizeMicro"
+                android:layout_below="@+id/authorName"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/details"
+            android:divider="@drawable/divider_repos_list_details"
+            android:showDividers="middle"
+            android:dividerPadding="@dimen/gapMedium">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/languageText"
+                android:gravity="center"
+                android:layout_marginRight="@dimen/gapMedium"
+                android:layout_marginEnd="@dimen/gapMedium"
+                android:layout_marginBottom="@dimen/gapSmall"
+                android:textColor="@color/gray_github_dark"
+                android:layout_weight="1"
+                android:textSize="@dimen/textSizeSmall"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/starsIcon"
+                android:gravity="center"
+                android:drawablePadding="@dimen/gapSmall"
+                android:layout_marginRight="@dimen/gapMedium"
+                android:layout_marginEnd="@dimen/gapMedium"
+                android:layout_marginBottom="@dimen/gapSmall"
+                android:textColor="@color/gray_github_dark"
+                android:layout_weight="1"
+                android:textSize="@dimen/textSizeSmall"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/forksIcon"
+                android:gravity="center"
+                android:drawablePadding="@dimen/gapSmall"
+                android:layout_marginRight="@dimen/gapMedium"
+                android:layout_marginEnd="@dimen/gapMedium"
+                android:layout_marginBottom="@dimen/gapSmall"
+                android:textColor="@color/gray_github_dark"
+                android:layout_weight="1"
+                android:textSize="@dimen/textSizeSmall"/>
+        </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

@@ -1,23 +1,22 @@
 package com.alorma.github.ui.adapter.orgs;
 
-import android.app.Activity;
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.Organization;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.users.UsersHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Bernat on 04/09/2014.
@@ -37,15 +36,20 @@ public class OrganizationsAdapter extends ArrayAdapter<Organization> {
 
 		Organization organization = getItem(position);
 
-		if (organization.name != null) {
-			userHolder.textView.setText(organization.name);
-		} else if (organization.login != null) {
-			userHolder.textView.setText(organization.login);
+		userHolder.authorLogin.setText(organization.login);
+
+		ImageLoader.getInstance().displayImage(organization.avatar_url, userHolder.authorAvatar);
+
+		if (organization.created_at != null) {
+			userHolder.authorDate.setText(getDate(organization.created_at));
 		}
 
-		ImageLoader.getInstance().displayImage(organization.avatar_url, userHolder.imageView);
-
 		return v;
+	}
+
+	private String getDate(Date created_at) {
+		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+		return sdf.format(created_at);
 	}
 
 	public void addAll(Collection<? extends Organization> collection, boolean paging) {

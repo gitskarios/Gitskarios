@@ -44,6 +44,9 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 		getListView().setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
 
+		getListView().setDivider(null);
+		getListView().setDividerHeight(0);
+
 		emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
 		emptyText = (TextView) view.findViewById(R.id.emptyText);
 		emptyLy = view.findViewById(R.id.emptyLayout);

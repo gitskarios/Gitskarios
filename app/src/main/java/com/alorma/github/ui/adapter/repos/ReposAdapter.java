@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.repos;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,15 @@ import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ReposAdapter extends ArrayAdapter<Repo> {
 
@@ -31,21 +38,9 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 		Repo repo = getItem(position);
 
-		int iconsColor = R.color.gray_github_medium;
-
 		reposHolder.textTitle.setText(repo.name);
 
 		reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.accent));
-
-		IconDrawable typeDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_book);
-		if (repo.fork) {
-			typeDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork);
-		}
-
-		typeDrawable.sizeDp(40);
-
-		typeDrawable.colorRes(iconsColor);
-		reposHolder.imageRepoType.setImageDrawable(typeDrawable);
 
 		reposHolder.textDescription.setText(repo.description);
 
@@ -55,13 +50,30 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		String forkText = getContext().getResources().getString(R.string.fork_icon_text, repo.forks_count);
 		reposHolder.textForks.setText(forkText);
 
+		Iconify.addIcons(reposHolder.textStarts, reposHolder.textForks);
+
 		reposHolder.textDescription.setText(repo.description);
 
-		reposHolder.textLanguage.setText(repo.language);
+		if (repo.language != null && !TextUtils.isEmpty(repo.language)) {
+			reposHolder.textLanguage.setText(repo.language);
+		} else {
+			reposHolder.textLanguage.setVisibility(View.GONE);
+		}
 
-		reposHolder.repoPrivate.setVisibility(repo.isPrivate ? View.VISIBLE : View.GONE);
+		reposHolder.repoPrivate.setVisibility(repo.isPrivate ? View.VISIBLE : View.INVISIBLE);
+
+		ImageLoader.getInstance().displayImage(repo.owner.avatar_url, reposHolder.authorAvatar);
+
+		reposHolder.authorName.setText(repo.owner.name != null ? repo.owner.name : repo.owner.login);
+
+		reposHolder.authorDate.setText(getDate(repo.created_at));
 
 		return v;
+	}
+
+	private String getDate(Date created_at) {
+		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+		return sdf.format(created_at);
 	}
 
 	public void addAll(Collection<? extends Repo> collection, boolean paging) {

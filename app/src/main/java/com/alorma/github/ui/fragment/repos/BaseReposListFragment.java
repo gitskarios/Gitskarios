@@ -24,6 +24,8 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 
 		reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
 
+		getListView().setDivider(null);
+
 		setListAdapter(reposAdapter);
 	}
 
