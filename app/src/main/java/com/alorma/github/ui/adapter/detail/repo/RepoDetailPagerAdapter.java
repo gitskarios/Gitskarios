@@ -49,18 +49,18 @@ public class RepoDetailPagerAdapter extends FragmentStatePagerAdapter {
 					issuesFragment = IssuesFragment.newInstance(owner, repo, refreshListener);
 				}
 				return issuesFragment;
-			case 3:
+			/*case 3:
 				if (commitsFragment == null) {
 					commitsFragment = ListCommitsFragments.newInstance(owner, repo, refreshListener);
 				}
-				return commitsFragment;
+				return commitsFragment;*/
 		}
 		return null;
 	}
 
 	@Override
 	public int getCount() {
-		return 4;
+		return 3;
 	}
 
 	public void setCurrentBranch(Branch currentBranch) {

@@ -58,6 +58,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private TabTitle tabReadme;
 	private TabTitle tabSource;
 	private TabTitle tabIssues;
+	//private TabTitle tabCommits;
 	private List<TabTitle> tabs;
 	private SmoothProgressBar smoothBar;
 	private ViewPager pager;
@@ -65,7 +66,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private boolean showParentMenu;
 	private RepoDetailPagerAdapter pagerAdapter;
 	private Integer refreshItems;
-	private TabTitle tabCommits;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -135,18 +135,18 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		tabReadme = (TabTitle) findViewById(R.id.tabReadme);
 		tabSource = (TabTitle) findViewById(R.id.tabSource);
 		tabIssues = (TabTitle) findViewById(R.id.tabIssues);
-		tabCommits = (TabTitle) findViewById(R.id.tabCommits);
+		//tabCommits = (TabTitle) findViewById(R.id.tabCommits);
 
 		tabReadme.setOnClickListener(this);
 		tabSource.setOnClickListener(this);
 		tabIssues.setOnClickListener(this);
-		tabCommits.setOnClickListener(this);
+		//tabCommits.setOnClickListener(this);
 
 		tabs = new ArrayList<TabTitle>();
 		tabs.add(tabReadme);
 		tabs.add(tabSource);
 		tabs.add(tabIssues);
-		tabs.add(tabCommits);
+		//tabs.add(tabCommits);
 
 		pager = (ViewPager) findViewById(R.id.pager);
 		pager.setOffscreenPageLimit(tabs.size());
@@ -319,10 +319,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				pager.setCurrentItem(2);
 				selectButton(tabIssues);
 				break;
-			case R.id.tabCommits:
+			/*case R.id.tabCommits:
 				pager.setCurrentItem(3);
 				selectButton(tabCommits);
-				break;
+				break;*/
 		}
 	}
 
