@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true">
 
-            <CircularImageView
+            <com.alorma.github.ui.view.CircularImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/chevron"
@@ -71,7 +71,7 @@
         android:layout_height="64dp"
         android:background="@color/gray_github_light">
 
-        <NumericTitle
+        <com.alorma.github.ui.view.NumericTitle
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -87,7 +87,7 @@
             android:clickable="true"
             app:barColor="@color/accent" />-->
 
-        <NumericTitle
+        <com.alorma.github.ui.view.NumericTitle
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -95,7 +95,7 @@
             android:clickable="true"
             app:barColor="@color/accent" />
 
-        <NumericTitle
+        <com.alorma.github.ui.view.NumericTitle
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

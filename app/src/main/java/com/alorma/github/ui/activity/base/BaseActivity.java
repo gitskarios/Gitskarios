@@ -5,13 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
-import com.alorma.github.GistsApplication;
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.UnAuthIntent;
 import com.alorma.github.ui.activity.LoginActivity;
@@ -33,7 +32,7 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		if (!BuildConfig.DEBUG) {
 			// Get tracker.
-			Tracker t = ((GistsApplication) getApplication()).getTracker();
+			Tracker t = ((GitskariosApplication) getApplication()).getTracker();
 
 			// Set screen name.
 			// Where path is a String representing the screen name.

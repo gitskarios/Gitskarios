@@ -12,19 +12,19 @@
         android:layout_height="48dp"
         android:background="@color/accent">
 
-        <android.widget.TabTitle
+        <com.alorma.github.ui.view.TabTitle
             android:id="@+id/tab1"
             android:text="@string/navigation_repos"
             style="@style/tab_repos"
             app:barColor="@color/complementary"/>
 
-        <android.widget.TabTitle
+        <com.alorma.github.ui.view.TabTitle
             android:id="@+id/tab2"
             android:text="@string/navigation_watched_repos"
             style="@style/tab_repos"
             app:barColor="@color/complementary" />
 
-        <android.widget.TabTitle
+        <com.alorma.github.ui.view.TabTitle
             android:id="@+id/tab3"
             android:text="@string/navigation_starred_repos"
             style="@style/tab_repos"

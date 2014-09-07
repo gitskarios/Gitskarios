@@ -3,7 +3,7 @@ package com.alorma.github.ui.fragment.base;
 import android.app.Fragment;
 import android.os.Bundle;
 
-import com.alorma.github.GistsApplication;
+import com.alorma.github.GitskariosApplication;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -17,7 +17,7 @@ public class BaseFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 
 		// Get tracker.
-		Tracker t = ((GistsApplication) getActivity().getApplication()).getTracker();
+		Tracker t = ((GitskariosApplication) getActivity().getApplication()).getTracker();
 
 		// Set screen name.
 		// Where path is a String representing the screen name.
