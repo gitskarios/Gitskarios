@@ -18,7 +18,6 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
-import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -144,8 +143,10 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	protected void fabClick() {
 		super.fabClick();
 
-		Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repository, permissions.push);
-		startActivityForResult(intent, ISSUE_REQUEST);
+		if (permissions != null) {
+			Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repository, permissions.push);
+			startActivityForResult(intent, ISSUE_REQUEST);
+		}
 
 	}
 
@@ -185,6 +186,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
+		checkFAB();
 	}
 
 

@@ -72,13 +72,13 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private Repo currentRepo;
 	private boolean showParentMenu;
 	private Integer refreshItems;
-	private RefreshListener refreshListener;
 	private MarkdownFragment markDownFragment;
 	private FilesTreeFragment filesTreeFragment;
 	private IssuesFragment issuesFragment;
 	private ListCommitsFragments commitsFragment;
 	private ArrayAdapter<Branch> branchesAdapter;
 	private Spinner repoDetailBranches;
+	private Branch currentBranch;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -316,6 +316,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				}
 			}
 
+			if (issuesFragment != null) {
+				issuesFragment.setPermissions(repo.permissions);
+			}
+
 			Branch branch = new Branch();
 			branch.name = currentRepo.default_branch;
 
@@ -375,13 +379,13 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	}
 
 	private void switchBranch(int position) {
-		Branch item = branchesAdapter.getItem(position);
+		currentBranch = branchesAdapter.getItem(position);
 
 		if (markDownFragment != null) {
-			markDownFragment.setCurrentBranch(item);
+			markDownFragment.setCurrentBranch(currentBranch);
 		}
 		if (filesTreeFragment != null) {
-			filesTreeFragment.setCurrentBranch(item);
+			filesTreeFragment.setCurrentBranch(currentBranch);
 		}
 	}
 
@@ -389,20 +393,23 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		switch (position) {
 			case 0:
 				if (markDownFragment == null) {
-					markDownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, refreshListener);
+					markDownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
 				}
+				markDownFragment.setCurrentBranch(currentBranch);
 				setUpFragment(markDownFragment);
 				break;
 			case 1:
 				if (filesTreeFragment == null) {
-					filesTreeFragment = FilesTreeFragment.newInstance(repoInfo.owner, repoInfo.repo, refreshListener);
+					filesTreeFragment = FilesTreeFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
 				}
+				filesTreeFragment.setCurrentBranch(currentBranch);
 				setUpFragment(filesTreeFragment);
 				break;
 			case 2:
 				if (issuesFragment == null) {
-					issuesFragment = IssuesFragment.newInstance(repoInfo.owner, repoInfo.repo, refreshListener);
+					issuesFragment = IssuesFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
 				}
+				issuesFragment.setPermissions(currentRepo.permissions);
 				setUpFragment(issuesFragment);
 				break;
 			/*case 3:

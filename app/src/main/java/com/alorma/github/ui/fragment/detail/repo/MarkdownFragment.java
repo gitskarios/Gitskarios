@@ -104,9 +104,6 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 	@Override
 	public void setCurrentBranch(Branch branch) {
 		if (getActivity() != null) {
-			if (refreshListener != null) {
-				refreshListener.showRefresh();
-			}
 			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
 			repoMarkdownClient.setCurrentBranch(branch);
 			repoMarkdownClient.setCallback(this);
