@@ -24,6 +24,7 @@
                 android:layout_marginStart="@dimen/gapLarge"
                 android:layout_marginRight="@dimen/gapMedium"
                 android:layout_marginEnd="@dimen/gapMedium"
+                android:id="@+id/repoDetailBranches"
                 android:background="@drawable/spinner_ab_background"/>
 
             <Spinner

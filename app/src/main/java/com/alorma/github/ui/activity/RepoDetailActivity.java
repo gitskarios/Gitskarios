@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.alorma.github.sdk.bean.dto.response.Branch;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.fragment.commit.ListCommitsFragments;
 import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
@@ -74,6 +77,8 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private FilesTreeFragment filesTreeFragment;
 	private IssuesFragment issuesFragment;
 	private ListCommitsFragments commitsFragment;
+	private ArrayAdapter<Branch> branchesAdapter;
+	private Spinner repoDetailBranches;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -115,6 +120,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			fromIntentFilter = getIntent().getExtras().getBoolean(FROM_INTENT_FILTER);
 
 			Spinner spinnerNavigation = (Spinner) findViewById(R.id.repoDetailNavigation);
+			repoDetailBranches = (Spinner) findViewById(R.id.repoDetailBranches);
 
 			String[] navItems = getResources().getStringArray(R.array.repoDetailNavigation);
 
@@ -123,6 +129,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			spinnerNavigation.setAdapter(adapter);
 
 			spinnerNavigation.setOnItemSelectedListener(this);
+
+			repoDetailBranches.setVisibility(View.INVISIBLE);
+
+			branchesAdapter = new ArrayAdapter<Branch>(this, R.layout.repo_detail_navigation, android.R.id.text1, new ArrayList<Branch>());
+			branchesAdapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
+			repoDetailBranches.setAdapter(branchesAdapter);
+
+			repoDetailBranches.setOnItemSelectedListener(this);
 
 			load();
 		} else {
@@ -301,7 +315,32 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 					this.getActionBar().setSubtitle(getResources().getString(R.string.fork_of, repo.parent.full_name));
 				}
 			}
-			// TODO send permissions to current fragment
+
+			Branch branch = new Branch();
+			branch.name = currentRepo.default_branch;
+
+			branchesAdapter.add(branch);
+
+			GetRepoBranchesClient client = new GetRepoBranchesClient(this, repoInfo.owner, repoInfo.repo);
+			client.setOnResultCallback(new BaseClient.OnResultCallback<ListBranches>() {
+				@Override
+				public void onResponseOk(ListBranches branches, Response r) {
+					ArrayList<Branch> newBranches = new ArrayList<Branch>(branches);
+					for (Branch branch : branches) {
+						if (branch.name.equals(currentRepo.default_branch)) {
+							newBranches.remove(branch);
+						}
+					}
+					branchesAdapter.addAll(newBranches);
+					repoDetailBranches.setVisibility(View.VISIBLE);
+				}
+
+				@Override
+				public void onFail(RetrofitError error) {
+
+				}
+			});
+			client.execute();
 		}
 
 
@@ -328,6 +367,25 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.repoDetailNavigation) {
+			switchNavigation(position);
+		} else if (parent.getId() == R.id.repoDetailBranches && branchesAdapter.getCount() > 0) {
+			switchBranch(position);
+		}
+	}
+
+	private void switchBranch(int position) {
+		Branch item = branchesAdapter.getItem(position);
+
+		if (markDownFragment != null) {
+			markDownFragment.setCurrentBranch(item);
+		}
+		if (filesTreeFragment != null) {
+			filesTreeFragment.setCurrentBranch(item);
+		}
+	}
+
+	private void switchNavigation(int position) {
 		switch (position) {
 			case 0:
 				if (markDownFragment == null) {
