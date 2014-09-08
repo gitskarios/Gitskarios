@@ -31,9 +31,6 @@
     <string name="source">Source</string>
     <string name="issues">Issues</string>
     <string name="info">info</string>
-    <string name="client_id">60f30c819ae20252ab74</string>
-    <string name="client_secret">c46258762edf73a3ef2b695545950ec962c171ec</string>
-    <string name="client_callback">http://bernatborras.net/giskarios</string>
     <string name="no_followers">There isn\'t any follower</string>
     <string name="no_followings">There isn\'t any following you</string>
     <string name="no_repositories">No repositories found</string>
@@ -80,5 +77,6 @@
     <string name="add_comment">Add comment</string>
     <string name="no_commits">No commits here</string>
     <string name="commits">Commits</string>
+    <string name="acces_token_request">Requesting user token</string>
 
 </resources>

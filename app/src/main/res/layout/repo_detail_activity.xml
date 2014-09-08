@@ -1,43 +1,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/repoDetailInfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/accent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.alorma.github.ui.view.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/white"
-                android:text="@string/readme"
-                android:id="@+id/tabReadme" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/gapLarge"
+                android:layout_marginStart="@dimen/gapLarge"
+                android:layout_marginRight="@dimen/gapMedium"
+                android:layout_marginEnd="@dimen/gapMedium"
+                android:id="@+id/repoDetailBranches"
+                android:background="@drawable/spinner_ab_background"/>
 
-            <com.alorma.github.ui.view.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/white"
-                android:text="@string/source"
-                android:id="@+id/tabSource" />
-
-            <com.alorma.github.ui.view.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/white"
-                android:text="@string/issues"
-                android:id="@+id/tabIssues" />
-
-<!--            <com.alorma.github.ui.view.TabTitle
-                style="@style/tab_repos"
-                app:barColor="@color/white"
-                android:text="@string/commits"
-                android:id="@+id/tabCommits" />-->
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/repoDetailNavigation"
+                android:layout_marginLeft="@dimen/gapMedium"
+                android:layout_marginStart="@dimen/gapMedium"
+                android:layout_marginRight="@dimen/gapLarge"
+                android:layout_marginEnd="@dimen/gapLarge"
+                android:background="@drawable/spinner_ab_background"/>
 
         </LinearLayout>
 
@@ -52,13 +51,13 @@
             app:spb_stroke_separator_length="4dp"
             app:spb_reversed="false"
             app:spb_mirror_mode="false"
-            android:id="@id/smoothBar" />
+            android:id="@id/smoothBar"/>
     </FrameLayout>
 
-    <android.support.v4.view.ViewPager
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:id="@id/pager" />
+        android:id="@+id/content"/>
 
 </LinearLayout>

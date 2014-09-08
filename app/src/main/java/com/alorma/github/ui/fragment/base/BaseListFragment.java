@@ -59,6 +59,12 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 		fab = (ImageView) view.findViewById(R.id.fabButton);
 
+		checkFAB();
+
+		loadArguments();
+	}
+
+	protected void checkFAB() {
 		if (fab != null) {
 			if (useFAB() && fabDrawable() != null) {
 				fabVisible = true;
@@ -68,8 +74,6 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 				fab.setVisibility(View.GONE);
 			}
 		}
-
-		loadArguments();
 	}
 
 	protected Drawable fabDrawable() {

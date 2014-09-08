@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class LoginActivity extends Activity {
 	private StoreCredentials credentials;
 	private WebView webview;
 	private SmoothProgressBar bar;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +86,22 @@ public class LoginActivity extends Activity {
 		finish();
 	}
 
+	private void showDialog() {
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setMessage(getString(R.string.acces_token_request));
+		progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.show();
+	}
+
 	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {
 		private RequestTokenClient requestTokenClient;
 
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
 			bar.progressiveStart();
 			String accessTokenFragment = "access_token=";
-			String accessCodeFragment = "code=";
+			String accessCodeFragment = "code";
 
 			// We hijack the GET request to extract the OAuth parameters
 
@@ -101,16 +112,24 @@ public class LoginActivity extends Activity {
 				endAcces(accessToken);
 			} else if (url.contains(accessCodeFragment)) {
 				// the GET request contains an authorization code
-				String accessCode = url.substring(url.indexOf(accessCodeFragment));
 
-				accessCode = accessCode.split("=")[1];
+				Uri uri = Uri.parse(url);
+
+				showDialog();
 
 				if (requestTokenClient == null) {
-					requestTokenClient = new RequestTokenClient(LoginActivity.this, accessCode);
+					requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
 					requestTokenClient.setOnResultCallback(this);
 					requestTokenClient.execute();
 				}
 			}
+		}
+
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			Uri uri = Uri.parse(url);
+			Uri callback = Uri.parse(ApiConstants.CLIENT_CALLBACK);
+			return (uri.getAuthority().equals(callback.getAuthority()));
 		}
 
 		@Override
@@ -128,6 +147,7 @@ public class LoginActivity extends Activity {
 		@Override
 		public void onResponseOk(Token token, Response r) {
 			if (token.access_token != null) {
+				progressDialog.hide();
 				endAcces(token.access_token);
 			} else if (token.error != null) {
 				Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();

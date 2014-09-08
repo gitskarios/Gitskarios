@@ -8,4 +8,8 @@ public class Branch {
     public Commit commit;
     public Links _links;
 
+	@Override
+	public String toString() {
+		return name;
+	}
 }

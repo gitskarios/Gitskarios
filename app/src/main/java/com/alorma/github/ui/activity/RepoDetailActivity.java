@@ -1,5 +1,7 @@
 package com.alorma.github.ui.activity;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,7 +11,19 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.alorma.github.sdk.bean.dto.response.Branch;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
+import com.alorma.github.ui.fragment.commit.ListCommitsFragments;
+import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
+import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
+import com.alorma.github.ui.fragment.issues.IssuesFragment;
 import com.alorma.github.ui.view.TabTitle;
+
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.alorma.github.R;
@@ -41,8 +55,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailActivity extends BackActivity implements RefreshListener, View.OnClickListener,
-		ViewPager.OnPageChangeListener, BaseClient.OnResultCallback<Repo> {
+public class RepoDetailActivity extends BackActivity implements RefreshListener, BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -55,17 +68,17 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private boolean fromIntentFilter;
 	private boolean repoStarred;
 	private boolean repoWatched;
-	private TabTitle tabReadme;
-	private TabTitle tabSource;
-	private TabTitle tabIssues;
-	//private TabTitle tabCommits;
-	private List<TabTitle> tabs;
 	private SmoothProgressBar smoothBar;
-	private ViewPager pager;
 	private Repo currentRepo;
 	private boolean showParentMenu;
-	private RepoDetailPagerAdapter pagerAdapter;
 	private Integer refreshItems;
+	private MarkdownFragment markDownFragment;
+	private FilesTreeFragment filesTreeFragment;
+	private IssuesFragment issuesFragment;
+	private ListCommitsFragments commitsFragment;
+	private ArrayAdapter<Branch> branchesAdapter;
+	private Spinner repoDetailBranches;
+	private Branch currentBranch;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -106,6 +119,25 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			description = getIntent().getExtras().getString(DESCRIPTION);
 			fromIntentFilter = getIntent().getExtras().getBoolean(FROM_INTENT_FILTER);
 
+			Spinner spinnerNavigation = (Spinner) findViewById(R.id.repoDetailNavigation);
+			repoDetailBranches = (Spinner) findViewById(R.id.repoDetailBranches);
+
+			String[] navItems = getResources().getStringArray(R.array.repoDetailNavigation);
+
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.repo_detail_navigation, android.R.id.text1, navItems);
+			adapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
+			spinnerNavigation.setAdapter(adapter);
+
+			spinnerNavigation.setOnItemSelectedListener(this);
+
+			repoDetailBranches.setVisibility(View.INVISIBLE);
+
+			branchesAdapter = new ArrayAdapter<Branch>(this, R.layout.repo_detail_navigation, android.R.id.text1, new ArrayList<Branch>());
+			branchesAdapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
+			repoDetailBranches.setAdapter(branchesAdapter);
+
+			repoDetailBranches.setOnItemSelectedListener(this);
+
 			load();
 		} else {
 			finish();
@@ -132,30 +164,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 
-		tabReadme = (TabTitle) findViewById(R.id.tabReadme);
-		tabSource = (TabTitle) findViewById(R.id.tabSource);
-		tabIssues = (TabTitle) findViewById(R.id.tabIssues);
-		//tabCommits = (TabTitle) findViewById(R.id.tabCommits);
-
-		tabReadme.setOnClickListener(this);
-		tabSource.setOnClickListener(this);
-		tabIssues.setOnClickListener(this);
-		//tabCommits.setOnClickListener(this);
-
-		tabs = new ArrayList<TabTitle>();
-		tabs.add(tabReadme);
-		tabs.add(tabSource);
-		tabs.add(tabIssues);
-		//tabs.add(tabCommits);
-
-		pager = (ViewPager) findViewById(R.id.pager);
-		pager.setOffscreenPageLimit(tabs.size());
-		pager.setOnPageChangeListener(this);
-		pagerAdapter = new RepoDetailPagerAdapter(getFragmentManager(), repoInfo.owner, repoInfo.repo);
-		pagerAdapter.setRefreshListener(this);
-		pager.setAdapter(pagerAdapter);
-
-		selectButton(tabReadme);
 	}
 
 	private void setUpShare(RepoInfo info) {
@@ -296,61 +304,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		}
 	}
 
-	private void selectButton(TabTitle tabSelected) {
-		for (TabTitle tab : tabs) {
-			if (tab != null) {
-				tab.setSelected(tab == tabSelected);
-			}
-		}
-	}
-
-	@Override
-	public void onClick(View view) {
-		switch (view.getId()) {
-			case R.id.tabReadme:
-				selectButton(tabReadme);
-				pager.setCurrentItem(0);
-				break;
-			case R.id.tabSource:
-				pager.setCurrentItem(1);
-				selectButton(tabSource);
-				break;
-			case R.id.tabIssues:
-				pager.setCurrentItem(2);
-				selectButton(tabIssues);
-				break;
-			/*case R.id.tabCommits:
-				pager.setCurrentItem(3);
-				selectButton(tabCommits);
-				break;*/
-		}
-	}
-
-	@Override
-	public void onPageScrolled(int i, float v, int i2) {
-
-	}
-
-	@Override
-	public void onPageSelected(int i) {
-		switch (i) {
-			case 0:
-				selectButton(tabReadme);
-				break;
-			case 1:
-				selectButton(tabSource);
-				break;
-			case 2:
-				selectButton(tabIssues);
-				break;
-		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int i) {
-
-	}
-
 	@Override
 	public void onResponseOk(Repo repo, Response r) {
 		if (repo != null) {
@@ -362,9 +315,37 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 					this.getActionBar().setSubtitle(getResources().getString(R.string.fork_of, repo.parent.full_name));
 				}
 			}
-			pagerAdapter.setPermissions(repo.permissions);
-		}
 
+			if (issuesFragment != null) {
+				issuesFragment.setPermissions(repo.permissions);
+			}
+
+			Branch branch = new Branch();
+			branch.name = currentRepo.default_branch;
+
+			branchesAdapter.add(branch);
+
+			GetRepoBranchesClient client = new GetRepoBranchesClient(this, repoInfo.owner, repoInfo.repo);
+			client.setOnResultCallback(new BaseClient.OnResultCallback<ListBranches>() {
+				@Override
+				public void onResponseOk(ListBranches branches, Response r) {
+					ArrayList<Branch> newBranches = new ArrayList<Branch>(branches);
+					for (Branch branch : branches) {
+						if (branch.name.equals(currentRepo.default_branch)) {
+							newBranches.remove(branch);
+						}
+					}
+					branchesAdapter.addAll(newBranches);
+					repoDetailBranches.setVisibility(View.VISIBLE);
+				}
+
+				@Override
+				public void onFail(RetrofitError error) {
+
+				}
+			});
+			client.execute();
+		}
 
 
 		cancelRefresh();
@@ -375,6 +356,74 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		ErrorHandler.onRetrofitError(this, "RepoDetailFragment", error);
 		finish();
 		cancelRefresh();
+	}
+
+	private void setUpFragment(Fragment fragment) {
+		if (fragment != null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			if (fragment.isAdded()) {
+				ft.remove(fragment);
+			}
+			ft.replace(R.id.content, fragment);
+			ft.commit();
+		}
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.repoDetailNavigation) {
+			switchNavigation(position);
+		} else if (parent.getId() == R.id.repoDetailBranches && branchesAdapter.getCount() > 0) {
+			switchBranch(position);
+		}
+	}
+
+	private void switchBranch(int position) {
+		currentBranch = branchesAdapter.getItem(position);
+
+		if (markDownFragment != null) {
+			markDownFragment.setCurrentBranch(currentBranch);
+		}
+		if (filesTreeFragment != null) {
+			filesTreeFragment.setCurrentBranch(currentBranch);
+		}
+	}
+
+	private void switchNavigation(int position) {
+		switch (position) {
+			case 0:
+				if (markDownFragment == null) {
+					markDownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
+				}
+				markDownFragment.setCurrentBranch(currentBranch);
+				setUpFragment(markDownFragment);
+				break;
+			case 1:
+				if (filesTreeFragment == null) {
+					filesTreeFragment = FilesTreeFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
+				}
+				filesTreeFragment.setCurrentBranch(currentBranch);
+				setUpFragment(filesTreeFragment);
+				break;
+			case 2:
+				if (issuesFragment == null) {
+					issuesFragment = IssuesFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
+				}
+				issuesFragment.setPermissions(currentRepo.permissions);
+				setUpFragment(issuesFragment);
+				break;
+			/*case 3:
+				if (commitsFragment == null) {
+					commitsFragment = ListCommitsFragments.newInstance(owner, repo, refreshListener);
+				}
+				return commitsFragment;
+				break;*/
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+
 	}
 
 	/**

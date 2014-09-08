@@ -5,6 +5,6 @@
 
     <string name="client_id">5dbfca95aa4de59f4a1c</string>
     <string name="client_secret">b3688437884ec6978884abafdce798d8781314d1</string>
-    <string name="client_callback">http://bernatborras.net/giskarios</string>
+    <string name="client_callback">http://gitsksarios.com/oauth</string>
 
 </resources>
