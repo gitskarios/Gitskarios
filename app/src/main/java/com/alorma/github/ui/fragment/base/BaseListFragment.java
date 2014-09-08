@@ -65,7 +65,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	}
 
 	protected void checkFAB() {
-		if (fab != null) {
+		if (getActivity() != null && fab != null) {
 			if (useFAB() && fabDrawable() != null) {
 				fabVisible = true;
 				fab.setImageDrawable(fabDrawable());
