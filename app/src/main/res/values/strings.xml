@@ -77,5 +77,6 @@
     <string name="add_comment">Add comment</string>
     <string name="no_commits">No commits here</string>
     <string name="commits">Commits</string>
+    <string name="acces_token_request">Requesting user token</string>
 
 </resources>

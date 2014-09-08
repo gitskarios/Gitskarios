@@ -34,6 +34,7 @@ public class LoginActivity extends Activity {
 	private StoreCredentials credentials;
 	private WebView webview;
 	private SmoothProgressBar bar;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,15 @@ public class LoginActivity extends Activity {
 		finish();
 	}
 
+	private void showDialog() {
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setMessage(getString(R.string.acces_token_request));
+		progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.show();
+	}
+
 	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {
 		private RequestTokenClient requestTokenClient;
 
@@ -104,6 +114,8 @@ public class LoginActivity extends Activity {
 				// the GET request contains an authorization code
 
 				Uri uri = Uri.parse(url);
+
+				showDialog();
 
 				if (requestTokenClient == null) {
 					requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
@@ -135,6 +147,7 @@ public class LoginActivity extends Activity {
 		@Override
 		public void onResponseOk(Token token, Response r) {
 			if (token.access_token != null) {
+				progressDialog.hide();
 				endAcces(token.access_token);
 			} else if (token.error != null) {
 				Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
