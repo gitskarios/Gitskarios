@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.util.Log;
@@ -90,7 +91,7 @@ public class LoginActivity extends Activity {
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
 			bar.progressiveStart();
 			String accessTokenFragment = "access_token=";
-			String accessCodeFragment = "code=";
+			String accessCodeFragment = "code";
 
 			// We hijack the GET request to extract the OAuth parameters
 
@@ -101,16 +102,22 @@ public class LoginActivity extends Activity {
 				endAcces(accessToken);
 			} else if (url.contains(accessCodeFragment)) {
 				// the GET request contains an authorization code
-				String accessCode = url.substring(url.indexOf(accessCodeFragment));
 
-				accessCode = accessCode.split("=")[1];
+				Uri uri = Uri.parse(url);
 
 				if (requestTokenClient == null) {
-					requestTokenClient = new RequestTokenClient(LoginActivity.this, accessCode);
+					requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
 					requestTokenClient.setOnResultCallback(this);
 					requestTokenClient.execute();
 				}
 			}
+		}
+
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			Uri uri = Uri.parse(url);
+			Uri callback = Uri.parse(ApiConstants.CLIENT_CALLBACK);
+			return (uri.getAuthority().equals(callback.getAuthority()));
 		}
 
 		@Override
