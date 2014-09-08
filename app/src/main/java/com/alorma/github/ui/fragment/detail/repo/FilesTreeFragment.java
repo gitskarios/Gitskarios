@@ -35,6 +35,7 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
+	public static final String BRANCH = "BRANCH";
 	private String owner;
 	private String repo;
 	private RepoContentAdapter contentAdapter;
@@ -43,11 +44,13 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 	private Content rootContent = new Content();
 	private Content currentSelectedContent = rootContent;
 	private Branch currentBranch;
+	private String branch;
 
-	public static FilesTreeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
+	public static FilesTreeFragment newInstance(String owner, String repo, String branchName, RefreshListener refreshListener) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
+		bundle.putString(BRANCH, branchName);
 
 		FilesTreeFragment f = new FilesTreeFragment();
 		f.setRefreshListener(refreshListener);
@@ -64,6 +67,7 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 		if (getArguments() != null) {
 			owner = getArguments().getString(OWNER);
 			repo = getArguments().getString(REPO);
+			branch = getArguments().getString(BRANCH);
 
 			getContent();
 
@@ -202,10 +206,18 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 	}
 
 	private void getContent() {
-		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
-		repoContentsClient.setOnResultCallback(this);
-		repoContentsClient.setCurrentBranch(currentBranch);
-		repoContentsClient.execute();
+		if (branch == null) {
+			GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
+			repoContentsClient.setOnResultCallback(this);
+			repoContentsClient.execute();
+		} else {
+			GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
+			repoContentsClient.setOnResultCallback(this);
+			Branch branch = new Branch();
+			branch.name = this.branch;
+			repoContentsClient.setCurrentBranch(branch);
+			repoContentsClient.execute();
+		}
 	}
 
 	private void getPathContent(Content item) {

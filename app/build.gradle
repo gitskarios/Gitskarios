@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 127
-        versionName "1.2.7"
+        versionName "1.3.0"
+        versionCode 130
     }
     signingConfigs {
         playStore {
