@@ -78,5 +78,7 @@
     <string name="no_commits">No commits here</string>
     <string name="commits">Commits</string>
     <string name="acces_token_request">Requesting user token</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_gthub_link_interceptor">Intercept links</string>
 
 </resources>
