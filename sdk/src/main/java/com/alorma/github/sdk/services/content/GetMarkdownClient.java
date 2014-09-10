@@ -3,7 +3,7 @@ package com.alorma.github.sdk.services.content;
 import android.content.Context;
 import android.util.Log;
 
-import com.alorma.github.sdk.bean.dto.request.RequestReadmeDTO;
+import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.google.gson.Gson;
@@ -29,11 +29,11 @@ import retrofit.client.Response;
  */
 public class GetMarkdownClient implements Callback<String>, Client {
 
-    private RequestReadmeDTO readme;
+    private RequestMarkdownDTO readme;
 
     private BaseClient.OnResultCallback<String> onResultCallback;
 
-    public GetMarkdownClient(Context context, RequestReadmeDTO readme) {
+    public GetMarkdownClient(Context context, RequestMarkdownDTO readme) {
         this.readme = readme;
     }
 

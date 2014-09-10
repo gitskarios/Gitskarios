@@ -3,11 +3,9 @@ package com.alorma.github.sdk.services.repo;
 import android.content.Context;
 import android.util.Base64;
 
-import com.alorma.github.sdk.bean.dto.request.RequestReadmeDTO;
+import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ListContents;
-import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
 
 import java.io.UnsupportedEncodingException;
@@ -49,7 +47,7 @@ public class GetReadmeContentsClient extends BaseRepoClient<String> {
 
         @Override
         public void success(Content content, Response response) {
-            RequestReadmeDTO requestReadmeDTO = new RequestReadmeDTO();
+            RequestMarkdownDTO requestMarkdownDTO = new RequestMarkdownDTO();
             if ("base64".equals(content.encoding)) {
                 byte[] data = Base64.decode(content.content, Base64.DEFAULT);
                 try {
@@ -59,8 +57,8 @@ public class GetReadmeContentsClient extends BaseRepoClient<String> {
                 }
             }
 
-            requestReadmeDTO.text = content.content;
-            GetMarkdownClient markdownClient = new GetMarkdownClient(context, requestReadmeDTO);
+            requestMarkdownDTO.text = content.content;
+            GetMarkdownClient markdownClient = new GetMarkdownClient(context, requestMarkdownDTO);
             markdownClient.setOnResultCallback(callback);
             markdownClient.execute();
         }

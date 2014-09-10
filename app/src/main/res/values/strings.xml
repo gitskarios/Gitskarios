@@ -80,5 +80,6 @@
     <string name="acces_token_request">Requesting user token</string>
     <string name="title_activity_settings">Settings</string>
     <string name="pref_gthub_link_interceptor">Intercept links</string>
+    <string name="error_loading_image">Image cannot be loaded</string>
 
 </resources>

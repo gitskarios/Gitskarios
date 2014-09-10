@@ -1,6 +1,6 @@
 package com.alorma.github.sdk.services.content;
 
-import com.alorma.github.sdk.bean.dto.request.RequestReadmeDTO;
+import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Content;
 
 import retrofit.Callback;
@@ -16,7 +16,7 @@ import retrofit.http.Query;
 public interface ContentService {
 
 	@POST("/markdown/raw")
-	void markdown(@Body RequestReadmeDTO readme, Callback<String> callback);
+	void markdown(@Body RequestMarkdownDTO readme, Callback<String> callback);
 
 	@GET("/repos/{owner}/{repo}/contents/{path}")
 	void fileContent(@Path("owner") String owner, @Path("repo") String repo, @Path("path") String path, Callback<Content> callback);
