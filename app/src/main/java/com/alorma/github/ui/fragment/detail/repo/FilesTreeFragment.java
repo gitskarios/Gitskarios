@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -168,8 +169,8 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 				}
 
 			} else if (item.isFile()) {
-				String url = item._links.html;
-				Intent intent = FileActivity.createLauncherIntent(getActivity(), url);
+				Intent intent = FileActivity.createLauncherIntent(getActivity(), owner,
+						repo, currentBranch != null ? currentBranch.name : null, item.name, item.path);
 				startActivity(intent);
 			} else if (ContentType.up.equals(item.type)) {
 				if (item.parent != null) {

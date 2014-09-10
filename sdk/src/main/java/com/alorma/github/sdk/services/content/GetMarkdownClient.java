@@ -9,16 +9,12 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import retrofit.Callback;
@@ -53,7 +49,7 @@ public class GetMarkdownClient implements Callback<String>, Client {
     }
 
     private void executeService(RestAdapter restAdapter) {
-        restAdapter.create(MarkdownService.class).markdown(readme, this);
+        restAdapter.create(ContentService.class).markdown(readme, this);
     }
 
     @Override
