@@ -155,6 +155,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if (item.getItemId() == R.id.action_settings) {
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
 		}
 
 		return true;

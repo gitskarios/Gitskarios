@@ -7,30 +7,22 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.alorma.github.sdk.bean.dto.response.Branch;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
-import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
-import com.alorma.github.ui.fragment.commit.ListCommitsFragments;
-import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
-import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
-import com.alorma.github.ui.fragment.issues.IssuesFragment;
-import com.alorma.github.ui.view.TabTitle;
-
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Branch;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -40,13 +32,15 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.detail.repo.RepoDetailPagerAdapter;
+import com.alorma.github.ui.fragment.commit.ListCommitsFragments;
+import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
+import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
+import com.alorma.github.ui.fragment.issues.IssuesFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
@@ -71,14 +65,13 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private SmoothProgressBar smoothBar;
 	private Repo currentRepo;
 	private boolean showParentMenu;
-	private Integer refreshItems;
 	private MarkdownFragment markDownFragment;
 	private FilesTreeFragment filesTreeFragment;
 	private IssuesFragment issuesFragment;
-	private ListCommitsFragments commitsFragment;
 	private ArrayAdapter<Branch> branchesAdapter;
 	private Spinner repoDetailBranches;
 	private Branch currentBranch;
+	private Spinner spinnerNavigation;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -119,24 +112,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			description = getIntent().getExtras().getString(DESCRIPTION);
 			fromIntentFilter = getIntent().getExtras().getBoolean(FROM_INTENT_FILTER);
 
-			Spinner spinnerNavigation = (Spinner) findViewById(R.id.repoDetailNavigation);
+			spinnerNavigation = (Spinner) findViewById(R.id.repoDetailNavigation);
 			repoDetailBranches = (Spinner) findViewById(R.id.repoDetailBranches);
 
-			String[] navItems = getResources().getStringArray(R.array.repoDetailNavigation);
-
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.repo_detail_navigation, android.R.id.text1, navItems);
-			adapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
-			spinnerNavigation.setAdapter(adapter);
-
 			spinnerNavigation.setOnItemSelectedListener(this);
-
-			repoDetailBranches.setVisibility(View.INVISIBLE);
-
-			branchesAdapter = new ArrayAdapter<Branch>(this, R.layout.repo_detail_navigation, android.R.id.text1, new ArrayList<Branch>());
-			branchesAdapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
-			repoDetailBranches.setAdapter(branchesAdapter);
-
 			repoDetailBranches.setOnItemSelectedListener(this);
+
+			spinnerNavigation.setVisibility(View.INVISIBLE);
+			repoDetailBranches.setVisibility(View.INVISIBLE);
 
 			load();
 		} else {
@@ -282,26 +265,12 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 	@Override
 	public void showRefresh() {
-		if (refreshItems == null) {
-			smoothBar.progressiveStart();
-			refreshItems = 1;
-		} else {
-			refreshItems++;
-		}
+		smoothBar.progressiveStart();
 	}
 
 	@Override
 	public void cancelRefresh() {
-		if (refreshItems != null) {
-			refreshItems--;
-
-			if (refreshItems == 0) {
-				refreshItems = null;
-			}
-		}
-		if (refreshItems == null) {
-			smoothBar.progressiveStop();
-		}
+		smoothBar.progressiveStop();
 	}
 
 	@Override
@@ -309,6 +278,8 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		if (repo != null) {
 			this.currentRepo = repo;
 			this.invalidateOptionsMenu();
+
+			cancelRefresh();
 
 			if (this.getActionBar() != null) {
 				if (repo.parent != null) {
@@ -320,6 +291,17 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				issuesFragment.setPermissions(repo.permissions);
 			}
 
+			String[] navItems = getResources().getStringArray(R.array.repoDetailNavigation);
+
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.repo_detail_navigation, android.R.id.text1, navItems);
+			adapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
+			spinnerNavigation.setAdapter(adapter);
+
+			spinnerNavigation.setVisibility(View.VISIBLE);
+
+			branchesAdapter = new ArrayAdapter<Branch>(this, R.layout.repo_detail_navigation, android.R.id.text1, new ArrayList<Branch>());
+			branchesAdapter.setDropDownViewResource(R.layout.repo_detail_navigation_dropdown);
+			repoDetailBranches.setAdapter(branchesAdapter);
 			Branch branch = new Branch();
 			branch.name = currentRepo.default_branch;
 
@@ -395,14 +377,12 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				if (markDownFragment == null) {
 					markDownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
 				}
-				markDownFragment.setCurrentBranch(currentBranch);
 				setUpFragment(markDownFragment);
 				break;
 			case 1:
 				if (filesTreeFragment == null) {
-					filesTreeFragment = FilesTreeFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
+					filesTreeFragment = FilesTreeFragment.newInstance(repoInfo.owner, repoInfo.repo, currentBranch.name, this);
 				}
-				filesTreeFragment.setCurrentBranch(currentBranch);
 				setUpFragment(filesTreeFragment);
 				break;
 			case 2:
