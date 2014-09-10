@@ -22,7 +22,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	protected static final String USERNAME = "USERNAME";
 	protected boolean paging;
 	private PaginationLink bottomPaginationLink;
-	private boolean refreshing;
+	protected boolean refreshing;
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <nine-patch android:src="@drawable/spinner_mtrl_am_alpha"/>
+    </item>
+    <item android:state_pressed="true">
+        <nine-patch android:src="@drawable/spinner_mtrl_am_alpha"/>
+    </item>
+    <item>
+        <nine-patch android:src="@drawable/spinner_mtrl_am_alpha"/>
+    </item>
+</selector>

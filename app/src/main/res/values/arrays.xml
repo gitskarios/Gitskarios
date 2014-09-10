@@ -15,4 +15,10 @@
         <item>about</item>
         <item>orgs</item>
     </string-array>
+
+    <string-array name="repoDetailNavigation">
+        <item>@string/readme</item>
+        <item>@string/source</item>
+        <item>@string/issues</item>
+    </string-array>
 </resources>

@@ -14,6 +14,13 @@
         <item>@color/accentDark</item>
     </integer-array>
 
+    <integer-array name="colorsFileContent">
+        <item>@color/accent</item>
+        <item>@color/gray_github_light</item>
+        <item>@color/accentDark</item>
+        <item>@color/gray_github_light</item>
+    </integer-array>
+
     <integer-array name="colorsSmoothWhite">
         <item>@color/gray_github_light</item>
         <item>@color/gray_github_medium</item>
