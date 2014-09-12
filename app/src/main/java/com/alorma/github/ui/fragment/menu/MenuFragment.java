@@ -20,10 +20,13 @@ import java.util.ArrayList;
  */
 public class MenuFragment extends ListFragment {
 
-	private OnMenuItemSelectedListener onMenuItemSelectedListener;
+    private static final String MENU_SELECTED_ITEM = "menu_selected_item";
+
+    private static final int DEFAULT_SELECTED_POSITION = 3;
+
+    private OnMenuItemSelectedListener onMenuItemSelectedListener;
 	private MenuItemsAdapter adapter;
-	private int currentSelectedItemId;
-	private MenuItem currentSelectedItem;
+	private int currentSelectedPosition;
 
 	public static MenuFragment newInstance() {
 		return new MenuFragment();
@@ -46,15 +49,11 @@ public class MenuFragment extends ListFragment {
 
 		int color = getResources().getColor(R.color.accent);
 
-		currentSelectedItemId = 0;
-
 		adapter.add(new CategoryMenuItem(-1, R.string.tab_user_parent, color, Iconify.IconValue.fa_group));
-
 		adapter.add(new MenuItem(0, -1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
 
 		adapter.add(new CategoryMenuItem(-2, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
-		currentSelectedItem = new MenuItem(0, -2, R.string.navigation_repos, color, Iconify.IconValue.fa_code);
-		adapter.add(currentSelectedItem);
+		adapter.add(new MenuItem(0, -2, R.string.navigation_repos, color, Iconify.IconValue.fa_code));
 		adapter.add(new MenuItem(1, -2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
 		adapter.add(new MenuItem(2, -2, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
 
@@ -63,12 +62,23 @@ public class MenuFragment extends ListFragment {
 		adapter.add(new MenuItem(0, -3, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
 		adapter.add(new MenuItem(1, -3, R.string.navigation_following, color, Iconify.IconValue.fa_user));
 
-		if (onMenuItemSelectedListener != null) {
-			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem);
-		}
-	}
+                currentSelectedPosition = savedInstanceState == null ? DEFAULT_SELECTED_POSITION
+                    : savedInstanceState.getInt(MENU_SELECTED_ITEM, DEFAULT_SELECTED_POSITION);
 
-	@Override
+                if (onMenuItemSelectedListener != null) {
+                    MenuItem item = adapter.getItem(currentSelectedPosition);
+                    onMenuItemSelectedListener.onMenuItemSelected(item);
+                }
+        }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(MENU_SELECTED_ITEM, currentSelectedPosition);
+    }
+
+    @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 
@@ -76,7 +86,7 @@ public class MenuFragment extends ListFragment {
 
 		if (item != null && onMenuItemSelectedListener != null) {
 			if (item.id > -1) {
-				currentSelectedItemId = item.id;
+				currentSelectedPosition = position;
 				switch (item.parentId) {
 					case -1:
 						itemUser(item);

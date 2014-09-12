@@ -107,13 +107,14 @@ public class MainActivity extends BaseActivity
         if (savedInstanceState == null) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.content, ReposFragment.newInstance());
+
             menuFragment = MenuFragment.newInstance();
-            menuFragment.setOnMenuItemSelectedListener(this);
             ft.replace(R.id.menuContent, menuFragment);
             ft.commit();
         } else {
             menuFragment = (MenuFragment) getFragmentManager().findFragmentById(R.id.menuContent);
         }
+        menuFragment.setOnMenuItemSelectedListener(this);
     }
 
     private void checkIab() {
