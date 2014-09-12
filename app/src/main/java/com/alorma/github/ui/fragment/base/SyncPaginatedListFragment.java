@@ -57,7 +57,7 @@ public abstract class SyncPaginatedListFragment<K> extends SyncLoadingListFragme
                 mEmptyView.setVisibility(View.GONE);
                 mBottomPaginationLink = pair.first;
 
-                onResponse(pair.second, mRefreshing);
+                onLoadFinished(pair.second);
 
                 mRefreshing = false;
             } else {
@@ -78,7 +78,7 @@ public abstract class SyncPaginatedListFragment<K> extends SyncLoadingListFragme
         }
     }
 
-    protected abstract void onResponse(final K response, boolean refreshing);
+    protected abstract void onLoadFinished(final K response);
 
     @Override
     public void onRefresh() {

@@ -50,7 +50,7 @@ public class SyncReposFragment extends SyncBaseReposListFragment
 
         final Bundle bundle = new Bundle();
         bundle.putInt(PAGE_LOADER_ARGUMENT, page);
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(0, bundle, this);
     }
 
     @Override

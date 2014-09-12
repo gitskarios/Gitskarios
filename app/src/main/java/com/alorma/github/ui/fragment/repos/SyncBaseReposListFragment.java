@@ -42,7 +42,7 @@ public abstract class SyncBaseReposListFragment extends SyncPaginatedListFragmen
     }
 
     @Override
-    protected void onResponse(ListRepos response, boolean refreshing) {
+    protected void onLoadFinished(final ListRepos response) {
         stopRefresh();
         mReposAdapter.addAll(response, mRefreshing);
     }
