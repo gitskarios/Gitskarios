@@ -4,6 +4,7 @@ import com.alorma.github.R;
 import com.alorma.github.ui.adapter.MenuItemsAdapter;
 import com.joanzapata.android.iconify.Iconify;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,13 @@ public class MenuFragment extends ListFragment {
 
     public static MenuFragment newInstance() {
         return new MenuFragment();
+    }
+
+    @Override
+    public void onAttach(final Activity activity) {
+        super.onAttach(activity);
+
+        onMenuItemSelectedListener = (OnMenuItemSelectedListener) activity;
     }
 
     @Nullable
@@ -140,11 +148,6 @@ public class MenuFragment extends ListFragment {
                 onMenuItemSelectedListener.onFollowingSelected();
                 break;
         }
-    }
-
-    public void setOnMenuItemSelectedListener(
-            OnMenuItemSelectedListener onMenuItemSelectedListener) {
-        this.onMenuItemSelectedListener = onMenuItemSelectedListener;
     }
 
     public interface OnMenuItemSelectedListener {

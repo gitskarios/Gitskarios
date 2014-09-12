@@ -114,7 +114,6 @@ public class MainActivity extends BaseActivity
         } else {
             menuFragment = (MenuFragment) getFragmentManager().findFragmentById(R.id.menuContent);
         }
-        menuFragment.setOnMenuItemSelectedListener(this);
     }
 
     private void checkIab() {
