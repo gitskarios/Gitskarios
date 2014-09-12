@@ -1,5 +1,26 @@
 package com.alorma.github.ui.activity;
 
+import com.alorma.github.R;
+import com.alorma.github.inapp.IabConstants;
+import com.alorma.github.inapp.IabHelper;
+import com.alorma.github.inapp.IabResult;
+import com.alorma.github.inapp.Inventory;
+import com.alorma.github.inapp.Purchase;
+import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.animations.HeightEvaluator;
+import com.alorma.github.ui.animations.WidthEvaluator;
+import com.alorma.github.ui.fragment.menu.MenuFragment;
+import com.alorma.github.ui.fragment.menu.MenuItem;
+import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
+import com.alorma.github.ui.fragment.repos.ReposFragment;
+import com.alorma.github.ui.fragment.repos.StarredReposFragment;
+import com.alorma.github.ui.fragment.repos.SyncReposFragment;
+import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
+import com.alorma.github.ui.fragment.users.FollowersFragment;
+import com.alorma.github.ui.fragment.users.FollowingFragment;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
+
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
@@ -15,333 +36,339 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alorma.github.R;
-import com.alorma.github.inapp.IabConstants;
-import com.alorma.github.inapp.IabHelper;
-import com.alorma.github.inapp.IabResult;
-import com.alorma.github.inapp.Inventory;
-import com.alorma.github.inapp.Purchase;
-import com.alorma.github.ui.activity.base.BaseActivity;
-import com.alorma.github.ui.animations.HeightEvaluator;
-import com.alorma.github.ui.animations.WidthEvaluator;
-import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
-import com.alorma.github.ui.fragment.users.FollowersFragment;
-import com.alorma.github.ui.fragment.users.FollowingFragment;
-import com.alorma.github.ui.fragment.menu.MenuFragment;
-import com.alorma.github.ui.fragment.menu.MenuItem;
-import com.alorma.github.ui.fragment.repos.ReposFragment;
-import com.alorma.github.ui.fragment.repos.StarredReposFragment;
-import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
-
 import java.util.UUID;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
+public class MainActivity extends BaseActivity
+        implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener,
+        IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener,
+        IabHelper.QueryInventoryFinishedListener {
 
-	private static final long MENU_ANIMATION_TIME = 200;
-	private TextView currentState;
-	private ImageView chevron;
-	private View chevronLy;
-	private boolean isMenuOpen = false;
-	private MenuFragment menuFragment;
-	private View menuFragmentLy;
-	private View searchIcon;
-	private int menuHeight = -1;
+    private static final long MENU_ANIMATION_TIME = 200;
 
-	private ReposFragment reposFragment;
-	private StarredReposFragment starredFragment;
-	private WatchedReposFragment watchedFragment;
-	private FollowersFragment followersFragment;
-	private FollowingFragment followingFragment;
-	private IabHelper iabHelper;
-	private boolean iabEnabled;
-	private OrganzationsFragment organizationsFragmet;
+    private TextView currentState;
 
-	public static void startActivity(Activity context) {
-		Intent intent = new Intent(context, MainActivity.class);
-		context.startActivity(intent);
-	}
+    private ImageView chevron;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+    private View chevronLy;
 
-		currentState = (TextView) findViewById(R.id.currentState);
+    private boolean isMenuOpen = false;
 
-		IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
-		chevronDown.colorRes(R.color.gray_github_dark);
+    private MenuFragment menuFragment;
 
-		chevron = (ImageView) findViewById(R.id.chevron);
-		chevron.setImageDrawable(chevronDown);
+    private View menuFragmentLy;
 
-		chevronLy = findViewById(R.id.chevronLy);
-		chevronLy.setOnClickListener(this);
+    private View searchIcon;
 
-		menuFragmentLy = findViewById(R.id.menuContent);
+    private int menuHeight = -1;
 
-		searchIcon = findViewById(R.id.searchIcon);
-		searchIcon.setOnClickListener(this);
+    private SyncReposFragment reposFragment;
 
-		checkIab();
+    private StarredReposFragment starredFragment;
 
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, ReposFragment.newInstance());
-		menuFragment = MenuFragment.newInstance();
-		menuFragment.setOnMenuItemSelectedListener(this);
-		ft.replace(R.id.menuContent, menuFragment);
-		ft.commit();
-	}
+    private WatchedReposFragment watchedFragment;
 
-	private void checkIab() {
-		iabHelper = new IabHelper(this, IabConstants.KEY);
-		iabHelper.startSetup(this);
-	}
+    private FollowersFragment followersFragment;
 
-	@Override
-	public void onIabSetupFinished(IabResult result) {
-		iabEnabled = result.isSuccess();
-		if (iabEnabled) {
-			invalidateOptionsMenu();
-			try {
-				iabHelper.queryInventoryAsync(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+    private FollowingFragment followingFragment;
 
-	}
+    private IabHelper iabHelper;
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
+    private boolean iabEnabled;
 
-		getMenuInflater().inflate(R.menu.main, menu);
+    private OrganzationsFragment organizationsFragmet;
 
-		return true;
-	}
+    public static void startActivity(Activity context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
+        currentState = (TextView) findViewById(R.id.currentState);
 
-		android.view.MenuItem donateItem = menu.findItem(R.id.action_donate);
+        IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
+        chevronDown.colorRes(R.color.gray_github_dark);
 
-		if (iabEnabled) {
-			if (donateItem == null) {
-				if (!iabDonatePurchased) {
-					menu.add(0, R.id.action_donate, 0, R.string.action_donate);
-				}
-			} else if (iabDonatePurchased) {
-				menu.removeItem(R.id.action_donate);
-			}
-		}
+        chevron = (ImageView) findViewById(R.id.chevron);
+        chevron.setImageDrawable(chevronDown);
 
-		return true;
-	}
+        chevronLy = findViewById(R.id.chevronLy);
+        chevronLy.setOnClickListener(this);
 
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        menuFragmentLy = findViewById(R.id.menuContent);
 
-		if (item.getItemId() == R.id.action_donate) {
-			try {
-				iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
-						this, UUID.randomUUID().toString());
-				item.setEnabled(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+        searchIcon = findViewById(R.id.searchIcon);
+        searchIcon.setOnClickListener(this);
 
-		return true;
-	}
+        checkIab();
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.chevronLy:
-				if (isMenuOpen) {
-					hideMenu();
-				} else {
-					showMenu();
-				}
-				break;
-			case R.id.searchIcon:
-				Intent search = SearchReposActivity.createLauncherIntent(this);
-				startActivity(search);
-		}
-	}
+        if (savedInstanceState == null) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.content, SyncReposFragment.newInstance());
 
-	private void showMenu() {
+            menuFragment = MenuFragment.newInstance();
+            ft.replace(R.id.menuContent, menuFragment);
+            ft.commit();
+        } else {
+            menuFragment = (MenuFragment) getFragmentManager().findFragmentById(R.id.menuContent);
+        }
+    }
 
-		menuFragmentLy.setVisibility(View.VISIBLE);
+    private void checkIab() {
+        iabHelper = new IabHelper(this, IabConstants.KEY);
+        iabHelper.startSetup(this);
+    }
 
-		IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
-		chevronUp.colorRes(R.color.gray_github_dark);
-		chevron.setImageDrawable(chevronUp);
+    @Override
+    public void onIabSetupFinished(IabResult result) {
+        iabEnabled = result.isSuccess();
+        if (iabEnabled) {
+            invalidateOptionsMenu();
+            try {
+                iabHelper.queryInventoryAsync(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-		isMenuOpen = true;
+    }
 
-		Float dimension = getResources().getDimension(R.dimen.menuSize);
-		ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), dimension.intValue(), 0);
-		searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
-		searchIconAnimator.start();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
 
-		if (menuHeight == -1) {
-			menuHeight = menuFragmentLy.getHeight();
-		}
+        getMenuInflater().inflate(R.menu.main, menu);
 
-		ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, true), 0, menuHeight);
-		valueAnimator.setDuration(MENU_ANIMATION_TIME);
-		valueAnimator.setInterpolator(new LinearInterpolator());
-		valueAnimator.start();
-	}
+        return true;
+    }
 
-	private void hideMenu() {
-		if (menuFragment != null) {
-			IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
-			chevronDown.colorRes(R.color.gray_github_dark);
-			chevron.setImageDrawable(chevronDown);
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
 
-			isMenuOpen = false;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
 
-			Float dimension = getResources().getDimension(R.dimen.menuSize);
-			ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), 0, dimension.intValue());
-			searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
-			searchIconAnimator.start();
+        android.view.MenuItem donateItem = menu.findItem(R.id.action_donate);
 
-			ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, false), menuHeight, 0);
-			valueAnimator.setDuration(MENU_ANIMATION_TIME);
-			valueAnimator.setInterpolator(new LinearInterpolator());
-			valueAnimator.start();
-		}
-	}
+        if (iabEnabled) {
+            if (donateItem == null) {
+                if (!iabDonatePurchased) {
+                    menu.add(0, R.id.action_donate, 0, R.string.action_donate);
+                }
+            } else if (iabDonatePurchased) {
+                menu.removeItem(R.id.action_donate);
+            }
+        }
 
-	private void setFragment(Fragment fragment) {
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, fragment);
-		ft.commit();
+        return true;
+    }
 
-		hideMenu();
-	}
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
-	@Override
-	public void onReposSelected() {
-		if (reposFragment == null) {
-			reposFragment = ReposFragment.newInstance();
-		}
+        if (item.getItemId() == R.id.action_donate) {
+            try {
+                iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
+                        this, UUID.randomUUID().toString());
+                item.setEnabled(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-		setFragment(reposFragment);
-	}
+        return true;
+    }
 
-	@Override
-	public void onStarredSelected() {
-		if (starredFragment == null) {
-			starredFragment = StarredReposFragment.newInstance();
-		}
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.chevronLy:
+                if (isMenuOpen) {
+                    hideMenu();
+                } else {
+                    showMenu();
+                }
+                break;
+            case R.id.searchIcon:
+                Intent search = SearchReposActivity.createLauncherIntent(this);
+                startActivity(search);
+        }
+    }
 
-		setFragment(starredFragment);
-	}
+    private void showMenu() {
 
-	@Override
-	public void onWatchedSelected() {
-		if (watchedFragment == null) {
-			watchedFragment = WatchedReposFragment.newInstance();
-		}
+        menuFragmentLy.setVisibility(View.VISIBLE);
 
-		setFragment(watchedFragment);
-	}
+        IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
+        chevronUp.colorRes(R.color.gray_github_dark);
+        chevron.setImageDrawable(chevronUp);
 
-	@Override
-	public void onFollowersSelected() {
-		if (followersFragment == null) {
-			followersFragment = FollowersFragment.newInstance();
-		}
+        isMenuOpen = true;
 
-		setFragment(followersFragment);
-	}
+        Float dimension = getResources().getDimension(R.dimen.menuSize);
+        ValueAnimator searchIconAnimator = ValueAnimator
+                .ofObject(new WidthEvaluator(searchIcon), dimension.intValue(), 0);
+        searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
+        searchIconAnimator.start();
 
-	@Override
-	public void onFollowingSelected() {
-		if (followingFragment == null) {
-			followingFragment = FollowingFragment.newInstance();
-		}
+        if (menuHeight == -1) {
+            menuHeight = menuFragmentLy.getHeight();
+        }
 
-		setFragment(followingFragment);
-	}
+        ValueAnimator valueAnimator = ValueAnimator
+                .ofObject(new HeightEvaluator(menuFragmentLy, true), 0, menuHeight);
+        valueAnimator.setDuration(MENU_ANIMATION_TIME);
+        valueAnimator.setInterpolator(new LinearInterpolator());
+        valueAnimator.start();
+    }
 
-	@Override
-	public void onMenuItemSelected(@NonNull MenuItem item) {
-		currentState.setText(item.text);
-	}
+    private void hideMenu() {
+        if (menuFragment != null) {
+            IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
+            chevronDown.colorRes(R.color.gray_github_dark);
+            chevron.setImageDrawable(chevronDown);
 
-	@Override
-	public void closeMenu() {
-		hideMenu();
-	}
+            isMenuOpen = false;
 
-	@Override
-	public void onOrganizationsSelected() {
-		if (organizationsFragmet == null) {
-			organizationsFragmet = OrganzationsFragment.newInstance();
-		}
-		setFragment(organizationsFragmet);
-	}
+            Float dimension = getResources().getDimension(R.dimen.menuSize);
+            ValueAnimator searchIconAnimator = ValueAnimator
+                    .ofObject(new WidthEvaluator(searchIcon), 0, dimension.intValue());
+            searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
+            searchIconAnimator.start();
 
-	@Override
-	public void onBackPressed() {
-		if (isMenuOpen) {
-			closeMenu();
-		} else {
-			super.onBackPressed();
-		}
-	}
+            ValueAnimator valueAnimator = ValueAnimator
+                    .ofObject(new HeightEvaluator(menuFragmentLy, false), menuHeight, 0);
+            valueAnimator.setDuration(MENU_ANIMATION_TIME);
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.start();
+        }
+    }
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (iabHelper != null) {
-			iabHelper.dispose();
-		}
-		iabHelper = null;
-	}
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fragment);
+        ft.commit();
 
-	@Override
-	public void onIabPurchaseFinished(IabResult result, Purchase info) {
-		if (result.isFailure()) {
-			invalidateOptionsMenu();
-		} else if (info.getSku().equals(IabConstants.SKU_DONATE)) {
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putBoolean(IabConstants.SKU_DONATE, true);
-			editor.apply();
-			invalidateOptionsMenu();
-		}
-	}
+        hideMenu();
+    }
 
-	@Override
-	public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-		if (result.isFailure()) {
-			if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_DEVELOPER_ERROR) {
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-				SharedPreferences.Editor editor = preferences.edit();
-				editor.putBoolean(IabConstants.SKU_DONATE, true);
-				editor.apply();
-			}
-			invalidateOptionsMenu();
-		} else {
-			boolean iabDonatePurchased = inv.hasPurchase(IabConstants.SKU_DONATE);
-			if (iabDonatePurchased) {
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-				SharedPreferences.Editor editor = preferences.edit();
-				editor.putBoolean(IabConstants.SKU_DONATE, true);
-				editor.apply();
-			}
-			invalidateOptionsMenu();
-		}
-	}
+    @Override
+    public void onReposSelected() {
+        if (reposFragment == null) {
+            reposFragment = SyncReposFragment.newInstance();
+        }
+
+        setFragment(reposFragment);
+    }
+
+    @Override
+    public void onStarredSelected() {
+        if (starredFragment == null) {
+            starredFragment = StarredReposFragment.newInstance();
+        }
+
+        setFragment(starredFragment);
+    }
+
+    @Override
+    public void onWatchedSelected() {
+        if (watchedFragment == null) {
+            watchedFragment = WatchedReposFragment.newInstance();
+        }
+
+        setFragment(watchedFragment);
+    }
+
+    @Override
+    public void onFollowersSelected() {
+        if (followersFragment == null) {
+            followersFragment = FollowersFragment.newInstance();
+        }
+
+        setFragment(followersFragment);
+    }
+
+    @Override
+    public void onFollowingSelected() {
+        if (followingFragment == null) {
+            followingFragment = FollowingFragment.newInstance();
+        }
+
+        setFragment(followingFragment);
+    }
+
+    @Override
+    public void onMenuItemSelected(@NonNull MenuItem item) {
+        currentState.setText(item.text);
+    }
+
+    @Override
+    public void closeMenu() {
+        hideMenu();
+    }
+
+    @Override
+    public void onOrganizationsSelected() {
+        if (organizationsFragmet == null) {
+            organizationsFragmet = OrganzationsFragment.newInstance();
+        }
+        setFragment(organizationsFragmet);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isMenuOpen) {
+            closeMenu();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (iabHelper != null) {
+            iabHelper.dispose();
+        }
+        iabHelper = null;
+    }
+
+    @Override
+    public void onIabPurchaseFinished(IabResult result, Purchase info) {
+        if (result.isFailure()) {
+            invalidateOptionsMenu();
+        } else if (info.getSku().equals(IabConstants.SKU_DONATE)) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(IabConstants.SKU_DONATE, true);
+            editor.apply();
+            invalidateOptionsMenu();
+        }
+    }
+
+    @Override
+    public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+        if (result.isFailure()) {
+            if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_DEVELOPER_ERROR) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(IabConstants.SKU_DONATE, true);
+                editor.apply();
+            }
+            invalidateOptionsMenu();
+        } else {
+            boolean iabDonatePurchased = inv.hasPurchase(IabConstants.SKU_DONATE);
+            if (iabDonatePurchased) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(IabConstants.SKU_DONATE, true);
+                editor.apply();
+            }
+            invalidateOptionsMenu();
+        }
+    }
 }

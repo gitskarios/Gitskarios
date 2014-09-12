@@ -3,10 +3,7 @@ package com.alorma.github.ui.fragment.repos;
 import android.os.Bundle;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ListRepos;
-import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
-import com.joanzapata.android.iconify.Iconify;
 
 public class ReposFragment extends BaseReposListFragment {
 
@@ -43,16 +40,16 @@ public class ReposFragment extends BaseReposListFragment {
 	@Override
 	protected void executeRequest() {
 		super.executeRequest();
-		BaseReposClient client;
-		client = new UserReposClient(getActivity(), username);
 
-		client.setOnResultCallback(this);
-		client.execute();
+                UserReposClient client = new UserReposClient(getActivity(), username);
+                client.setOnResultCallback(this);
+                client.execute();
 	}
 
 	@Override
 	protected void executePaginatedRequest(int page) {
 		super.executePaginatedRequest(page);
+
 		UserReposClient client = new UserReposClient(getActivity(), username, page);
 		client.setOnResultCallback(this);
 		client.execute();

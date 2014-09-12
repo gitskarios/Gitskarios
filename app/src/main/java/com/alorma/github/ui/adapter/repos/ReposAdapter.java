@@ -76,8 +76,8 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		return sdf.format(created_at);
 	}
 
-	public void addAll(Collection<? extends Repo> collection, boolean paging) {
-		if (!paging) {
+	public void addAll(Collection<? extends Repo> collection, boolean refreshing) {
+		if (refreshing) {
 			clear();
 		}
 		super.addAll(collection);
