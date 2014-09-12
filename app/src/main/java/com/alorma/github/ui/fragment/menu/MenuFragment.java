@@ -1,5 +1,9 @@
 package com.alorma.github.ui.fragment.menu;
 
+import com.alorma.github.R;
+import com.alorma.github.ui.adapter.MenuItemsAdapter;
+import com.joanzapata.android.iconify.Iconify;
+
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,15 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.alorma.github.R;
-import com.alorma.github.ui.adapter.MenuItemsAdapter;
-import com.joanzapata.android.iconify.Iconify;
-
 import java.util.ArrayList;
 
-/**
- * Created by Bernat on 13/08/2014.
- */
 public class MenuFragment extends ListFragment {
 
     private static final String MENU_SELECTED_ITEM = "menu_selected_item";
@@ -25,51 +22,62 @@ public class MenuFragment extends ListFragment {
     private static final int DEFAULT_SELECTED_POSITION = 3;
 
     private OnMenuItemSelectedListener onMenuItemSelectedListener;
-	private MenuItemsAdapter adapter;
-	private int currentSelectedPosition;
 
-	public static MenuFragment newInstance() {
-		return new MenuFragment();
-	}
+    private MenuItemsAdapter adapter;
 
-	@Nullable
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		return inflater.inflate(R.layout.custom_list_fragment, null);
-	}
+    private int currentSelectedPosition;
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    public static MenuFragment newInstance() {
+        return new MenuFragment();
+    }
 
-		adapter = new MenuItemsAdapter(getActivity(), new ArrayList<MenuItem>());
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.custom_list_fragment, container, false);
+    }
 
-		setListAdapter(adapter);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		int color = getResources().getColor(R.color.accent);
+        adapter = new MenuItemsAdapter(getActivity(), new ArrayList<MenuItem>());
 
-		adapter.add(new CategoryMenuItem(-1, R.string.tab_user_parent, color, Iconify.IconValue.fa_group));
-		adapter.add(new MenuItem(0, -1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
+        setListAdapter(adapter);
 
-		adapter.add(new CategoryMenuItem(-2, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
-		adapter.add(new MenuItem(0, -2, R.string.navigation_repos, color, Iconify.IconValue.fa_code));
-		adapter.add(new MenuItem(1, -2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
-		adapter.add(new MenuItem(2, -2, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
+        int color = getResources().getColor(R.color.accent);
 
-		adapter.add(new CategoryMenuItem(-3, R.string.tab_people_parent, color, Iconify.IconValue.fa_code));
+        adapter.add(new CategoryMenuItem(-1, R.string.tab_user_parent, color,
+                Iconify.IconValue.fa_group));
+        adapter.add(new MenuItem(0, -1, R.string.menu_organizations, color,
+                Iconify.IconValue.fa_group));
 
-		adapter.add(new MenuItem(0, -3, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
-		adapter.add(new MenuItem(1, -3, R.string.navigation_following, color, Iconify.IconValue.fa_user));
+        adapter.add(new CategoryMenuItem(-2, R.string.tab_repos_parent, color,
+                Iconify.IconValue.fa_code));
+        adapter.add(
+                new MenuItem(0, -2, R.string.navigation_repos, color, Iconify.IconValue.fa_code));
+        adapter.add(new MenuItem(1, -2, R.string.navigation_starred_repos, color,
+                Iconify.IconValue.fa_star));
+        adapter.add(new MenuItem(2, -2, R.string.navigation_watched_repos, color,
+                Iconify.IconValue.fa_eye));
 
-                currentSelectedPosition = savedInstanceState == null ? DEFAULT_SELECTED_POSITION
-                    : savedInstanceState.getInt(MENU_SELECTED_ITEM, DEFAULT_SELECTED_POSITION);
+        adapter.add(new CategoryMenuItem(-3, R.string.tab_people_parent, color,
+                Iconify.IconValue.fa_code));
 
-                if (onMenuItemSelectedListener != null) {
-                    MenuItem item = adapter.getItem(currentSelectedPosition);
-                    onMenuItemSelectedListener.onMenuItemSelected(item);
-                }
+        adapter.add(new MenuItem(0, -3, R.string.navigation_followers, color,
+                Iconify.IconValue.fa_user));
+        adapter.add(new MenuItem(1, -3, R.string.navigation_following, color,
+                Iconify.IconValue.fa_user));
+
+        currentSelectedPosition = savedInstanceState == null ? DEFAULT_SELECTED_POSITION
+                : savedInstanceState.getInt(MENU_SELECTED_ITEM, DEFAULT_SELECTED_POSITION);
+
+        if (onMenuItemSelectedListener != null) {
+            MenuItem item = adapter.getItem(currentSelectedPosition);
+            onMenuItemSelectedListener.onMenuItemSelected(item);
         }
+    }
 
     @Override
     public void onSaveInstanceState(final Bundle outState) {
@@ -79,86 +87,82 @@ public class MenuFragment extends ListFragment {
     }
 
     @Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        MenuItem item = adapter.getItem(position);
 
-		MenuItem item = adapter.getItem(position);
+        if (item != null && onMenuItemSelectedListener != null) {
+            if (item.id > -1) {
+                currentSelectedPosition = position;
+                switch (item.parentId) {
+                    case -1:
+                        itemUser(item);
+                        break;
+                    case -2:
+                        itemRepositories(item);
+                        break;
+                    case -3:
+                        itemPeople(item);
+                        break;
+                }
+                onMenuItemSelectedListener.onMenuItemSelected(item);
+            }
+        }
+    }
 
-		if (item != null && onMenuItemSelectedListener != null) {
-			if (item.id > -1) {
-				currentSelectedPosition = position;
-				switch (item.parentId) {
-					case -1:
-						itemUser(item);
-						break;
-					case -2:
-						itemRepositories(item);
-						break;
-					case -3:
-						itemPeople(item);
-						break;
-				}
-				onMenuItemSelectedListener.onMenuItemSelected(item);
-			}
-		}
-	}
+    private void itemUser(MenuItem item) {
+        switch (item.id) {
+            case 0:
+                onMenuItemSelectedListener.onOrganizationsSelected();
+                break;
+        }
+    }
 
-	private void itemUser(MenuItem item) {
-		switch (item.id) {
-			case 0:
-				onMenuItemSelectedListener.onOrganizationsSelected();
-				break;
-		}
-	}
+    private void itemRepositories(MenuItem item) {
+        switch (item.id) {
+            case 0:
+                onMenuItemSelectedListener.onReposSelected();
+                break;
+            case 1:
+                onMenuItemSelectedListener.onStarredSelected();
+                break;
+            case 2:
+                onMenuItemSelectedListener.onWatchedSelected();
+                break;
+        }
+    }
 
-	private void itemRepositories(MenuItem item) {
-		switch (item.id) {
-			case 0:
-				onMenuItemSelectedListener.onReposSelected();
-				break;
-			case 1:
-				onMenuItemSelectedListener.onStarredSelected();
-				break;
-			case 2:
-				onMenuItemSelectedListener.onWatchedSelected();
-				break;
-		}
-	}
+    private void itemPeople(MenuItem item) {
+        switch (item.id) {
+            case 0:
+                onMenuItemSelectedListener.onFollowersSelected();
+                break;
+            case 1:
+                onMenuItemSelectedListener.onFollowingSelected();
+                break;
+        }
+    }
 
-	private void itemPeople(MenuItem item) {
-		switch (item.id) {
-			case 0:
-				onMenuItemSelectedListener.onFollowersSelected();
-				break;
-			case 1:
-				onMenuItemSelectedListener.onFollowingSelected();
-				break;
-		}
-	}
+    public void setOnMenuItemSelectedListener(
+            OnMenuItemSelectedListener onMenuItemSelectedListener) {
+        this.onMenuItemSelectedListener = onMenuItemSelectedListener;
+    }
 
-	private boolean checkItem(MenuItem item) {
-		return item != null && onMenuItemSelectedListener != null;
-	}
+    public interface OnMenuItemSelectedListener {
 
-	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
-		this.onMenuItemSelectedListener = onMenuItemSelectedListener;
-	}
+        void onReposSelected();
 
-	public interface OnMenuItemSelectedListener {
-		void onReposSelected();
+        void onStarredSelected();
 
-		void onStarredSelected();
+        void onWatchedSelected();
 
-		void onWatchedSelected();
+        void onFollowersSelected();
 
-		void onFollowersSelected();
+        void onFollowingSelected();
 
-		void onFollowingSelected();
+        void onMenuItemSelected(@NonNull MenuItem item);
 
-		void onMenuItemSelected(@NonNull MenuItem item);
+        void closeMenu();
 
-		void closeMenu();
-
-		void onOrganizationsSelected();
-	}
+        void onOrganizationsSelected();
+    }
 }
