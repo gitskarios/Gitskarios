@@ -104,12 +104,16 @@ public class MainActivity extends BaseActivity
 
         checkIab();
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content, ReposFragment.newInstance());
-        menuFragment = MenuFragment.newInstance();
-        menuFragment.setOnMenuItemSelectedListener(this);
-        ft.replace(R.id.menuContent, menuFragment);
-        ft.commit();
+        if (savedInstanceState == null) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.content, ReposFragment.newInstance());
+            menuFragment = MenuFragment.newInstance();
+            menuFragment.setOnMenuItemSelectedListener(this);
+            ft.replace(R.id.menuContent, menuFragment);
+            ft.commit();
+        } else {
+            menuFragment = (MenuFragment) getFragmentManager().findFragmentById(R.id.menuContent);
+        }
     }
 
     private void checkIab() {
