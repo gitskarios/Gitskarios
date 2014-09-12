@@ -45,10 +45,11 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 
 	@Override
 	protected void onResponse(ListRepos repos, boolean refreshing) {
+                stopRefresh();
 		if (reposAdapter == null) {
 			setUpList();
 		}
-		reposAdapter.addAll(repos, paging);
+		reposAdapter.addAll(repos, !paging);
 	}
 
 	@Override

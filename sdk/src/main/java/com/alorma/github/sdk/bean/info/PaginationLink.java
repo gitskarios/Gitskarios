@@ -2,13 +2,12 @@ package com.alorma.github.sdk.bean.info;
 
 import android.net.Uri;
 
-/**
- * Created by Bernat on 13/07/2014.
- */
 public class PaginationLink {
 
     public Uri uri;
+
     public RelType rel;
+
     public int page;
 
     public PaginationLink(String link) {

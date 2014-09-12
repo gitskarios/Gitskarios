@@ -14,6 +14,7 @@ import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
+import com.alorma.github.ui.fragment.repos.SyncReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
@@ -60,7 +61,7 @@ public class MainActivity extends BaseActivity
 
     private int menuHeight = -1;
 
-    private ReposFragment reposFragment;
+    private SyncReposFragment reposFragment;
 
     private StarredReposFragment starredFragment;
 
@@ -106,7 +107,7 @@ public class MainActivity extends BaseActivity
 
         if (savedInstanceState == null) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.content, ReposFragment.newInstance());
+            ft.replace(R.id.content, SyncReposFragment.newInstance());
 
             menuFragment = MenuFragment.newInstance();
             ft.replace(R.id.menuContent, menuFragment);
@@ -258,7 +259,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onReposSelected() {
         if (reposFragment == null) {
-            reposFragment = ReposFragment.newInstance();
+            reposFragment = SyncReposFragment.newInstance();
         }
 
         setFragment(reposFragment);

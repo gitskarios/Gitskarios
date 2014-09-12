@@ -27,7 +27,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	private static final long FAB_ANIM_DURATION = 400;
 	protected TextView emptyText;
 	protected ImageView emptyIcon;
-	protected View emptyLy;
+	protected View mEmptyView;
 	protected ImageView fab;
 	private ValueAnimator animator;
 	private boolean fabVisible;
@@ -49,7 +49,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 		emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
 		emptyText = (TextView) view.findViewById(R.id.emptyText);
-		emptyLy = view.findViewById(R.id.emptyLayout);
+		mEmptyView = view.findViewById(R.id.emptyLayout);
 
 		ListView listView = getListView();
 
@@ -96,7 +96,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 					emptyText.setText(getNoDataText());
 
-					emptyLy.setVisibility(View.VISIBLE);
+					mEmptyView.setVisibility(View.VISIBLE);
 				}
 			}
 		}
