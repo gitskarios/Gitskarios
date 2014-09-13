@@ -4,6 +4,7 @@ import android.animation.PropertyValuesHolder;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 
 import com.alorma.github.R;
@@ -11,11 +12,15 @@ import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.GetIssueComments;
 import com.alorma.github.ui.adapter.detail.issue.IssuesCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.joanzapata.android.iconify.Iconify;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.dvilleneuve.android.TextDrawable;
 import retrofit.RetrofitError;
@@ -26,18 +31,17 @@ import retrofit.client.Response;
  */
 public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComments> {
 
-	private String owner;
-	private String repository;
-	private int num;
+	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private IssuesCommentsAdapter adapter;
 	private float fabOldY;
 	private float fabNewY;
+	private IssueDiscussionListener issueDiscussionListener;
+	private IssueInfo issueInfo;
 
-	public static IssueDiscussionFragment newInstance(String owner, String repo, int num) {
+	public static IssueDiscussionFragment newInstance(IssueInfo info) {
 		Bundle bundle = new Bundle();
-		bundle.putString("OWNER", owner);
-		bundle.putString("REPO", repo);
-		bundle.putInt("NUM", num);
+
+		bundle.putParcelable(ISSUE_INFO, info);
 
 		IssueDiscussionFragment fragment = new IssueDiscussionFragment();
 		fragment.setArguments(bundle);
@@ -59,9 +63,7 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	@Override
 	protected void loadArguments() {
 		if (getArguments() != null) {
-			this.owner = getArguments().getString("OWNER");
-			this.repository = getArguments().getString("REPO");
-			this.num = getArguments().getInt("NUM");
+			issueInfo = getArguments().getParcelable(ISSUE_INFO);
 		}
 	}
 
@@ -69,8 +71,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	protected void executeRequest() {
 		super.executeRequest();
 
-		if (owner != null && repository != null && num > 0) {
-			GetIssueComments issueComments = new GetIssueComments(getActivity(), owner, repository, num);
+		if (issueInfo.owner != null && issueInfo.repo != null && issueInfo.num > 0) {
+			GetIssueComments issueComments = new GetIssueComments(getActivity(), issueInfo.owner, issueInfo.repo, issueInfo.num);
 			issueComments.setOnResultCallback(this);
 			issueComments.execute();
 		}
@@ -82,8 +84,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 		adapter.setLazyLoading(true);
 
-		if (owner != null && repository != null && num > 0) {
-			GetIssueComments issueComments = new GetIssueComments(getActivity(), owner, repository, num, page);
+		if (issueInfo.owner != null && issueInfo.repo != null && issueInfo.num > 0) {
+			GetIssueComments issueComments = new GetIssueComments(getActivity(), issueInfo.owner, issueInfo.repo, issueInfo.num, page);
 			issueComments.setOnResultCallback(this);
 			issueComments.execute();
 		}
@@ -93,7 +95,12 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	protected void onResponse(ListIssueComments issueComments, boolean refreshing) {
 		if (issueComments != null && issueComments.size() > 0) {
 			if (adapter == null || refreshing) {
-				adapter = new IssuesCommentsAdapter(getActivity(), issueComments);
+				ListIssueComments comments = new ListIssueComments();
+				if (issueDiscussionListener != null) {
+					comments.add(issueDiscussionListener.requestIssue());
+				}
+				comments.addAll(issueComments);
+				adapter = new IssuesCommentsAdapter(getActivity(), comments);
 				setListAdapter(adapter);
 			} else if (adapter.isLazyLoading()) {
 				adapter.setLazyLoading(false);
@@ -114,7 +121,7 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 	@Override
 	protected boolean useInnerSwipeRefresh() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -147,27 +154,11 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 		return drawable;
 	}
 
-	public void addComment(IssueComment issueComment) {
-		if (adapter != null) {
-			ListIssueComments listIssueComments = new ListIssueComments();
-			listIssueComments.add(issueComment);
-			onResponse(listIssueComments, false);
-		}
+	public void setIssueDiscussionListener(IssueDiscussionListener issueDiscussionListener) {
+		this.issueDiscussionListener = issueDiscussionListener;
 	}
 
-	private class EventsResultCallback implements BaseClient.OnResultCallback<ListEvents> {
-		@Override
-		public void onResponseOk(ListEvents githubEvents, Response r) {
-			if (githubEvents != null) {
-				for (GithubEvent githubEvent : githubEvents) {
-
-				}
-			}
-		}
-
-		@Override
-		public void onFail(RetrofitError error) {
-
-		}
+	public interface IssueDiscussionListener {
+		IssueComment requestIssue();
 	}
 }

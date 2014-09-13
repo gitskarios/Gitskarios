@@ -72,10 +72,6 @@
             android:label="@string/title_activity_issue_detail" >
         </activity>
         <activity
-            android:name=".ui.activity.PullRequestDetailActivity"
-            android:label="@string/title_activity_issue_detail" >
-        </activity>
-        <activity
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>

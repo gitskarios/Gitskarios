@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -45,12 +46,25 @@ public class IssuesCommentsAdapter extends ArrayAdapter<IssueComment> {
 
 		IssueComment item = getItem(position);
 
-		vh.webview.loadData(item.body_html, "text/html", "UTF-8");
+		if (item instanceof Issue) {
 
-		ImageLoader.getInstance().displayImage(item.user.avatar_url, vh.avatar);
+		}
 
-		vh.textAuthor.setText(item.user.login);
+		try {
+			if (item.body_html == null) {
+				vh.webview.loadData(item.body, "text/html", "UTF-8");
+			} else {
+				vh.webview.loadData(item.body_html, "text/html", "UTF-8");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		if (item.user != null) {
+			ImageLoader.getInstance().displayImage(item.user.avatar_url, vh.avatar);
+
+			vh.textAuthor.setText(item.user.login);
+		}
 		return vh.rootView;
 	}
 

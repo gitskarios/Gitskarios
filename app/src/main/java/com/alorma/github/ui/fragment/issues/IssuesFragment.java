@@ -15,6 +15,7 @@ import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
@@ -170,16 +171,12 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
 		Issue item = issuesAdapter.getItem(position);
 		if (item != null) {
-			item.repository = new Repo();
-			item.repository.owner = new User();
-			item.repository.owner.login = owner;
-			item.repository.name = repository;
-			item.repository.permissions = permissions;
+			IssueInfo info = new IssueInfo();
+			info.owner = owner;
+			info.repo = repository;
+			info.num = item.number;
 
-			Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), item);
-			if (item.pullRequest != null) {
-				//intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), item);
-			}
+			Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info, permissions);
 			startActivity(intent);
 		}
 	}

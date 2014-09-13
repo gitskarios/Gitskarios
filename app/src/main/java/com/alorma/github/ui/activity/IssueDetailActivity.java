@@ -3,16 +3,16 @@ package com.alorma.github.ui.activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.alorma.github.ui.view.FABCenterLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.services.issues.GetIssueClient;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -29,50 +29,34 @@ import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import fr.dvilleneuve.android.TextDrawable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uk.me.lewisdeane.ldialogs.CustomDialog;
 
-public class IssueDetailActivity extends BackActivity implements RefreshListener, BaseClient.OnResultCallback<Issue> {
+public class IssueDetailActivity extends BackActivity implements RefreshListener
+		, IssueDiscussionFragment.IssueDiscussionListener {
 
-	public static final String OWNER = "OWNER";
-	public static final String REPO = "REPO";
-	public static final String NUMBER = "NUMBER";
-	public static final String STATE = "STATE";
-	public static final String PERMISSIONS = "PERMS";
-	public static final String CREATOR = "CREATOR";
-	private static final String DESCRIPTION = "DESCRIPTION";
+	public static final String ISSUE_INFO = "ISSUE_INFO";
+	public static final String PERMISSIONS = "PERMISSIONS";
 	private static final int NEW_COMMENT_REQUEST = 1243;
 
-	private String owner;
-	private String repo;
-	private int number;
 	private SmoothProgressBar smoothBar;
-	protected FABCenterLayout fabLayout;
 	private IssueDiscussionFragment issueDiscussionFragment;
 	private IssueState issueState;
 	private Permissions permissions;
-	private User creator;
-	private String desctiption;
-	private ImageView avatarAuthor;
-	private TextView issueTitle;
-	private Issue issue;
 	private boolean shouldRefreshOnBack;
+	private Issue issue;
+	private IssueResponse issueResponse;
+	private IssueInfo issueInfo;
+	private View issueDetailInfo;
 
-	public static Intent createLauncherIntent(Context context, Issue issue) {
+	public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
 		Bundle bundle = new Bundle();
 
-		bundle.putInt(NUMBER, issue.number);
-		bundle.putString(OWNER, issue.repository.owner.login);
-		bundle.putParcelable(CREATOR, issue.user);
-		bundle.putString(REPO, issue.repository.name);
-		bundle.putString(STATE, issue.state.toString());
-		bundle.putString(DESCRIPTION, issue.title);
-		bundle.putParcelable(PERMISSIONS, issue.repository.permissions);
+		bundle.putParcelable(ISSUE_INFO, issueInfo);
+		bundle.putParcelable(PERMISSIONS, permissions);
 
 		Intent intent = new Intent(context, IssueDetailActivity.class);
 		intent.putExtras(bundle);
@@ -85,24 +69,23 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		setContentView(R.layout.activity_issue_detail);
 
 		if (getIntent().getExtras() != null) {
-			number = getIntent().getExtras().getInt(NUMBER);
-			owner = getIntent().getExtras().getString(OWNER);
-			repo = getIntent().getExtras().getString(REPO);
-			desctiption = getIntent().getExtras().getString(DESCRIPTION);
+			issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 			permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
-			creator = getIntent().getExtras().getParcelable(CREATOR);
 
-			String state = getIntent().getExtras().getString(STATE);
+			issueResponse = new IssueResponse();
 
-			this.issueState = IssueState.open;
-			if (IssueState.closed.toString().equals(state)) {
-				issueState = IssueState.closed;
-			}
+			GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
+			issuesClient.setOnResultCallback(issueResponse);
+			issuesClient.execute();
 
 			findViews();
-			setPreviewData();
-			checkForState();
 		}
+	}
+
+	private void findViews() {
+		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
+
+		issueDetailInfo = findViewById(R.id.issueState);
 	}
 
 	protected void checkForState() {
@@ -114,15 +97,14 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 		if (issueState == IssueState.open) {
 			if (permissions != null && permissions.push) {
-				fabLayout.setFABDrawable(new TextDrawable(this, "x").color(Color.WHITE));
-				fabLayout.setFabClickListener(new FabCloseIssueClickListener(), getString(R.string.closeIssue));
-				fabLayout.setFabVisible(permissions.push || permissions.pull);
+
 			} else {
-				fabLayout.setFabVisible(false);
+
 			}
 		} else {
-			fabLayout.setFabVisible(false);
+
 		}
+
 		invalidateOptionsMenu();
 
 		setColor(color);
@@ -131,45 +113,29 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private void setColor(int colorRes) {
 		if (getActionBar() != null) {
 			int color = getResources().getColor(colorRes);
-			getActionBar().setBackgroundDrawable(new ColorDrawable(color));
-			View issueDetailInfo = findViewById(R.id.issueDetailInfo);
+			ColorDrawable colorDrawable = new ColorDrawable(color);
+			getActionBar().setBackgroundDrawable(colorDrawable);
 			if (issueDetailInfo != null) {
 				issueDetailInfo.setBackgroundColor(color);
 			}
 		}
 	}
 
-	private void findViews() {
-		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
-		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
-
-		avatarAuthor = (ImageView) findViewById(R.id.avatarAuthor);
-		issueTitle = (TextView) findViewById(R.id.issueTitle);
-	}
-
-	private void setPreviewData() {
+	private void setData() {
 		if (getActionBar() != null) {
-			getActionBar().setTitle(repo);
-			getActionBar().setSubtitle(Html.fromHtml(getString(R.string.issue_detail_title, number)));
+			getActionBar().setTitle(issue.title);
+			getActionBar().setSubtitle(Html.fromHtml(getString(R.string.issue_detail_title, issue.number)));
 		}
 
 		if (issueDiscussionFragment == null) {
-			issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, number);
+			issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
+			issueDiscussionFragment.setIssueDiscussionListener(this);
 			issueDiscussionFragment.setRefreshListener(this);
 		}
-
-		setTopData();
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.discussionFeed, issueDiscussionFragment);
 		ft.commit();
-	}
-
-	private void setTopData() {
-		if (creator != null) {
-			ImageLoader.getInstance().displayImage(creator.avatar_url, avatarAuthor);
-			issueTitle.setText(desctiption);
-		}
 	}
 
 	@Override
@@ -201,7 +167,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 				finish();
 				break;
 			case R.id.action_add_comment:
-				new FabAddCommentIssueClickListener().onClick(fabLayout);
+				// TODO Listener on close issue
 				break;
 		}
 
@@ -222,6 +188,12 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		}
 	}
 
+	@Override
+	public IssueComment requestIssue() {
+		return issue;
+	}
+
+	// TODO change to use comment dialog and close
 	private class FabCloseIssueClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
@@ -252,8 +224,8 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	}
 
 	private void closeIssue() {
-		CloseIssueClient closeIssueClient = new CloseIssueClient(this, owner, repo, number);
-		closeIssueClient.setOnResultCallback(this);
+		CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.owner, issueInfo.repo, issueInfo.num);
+		closeIssueClient.setOnResultCallback(issueResponse);
 		closeIssueClient.execute();
 
 		if (smoothBar != null && !smoothBar.isActivated()) {
@@ -261,31 +233,31 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		}
 	}
 
-	@Override
-	public void onResponseOk(Issue issue, Response r) {
-		if (issue != null) {
-			if (smoothBar != null && smoothBar.isActivated()) {
-				smoothBar.progressiveStop();
-			}
-			this.issue = issue;
-			this.issueState = issue.state;
-			checkForState();
-			shouldRefreshOnBack = true;
-		}
-	}
+	private class IssueResponse implements BaseClient.OnResultCallback<Issue> {
 
-	@Override
-	public void onFail(RetrofitError error) {
-		ErrorHandler.onRetrofitError(this, "Closing issue: ", error);
+		@Override
+		public void onResponseOk(Issue issue, Response r) {
+			if (issue != null) {
+				if (smoothBar != null && smoothBar.isActivated()) {
+					smoothBar.progressiveStop();
+				}
+				IssueDetailActivity.this.issue = issue;
+				IssueDetailActivity.this.issueState = issue.state;
+				checkForState();
+				setData();
+				shouldRefreshOnBack = true;
+			}
+		}
+
+		@Override
+		public void onFail(RetrofitError error) {
+			ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Closing issue: ", error);
+		}
 	}
 
 	private class FabAddCommentIssueClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			IssueInfo issueInfo = new IssueInfo();
-			issueInfo.owner = owner;
-			issueInfo.repo = repo;
-			issueInfo.num = number;
 			smoothBar.progressiveStart();
 			Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
 			startActivityForResult(intent, NEW_COMMENT_REQUEST);
@@ -304,7 +276,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		if (resultCode == RESULT_OK) {
 			if (requestCode == NEW_COMMENT_REQUEST) {
 				smoothBar.progressiveStop();
-				issueDiscussionFragment = IssueDiscussionFragment.newInstance(owner, repo, number);
+				issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
 				issueDiscussionFragment.setRefreshListener(IssueDetailActivity.this);
 
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
