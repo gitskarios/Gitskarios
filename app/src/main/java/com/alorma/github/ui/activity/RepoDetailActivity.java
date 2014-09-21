@@ -32,7 +32,6 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.commit.ListCommitsFragments;
 import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
 import com.alorma.github.ui.fragment.issues.IssuesFragment;
@@ -128,11 +127,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	}
 
 	private void load() {
-		if (getActionBar() != null) {
-			getActionBar().setTitle(repoInfo.owner + "/" + repoInfo.repo);
-			getActionBar().setDisplayHomeAsUpEnabled(!fromIntentFilter);
-		}
-
 		GetRepoClient repoClient = new GetRepoClient(this, repoInfo.owner, repoInfo.repo);
 		repoClient.setOnResultCallback(this);
 		repoClient.execute();
@@ -215,7 +209,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 
-
 		if (item.getItemId() == R.id.share_repo) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setData(shareUri);
@@ -280,12 +273,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			this.invalidateOptionsMenu();
 
 			cancelRefresh();
-
-			if (this.getActionBar() != null) {
-				if (repo.parent != null) {
-					this.getActionBar().setSubtitle(getResources().getString(R.string.fork_of, repo.parent.full_name));
-				}
-			}
 
 			if (issuesFragment != null) {
 				issuesFragment.setPermissions(repo.permissions);

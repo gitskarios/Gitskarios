@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
@@ -44,6 +47,23 @@ public class BaseActivity extends Activity {
 			BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
 		}
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+
+		if (getActionBar() != null) {
+			getActionBar().setDisplayShowHomeEnabled(useLogo());
+			getActionBar().setHomeButtonEnabled(useLogo());
+			getActionBar().setDisplayShowTitleEnabled(true);
+			if (useLogo() && getActionBarLogo() != 0) {
+				getActionBar().setIcon(getActionBarLogo());
+			}
+		}
+	}
+
+	protected boolean useLogo() {
+		return false;
+	}
+
+	protected int getActionBarLogo() {
+		return 0;
 	}
 
 	@Override
