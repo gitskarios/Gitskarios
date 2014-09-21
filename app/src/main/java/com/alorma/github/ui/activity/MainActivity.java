@@ -1,9 +1,9 @@
 package com.alorma.github.ui.activity;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +13,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.PopupMenu;
 
 import com.alorma.github.R;
 import com.alorma.github.inapp.IabConstants;
@@ -24,22 +23,19 @@ import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
 import com.alorma.github.ui.activity.base.BaseActivity;
-import com.alorma.github.ui.animations.HeightEvaluator;
-import com.alorma.github.ui.animations.WidthEvaluator;
-import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
-import com.alorma.github.ui.fragment.users.FollowersFragment;
-import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
+import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.github.ui.fragment.users.FollowersFragment;
+import com.alorma.github.ui.fragment.users.FollowingFragment;
 
 import java.util.UUID;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
+		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
 
 	private MenuFragment menuFragment;
 
@@ -110,27 +106,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		return true;
-	}
+		final View actionView = menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuPlaceHolder);
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
-
-		android.view.MenuItem donateItem = menu.findItem(R.id.action_donate);
-
-		if (iabEnabled) {
-			if (donateItem == null) {
-				if (!iabDonatePurchased) {
-					menu.add(0, R.id.action_donate, 0, R.string.action_donate);
-				}
-			} else if (iabDonatePurchased) {
-				menu.removeItem(R.id.action_donate);
-			}
-		}
+		menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuItem)
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						PopupMenu menu = new MainMenu(MainActivity.this, actionView);
+						if (iabEnabled) {
+							SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+							boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
+							if (!iabDonatePurchased) {
+								menu = new DonateMenu(MainActivity.this, actionView);
+							}
+						}
+						menu.show();
+					}
+				});
 
 		return true;
 	}
@@ -157,7 +149,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 		}
-
 		return true;
 	}
 
@@ -293,6 +284,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 				editor.apply();
 			}
 			invalidateOptionsMenu();
+		}
+	}
+
+	private class DonateMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
+
+		public DonateMenu(Context context, View anchor) {
+			super(context, anchor);
+			inflate(R.menu.main_menu_donate);
+			setOnMenuItemClickListener(this);
+		}
+
+		@Override
+		public boolean onMenuItemClick(android.view.MenuItem item) {
+			return onOptionsItemSelected(item);
+		}
+	}
+
+	private class MainMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
+		public MainMenu(Context context, View anchor) {
+			super(context, anchor);
+			inflate(R.menu.main_menu);
+			setOnMenuItemClickListener(this);
+		}
+
+		@Override
+		public boolean onMenuItemClick(android.view.MenuItem item) {
+			return onOptionsItemSelected(item);
 		}
 	}
 }
