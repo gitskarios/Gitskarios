@@ -3,9 +3,10 @@
     tools:context=".MainActivity">
 
     <item
-        android:title="@string/action_settings"
-        android:id="@+id/action_settings"
-        android:showAsAction="never"
-        android:orderInCategory="10"/>
+        android:title="@string/action_menu"
+        android:id="@+id/action_menu"
+        android:icon="@drawable/ic_menu_moreoverflow_mtrl_alpha"
+        android:showAsAction="always"
+        android:actionLayout="@layout/action_menu"/>
 
 </menu>
