@@ -2,22 +2,16 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/share_repo"
+    <item
+        android:id="@+id/share_repo"
         android:title="@string/action_share_repo"
         android:showAsAction="ifRoom"/>
+
     <item
-        android:title="@string/show_parent"
-        android:id="@+id/action_show_parent"
-        android:showAsAction="never" />
-    <item
-        android:title="@string/menu_star"
-        android:id="@+id/action_star"
-        android:showAsAction="never"
-        android:orderInCategory="10"/>
-    <item
-        android:title="@string/menu_watch"
-        android:id="@+id/action_watch"
-        android:showAsAction="never"
-        android:orderInCategory="11" />
+        android:title="@string/action_menu"
+        android:id="@+id/action_menu"
+        android:icon="@drawable/ic_menu_moreoverflow_mtrl_alpha"
+        android:showAsAction="always"
+        android:actionLayout="@layout/action_menu"/>
 
 </menu>

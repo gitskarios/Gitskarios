@@ -4,18 +4,22 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.inapp.IabConstants;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -63,7 +67,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private boolean repoWatched;
 	private SmoothProgressBar smoothBar;
 	private Repo currentRepo;
-	private boolean showParentMenu;
 	private MarkdownFragment markDownFragment;
 	private FilesTreeFragment filesTreeFragment;
 	private IssuesFragment issuesFragment;
@@ -155,7 +158,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
 
-		if (menu != null) {
+		if(menu != null) {
 			MenuItem item = menu.findItem(R.id.share_repo);
 			if (item != null) {
 				IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_share_alt);
@@ -177,30 +180,19 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				item.setVisible(shareUri != null);
 			}
 
-			MenuItem starItem = menu.findItem(R.id.action_star);
+			final View actionView = menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuPlaceHolder);
 
-			if (starItem != null) {
-				if (repoStarred) {
-					starItem.setTitle(R.string.menu_unstar);
-				} else {
-					starItem.setTitle(R.string.menu_star);
-				}
-			}
-
-			MenuItem watchItem = menu.findItem(R.id.action_watch);
-
-			if (watchItem != null) {
-				if (repoWatched) {
-					watchItem.setTitle(R.string.menu_unwatch);
-				} else {
-					watchItem.setTitle(R.string.menu_watch);
-				}
-			}
-
-			if (currentRepo != null && currentRepo.parent == null && !showParentMenu) {
-				showParentMenu = true;
-				menu.removeItem(R.id.action_show_parent);
-			}
+			menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuItem)
+					.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							PopupMenu menu = new MainMenu(RepoDetailActivity.this, actionView, R.menu.repo_detail_content);
+							if (currentRepo != null && currentRepo.parent != null) {
+								menu = new MainMenu(RepoDetailActivity.this, actionView, R.menu.repo_detail_content_parent);
+							}
+							menu.show();
+						}
+					});
 		}
 		return true;
 	}
@@ -523,5 +515,39 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	private class MainMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
+
+		public MainMenu(Context context, View actionView, int id) {
+			super(context, actionView);
+			inflate(id);
+			MenuItem starItem = getMenu().findItem(R.id.action_star);
+
+			if (starItem != null) {
+				if (repoStarred) {
+					starItem.setTitle(R.string.menu_unstar);
+				} else {
+					starItem.setTitle(R.string.menu_star);
+				}
+			}
+
+			MenuItem watchItem = getMenu().findItem(R.id.action_watch);
+
+			if (watchItem != null) {
+				if (repoWatched) {
+					watchItem.setTitle(R.string.menu_unwatch);
+				} else {
+					watchItem.setTitle(R.string.menu_watch);
+				}
+			}
+
+			setOnMenuItemClickListener(this);
+		}
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			return onOptionsItemSelected(item);
+		}
 	}
 }
