@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -39,15 +41,7 @@ import java.util.UUID;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
 
-	private static final long MENU_ANIMATION_TIME = 200;
-	private TextView currentState;
-	private ImageView chevron;
-	private View chevronLy;
-	private boolean isMenuOpen = false;
 	private MenuFragment menuFragment;
-	private View menuFragmentLy;
-	private View searchIcon;
-	private int menuHeight = -1;
 
 	private ReposFragment reposFragment;
 	private StarredReposFragment starredFragment;
@@ -57,6 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
+	private DrawerLayout mDrawerLayout;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -68,21 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		currentState = (TextView) findViewById(R.id.currentState);
-
-		IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
-		chevronDown.colorRes(R.color.gray_github_dark);
-
-		chevron = (ImageView) findViewById(R.id.chevron);
-		chevron.setImageDrawable(chevronDown);
-
-		chevronLy = findViewById(R.id.chevronLy);
-		chevronLy.setOnClickListener(this);
-
-		menuFragmentLy = findViewById(R.id.menuContent);
-
-		searchIcon = findViewById(R.id.searchIcon);
-		searchIcon.setOnClickListener(this);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		checkIab();
 
@@ -156,8 +137,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-
-		if (item.getItemId() == R.id.action_donate) {
+		if (item.getItemId() == android.R.id.home) {
+			if (mDrawerLayout != null) {
+				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+					mDrawerLayout.closeDrawer(Gravity.START);
+				} else {
+					mDrawerLayout.openDrawer(Gravity.START);
+				}
+			}
+		} else if (item.getItemId() == R.id.action_donate) {
 			try {
 				iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
 						this, UUID.randomUUID().toString());
@@ -176,61 +164,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.chevronLy:
-				if (isMenuOpen) {
-					hideMenu();
-				} else {
-					showMenu();
-				}
-				break;
 			case R.id.searchIcon:
 				Intent search = SearchReposActivity.createLauncherIntent(this);
 				startActivity(search);
-		}
-	}
-
-	private void showMenu() {
-
-		menuFragmentLy.setVisibility(View.VISIBLE);
-
-		IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
-		chevronUp.colorRes(R.color.gray_github_dark);
-		chevron.setImageDrawable(chevronUp);
-
-		isMenuOpen = true;
-
-		Float dimension = getResources().getDimension(R.dimen.menuSize);
-		ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), dimension.intValue(), 0);
-		searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
-		searchIconAnimator.start();
-
-		if (menuHeight == -1) {
-			menuHeight = menuFragmentLy.getHeight();
-		}
-
-		ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, true), 0, menuHeight);
-		valueAnimator.setDuration(MENU_ANIMATION_TIME);
-		valueAnimator.setInterpolator(new LinearInterpolator());
-		valueAnimator.start();
-	}
-
-	private void hideMenu() {
-		if (menuFragment != null) {
-			IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
-			chevronDown.colorRes(R.color.gray_github_dark);
-			chevron.setImageDrawable(chevronDown);
-
-			isMenuOpen = false;
-
-			Float dimension = getResources().getDimension(R.dimen.menuSize);
-			ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), 0, dimension.intValue());
-			searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
-			searchIconAnimator.start();
-
-			ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, false), menuHeight, 0);
-			valueAnimator.setDuration(MENU_ANIMATION_TIME);
-			valueAnimator.setInterpolator(new LinearInterpolator());
-			valueAnimator.start();
+				break;
 		}
 	}
 
@@ -238,8 +175,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.content, fragment);
 		ft.commit();
-
-		hideMenu();
 	}
 
 	@Override
@@ -289,12 +224,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onMenuItemSelected(@NonNull MenuItem item) {
-		currentState.setText(item.text);
+		setTitle(item.text);
+		closeMenu();
 	}
 
 	@Override
 	public void closeMenu() {
-		hideMenu();
+		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
+			mDrawerLayout.closeDrawer(Gravity.START);
+		}
 	}
 
 	@Override
@@ -307,7 +245,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onBackPressed() {
-		if (isMenuOpen) {
+		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
 			closeMenu();
 		} else {
 			super.onBackPressed();
