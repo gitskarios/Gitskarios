@@ -10,17 +10,6 @@
               android:divider="@drawable/divider_main"
               android:showDividers="middle">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menuSize"
-        android:id="@+id/issueState"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/gapLarge"
-        android:paddingStart="@dimen/gapLarge"
-        android:fontFamily="sans-serif-light"
-        android:textSize="@dimen/textSizeLarge"
-        android:background="@color/accent"/>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

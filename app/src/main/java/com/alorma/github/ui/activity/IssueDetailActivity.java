@@ -50,7 +50,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private Issue issue;
 	private IssueResponse issueResponse;
 	private IssueInfo issueInfo;
-	private View issueDetailInfo;
 
 	public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
 		Bundle bundle = new Bundle();
@@ -84,8 +83,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	private void findViews() {
 		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
-
-		issueDetailInfo = findViewById(R.id.issueState);
 	}
 
 	protected void checkForState() {
@@ -101,8 +98,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			} else {
 
 			}
-		} else {
-
 		}
 
 		invalidateOptionsMenu();
@@ -115,9 +110,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			int color = getResources().getColor(colorRes);
 			ColorDrawable colorDrawable = new ColorDrawable(color);
 			getActionBar().setBackgroundDrawable(colorDrawable);
-			if (issueDetailInfo != null) {
-				issueDetailInfo.setBackgroundColor(color);
-			}
 		}
 	}
 
