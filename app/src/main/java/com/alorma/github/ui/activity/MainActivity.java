@@ -94,6 +94,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		ft.commit();
 	}
 
+	@Override
+	protected boolean useLogo() {
+		return true;
+	}
+
+	@Override
+	protected int getActionBarLogo() {
+		return R.drawable.ic_ab_drawer_mask;
+	}
+
 	private void checkIab() {
 		iabHelper = new IabHelper(this, IabConstants.KEY);
 		iabHelper.startSetup(this);

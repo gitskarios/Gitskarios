@@ -3,17 +3,21 @@ package com.alorma.github.ui.activity.base;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.alorma.github.R;
+
 /**
  * Created by Bernat on 17/07/2014.
  */
 public class BackActivity extends BaseActivity {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getActionBar() != null) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+	protected boolean useLogo() {
+		return true;
+	}
+
+	@Override
+	protected int getActionBarLogo() {
+		return R.drawable.ic_ab_back_mtrl_am_alpha;
 	}
 
 	@Override
