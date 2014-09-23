@@ -14,6 +14,7 @@
     <dimen name="button_press">2dp</dimen>
     <dimen name="button_press_elevation">4dp</dimen>
     <dimen name="menuSize">48dp</dimen>
+    <dimen name="fabLayoutSpacing">100dp</dimen>
 
     <!-- http://developer.android.com/design/style/metrics-grids.html -->
     <dimen name="gapMicro">2dp</dimen>

@@ -15,16 +15,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 /**
  * Created by Bernat on 26/08/2014.
  */
 public class FABCenterLayout extends RelativeLayout {
-	private ImageView fabView;
+	private AddFloatingActionButton fabView;
 	private int topId;
 	private OnClickListener fabClickListener;
 	private boolean fabVisible;
-	private Drawable fabDrawable;
 	private String fabTag;
 
 	public FABCenterLayout(Context context) {
@@ -49,25 +49,19 @@ public class FABCenterLayout extends RelativeLayout {
 			if (attr.hasValue(R.styleable.FABCenterLayout_top_id)) {
 				topId = attr.getResourceId(R.styleable.FABCenterLayout_top_id, 0);
 				if (topId != 0) {
-					if (isInEditMode()) {
-						fabVisible = true;
-						createFabView();
-					}
+					fabVisible = true;
+					createFabView();
 				}
 			}
 		}
 	}
 
 	private void createFabView() {
-		fabView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.fab, this, false);
+		fabView = (AddFloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			fabView.setBackground(getResources().getDrawable(R.drawable.fab_inv_button));
 		} else {
 			fabView.setBackgroundDrawable(getResources().getDrawable(R.drawable.fab_inv_button));
-		}
-
-		if (fabDrawable != null) {
-			fabView.setImageDrawable(fabDrawable);
 		}
 
 		fabView.setOnClickListener(fabClickListener);
@@ -106,21 +100,6 @@ public class FABCenterLayout extends RelativeLayout {
 		oa.start();
 	}
 
-	public void setFABDrawable(Drawable drawable) {
-		this.fabDrawable = drawable;
-		if (fabView != null) {
-			fabView.setImageDrawable(drawable);
-		}
-	}
-
-	public void setFABBackground(Drawable drawable) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			fabView.setBackground(drawable);
-		} else {
-			fabView.setBackgroundDrawable(drawable);
-		}
-	}
-
 	public void setFabClickListener(OnClickListener fabClickListener, final String tag) {
 		this.fabClickListener = fabClickListener;
 		this.fabTag = tag;
@@ -141,16 +120,5 @@ public class FABCenterLayout extends RelativeLayout {
 				}
 			});
 		}
-	}
-
-	public void setFabVisible(boolean fabVisible) {
-		this.fabVisible = fabVisible;
-		if (!fabVisible) {
-			removeView(fabView);
-			fabView = null;
-		} else {
-			createFabView();
-		}
-		invalidate();
 	}
 }

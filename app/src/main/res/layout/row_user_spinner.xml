@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginRight="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_marginEnd="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_marginBottom="@dimen/gapSmall">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <com.alorma.github.ui.view.CircularImageView
+                android:layout_width="@dimen/avatar_size_list"
+                android:layout_height="@dimen/avatar_size_list"
+                android:id="@+id/authorAvatar"
+                android:src="@drawable/ic_contact_picture"
+                android:layout_margin="@dimen/gapMedium"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Large Text"
+                android:id="@+id/authorLogin"
+                android:layout_marginLeft="@dimen/gapMedium"
+                android:layout_marginStart="@dimen/gapMedium"
+                android:paddingTop="0dp"
+                android:textSize="@dimen/textSizeXLarge"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/accentDark"
+                android:layout_toEndOf="@+id/authorAvatar"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/authorAvatar"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/authorDate"
+                android:layout_below="@+id/authorLogin"
+                android:layout_alignLeft="@+id/authorLogin"
+                android:layout_alignStart="@+id/authorLogin"/>
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
