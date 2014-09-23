@@ -82,5 +82,6 @@
     <string name="pref_gthub_link_interceptor">Intercept links</string>
     <string name="error_loading_image">Image cannot be loaded</string>
     <string name="action_menu">Menu</string>
+    <string name="unknown_language">Unknown</string>
 
 </resources>

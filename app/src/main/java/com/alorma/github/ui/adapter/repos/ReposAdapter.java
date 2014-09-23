@@ -25,10 +25,14 @@ import java.util.Locale;
 public class ReposAdapter extends ArrayAdapter<Repo> {
 
 	private final LayoutInflater mInflater;
+	private final int accentColor;
+	private boolean checkUsername;
+	private String userName;
 
 	public ReposAdapter(Context context, List<Repo> repos) {
 		super(context, 0, 0, repos);
 		this.mInflater = LayoutInflater.from(context);
+		this.accentColor = getContext().getResources().getColor(R.color.accent);
 	}
 
 	@Override
@@ -48,6 +52,9 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		reposHolder.textStarts.setText(starText);
 
 		String forkText = getContext().getResources().getString(R.string.fork_icon_text, repo.forks_count);
+		if (repo.fork) {
+			reposHolder.textForks.setTextColor(accentColor);
+		}
 		reposHolder.textForks.setText(forkText);
 
 		Iconify.addIcons(reposHolder.textStarts, reposHolder.textForks);
@@ -57,14 +64,10 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		if (repo.language != null && !TextUtils.isEmpty(repo.language)) {
 			reposHolder.textLanguage.setText(repo.language);
 		} else {
-			reposHolder.textLanguage.setVisibility(View.GONE);
+			reposHolder.textLanguage.setText(R.string.unknown_language);
 		}
 
 		reposHolder.repoPrivate.setVisibility(repo.isPrivate ? View.VISIBLE : View.INVISIBLE);
-
-		ImageLoader.getInstance().displayImage(repo.owner.avatar_url, reposHolder.authorAvatar);
-
-		reposHolder.authorName.setText(repo.owner.name != null ? repo.owner.name : repo.owner.login);
 
 		reposHolder.authorDate.setText(getDate(repo.created_at));
 
