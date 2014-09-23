@@ -146,14 +146,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
 	}
 
-	@Override
-	protected Drawable fabDrawable() {
-		TextDrawable drawable = new TextDrawable(getActivity(), "+");
-		drawable.color(Color.WHITE);
-		drawable.sizeDp(30);
-		return drawable;
-	}
-
 	public void setIssueDiscussionListener(IssueDiscussionListener issueDiscussionListener) {
 		this.issueDiscussionListener = issueDiscussionListener;
 	}

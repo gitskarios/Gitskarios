@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "com.getbase.floatingactionbutton"
+        minSdkVersion 15
+        targetSdkVersion 19
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-annotations:20.0.0'
+}
