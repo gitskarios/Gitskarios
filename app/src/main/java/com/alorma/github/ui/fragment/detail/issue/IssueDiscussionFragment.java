@@ -1,30 +1,17 @@
 package com.alorma.github.ui.fragment.detail.issue;
 
 import android.animation.PropertyValuesHolder;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
-import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.GetIssueComments;
 import com.alorma.github.ui.adapter.detail.issue.IssuesCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.joanzapata.android.iconify.Iconify;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.dvilleneuve.android.TextDrawable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Bernat on 23/08/2014.
@@ -135,12 +122,12 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected PropertyValuesHolder showAnimator() {
+	protected PropertyValuesHolder showAnimator(View fab) {
 		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
 	}
 
 	@Override
-	protected PropertyValuesHolder hideAnimator() {
+	protected PropertyValuesHolder hideAnimator(View fab) {
 		fabOldY = fab.getY();
 		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
