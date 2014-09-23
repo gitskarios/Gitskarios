@@ -58,12 +58,6 @@ public class FABCenterLayout extends RelativeLayout {
 
 	private void createFabView() {
 		fabView = (AddFloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			fabView.setBackground(getResources().getDrawable(R.drawable.fab_inv_button));
-		} else {
-			fabView.setBackgroundDrawable(getResources().getDrawable(R.drawable.fab_inv_button));
-		}
-
 		fabView.setOnClickListener(fabClickListener);
 		setFabTag();
 	}

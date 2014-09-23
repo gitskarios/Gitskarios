@@ -113,12 +113,14 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 	@Override
 	protected boolean useFAB() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected void fabClick() {
-
+		if (issueDiscussionListener != null) {
+			issueDiscussionListener.onAddComment();
+		}
 	}
 
 	@Override
@@ -139,5 +141,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 	public interface IssueDiscussionListener {
 		IssueComment requestIssue();
+		void onAddComment();
 	}
 }

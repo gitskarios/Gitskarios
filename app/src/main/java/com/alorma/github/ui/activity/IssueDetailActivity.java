@@ -42,7 +42,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	public static final String PERMISSIONS = "PERMISSIONS";
 	private static final int NEW_COMMENT_REQUEST = 1243;
 
-	private SmoothProgressBar smoothBar;
 	private IssueDiscussionFragment issueDiscussionFragment;
 	private IssueState issueState;
 	private Permissions permissions;
@@ -82,27 +81,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	}
 
 	private void findViews() {
-		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
-	}
 
-	protected void checkForState() {
-
-		int color = R.color.issue_state_open;
-		if (IssueState.closed == issueState) {
-			color = R.color.issue_state_close;
-		}
-
-		if (issueState == IssueState.open) {
-			if (permissions != null && permissions.push) {
-
-			} else {
-
-			}
-		}
-
-		invalidateOptionsMenu();
-
-		setColor(color);
 	}
 
 	private void setColor(int colorRes) {
@@ -140,10 +119,10 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 
-		if (permissions != null && permissions.pull && issueState == IssueState.open) {
-			menu.add(0, R.id.action_add_comment, 0, getString(R.string.addComment));
-			menu.findItem(R.id.action_add_comment).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).actionBarSize().colorRes(R.color.white));
-			menu.findItem(R.id.action_add_comment).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		if (permissions != null && permissions.push && issueState == IssueState.open) {
+			menu.add(0, R.id.action_close_issue, 0, getString(R.string.closeIssue));
+			menu.findItem(R.id.action_close_issue).setIcon(new IconDrawable(this, Iconify.IconValue.fa_times).actionBarSize().colorRes(R.color.white));
+			menu.findItem(R.id.action_close_issue).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 
 		return true;
@@ -151,15 +130,15 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		//super.onOptionsItemSelected(item);
+		super.onOptionsItemSelected(item);
 
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
 				finish();
 				break;
-			case R.id.action_add_comment:
-				// TODO Listener on close issue
+			case R.id.action_close_issue:
+				closeIssueDialog();
 				break;
 		}
 
@@ -168,16 +147,12 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	@Override
 	public void showRefresh() {
-		if (smoothBar != null) {
-			smoothBar.progressiveStart();
-		}
+
 	}
 
 	@Override
 	public void cancelRefresh() {
-		if (smoothBar != null) {
-			smoothBar.progressiveStop();
-		}
+
 	}
 
 	@Override
@@ -185,34 +160,36 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		return issue;
 	}
 
-	// TODO change to use comment dialog and close
-	private class FabCloseIssueClickListener implements View.OnClickListener {
-		@Override
-		public void onClick(View v) {
-			String title = getString(R.string.closeIssue);
-			String accept = getString(R.string.accept);
-			String cancel = getString(R.string.cancel);
-			CustomDialog.Builder builder = new CustomDialog.Builder(v.getContext(), title, accept);
-			builder.darkTheme(false);
-			builder.positiveColor(getString(R.string.lDialogPositve));
-			builder.darkTheme(false);
-			builder.negativeText(cancel);
-			builder.negativeColor(getString(R.string.lDialogNegative));
-			builder.darkTheme(true);
-			CustomDialog customDialog = builder.build();
-			customDialog.setClickListener(new CustomDialog.ClickListener() {
-				@Override
-				public void onConfirmClick() {
-					closeIssue();
-				}
+	@Override
+	public void onAddComment() {
+		Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
+		startActivityForResult(intent, NEW_COMMENT_REQUEST);
+	}
 
-				@Override
-				public void onCancelClick() {
-					// Do nothing
-				}
-			});
-			customDialog.show();
-		}
+	private void closeIssueDialog() {
+		String title = getString(R.string.closeIssue);
+		String accept = getString(R.string.accept);
+		String cancel = getString(R.string.cancel);
+		CustomDialog.Builder builder = new CustomDialog.Builder(this, title, accept);
+		builder.darkTheme(false);
+		builder.positiveColor(getString(R.string.lDialogPositve));
+		builder.darkTheme(false);
+		builder.negativeText(cancel);
+		builder.negativeColor(getString(R.string.lDialogNegative));
+		builder.darkTheme(true);
+		CustomDialog customDialog = builder.build();
+		customDialog.setClickListener(new CustomDialog.ClickListener() {
+			@Override
+			public void onConfirmClick() {
+				closeIssue();
+			}
+
+			@Override
+			public void onCancelClick() {
+
+			}
+		});
+		customDialog.show();
 	}
 
 	private void closeIssue() {
@@ -220,9 +197,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		closeIssueClient.setOnResultCallback(issueResponse);
 		closeIssueClient.execute();
 
-		if (smoothBar != null && !smoothBar.isActivated()) {
-			smoothBar.progressiveStart();
-		}
 	}
 
 	private class IssueResponse implements BaseClient.OnResultCallback<Issue> {
@@ -230,12 +204,9 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		@Override
 		public void onResponseOk(Issue issue, Response r) {
 			if (issue != null) {
-				if (smoothBar != null && smoothBar.isActivated()) {
-					smoothBar.progressiveStop();
-				}
 				IssueDetailActivity.this.issue = issue;
 				IssueDetailActivity.this.issueState = issue.state;
-				checkForState();
+				invalidateOptionsMenu();
 				setData();
 				shouldRefreshOnBack = true;
 			}
@@ -244,15 +215,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		@Override
 		public void onFail(RetrofitError error) {
 			ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Closing issue: ", error);
-		}
-	}
-
-	private class FabAddCommentIssueClickListener implements View.OnClickListener {
-		@Override
-		public void onClick(View v) {
-			smoothBar.progressiveStart();
-			Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
-			startActivityForResult(intent, NEW_COMMENT_REQUEST);
 		}
 	}
 
@@ -267,7 +229,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == NEW_COMMENT_REQUEST) {
-				smoothBar.progressiveStop();
 				issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
 				issueDiscussionFragment.setRefreshListener(IssueDetailActivity.this);
 
