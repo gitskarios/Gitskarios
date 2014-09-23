@@ -121,14 +121,6 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	}
 
 	@Override
-	protected Drawable fabDrawable() {
-		TextDrawable drawable = new TextDrawable(getActivity(), "+");
-		drawable.color(Color.WHITE);
-		drawable.sizeDp(30);
-		return drawable;
-	}
-
-	@Override
 	protected PropertyValuesHolder showAnimator() {
 		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
 	}
