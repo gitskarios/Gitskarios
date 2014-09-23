@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.ListFragment;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -28,7 +28,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	protected TextView emptyText;
 	protected ImageView emptyIcon;
 	protected View emptyLy;
-	protected ImageView fab;
+	private AddFloatingActionButton fab;
 	private ValueAnimator animator;
 	private boolean fabVisible;
 
@@ -57,7 +57,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 		}
 
-		fab = (ImageView) view.findViewById(R.id.fabButton);
+		fab = (AddFloatingActionButton) view.findViewById(R.id.fabButton);
 
 		checkFAB();
 
@@ -104,7 +104,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	private void showFab() {
 		if (!fabVisible) {
 			fabVisible = true;
-			PropertyValuesHolder pvh = showAnimator();
+			PropertyValuesHolder pvh = showAnimator(fab);
 			startAnimator(pvh);
 		}
 	}
@@ -112,7 +112,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	private void hideFab() {
 		if (fabVisible & (animator == null || !animator.isRunning())) {
 			fabVisible = false;
-			PropertyValuesHolder pvh = hideAnimator();
+			PropertyValuesHolder pvh = hideAnimator(fab);
 			startAnimator(pvh);
 		}
 	}
@@ -126,12 +126,12 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 		}
 	}
 
-	protected PropertyValuesHolder showAnimator() {
+	protected PropertyValuesHolder showAnimator(View fab) {
 		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f);
 		return pvh;
 	}
 
-	protected PropertyValuesHolder hideAnimator() {
+	protected PropertyValuesHolder hideAnimator(View fab) {
 		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
 		return pvh;
 	}

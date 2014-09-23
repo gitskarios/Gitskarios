@@ -26,8 +26,6 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 	private final LayoutInflater mInflater;
 	private final int accentColor;
-	private boolean checkUsername;
-	private String userName;
 
 	public ReposAdapter(Context context, List<Repo> repos) {
 		super(context, 0, 0, repos);
@@ -69,6 +67,10 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 		reposHolder.repoPrivate.setVisibility(repo.isPrivate ? View.VISIBLE : View.INVISIBLE);
 
+		ImageLoader.getInstance().displayImage(repo.owner.avatar_url, reposHolder.authorAvatar);
+
+		reposHolder.authorName.setText(repo.owner.name != null ? repo.owner.name : repo.owner.login);
+
 		reposHolder.authorDate.setText(getDate(repo.created_at));
 
 		return v;
@@ -85,4 +87,5 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		}
 		super.addAll(collection);
 	}
+
 }
