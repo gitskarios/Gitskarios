@@ -58,6 +58,7 @@ public class FABCenterLayout extends RelativeLayout {
 
 	private void createFabView() {
 		fabView = (AddFloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
+
 		fabView.setOnClickListener(fabClickListener);
 		setFabTag();
 	}
@@ -73,9 +74,8 @@ public class FABCenterLayout extends RelativeLayout {
 					int bottom = topView.getHeight();
 
 					if (bottom > 0) {
-						int int56 = getResources().getDimensionPixelOffset(R.dimen.fab);
 						int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
-						fabView.layout(r - int56 - int16, bottom - int56 / 2, r - int16, bottom + int56 / 2);
+						fabView.layout(r - fabView.getWidth() - int16, bottom - fabView.getHeight() / 2, r - int16, bottom + fabView.getHeight() / 2);
 						removeView(fabView);
 						fabView.setAlpha(0f);
 						addView(fabView);

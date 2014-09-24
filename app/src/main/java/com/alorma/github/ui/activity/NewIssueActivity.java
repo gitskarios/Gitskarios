@@ -95,7 +95,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 			public void onClick(View v) {
 				checkDataAndCreateIssue();
 			}
-		}, "");
+		}, null);
 		pushAccesLayout = findViewById(R.id.pushAccessLayout);
 		editTitle = (EditText) findViewById(R.id.editTitle);
 		editBody = (EditText) findViewById(R.id.editBody);

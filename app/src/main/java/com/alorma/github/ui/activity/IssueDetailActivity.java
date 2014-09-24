@@ -84,13 +84,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	}
 
-	private void setColor(int colorRes) {
-		if (getActionBar() != null) {
-			int color = getResources().getColor(colorRes);
-			ColorDrawable colorDrawable = new ColorDrawable(color);
-			getActionBar().setBackgroundDrawable(colorDrawable);
-		}
-	}
+	// TODO Set something todispay that is closed or not
 
 	private void setData() {
 		if (getActionBar() != null) {
@@ -98,11 +92,13 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			getActionBar().setSubtitle(Html.fromHtml(getString(R.string.issue_detail_title, issue.number)));
 		}
 
-		if (issueDiscussionFragment == null) {
-			issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
-			issueDiscussionFragment.setIssueDiscussionListener(this);
-			issueDiscussionFragment.setRefreshListener(this);
-		}
+		addDiscussionFragment();
+	}
+
+	private void addDiscussionFragment() {
+		issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
+		issueDiscussionFragment.setIssueDiscussionListener(this);
+		issueDiscussionFragment.setRefreshListener(this);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.discussionFeed, issueDiscussionFragment);
@@ -229,12 +225,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == NEW_COMMENT_REQUEST) {
-				issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
-				issueDiscussionFragment.setRefreshListener(IssueDetailActivity.this);
-
-				FragmentTransaction ft = getFragmentManager().beginTransaction();
-				ft.replace(R.id.discussionFeed, issueDiscussionFragment);
-				ft.commit();
+				addDiscussionFragment();
 			}
 		}
 	}
