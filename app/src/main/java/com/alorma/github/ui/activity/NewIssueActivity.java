@@ -23,6 +23,8 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
+import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.github.ui.view.FABCenterLayout;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -43,12 +45,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	private boolean pushAcces;
 	private View pushAccesLayout;
 	private Spinner spinnerAssignee;
-	private UsersAdapter assigneesAdapter;
+	private UsersAdapterSpinner assigneesAdapter;
 	private EditText editLabels;
 	private EditText editTitle;
 	private EditText editBody;
-	private boolean sending;
-	private SmoothProgressBar smoothBar;
+	private FABCenterLayout fabLayout;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, boolean pushAcces) {
 		Bundle bundle = new Bundle();
@@ -69,20 +70,14 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 			owner = getIntent().getExtras().getString(OWNER);
 			repo = getIntent().getExtras().getString(REPO);
 
-			if (getActionBar() != null) {
-				getActionBar().setSubtitle(owner + "/" + repo);
-			}
-
 			pushAcces = getIntent().getExtras().getBoolean(PUSH, false);
 
 			findViews();
 
 			if (!pushAcces) {
-				pushAccesLayout.setVisibility(View.GONE);
+				pushAccesLayout.setVisibility(View.INVISIBLE);
 			} else {
 				findViewsAcces();
-
-				smoothBar.progressiveStart();
 
 				GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), owner, repo);
 				contributorsClient.setOnResultCallback(new ContributorsCallback());
@@ -93,45 +88,17 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.new_issue, menu);
-		MenuItem itemSend = menu.findItem(R.id.action_send);
-
-		if (itemSend != null) {
-			IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_send);
-			iconDrawable.color(Color.WHITE);
-			iconDrawable.actionBarSize();
-			itemSend.setIcon(iconDrawable);
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem itemSend = menu.findItem(R.id.action_send);
-
-		if (itemSend != null) {
-			itemSend.setEnabled(!sending);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-		if (item.getItemId() == R.id.action_send) {
-			checkDataAndCreateIssue();
-		}
-		return true;
-	}
-
 	private void findViews() {
+		fabLayout = (FABCenterLayout) findViewById(R.id.newFabLayout);
+		fabLayout.setFabClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				checkDataAndCreateIssue();
+			}
+		}, null);
 		pushAccesLayout = findViewById(R.id.pushAccessLayout);
 		editTitle = (EditText) findViewById(R.id.editTitle);
 		editBody = (EditText) findViewById(R.id.editBody);
-		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 	}
 
 	private void findViewsAcces() {
@@ -141,14 +108,14 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 		User cleanUser = new User();
 		cleanUser.login = "No assignee";
 		users.add(cleanUser);
-		assigneesAdapter = new UsersAdapter(NewIssueActivity.this, users);
+		assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
 		spinnerAssignee.setAdapter(assigneesAdapter);
 
 		editLabels = (EditText) findViewById(R.id.editLabels);
 	}
 
 	private void checkDataAndCreateIssue() {
-		if (editTitle.length() < 0) {
+		if (editTitle.length() <= 0) {
 			editTitle.setError(getString(R.string.issue_title_mandatory));
 			return;
 		}
@@ -157,25 +124,25 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 		issue.title = editTitle.getText().toString();
 		issue.body = editBody.getText().toString();
 
-		if (spinnerAssignee.getSelectedItemPosition() > 0) {
-			issue.assignee = assigneesAdapter.getItem(spinnerAssignee.getSelectedItemPosition()).login;
-		}
-
-		if (editLabels.length() > 0) {
-			String[] labels = editLabels.getText().toString().split(",");
-
-			String[] clearLabels = new String[labels.length];
-
-			for (int i = 0; i < labels.length; i++) {
-				clearLabels[i] = labels[i].trim();
+		if (pushAcces) {
+			if (spinnerAssignee.getSelectedItemPosition() > 0) {
+				issue.assignee = assigneesAdapter.getItem(spinnerAssignee.getSelectedItemPosition()).login;
 			}
 
-			issue.labels = clearLabels;
+			if (editLabels.length() > 0) {
+				String[] labels = editLabels.getText().toString().split(",");
+
+				String[] clearLabels = new String[labels.length];
+
+				for (int i = 0; i < labels.length; i++) {
+					clearLabels[i] = labels[i].trim();
+				}
+
+				issue.labels = clearLabels;
+			}
 		}
 
-		sending = true;
 		invalidateOptionsMenu();
-		smoothBar.progressiveStart();
 
 		createIssue(issue);
 	}
@@ -197,8 +164,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	@Override
 	public void onFail(RetrofitError error) {
 		ErrorHandler.onRetrofitError(this, "Creating issue", error);
-		smoothBar.progressiveStop();
-		sending = false;
 		invalidateOptionsMenu();
 		Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
 	}
@@ -206,7 +171,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
 		@Override
 		public void onResponseOk(ListContributors contributors, Response r) {
-			smoothBar.progressiveStop();
 			List<User> users = new ArrayList<User>(contributors.size());
 			User cleanUser = new User();
 			cleanUser.login = "No assignee";
@@ -214,18 +178,17 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 			for (Contributor contributor : contributors) {
 				users.add(contributor.author);
 			}
-			assigneesAdapter = new UsersAdapter(NewIssueActivity.this, users);
+			assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
 			spinnerAssignee.setAdapter(assigneesAdapter);
 		}
 
 		@Override
 		public void onFail(RetrofitError error) {
-			smoothBar.progressiveStop();
 			List<User> users = new ArrayList<User>(1);
 			User cleanUser = new User();
 			cleanUser.login = "No assignee";
 			users.add(cleanUser);
-			assigneesAdapter = new UsersAdapter(NewIssueActivity.this, users);
+			assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
 			spinnerAssignee.setAdapter(assigneesAdapter);
 		}
 	}

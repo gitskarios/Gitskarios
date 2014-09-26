@@ -3,8 +3,6 @@ package com.alorma.github.ui.fragment.issues;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -13,8 +11,6 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
-import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
@@ -23,8 +19,6 @@ import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.Iconify;
-
-import fr.dvilleneuve.android.TextDrawable;
 
 /**
  * Created by Bernat on 22/08/2014.
@@ -121,20 +115,12 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	}
 
 	@Override
-	protected Drawable fabDrawable() {
-		TextDrawable drawable = new TextDrawable(getActivity(), "+");
-		drawable.color(Color.WHITE);
-		drawable.sizeDp(30);
-		return drawable;
-	}
-
-	@Override
-	protected PropertyValuesHolder showAnimator() {
+	protected PropertyValuesHolder showAnimator(View fab) {
 		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
 	}
 
 	@Override
-	protected PropertyValuesHolder hideAnimator() {
+	protected PropertyValuesHolder hideAnimator(View fab) {
 		fabOldY = fab.getY();
 		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);

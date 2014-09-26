@@ -65,7 +65,8 @@
 
         <activity
             android:name=".ui.activity.NewIssueActivity"
-            android:label="@string/title_activity_new_issue" >
+            android:label="@string/title_activity_new_issue"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".ui.activity.IssueDetailActivity"

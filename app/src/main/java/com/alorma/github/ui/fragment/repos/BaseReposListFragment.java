@@ -1,14 +1,17 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.ListView;
 
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
@@ -16,9 +19,10 @@ import java.util.ArrayList;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public abstract class BaseReposListFragment extends PaginatedListFragment<ListRepos> {
+public abstract class BaseReposListFragment extends PaginatedListFragment<ListRepos> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 	protected ReposAdapter reposAdapter;
+	private GitskariosSettings settings;
 
 	protected void setUpList() {
 
@@ -27,6 +31,9 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 		getListView().setDivider(null);
 
 		setListAdapter(reposAdapter);
+
+		settings = new GitskariosSettings(getActivity());
+		settings.registerListener(this);
 	}
 
 	@Override
@@ -54,5 +61,23 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 	@Override
 	protected Iconify.IconValue getNoDataIcon() {
 		return Iconify.IconValue.fa_code;
+	}
+
+	@Override
+	protected int getNoDataText() {
+		return 0;
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (GitskariosSettings.KEY_REPO_SORT.equals(key)) {
+			executeRequest();
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		settings.unregisterListener(this);
 	}
 }

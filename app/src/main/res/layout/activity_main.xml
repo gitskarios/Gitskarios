@@ -1,85 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="@drawable/divider_main"
-    android:showDividers="middle">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menuSize">
-
-        <ImageView
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="@dimen/menuSize"
-            android:layout_height="@dimen/menuSize"
-            android:padding="12dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/searchIcon"
-            android:clickable="true"
-            android:src="@drawable/ic_search" />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/gray_divider"
-            android:id="@+id/divider"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@id/searchIcon"
-            android:layout_toStartOf="@id/searchIcon" />
-
-        <RelativeLayout
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@id/divider"
-            android:layout_toStartOf="@id/divider"
-            android:clickable="true"
-            android:id="@+id/chevronLy">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toStartOf="@+id/chevron"
-                android:id="@+id/currentState"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/gapLarge"
-                android:paddingStart="@dimen/gapLarge"
-                android:textSize="@dimen/textSizeLarge"
-                android:fontFamily="sans-serif-light"
-                android:layout_toLeftOf="@+id/chevron" />
-
-            <ImageView
-                android:layout_width="@dimen/menuSize"
-                android:layout_height="@dimen/menuSize"
-                android:id="@+id/chevron"
-                android:padding="@dimen/gapLarge"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
-
-    </RelativeLayout>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                        android:id="@+id/drawer_layout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/content"/>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/content" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/menuContent"
-            android:visibility="invisible"/>
-    </FrameLayout>
-
-</LinearLayout>
+    <FrameLayout
+        android:layout_width="304dp"
+        android:layout_height="match_parent"
+        android:id="@+id/menuContent"
+        android:layout_gravity="start"/>
+</android.support.v4.widget.DrawerLayout>

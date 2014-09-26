@@ -1,19 +1,20 @@
 package com.alorma.github.ui.activity;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.PopupMenu;
 
 import com.alorma.github.R;
 import com.alorma.github.inapp.IabConstants;
@@ -22,32 +23,21 @@ import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
 import com.alorma.github.ui.activity.base.BaseActivity;
-import com.alorma.github.ui.animations.HeightEvaluator;
-import com.alorma.github.ui.animations.WidthEvaluator;
-import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
-import com.alorma.github.ui.fragment.users.FollowersFragment;
-import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
+import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.github.ui.fragment.users.FollowersFragment;
+import com.alorma.github.ui.fragment.users.FollowingFragment;
 
 import java.util.UUID;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
+		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
 
-	private static final long MENU_ANIMATION_TIME = 200;
-	private TextView currentState;
-	private ImageView chevron;
-	private View chevronLy;
-	private boolean isMenuOpen = false;
 	private MenuFragment menuFragment;
-	private View menuFragmentLy;
-	private View searchIcon;
-	private int menuHeight = -1;
 
 	private ReposFragment reposFragment;
 	private StarredReposFragment starredFragment;
@@ -57,6 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
+	private DrawerLayout mDrawerLayout;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -68,21 +59,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		currentState = (TextView) findViewById(R.id.currentState);
-
-		IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
-		chevronDown.colorRes(R.color.gray_github_dark);
-
-		chevron = (ImageView) findViewById(R.id.chevron);
-		chevron.setImageDrawable(chevronDown);
-
-		chevronLy = findViewById(R.id.chevronLy);
-		chevronLy.setOnClickListener(this);
-
-		menuFragmentLy = findViewById(R.id.menuContent);
-
-		searchIcon = findViewById(R.id.searchIcon);
-		searchIcon.setOnClickListener(this);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		checkIab();
 
@@ -92,6 +69,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		menuFragment.setOnMenuItemSelectedListener(this);
 		ft.replace(R.id.menuContent, menuFragment);
 		ft.commit();
+	}
+
+	@Override
+	protected boolean useLogo() {
+		return true;
+	}
+
+	@Override
+	protected int getActionBarLogo() {
+		return R.drawable.ic_ab_drawer_mask;
 	}
 
 	private void checkIab() {
@@ -119,35 +106,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		return true;
-	}
+		final View actionView = menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuPlaceHolder);
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
-
-		android.view.MenuItem donateItem = menu.findItem(R.id.action_donate);
-
-		if (iabEnabled) {
-			if (donateItem == null) {
-				if (!iabDonatePurchased) {
-					menu.add(0, R.id.action_donate, 0, R.string.action_donate);
-				}
-			} else if (iabDonatePurchased) {
-				menu.removeItem(R.id.action_donate);
-			}
-		}
+		menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuItem)
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						PopupMenu menu = new MainMenu(MainActivity.this, actionView);
+						if (iabEnabled) {
+							SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+							boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
+							if (!iabDonatePurchased) {
+								menu = new DonateMenu(MainActivity.this, actionView);
+							}
+						}
+						menu.show();
+					}
+				});
 
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-
-		if (item.getItemId() == R.id.action_donate) {
+		if (item.getItemId() == android.R.id.home) {
+			if (mDrawerLayout != null) {
+				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+					mDrawerLayout.closeDrawer(Gravity.START);
+				} else {
+					mDrawerLayout.openDrawer(Gravity.START);
+				}
+			}
+		} else if (item.getItemId() == R.id.action_donate) {
 			try {
 				iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
 						this, UUID.randomUUID().toString());
@@ -159,68 +149,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 		}
-
 		return true;
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.chevronLy:
-				if (isMenuOpen) {
-					hideMenu();
-				} else {
-					showMenu();
-				}
-				break;
 			case R.id.searchIcon:
 				Intent search = SearchReposActivity.createLauncherIntent(this);
 				startActivity(search);
-		}
-	}
-
-	private void showMenu() {
-
-		menuFragmentLy.setVisibility(View.VISIBLE);
-
-		IconDrawable chevronUp = new IconDrawable(this, Iconify.IconValue.fa_chevron_up);
-		chevronUp.colorRes(R.color.gray_github_dark);
-		chevron.setImageDrawable(chevronUp);
-
-		isMenuOpen = true;
-
-		Float dimension = getResources().getDimension(R.dimen.menuSize);
-		ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), dimension.intValue(), 0);
-		searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
-		searchIconAnimator.start();
-
-		if (menuHeight == -1) {
-			menuHeight = menuFragmentLy.getHeight();
-		}
-
-		ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, true), 0, menuHeight);
-		valueAnimator.setDuration(MENU_ANIMATION_TIME);
-		valueAnimator.setInterpolator(new LinearInterpolator());
-		valueAnimator.start();
-	}
-
-	private void hideMenu() {
-		if (menuFragment != null) {
-			IconDrawable chevronDown = new IconDrawable(this, Iconify.IconValue.fa_chevron_down);
-			chevronDown.colorRes(R.color.gray_github_dark);
-			chevron.setImageDrawable(chevronDown);
-
-			isMenuOpen = false;
-
-			Float dimension = getResources().getDimension(R.dimen.menuSize);
-			ValueAnimator searchIconAnimator = ValueAnimator.ofObject(new WidthEvaluator(searchIcon), 0, dimension.intValue());
-			searchIconAnimator.setDuration(MENU_ANIMATION_TIME);
-			searchIconAnimator.start();
-
-			ValueAnimator valueAnimator = ValueAnimator.ofObject(new HeightEvaluator(menuFragmentLy, false), menuHeight, 0);
-			valueAnimator.setDuration(MENU_ANIMATION_TIME);
-			valueAnimator.setInterpolator(new LinearInterpolator());
-			valueAnimator.start();
+				break;
 		}
 	}
 
@@ -228,8 +166,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.content, fragment);
 		ft.commit();
-
-		hideMenu();
 	}
 
 	@Override
@@ -279,12 +215,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onMenuItemSelected(@NonNull MenuItem item) {
-		currentState.setText(item.text);
+		setTitle(item.text);
+		closeMenu();
 	}
 
 	@Override
 	public void closeMenu() {
-		hideMenu();
+		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
+			mDrawerLayout.closeDrawer(Gravity.START);
+		}
 	}
 
 	@Override
@@ -297,7 +236,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onBackPressed() {
-		if (isMenuOpen) {
+		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
 			closeMenu();
 		} else {
 			super.onBackPressed();
@@ -345,6 +284,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 				editor.apply();
 			}
 			invalidateOptionsMenu();
+		}
+	}
+
+	private class DonateMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
+
+		public DonateMenu(Context context, View anchor) {
+			super(context, anchor);
+			inflate(R.menu.main_menu_donate);
+			setOnMenuItemClickListener(this);
+		}
+
+		@Override
+		public boolean onMenuItemClick(android.view.MenuItem item) {
+			return onOptionsItemSelected(item);
+		}
+	}
+
+	private class MainMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
+		public MainMenu(Context context, View anchor) {
+			super(context, anchor);
+			inflate(R.menu.main_menu);
+			setOnMenuItemClickListener(this);
+		}
+
+		@Override
+		public boolean onMenuItemClick(android.view.MenuItem item) {
+			return onOptionsItemSelected(item);
 		}
 	}
 }

@@ -21,4 +21,23 @@
         <item>@string/source</item>
         <item>@string/issues</item>
     </string-array>
+
+    <integer-array name="reposSort">
+        <item>@string/sort_created</item>
+        <item>@string/sort_updated</item>
+        <item>@string/sort_pushed</item>
+        <item>@string/sort_full_name</item>
+    </integer-array>
+
+    <string-array name="reposSortValues">
+        <item>created</item>
+        <item>update</item>
+        <item>pushed</item>
+        <item>full_name</item>
+    </string-array>
+
+    <string name="sort_created">Created</string>
+    <string name="sort_updated">Updated</string>
+    <string name="sort_pushed">Pushed</string>
+    <string name="sort_full_name">Full name</string>
 </resources>

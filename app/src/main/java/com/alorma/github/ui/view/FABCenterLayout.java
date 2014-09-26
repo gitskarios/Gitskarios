@@ -15,16 +15,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 /**
  * Created by Bernat on 26/08/2014.
  */
 public class FABCenterLayout extends RelativeLayout {
-	private ImageView fabView;
+	private AddFloatingActionButton fabView;
 	private int topId;
 	private OnClickListener fabClickListener;
 	private boolean fabVisible;
-	private Drawable fabDrawable;
 	private String fabTag;
 
 	public FABCenterLayout(Context context) {
@@ -49,26 +49,15 @@ public class FABCenterLayout extends RelativeLayout {
 			if (attr.hasValue(R.styleable.FABCenterLayout_top_id)) {
 				topId = attr.getResourceId(R.styleable.FABCenterLayout_top_id, 0);
 				if (topId != 0) {
-					if (isInEditMode()) {
-						fabVisible = true;
-						createFabView();
-					}
+					fabVisible = true;
+					createFabView();
 				}
 			}
 		}
 	}
 
 	private void createFabView() {
-		fabView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.fab, this, false);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			fabView.setBackground(getResources().getDrawable(R.drawable.fab_inv_button));
-		} else {
-			fabView.setBackgroundDrawable(getResources().getDrawable(R.drawable.fab_inv_button));
-		}
-
-		if (fabDrawable != null) {
-			fabView.setImageDrawable(fabDrawable);
-		}
+		fabView = (AddFloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
 
 		fabView.setOnClickListener(fabClickListener);
 		setFabTag();
@@ -85,9 +74,8 @@ public class FABCenterLayout extends RelativeLayout {
 					int bottom = topView.getHeight();
 
 					if (bottom > 0) {
-						int int56 = getResources().getDimensionPixelOffset(R.dimen.fab);
 						int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
-						fabView.layout(r - int56 - int16, bottom - int56 / 2, r - int16, bottom + int56 / 2);
+						fabView.layout(r - fabView.getWidth() - int16, bottom - fabView.getHeight() / 2, r - int16, bottom + fabView.getHeight() / 2);
 						removeView(fabView);
 						fabView.setAlpha(0f);
 						addView(fabView);
@@ -104,21 +92,6 @@ public class FABCenterLayout extends RelativeLayout {
 		oa.setDuration(500);
 		oa.setInterpolator(new AccelerateDecelerateInterpolator());
 		oa.start();
-	}
-
-	public void setFABDrawable(Drawable drawable) {
-		this.fabDrawable = drawable;
-		if (fabView != null) {
-			fabView.setImageDrawable(drawable);
-		}
-	}
-
-	public void setFABBackground(Drawable drawable) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			fabView.setBackground(drawable);
-		} else {
-			fabView.setBackgroundDrawable(drawable);
-		}
 	}
 
 	public void setFabClickListener(OnClickListener fabClickListener, final String tag) {
@@ -141,16 +114,5 @@ public class FABCenterLayout extends RelativeLayout {
 				}
 			});
 		}
-	}
-
-	public void setFabVisible(boolean fabVisible) {
-		this.fabVisible = fabVisible;
-		if (!fabVisible) {
-			removeView(fabView);
-			fabView = null;
-		} else {
-			createFabView();
-		}
-		invalidate();
 	}
 }
