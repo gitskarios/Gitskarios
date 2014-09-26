@@ -83,5 +83,6 @@
     <string name="error_loading_image">Image cannot be loaded</string>
     <string name="action_menu">Menu</string>
     <string name="unknown_language">Unknown</string>
+    <string name="pref_repos_sor_order">Repositories sort order</string>
 
 </resources>

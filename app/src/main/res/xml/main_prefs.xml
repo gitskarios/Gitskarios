@@ -2,7 +2,15 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference android:title="@string/pref_gthub_link_interceptor"
+    <CheckBoxPreference
+        android:title="@string/pref_gthub_link_interceptor"
         android:key="pref_intercept"/>
+
+    <ListPreference
+        android:title="@string/pref_repos_sor_order"
+        android:key="repos_sort"
+        android:entries="@array/reposSort"
+        android:entryValues="@array/reposSortValues"
+        android:defaultValue="@string/sort_full_name"/>
 
 </PreferenceScreen>
