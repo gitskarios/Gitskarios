@@ -84,5 +84,6 @@
     <string name="action_menu">Menu</string>
     <string name="unknown_language">Unknown</string>
     <string name="pref_repos_sor_order">Repositories sort order</string>
+    <string name="menu_repo_settings">Repository settings</string>
 
 </resources>

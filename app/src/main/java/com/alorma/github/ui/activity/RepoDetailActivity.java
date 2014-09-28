@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,11 +39,14 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.detail.repo.FilesTreeFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoSettingsFragment;
 import com.alorma.github.ui.fragment.issues.IssuesFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
@@ -74,6 +78,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private Spinner repoDetailBranches;
 	private Branch currentBranch;
 	private Spinner spinnerNavigation;
+	private RepoSettingsFragment settingsFragment;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -158,7 +163,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
 
-		if(menu != null) {
+		if (menu != null) {
 			MenuItem item = menu.findItem(R.id.share_repo);
 			if (item != null) {
 				IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_share_alt);
@@ -243,6 +248,8 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(this, owner, name, currentRepo.parent.description);
 				startActivity(launcherActivity);
 			}
+		} else if (item.getItemId() == R.id.action_repo_settigs) {
+			switchNavigation(NAVIGATION_SETTINGS);
 		}
 
 		return false;
@@ -262,6 +269,9 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	public void onResponseOk(Repo repo, Response r) {
 		if (repo != null) {
 			this.currentRepo = repo;
+
+			setTitle(currentRepo.name);
+
 			this.invalidateOptionsMenu();
 
 			cancelRefresh();
@@ -350,26 +360,42 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		}
 	}
 
-	private void switchNavigation(int position) {
+	@Retention(RetentionPolicy.SOURCE)
+	@IntDef({NAVIGATION_MARKDOWN, NAVIGATION_SOURCE, NAVIGATION_ISSUES, NAVIGATION_SETTINGS})
+	public @interface NavigationItems {
+	}
+
+	private static final int NAVIGATION_MARKDOWN = 0;
+	private static final int NAVIGATION_SOURCE = 1;
+	private static final int NAVIGATION_ISSUES = 2;
+	private static final int NAVIGATION_SETTINGS = 3;
+
+	private void switchNavigation(@NavigationItems int position) {
 		switch (position) {
-			case 0:
+			case NAVIGATION_MARKDOWN:
 				if (markDownFragment == null) {
 					markDownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
 				}
 				setUpFragment(markDownFragment);
 				break;
-			case 1:
+			case NAVIGATION_SOURCE:
 				if (filesTreeFragment == null) {
 					filesTreeFragment = FilesTreeFragment.newInstance(repoInfo.owner, repoInfo.repo, currentBranch.name, this);
 				}
 				setUpFragment(filesTreeFragment);
 				break;
-			case 2:
+			case NAVIGATION_ISSUES:
 				if (issuesFragment == null) {
 					issuesFragment = IssuesFragment.newInstance(repoInfo.owner, repoInfo.repo, this);
 				}
 				issuesFragment.setPermissions(currentRepo.permissions);
 				setUpFragment(issuesFragment);
+				break;
+			case NAVIGATION_SETTINGS:
+				if (settingsFragment == null) {
+					settingsFragment = RepoSettingsFragment.newInstance(currentRepo);
+				}
+				setUpFragment(settingsFragment);
 				break;
 			/*case 3:
 				if (commitsFragment == null) {
@@ -543,6 +569,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			}
 
 			setOnMenuItemClickListener(this);
+
+			if (currentRepo == null || currentRepo.permissions == null || !currentRepo.permissions.admin) {
+				getMenu().removeItem(R.id.action_repo_settigs);
+			}
 		}
 
 		@Override
