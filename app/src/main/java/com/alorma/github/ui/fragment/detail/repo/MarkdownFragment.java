@@ -84,12 +84,7 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 
 	@Override
 	public void onResponseOk(final String s, Response r) {
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
-			}
-		});
+		webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
 	}
 
 	@Override
