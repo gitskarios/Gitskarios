@@ -90,5 +90,7 @@
     <string name="repo_check_issue">Has issues</string>
     <string name="repo_check_wiki">Has wiki</string>
     <string name="repo_check_downloads">Downloads</string>
+    <string name="noevents">No events</string>
+    <string name="menu_events">Events</string>
 
 </resources>

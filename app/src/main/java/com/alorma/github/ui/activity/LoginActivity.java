@@ -3,6 +3,7 @@ package com.alorma.github.ui.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -17,17 +18,20 @@ import android.widget.Toast;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.bugsense.trace.BugSenseHandler;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements BaseClient.OnResultCallback<User> {
 
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -76,8 +80,10 @@ public class LoginActivity extends Activity {
 	private void endAcces(String accessToken) {
 		credentials.storeToken(accessToken);
 
-		MainActivity.startActivity(this);
-		finish();
+		GetAuthUserClient authUserClient = new GetAuthUserClient(this);
+		authUserClient.setOnResultCallback(this);
+		authUserClient.execute();
+
 	}
 
 	@Override
@@ -93,6 +99,20 @@ public class LoginActivity extends Activity {
 		progressDialog.setCancelable(false);
 		progressDialog.setCanceledOnTouchOutside(false);
 		progressDialog.show();
+	}
+
+	@Override
+	public void onResponseOk(User user, Response r) {
+		GitskariosSettings settings = new GitskariosSettings(this);
+		settings.saveAuthUser(user.login);
+		MainActivity.startActivity(this);
+		finish();
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+		MainActivity.startActivity(this);
+		finish();
 	}
 
 	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {

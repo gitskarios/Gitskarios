@@ -22,7 +22,9 @@ import com.alorma.github.inapp.IabHelper;
 import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
@@ -44,10 +46,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private WatchedReposFragment watchedFragment;
 	private FollowersFragment followersFragment;
 	private FollowingFragment followingFragment;
+	private EventsListFragment eventsFragment;
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
 	private DrawerLayout mDrawerLayout;
+	private String username;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -58,6 +62,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		username = new GitskariosSettings(this).getAuthUser(null);
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -163,9 +169,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	private void setFragment(Fragment fragment) {
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, fragment);
-		ft.commit();
+		if (fragment != null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.replace(R.id.content, fragment);
+			ft.commit();
+		}
 	}
 
 	@Override
@@ -232,6 +240,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			organizationsFragmet = OrganzationsFragment.newInstance();
 		}
 		setFragment(organizationsFragmet);
+	}
+
+	@Override
+	public void onUserEventsSelected() {
+		if (eventsFragment == null && username != null) {
+			eventsFragment = EventsListFragment.newInstance(username);
+		}
+		setFragment(eventsFragment);
 	}
 
 	@Override
