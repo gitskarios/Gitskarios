@@ -1,13 +1,11 @@
 package com.alorma.github.ui.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.ListEvents;
 
 import java.util.ArrayList;
 

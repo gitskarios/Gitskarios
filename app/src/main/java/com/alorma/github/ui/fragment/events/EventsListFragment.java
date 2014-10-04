@@ -61,6 +61,9 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 	@Override
 	protected void executePaginatedRequest(int page) {
 		super.executePaginatedRequest(page);
+
+		eventsAdapter.setLazyLoading(true);
+
 		GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
 		eventsClient.setOnResultCallback(this);
 		eventsClient.execute();
