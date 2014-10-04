@@ -1,11 +1,12 @@
 package com.alorma.github.ui.fragment.events;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
-import com.alorma.github.ui.adapter.EventAdapter;
+import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -25,6 +26,15 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 		f.setArguments(bundle);
 
 		return f;
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+		if (getListView() != null) {
+			getListView().setDivider(null);
+		}
 	}
 
 	@Override

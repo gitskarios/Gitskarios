@@ -92,5 +92,6 @@
     <string name="repo_check_downloads">Downloads</string>
     <string name="noevents">No events</string>
     <string name="menu_events">Events</string>
+    <string name="pushed">Pushed</string>
 
 </resources>
