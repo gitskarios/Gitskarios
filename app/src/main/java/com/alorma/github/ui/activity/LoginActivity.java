@@ -31,7 +31,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginActivity extends Activity implements BaseClient.OnResultCallback<User> {
+public class LoginActivity extends Activity {
 
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -79,11 +79,8 @@ public class LoginActivity extends Activity implements BaseClient.OnResultCallba
 
 	private void endAcces(String accessToken) {
 		credentials.storeToken(accessToken);
-
-		GetAuthUserClient authUserClient = new GetAuthUserClient(this);
-		authUserClient.setOnResultCallback(this);
-		authUserClient.execute();
-
+		MainActivity.startActivity(this);
+		finish();
 	}
 
 	@Override
@@ -99,20 +96,6 @@ public class LoginActivity extends Activity implements BaseClient.OnResultCallba
 		progressDialog.setCancelable(false);
 		progressDialog.setCanceledOnTouchOutside(false);
 		progressDialog.show();
-	}
-
-	@Override
-	public void onResponseOk(User user, Response r) {
-		GitskariosSettings settings = new GitskariosSettings(this);
-		settings.saveAuthUser(user.login);
-		MainActivity.startActivity(this);
-		finish();
-	}
-
-	@Override
-	public void onFail(RetrofitError error) {
-		MainActivity.startActivity(this);
-		finish();
 	}
 
 	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {

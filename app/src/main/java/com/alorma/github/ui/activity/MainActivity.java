@@ -22,6 +22,9 @@ import com.alorma.github.inapp.IabHelper;
 import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
+import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
@@ -36,8 +39,11 @@ import com.alorma.github.ui.fragment.users.FollowingFragment;
 
 import java.util.UUID;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
-		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
+		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, BaseClient.OnResultCallback<User> {
 
 	private MenuFragment menuFragment;
 
@@ -75,6 +81,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		menuFragment.setOnMenuItemSelectedListener(this);
 		ft.replace(R.id.menuContent, menuFragment);
 		ft.commit();
+
+		if (username == null) {
+			GetAuthUserClient authUserClient = new GetAuthUserClient(this);
+			authUserClient.setOnResultCallback(this);
+			authUserClient.execute();
+		}
+	}
+
+	@Override
+	public void onResponseOk(User user, Response r) {
+		GitskariosSettings settings = new GitskariosSettings(this);
+		settings.saveAuthUser(user.login);
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+
 	}
 
 	@Override
@@ -244,6 +267,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onUserEventsSelected() {
+		username = new GitskariosSettings(this).getAuthUser(null);
 		if (eventsFragment == null && username != null) {
 			eventsFragment = EventsListFragment.newInstance(username);
 		}
