@@ -33,7 +33,10 @@ public abstract class GithubEventView<K extends GithubEventPayload> extends Fram
 
 	protected void init() {
 		isInEditMode();
+		inflate();
 	}
+
+	protected abstract void inflate();
 
 	public void setEvent(GithubEvent event) {
 		this.event = event;

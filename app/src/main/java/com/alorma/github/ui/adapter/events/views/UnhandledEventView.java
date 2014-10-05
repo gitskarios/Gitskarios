@@ -27,7 +27,10 @@ public class UnhandledEventView extends GithubEventView<UnhandledPayload> {
 	@Override
 	protected void init() {
 		super.init();
+	}
 
+	@Override
+	protected void inflate() {
 		inflate(getContext(), R.layout.payload_unhandled, this);
 	}
 

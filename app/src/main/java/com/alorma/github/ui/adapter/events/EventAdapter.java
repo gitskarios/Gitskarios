@@ -10,6 +10,7 @@ import com.alorma.github.ui.adapter.LazyAdapter;
 import com.alorma.github.ui.adapter.events.views.GithubEventView;
 import com.alorma.github.ui.adapter.events.views.PushEventView;
 import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
+import com.alorma.github.ui.adapter.events.views.WatchEventView;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,8 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 
 		if (event.getType() == EventType.PushEvent) {
 			v = new PushEventView(getContext());
+		} else if (event.getType() == EventType.WatchEvent) {
+			v = new WatchEventView(getContext());
 		} else {
 			v = new UnhandledEventView(getContext());
 		}

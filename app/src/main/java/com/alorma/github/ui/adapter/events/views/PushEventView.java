@@ -32,16 +32,15 @@ public class PushEventView extends GithubEventView<PushEventPayload> {
 	}
 
 	@Override
-	protected void init() {
-		super.init();
-
+	protected void inflate() {
 		inflate(getContext(), R.layout.payload_push, this);
-		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.pushed);
 	}
 
 	@Override
 	protected void populateView(GithubEvent event) {
+
+		TextView actionType = (TextView) findViewById(R.id.actionType);
+		actionType.setText(R.string.pushed);
 
 		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
