@@ -95,5 +95,6 @@
     <string name="pushed">Pushed</string>
     <string name="watched">Watched</string>
     <string name="created">Created</string>
+    <string name="issue_commented">Issue comment</string>
 
 </resources>
