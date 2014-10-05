@@ -8,6 +8,7 @@ import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.ui.adapter.LazyAdapter;
 import com.alorma.github.ui.adapter.events.views.CreatedEventView;
+import com.alorma.github.ui.adapter.events.views.ForkEventView;
 import com.alorma.github.ui.adapter.events.views.GithubEventView;
 import com.alorma.github.ui.adapter.events.views.IssueCommentEventView;
 import com.alorma.github.ui.adapter.events.views.PushEventView;
@@ -45,6 +46,8 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 			v = new CreatedEventView(getContext());
 		}  else if (event.getType() == EventType.IssueCommentEvent) {
 			v = new IssueCommentEventView(getContext());
+		}   else if (event.getType() == EventType.ForkEvent) {
+			v = new ForkEventView(getContext());
 		} else {
 			v = new UnhandledEventView(getContext());
 		}

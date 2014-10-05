@@ -96,5 +96,6 @@
     <string name="watched">Watched</string>
     <string name="created">Created</string>
     <string name="issue_commented">Issue comment</string>
+    <string name="forked">Forked</string>
 
 </resources>
