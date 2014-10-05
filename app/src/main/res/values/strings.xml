@@ -94,5 +94,6 @@
     <string name="menu_events">Events</string>
     <string name="pushed">Pushed</string>
     <string name="watched">Watched</string>
+    <string name="created">Created</string>
 
 </resources>

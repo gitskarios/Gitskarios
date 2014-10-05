@@ -5,10 +5,10 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.events.payload.CreatedEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
 import com.google.gson.Gson;
 import com.joanzapata.android.iconify.IconDrawable;
@@ -18,28 +18,28 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by Bernat on 04/10/2014.
  */
-public class WatchEventView extends GithubEventView<WatchedEventPayload> {
-	public WatchEventView(Context context) {
+public class CreatedEventView extends GithubEventView<CreatedEventPayload> {
+	public CreatedEventView(Context context) {
 		super(context);
 	}
 
-	public WatchEventView(Context context, AttributeSet attrs) {
+	public CreatedEventView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public WatchEventView(Context context, AttributeSet attrs, int defStyle) {
+	public CreatedEventView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
 	@Override
 	protected void inflate() {
-		inflate(getContext(), R.layout.payload_watch, this);
+		inflate(getContext(), R.layout.payload_create, this);
 	}
 
 	@Override
 	protected void populateView(GithubEvent event) {
 		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.watched);
+		actionType.setText(R.string.created);
 
 		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
@@ -50,8 +50,8 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
-		if (eventPayload.action.equals("started")) {
-			drawable = new IconDrawable(getContext(), Iconify.IconValue.fa_star).colorRes(R.color.accentDark);
+		if (eventPayload.ref_type.equals("repository")) {
+			drawable = new IconDrawable(getContext(), Iconify.IconValue.fa_plus).colorRes(R.color.accentDark);
 		}
 
 		if (drawable != null) {
@@ -62,7 +62,7 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 	}
 
 	@Override
-	protected WatchedEventPayload convert(Gson gson, String s) {
-		return gson.fromJson(s, WatchedEventPayload.class);
+	protected CreatedEventPayload convert(Gson gson, String s) {
+		return gson.fromJson(s, CreatedEventPayload.class);
 	}
 }

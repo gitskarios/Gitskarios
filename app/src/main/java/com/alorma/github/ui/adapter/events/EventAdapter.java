@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.alorma.github.ui.adapter.events.views.CreatedEventView;
 import com.alorma.github.ui.adapter.events.views.GithubEventView;
 import com.alorma.github.ui.adapter.events.views.PushEventView;
 import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
@@ -39,6 +40,8 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 			v = new PushEventView(getContext());
 		} else if (event.getType() == EventType.WatchEvent) {
 			v = new WatchEventView(getContext());
+		}  else if (event.getType() == EventType.CreateEvent) {
+			v = new CreatedEventView(getContext());
 		} else {
 			v = new UnhandledEventView(getContext());
 		}
