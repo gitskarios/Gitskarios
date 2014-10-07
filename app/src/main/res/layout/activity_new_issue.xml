@@ -55,7 +55,7 @@
         tools:context="com.alorma.github.ui.activity.NewIssueActivity"
         android:layout_below="@id/coloredLayout"
         android:id="@+id/pushAccessLayout"
-        android:background="@color/gray_github_light_selected"
+        android:background="@color/gray_github_light"
         android:orientation="vertical">
 
         <EditText
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/labels"
             android:layout_marginTop="@dimen/gapLarge"
-            android:background="@drawable/edit_text_material"
+            android:background="@drawable/edit_text_material_dark"
             android:id="@+id/editLabels"/>
 
         <Spinner

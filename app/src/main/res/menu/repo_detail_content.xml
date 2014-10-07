@@ -12,5 +12,10 @@
         android:id="@+id/action_watch"
         android:showAsAction="never"
         android:orderInCategory="11" />
+    <item
+        android:title="@string/menu_repo_settings"
+        android:id="@+id/action_repo_settigs"
+        android:showAsAction="never"
+        android:orderInCategory="12" />
 
 </menu>
