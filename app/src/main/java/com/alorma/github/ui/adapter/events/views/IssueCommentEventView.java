@@ -3,17 +3,16 @@ package com.alorma.github.ui.adapter.events.views;
 import android.content.Context;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
 import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -54,7 +53,7 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 
 		comment.setText(Html.fromHtml(eventPayload.comment.body));
 
-		IconDrawable left = new IconDrawable(getContext(), Iconify.IconValue.fa_code);
+		GithubIconDrawable left = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_comment_discussion);
 
 		TextView action = (TextView) findViewById(R.id.action);
 		action.setCompoundDrawables(left, null, null, null);

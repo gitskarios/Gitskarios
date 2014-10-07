@@ -10,6 +10,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -61,7 +63,7 @@ public class PushEventView extends GithubEventView<PushEventPayload> {
 			}
 		}
 
-		IconDrawable left = new IconDrawable(getContext(), Iconify.IconValue.fa_code);
+		GithubIconDrawable left = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo_push);
 
 		TextView action = (TextView) findViewById(R.id.action);
 		action.setCompoundDrawables(left, null, null, null);

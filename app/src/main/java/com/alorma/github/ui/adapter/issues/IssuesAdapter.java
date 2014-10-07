@@ -16,6 +16,8 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -59,16 +61,16 @@ public class IssuesAdapter extends LazyAdapter<Issue> {
 
 		state.setBackgroundColor(colorState);
 		num.setTextColor(colorState);
-
+		GithubIconDrawable iconDrawable;
 		if (item.pullRequest != null) {
-			IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork);
-			iconDrawable.colorRes(R.color.gray_github_medium);
-			pullRequest.setImageDrawable(iconDrawable);
+			iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_git_pull_request);
+		} else if (item.state == IssueState.closed) {
+			iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_issue_closed);
 		} else {
-			IconDrawable iconDrawable = new IconDrawable(getContext(), Iconify.IconValue.fa_info_circle);
-			iconDrawable.colorRes(R.color.gray_github_light_selected);
-			pullRequest.setImageDrawable(iconDrawable);
+			iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_issue_opened);
 		}
+		iconDrawable.colorRes(R.color.gray_github_medium);
+		pullRequest.setImageDrawable(iconDrawable);
 
 		return v;
 	}

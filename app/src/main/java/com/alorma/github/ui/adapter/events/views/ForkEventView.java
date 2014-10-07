@@ -10,6 +10,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -49,7 +51,7 @@ public class ForkEventView extends GithubEventView<ForkEventPayload> {
 		authorName.setText(event.actor.login);
 
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
-		Drawable drawable = new IconDrawable(getContext(), Iconify.IconValue.fa_code_fork).colorRes(R.color.accentDark);
+		Drawable drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo_forked).colorRes(R.color.accentDark);
 
 		if (drawable != null) {
 			actionImage.setImageDrawable(drawable);
