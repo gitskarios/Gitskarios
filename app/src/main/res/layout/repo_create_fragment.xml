@@ -44,13 +44,15 @@
                     android:layout_height="match_parent"
                     style="?android:borderlessButtonStyle"
                     android:layout_weight="1"
-                    android:text="@string/add_gitignore"/>
+                    android:text="@string/add_gitignore"
+                    android:id="@+id/add_gitignore"/>
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     style="?android:borderlessButtonStyle"
                     android:layout_weight="1"
-                    android:text="@string/add_license"/>
+                    android:text="@string/add_license"
+                    android:id="@+id/add_license"/>
                 </LinearLayout>
 
             <CheckedTextView
