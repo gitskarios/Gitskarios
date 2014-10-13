@@ -90,5 +90,7 @@
     <string name="repo_check_issue">Has issues</string>
     <string name="repo_check_wiki">Has wiki</string>
     <string name="repo_check_downloads">Downloads</string>
+    <string name="add_gitignore">Add GitIgnore</string>
+    <string name="add_license">Add license</string>
 
 </resources>

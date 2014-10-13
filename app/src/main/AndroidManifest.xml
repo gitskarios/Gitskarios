@@ -66,16 +66,17 @@
         <activity
             android:name=".ui.activity.NewIssueActivity"
             android:label="@string/title_activity_new_issue"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.NewRepoActivity"
+            android:label="@string/title_activity_new_issue"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.IssueDetailActivity"
-            android:label="@string/title_activity_issue_detail" >
-        </activity>
+            android:label="@string/title_activity_issue_detail" />
         <activity
             android:name=".ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>
