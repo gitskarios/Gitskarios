@@ -1,10 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="android:windowBackground">@color/accent</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorPrimaryDark">@color/accentDark</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme.Dialog" parent="android:Theme.Holo.Dialog">
@@ -59,6 +61,11 @@
         <item name="android:gravity">center</item>
         <item name="android:paddingBottom">16dp</item>
         <item name="android:layout_gravity">right|bottom</item>
+    </style>
+    <!-- EnhancedEditText -->
+    <style name="enhancedEditText" parent="android:style/Widget.EditText">
+        <item name="prefixColor">@color/defaultEnchancedColor</item>
+        <item name="suffixColor">@color/defaultEnchancedColor</item>
     </style>
 
 </resources>

@@ -16,16 +16,16 @@
  * It uses Iconify by Joan Zapata, licensed under Apache License version 2, which is compatible
  * with this library's license.
  */
-package android.widget;
+package fr.dvilleneuve.android;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.widget.Button;
+
+import com.alorma.github.R;
 import com.joanzapata.android.iconify.Iconify;
-import fr.dvilleneuve.android.EnhancedText;
-import fr.dvilleneuve.android.OnClickDrawableListener;
-import fr.dvilleneuve.android.R;
 
 public class EnhancedButton extends Button implements EnhancedText {
 

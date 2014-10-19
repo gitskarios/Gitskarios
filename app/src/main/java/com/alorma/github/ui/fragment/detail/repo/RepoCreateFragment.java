@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.CreateRepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.GitIgnoreTemplates;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.gtignore.GitIgnoreClient;
@@ -45,6 +46,7 @@ public class RepoCreateFragment extends Fragment implements View.OnClickListener
 	private String definedIgnore;
 	private ArrayAdapter<String> ignoresAdapter;
 	private GitIgnorePopup gitIgnorePopup;
+	private String definedLicense;
 
 	public static RepoCreateFragment newInstance() {
 		return new RepoCreateFragment();
@@ -135,8 +137,14 @@ public class RepoCreateFragment extends Fragment implements View.OnClickListener
 		boolean hasWiki = repoWikiCheck.isChecked();
 		boolean hasDownloads = repoDownloadsCheck.isChecked();
 
-		String ignore_template = definedIgnore;
-		String license_template = "";
+		CreateRepoRequestDTO repoRequestDTO = new CreateRepoRequestDTO();
+		repoRequestDTO.name = title;
+		repoRequestDTO.description = description;
+		repoRequestDTO.isPrivate = isPrivate;
+		repoRequestDTO.gitignore_template = definedIgnore;
+		repoRequestDTO.has_issues = hasIssues;
+		repoRequestDTO.has_wiki = hasWiki;
+		repoRequestDTO.has_downloads = hasDownloads;
 
 	}
 

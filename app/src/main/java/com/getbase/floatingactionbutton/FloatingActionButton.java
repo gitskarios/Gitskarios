@@ -25,6 +25,8 @@ import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 
+import com.alorma.github.R;
+
 public class FloatingActionButton extends ImageButton {
 
 	public static final int SIZE_NORMAL = 0;
@@ -91,7 +93,7 @@ public class FloatingActionButton extends ImageButton {
 				mColorNormal = attr.getColor(R.styleable.FloatingActionButton_colorNormal, getColor(android.R.color.holo_blue_dark));
 				mColorPressed = attr.getColor(R.styleable.FloatingActionButton_colorPressed, getColor(android.R.color.holo_blue_light));
 				mSize = attr.getInt(R.styleable.FloatingActionButton_size, SIZE_NORMAL);
-				mIcon = attr.getResourceId(R.styleable.FloatingActionButton_icon, 0);
+				mIcon = attr.getResourceId(R.styleable.FloatingActionButton_float_icon, 0);
 			} finally {
 				attr.recycle();
 			}

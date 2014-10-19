@@ -7,13 +7,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
-import android.support.v7.graphics.PaletteItem;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.ui.view.CircularImageView;
-import android.widget.EnhancedTextView;
+import fr.dvilleneuve.android.EnhancedTextView;
 import com.alorma.github.ui.view.NumericTitle;
 
 import com.alorma.github.R;
@@ -49,7 +48,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 	private EnhancedTextView mailText;
 	private EnhancedTextView blogText;
 	private EnhancedTextView joinedText;
-	private PaletteItem usedPalette;
+	private Palette.Swatch usedPalette;
 	private Palette palette;
 	private ArrayList<NumericTitle> numericTitles;
 
@@ -239,13 +238,13 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 	public void setUpFromPalette(Palette palette) {
 		this.palette = palette;
 		if (palette != null) {
-			PaletteItem item = PaletteUtils.getProfilePaletteItem(palette);
+			Palette.Swatch item = PaletteUtils.getProfilePaletteItem(palette);
 
 			setUpFromPaletteItem(item);
 		}
 	}
 
-	private void setUpFromPaletteItem(PaletteItem paletteItem) {
+	private void setUpFromPaletteItem(Palette.Swatch paletteItem) {
 		if (isAdded()) {
 			this.usedPalette = paletteItem;
 

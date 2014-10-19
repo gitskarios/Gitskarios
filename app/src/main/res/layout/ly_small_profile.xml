@@ -33,7 +33,7 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
-        <android.widget.EnhancedTextView
+        <fr.dvilleneuve.android.EnhancedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearance"

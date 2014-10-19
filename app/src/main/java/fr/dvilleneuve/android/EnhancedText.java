@@ -20,6 +20,7 @@ package fr.dvilleneuve.android;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+
 import com.joanzapata.android.iconify.Iconify;
 
 public interface EnhancedText {

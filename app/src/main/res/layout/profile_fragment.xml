@@ -30,7 +30,7 @@
                 android:src="@drawable/ic_contact_picture" />
         </LinearLayout>
 
-        <android.widget.EnhancedTextView
+        <fr.dvilleneuve.android.EnhancedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearance"
@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="4dp" />
 
-        <android.widget.EnhancedTextView
+        <fr.dvilleneuve.android.EnhancedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearance"
@@ -52,7 +52,7 @@
             android:layout_margin="4dp"
             app:prefixColor="@color/accent"/>
 
-        <android.widget.EnhancedTextView
+        <fr.dvilleneuve.android.EnhancedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearance"
