@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -106,7 +107,7 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		if (MarkdownUtils.isMarkdown(content.name)) {
 			RequestMarkdownDTO request = new RequestMarkdownDTO();
 			request.text = decodeContent();
-			GetMarkdownClient markdownClient = new GetMarkdownClient(this, request);
+			GetMarkdownClient markdownClient = new GetMarkdownClient(this, request, new Handler());
 			markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
 				@Override
 				public void onResponseOk(final String s, Response r) {
