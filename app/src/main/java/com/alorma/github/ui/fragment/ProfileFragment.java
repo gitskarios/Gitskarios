@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Palette.Swatch;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,7 +105,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 		numericTitles.add(num3Text);
 		numericTitles.add(num4Text);
 
-		setUpFromPaletteItem(null);
+		setUpFromSwatch(null);
 
 		BaseUsersClient<User> requestClient = null;
 		if (getArguments() != null) {
@@ -238,20 +239,20 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 	public void setUpFromPalette(Palette palette) {
 		this.palette = palette;
 		if (palette != null) {
-			Palette.Swatch item = PaletteUtils.getProfilePaletteItem(palette);
+			Swatch item = PaletteUtils.getProfileSwatch(palette);
 
-			setUpFromPaletteItem(item);
+			setUpFromSwatch(item);
 		}
 	}
 
-	private void setUpFromPaletteItem(Palette.Swatch paletteItem) {
+	private void setUpFromSwatch(Swatch swatch) {
 		if (isAdded()) {
-			this.usedPalette = paletteItem;
+			this.usedPalette = swatch;
 
 			int rgb = getResources().getColor(R.color.accent);
 
-			if (paletteItem != null && paletteItem.getRgb() != 0x000000) {
-				rgb = paletteItem.getRgb();
+			if (swatch != null && swatch.getRgb() != 0x000000) {
+				rgb = swatch.getRgb();
 			}
 
 			avatarImage.setBorderColor(rgb);

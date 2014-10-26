@@ -7,46 +7,31 @@ import android.support.v7.graphics.Palette;
  */
 public class PaletteUtils {
 
-	public static Palette.Swatch getProfilePaletteItem(Palette palette) {
+	public static Palette.Swatch getProfileSwatch(Palette palette) {
 		if (palette != null) {
-			Palette.Swatch vibrantColor = palette.getVibrantSwatch();
-			Palette.Swatch lightVibrantColor = palette.getLightVibrantSwatch();
-			Palette.Swatch darkVibrantColor = palette.getDarkVibrantSwatch();
-			Palette.Swatch mutedColor = palette.getMutedSwatch();
-			Palette.Swatch lightMutedColor = palette.getLightMutedSwatch();
-			Palette.Swatch darkMutedColor = palette.getDarkMutedSwatch();
+			Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+			Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+			Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
+			Palette.Swatch mutedSwatch = palette.getMutedSwatch();
+			Palette.Swatch lightMutedSwatch = palette.getLightMutedSwatch();
+			Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
 			Palette.Swatch item = null;
-			if (vibrantColor != null) {
-				item = vibrantColor;
-			} else if (darkVibrantColor != null) {
-				item = darkVibrantColor;
-			} else if (lightMutedColor != null) {
-				item = lightMutedColor;
-			} else if (darkMutedColor != null) {
-				item = darkMutedColor;
-			} else if (mutedColor != null) {
-				item = mutedColor;
-			} else if (lightVibrantColor != null) {
-				item = lightVibrantColor;
+			if (vibrantSwatch != null) {
+				item = vibrantSwatch;
+			} else if (darkVibrantSwatch != null) {
+				item = darkVibrantSwatch;
+			} else if (lightMutedSwatch != null) {
+				item = lightMutedSwatch;
+			} else if (darkMutedSwatch != null) {
+				item = darkMutedSwatch;
+			} else if (mutedSwatch != null) {
+				item = mutedSwatch;
+			} else if (lightVibrantSwatch != null) {
+				item = lightVibrantSwatch;
 			}
 			return item;
 		}
 
 		return null;
-	}
-
-	public static Palette.Swatch getDarkPaletteItem(Palette palette) {
-		Palette.Swatch darkVibrantColor = palette.getDarkVibrantSwatch();
-		Palette.Swatch darkMutedColor = palette.getDarkMutedSwatch();
-		Palette.Swatch vibrantColor = palette.getVibrantSwatch();
-
-		if (darkVibrantColor != null) {
-			return darkVibrantColor;
-		} else if (darkMutedColor != null) {
-			return darkMutedColor;
-		} else {
-			return null;
-		}
-
 	}
 }
