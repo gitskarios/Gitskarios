@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19
-        versionName "1.5.0"
-        versionCode 150
+        versionName "1.5.1"
+        versionCode 151
     }
     signingConfigs {
         playStore {
@@ -31,11 +31,11 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services:5.2.08'
+    compile 'com.google.android.gms:play-services:6.1.11'
     compile 'com.android.support:support-annotations:20.0.0'
-    compile 'com.android.support:support-v4:20.0.0'
-    compile 'com.android.support:support-v13:20.0.0'
-    compile 'com.android.support:palette-v7:21.0.0-rc1'
+    compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.android.support:support-v13:21.0.0'
+    compile 'com.android.support:palette-v7:21.0.0'
     compile project(':sdk')
     compile project(':libraries:enhanced-edittext')
     compile project(':libraries:fab_button')
