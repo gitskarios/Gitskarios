@@ -9,7 +9,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -48,6 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
 	private DrawerLayout mDrawerLayout;
+	private ActionBarDrawerToggle actionBarDrawerToggle;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -59,7 +63,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+		setSupportActionBar(toolbar);
+
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
+
+		actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+
+		mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
 
 		checkIab();
 
@@ -72,13 +86,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	protected boolean useLogo() {
-		return true;
-	}
-
-	@Override
-	protected int getActionBarLogo() {
-		return R.drawable.ic_ab_drawer_mask;
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		if (actionBarDrawerToggle != null) {
+			actionBarDrawerToggle.syncState();
+		}
 	}
 
 	private void checkIab() {
@@ -103,26 +115,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+		boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
 
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.main_menu_donate, menu);
 
-		final View actionView = menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuPlaceHolder);
-
-		menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuItem)
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						PopupMenu menu = new MainMenu(MainActivity.this, actionView);
-						if (iabEnabled) {
-							SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-							boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
-							if (!iabDonatePurchased) {
-								menu = new DonateMenu(MainActivity.this, actionView);
-							}
-						}
-						menu.show();
-					}
-				});
+		if (iabDonatePurchased) {
+			android.view.MenuItem donateItem = menu.findItem(R.id.action_donate);
+			menu.removeItem(donateItem.getItemId());
+		}
 
 		return true;
 	}
@@ -284,33 +285,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 				editor.apply();
 			}
 			invalidateOptionsMenu();
-		}
-	}
-
-	private class DonateMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
-
-		public DonateMenu(Context context, View anchor) {
-			super(context, anchor);
-			inflate(R.menu.main_menu_donate);
-			setOnMenuItemClickListener(this);
-		}
-
-		@Override
-		public boolean onMenuItemClick(android.view.MenuItem item) {
-			return onOptionsItemSelected(item);
-		}
-	}
-
-	private class MainMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
-		public MainMenu(Context context, View anchor) {
-			super(context, anchor);
-			inflate(R.menu.main_menu);
-			setOnMenuItemClickListener(this);
-		}
-
-		@Override
-		public boolean onMenuItemClick(android.view.MenuItem item) {
-			return onOptionsItemSelected(item);
 		}
 	}
 }

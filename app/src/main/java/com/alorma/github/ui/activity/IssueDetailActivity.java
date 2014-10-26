@@ -3,13 +3,10 @@ package com.alorma.github.ui.activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.services.issues.GetIssueClient;
@@ -18,19 +15,17 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.dialog.NewCommentDialog;
+import com.alorma.github.ui.dialog.NewIssueCommentDialog;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uk.me.lewisdeane.ldialogs.CustomDialog;
@@ -158,7 +153,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	@Override
 	public void onAddComment() {
-		Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
+		Intent intent = NewIssueCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
 		startActivityForResult(intent, NEW_COMMENT_REQUEST);
 	}
 

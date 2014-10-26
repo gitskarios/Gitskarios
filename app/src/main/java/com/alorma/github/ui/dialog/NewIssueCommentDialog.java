@@ -25,7 +25,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 06/09/2014.
  */
-public class NewCommentDialog extends BaseDialogActivity implements BaseClient.OnResultCallback<IssueComment> {
+public class NewIssueCommentDialog extends BaseDialogActivity implements BaseClient.OnResultCallback<IssueComment> {
 
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private EditText edit;
@@ -36,7 +36,7 @@ public class NewCommentDialog extends BaseDialogActivity implements BaseClient.O
 		Bundle bundle = new Bundle();
 		bundle.putParcelable(ISSUE_INFO, issueInfo);
 
-		Intent intent = new Intent(context, NewCommentDialog.class);
+		Intent intent = new Intent(context, NewIssueCommentDialog.class);
 
 		intent.putExtras(bundle);
 		return intent;

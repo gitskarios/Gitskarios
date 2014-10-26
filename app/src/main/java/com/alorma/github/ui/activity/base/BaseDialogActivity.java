@@ -2,6 +2,7 @@ package com.alorma.github.ui.activity.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -11,7 +12,7 @@ import com.alorma.github.R;
 /**
  * Created by Bernat on 06/09/2014.
  */
-public class BaseDialogActivity extends Activity {
+public class BaseDialogActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

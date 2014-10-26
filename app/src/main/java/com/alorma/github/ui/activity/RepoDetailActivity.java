@@ -4,12 +4,11 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.inapp.IabConstants;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -107,7 +105,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.repo_detail_activity);
+		setContentView(R.layout.activity_repo_detail);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+		setSupportActionBar(toolbar);
 
 		if (getIntent().getExtras() != null) {
 			repoInfo = new RepoInfo();
@@ -171,34 +173,15 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				iconDrawable.actionBarSize();
 				item.setIcon(iconDrawable);
 			}
-		}
 
-		return true;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		if (menu != null) {
-			MenuItem item = menu.findItem(R.id.share_repo);
-			if (item != null) {
-				item.setVisible(shareUri != null);
+			if (currentRepo == null || currentRepo.parent == null) {
+				MenuItem parentItem = menu.findItem(R.id.action_show_parent);
+				if (parentItem != null) {
+					menu.removeItem(parentItem.getItemId());
+				}
 			}
-
-			final View actionView = menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuPlaceHolder);
-
-			menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuItem)
-					.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							PopupMenu menu = new MainMenu(RepoDetailActivity.this, actionView, R.menu.repo_detail_content);
-							if (currentRepo != null && currentRepo.parent != null) {
-								menu = new MainMenu(RepoDetailActivity.this, actionView, R.menu.repo_detail_content_parent);
-							}
-							menu.show();
-						}
-					});
 		}
+
 		return true;
 	}
 
