@@ -10,6 +10,7 @@ android {
         versionName "1.5.0"
         versionCode 150
     }
+
     signingConfigs {
         playStore {
             storeFile file(SIGN_FILE)
