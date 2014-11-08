@@ -1,1 +1,1 @@
-include ':app', ':sdk'
+include ':app', ':sdk', ':libraries:enhanced-edittext', ':libraries:githubicons', 'libraries:fab_button'

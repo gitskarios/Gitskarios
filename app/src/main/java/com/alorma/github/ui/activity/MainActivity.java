@@ -202,6 +202,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
+	public void onUserEventsSelected() {
+
+	}
+
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		if (iabHelper != null) {

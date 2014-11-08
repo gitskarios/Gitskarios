@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.List;
 
@@ -41,19 +41,19 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
 
 		textName.setText(item.name);
 
-		IconDrawable iconDrawable = null;
+		GithubIconDrawable iconDrawable = null;
 		if (ContentType.dir.equals(item.type)) {
-			iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_folder);
+			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_directory);
 		} else if (ContentType.submodule.equals(item.type)) {
-			iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_code_fork);
+			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_submodule);
 		} else if (ContentType.file.equals(item.type)) {
-			iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_file);
+			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_text);
 		} else if (ContentType.up.equals(item.type)) {
-			iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_arrow_circle_o_left);
+			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_arrow_left);
 		}
 
 		if (iconDrawable != null) {
-			iconDrawable.sizeDp(28);
+			iconDrawable.sizeDp(32);
 			iconDrawable.colorRes(R.color.gray_github_medium);
 
 			image.setImageDrawable(iconDrawable);

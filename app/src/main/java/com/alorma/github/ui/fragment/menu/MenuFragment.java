@@ -48,20 +48,20 @@ public class MenuFragment extends ListFragment {
 
 		currentSelectedItemId = 0;
 
-		adapter.add(new CategoryMenuItem(-1, R.string.tab_user_parent, color, Iconify.IconValue.fa_group));
+		adapter.add(new CategoryMenuItem(1, R.string.tab_user_parent, color, Iconify.IconValue.fa_group));
+		adapter.add(new MenuItem(0, 1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
+		adapter.add(new MenuItem(1, 1, R.string.menu_events, color, Iconify.IconValue.fa_calendar));
 
-		adapter.add(new MenuItem(0, -1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
-
-		adapter.add(new CategoryMenuItem(-2, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
-		currentSelectedItem = new MenuItem(0, -2, R.string.navigation_repos, color, Iconify.IconValue.fa_code);
+		adapter.add(new CategoryMenuItem(2, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
+		currentSelectedItem = new MenuItem(0, 2, R.string.navigation_repos, color, Iconify.IconValue.fa_code);
 		adapter.add(currentSelectedItem);
-		adapter.add(new MenuItem(1, -2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
-		adapter.add(new MenuItem(2, -2, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
+		adapter.add(new MenuItem(1, 2, R.string.navigation_starred_repos, color, Iconify.IconValue.fa_star));
+		adapter.add(new MenuItem(2, 2, R.string.navigation_watched_repos, color, Iconify.IconValue.fa_eye));
 
-		adapter.add(new CategoryMenuItem(-3, R.string.tab_people_parent, color, Iconify.IconValue.fa_code));
+		adapter.add(new CategoryMenuItem(3, R.string.tab_people_parent, color, Iconify.IconValue.fa_code));
 
-		adapter.add(new MenuItem(0, -3, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
-		adapter.add(new MenuItem(1, -3, R.string.navigation_following, color, Iconify.IconValue.fa_user));
+		adapter.add(new MenuItem(0, 3, R.string.navigation_followers, color, Iconify.IconValue.fa_user));
+		adapter.add(new MenuItem(1, 3, R.string.navigation_following, color, Iconify.IconValue.fa_user));
 
 		if (onMenuItemSelectedListener != null) {
 			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem);
@@ -75,21 +75,19 @@ public class MenuFragment extends ListFragment {
 		MenuItem item = adapter.getItem(position);
 
 		if (item != null && onMenuItemSelectedListener != null) {
-			if (item.id > -1) {
-				currentSelectedItemId = item.id;
-				switch (item.parentId) {
-					case -1:
-						itemUser(item);
-						break;
-					case -2:
-						itemRepositories(item);
-						break;
-					case -3:
-						itemPeople(item);
-						break;
-				}
-				onMenuItemSelectedListener.onMenuItemSelected(item);
+			currentSelectedItemId = item.id;
+			switch (item.parentId) {
+				case 1:
+					itemUser(item);
+					break;
+				case 2:
+					itemRepositories(item);
+					break;
+				case 3:
+					itemPeople(item);
+					break;
 			}
+			onMenuItemSelectedListener.onMenuItemSelected(item);
 		}
 	}
 
@@ -97,6 +95,9 @@ public class MenuFragment extends ListFragment {
 		switch (item.id) {
 			case 0:
 				onMenuItemSelectedListener.onOrganizationsSelected();
+				break;
+			case 1:
+				onMenuItemSelectedListener.onUserEventsSelected();
 				break;
 		}
 	}
@@ -150,5 +151,7 @@ public class MenuFragment extends ListFragment {
 		void closeMenu();
 
 		void onOrganizationsSelected();
+
+		void onUserEventsSelected();
 	}
 }

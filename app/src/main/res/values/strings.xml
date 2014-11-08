@@ -90,6 +90,13 @@
     <string name="repo_check_issue">Has issues</string>
     <string name="repo_check_wiki">Has wiki</string>
     <string name="repo_check_downloads">Downloads</string>
+    <string name="noevents">No events</string>
+    <string name="menu_events">Events</string>
+    <string name="pushed">Pushed</string>
+    <string name="watched">Watched</string>
+    <string name="created">Created</string>
+    <string name="issue_commented">Issue comment</string>
+    <string name="forked">Forked</string>
     <string name="add_gitignore">Add GitIgnore</string>
     <string name="add_license">Add license</string>
     <string name="no_gitignore_template">No gitignore</string>
