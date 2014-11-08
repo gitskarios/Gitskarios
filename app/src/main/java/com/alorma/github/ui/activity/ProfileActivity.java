@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.ProfileFragment;
@@ -39,13 +40,14 @@ public class ProfileActivity extends BackActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.generic_toolbar_no_drawer);
 
 		if (getIntent().getExtras() != null) {
 			if (getIntent().getExtras().containsKey(ProfileFragment.USER)) {
 				User user = getIntent().getParcelableExtra(ProfileFragment.USER);
 				boolean fromIntentFilter = getIntent().getBooleanExtra(ProfileFragment.FROM_INTENT_FILTER, false);
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
-				ft.replace(android.R.id.content, ProfileFragment.newInstance(user, fromIntentFilter));
+				ft.replace(R.id.content, ProfileFragment.newInstance(user, fromIntentFilter));
 				ft.commit();
 			} else {
 				finish();

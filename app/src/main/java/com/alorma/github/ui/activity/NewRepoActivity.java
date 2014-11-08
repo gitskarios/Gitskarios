@@ -3,24 +3,20 @@ package com.alorma.github.ui.activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 
-import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoCreateFragment;
 
-public class SettingsActivity extends BackActivity {
-
+/**
+ * Created by Bernat on 07/10/2014.
+ */
+public class NewRepoActivity extends BackActivity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.settings_activity);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, new GitskariosPreferenceFragment());
+		ft.replace(android.R.id.content, RepoCreateFragment.newInstance());
 		ft.commit();
-
 	}
-
-
-
 }

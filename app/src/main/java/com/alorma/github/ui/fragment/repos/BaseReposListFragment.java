@@ -77,9 +77,9 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		if (settings != null) {
 			settings.unregisterListener(this);
 		}
+		super.onDestroy();
 	}
 }

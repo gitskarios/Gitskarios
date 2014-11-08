@@ -8,26 +8,27 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.services.issues.GetIssueClient;
+
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
-import com.alorma.github.sdk.services.issues.GetIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.dialog.NewCommentDialog;
+import com.alorma.github.ui.dialog.NewIssueCommentDialog;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class IssueDetailActivity extends BackActivity implements RefreshListener
 		, IssueDiscussionFragment.IssueDiscussionListener {
@@ -111,7 +112,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 		if (permissions != null && permissions.push && issueState == IssueState.open) {
 			menu.add(0, R.id.action_close_issue, 0, getString(R.string.closeIssue));
-			menu.findItem(R.id.action_close_issue).setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
+			menu.findItem(R.id.action_close_issue).setIcon(new IconDrawable(this, Iconify.IconValue.fa_times).actionBarSize().colorRes(R.color.white));
 			menu.findItem(R.id.action_close_issue).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 
@@ -152,7 +153,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	@Override
 	public void onAddComment() {
-		Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
+		Intent intent = NewIssueCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
 		startActivityForResult(intent, NEW_COMMENT_REQUEST);
 	}
 
@@ -160,26 +161,20 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		String title = getString(R.string.closeIssue);
 		String accept = getString(R.string.accept);
 		String cancel = getString(R.string.cancel);
-		CustomDialog.Builder builder = new CustomDialog.Builder(this, title, accept);
-		builder.darkTheme(false);
-		builder.positiveColor(getString(R.string.lDialogPositve));
-		builder.darkTheme(false);
-		builder.negativeText(cancel);
-		builder.negativeColor(getString(R.string.lDialogNegative));
-		builder.darkTheme(true);
-		CustomDialog customDialog = builder.build();
-		customDialog.setClickListener(new CustomDialog.ClickListener() {
-			@Override
-			public void onConfirmClick() {
-				closeIssue();
-			}
 
-			@Override
-			public void onCancelClick() {
+		MaterialDialog dialog = new MaterialDialog.Builder(this)
+				.title(title)
+				.positiveText(accept)
+				.negativeText(cancel)
+				.callback(new MaterialDialog.SimpleCallback() {
+					@Override
+					public void onPositive(MaterialDialog materialDialog) {
+						closeIssue();
+					}
+				})
+				.build();
 
-			}
-		});
-		customDialog.show();
+		dialog.show();
 	}
 
 	private void closeIssue() {

@@ -97,5 +97,8 @@
     <string name="created">Created</string>
     <string name="issue_commented">Issue comment</string>
     <string name="forked">Forked</string>
+    <string name="add_gitignore">Add GitIgnore</string>
+    <string name="add_license">Add license</string>
+    <string name="no_gitignore_template">No gitignore</string>
 
 </resources>

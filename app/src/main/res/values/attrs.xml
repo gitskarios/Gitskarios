@@ -29,4 +29,32 @@
         <attr name="top_id" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="EnhancedEditText">
+        <attr format="string" name="prefixIcon"/>
+        <attr format="reference|string" localization="suggested" name="prefixText"/>
+        <attr format="reference|color" name="prefixColor"/>
+        <attr format="string" name="suffixIcon"/>
+        <attr format="reference|string" localization="suggested" name="suffixText"/>
+        <attr format="reference|color" name="suffixColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="FloatingActionButton">
+        <attr name="colorPressed" format="color"/>
+        <attr name="colorNormal" format="color"/>
+        <attr name="float_icon" format="reference"/>
+        <attr name="size" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="mini" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AddFloatingActionButton">
+        <attr name="plusIconColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="FloatingActionsMenu">
+        <attr name="addButtonColorPressed" format="color"/>
+        <attr name="addButtonColorNormal" format="color"/>
+        <attr name="addButtonPlusIconColor" format="color"/>
+    </declare-styleable>
+
+
 </resources>
