@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
@@ -26,6 +30,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class BaseActivity extends ActionBarActivity {
 
 	private AuthReceiver authReceiver;
+	private DrawerLayout mDrawerLayout;
+	private ActionBarDrawerToggle actionBarDrawerToggle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,62 @@ public class BaseActivity extends ActionBarActivity {
 			BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
 		}
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+	}
+
+	@Override
+	public void setContentView(int layoutResID) {
+		super.setContentView(layoutResID);
+		if (isToolbarEnsbled()) {
+			Toolbar toolbar = (Toolbar) findViewById(getToolbarId());
+
+			if (toolbar != null) {
+				setSupportActionBar(toolbar);
+
+				mDrawerLayout = (DrawerLayout) findViewById(getDrawerLayout());
+
+				if (mDrawerLayout != null) {
+					actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
+
+					actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+
+					mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+				}
+			}
+		}
+	}
+
+	public boolean isToolbarEnsbled() {
+		return true;
+	}
+
+	public int getToolbarId() {
+		return R.id.toolbar;
+	}
+
+	public int getDrawerLayout() {
+		return R.id.drawer_layout;
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		if (actionBarDrawerToggle != null) {
+			actionBarDrawerToggle.syncState();
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			if (mDrawerLayout != null) {
+				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+					mDrawerLayout.closeDrawer(Gravity.START);
+				} else {
+					mDrawerLayout.openDrawer(Gravity.START);
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -68,6 +130,21 @@ public class BaseActivity extends ActionBarActivity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(loginIntent);
 			finish();
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
+			closeMenu();
+		} else {
+			super.onBackPressed();
+		}
+	}
+
+	public void closeMenu() {
+		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
+			mDrawerLayout.closeDrawer(Gravity.START);
 		}
 	}
 }

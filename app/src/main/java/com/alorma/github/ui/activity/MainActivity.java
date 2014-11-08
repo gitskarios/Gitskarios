@@ -50,8 +50,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
-	private DrawerLayout mDrawerLayout;
-	private ActionBarDrawerToggle actionBarDrawerToggle;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -63,17 +61,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-		setSupportActionBar(toolbar);
-
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-		actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
-
-		actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-
-		mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
 
 		checkIab();
 
@@ -83,14 +70,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		menuFragment.setOnMenuItemSelectedListener(this);
 		ft.replace(R.id.menuContent, menuFragment);
 		ft.commit();
-	}
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		if (actionBarDrawerToggle != null) {
-			actionBarDrawerToggle.syncState();
-		}
 	}
 
 	private void checkIab() {
@@ -130,15 +109,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			if (mDrawerLayout != null) {
-				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-					mDrawerLayout.closeDrawer(Gravity.START);
-				} else {
-					mDrawerLayout.openDrawer(Gravity.START);
-				}
-			}
-		} else if (item.getItemId() == R.id.action_donate) {
+		if (item.getItemId() == R.id.action_donate) {
 			try {
 				iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
 						this, UUID.randomUUID().toString());
@@ -220,12 +191,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		closeMenu();
 	}
 
-	@Override
-	public void closeMenu() {
-		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
-			mDrawerLayout.closeDrawer(Gravity.START);
-		}
-	}
+
 
 	@Override
 	public void onOrganizationsSelected() {
@@ -233,15 +199,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			organizationsFragmet = OrganzationsFragment.newInstance();
 		}
 		setFragment(organizationsFragmet);
-	}
-
-	@Override
-	public void onBackPressed() {
-		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
-			closeMenu();
-		} else {
-			super.onBackPressed();
-		}
 	}
 
 	@Override

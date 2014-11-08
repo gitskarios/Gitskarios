@@ -8,6 +8,7 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.services.issues.GetIssueClient;
 
@@ -28,7 +29,6 @@ import com.joanzapata.android.iconify.Iconify;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class IssueDetailActivity extends BackActivity implements RefreshListener
 		, IssueDiscussionFragment.IssueDiscussionListener {
@@ -161,26 +161,20 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		String title = getString(R.string.closeIssue);
 		String accept = getString(R.string.accept);
 		String cancel = getString(R.string.cancel);
-		CustomDialog.Builder builder = new CustomDialog.Builder(this, title, accept);
-		builder.darkTheme(false);
-		builder.positiveColor(getString(R.string.lDialogPositve));
-		builder.darkTheme(false);
-		builder.negativeText(cancel);
-		builder.negativeColor(getString(R.string.lDialogNegative));
-		builder.darkTheme(true);
-		CustomDialog customDialog = builder.build();
-		customDialog.setClickListener(new CustomDialog.ClickListener() {
-			@Override
-			public void onConfirmClick() {
-				closeIssue();
-			}
 
-			@Override
-			public void onCancelClick() {
+		MaterialDialog dialog = new MaterialDialog.Builder(this)
+				.title(title)
+				.positiveText(accept)
+				.negativeText(cancel)
+				.callback(new MaterialDialog.SimpleCallback() {
+					@Override
+					public void onPositive(MaterialDialog materialDialog) {
+						closeIssue();
+					}
+				})
+				.build();
 
-			}
-		});
-		customDialog.show();
+		dialog.show();
 	}
 
 	private void closeIssue() {

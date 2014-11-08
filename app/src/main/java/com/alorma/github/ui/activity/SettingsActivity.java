@@ -16,7 +16,7 @@ public class SettingsActivity extends BackActivity {
 		setContentView(R.layout.settings_activity);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(android.R.id.content, new GitskariosPreferenceFragment());
+		ft.replace(R.id.content, new GitskariosPreferenceFragment());
 		ft.commit();
 
 	}

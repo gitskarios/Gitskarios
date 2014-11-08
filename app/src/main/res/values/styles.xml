@@ -1,24 +1,11 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme.NoBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/accent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/accent</item>
         <item name="colorPrimaryDark">@color/accentDark</item>
         <item name="colorAccent">@color/complementary</item>
-        <!-- You can also set colorControlNormal, colorControlActivated
-             colorControlHighlight & colorSwitchThumbNormal. -->
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-    </style>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowBackground">@color/gray_github_light</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowIsTranslucent">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 

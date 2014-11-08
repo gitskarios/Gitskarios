@@ -2,10 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,16 +19,11 @@ import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.github.ui.view.FABCenterLayout;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -49,7 +41,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	private EditText editLabels;
 	private EditText editTitle;
 	private EditText editBody;
-	private FABCenterLayout fabLayout;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, boolean pushAcces) {
 		Bundle bundle = new Bundle();
@@ -59,6 +50,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 		Intent intent = new Intent(context, NewIssueActivity.class);
 		intent.putExtras(bundle);
 		return intent;
+	}
+
+	@Override
+	public int getToolbarId() {
+		return super.getToolbarId();
 	}
 
 	@Override
@@ -89,13 +85,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	}
 
 	private void findViews() {
-		fabLayout = (FABCenterLayout) findViewById(R.id.newFabLayout);
-		fabLayout.setFabClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				checkDataAndCreateIssue();
-			}
-		}, null);
+		// TODO 		checkDataAndCreateIssue();
 		pushAccesLayout = findViewById(R.id.pushAccessLayout);
 		editTitle = (EditText) findViewById(R.id.editTitle);
 		editBody = (EditText) findViewById(R.id.editBody);

@@ -14,6 +14,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.base.BaseDialogActivity;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -25,7 +26,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 06/09/2014.
  */
-public class NewIssueCommentDialog extends BaseDialogActivity implements BaseClient.OnResultCallback<IssueComment> {
+public class NewIssueCommentDialog extends BackActivity implements BaseClient.OnResultCallback<IssueComment> {
 
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private EditText edit;
