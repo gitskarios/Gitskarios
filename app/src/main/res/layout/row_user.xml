@@ -11,7 +11,7 @@
         android:id="@+id/carddemo_largeimage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card:card_layout_resourceID="@layout/native_material_largeimage_card"
+        card:card_layout_resourceID="@layout/native_material_largeimage_text_card"
         style="@style/card_external"
         />
 <!--
