@@ -32,7 +32,7 @@ public class OrganizationsAdapter extends ArrayAdapter<Organization> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
 		View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
-		UsersHolder userHolder = new UsersHolder(v);
+		/*UsersHolder userHolder = new UsersHolder(v);
 
 		Organization organization = getItem(position);
 
@@ -42,7 +42,7 @@ public class OrganizationsAdapter extends ArrayAdapter<Organization> {
 
 		if (organization.created_at != null) {
 			userHolder.authorDate.setText(getDate(organization.created_at));
-		}
+		}*/
 
 		return v;
 	}

@@ -47,7 +47,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -67,7 +66,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private boolean fromIntentFilter;
 	private boolean repoStarred;
 	private boolean repoWatched;
-	private SmoothProgressBar smoothBar;
 	private Repo currentRepo;
 	private MarkdownFragment markDownFragment;
 	private FilesTreeFragment filesTreeFragment;
@@ -148,9 +146,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(this, repoInfo.owner, repoInfo.repo);
 		watcheClien.setOnResultCallback(new WatchedResult());
 		watcheClien.execute();
-
-		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
-
 	}
 
 	private void setUpShare(RepoInfo info) {
@@ -240,12 +235,12 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 	@Override
 	public void showRefresh() {
-		smoothBar.progressiveStart();
+		// TODO START LOADING
 	}
 
 	@Override
 	public void cancelRefresh() {
-		smoothBar.progressiveStop();
+		// TODO STOP LOADING
 	}
 
 	@Override

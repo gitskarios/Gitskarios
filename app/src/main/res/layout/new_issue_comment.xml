@@ -8,20 +8,6 @@
 
     <include layout="@layout/toolbar" />
 
-    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:indeterminate="true"
-        android:background="@color/gray_github_light"
-        app:spb_sections_count="4"
-        app:spb_colors="@array/colorsSmooth"
-        app:spb_speed="2.0"
-        app:spb_stroke_width="4dp"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_reversed="false"
-        app:spb_mirror_mode="false"
-        android:id="@id/smoothBar"/>
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="match_parent"

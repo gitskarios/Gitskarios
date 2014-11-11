@@ -19,7 +19,6 @@ import com.alorma.github.ui.activity.base.BaseDialogActivity;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -31,7 +30,6 @@ public class NewIssueCommentDialog extends BackActivity implements BaseClient.On
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private EditText edit;
 	private IssueInfo issueInfo;
-	private SmoothProgressBar smoothBar;
 
 	public static Intent launchIntent(Context context, IssueInfo issueInfo) {
 		Bundle bundle = new Bundle();
@@ -52,8 +50,6 @@ public class NewIssueCommentDialog extends BackActivity implements BaseClient.On
 			issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 
 			if (issueInfo != null) {
-				smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
-				smoothBar.progressiveStop();
 				edit = (EditText) findViewById(R.id.edit);
 			}
 		} else {
@@ -82,9 +78,6 @@ public class NewIssueCommentDialog extends BackActivity implements BaseClient.On
 		super.onOptionsItemSelected(item);
 
 		if (item.getItemId() == R.id.action_send) {
-			if (smoothBar != null) {
-				smoothBar.progressiveStart();
-			}
 			String body = edit.getText().toString();
 			NewIssueCommentClient client = new NewIssueCommentClient(this, issueInfo, body);
 			client.setOnResultCallback(this);
@@ -96,9 +89,6 @@ public class NewIssueCommentDialog extends BackActivity implements BaseClient.On
 
 	@Override
 	public void onResponseOk(IssueComment issueComment, Response r) {
-		if (smoothBar != null) {
-			smoothBar.progressiveStop();
-		}
 		setResult(RESULT_OK);
 		finish();
 	}

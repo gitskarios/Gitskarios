@@ -29,7 +29,6 @@ import com.alorma.github.utils.ImageUtils;
 
 import java.io.UnsupportedEncodingException;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -46,7 +45,6 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	private WebView webView;
 	private ImageView imageView;
 	private Content content;
-	private SmoothProgressBar smoothBar;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, String head, String name, String path) {
 		Bundle bundle = new Bundle();
@@ -68,7 +66,6 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 
 		webView = (WebView) findViewById(R.id.webview);
 		imageView = (ImageView) findViewById(R.id.imageView);
-		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 
 		String owner = getIntent().getExtras().getString(OWNER);
 		String repo = getIntent().getExtras().getString(REPO);
@@ -78,7 +75,6 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 
 		setTitle(name);
 
-		smoothBar.progressiveStart();
 
 		GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
 		fileContentClient.setOnResultCallback(this);
@@ -134,7 +130,7 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 				webView.setVisibility(View.GONE);
 				imageView.setVisibility(View.VISIBLE);
 				imageView.setImageBitmap(bitmap);
-				smoothBar.progressiveStop();
+				// TODO STOP loading
 			} catch (Exception e) {
 				Toast.makeText(this, R.string.error_loading_image, Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
@@ -159,7 +155,7 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		@Override
 		public void onProgressChanged(WebView view, int progress) {
 			if (progress >= 100) {
-				smoothBar.progressiveStop();
+				// TODO STOP LOADING
 			}
 		}
 	}

@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.inapp.IabConstants;
@@ -25,7 +26,15 @@ import com.alorma.github.inapp.IabHelper;
 import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
+import com.alorma.github.sdk.bean.dto.response.ListEmails;
+import com.alorma.github.sdk.bean.dto.response.ListUsers;
+import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.github.sdk.services.user.UsersService;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
@@ -37,8 +46,14 @@ import com.alorma.github.ui.fragment.users.FollowingFragment;
 
 import java.util.UUID;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.http.Path;
+import retrofit.http.Query;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
-		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
+		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, BaseClient.OnResultCallback<User> {
 
 	private MenuFragment menuFragment;
 
@@ -50,6 +65,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
+	private EventsListFragment eventsFragment;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -61,6 +77,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		GetAuthUserClient client = new GetAuthUserClient(this);
+		client.setOnResultCallback(this);
+		client.execute();
 
 		checkIab();
 
@@ -191,8 +210,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		closeMenu();
 	}
 
-
-
 	@Override
 	public void onOrganizationsSelected() {
 		if (organizationsFragmet == null) {
@@ -203,7 +220,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onUserEventsSelected() {
-
+		GitskariosSettings settings = new GitskariosSettings(this);
+		String user = settings.getAuthUser(null);
+		if (user != null) {
+			if (eventsFragment == null) {
+				eventsFragment = EventsListFragment.newInstance(user);
+			}
+			setFragment(eventsFragment);
+		} else {
+			// TODO SHOW Error no user
+		}
 	}
 
 	@Override
@@ -248,5 +274,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			}
 			invalidateOptionsMenu();
 		}
+	}
+
+	@Override
+	public void onResponseOk(User user, Response r) {
+		GitskariosSettings settings = new GitskariosSettings(this);
+		settings.saveAuthUser(user.login);
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+
 	}
 }

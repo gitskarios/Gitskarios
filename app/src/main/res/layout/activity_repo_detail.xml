@@ -41,19 +41,6 @@
                 android:background="@drawable/spinner_ab_background"/>
 
         </LinearLayout>
-
-        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:indeterminate="true"
-            app:spb_sections_count="4"
-            app:spb_color="@color/white"
-            app:spb_speed="2.0"
-            app:spb_stroke_width="4dp"
-            app:spb_stroke_separator_length="4dp"
-            app:spb_reversed="false"
-            app:spb_mirror_mode="false"
-            android:id="@id/smoothBar"/>
     </FrameLayout>
 
     <FrameLayout

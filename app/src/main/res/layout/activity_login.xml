@@ -6,20 +6,6 @@
     tools:context="com.alorma.github.ui.activity.LoginActivity"
     android:orientation="vertical">
 
-    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:spb_sections_count="4"
-        app:spb_colors="@array/colorsSmooth"
-        app:spb_speed="2.0"
-        app:spb_stroke_width="4dp"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_reversed="true"
-        app:spb_mirror_mode="true"
-        android:id="@id/smoothBar"
-        android:background="@color/gray_github_light"/>
-
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

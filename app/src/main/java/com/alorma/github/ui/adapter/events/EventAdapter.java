@@ -16,14 +16,19 @@ import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
 import com.alorma.github.ui.adapter.events.views.WatchEventView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import it.gmariotti.cardslib.library.internal.Card;
 
 /**
  * Created by Bernat on 03/10/2014.
  */
 public class EventAdapter extends LazyAdapter<GithubEvent> {
 
-	public EventAdapter(Context context, ArrayList<GithubEvent> githubEvents) {
-		super(context, githubEvents);
+	public EventAdapter(Context context, Collection<GithubEvent> collection) {
+		super(context, new ArrayList<GithubEvent>());
+		addAll(collection);
 	}
 
 	@Override
@@ -55,5 +60,28 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 		v.setEvent(event);
 
 		return v;
+	}
+
+	@Override
+	public void addAll(Collection<? extends GithubEvent> collection) {
+		for (GithubEvent githubEvent : collection) {
+			if (checkEventHandled(githubEvent)) {
+				add(githubEvent);
+			}
+		}
+	}
+
+	@Override
+	public void addAll(GithubEvent... items) {
+		super.addAll(items);
+		for (GithubEvent githubEvent : items) {
+			if (checkEventHandled(githubEvent)) {
+				add(githubEvent);
+			}
+		}
+	}
+
+	private boolean checkEventHandled(GithubEvent event) {
+		return (event.getType() == EventType.PushEvent) || (event.getType() == EventType.WatchEvent) || (event.getType() == EventType.CreateEvent) || (event.getType() == EventType.IssueCommentEvent) || (event.getType() == EventType.ForkEvent);
 	}
 }

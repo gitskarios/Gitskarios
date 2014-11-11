@@ -21,7 +21,6 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.bugsense.trace.BugSenseHandler;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -31,7 +30,6 @@ public class LoginActivity extends Activity {
 
 	private StoreCredentials credentials;
 	private WebView webview;
-	private SmoothProgressBar bar;
 	private ProgressDialog progressDialog;
 
 	@Override
@@ -43,8 +41,6 @@ public class LoginActivity extends Activity {
 		}
 
 		setContentView(R.layout.activity_login);
-
-		bar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 
 		credentials = new StoreCredentials(this);
 		if (credentials.token() != null) {
@@ -96,7 +92,7 @@ public class LoginActivity extends Activity {
 		private RequestTokenClient requestTokenClient;
 
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
-			bar.progressiveStart();
+			// TODO START LOADING
 			String accessTokenFragment = "access_token=";
 			String accessCodeFragment = "code";
 
@@ -132,7 +128,7 @@ public class LoginActivity extends Activity {
 		@Override
 		public void onPageFinished(WebView view, String url) {
 			super.onPageFinished(view, url);
-			bar.progressiveStop();
+			// TODO STOP LOADING
 		}
 
 		@Override

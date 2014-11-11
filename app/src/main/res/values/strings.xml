@@ -100,5 +100,6 @@
     <string name="add_gitignore">Add GitIgnore</string>
     <string name="add_license">Add license</string>
     <string name="no_gitignore_template">No gitignore</string>
+    <string name="follow">Follow</string>
 
 </resources>
