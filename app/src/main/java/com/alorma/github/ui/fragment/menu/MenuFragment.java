@@ -49,7 +49,7 @@ public class MenuFragment extends ListFragment {
 		currentSelectedItemId = 0;
 
 		adapter.add(new CategoryMenuItem(1, R.string.tab_user_parent, color, Iconify.IconValue.fa_group));
-		//adapter.add(new MenuItem(0, 1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
+		adapter.add(new MenuItem(0, 1, R.string.menu_organizations, color, Iconify.IconValue.fa_group));
 		adapter.add(new MenuItem(1, 1, R.string.menu_events, color, Iconify.IconValue.fa_calendar));
 
 		adapter.add(new CategoryMenuItem(2, R.string.tab_repos_parent, color, Iconify.IconValue.fa_code));
@@ -94,7 +94,7 @@ public class MenuFragment extends ListFragment {
 	private void itemUser(MenuItem item) {
 		switch (item.id) {
 			case 0:
-				//onMenuItemSelectedListener.onOrganizationsSelected();
+				onMenuItemSelectedListener.onOrganizationsSelected();
 				break;
 			case 1:
 				onMenuItemSelectedListener.onUserEventsSelected();

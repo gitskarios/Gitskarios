@@ -40,27 +40,14 @@ public class UsersAdapter extends ArrayAdapter<User> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
 		View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
-		//UsersHolder userHolder = new UsersHolder(v);
-
 		User user = getItem(position);
 
 		CardViewNative cardViewNative = (CardViewNative) v.findViewById(R.id.carddemo_largeimage);
-/*
-		ArrayList<BaseSupplementalAction> actions = new ArrayList<BaseSupplementalAction>();
-		TextSupplementalAction t1 = new TextSupplementalAction(getContext(), R.string.follow);
-		t1.setOnActionClickListener(new BaseSupplementalAction.OnActionClickListener() {
-			@Override
-			public void onClick(Card card, View view) {
 
-			}
-		});
-		actions.add(t1);
-		*/
 		MaterialLargeImageCard card =
 				MaterialLargeImageCard.with(getContext())
 						.setTitle(user.login)
 						.useDrawableExternal(new UiDrawableExternal(user.avatar_url))
-						//.setupSupplementalActions(R.layout.carduser_supplemental_actions_large_icon, actions)
 		.build();
 		cardViewNative.setCard(card);
 
