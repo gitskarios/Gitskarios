@@ -6,7 +6,7 @@
                                                        android:layout_height="wrap_content"
                                                        fab:colorNormal="@color/white"
                                                        fab:colorPressed="@color/gray_github_medium"
-                                                       fab:plusIconColor="@color/accent"
+                                                       fab:plusIconColor="?attr/colorPrimary"
                                                        android:layout_alignParentBottom="true"
                                                        android:layout_centerHorizontal="true"
                                                        android:layout_marginBottom="16dp"

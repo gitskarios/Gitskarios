@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.ProfileActivity;

@@ -1,12 +1,16 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@color/accent</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/accent</item>
         <item name="colorPrimaryDark">@color/accentDark</item>
         <item name="colorAccent">@color/complementary</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
+    <style name="AppTheme.Login">
+        <item name="android:windowBackground">@color/accent</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
@@ -49,6 +53,11 @@
     <style name="enhancedEditText" parent="android:style/Widget.EditText">
         <item name="prefixColor">@color/defaultEnchancedColor</item>
         <item name="suffixColor">@color/defaultEnchancedColor</item>
+    </style>
+
+    <style name="card_row_item_text">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
 </resources>

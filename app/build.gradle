@@ -53,4 +53,6 @@ dependencies {
 
     //Optional for built-in cards
     compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.0.0'
+
+    compile 'com.pnikosis:materialish-progress:1.0'
 }

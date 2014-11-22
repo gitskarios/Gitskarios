@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:wheel="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,10 +25,10 @@
                 android:layout_height="match_parent"
                 android:id="@+id/chevron"
                 android:layout_margin="8dp"
-                app:border_color="@color/accent"
+                app:border_color="?attr/colorPrimary"
                 app:border_width="4dp"
                 app:border="true"
-                android:src="@drawable/ic_contact_picture" />
+                android:src="@drawable/ic_contact_picture"/>
         </LinearLayout>
 
         <fr.dvilleneuve.android.EnhancedTextView
@@ -38,7 +39,7 @@
             android:layout_toEndOf="@+id/avatarParent"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="4dp" />
+            android:layout_margin="4dp"/>
 
         <fr.dvilleneuve.android.EnhancedTextView
             android:layout_width="wrap_content"
@@ -50,7 +51,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="4dp"
-            app:prefixColor="@color/accent"/>
+            app:prefixColor="?attr/colorPrimary"/>
 
         <fr.dvilleneuve.android.EnhancedTextView
             android:layout_width="wrap_content"
@@ -62,7 +63,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="4dp"
-            app:prefixColor="@color/accent" />
+            app:prefixColor="?attr/colorPrimary"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -77,15 +78,15 @@
             android:layout_weight="1"
             android:id="@+id/num1"
             android:clickable="true"
-            app:barColor="@color/accent"/>
+            app:barColor="?attr/colorPrimary"/>
 
-       <!-- <NumericTitle
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/num2"
-            android:clickable="true"
-            app:barColor="@color/accent" />-->
+        <!-- <NumericTitle
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:id="@+id/num2"
+             android:clickable="true"
+             app:barColor="?attr/colorPrimary" />-->
 
         <com.alorma.github.ui.view.NumericTitle
             android:layout_width="match_parent"
@@ -93,7 +94,7 @@
             android:layout_weight="1"
             android:id="@+id/num3"
             android:clickable="true"
-            app:barColor="@color/accent" />
+            app:barColor="?attr/colorPrimary"/>
 
         <com.alorma.github.ui.view.NumericTitle
             android:layout_width="match_parent"
@@ -101,11 +102,12 @@
             android:layout_weight="1"
             android:id="@+id/num4"
             android:clickable="true"
-            app:barColor="@color/accent" />
+            app:barColor="?attr/colorPrimary"/>
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content3" />
+        android:id="@+id/content3"
+        android:background="@color/white"/>
 </LinearLayout>

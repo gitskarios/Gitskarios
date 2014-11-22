@@ -33,6 +33,12 @@ public class BaseActivity extends ActionBarActivity {
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle actionBarDrawerToggle;
 
+	public Toolbar getToolbar() {
+		return toolbar;
+	}
+
+	private Toolbar toolbar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,8 +57,8 @@ public class BaseActivity extends ActionBarActivity {
 	@Override
 	public void setContentView(int layoutResID) {
 		super.setContentView(layoutResID);
-		if (isToolbarEnsbled()) {
-			Toolbar toolbar = (Toolbar) findViewById(getToolbarId());
+		if (isToolbarEnabled()) {
+			toolbar = (Toolbar) findViewById(getToolbarId());
 
 			if (toolbar != null) {
 				setSupportActionBar(toolbar);
@@ -70,7 +76,7 @@ public class BaseActivity extends ActionBarActivity {
 		}
 	}
 
-	public boolean isToolbarEnsbled() {
+	public boolean isToolbarEnabled() {
 		return true;
 	}
 

@@ -15,7 +15,8 @@
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.LoginActivity">
+        <activity android:name=".ui.activity.LoginActivity"
+            android:theme="@style/AppTheme.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

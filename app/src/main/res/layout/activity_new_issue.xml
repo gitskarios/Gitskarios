@@ -72,7 +72,7 @@
             android:background="@drawable/edit_text_material_dark"
             android:id="@+id/editLabels"
             app:floatingLabel="normal"
-            app:primaryColor="@color/accent"/>
+            app:primaryColor="?attr/colorPrimary"/>
 
         <Spinner
             android:layout_width="match_parent"

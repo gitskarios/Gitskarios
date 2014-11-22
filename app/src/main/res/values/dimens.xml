@@ -49,4 +49,12 @@
     <dimen name="fab_stroke_width">0.5dp</dimen>
 
     <dimen name="fab_actions_spacing">16dp</dimen>
+
+    <dimen name="card_row_item_height">56dp</dimen>
+    <dimen name="card_row_item_margin">12dp</dimen>
+    <dimen name="card_row_item_image_size">40dp</dimen>
+    <dimen name="card_row_item_image_padding">10dp</dimen>
+    <dimen name="card_row_item_divider_height">1dp</dimen>
+    <dimen name="card_row_item_divider_left_margin">@dimen/card_row_item_height</dimen>
+    <dimen name="card_row_item_height_extra">73dp</dimen>
 </resources>

@@ -34,7 +34,7 @@
                 android:paddingTop="0dp"
                 android:textSize="@dimen/textSizeXLarge"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/accentDark"
+                android:textColor="?attr/colorPrimaryDark"
                 android:layout_marginBottom="@dimen/gapMedium"/>
 
             <com.alorma.github.ui.view.CircularImageView

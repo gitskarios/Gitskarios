@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.profile;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -31,6 +31,7 @@ import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.util.ArrayList;
 
@@ -50,8 +51,8 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 	private EnhancedTextView blogText;
 	private EnhancedTextView joinedText;
 	private Palette.Swatch usedPalette;
-	private Palette palette;
 	private ArrayList<NumericTitle> numericTitles;
+	private ProgressWheel progressWheel;
 
 	public static ProfileFragment newInstance() {
 		return new ProfileFragment();
@@ -107,7 +108,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 
 		setUpFromSwatch(null);
 
-		BaseUsersClient<User> requestClient = null;
 		if (getArguments() != null) {
 
 			if (getArguments().containsKey(USER)) {
@@ -116,6 +116,7 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 			}
 		}
 
+		BaseUsersClient<User> requestClient;
 		if (user != null) {
 			requestClient = new RequestUserClient(getActivity(), user.login);
 		} else {
@@ -237,7 +238,6 @@ public class ProfileFragment extends BaseFragment implements BaseClient.OnResult
 	}
 
 	public void setUpFromPalette(Palette palette) {
-		this.palette = palette;
 		if (palette != null) {
 			Swatch item = PaletteUtils.getProfileSwatch(palette);
 

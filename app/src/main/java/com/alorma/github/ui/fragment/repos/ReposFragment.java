@@ -92,4 +92,9 @@ public class ReposFragment extends BaseReposListFragment {
 		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
 	}
+
+	@Override
+	protected boolean useInnerSwipeRefresh() {
+		return true;
+	}
 }
