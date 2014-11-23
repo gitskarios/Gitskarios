@@ -1,7 +1,6 @@
 package com.alorma.github.ui.cards.profile;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
@@ -19,11 +17,11 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
 /**
  * Created by Bernat on 23/11/2014.
  */
-public class ReposCard extends Card implements View.OnClickListener {
+public class GithubDataCard extends Card implements View.OnClickListener {
 	private User user;
 
-	public ReposCard(Context context, User user) {
-		super(context, R.layout.card_repo_layout);
+	public GithubDataCard(Context context, User user) {
+		super(context, R.layout.card_github_data_layout);
 		this.user = user;
 		CardHeader header = new CardHeader(context);
 		header.setTitle(context.getString(R.string.public_data));

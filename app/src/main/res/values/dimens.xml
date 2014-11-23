@@ -57,4 +57,7 @@
     <dimen name="card_row_item_divider_height">1dp</dimen>
     <dimen name="card_row_item_divider_left_margin">@dimen/card_row_item_height</dimen>
     <dimen name="card_row_item_height_extra">73dp</dimen>
+    <dimen name="user_row_item_height">72dp</dimen>
+    <dimen name="user_row_item_image_size">40dp</dimen>
+    <dimen name="user_row_item_margin">16dp</dimen>
 </resources>

@@ -63,6 +63,7 @@ public final class GithubIconify {
 		octicon_comment_discussion('\uf04f'),
 		octicon_repo_push('\uf005'),
 		octicon_organization('\uf037'),
+		octicon_person('\uf018'),
 		octicon_location('\uf060'),
 		octicon_mail('\uf03b'),
 		octicon_eye('\uf04e');

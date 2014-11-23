@@ -17,6 +17,8 @@
     <string name="tab_repos_parent">Repositories</string>
     <string name="repos_num">%d Repositories</string>
     <string name="gists_num">%d Gists</string>
+    <string name="collaborators_num">%d Collaborators</string>
+    <string name="one_collaborator_num">%d Collaborator</string>
     <string name="navigation_repos">My Repositories</string>
     <string name="navigation_watched_repos">Watched</string>
     <string name="navigation_starred_repos">Starred</string>

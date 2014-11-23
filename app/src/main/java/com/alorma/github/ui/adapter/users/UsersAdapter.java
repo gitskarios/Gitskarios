@@ -5,10 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.ui.view.CircularImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,14 +45,19 @@ public class UsersAdapter extends ArrayAdapter<User> {
 		View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
 		User user = getItem(position);
 
-		CardViewNative cardViewNative = (CardViewNative) v.findViewById(R.id.carddemo_largeimage);
+		CircularImageView imageView = (CircularImageView) v.findViewById(R.id.avatarAuthorImage);
 
-		MaterialLargeImageCard card =
-				MaterialLargeImageCard.with(getContext())
-						.setTitle(user.login)
-						.useDrawableExternal(new UiDrawableExternal(user.avatar_url))
-		.build();
-		cardViewNative.setCard(card);
+		ImageLoader.getInstance().displayImage(user.avatar_url, imageView);
+
+		TextView textView = (TextView) v.findViewById(R.id.textAuthorLogin);
+
+		textView.setText(user.login);
+
+		View divider = v.findViewById(R.id.divider);
+
+		if (position == getCount()) {
+			divider.setVisibility(View.GONE);
+		}
 
 		return v;
 	}

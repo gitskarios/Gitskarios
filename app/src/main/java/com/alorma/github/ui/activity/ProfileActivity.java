@@ -5,21 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.WindowCompat;
-import android.support.v4.widget.ScrollerCompat;
 import android.support.v7.graphics.Palette;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -29,15 +20,10 @@ import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
-import com.alorma.github.ui.cards.profile.ReposCard;
+import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.fragment.profile.ProfileFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.github.ui.view.MyScroll;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardViewNative;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -130,7 +116,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	private void fillCardRepos(User user) {
-		ReposCard card = new ReposCard(this, user);
+		GithubDataCard card = new GithubDataCard(this, user);
 
 		cardRepos.setCard(card);
 		cardRepos.setVisibility(View.VISIBLE);

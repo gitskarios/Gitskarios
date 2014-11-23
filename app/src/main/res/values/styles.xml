@@ -59,5 +59,9 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">15sp</item>
     </style>
+    <style name="user_row_item">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">15sp</item>
+    </style>
 
 </resources>
