@@ -21,15 +21,20 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
 /**
  * Created by Bernat on 22/11/2014.
  */
-public class BioCard extends Card{
+public class BioCard extends Card implements View.OnClickListener {
+
+	private BioCardListener bioCardListener;
+
 	private User user;
 
 	public BioCard(Context context, User user) {
 		super(context, R.layout.card_bio_layout);
 		this.user = user;
-		CardHeader header = new CardHeader(context);
-		header.setTitle(user.name);
-		addCardHeader(header);
+		if (!TextUtils.isEmpty(user.name)) {
+			CardHeader header = new CardHeader(context);
+			header.setTitle(user.name);
+			addCardHeader(header);
+		}
 		setCardElevation(4f);
 	}
 
@@ -54,6 +59,8 @@ public class BioCard extends Card{
 			TextView text = (TextView) view.findViewById(R.id.textCompany);
 
 			text.setText(user.company);
+
+			view.findViewById(R.id.company).setOnClickListener(this);
 		} else {
 			view.findViewById(R.id.company).setVisibility(View.GONE);
 			view.findViewById(R.id.dividerCompany).setVisibility(View.GONE);
@@ -71,6 +78,8 @@ public class BioCard extends Card{
 			TextView text = (TextView) view.findViewById(R.id.textLocation);
 
 			text.setText(user.location);
+
+			view.findViewById(R.id.location).setOnClickListener(this);
 		} else {
 			view.findViewById(R.id.location).setVisibility(View.GONE);
 			view.findViewById(R.id.dividerLocation).setVisibility(View.GONE);
@@ -88,6 +97,8 @@ public class BioCard extends Card{
 			TextView text = (TextView) view.findViewById(R.id.textMail);
 
 			text.setText(user.email);
+
+			view.findViewById(R.id.mail).setOnClickListener(this);
 		} else {
 			view.findViewById(R.id.mail).setVisibility(View.GONE);
 			view.findViewById(R.id.dividerMail).setVisibility(View.GONE);
@@ -120,5 +131,34 @@ public class BioCard extends Card{
 		githubIconDrawable.colorRes(R.color.accentDark);
 
 		return githubIconDrawable;
+	}
+
+	@Override
+	public void onClick(View v) {
+		if (bioCardListener != null) {
+			switch (v.getId()) {
+				case R.id.company:
+					//bioCardListener.onCompanyRequest(user.company);
+					break;
+				case R.id.location:
+					bioCardListener.onLocationRequest(user.location);
+					break;
+				case R.id.mail:
+					bioCardListener.onMailRequest(user.email);
+					break;
+			}
+		}
+	}
+
+	public void setBioCardListener(BioCardListener bioCardListener) {
+		this.bioCardListener = bioCardListener;
+	}
+
+	public interface BioCardListener {
+		void onCompanyRequest(String company);
+
+		void onLocationRequest(String location);
+
+		void onMailRequest(String mail);
 	}
 }

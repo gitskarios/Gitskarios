@@ -51,6 +51,7 @@ public final class GithubIconify {
 		octicon_issue_opened('\uf026'),
 		octicon_issue_closed('\uf028'),
 		octicon_x('\uf081'),
+		octicon_file_code('\uf010'),
 		octicon_file_text('\uf011'),
 		octicon_file_directory('\uf016'),
 		octicon_file_submodule('\uf017'),

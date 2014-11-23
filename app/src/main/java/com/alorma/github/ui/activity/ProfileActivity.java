@@ -1,10 +1,12 @@
 package com.alorma.github.ui.activity;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.WindowCompat;
@@ -13,6 +15,7 @@ import android.support.v7.graphics.Palette;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
+import com.alorma.github.ui.cards.profile.ReposCard;
 import com.alorma.github.ui.fragment.profile.ProfileFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.MyScroll;
@@ -42,9 +46,11 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-		PaletteUtils.PaletteUtilsListener {
+		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener {
 
 	private CardViewNative cardBio;
+	private CardViewNative cardRepos;
+	private ViewGroup cardsContainer;
 
 	public static Intent createLauncherIntent(Context context) {
 		Intent intent = new Intent(context, ProfileActivity.class);
@@ -73,7 +79,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
 
+		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
+
 		cardBio = (CardViewNative) findViewById(R.id.cardBio);
+		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
 
 		BaseUsersClient<User> requestClient;
 		User user = null;
@@ -85,7 +94,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		if (user != null) {
 			requestClient = new RequestUserClient(this, user.login);
-			setTitle(user.login);
+			getToolbar().setTitle(user.login);
 		} else {
 			requestClient = new RequestAutenticatedUserClient(this);
 		}
@@ -96,9 +105,15 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onResponseOk(User user, Response r) {
-		setTitle(user.login);
+		getToolbar().setTitle(user.login);
 
 		fillCardBio(user);
+
+		if (user.public_repos > 0 && user.public_gists > 0){
+			fillCardRepos(user);
+		} else {
+			cardsContainer.removeView(cardRepos);
+		}
 
 		if (getSupportActionBar() != null) {
 			new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
@@ -106,11 +121,19 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	private void fillCardBio(User user) {
-		Card card = new BioCard(this, user);
+		BioCard card = new BioCard(this, user);
 
+		card.setBioCardListener(this);
 
 		cardBio.setCard(card);
 		cardBio.setVisibility(View.VISIBLE);
+	}
+
+	private void fillCardRepos(User user) {
+		ReposCard card = new ReposCard(this, user);
+
+		cardRepos.setCard(card);
+		cardRepos.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -126,11 +149,40 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (getSupportActionBar() != null) {
 			getSupportActionBar().setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
 
-			if (profileSwatchDark != null) {
+			if (profileSwatchDark != null && profileSwatchDark.getRgb() != 0) {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 					getWindow().setStatusBarColor(profileSwatchDark.getRgb());
 				}
 			}
+		}
+	}
+
+	@Override
+	public void onCompanyRequest(String company) {
+		Intent intent = new Intent(Intent.ACTION_SEARCH);
+		intent.putExtra(SearchManager.QUERY, company);
+		if (intent.resolveActivity(getPackageManager()) != null) {
+			startActivity(intent);
+		}
+	}
+
+	@Override
+	public void onLocationRequest(String location) {
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		Uri geo = Uri.parse("geo:0,0?q=" + location);
+		intent.setData(geo);
+		if (intent.resolveActivity(getPackageManager()) != null) {
+			startActivity(intent);
+		}
+	}
+
+	@Override
+	public void onMailRequest(String mail) {
+		Intent intent = new Intent(Intent.ACTION_SENDTO);
+		intent.setData(Uri.parse("mailto:"));
+		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {mail});
+		if (intent.resolveActivity(getPackageManager()) != null) {
+			startActivity(intent);
 		}
 	}
 }

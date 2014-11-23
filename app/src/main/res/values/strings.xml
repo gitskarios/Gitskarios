@@ -15,6 +15,8 @@
     <string name="public_repos">Repositories</string>
     <string name="public_gists">Gists</string>
     <string name="tab_repos_parent">Repositories</string>
+    <string name="repos_num">%d Repositories</string>
+    <string name="gists_num">%d Gists</string>
     <string name="navigation_repos">My Repositories</string>
     <string name="navigation_watched_repos">Watched</string>
     <string name="navigation_starred_repos">Starred</string>
@@ -103,5 +105,6 @@
     <string name="follow">Follow</string>
     <string name="joined_at">Joined at %s</string>
     <string name="joined_at_date_format">dd MMM yyyy</string>
+    <string name="public_data">Public data</string>
 
 </resources>
