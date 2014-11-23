@@ -18,6 +18,9 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
  * Created by Bernat on 23/11/2014.
  */
 public class GithubDataCard extends Card implements View.OnClickListener {
+
+	private GithubDataCardListener githubDataCardListener;
+
 	private User user;
 
 	public GithubDataCard(Context context, User user) {
@@ -60,7 +63,7 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 		if (user.public_gists > 0) {
 			ImageView icon = (ImageView) view.findViewById(R.id.iconGists);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_file_code);
+			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_gist);
 
 			icon.setImageDrawable(githubIconDrawable);
 
@@ -84,6 +87,20 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		if (githubDataCardListener != null) {
+			switch (v.getId()) {
+				case R.id.repositories:
+					githubDataCardListener.onRepositoriesRequest(user.login);
+					break;
+			}
+		}
+	}
 
+	public void setGithubDataCardListener(GithubDataCardListener githubDataCardListener) {
+		this.githubDataCardListener = githubDataCardListener;
+	}
+
+	public interface GithubDataCardListener {
+		void onRepositoriesRequest(String username);
 	}
 }

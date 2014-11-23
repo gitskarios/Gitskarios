@@ -32,6 +32,7 @@
     <color name="lDialogNegative">#ff808080</color>
     <color name="privateRepo">#a1882b</color>
     <color name="privateRepoBackground">#f8eeca</color>
+    <color name="redError">#ffff1a29</color>
 
     <string name="lDialogPositve">#ffffffff</string>
     <string name="lDialogNegative">#ff808080</string>

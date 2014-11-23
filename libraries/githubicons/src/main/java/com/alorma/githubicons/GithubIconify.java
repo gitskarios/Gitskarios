@@ -59,11 +59,13 @@ public final class GithubIconify {
 		octicon_arrow_left('\uf040'),
 		octicon_clock('\uf046'),
 		octicon_repo('\uf001'),
+		octicon_plus('\uf05d'),
 		octicon_repo_forked('\uf002'),
 		octicon_comment_discussion('\uf04f'),
 		octicon_repo_push('\uf005'),
 		octicon_organization('\uf037'),
 		octicon_person('\uf018'),
+		octicon_gist('\uf00e'),
 		octicon_location('\uf060'),
 		octicon_mail('\uf03b'),
 		octicon_eye('\uf04e');

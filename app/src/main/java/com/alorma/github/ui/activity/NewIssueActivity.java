@@ -3,6 +3,8 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -20,6 +22,9 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +43,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	private View pushAccesLayout;
 	private Spinner spinnerAssignee;
 	private UsersAdapterSpinner assigneesAdapter;
-	private EditText editLabels;
-	private EditText editTitle;
-	private EditText editBody;
+	private MaterialEditText editLabels;
+	private MaterialEditText editTitle;
+	private MaterialEditText editBody;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, boolean pushAcces) {
 		Bundle bundle = new Bundle();
@@ -85,10 +90,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	}
 
 	private void findViews() {
-		// TODO 		checkDataAndCreateIssue();
 		pushAccesLayout = findViewById(R.id.pushAccessLayout);
-		editTitle = (EditText) findViewById(R.id.editTitle);
-		editBody = (EditText) findViewById(R.id.editBody);
+		editTitle = (MaterialEditText) findViewById(R.id.editTitle);
+		editBody = (MaterialEditText) findViewById(R.id.editBody);
 	}
 
 	private void findViewsAcces() {
@@ -101,7 +105,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 		assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
 		spinnerAssignee.setAdapter(assigneesAdapter);
 
-		editLabels = (EditText) findViewById(R.id.editLabels);
+		editLabels = (MaterialEditText) findViewById(R.id.editLabels);
 	}
 
 	private void checkDataAndCreateIssue() {
@@ -135,6 +139,32 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 		invalidateOptionsMenu();
 
 		createIssue(issue);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.new_issue, menu);
+
+		MenuItem item = menu.findItem(R.id.action_send);
+		if (item != null) {
+			GithubIconDrawable githubIconDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_plus);
+			githubIconDrawable.actionBarSize();
+			githubIconDrawable.colorRes(R.color.white);
+			item.setIcon(githubIconDrawable);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+			case R.id.action_send:
+				checkDataAndCreateIssue();
+				break;
+		}
+		return true;
 	}
 
 	private void createIssue(IssueRequest issue) {

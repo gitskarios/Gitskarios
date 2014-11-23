@@ -105,14 +105,12 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_repo_detail);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-		setSupportActionBar(toolbar);
-
 		if (getIntent().getExtras() != null) {
 			repoInfo = new RepoInfo();
 			repoInfo.owner = getIntent().getExtras().getString(OWNER);
 			repoInfo.repo = getIntent().getExtras().getString(REPO);
+
+			setTitle(repoInfo.repo);
 
 			setUpShare(repoInfo);
 

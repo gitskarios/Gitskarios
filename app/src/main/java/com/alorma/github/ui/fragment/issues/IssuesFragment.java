@@ -106,7 +106,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 
 	@Override
 	protected boolean useInnerSwipeRefresh() {
-		return false;
+		return true;
 	}
 
 	@Override

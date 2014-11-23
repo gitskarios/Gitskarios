@@ -32,7 +32,7 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener {
+		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener, GithubDataCard.GithubDataCardListener {
 
 	private CardViewNative cardBio;
 	private CardViewNative cardRepos;
@@ -118,6 +118,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private void fillCardRepos(User user) {
 		GithubDataCard card = new GithubDataCard(this, user);
 
+		card.setGithubDataCardListener(this);
+
 		cardRepos.setCard(card);
 		cardRepos.setVisibility(View.VISIBLE);
 	}
@@ -170,5 +172,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (intent.resolveActivity(getPackageManager()) != null) {
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public void onRepositoriesRequest(String username) {
+		Intent intent = ReposActivity.launchIntent(this, username);
+		startActivity(intent);
 	}
 }

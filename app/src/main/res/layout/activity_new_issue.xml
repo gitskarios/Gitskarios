@@ -34,6 +34,7 @@
                 android:textSize="@dimen/textSizeLarge"
                 app:floatingLabel="highlight"
                 app:baseColor="@color/white"
+                app:errorColor="@color/redError"
                 app:primaryColor="@color/white"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
@@ -45,6 +46,7 @@
                 android:gravity="top"
                 android:id="@+id/editBody"
                 android:textSize="@dimen/textSizeMedium"
+                app:errorColor="@color/redError"
                 app:floatingLabel="highlight"
                 app:baseColor="@color/white"
                 app:primaryColor="@color/white"/>
