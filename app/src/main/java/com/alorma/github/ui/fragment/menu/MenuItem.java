@@ -12,13 +12,11 @@ import com.joanzapata.android.iconify.Iconify;
 public class MenuItem {
 	public int parentId;
 	public int text;
-	public int color;
 	public int id;
 	public Iconify.IconValue icon;
 
-	public MenuItem(int id, int parentId, @StringRes int text, @ColorRes int color, @NonNull Iconify.IconValue icon) {
+	public MenuItem(int id, int parentId, @StringRes int text, @NonNull Iconify.IconValue icon) {
 		this.text = text;
-		this.color = color;
 		this.id = id;
 		this.parentId = parentId;
 		this.icon = icon;

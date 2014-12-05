@@ -1,15 +1,15 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.ui.fragment.menu.CategoryMenuItem;
+import com.alorma.github.ui.fragment.menu.DividerMenuItem;
 import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 
@@ -18,39 +18,105 @@ import java.util.List;
 /**
  * Created by Bernat on 13/08/2014.
  */
-public class MenuItemsAdapter extends ArrayAdapter<MenuItem> {
+public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.MenuHolder> {
+
+	private static final int ROW = 0;
+	private static final int DIVIDER = 1;
+
+	private OnMenuItemSelectedListener onMenuItemSelectedListener;
 	private final LayoutInflater mInflater;
+	private final int color;
+	private Context context;
+	private List<MenuItem> objects;
 
 	public MenuItemsAdapter(Context context, List<MenuItem> objects) {
-		super(context, 0, objects);
+		this.context = context;
+		this.objects = objects;
 		mInflater = LayoutInflater.from(context);
+		color = context.getResources().getColor(R.color.gray_github_dark);
 	}
 
 	@Override
 	public int getItemViewType(int position) {
-		if (getItem(position) instanceof CategoryMenuItem) {
-			return R.layout.row_menu_category;
+		MenuItem item = objects.get(position);
+
+		if (item instanceof DividerMenuItem) {
+			return DIVIDER;
 		} else {
-			return R.layout.row_menu;
+			return ROW;
 		}
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View v = mInflater.inflate(getItemViewType(position), parent, false);
+	public MenuHolder onCreateViewHolder(ViewGroup viewGroup, int itemViewType) {
+		switch (itemViewType) {
+			case ROW:
+				return new RowMenuHolder(mInflater.inflate(R.layout.row_menu, viewGroup, false));
+			case DIVIDER:
+				default:
+				return new DividerMenuHolder(mInflater.inflate(R.layout.row_divider, viewGroup, false));
+		}
+	}
 
-		MenuItem item = getItem(position);
+	@Override
+	public void onBindViewHolder(MenuHolder menuHolder, int position) {
+		switch (getItemViewType(position)) {
+			case ROW:
+				MenuItem item = objects.get(position);
+				RowMenuHolder holder = (RowMenuHolder) menuHolder;
+				holder.text.setText(item.text);
+				if (item.icon != null) {
+					holder.image.setImageDrawable(new IconDrawable(context, item.icon).color(color));
+				}
+				break;
+		}
+	}
 
-		TextView text = (TextView) v.findViewById(android.R.id.text1);
-		text.setText(item.text);
-		if (getItem(position) instanceof CategoryMenuItem) {
+	@Override
+	public int getItemCount() {
+		return objects != null ? objects.size() : 0;
+	}
 
-		} else {
-			ImageView image = (ImageView) v.findViewById(android.R.id.icon);
+	public class RowMenuHolder extends MenuHolder implements View.OnClickListener {
 
-			image.setImageDrawable(new IconDrawable(getContext(), item.icon).color(item.color));
+		public ImageView image;
+		public TextView text;
+
+		public RowMenuHolder(View itemView) {
+			super(itemView);
+			image = (ImageView) itemView.findViewById(android.R.id.icon);
+			text = (TextView) itemView.findViewById(android.R.id.text1);
+
+			itemView.setOnClickListener(this);
 		}
 
-		return v;
+		@Override
+		public void onClick(View v) {
+			if (onMenuItemSelectedListener != null) {
+				onMenuItemSelectedListener.onMenuItemSelected(objects.get(getPosition()));
+			}
+		}
+	}
+
+	public class DividerMenuHolder extends MenuHolder {
+
+		public DividerMenuHolder(View itemView) {
+			super(itemView);
+		}
+	}
+
+	public class MenuHolder extends RecyclerView.ViewHolder {
+
+		public MenuHolder(View itemView) {
+			super(itemView);
+		}
+	}
+
+	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
+		this.onMenuItemSelectedListener = onMenuItemSelectedListener;
+	}
+
+	public interface OnMenuItemSelectedListener {
+		void onMenuItemSelected(MenuItem item);
 	}
 }

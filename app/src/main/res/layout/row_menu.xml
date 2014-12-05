@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_margin="@dimen/gapLarge"
+        android:layout_margin="@dimen/gapMedium"
         android:id="@android:id/icon"
         android:padding="@dimen/gapMedium"/>
     
@@ -19,9 +19,9 @@
         android:textColor="@android:color/black"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/gapMedium"
-        android:paddingRight="@dimen/gapMedium"
         android:paddingStart="@dimen/gapMedium"
+        android:paddingRight="@dimen/gapMedium"
         android:paddingEnd="@dimen/gapMedium"
-        android:textSize="@dimen/textSizeLarge"
+        android:textSize="@dimen/textSizeMedium"
         android:fontFamily="sans-serif-light"/>
 </LinearLayout>
