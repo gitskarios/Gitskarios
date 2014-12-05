@@ -100,7 +100,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	public void onIabSetupFinished(IabResult result) {
 		iabEnabled = result.isSuccess();
 		if (iabEnabled) {
-			invalidateOptionsMenu();
 			try {
 				iabHelper.queryInventoryAsync(this);
 			} catch (Exception e) {
@@ -108,39 +107,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			}
 		}
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-		boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
-
-		getMenuInflater().inflate(R.menu.main_menu_donate, menu);
-
-		if (iabDonatePurchased) {
-			android.view.MenuItem donateItem = menu.findItem(R.id.action_donate);
-			menu.removeItem(donateItem.getItemId());
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		if (item.getItemId() == R.id.action_donate) {
-			try {
-				iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
-						this, UUID.randomUUID().toString());
-				item.setEnabled(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (item.getItemId() == R.id.action_settings) {
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
-		}
-		return true;
 	}
 
 	@Override
@@ -157,6 +123,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.content, fragment);
 		ft.commit();
+	}
+
+	@Override
+	public void onProfileSelected() {
+		Intent launcherIntent = ProfileActivity.createLauncherIntent(this);
+		startActivity(launcherIntent);
 	}
 
 	@Override
@@ -230,6 +202,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		} else {
 			// TODO SHOW Error no user
 		}
+	}
+
+	@Override
+	public void onSettingsSelected() {
+		Intent intent = new Intent(this, SettingsActivity.class);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onAboutSelected() {
+
 	}
 
 	@Override

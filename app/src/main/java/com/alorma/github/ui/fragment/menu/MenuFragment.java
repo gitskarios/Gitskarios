@@ -46,6 +46,10 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		currentSelectedItemId = 0;
 
 		List<MenuItem> objMenuItems = new ArrayList<MenuItem>();
+		objMenuItems.add(new MenuItem(0, 0, R.string.menu_my_profile, Iconify.IconValue.fa_user));
+
+		objMenuItems.add(new DividerMenuItem());
+
 		objMenuItems.add(new MenuItem(0, 1, R.string.menu_organizations, Iconify.IconValue.fa_group));
 		objMenuItems.add(new MenuItem(1, 1, R.string.menu_events, Iconify.IconValue.fa_calendar));
 
@@ -56,8 +60,10 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_followers, Iconify.IconValue.fa_user));
 		objMenuItems.add(new MenuItem(1, 3, R.string.navigation_following, Iconify.IconValue.fa_user));
+
 		objMenuItems.add(new DividerMenuItem());
 		objMenuItems.add(new MenuItem(0, 4, R.string.navigation_settings, null));
+
 		objMenuItems.add(new MenuItem(1, 4, R.string.navigation_about, null));
 
 		if (onMenuItemSelectedListener != null) {
@@ -78,6 +84,9 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		if (item != null && onMenuItemSelectedListener != null) {
 			currentSelectedItemId = item.id;
 			switch (item.parentId) {
+				case 0:
+					itemCurrentUser(item);
+					break;
 				case 1:
 					itemUser(item);
 					break;
@@ -87,9 +96,16 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 				case 3:
 					itemPeople(item);
 					break;
+				case 4:
+					itemExtras(item);
+					break;
 			}
 			onMenuItemSelectedListener.onMenuItemSelected(item);
 		}
+	}
+
+	private void itemCurrentUser(MenuItem item) {
+		onMenuItemSelectedListener.onProfileSelected();
 	}
 
 	private void itemUser(MenuItem item) {
@@ -128,11 +144,24 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		}
 	}
 
+	private void itemExtras(MenuItem item) {
+		switch (item.id) {
+			case 0:
+				onMenuItemSelectedListener.onSettingsSelected();
+				break;
+			case 1:
+				onMenuItemSelectedListener.onAboutSelected();
+				break;
+		}
+	}
+
 	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
 		this.onMenuItemSelectedListener = onMenuItemSelectedListener;
 	}
 
 	public interface OnMenuItemSelectedListener {
+		void onProfileSelected();
+
 		void onReposSelected();
 
 		void onStarredSelected();
@@ -150,5 +179,9 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		void onOrganizationsSelected();
 
 		void onUserEventsSelected();
+
+		void onSettingsSelected();
+
+		void onAboutSelected();
 	}
 }
