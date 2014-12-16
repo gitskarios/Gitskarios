@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -19,6 +18,8 @@ import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
 import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.githubicons.GithubIconify;
 import com.bugsense.trace.BugSenseHandler;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -32,7 +33,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FilesTreeFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager {
+public class SourceListFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager, TitleProvider {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -47,13 +48,13 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 	private Branch currentBranch;
 	private String branch;
 
-	public static FilesTreeFragment newInstance(String owner, String repo, String branchName, RefreshListener refreshListener) {
+	public static SourceListFragment newInstance(String owner, String repo, String branchName, RefreshListener refreshListener) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
 		bundle.putString(BRANCH, branchName);
 
-		FilesTreeFragment f = new FilesTreeFragment();
+		SourceListFragment f = new SourceListFragment();
 		f.setRefreshListener(refreshListener);
 		f.setArguments(bundle);
 		return f;
@@ -226,5 +227,20 @@ public class FilesTreeFragment extends BaseListFragment implements BaseClient.On
 		repoContentsClient.setOnResultCallback(this);
 		repoContentsClient.setCurrentBranch(currentBranch);
 		repoContentsClient.execute();
+	}
+
+	@Override
+	public CharSequence getTitle() {
+		return getString(R.string.files_fragment_title);
+	}
+
+	@Override
+	protected boolean useFAB() {
+		return true;
+	}
+
+	@Override
+	protected GithubIconify.IconValue getGithubIcon() {
+		return GithubIconify.IconValue.octicon_repo_forked;
 	}
 }

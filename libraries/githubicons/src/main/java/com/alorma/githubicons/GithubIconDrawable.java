@@ -46,9 +46,11 @@ import android.text.TextPaint;
  */
 public class GithubIconDrawable extends Drawable {
 
-    public static final int ANDROID_ACTIONBAR_ICON_SIZE_DP = 24;
+    public static final int ANDROID_ACTIONBAR_ICON_SIZE_DP = 28;
+	private static final int FAB_SIZE = 28;
+	private static final int FAB_SIZE_MINI = 20;
 
-    private final Context context;
+	private final Context context;
 
     private final GithubIconify.IconValue icon;
 
@@ -81,6 +83,12 @@ public class GithubIconDrawable extends Drawable {
      */
     public GithubIconDrawable actionBarSize() {
         return sizeDp(ANDROID_ACTIONBAR_ICON_SIZE_DP);
+    }
+    public GithubIconDrawable fabSize() {
+        return sizeDp(FAB_SIZE);
+    }
+    public GithubIconDrawable fabSizeMini() {
+        return sizeDp(FAB_SIZE_MINI);
     }
 
     /**

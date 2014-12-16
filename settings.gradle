@@ -1,1 +1,2 @@
-include ':app', ':sdk', ':libraries:enhanced-edittext', ':libraries:githubicons', 'libraries:fab_button'
+include ':app', ':sdk', ':libraries:enhanced-edittext', ':libraries:githubicons', 'libraries:fab_button', ':fab'
+project(':fab').projectDir = new File('libraries/fab')

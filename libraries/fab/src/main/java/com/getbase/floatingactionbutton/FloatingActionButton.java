@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,23 +23,34 @@ import android.os.Build.VERSION_CODES;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
-import com.alorma.github.R;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public class FloatingActionButton extends ImageButton {
 
 	public static final int SIZE_NORMAL = 0;
 	public static final int SIZE_MINI = 1;
 
+	@Retention(RetentionPolicy.SOURCE)
+	@IntDef({SIZE_NORMAL, SIZE_MINI})
+	public @interface FAB_SIZE {
+	}
+
 	private static final int HALF_TRANSPARENT_WHITE = Color.argb(128, 255, 255, 255);
 	private static final int HALF_TRANSPARENT_BLACK = Color.argb(128, 0, 0, 0);
 
 	int mColorNormal;
 	int mColorPressed;
+	String mTitle;
 	@DrawableRes
 	private int mIcon;
+	private Drawable mDrawable;
 	private int mSize;
 
 	private float mCircleSize;
@@ -61,21 +73,101 @@ public class FloatingActionButton extends ImageButton {
 	}
 
 	void init(Context context, AttributeSet attributeSet) {
-		isInEditMode();
-		mColorNormal = getColor(android.R.color.holo_blue_dark);
-		mColorPressed = getColor(android.R.color.holo_blue_light);
-		mIcon = 0;
-		mSize = SIZE_NORMAL;
-		if (attributeSet != null) {
-			initAttributes(context, attributeSet);
-		}
+		TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionButton, 0, 0);
+		mColorNormal = attr.getColor(R.styleable.FloatingActionButton_fab_colorNormal, getColor(android.R.color.holo_blue_dark));
+		mColorPressed = attr.getColor(R.styleable.FloatingActionButton_fab_colorPressed, getColor(android.R.color.holo_blue_light));
+		mSize = attr.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL);
+		mIcon = attr.getResourceId(R.styleable.FloatingActionButton_fab_icon, 0);
+		mTitle = attr.getString(R.styleable.FloatingActionButton_fab_title);
+		attr.recycle();
 
-		mCircleSize = getDimension(mSize == SIZE_NORMAL ? R.dimen.fab_size_normal : R.dimen.fab_size_mini);
+		updateCircleSize();
 		mShadowRadius = getDimension(R.dimen.fab_shadow_radius);
 		mShadowOffset = getDimension(R.dimen.fab_shadow_offset);
-		mDrawableSize = (int) (mCircleSize + 2 * mShadowRadius);
+		updateDrawableSize();
 
 		updateBackground();
+	}
+
+	private void updateDrawableSize() {
+		mDrawableSize = (int) (mCircleSize + 2 * mShadowRadius);
+	}
+
+	private void updateCircleSize() {
+		mCircleSize = getDimension(mSize == SIZE_NORMAL ? R.dimen.fab_size_normal : R.dimen.fab_size_mini);
+	}
+
+	public void setSize(@FAB_SIZE int size) {
+		if (size != SIZE_MINI && size != SIZE_NORMAL) {
+			throw new IllegalArgumentException("Use @FAB_SIZE constants only!");
+		}
+
+		if (mSize != size) {
+			mSize = size;
+			updateCircleSize();
+			updateDrawableSize();
+			updateBackground();
+		}
+	}
+
+	@FAB_SIZE
+	public int getSize() {
+		return mSize;
+	}
+
+	public void setIcon(@DrawableRes int icon) {
+		mDrawable = null;
+		if (mIcon != icon) {
+			mIcon = icon;
+			updateBackground();
+		}
+	}
+
+	public void setDrawable(@NonNull Drawable drawable) {
+		if (mDrawable != drawable) {
+			Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
+			Canvas canvas = new Canvas(bitmap);
+			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+			drawable.draw(canvas);
+			mDrawable = new BitmapDrawable(getResources(), bitmap);
+			updateBackground();
+		}
+	}
+
+	/**
+	 * @return the current Color for normal state.
+	 */
+	public int getColorNormal() {
+		return mColorNormal;
+	}
+
+	public void setColorNormalResId(@ColorRes int colorNormal) {
+		setColorNormal(getColor(colorNormal));
+	}
+
+	public void setColorNormal(int color) {
+		if (mColorNormal != color) {
+			mColorNormal = color;
+			updateBackground();
+		}
+	}
+
+	/**
+	 * @return the current color for pressed state.
+	 */
+	public int getColorPressed() {
+		return mColorPressed;
+	}
+
+	public void setColorPressedResId(@ColorRes int colorPressed) {
+		setColorPressed(getColor(colorPressed));
+	}
+
+	public void setColorPressed(int color) {
+		if (mColorPressed != color) {
+			mColorPressed = color;
+			updateBackground();
+		}
 	}
 
 	int getColor(@ColorRes int id) {
@@ -86,18 +178,15 @@ public class FloatingActionButton extends ImageButton {
 		return getResources().getDimension(id);
 	}
 
-	private void initAttributes(Context context, AttributeSet attributeSet) {
-		TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionButton, 0, 0);
-		if (attr != null) {
-			try {
-				mColorNormal = attr.getColor(R.styleable.FloatingActionButton_colorNormal, getColor(android.R.color.holo_blue_dark));
-				mColorPressed = attr.getColor(R.styleable.FloatingActionButton_colorPressed, getColor(android.R.color.holo_blue_light));
-				mSize = attr.getInt(R.styleable.FloatingActionButton_size, SIZE_NORMAL);
-				mIcon = attr.getResourceId(R.styleable.FloatingActionButton_float_icon, 0);
-			} finally {
-				attr.recycle();
-			}
-		}
+	public void setTitle(String title) {
+		mTitle = title;
+		TextView label = (TextView) getTag(R.id.fab_label);
+		if (label != null)
+			label.setText(title);
+	}
+
+	public String getTitle() {
+		return mTitle;
 	}
 
 	@Override
@@ -132,7 +221,9 @@ public class FloatingActionButton extends ImageButton {
 	}
 
 	Drawable getIconDrawable() {
-		if (mIcon != 0) {
+		if (mDrawable != null) {
+			return mDrawable;
+		} else if (mIcon != 0) {
 			return getResources().getDrawable(mIcon);
 		} else {
 			return new ColorDrawable(Color.TRANSPARENT);

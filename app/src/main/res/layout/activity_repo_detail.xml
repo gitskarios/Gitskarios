@@ -1,52 +1,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <include layout="@layout/toolbar"/>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/repoDetailInfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:orientation="horizontal">
 
-        <LinearLayout
+        <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?android:attr/actionBarSize"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?android:borderlessButtonStyle"
+            android:text="@string/menu_star"
+            android:textColor="@color/white"/>
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginLeft="@dimen/gapLarge"
-                android:layout_marginStart="@dimen/gapLarge"
-                android:layout_marginRight="@dimen/gapMedium"
-                android:layout_marginEnd="@dimen/gapMedium"
-                android:id="@+id/repoDetailBranches"
-                android:background="@drawable/spinner_ab_background"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?android:borderlessButtonStyle"
+            android:text="@string/menu_watch"
+            android:textColor="@color/white"/>
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/repoDetailNavigation"
-                android:layout_marginLeft="@dimen/gapMedium"
-                android:layout_marginStart="@dimen/gapMedium"
-                android:layout_marginRight="@dimen/gapLarge"
-                android:layout_marginEnd="@dimen/gapLarge"
-                android:background="@drawable/spinner_ab_background"/>
+    </LinearLayout>
 
-        </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:id="@+id/content"/>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:orientation="horizontal">
+
+        <com.alorma.github.ui.view.SlidingTabLayout
+            android:id="@+id/tabStrip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

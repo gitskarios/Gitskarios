@@ -4,6 +4,9 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.ListFragment;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +18,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
@@ -28,7 +34,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	protected TextView emptyText;
 	protected ImageView emptyIcon;
 	protected View emptyLy;
-	private AddFloatingActionButton fab;
+	private FloatingActionButton fab;
 	private ValueAnimator animator;
 	private boolean fabVisible;
 
@@ -57,7 +63,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 		}
 
-		fab = (AddFloatingActionButton) view.findViewById(R.id.fabButton);
+		fab = (FloatingActionButton) view.findViewById(R.id.fabButton);
 
 		checkFAB();
 
@@ -69,6 +75,12 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 			if (useFAB()) {
 				fabVisible = true;
 				fab.setOnClickListener(this);
+				fab.setSize(FloatingActionButton.SIZE_NORMAL);
+				GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getGithubIcon()).color(Color.WHITE).fabSize();
+
+				drawable.setStyle(Paint.Style.FILL);
+
+				fab.setDrawable(drawable);
 			} else {
 				fab.setVisibility(View.GONE);
 			}
@@ -170,5 +182,9 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 	protected void fabClick() {
 
+	}
+
+	protected GithubIconify.IconValue getGithubIcon() {
+		return GithubIconify.IconValue.octicon_squirrel;
 	}
 }

@@ -18,12 +18,14 @@ import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.githubicons.GithubIconify;
 import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener {
+public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider {
 
 	private static final int ISSUE_REQUEST = 1234;
 	private String owner;
@@ -172,5 +174,13 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 		checkFAB();
 	}
 
+	@Override
+	protected GithubIconify.IconValue getGithubIcon() {
+		return GithubIconify.IconValue.octicon_bug;
+	}
 
+	@Override
+	public CharSequence getTitle() {
+		return getString(R.string.issues_fragment_title);
+	}
 }

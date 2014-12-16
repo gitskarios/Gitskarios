@@ -60,7 +60,6 @@ public final class GithubIconify {
 		octicon_clock('\uf046'),
 		octicon_repo('\uf001'),
 		octicon_plus('\uf05d'),
-		octicon_repo_forked('\uf002'),
 		octicon_comment_discussion('\uf04f'),
 		octicon_repo_push('\uf005'),
 		octicon_organization('\uf037'),
@@ -68,6 +67,9 @@ public final class GithubIconify {
 		octicon_gist('\uf00e'),
 		octicon_location('\uf060'),
 		octicon_mail('\uf03b'),
+		octicon_squirrel('\uf0b2'),
+		octicon_bug('\uf091'),
+		octicon_repo_forked('\uf002'),
 		octicon_eye('\uf04e');
 
 		char character;
