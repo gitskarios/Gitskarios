@@ -116,5 +116,7 @@
     <string name="issues_fragment_title">Issues</string>
     <string name="files_fragment_title">Source</string>
     <string name="commits_fragment_title">Commits</string>
+    <string name="source_download_notification">Source code from %1$s was queued</string>
+    <string name="source_download_notification_finished">Source code from %1$s was downloaded</string>
 
 </resources>

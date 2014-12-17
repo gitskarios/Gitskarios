@@ -1,7 +1,16 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.ListView;
 
@@ -12,6 +21,7 @@ import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
@@ -26,6 +36,7 @@ import com.joanzapata.android.iconify.Iconify;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -33,7 +44,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>, BranchManager, TitleProvider {
+public class SourceListFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>,
+		BranchManager, TitleProvider {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -241,6 +253,12 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 
 	@Override
 	protected GithubIconify.IconValue getGithubIcon() {
-		return GithubIconify.IconValue.octicon_repo_forked;
+		return GithubIconify.IconValue.octicon_cloud_download;
+	}
+
+	@Override
+	protected void fabClick() {
+		GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getActivity(), owner, repo, "master", "zipball");
+		getArchiveLinkService.execute();
 	}
 }

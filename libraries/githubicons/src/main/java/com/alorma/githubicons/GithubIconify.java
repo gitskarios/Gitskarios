@@ -70,6 +70,7 @@ public final class GithubIconify {
 		octicon_squirrel('\uf0b2'),
 		octicon_bug('\uf091'),
 		octicon_repo_forked('\uf002'),
+		octicon_cloud_download('\uf00b'),
 		octicon_eye('\uf04e');
 
 		char character;
