@@ -253,7 +253,7 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 	}
 
 	@Override
-	protected GithubIconify.IconValue getGithubIcon() {
+	protected GithubIconify.IconValue getFABGithubIcon() {
 		return GithubIconify.IconValue.octicon_cloud_download;
 	}
 

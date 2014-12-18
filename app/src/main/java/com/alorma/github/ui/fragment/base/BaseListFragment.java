@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.app.ListFragment;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
-import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -76,7 +74,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 				fabVisible = true;
 				fab.setOnClickListener(this);
 				fab.setSize(FloatingActionButton.SIZE_NORMAL);
-				GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getGithubIcon()).color(Color.WHITE).fabSize();
+				GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).fabSize();
 
 				drawable.setStyle(Paint.Style.FILL);
 
@@ -184,7 +182,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 	}
 
-	protected GithubIconify.IconValue getGithubIcon() {
+	protected GithubIconify.IconValue getFABGithubIcon() {
 		return GithubIconify.IconValue.octicon_squirrel;
 	}
 }

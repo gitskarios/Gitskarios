@@ -31,10 +31,11 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoSettingsFragment;
-import com.alorma.github.ui.fragment.issues.IssuesFragment;
+import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.joanzapata.android.iconify.IconDrawable;
@@ -65,11 +66,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private Repo currentRepo;
 	private MarkdownFragment markdownFragment;
 	private SourceListFragment sourceListFragment;
-	private IssuesFragment issuesFragment;
+	private IssuesListFragment issuesListFragment;
 	private Branch currentBranch;
-	private RepoSettingsFragment settingsFragment;
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
+	private CommitsListFragment commitsListFragment;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -122,12 +123,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			markdownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null, this);
-			issuesFragment = IssuesFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 
 			listFragments = new ArrayList<>();
 			listFragments.add(markdownFragment);
 			listFragments.add(sourceListFragment);
-			listFragments.add(issuesFragment);
+			listFragments.add(issuesListFragment);
+			listFragments.add(commitsListFragment);
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 			slidingTabLayout.setViewPager(viewPager);
@@ -292,8 +295,8 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			cancelRefresh();
 
-			if (issuesFragment != null) {
-				issuesFragment.setPermissions(repo.permissions);
+			if (issuesListFragment != null) {
+				issuesListFragment.setPermissions(repo.permissions);
 			}
 		}
 
@@ -308,28 +311,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		cancelRefresh();
 	}
 
-	private void setUpFragment(Fragment fragment) {
-		if (fragment != null) {
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			if (fragment.isAdded()) {
-				ft.remove(fragment);
-			}
-			ft.replace(R.id.content, fragment);
-			ft.commit();
-		}
-	}
-
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
 	}
-
-	/*
-	@Retention(RetentionPolicy.SOURCE)
-	@IntDef({NAVIGATION_MARKDOWN, NAVIGATION_SOURCE, NAVIGATION_ISSUES, NAVIGATION_SETTINGS})
-	public @interface NavigationItems {
-	}
-	*/
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {

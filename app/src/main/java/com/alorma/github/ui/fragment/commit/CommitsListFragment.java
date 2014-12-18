@@ -9,23 +9,25 @@ import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.ui.adapter.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.githubicons.GithubIconify;
 import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class ListCommitsFragments extends PaginatedListFragment<ListCommit> {
+public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider {
 	private static final String OWNER = "OWNER";
 	private static final String REPO = "REPO";
 	private RepoInfo info;
 	private CommitsAdapter commitsAdapter;
 
-	public static ListCommitsFragments newInstance(String owner, String repo, RefreshListener listener) {
+	public static CommitsListFragment newInstance(String owner, String repo, RefreshListener listener) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
 
-		ListCommitsFragments fragment = new ListCommitsFragments();
+		CommitsListFragment fragment = new CommitsListFragment();
 		fragment.setRefreshListener(listener);
 		fragment.setArguments(bundle);
 		return fragment;
@@ -88,5 +90,20 @@ public class ListCommitsFragments extends PaginatedListFragment<ListCommit> {
 	@Override
 	protected boolean useInnerSwipeRefresh() {
 		return false;
+	}
+
+	@Override
+	public CharSequence getTitle() {
+		return getString(R.string.commits_fragment_title);
+	}
+
+	@Override
+	protected boolean useFAB() {
+		return true;
+	}
+
+	@Override
+	protected GithubIconify.IconValue getFABGithubIcon() {
+		return GithubIconify.IconValue.octicon_repo_forked;
 	}
 }
