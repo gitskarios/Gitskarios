@@ -23,6 +23,7 @@ import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
@@ -258,7 +259,8 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 
 	@Override
 	protected void fabClick() {
-		GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getActivity(), owner, repo, "master", "zipball");
+		String downloadFileType = new GitskariosSettings(getActivity()).getDownloadFileType();
+		GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getActivity(), owner, repo, "master", downloadFileType);
 		getArchiveLinkService.execute();
 	}
 }

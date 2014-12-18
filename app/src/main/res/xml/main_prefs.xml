@@ -13,4 +13,11 @@
         android:entryValues="@array/reposSortValues"
         android:defaultValue="@string/sort_full_name"/>
 
+    <ListPreference
+        android:title="@string/pref_repos_download_type"
+        android:key="repos_download_type"
+        android:entries="@array/reposDownloadFileType"
+        android:entryValues="@array/reposDownloadFileTypeValues"
+        android:defaultValue="@string/sort_full_name"/>
+
 </PreferenceScreen>

@@ -36,8 +36,20 @@
         <item>full_name</item>
     </string-array>
 
+    <integer-array name="reposDownloadFileType">
+        <item>@string/download_zip</item>
+        <item>@string/download_tar</item>
+    </integer-array>
+
+    <string-array name="reposDownloadFileTypeValues">
+        <item>zipball</item>
+        <item>tarball</item>
+    </string-array>
+
     <string name="sort_created">Created</string>
     <string name="sort_updated">Updated</string>
     <string name="sort_pushed">Pushed</string>
     <string name="sort_full_name">Full name</string>
+    <string name="download_zip">Zip</string>
+    <string name="download_tar">Tar</string>
 </resources>
