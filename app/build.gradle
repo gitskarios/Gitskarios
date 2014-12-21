@@ -46,7 +46,7 @@ dependencies {
     //compile 'com.github.castorflex.smoothprogressbar:library:0.5.2'
     // compile 'com.squareup:otto:1.3.5'
     compile project(':libraries:githubicons')
-    compile 'com.afollestad:material-dialogs:0.3.6'
+    compile 'com.afollestad:material-dialogs:0.4.6'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     //compile 'com.getbase:floatingactionbutton:1.3.0'
     compile 'com.joanzapata.android:android-iconify:1.0.6'
