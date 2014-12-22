@@ -4,3 +4,6 @@
 [submodule "libraries/GitDiffTextView"]
 	path = libraries/GitDiffTextView
 	url = https://github.com/alorma/GitDiffTextView.git
+[submodule "libraries/android-floating-action-button"]
+	path = libraries/android-floating-action-button
+	url = https://github.com/alorma/android-floating-action-button.git
