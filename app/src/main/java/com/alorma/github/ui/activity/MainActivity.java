@@ -3,22 +3,12 @@ package com.alorma.github.ui.activity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.inapp.IabConstants;
@@ -26,12 +16,9 @@ import com.alorma.github.inapp.IabHelper;
 import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
-import com.alorma.github.sdk.bean.dto.response.ListEmails;
-import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.sdk.services.user.UsersService;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
@@ -44,13 +31,8 @@ import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
 
-import java.util.UUID;
-
-import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.http.Path;
-import retrofit.http.Query;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
 		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, BaseClient.OnResultCallback<User> {
