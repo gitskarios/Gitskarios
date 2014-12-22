@@ -1,19 +1,19 @@
 package com.alorma.github.ui.fragment.commit;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
-import com.alorma.github.ui.activity.FileActivity;
+import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 
 import retrofit.RetrofitError;
@@ -26,6 +26,7 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 
 	public static final String SHA = "SHA";
 	public static final String INFO = "INFO";
+	private RecyclerView recyclerView;
 
 	public static SingleCommitFragment newInstance(RepoInfo info, String sha) {
 		SingleCommitFragment f = new SingleCommitFragment();
@@ -39,7 +40,7 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return new TextView(getActivity());
+		return inflater.inflate(R.layout.single_commit_fragment, null);
 	}
 
 	@Override
@@ -49,6 +50,9 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 			RepoInfo info = getArguments().getParcelable(INFO);
 			String sha = getArguments().getString(SHA);
 
+			recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+						
 			GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info, sha);
 			client.setOnResultCallback(this);
 			client.execute();
@@ -57,11 +61,12 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 
 	@Override
 	public void onResponseOk(Commit commit, Response r) {
-		Log.i("ALORMA", "" + commit);
+		CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), commit.files);
+		recyclerView.setAdapter(adapter);
 	}
 
 	@Override
 	public void onFail(RetrofitError error) {
-		Log.e("ALORMA", "" + error);
+		
 	}
 }

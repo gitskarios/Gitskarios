@@ -76,8 +76,6 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 				fab.setSize(FloatingActionButton.SIZE_NORMAL);
 				GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).fabSize();
 
-				drawable.setStyle(Paint.Style.FILL);
-
 				fab.setDrawable(drawable);
 			} else {
 				fab.setVisibility(View.GONE);
