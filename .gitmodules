@@ -7,3 +7,6 @@
 [submodule "libraries/AndroidGithubIcons"]
 	path = libraries/AndroidGithubIcons
 	url = https://github.com/alorma/AndroidGithubIcons.git
+[submodule "libraries/android-floating-action-button"]
+	path = libraries/android-floating-action-button
+	url = https://github.com/alorma/android-floating-action-button.git
