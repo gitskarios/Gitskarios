@@ -51,7 +51,7 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 			String sha = getArguments().getString(SHA);
 
 			recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 						
 			GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info, sha);
 			client.setOnResultCallback(this);
