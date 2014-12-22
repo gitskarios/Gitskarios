@@ -42,9 +42,11 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	private static final String HEAD = "HEAD";
 	private static final String NAME = "NAME";
 	private static final String PATH = "PATH";
+	private static final String PATCH = "PATCH";
 	private WebView webView;
 	private ImageView imageView;
 	private Content content;
+	private String patch;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, String head, String name, String path) {
 		Bundle bundle = new Bundle();
@@ -53,6 +55,15 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		bundle.putString(HEAD, head);
 		bundle.putString(NAME, name);
 		bundle.putString(PATH, path);
+
+		Intent intent = new Intent(context, FileActivity.class);
+		intent.putExtras(bundle);
+		return intent;
+	}
+
+	public static Intent createLauncherIntent(Context context, String patch) {
+		Bundle bundle = new Bundle();
+		bundle.putString(PATCH, patch);
 
 		Intent intent = new Intent(context, FileActivity.class);
 		intent.putExtras(bundle);
@@ -72,13 +83,14 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		String head = getIntent().getExtras().getString(HEAD);
 		String name = getIntent().getExtras().getString(NAME);
 		String path = getIntent().getExtras().getString(PATH);
+		patch = getIntent().getExtras().getString(PATCH);
 
-		setTitle(name);
-
-
-		GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
-		fileContentClient.setOnResultCallback(this);
-		fileContentClient.execute();
+		if (patch == null) {
+			GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
+			fileContentClient.setOnResultCallback(this);
+			fileContentClient.execute();
+			setTitle(name);
+		}
 
 		webView.clearCache(true);
 		webView.clearFormData();
@@ -93,6 +105,10 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		settings.setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 		webView.setWebChromeClient(new MyWebChromeClient());
+
+		if (patch != null) {
+			webView.loadUrl("file:///android_asset/diff.html");
+		}
 
 	}
 
@@ -141,14 +157,18 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	}
 
 	private String decodeContent() {
-		byte[] data = android.util.Base64.decode(content.content, android.util.Base64.DEFAULT);
-		try {
-			content.content = new String(data, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		if (patch == null) {
+			byte[] data = android.util.Base64.decode(content.content, android.util.Base64.DEFAULT);
+			try {
+				content.content = new String(data, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 
-		return content.content;
+			return content.content;
+		} else {
+			return patch;
+		}
 	}
 
 	final class MyWebChromeClient extends WebChromeClient {

@@ -119,5 +119,6 @@
     <string name="source_download_notification">Source code from %1$s was queued</string>
     <string name="source_download_notification_finished">Source code from %1$s was downloaded</string>
     <string name="pref_repos_download_type">Download file extension</string>
+    <string name="title_activity_commits">Commits</string>
 
 </resources>

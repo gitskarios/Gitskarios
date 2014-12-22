@@ -1,19 +1,23 @@
 package com.alorma.github.ui.fragment.commit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
+import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.ListCommit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
+import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -165,5 +169,14 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 			refreshing = true;
 			executeRequest();
 		}
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Commit item = commitsAdapter.getItem(position);
+
+		Intent intent = CommitDetailActivity.launchIntent(getActivity(), info, item.sha);
+		startActivity(intent);
 	}
 }
