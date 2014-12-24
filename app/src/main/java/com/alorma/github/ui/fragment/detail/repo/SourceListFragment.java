@@ -1,16 +1,7 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.DownloadManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.ListView;
 
@@ -26,7 +17,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
-import com.alorma.github.ui.adapter.detail.repo.RepoContentAdapter;
+import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -37,7 +28,6 @@ import com.joanzapata.android.iconify.Iconify;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -53,7 +43,7 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 	public static final String BRANCH = "BRANCH";
 	private String owner;
 	private String repo;
-	private RepoContentAdapter contentAdapter;
+	private RepoSourceAdapter contentAdapter;
 	private RefreshListener refreshListener;
 	private Map<Content, ListContents> treeContent;
 	private Content rootContent = new Content();
@@ -133,9 +123,9 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 					Collections.sort(contents, ListContents.SORT.TYPE);
 					currentContents.addAll(contents);
 
-					contentAdapter = new RepoContentAdapter(getActivity(), currentContents);
+					contentAdapter = new RepoSourceAdapter(getActivity(), currentContents);
 				} else {
-					contentAdapter = new RepoContentAdapter(getActivity(), contents);
+					contentAdapter = new RepoSourceAdapter(getActivity(), contents);
 				}
 
 				setListAdapter(contentAdapter);

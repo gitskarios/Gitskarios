@@ -42,7 +42,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 		reposHolder.textTitle.setText(repo.name);
 
-		reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.accent));
+		reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.primary_dark));
 
 		reposHolder.textDescription.setText(repo.description);
 

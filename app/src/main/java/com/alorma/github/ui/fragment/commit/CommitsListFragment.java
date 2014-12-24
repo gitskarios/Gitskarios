@@ -3,8 +3,6 @@ package com.alorma.github.ui.fragment.commit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -18,7 +16,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.CommitDetailActivity;
-import com.alorma.github.ui.adapter.CommitsAdapter;
+import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -105,7 +103,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
 	@Override
 	protected boolean useInnerSwipeRefresh() {
-		return false;
+		return true;
 	}
 
 	@Override

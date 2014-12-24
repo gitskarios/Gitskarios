@@ -38,7 +38,7 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
 		if (useInnerSwipeRefresh()) {
 			swipe.setColorSchemeResources(R.color.accent,
 					R.color.gray_github_light,
-					R.color.accentDark,
+					R.color.accent,
 					R.color.gray_github_light);
 		} else {
 			swipe.setColorSchemeResources(android.R.color.transparent,

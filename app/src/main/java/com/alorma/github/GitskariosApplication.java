@@ -10,6 +10,8 @@ import com.alorma.github.sdk.security.StoreCredentials;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 /**
  * Created by Bernat on 08/07/2014.
  */
@@ -22,6 +24,8 @@ public class GitskariosApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
+		JodaTimeAndroid.init(this);
+		
 		if (BuildConfig.DEBUG) {
 			int enabled = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
 

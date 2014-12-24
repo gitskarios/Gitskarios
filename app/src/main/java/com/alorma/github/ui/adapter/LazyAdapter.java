@@ -60,8 +60,8 @@ public abstract class LazyAdapter<T> extends ArrayAdapter<T> {
 		return super.getView(position, convertView, parent);
 	}
 
-	protected View inflate(int id, ViewGroup parent, boolean attach) {
-		return mInflater.inflate(id, parent, attach);
+	protected View inflate(int resource, ViewGroup parent, boolean attach) {
+		return mInflater.inflate(resource, parent, attach);
 	}
 
 	public boolean isLazyLoading() {
