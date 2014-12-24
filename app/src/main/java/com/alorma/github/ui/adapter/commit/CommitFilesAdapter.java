@@ -42,11 +42,8 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 		CommitFile commitFile = files.get(position);
 		holder.fileName.setText(commitFile.filename);
 		if (commitFile.patch != null) {
+			holder.diffTextView.setMaxLines(8);
 			holder.diffTextView.setText(commitFile.patch);
-			holder.image.setImageResource(android.R.color.transparent);
-		} else if (commitFile.filename.endsWith(".png") || commitFile.filename.endsWith(".jpg") || commitFile.filename.endsWith(".jpeg")) {
-			uil.displayImage(commitFile.raw_url, holder.image);
-			holder.diffTextView.setText(null);
 		}
 	}
 
@@ -55,17 +52,21 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 		return files != null ? files.size() : 0;
 	}
 
-	public class FileVH extends RecyclerView.ViewHolder {
+	public class FileVH extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 		public DiffTextView diffTextView;
 		public TextView fileName;
-		public ImageView image;
 
 		public FileVH(View itemView) {
 			super(itemView);
 			diffTextView = (DiffTextView) itemView.findViewById(R.id.diffText);
 			fileName = (TextView) itemView.findViewById(R.id.fileName);
-			image = (ImageView) itemView.findViewById(R.id.image);
+			diffTextView.setOnClickListener(this);
+		}
+
+		@Override
+		public void onClick(View v) {
+
 		}
 	}
 }

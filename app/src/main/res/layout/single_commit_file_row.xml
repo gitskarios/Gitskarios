@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="260dp"
-              android:layout_height="200dp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
               android:padding="8dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fileName"/>
+        android:id="@+id/fileName"
+        android:textStyle="bold"/>
 
-    <FrameLayout
+    <com.alorma.diff.lib.DiffTextView
+        android:id="@+id/diffText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <com.alorma.diff.lib.DiffTextView
-            android:id="@+id/diffText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

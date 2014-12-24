@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
@@ -27,6 +28,9 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	public static final String SHA = "SHA";
 	public static final String INFO = "INFO";
 	private RecyclerView recyclerView;
+	private TextView textMessage;
+	private TextView textAdditions;
+	private TextView textDeletions;
 
 	public static SingleCommitFragment newInstance(RepoInfo info, String sha) {
 		SingleCommitFragment f = new SingleCommitFragment();
@@ -50,8 +54,12 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 			RepoInfo info = getArguments().getParcelable(INFO);
 			String sha = getArguments().getString(SHA);
 
+			textMessage = (TextView) view.findViewById(R.id.message);
+			textAdditions = (TextView) view.findViewById(R.id.additions);
+			textDeletions = (TextView) view.findViewById(R.id.deletions);
+			
 			recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 						
 			GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info, sha);
 			client.setOnResultCallback(this);
@@ -61,6 +69,16 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 
 	@Override
 	public void onResponseOk(Commit commit, Response r) {
+		getActivity().setTitle(commit.sha.substring(0, 8));
+		
+		textMessage.setText(commit.commit.message);
+		
+		String additions = getResources().getString(R.string.commit_additions, commit.stats.additions);
+		String deletions = getResources().getString(R.string.commit_deletions, commit.stats.deletions);
+
+		textAdditions.setText(additions);
+		textDeletions.setText(deletions);
+
 		CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), commit.files);
 		recyclerView.setAdapter(adapter);
 	}
