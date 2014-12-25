@@ -25,7 +25,7 @@ import com.joanzapata.android.iconify.Iconify;
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider {
+public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider {
 
 	private static final int ISSUE_REQUEST = 1234;
 	private String owner;
@@ -35,12 +35,12 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	private IssuesAdapter issuesAdapter;
 	private Permissions permissions;
 
-	public static IssuesFragment newInstance(String owner, String repo, RefreshListener listener) {
+	public static IssuesListFragment newInstance(String owner, String repo, RefreshListener listener) {
 		Bundle bundle = new Bundle();
 		bundle.putString("OWNER", owner);
 		bundle.putString("REPO", repo);
 
-		IssuesFragment fragment = new IssuesFragment();
+		IssuesListFragment fragment = new IssuesListFragment();
 		fragment.setRefreshListener(listener);
 		fragment.setArguments(bundle);
 		return fragment;
@@ -175,7 +175,7 @@ public class IssuesFragment extends PaginatedListFragment<ListIssues> implements
 	}
 
 	@Override
-	protected GithubIconify.IconValue getGithubIcon() {
+	protected GithubIconify.IconValue getFABGithubIcon() {
 		return GithubIconify.IconValue.octicon_bug;
 	}
 

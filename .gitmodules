@@ -1,3 +1,12 @@
 [submodule "sdk"]
 	path = sdk
 	url = https://github.com/alorma/GithubAndroidSdk.git
+[submodule "libraries/GitDiffTextView"]
+	path = libraries/GitDiffTextView
+	url = https://github.com/alorma/GitDiffTextView.git
+[submodule "libraries/AndroidGithubIcons"]
+	path = libraries/AndroidGithubIcons
+	url = https://github.com/alorma/AndroidGithubIcons.git
+[submodule "libraries/android-floating-action-button"]
+	path = libraries/android-floating-action-button
+	url = https://github.com/alorma/android-floating-action-button.git

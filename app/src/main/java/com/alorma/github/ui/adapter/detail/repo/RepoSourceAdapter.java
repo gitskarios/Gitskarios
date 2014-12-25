@@ -19,12 +19,12 @@ import java.util.List;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class RepoContentAdapter extends ArrayAdapter<Content> {
+public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
 	private final LayoutInflater inflater;
 	private Context context;
 
-	public RepoContentAdapter(Context context, List<Content> objects) {
+	public RepoSourceAdapter(Context context, List<Content> objects) {
 		super(context, 0, objects);
 		this.context = context;
 		inflater = LayoutInflater.from(context);
@@ -53,8 +53,8 @@ public class RepoContentAdapter extends ArrayAdapter<Content> {
 		}
 
 		if (iconDrawable != null) {
-			iconDrawable.sizeDp(32);
-			iconDrawable.colorRes(R.color.gray_github_medium);
+			iconDrawable.sizeDp(GithubIconDrawable.ANDROID_ACTIONBAR_ICON_SIZE_DP);
+			iconDrawable.colorRes(R.color.primary_light);
 
 			image.setImageDrawable(iconDrawable);
 		}
