@@ -4,13 +4,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -23,6 +27,9 @@ import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.fragment.profile.ProfileFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
+import com.alorma.github.ui.view.FABCenterLayout;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import it.gmariotti.cardslib.library.view.CardViewNative;
 import retrofit.RetrofitError;
@@ -37,6 +44,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private CardViewNative cardBio;
 	private CardViewNative cardRepos;
 	private ViewGroup cardsContainer;
+	private ViewGroup topContainer;
+	private FABCenterLayout fabLayout;
+	private ImageView image;
+	private GithubIconDrawable fabDrawable;
+	private ScrollView cardsContainerScroll;
 
 	public static Intent createLauncherIntent(Context context) {
 		Intent intent = new Intent(context, ProfileActivity.class);
@@ -64,8 +76,15 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
+		
+		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+		image = (ImageView) findViewById(R.id.image);
 
+		cardsContainerScroll = (ScrollView) findViewById(R.id.cardsContainerScroll);
+
+		
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
+		topContainer = (ViewGroup) findViewById(R.id.top);
 
 		cardBio = (CardViewNative) findViewById(R.id.cardBio);
 		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
@@ -93,6 +112,12 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	public void onResponseOk(User user, Response r) {
 		getToolbar().setTitle(user.login);
 
+		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_person);
+		fabDrawable.setStyle(Paint.Style.FILL);
+		fabDrawable.colorRes(R.color.icons);
+		fabDrawable.actionBarSize();
+		fabLayout.setFabIcon(fabDrawable);
+						
 		fillCardBio(user);
 
 		if (user.public_repos > 0 && user.public_gists > 0){
@@ -133,11 +158,22 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	public void onImageLoaded(Bitmap loadedImage, Palette palette) {
 
 		Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
+		Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
 
 		if (getSupportActionBar() != null) {
-			getSupportActionBar().setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
+			Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
 
+			image.setImageDrawable(drawable);
+
+			if (profileSwatch != null && profileSwatch.getRgb() != 0) {
+				fabLayout.setFabColor(profileSwatch.getRgb());
+				if (profileSwatchDark != null) {
+					fabDrawable.color(profileSwatchDark.getRgb());
+				}
+			}
+			
 			if (profileSwatchDark != null && profileSwatchDark.getRgb() != 0) {
+				fabLayout.setFabColorPressed(profileSwatchDark.getRgb());
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 					getWindow().setStatusBarColor(profileSwatchDark.getRgb());
 				}

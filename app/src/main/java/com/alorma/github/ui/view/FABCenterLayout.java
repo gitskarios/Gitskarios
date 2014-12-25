@@ -4,11 +4,18 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -16,16 +23,21 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 /**
  * Created by Bernat on 26/08/2014.
  */
-public class FABCenterLayout extends RelativeLayout {
-	private AddFloatingActionButton fabView;
+public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.OnScrollChangedListener {
+
+	private static final long FAB_ANIM_DURATION = 400;
+	private FloatingActionButton fabView;
 	private int topId;
 	private OnClickListener fabClickListener;
 	private boolean fabVisible;
 	private String fabTag;
+	private View scrolledChild;
+	private ObjectAnimator animator;
 
 	public FABCenterLayout(Context context) {
 		super(context);
@@ -57,7 +69,7 @@ public class FABCenterLayout extends RelativeLayout {
 	}
 
 	private void createFabView() {
-		fabView = (AddFloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
+		fabView = (FloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
 
 		fabView.setOnClickListener(fabClickListener);
 		setFabTag();
@@ -79,11 +91,24 @@ public class FABCenterLayout extends RelativeLayout {
 						removeView(fabView);
 						fabView.setAlpha(0f);
 						addView(fabView);
+						fabView.bringToFront();
 						startFabTransition();
 					}
 				}
 			}
 		}
+	}
+
+	public void setFabIcon(Drawable drawable) {
+		fabView.setDrawable(drawable);
+	}
+
+	public void setFabColor(int color) {
+		fabView.setColorNormal(color);
+	}
+
+	public void setFabColorPressed(int color) {
+		fabView.setColorPressed(color);
 	}
 
 	private void startFabTransition() {
@@ -114,5 +139,95 @@ public class FABCenterLayout extends RelativeLayout {
 				}
 			});
 		}
+	}
+
+	public void setFabViewVisibility(int visibility) {
+		fabView.setVisibility(visibility);
+	}
+
+	private void startAnimator(View fab, PropertyValuesHolder pvh) {
+		if (pvh != null) {
+			animator = ObjectAnimator.ofPropertyValuesHolder(fab, pvh);
+			animator.setDuration(FAB_ANIM_DURATION);
+			animator.setRepeatCount(0);
+			animator.start();
+		}
+	}
+
+	protected PropertyValuesHolder showAnimator(View fab) {
+		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f);
+		return pvh;
+	}
+
+	protected PropertyValuesHolder hideAnimator(View fab) {
+		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
+		return pvh;
+	}
+
+	@Override
+	public void onScrollChanged() {
+
+		if (scrolledChild != null) {
+			int scrollY = scrolledChild.getScrollY();
+
+			if (scrollY == 0) {
+				//setFabViewVisibility(View.VISIBLE);
+			} else {
+				//setFabViewVisibility(View.INVISIBLE);
+			}
+
+			float alpha = ((float) (255 - scrollY)) / 255f;
+			Log.i("ALORMA", "Scroll: " + scrollY + " - Alpha: " + alpha);
+			ViewCompat.setAlpha(fabView, alpha);
+		}
+	}
+
+	private void addChildScrollListener(View child) {
+		if (child != null && child.getId() != topId && child.getId() != fabView.getId()) {
+			scrolledChild = child;
+			child.getViewTreeObserver().addOnScrollChangedListener(this);
+		}
+	}
+
+	@Override
+	public void addView(View child) {
+		super.addView(child);
+		addChildScrollListener(child);
+	}
+
+	@Override
+	public void addView(View child, int index) {
+		super.addView(child, index);
+		addChildScrollListener(child);
+	}
+
+	@Override
+	public void addView(View child, int width, int height) {
+		super.addView(child, width, height);
+		addChildScrollListener(child);
+	}
+
+	@Override
+	public void addView(View child, ViewGroup.LayoutParams params) {
+		super.addView(child, params);
+		addChildScrollListener(child);
+	}
+
+	@Override
+	public void addView(View child, int index, ViewGroup.LayoutParams params) {
+		super.addView(child, index, params);
+		addChildScrollListener(child);
+	}
+
+	@Override
+	protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params) {
+		addChildScrollListener(child);
+		return super.addViewInLayout(child, index, params);
+	}
+
+	@Override
+	protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params, boolean preventRequestLayout) {
+		addChildScrollListener(child);
+		return super.addViewInLayout(child, index, params, preventRequestLayout);
 	}
 }
