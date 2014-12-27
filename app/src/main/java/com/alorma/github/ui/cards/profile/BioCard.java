@@ -129,7 +129,7 @@ public class BioCard extends Card implements View.OnClickListener {
 		GithubIconDrawable githubIconDrawable = new GithubIconDrawable(context, icon);
 
 		githubIconDrawable.sizeDp(30);
-		githubIconDrawable.colorRes(R.color.icons);
+		githubIconDrawable.colorRes(R.color.primary_dark);
 
 		return githubIconDrawable;
 	}

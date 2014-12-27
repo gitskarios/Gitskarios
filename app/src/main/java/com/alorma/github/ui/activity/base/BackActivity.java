@@ -1,9 +1,6 @@
 package com.alorma.github.ui.activity.base;
 
-import android.os.Bundle;
 import android.view.MenuItem;
-
-import com.alorma.github.R;
 
 /**
  * Created by Bernat on 17/07/2014.

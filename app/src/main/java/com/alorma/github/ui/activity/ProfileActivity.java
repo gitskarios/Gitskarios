@@ -39,16 +39,14 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener, GithubDataCard.GithubDataCardListener {
+		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener, GithubDataCard.GithubDataCardListener, View.OnClickListener {
 
 	private CardViewNative cardBio;
 	private CardViewNative cardRepos;
 	private ViewGroup cardsContainer;
-	private ViewGroup topContainer;
 	private FABCenterLayout fabLayout;
 	private ImageView image;
 	private GithubIconDrawable fabDrawable;
-	private ScrollView cardsContainerScroll;
 
 	public static Intent createLauncherIntent(Context context) {
 		Intent intent = new Intent(context, ProfileActivity.class);
@@ -76,14 +74,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
-		
+
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 		image = (ImageView) findViewById(R.id.image);
 
-		cardsContainerScroll = (ScrollView) findViewById(R.id.cardsContainerScroll);
-
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
-		topContainer = (ViewGroup) findViewById(R.id.top);
 
 		cardBio = (CardViewNative) findViewById(R.id.cardBio);
 		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
@@ -116,10 +111,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		fabDrawable.colorRes(R.color.icons);
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);
-						
+		fabLayout.setFabClickListener(this, "Follow");
+
 		fillCardBio(user);
 
-		if (user.public_repos > 0 && user.public_gists > 0){
+		if (user.public_repos > 0 && user.public_gists > 0) {
 			fillCardRepos(user);
 		} else {
 			cardsContainer.removeView(cardRepos);
@@ -159,23 +155,21 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
 		Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
 
-		if (getSupportActionBar() != null) {
-			Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
+		Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
 
-			image.setImageDrawable(drawable);
+		image.setImageDrawable(drawable);
 
-			if (profileSwatch != null && profileSwatch.getRgb() != 0) {
-				fabLayout.setFabColor(profileSwatch.getRgb());
-				if (profileSwatchDark != null) {
-					fabDrawable.color(profileSwatchDark.getRgb());
-				}
+		if (profileSwatch != null && profileSwatch.getRgb() != 0) {
+			fabLayout.setFabColor(profileSwatch.getRgb());
+			if (profileSwatchDark != null) {
+				fabDrawable.color(profileSwatchDark.getRgb());
 			}
-			
-			if (profileSwatchDark != null && profileSwatchDark.getRgb() != 0) {
-				fabLayout.setFabColorPressed(profileSwatchDark.getRgb());
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-					getWindow().setStatusBarColor(profileSwatchDark.getRgb());
-				}
+		}
+
+		if (profileSwatchDark != null && profileSwatchDark.getRgb() != 0) {
+			fabLayout.setFabColorPressed(profileSwatchDark.getRgb());
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				getWindow().setStatusBarColor(profileSwatchDark.getRgb());
 			}
 		}
 	}
@@ -203,7 +197,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	public void onMailRequest(String mail) {
 		Intent intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(Uri.parse("mailto:"));
-		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {mail});
+		intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
 		if (intent.resolveActivity(getPackageManager()) != null) {
 			startActivity(intent);
 		}
@@ -213,5 +207,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	public void onRepositoriesRequest(String username) {
 		Intent intent = ReposActivity.launchIntent(this, username);
 		startActivity(intent);
+	}
+
+	@Override
+	public void onClick(View v) {
+
 	}
 }
