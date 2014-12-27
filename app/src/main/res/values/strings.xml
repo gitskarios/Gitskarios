@@ -123,5 +123,6 @@
     <string name="commit_authored_at">%1$s authored %2$d days ago</string>
     <string name="commit_additions">Additions %d</string>
     <string name="commit_deletions">Deletions %d</string>
+    <string name="unfollow">Unfollow</string>
 
 </resources>

@@ -12,20 +12,21 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
+import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
+import com.alorma.github.sdk.services.user.follow.FollowUserClient;
+import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
+import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
@@ -44,7 +45,11 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener, GithubDataCard.GithubDataCardListener, View.OnClickListener, FABCenterLayout.FABScrollContentListener {
+		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener,
+		GithubDataCard.GithubDataCardListener,
+		View.OnClickListener,
+		FABCenterLayout.FABScrollContentListener,
+		OnCheckFollowingUser {
 
 	private CardViewNative cardBio;
 	private CardViewNative cardRepos;
@@ -55,6 +60,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private int avatarColor;
 	private User user;
 	private int avatarSecondaryColor;
+	private boolean followingUser = false;
 
 	public static Intent createLauncherIntent(Context context) {
 		Intent intent = new Intent(context, ProfileActivity.class);
@@ -82,6 +88,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
+
+		avatarColor = getResources().getColor(R.color.icons);
+		avatarSecondaryColor = getResources().getColor(R.color.primary);
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
@@ -125,13 +134,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (!TextUtils.isEmpty(authUser) && authUser.equals(user.login)) {
 			fabLayout.removeFab();
 		} else {
-			fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
-			fabDrawable.setStyle(Paint.Style.FILL);
-			fabDrawable.colorRes(R.color.icons);
-			fabDrawable.actionBarSize();
-			fabLayout.setFabIcon(fabDrawable);
-			fabLayout.setFabClickListener(this, "Follow");
-			fabLayout.setFabViewVisibility(View.VISIBLE, false);
+
+			CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
+			checkFollowingUser.setOnCheckFollowingUser(this);
+			checkFollowingUser.execute();
 		}
 
 		if (getSupportActionBar() != null) {
@@ -236,7 +242,16 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onClick(View v) {
-
+		if (followingUser) {
+			UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
+			unfollowUserClient.setOnCheckFollowingUser(this);
+			unfollowUserClient.execute();
+		} else {
+			FollowUserClient followUserClient = new FollowUserClient(this, user.login);
+			followUserClient.setOnCheckFollowingUser(this);
+			followUserClient.execute();
+		}
+		fabLayout.setFabClickListener(null, null);
 	}
 
 	@Override
@@ -256,5 +271,30 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 			getSupportActionBar().setBackgroundDrawable(cd);
 		}
+	}
+
+	@Override
+	public void onCheckFollowUser(String username, boolean following) {
+		followingUser = following;
+
+
+		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
+		fabDrawable.setStyle(Paint.Style.FILL);
+		if (following) {
+			fabDrawable.color(avatarColor);
+		} else {
+			fabDrawable.colorRes(R.color.icons);
+		}
+		fabDrawable.actionBarSize();
+		fabLayout.setFabIcon(fabDrawable);
+		fabLayout.setFabClickListener(this, getTagFab());
+		fabLayout.setFabViewVisibility(View.VISIBLE, false);
+		
+		fabLayout.setFabClickListener(this, null);
+	}
+
+	public String getTagFab() {
+		int string = followingUser ? R.string.unfollow : R.string.follow;
+		return getString(string);
 	}
 }
