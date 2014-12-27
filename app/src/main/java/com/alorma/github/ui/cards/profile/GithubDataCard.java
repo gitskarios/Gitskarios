@@ -22,10 +22,12 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 	private GithubDataCardListener githubDataCardListener;
 
 	private User user;
+	private int avatarColor;
 
-	public GithubDataCard(Context context, User user) {
+	public GithubDataCard(Context context, User user, int avatarColor) {
 		super(context, R.layout.card_github_data_layout);
 		this.user = user;
+		this.avatarColor = avatarColor;
 		CardHeader header = new CardHeader(context);
 		header.setTitle(context.getString(R.string.public_data));
 		addCardHeader(header);
@@ -80,7 +82,8 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
 		GithubIconDrawable githubIconDrawable = new GithubIconDrawable(context, icon);
 
-		githubIconDrawable.colorRes(R.color.icons);
+		githubIconDrawable.sizeDp(30);
+		githubIconDrawable.color(avatarColor);
 
 		return githubIconDrawable;
 	}

@@ -26,10 +26,12 @@ public class BioCard extends Card implements View.OnClickListener {
 	private BioCardListener bioCardListener;
 
 	private User user;
+	private int avatarColor;
 
-	public BioCard(Context context, User user) {
+	public BioCard(Context context, User user, int avatarColor) {
 		super(context, R.layout.card_bio_layout);
 		this.user = user;
+		this.avatarColor = avatarColor;
 		if (!TextUtils.isEmpty(user.name)) {
 			CardHeader header = new CardHeader(context);
 			header.setTitle(user.name);
@@ -128,7 +130,8 @@ public class BioCard extends Card implements View.OnClickListener {
 	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
 		GithubIconDrawable githubIconDrawable = new GithubIconDrawable(context, icon);
 
-		githubIconDrawable.colorRes(R.color.icons);
+		githubIconDrawable.sizeDp(30);
+		githubIconDrawable.color(avatarColor);
 
 		return githubIconDrawable;
 	}
