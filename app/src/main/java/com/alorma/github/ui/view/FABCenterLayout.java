@@ -157,7 +157,9 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			float alpha = ((float) (255 - scrollY)) / 255f;
 			
 			if (scrollY < minimScroll) {
-				ViewCompat.setAlpha(fabView, alpha);
+				if (fabView != null) {
+					ViewCompat.setAlpha(fabView, alpha);
+				}
 				setFabViewVisibility(View.VISIBLE, false);
 			} else {
 				setFabViewVisibility(View.INVISIBLE, false);

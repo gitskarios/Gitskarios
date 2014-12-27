@@ -101,6 +101,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
 
+		cardsContainer.setVisibility(View.INVISIBLE);
+		
 		cardBio = (CardViewNative) findViewById(R.id.cardBio);
 		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
 
@@ -203,6 +205,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		} else {
 			cardsContainer.removeView(cardRepos);
 		}
+		cardsContainer.setVisibility(View.VISIBLE);
 	}
 
 	@Override
