@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="wrap_content"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:padding="8dp">
 
-    <TextView
+    <it.gmariotti.cardslib.library.view.ForegroundLinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fileName"
-        android:textStyle="bold"/>
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_card"
+        android:padding="8dp">
 
-    <com.alorma.diff.lib.DiffTextView
-        android:id="@+id/diffText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fileName"
+            android:textStyle="bold"/>
 
+        <com.alorma.diff.lib.DiffTextView
+            android:id="@+id/diffText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?android:selectableItemBackground"/>
+    </it.gmariotti.cardslib.library.view.ForegroundLinearLayout>
 </LinearLayout>
