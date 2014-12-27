@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,7 +42,7 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener, GithubDataCard.GithubDataCardListener, View.OnClickListener {
+		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener, GithubDataCard.GithubDataCardListener, View.OnClickListener, FABCenterLayout.FABScrollContentListener {
 
 	private CardViewNative cardBio;
 	private CardViewNative cardRepos;
@@ -47,6 +50,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private FABCenterLayout fabLayout;
 	private ImageView image;
 	private GithubIconDrawable fabDrawable;
+	private int avatarColor;
+	private User user;
+	private int avatarSecondaryColor;
 
 	public static Intent createLauncherIntent(Context context) {
 		Intent intent = new Intent(context, ProfileActivity.class);
@@ -76,6 +82,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		setContentView(R.layout.profile_activity);
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+
+		fabLayout.setFabScrollContentListener(this);
+
 		image = (ImageView) findViewById(R.id.image);
 
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
@@ -104,22 +113,15 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onResponseOk(User user, Response r) {
+		this.user = user;
 		getToolbar().setTitle(user.login);
 
-		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_person);
+		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
 		fabDrawable.setStyle(Paint.Style.FILL);
 		fabDrawable.colorRes(R.color.icons);
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);
 		fabLayout.setFabClickListener(this, "Follow");
-
-		fillCardBio(user);
-
-		if (user.public_repos > 0 && user.public_gists > 0) {
-			fillCardRepos(user);
-		} else {
-			cardsContainer.removeView(cardRepos);
-		}
 
 		if (getSupportActionBar() != null) {
 			new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
@@ -127,8 +129,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	private void fillCardBio(User user) {
-		BioCard card = new BioCard(this, user);
-
+		BioCard card = new BioCard(this, user, avatarSecondaryColor);
+		
 		card.setBioCardListener(this);
 
 		cardBio.setCard(card);
@@ -136,7 +138,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	private void fillCardRepos(User user) {
-		GithubDataCard card = new GithubDataCard(this, user);
+		GithubDataCard card = new GithubDataCard(this, user, avatarSecondaryColor);
 
 		card.setGithubDataCardListener(this);
 
@@ -158,19 +160,29 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
 
 		image.setImageDrawable(drawable);
+		if (profileSwatchDark != null && profileSwatch != null) {
+			avatarColor = profileSwatchDark.getRgb();
+			avatarSecondaryColor = profileSwatch.getRgb();
+			if (profileSwatch.getRgb() != 0) {
+				fabLayout.setFabColor(avatarSecondaryColor);
+				fabDrawable.color(avatarColor);
+				fabLayout.setFabIcon(fabDrawable);
+			}
 
-		if (profileSwatch != null && profileSwatch.getRgb() != 0) {
-			fabLayout.setFabColor(profileSwatch.getRgb());
-			if (profileSwatchDark != null) {
-				fabDrawable.color(profileSwatchDark.getRgb());
+			if (avatarColor != 0) {
+				fabLayout.setFabColorPressed(avatarColor);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+					getWindow().setStatusBarColor(avatarColor);
+				}
 			}
 		}
+		
+		fillCardBio(user);
 
-		if (profileSwatchDark != null && profileSwatchDark.getRgb() != 0) {
-			fabLayout.setFabColorPressed(profileSwatchDark.getRgb());
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				getWindow().setStatusBarColor(profileSwatchDark.getRgb());
-			}
+		if (user.public_repos > 0 && user.public_gists > 0) {
+			fillCardRepos(user);
+		} else {
+			cardsContainer.removeView(cardRepos);
 		}
 	}
 
@@ -212,5 +224,24 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onClick(View v) {
 
+	}
+
+	@Override
+	public void onScrollFactor(int alpha, float factor) {
+		if (getSupportActionBar() != null) {
+			ColorDrawable cd = new ColorDrawable(avatarColor);
+
+			if (alpha < 0) {
+				alpha = -alpha;
+			}
+			
+			if (alpha > 255) {
+				alpha = 255;
+			}
+			
+			cd.setAlpha(alpha);
+			
+			getSupportActionBar().setBackgroundDrawable(cd);
+		}
 	}
 }

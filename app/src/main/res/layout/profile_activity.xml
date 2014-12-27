@@ -22,7 +22,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/image"
                 android:scaleType="centerCrop"/>
-            
+
             <android.support.v7.widget.Toolbar
                 android:id="@id/toolbar"
                 android:layout_height="wrap_content"
@@ -37,8 +37,9 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="240dp"
+            android:paddingTop="184dp"
             android:clipToPadding="false"
+            android:layout_marginTop="?attr/actionBarSize"
             android:id="@+id/cardsContainerScroll">
 
             <LinearLayout

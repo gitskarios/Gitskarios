@@ -30,14 +30,13 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
  */
 public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.OnScrollChangedListener {
 
-	private static final long FAB_ANIM_DURATION = 400;
+	private FABScrollContentListener fabScrollContentListener;
 	private FloatingActionButton fabView;
 	private int topId;
 	private OnClickListener fabClickListener;
 	private boolean fabVisible;
 	private String fabTag;
 	private View scrolledChild;
-	private ObjectAnimator animator;
 
 	public FABCenterLayout(Context context) {
 		super(context);
@@ -89,10 +88,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 						int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
 						fabView.layout(r - fabView.getWidth() - int16, bottom - fabView.getHeight() / 2, r - int16, bottom + fabView.getHeight() / 2);
 						removeView(fabView);
-						fabView.setAlpha(0f);
 						addView(fabView);
-						fabView.bringToFront();
-						startFabTransition();
 					}
 				}
 			}
@@ -109,14 +105,6 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 
 	public void setFabColorPressed(int color) {
 		fabView.setColorPressed(color);
-	}
-
-	private void startFabTransition() {
-		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f);
-		ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fabView, pvh);
-		oa.setDuration(500);
-		oa.setInterpolator(new AccelerateDecelerateInterpolator());
-		oa.start();
 	}
 
 	public void setFabClickListener(OnClickListener fabClickListener, final String tag) {
@@ -145,25 +133,6 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 		fabView.setVisibility(visibility);
 	}
 
-	private void startAnimator(View fab, PropertyValuesHolder pvh) {
-		if (pvh != null) {
-			animator = ObjectAnimator.ofPropertyValuesHolder(fab, pvh);
-			animator.setDuration(FAB_ANIM_DURATION);
-			animator.setRepeatCount(0);
-			animator.start();
-		}
-	}
-
-	protected PropertyValuesHolder showAnimator(View fab) {
-		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f);
-		return pvh;
-	}
-
-	protected PropertyValuesHolder hideAnimator(View fab) {
-		PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
-		return pvh;
-	}
-
 	@Override
 	public void onScrollChanged() {
 
@@ -171,13 +140,19 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			int scrollY = scrolledChild.getScrollY();
 
 			if (scrollY == 0) {
+				setFabViewVisibility(View.VISIBLE);							
 				setFabClickListener(fabClickListener, "");
 			} else {
+				setFabViewVisibility(View.INVISIBLE);
 				setFabClickListener(null, "");
 			}
 
 			float alpha = ((float) (255 - scrollY)) / 255f;
-			ViewCompat.setAlpha(fabView, alpha);
+
+
+			if (fabScrollContentListener != null) {
+				fabScrollContentListener.onScrollFactor(scrollY, alpha);
+			}
 		}
 	}
 
@@ -228,5 +203,14 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params, boolean preventRequestLayout) {
 		addChildScrollListener(child);
 		return super.addViewInLayout(child, index, params, preventRequestLayout);
+	}
+
+	public void setFabScrollContentListener(FABScrollContentListener fabScrollContentListener) {
+		this.fabScrollContentListener = fabScrollContentListener;
+	}
+
+	public interface FABScrollContentListener {
+		void onScrollFactor(int alpha, float factor);
+
 	}
 }
