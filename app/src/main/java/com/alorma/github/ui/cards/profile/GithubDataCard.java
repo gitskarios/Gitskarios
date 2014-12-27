@@ -80,6 +80,7 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
 		GithubIconDrawable githubIconDrawable = new GithubIconDrawable(context, icon);
 
+		githubIconDrawable.sizeDp(30);
 		githubIconDrawable.colorRes(R.color.icons);
 
 		return githubIconDrawable;

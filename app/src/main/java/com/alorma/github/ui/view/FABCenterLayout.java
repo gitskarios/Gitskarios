@@ -171,13 +171,12 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			int scrollY = scrolledChild.getScrollY();
 
 			if (scrollY == 0) {
-				//setFabViewVisibility(View.VISIBLE);
+				setFabClickListener(fabClickListener, "");
 			} else {
-				//setFabViewVisibility(View.INVISIBLE);
+				setFabClickListener(null, "");
 			}
 
 			float alpha = ((float) (255 - scrollY)) / 255f;
-			Log.i("ALORMA", "Scroll: " + scrollY + " - Alpha: " + alpha);
 			ViewCompat.setAlpha(fabView, alpha);
 		}
 	}

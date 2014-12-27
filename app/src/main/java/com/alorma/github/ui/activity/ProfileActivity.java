@@ -82,7 +82,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		cardsContainerScroll = (ScrollView) findViewById(R.id.cardsContainerScroll);
 
-		
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
 		topContainer = (ViewGroup) findViewById(R.id.top);
 
