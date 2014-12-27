@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
@@ -82,6 +84,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		setContentView(R.layout.profile_activity);
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
 
 		fabLayout.setFabScrollContentListener(this);
 
@@ -116,12 +119,20 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
-		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
-		fabDrawable.setStyle(Paint.Style.FILL);
-		fabDrawable.colorRes(R.color.icons);
-		fabDrawable.actionBarSize();
-		fabLayout.setFabIcon(fabDrawable);
-		fabLayout.setFabClickListener(this, "Follow");
+		GitskariosSettings gitskariosSettings = new GitskariosSettings(this);
+		String authUser = gitskariosSettings.getAuthUser(null);
+
+		if (!TextUtils.isEmpty(authUser) && authUser.equals(user.login)) {
+			fabLayout.removeFab();
+		} else {
+			fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
+			fabDrawable.setStyle(Paint.Style.FILL);
+			fabDrawable.colorRes(R.color.icons);
+			fabDrawable.actionBarSize();
+			fabLayout.setFabIcon(fabDrawable);
+			fabLayout.setFabClickListener(this, "Follow");
+			fabLayout.setFabViewVisibility(View.VISIBLE, false);
+		}
 
 		if (getSupportActionBar() != null) {
 			new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
@@ -130,7 +141,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	private void fillCardBio(User user) {
 		BioCard card = new BioCard(this, user, avatarSecondaryColor);
-		
+
 		card.setBioCardListener(this);
 
 		cardBio.setCard(card);
@@ -165,8 +176,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			avatarSecondaryColor = profileSwatch.getRgb();
 			if (profileSwatch.getRgb() != 0) {
 				fabLayout.setFabColor(avatarSecondaryColor);
-				fabDrawable.color(avatarColor);
-				fabLayout.setFabIcon(fabDrawable);
+				if (fabDrawable != null) {
+					fabDrawable.color(avatarColor);
+					fabLayout.setFabIcon(fabDrawable);
+				}
 			}
 
 			if (avatarColor != 0) {
@@ -176,7 +189,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 				}
 			}
 		}
-		
+
 		fillCardBio(user);
 
 		if (user.public_repos > 0 && user.public_gists > 0) {
@@ -234,13 +247,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			if (alpha < 0) {
 				alpha = -alpha;
 			}
-			
+
 			if (alpha > 255) {
 				alpha = 255;
 			}
-			
+
 			cd.setAlpha(alpha);
-			
+
 			getSupportActionBar().setBackgroundDrawable(cd);
 		}
 	}

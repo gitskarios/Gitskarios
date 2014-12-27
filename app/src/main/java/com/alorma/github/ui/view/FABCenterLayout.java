@@ -37,6 +37,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	private boolean fabVisible;
 	private String fabTag;
 	private View scrolledChild;
+	private boolean forceVisbility;
 
 	public FABCenterLayout(Context context) {
 		super(context);
@@ -96,15 +97,21 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	}
 
 	public void setFabIcon(Drawable drawable) {
-		fabView.setDrawable(drawable);
+		if (fabView != null) {
+			fabView.setDrawable(drawable);
+		}
 	}
 
 	public void setFabColor(int color) {
-		fabView.setColorNormal(color);
+		if (fabView != null) {
+			fabView.setColorNormal(color);
+		}
 	}
 
 	public void setFabColorPressed(int color) {
-		fabView.setColorPressed(color);
+		if (fabView != null) {
+			fabView.setColorPressed(color);
+		}
 	}
 
 	public void setFabClickListener(OnClickListener fabClickListener, final String tag) {
@@ -129,26 +136,32 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 		}
 	}
 
-	public void setFabViewVisibility(int visibility) {
-		fabView.setVisibility(visibility);
+	public void setFabViewVisibility(int visibility, boolean forced) {
+		forceVisbility = forced;
+		if (fabView != null) {
+			fabView.setVisibility(visibility);
+		}
 	}
 
 	@Override
 	public void onScrollChanged() {
 
-		if (scrolledChild != null) {
+		if (!forceVisbility && scrolledChild != null) {
 			int scrollY = scrolledChild.getScrollY();
 
-			if (scrollY == 0) {
-				setFabViewVisibility(View.VISIBLE);							
-				setFabClickListener(fabClickListener, "");
-			} else {
-				setFabViewVisibility(View.INVISIBLE);
-				setFabClickListener(null, "");
-			}
+			int fabViewHeight = fabView != null ? fabView.getHeight() : 0;
+			int minimScroll = fabViewHeight / 2;
 
+			setFabClickListener(scrollY < minimScroll ? fabClickListener : null, null);
+			
 			float alpha = ((float) (255 - scrollY)) / 255f;
-
+			
+			if (scrollY < minimScroll) {
+				ViewCompat.setAlpha(fabView, alpha);
+				setFabViewVisibility(View.VISIBLE, false);
+			} else {
+				setFabViewVisibility(View.INVISIBLE, false);
+			}
 
 			if (fabScrollContentListener != null) {
 				fabScrollContentListener.onScrollFactor(scrollY, alpha);
@@ -157,7 +170,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	}
 
 	private void addChildScrollListener(View child) {
-		if (child != null && child.getId() != topId && child.getId() != fabView.getId()) {
+		if (child != null && fabView != null && child.getId() != topId && child.getId() != fabView.getId()) {
 			scrolledChild = child;
 			child.getViewTreeObserver().addOnScrollChangedListener(this);
 		}
@@ -209,8 +222,14 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 		this.fabScrollContentListener = fabScrollContentListener;
 	}
 
+	public void removeFab() {
+		if (fabView != null) {
+			removeView(fabView);
+			fabView = null;
+		}
+	}
+
 	public interface FABScrollContentListener {
 		void onScrollFactor(int alpha, float factor);
-
 	}
 }
