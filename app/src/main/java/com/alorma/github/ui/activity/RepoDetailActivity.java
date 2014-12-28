@@ -220,10 +220,9 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 		if (currentRepo != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setData(shareUri);
 			intent.setType("text/plain");
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.owner + "/" + repoInfo.repo);
+			intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
 			intent.putExtra(Intent.EXTRA_TEXT, currentRepo.url);
 
 			mShareActionProvider.setShareIntent(intent);
