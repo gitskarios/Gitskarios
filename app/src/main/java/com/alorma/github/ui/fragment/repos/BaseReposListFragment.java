@@ -76,6 +76,11 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 	}
 
 	@Override
+	protected boolean useInnerSwipeRefresh() {
+		return true;
+	}
+
+	@Override
 	public void onDestroy() {
 		if (settings != null) {
 			settings.unregisterListener(this);

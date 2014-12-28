@@ -93,8 +93,4 @@ public class ReposFragment extends BaseReposListFragment {
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
 	}
 
-	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
-	}
 }
