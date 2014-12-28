@@ -51,8 +51,10 @@ public class CommitsAdapter extends LazyAdapter<Commit> {
 
 			Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
-			String userDate = getContext().getResources().getString(R.string.commit_authored_at, commit.committer.login, days.getDays());
-			user.setText(userDate);
+			if (commit.committer != null && commit.committer.login != null) {
+				String userDate = getContext().getResources().getString(R.string.commit_authored_at, commit.committer.login, days.getDays());
+				user.setText(userDate);
+			}
 		} else {
 			user.setText(commit.committer.login);
 		}
