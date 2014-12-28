@@ -11,20 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:top_id="@id/top"
-        app:folded_size="@dimen/issue_discussion_header_no_actionbar_fold"
-        app:unfolded_size="@dimen/issue_discussion_header_no_actionbar"
+        app:folded_size="@dimen/issue_discussion_header_fold"
+        app:unfolded_size="@dimen/issue_discussion_header_unfold"
         android:id="@id/fabLayout">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/discussionFeed"
-            android:layout_marginTop="@dimen/issue_discussion_header_no_actionbar_fold"
-            android:background="@color/primary_light"/>
+            android:layout_marginTop="@dimen/issue_discussion_header_fold"/>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/issue_discussion_header_no_actionbar_fold"
+            android:layout_height="@dimen/issue_discussion_header_fold"
             android:background="@color/primary"
             android:id="@id/top">
 

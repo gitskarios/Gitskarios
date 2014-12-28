@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,6 +87,8 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
 
 		issueBody = (TextView) findViewById(R.id.issueBody);
+		issueBody.setMaxLines(3);
+		issueBody.setEllipsize(TextUtils.TruncateAt.END);
 	}
 
 	private void setData() {
@@ -150,6 +153,13 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 				closeIssueDialog();
 				break;
 			case R.id.action_fold_issue:
+				if (fabLayout.isFold()) {
+					issueBody.setMaxLines(Integer.MAX_VALUE);
+					issueBody.setEllipsize(null);
+				} else {
+					issueBody.setMaxLines(3);
+					issueBody.setEllipsize(TextUtils.TruncateAt.END);
+				}
 				fabLayout.setFold(!fabLayout.isFold());
 				invalidateOptionsMenu();
 				break;
@@ -214,7 +224,8 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			IssueDetailActivity.this.issueState = issue.state;
 			invalidateOptionsMenu();
 			setData();
-			Spanned issueNumber = Html.fromHtml(getString(R.string.issue_detail_title, issue.number));
+			
+			//Spanned issueNumber = Html.fromHtml(getString(R.string.issue_detail_title, issue.number));
 
 			shouldRefreshOnBack = true;
 		}

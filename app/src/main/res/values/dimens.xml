@@ -60,6 +60,6 @@
     <dimen name="user_row_item_height">72dp</dimen>
     <dimen name="user_row_item_image_size">40dp</dimen>
     <dimen name="user_row_item_margin">16dp</dimen>
-    <dimen name="issue_discussion_header_no_actionbar">244dp</dimen>
-    <dimen name="issue_discussion_header_no_actionbar_fold">120dp</dimen>
+    <dimen name="issue_discussion_header_unfold">400dp</dimen>
+    <dimen name="issue_discussion_header_fold">120dp</dimen>
 </resources>

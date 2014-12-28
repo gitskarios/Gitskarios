@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.nineoldandroids.animation.IntEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
 /**
@@ -118,6 +121,8 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 				fabView.layout(r - fabView.getWidth() - int16, bottom - fabView.getHeight() / 2, r - int16, bottom + fabView.getHeight() / 2);
 				removeView(fabView);
 				addView(fabView);
+
+				ViewCompat.setElevation(fabView, 6f);
 			}
 		}
 	}
@@ -237,6 +242,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 		ValueAnimator animator = ValueAnimator.ofInt(topView.getMeasuredHeight(), finalValue);
 		animator.addUpdateListener(new TopFoldAnimatorListener(topView));
 		animator.setDuration(FOLD_DURATION);
+		animator.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator.start();
 
 	}
@@ -257,7 +263,6 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			View viewTop = child.findViewById(topId);
 			if (viewTop != null) {
 				topView = viewTop;
-				ViewCompat.setElevation(topView, 4f);
 			}
 			View viewScroll = child.findViewById(scrollableId);
 			if (viewScroll != null) {
