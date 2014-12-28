@@ -9,9 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
-import com.alorma.github.sdk.services.issues.GetIssueClient;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -19,13 +16,14 @@ import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.sdk.services.issues.GetIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.dialog.NewIssueCommentDialog;
+import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -111,9 +109,9 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		menu.clear();
 
 		if (permissions != null && permissions.push && issueState == IssueState.open) {
-			menu.add(0, R.id.action_close_issue, 0, getString(R.string.closeIssue));
-			menu.findItem(R.id.action_close_issue).setIcon(new IconDrawable(this, Iconify.IconValue.fa_times).actionBarSize().colorRes(R.color.white));
-			menu.findItem(R.id.action_close_issue).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+			menuItem.setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
+			menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 
 		return true;
@@ -147,13 +145,13 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	}
 
 	@Override
-	public IssueComment requestIssue() {
+	public Issue requestIssue() {
 		return issue;
 	}
 
 	@Override
 	public void onAddComment() {
-		Intent intent = NewIssueCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
+		Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
 		startActivityForResult(intent, NEW_COMMENT_REQUEST);
 	}
 

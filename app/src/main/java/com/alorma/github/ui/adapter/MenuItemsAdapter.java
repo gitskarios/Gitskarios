@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.menu.DividerMenuItem;
 import com.alorma.github.ui.fragment.menu.MenuItem;
-import com.joanzapata.android.iconify.IconDrawable;
+import com.alorma.githubicons.GithubIconDrawable;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.Menu
 				RowMenuHolder holder = (RowMenuHolder) menuHolder;
 				holder.text.setText(item.text);
 				if (item.icon != null) {
-					holder.image.setImageDrawable(new IconDrawable(context, item.icon).color(color));
+					holder.image.setImageDrawable(new GithubIconDrawable(context, item.icon).color(color));
 				}
 				break;
 		}

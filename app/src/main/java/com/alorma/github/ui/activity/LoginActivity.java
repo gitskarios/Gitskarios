@@ -80,12 +80,16 @@ public class LoginActivity extends Activity {
 	}
 
 	private void showDialog() {
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setMessage(getString(R.string.acces_token_request));
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.show();
+		try {
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage(getString(R.string.acces_token_request));
+			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
+			progressDialog.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {

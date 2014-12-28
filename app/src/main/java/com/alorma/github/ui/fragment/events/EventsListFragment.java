@@ -8,7 +8,7 @@ import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 /**
  * Created by Bernat on 03/10/2014.
@@ -80,8 +80,8 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_calendar;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_calendar;
 	}
 
 	@Override

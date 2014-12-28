@@ -11,7 +11,7 @@ import com.alorma.github.sdk.bean.dto.response.search.ReposSearch;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 
@@ -36,8 +36,8 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_search;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_repo;
 	}
 
 	@Override

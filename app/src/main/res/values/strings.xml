@@ -28,8 +28,8 @@
     <string name="title_followers">Followers</string>
     <string name="title_following">Following</string>
     <string name="title_repos">Repos</string>
-    <string name="star_icon_text">{fa_star} %1$d</string>
-    <string name="fork_icon_text">{fa_code_fork} %1$d</string>
+    <string name="star_icon_text">%1$d</string>
+    <string name="fork_icon_text">%1$d</string>
     <string name="unauthorized">Unauthorized acces</string>
     <string name="readme">Readme</string>
     <string name="source">Source</string>
@@ -124,5 +124,6 @@
     <string name="commit_additions">Additions %d</string>
     <string name="commit_deletions">Deletions %d</string>
     <string name="unfollow">Unfollow</string>
+    <string name="fold_issue">Fold issue detail</string>
 
 </resources>

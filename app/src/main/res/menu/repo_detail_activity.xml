@@ -6,11 +6,12 @@
     <item
         android:id="@+id/share_repo"
         android:title="@string/action_share_repo"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
 
     <item
         android:title="@string/show_parent"
         android:id="@+id/action_show_parent"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
 
 </menu>

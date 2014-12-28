@@ -1,17 +1,25 @@
 package com.alorma.github.ui.fragment.detail.issue;
 
 import android.animation.PropertyValuesHolder;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.GetIssueComments;
 import com.alorma.github.ui.adapter.detail.issue.IssuesCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.github.ui.view.FABCenterLayout;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 /**
  * Created by Bernat on 23/08/2014.
@@ -24,6 +32,7 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	private float fabNewY;
 	private IssueDiscussionListener issueDiscussionListener;
 	private IssueInfo issueInfo;
+	private FABCenterLayout fabLayout;
 
 	public static IssueDiscussionFragment newInstance(IssueInfo info) {
 		Bundle bundle = new Bundle();
@@ -36,8 +45,38 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+
+		View v = inflater.inflate(R.layout.issues_discussion_list_fragment, null, false);
+
+		return v;
+	}
+
+	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
+		fabLayout = (FABCenterLayout) view.findViewById(R.id.fabLayout);
+		fabLayout.setFabColor(getResources().getColor(R.color.accent));
+		fabLayout.setFabColorPressed(getResources().getColor(R.color.primary_dark));
+		GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).fabSize();
+		fabLayout.setFabIcon(drawable);
+		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
+
+		if (issueDiscussionListener != null) {
+			Issue issue = issueDiscussionListener.requestIssue();
+
+			TextView issueBody = (TextView) view.findViewById(R.id.issueBody);
+			issueBody.setText(issue.body);
+		}
 
 		if (getListView() != null) {
 			getListView().setDivider(null);
@@ -45,6 +84,14 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 			getListView().setPadding(0, int16, 0, 0);
 			getListView().setClipToPadding(false);
 		}
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		MenuItem menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.fold_issue);
+		menuItem.setIcon(new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_fold).actionBarSize().colorRes(R.color.white));
+		menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 	}
 
 	@Override
@@ -83,9 +130,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 		if (issueComments != null && issueComments.size() > 0) {
 			if (adapter == null || refreshing) {
 				ListIssueComments comments = new ListIssueComments();
-				if (issueDiscussionListener != null) {
-					comments.add(issueDiscussionListener.requestIssue());
-				}
 				comments.addAll(issueComments);
 				adapter = new IssuesCommentsAdapter(getActivity(), comments);
 				setListAdapter(adapter);
@@ -97,8 +141,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_comment;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_comment_discussion;
 	}
 
 	@Override
@@ -112,20 +156,19 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected boolean useFAB() {
-		return true;
+	protected GithubIconify.IconValue getFABGithubIcon() {
+		return GithubIconify.IconValue.octicon_comment_discussion;
 	}
 
 	@Override
-	protected void fabClick() {
-		if (issueDiscussionListener != null) {
-			issueDiscussionListener.onAddComment();
+	public void onClick(View v) {
+		if (v.getId() == fabLayout.getFabId()) {
+			if (issueDiscussionListener != null) {
+				issueDiscussionListener.onAddComment();
+			}
+		} else {
+			super.onClick(v);
 		}
-	}
-
-	@Override
-	protected PropertyValuesHolder showAnimator(View fab) {
-		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
 	}
 
 	@Override
@@ -140,7 +183,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	public interface IssueDiscussionListener {
-		IssueComment requestIssue();
+		Issue requestIssue();
+
 		void onAddComment();
 	}
 }

@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.RecyclerView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.adapter.MenuItemsAdapter;
 import com.alorma.githubicons.GithubIconify;
-import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +45,20 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		currentSelectedItemId = 0;
 
 		List<MenuItem> objMenuItems = new ArrayList<MenuItem>();
-		objMenuItems.add(new MenuItem(0, 0, R.string.menu_my_profile, Iconify.IconValue.fa_user));
+		objMenuItems.add(new MenuItem(0, 0, R.string.menu_my_profile, GithubIconify.IconValue.octicon_person));
 
 		objMenuItems.add(new DividerMenuItem());
 
-		objMenuItems.add(new MenuItem(0, 1, R.string.menu_organizations, Iconify.IconValue.fa_group));
-		objMenuItems.add(new MenuItem(1, 1, R.string.menu_events, Iconify.IconValue.fa_calendar));
+		objMenuItems.add(new MenuItem(0, 1, R.string.menu_organizations, GithubIconify.IconValue.octicon_organization));
+		objMenuItems.add(new MenuItem(1, 1, R.string.menu_events, GithubIconify.IconValue.octicon_calendar));
 
-		currentSelectedItem = new MenuItem(0, 2, R.string.navigation_repos, Iconify.IconValue.fa_code);
+		currentSelectedItem = new MenuItem(0, 2, R.string.navigation_repos, GithubIconify.IconValue.octicon_repo);
 		objMenuItems.add(currentSelectedItem);
-		objMenuItems.add(new MenuItem(1, 2, R.string.navigation_starred_repos, Iconify.IconValue.fa_star));
-		objMenuItems.add(new MenuItem(2, 2, R.string.navigation_watched_repos, Iconify.IconValue.fa_eye));
+		objMenuItems.add(new MenuItem(1, 2, R.string.navigation_starred_repos, GithubIconify.IconValue.octicon_star));
+		objMenuItems.add(new MenuItem(2, 2, R.string.navigation_watched_repos, GithubIconify.IconValue.octicon_eye));
 
-		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_followers, Iconify.IconValue.fa_user));
-		objMenuItems.add(new MenuItem(1, 3, R.string.navigation_following, Iconify.IconValue.fa_user));
+		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_followers, GithubIconify.IconValue.octicon_person));
+		objMenuItems.add(new MenuItem(1, 3, R.string.navigation_following, GithubIconify.IconValue.octicon_person));
 
 		objMenuItems.add(new DividerMenuItem());
 		objMenuItems.add(new MenuItem(0, 4, R.string.navigation_settings, null));

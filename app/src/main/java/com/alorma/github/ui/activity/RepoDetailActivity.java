@@ -8,7 +8,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +37,7 @@ import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
 	private CommitsListFragment commitsListFragment;
+	private ShareActionProvider mShareActionProvider;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -197,13 +199,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
 
 		if (menu != null) {
-			MenuItem item = menu.findItem(R.id.share_repo);
-			if (item != null) {
-				IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_share_alt);
-				iconDrawable.color(Color.WHITE);
-				iconDrawable.actionBarSize();
-				item.setIcon(iconDrawable);
-			}
 
 			if (currentRepo == null || currentRepo.parent == null) {
 				MenuItem parentItem = menu.findItem(R.id.action_show_parent);
@@ -217,18 +212,30 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		MenuItem item = menu.findItem(R.id.share_repo);
 
-		if (item.getItemId() == R.id.share_repo) {
+		mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+		if (currentRepo != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setData(shareUri);
 			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.repo);
-			intent.putExtra(Intent.EXTRA_TEXT, shareUri);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.owner + "/" + repoInfo.repo);
+			intent.putExtra(Intent.EXTRA_TEXT, currentRepo.url);
 
-			startActivity(Intent.createChooser(intent, "Share repository!"));
-		} else if (item.getItemId() == R.id.action_show_parent) {
+			mShareActionProvider.setShareIntent(intent);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+
+		if (item.getItemId() == R.id.action_show_parent) {
 			if (currentRepo != null && currentRepo.parent != null) {
 				String parentFullName = currentRepo.parent.full_name;
 				String[] split = parentFullName.split("/");

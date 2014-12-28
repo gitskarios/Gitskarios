@@ -47,7 +47,6 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
     compile 'com.afollestad:material-dialogs:0.4.6'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
-    compile 'com.joanzapata.android:android-iconify:1.0.6'
     //Core
     compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.0'
     //Optional for built-in cards

@@ -5,13 +5,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 05/08/2014.

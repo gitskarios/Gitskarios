@@ -5,23 +5,20 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.ListFragment;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import com.alorma.github.ui.view.DirectionalScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 12/08/2014.
@@ -93,7 +90,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 		if (getActivity() != null) {
 			if (emptyText != null && emptyIcon != null) {
 				if (getNoDataIcon() != null && getNoDataText() > 0) {
-					IconDrawable iconDrawable = new IconDrawable(getActivity(), getNoDataIcon());
+					GithubIconDrawable iconDrawable = new GithubIconDrawable(getActivity(), getNoDataIcon());
 					iconDrawable.colorRes(R.color.gray_github_medium);
 					emptyIcon.setImageDrawable(iconDrawable);
 
@@ -105,12 +102,12 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 		}
 	}
 
-	protected abstract Iconify.IconValue getNoDataIcon();
+	protected abstract GithubIconify.IconValue getNoDataIcon();
 
 	protected abstract int getNoDataText();
 
 	private void showFab() {
-		if (!fabVisible) {
+		if (useFAB() && !fabVisible) {
 			fabVisible = true;
 			PropertyValuesHolder pvh = showAnimator(fab);
 			startAnimator(pvh);
@@ -118,7 +115,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	}
 
 	private void hideFab() {
-		if (fabVisible & (animator == null || !animator.isRunning())) {
+		if (useFAB() && fabVisible & (animator == null || !animator.isRunning())) {
 			fabVisible = false;
 			PropertyValuesHolder pvh = hideAnimator(fab);
 			startAnimator(pvh);
@@ -126,7 +123,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	}
 
 	private void startAnimator(PropertyValuesHolder pvh) {
-		if (pvh != null) {
+		if (useFAB() && pvh != null) {
 			animator = ObjectAnimator.ofPropertyValuesHolder(fab, pvh);
 			animator.setDuration(FAB_ANIM_DURATION);
 			animator.setRepeatCount(0);

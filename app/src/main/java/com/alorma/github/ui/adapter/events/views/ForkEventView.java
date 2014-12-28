@@ -9,12 +9,9 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
-import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**

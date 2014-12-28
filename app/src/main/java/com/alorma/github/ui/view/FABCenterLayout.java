@@ -38,6 +38,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	private String fabTag;
 	private View scrolledChild;
 	private boolean forceVisbility;
+	private int scrollable_id;
 
 	public FABCenterLayout(Context context) {
 		super(context);
@@ -60,6 +61,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 
 			if (attr.hasValue(R.styleable.FABCenterLayout_top_id)) {
 				topId = attr.getResourceId(R.styleable.FABCenterLayout_top_id, 0);
+				scrollable_id = attr.getResourceId(R.styleable.FABCenterLayout_scrollable_id, 0);
 				if (topId != 0) {
 					fabVisible = true;
 					createFabView();
@@ -152,10 +154,10 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			int fabViewHeight = fabView != null ? fabView.getHeight() : 0;
 			int minimScroll = fabViewHeight / 2;
 
-			setFabClickListener(scrollY < minimScroll ? fabClickListener : null, null);
-			
+			setFabClickListener(scrollY < minimScroll ? fabClickListener : null, "");
+
 			float alpha = ((float) (255 - scrollY)) / 255f;
-			
+
 			if (scrollY < minimScroll) {
 				if (fabView != null) {
 					ViewCompat.setAlpha(fabView, alpha);
@@ -172,7 +174,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	}
 
 	private void addChildScrollListener(View child) {
-		if (child != null && fabView != null && child.getId() != topId && child.getId() != fabView.getId()) {
+		if (child != null && fabView != null && child != fabView && child.getId() != topId && child.getId() == scrollable_id) {
 			scrolledChild = child;
 			child.getViewTreeObserver().addOnScrollChangedListener(this);
 		}
@@ -229,6 +231,10 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			removeView(fabView);
 			fabView = null;
 		}
+	}
+
+	public int getFabId() {
+		return fabView != null ? fabView.getId() : 0;
 	}
 
 	public interface FABScrollContentListener {

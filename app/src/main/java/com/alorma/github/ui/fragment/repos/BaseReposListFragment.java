@@ -12,7 +12,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 
@@ -59,8 +59,8 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_code;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_repo;
 	}
 
 	@Override

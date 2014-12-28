@@ -21,7 +21,6 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
-import com.joanzapata.android.iconify.Iconify;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -92,8 +91,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_code_fork;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_file_diff;
 	}
 
 	@Override

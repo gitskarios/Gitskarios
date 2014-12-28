@@ -13,8 +13,6 @@ import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**

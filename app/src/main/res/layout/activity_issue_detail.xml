@@ -4,10 +4,9 @@
               tools:context="com.alorma.github.ui.activity.IssueDetailActivity"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:id="@+id/fabLayout">
+              android:orientation="vertical">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"/>
 
     <FrameLayout
         android:layout_width="match_parent"

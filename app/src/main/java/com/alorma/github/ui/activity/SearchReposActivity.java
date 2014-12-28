@@ -1,7 +1,6 @@
 package com.alorma.github.ui.activity;
 
 import android.app.FragmentTransaction;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +15,8 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
-import com.joanzapata.android.iconify.IconDrawable;
 
 /**
  * Created by Bernat on 08/08/2014.

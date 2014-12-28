@@ -31,7 +31,7 @@
         <activity android:name="com.alorma.github.ui.activity.ProfileActivity" />
         <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity" />
         <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity" />
-        <activity android:name="com.alorma.github.ui.dialog.NewIssueCommentDialog" />
+        <activity android:name=".ui.dialog.NewIssueCommentActivity" />
         <activity android:name="com.alorma.github.ui.activity.FileActivity" />
         <activity android:name="com.alorma.github.ui.activity.SearchReposActivity" >
             <intent-filter>
