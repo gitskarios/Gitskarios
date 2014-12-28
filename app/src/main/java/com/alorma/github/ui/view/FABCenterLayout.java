@@ -1,35 +1,28 @@
 package com.alorma.github.ui.view;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * Created by Bernat on 26/08/2014.
  */
 public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.OnScrollChangedListener {
 
+	private static final long FOLD_DURATION = 500;
 	private FABScrollContentListener fabScrollContentListener;
 	private FloatingActionButton fabView;
 	private int topId;
@@ -38,7 +31,11 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	private String fabTag;
 	private View scrolledChild;
 	private boolean forceVisbility;
-	private int scrollable_id;
+	private int scrollableId;
+	private boolean isFold = true;
+	private View topView;
+	private int topFoldedSize;
+	private int topUnfoldedSize;
 
 	public FABCenterLayout(Context context) {
 		super(context);
@@ -56,22 +53,53 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	}
 
 	private void init(AttributeSet attrs, int defStyle) {
+		isInEditMode();
+
+		TypedValue tv = new TypedValue();
+
+		topFoldedSize = (int) (56 * getResources().getDisplayMetrics().density);
+		if (getContext().getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+			topFoldedSize = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+		}
+
+		topUnfoldedSize = topFoldedSize * 2;
+
 		if (attrs != null) {
 			TypedArray attr = getContext().obtainStyledAttributes(attrs, R.styleable.FABCenterLayout, defStyle, 0);
 
 			if (attr.hasValue(R.styleable.FABCenterLayout_top_id)) {
 				topId = attr.getResourceId(R.styleable.FABCenterLayout_top_id, 0);
-				scrollable_id = attr.getResourceId(R.styleable.FABCenterLayout_scrollable_id, 0);
 				if (topId != 0) {
 					fabVisible = true;
 					createFabView();
 				}
 			}
+
+			if (attr.hasValue(R.styleable.FABCenterLayout_scrollable_id)) {
+				scrollableId = attr.getResourceId(R.styleable.FABCenterLayout_scrollable_id, 0);
+			}
+
+			if (attr.hasValue(R.styleable.FABCenterLayout_folded_size)) {
+				topFoldedSize = attr.getDimensionPixelOffset(R.styleable.FABCenterLayout_folded_size, topFoldedSize);
+			}
+
+			if (attr.hasValue(R.styleable.FABCenterLayout_unfolded_size)) {
+				topUnfoldedSize = attr.getDimensionPixelOffset(R.styleable.FABCenterLayout_unfolded_size, topUnfoldedSize);
+			}
+		}
+	}
+
+	private void addChildScrollListener(View child) {
+		if (child != null && fabView != null && child != fabView && child.getId() != topId && child.getId() == scrollableId) {
+			scrolledChild = child;
+			child.getViewTreeObserver().addOnScrollChangedListener(this);
 		}
 	}
 
 	private void createFabView() {
 		fabView = (FloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
+
+		fabView.setColorNormal(getResources().getColor(R.color.accent));
 
 		fabView.setOnClickListener(fabClickListener);
 		setFabTag();
@@ -80,20 +108,16 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
-		if (getChildCount() > 1) {
-			if (topId != 0 && fabVisible && fabView != null) {
-				View topView = findViewById(topId);
 
-				if (topView != null) {
-					int bottom = topView.getHeight();
+		if (topView != null && fabVisible && fabView != null) {
 
-					if (bottom > 0) {
-						int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
-						fabView.layout(r - fabView.getWidth() - int16, bottom - fabView.getHeight() / 2, r - int16, bottom + fabView.getHeight() / 2);
-						removeView(fabView);
-						addView(fabView);
-					}
-				}
+			int bottom = topView.getBottom();
+
+			if (bottom > 0) {
+				int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
+				fabView.layout(r - fabView.getWidth() - int16, bottom - fabView.getHeight() / 2, r - int16, bottom + fabView.getHeight() / 2);
+				removeView(fabView);
+				addView(fabView);
 			}
 		}
 	}
@@ -173,55 +197,6 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 		}
 	}
 
-	private void addChildScrollListener(View child) {
-		if (child != null && fabView != null && child != fabView && child.getId() != topId && child.getId() == scrollable_id) {
-			scrolledChild = child;
-			child.getViewTreeObserver().addOnScrollChangedListener(this);
-		}
-	}
-
-	@Override
-	public void addView(View child) {
-		super.addView(child);
-		addChildScrollListener(child);
-	}
-
-	@Override
-	public void addView(View child, int index) {
-		super.addView(child, index);
-		addChildScrollListener(child);
-	}
-
-	@Override
-	public void addView(View child, int width, int height) {
-		super.addView(child, width, height);
-		addChildScrollListener(child);
-	}
-
-	@Override
-	public void addView(View child, ViewGroup.LayoutParams params) {
-		super.addView(child, params);
-		addChildScrollListener(child);
-	}
-
-	@Override
-	public void addView(View child, int index, ViewGroup.LayoutParams params) {
-		super.addView(child, index, params);
-		addChildScrollListener(child);
-	}
-
-	@Override
-	protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params) {
-		addChildScrollListener(child);
-		return super.addViewInLayout(child, index, params);
-	}
-
-	@Override
-	protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params, boolean preventRequestLayout) {
-		addChildScrollListener(child);
-		return super.addViewInLayout(child, index, params, preventRequestLayout);
-	}
-
 	public void setFabScrollContentListener(FABScrollContentListener fabScrollContentListener) {
 		this.fabScrollContentListener = fabScrollContentListener;
 	}
@@ -237,7 +212,73 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 		return fabView != null ? fabView.getId() : 0;
 	}
 
+	public void setFold(boolean fold) {
+		this.isFold = fold;
+		if (fold) {
+			fold();
+		} else {
+			unfold();
+		}
+	}
+
+	public boolean isFold() {
+		return isFold;
+	}
+
+	public void fold() {
+		animFold(topFoldedSize);
+	}
+
+	public void unfold() {
+		animFold(topUnfoldedSize);
+	}
+
+	private void animFold(int finalValue) {
+		ValueAnimator animator = ValueAnimator.ofInt(topView.getMeasuredHeight(), finalValue);
+		animator.addUpdateListener(new TopFoldAnimatorListener(topView));
+		animator.setDuration(FOLD_DURATION);
+		animator.start();
+
+	}
+
 	public interface FABScrollContentListener {
 		void onScrollFactor(int alpha, float factor);
+	}
+
+	@Override
+	public void addView(View child, int index, ViewGroup.LayoutParams params) {
+		super.addView(child, index, params);
+		if (child.getId() == scrollableId) {
+			scrolledChild = child;
+			addChildScrollListener(scrolledChild);
+		} else if (child.getId() == topId) {
+			topView = child;
+		} else {
+			View viewTop = child.findViewById(topId);
+			if (viewTop != null) {
+				topView = viewTop;
+				ViewCompat.setElevation(topView, 4f);
+			}
+			View viewScroll = child.findViewById(scrollableId);
+			if (viewScroll != null) {
+				scrolledChild = viewScroll;
+			}
+		}
+	}
+
+	private class TopFoldAnimatorListener implements ValueAnimator.AnimatorUpdateListener {
+		private View animatedView;
+
+		private TopFoldAnimatorListener(View animatedView) {
+			this.animatedView = animatedView;
+		}
+
+		@Override
+		public void onAnimationUpdate(ValueAnimator animation) {
+			int height = (Integer) animation.getAnimatedValue();
+			ViewGroup.LayoutParams params = animatedView.getLayoutParams();
+			params.height = height;
+			animatedView.setLayoutParams(params);
+		}
 	}
 }

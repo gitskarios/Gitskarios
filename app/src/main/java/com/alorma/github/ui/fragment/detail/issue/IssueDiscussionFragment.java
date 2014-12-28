@@ -28,11 +28,7 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private IssuesCommentsAdapter adapter;
-	private float fabOldY;
-	private float fabNewY;
-	private IssueDiscussionListener issueDiscussionListener;
 	private IssueInfo issueInfo;
-	private FABCenterLayout fabLayout;
 
 	public static IssueDiscussionFragment newInstance(IssueInfo info) {
 		Bundle bundle = new Bundle();
@@ -64,20 +60,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		fabLayout = (FABCenterLayout) view.findViewById(R.id.fabLayout);
-		fabLayout.setFabColor(getResources().getColor(R.color.accent));
-		fabLayout.setFabColorPressed(getResources().getColor(R.color.primary_dark));
-		GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).fabSize();
-		fabLayout.setFabIcon(drawable);
-		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
-
-		if (issueDiscussionListener != null) {
-			Issue issue = issueDiscussionListener.requestIssue();
-
-			TextView issueBody = (TextView) view.findViewById(R.id.issueBody);
-			issueBody.setText(issue.body);
-		}
-
 		if (getListView() != null) {
 			getListView().setDivider(null);
 			int int16 = getResources().getDimensionPixelOffset(R.dimen.gapLarge);
@@ -89,9 +71,7 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		MenuItem menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.fold_issue);
-		menuItem.setIcon(new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_fold).actionBarSize().colorRes(R.color.white));
-		menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
 	}
 
 	@Override
@@ -156,35 +136,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected GithubIconify.IconValue getFABGithubIcon() {
-		return GithubIconify.IconValue.octicon_comment_discussion;
-	}
-
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == fabLayout.getFabId()) {
-			if (issueDiscussionListener != null) {
-				issueDiscussionListener.onAddComment();
-			}
-		} else {
-			super.onClick(v);
-		}
-	}
-
-	@Override
 	protected PropertyValuesHolder hideAnimator(View fab) {
-		fabOldY = fab.getY();
-		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
+		float fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
-	}
-
-	public void setIssueDiscussionListener(IssueDiscussionListener issueDiscussionListener) {
-		this.issueDiscussionListener = issueDiscussionListener;
-	}
-
-	public interface IssueDiscussionListener {
-		Issue requestIssue();
-
-		void onAddComment();
 	}
 }

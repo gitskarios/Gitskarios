@@ -28,6 +28,8 @@
     <declare-styleable name="FABCenterLayout">
         <attr name="top_id" format="reference"/>
         <attr name="scrollable_id" format="reference"/>
+        <attr name="folded_size" format="dimension"/>
+        <attr name="unfolded_size" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="FloatingActionButton">

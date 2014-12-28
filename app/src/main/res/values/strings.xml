@@ -125,5 +125,6 @@
     <string name="commit_deletions">Deletions %d</string>
     <string name="unfollow">Unfollow</string>
     <string name="fold_issue">Fold issue detail</string>
+    <string name="unfold_issue">Unfold issue detail</string>
 
 </resources>

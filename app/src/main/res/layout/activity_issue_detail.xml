@@ -1,16 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              tools:context="com.alorma.github.ui.activity.IssueDetailActivity"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <include layout="@layout/toolbar"/>
 
-    <FrameLayout
+    <com.alorma.github.ui.view.FABCenterLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/discussionFeed"/>
+        app:top_id="@id/top"
+        app:folded_size="@dimen/issue_discussion_header_no_actionbar_fold"
+        app:unfolded_size="@dimen/issue_discussion_header_no_actionbar"
+        android:id="@id/fabLayout">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/discussionFeed"
+            android:layout_marginTop="@dimen/issue_discussion_header_no_actionbar_fold"
+            android:background="@color/primary_light"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/issue_discussion_header_no_actionbar_fold"
+            android:background="@color/primary"
+            android:id="@id/top">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:layout_marginLeft="128dp"
+                android:textColor="@color/white"
+                android:id="@+id/issueBody"/>
+        </FrameLayout>
+    </com.alorma.github.ui.view.FABCenterLayout>
 </LinearLayout>
