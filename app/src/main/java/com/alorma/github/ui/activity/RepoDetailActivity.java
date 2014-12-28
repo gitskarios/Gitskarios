@@ -308,7 +308,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	@Override
 	public void onFail(RetrofitError error) {
 		ErrorHandler.onRetrofitError(this, "RepoDetailFragment", error);
-		finish();
 		cancelRefresh();
 	}
 
