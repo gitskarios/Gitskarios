@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,7 +21,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
-import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
@@ -67,8 +66,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private boolean followingUser = false;
 
 	public static Intent createLauncherIntent(Context context) {
-		Intent intent = new Intent(context, ProfileActivity.class);
-		return intent;
+		return new Intent(context, ProfileActivity.class);
 	}
 
 	public static Intent createLauncherIntent(Context context, User user) {
@@ -122,7 +120,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new RequestUserClient(this, user.login);
 			getToolbar().setTitle(user.login);
 		} else {
-			requestClient = new RequestAutenticatedUserClient(this);
+			requestClient = new GetAuthUserClient(this);
 		}
 
 		requestClient.setOnResultCallback(this);
