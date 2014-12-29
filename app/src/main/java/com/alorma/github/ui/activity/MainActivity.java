@@ -35,7 +35,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
-		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, BaseClient.OnResultCallback<User> {
+		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
 
 	private MenuFragment menuFragment;
 
@@ -60,7 +60,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		setContentView(R.layout.activity_main);
 
 		GetAuthUserClient client = new GetAuthUserClient(this);
-		client.setOnResultCallback(this);
 		client.execute();
 
 		checkIab();
@@ -239,16 +238,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			}
 			invalidateOptionsMenu();
 		}
-	}
-
-	@Override
-	public void onResponseOk(User user, Response r) {
-		GitskariosSettings settings = new GitskariosSettings(this);
-		settings.saveAuthUser(user.login);
-	}
-
-	@Override
-	public void onFail(RetrofitError error) {
-
 	}
 }
