@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.menu;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,9 +16,11 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.MenuItemsAdapter;
 import com.alorma.github.ui.view.CircularImageView;
 import com.alorma.githubicons.GithubIconify;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -60,15 +63,15 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		userLogin = (TextView) view.findViewById(R.id.userLogin);
 		userName = (TextView) view.findViewById(R.id.userName);
 
+		GetAuthUserClient authUserClient = new GetAuthUserClient(getActivity());
+		authUserClient.setOnResultCallback(this);
+		authUserClient.execute();
+
 		userLayout.setOnClickListener(this);
 		userAvatar.setOnClickListener(this);
 		userLogin.setOnClickListener(this);
 		userName.setOnClickListener(this);
 
-		GetAuthUserClient authUserClient = new GetAuthUserClient(getActivity());
-		authUserClient.setOnResultCallback(this);
-		authUserClient.execute();
-		
 		currentSelectedItemId = 0;
 
 		List<MenuItem> objMenuItems = new ArrayList<MenuItem>();
@@ -100,7 +103,6 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		adapter.setOnMenuItemSelectedListener(this);
 		recyclerView.setAdapter(adapter);
 	}
-
 
 	@Override
 	public void onMenuItemSelected(MenuItem item) {
@@ -191,6 +193,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 	public void onClick(View v) {
 		if (onMenuItemSelectedListener != null) {
 			onMenuItemSelectedListener.onProfileSelected();
+			onMenuItemSelectedListener.closeMenu();
 		}
 	}
 

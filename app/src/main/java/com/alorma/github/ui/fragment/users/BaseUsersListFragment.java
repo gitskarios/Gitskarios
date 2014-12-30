@@ -37,6 +37,14 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	}
 
 	@Override
+	public void setEmpty() {
+		super.setEmpty();
+		if (usersAdapter != null) {
+			usersAdapter.clear();
+		}	
+	}
+
+	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 
