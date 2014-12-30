@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
@@ -40,7 +41,14 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 
 		setUpRepos(view);
 		setUpGists(view);
-		setUpPrivateGists(view);
+
+		GitskariosSettings gitskariosSettings = new GitskariosSettings(getContext());
+		String authUser = gitskariosSettings.getAuthUser(null);
+		if (authUser != null && authUser.equals(user.login)) {
+			setUpPrivateGists(view);
+		} else {
+			hidePrivateGists(view);
+		}
 	}
 
 	private void setUpRepos(View view) {
@@ -83,6 +91,11 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 		text.setText(view.getContext().getString(R.string.private_gists_num, user.private_gists));
 
 		view.findViewById(R.id.gists).setOnClickListener(this);
+	}
+
+	private void hidePrivateGists(View view) {
+		view.findViewById(R.id.dividerGists).setVisibility(View.GONE);
+		view.findViewById(R.id.privateGists).setVisibility(View.GONE);
 	}
 
 	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
