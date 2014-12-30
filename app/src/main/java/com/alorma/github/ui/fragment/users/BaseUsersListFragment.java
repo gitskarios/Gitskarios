@@ -41,7 +41,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 		super.setEmpty();
 		if (usersAdapter != null) {
 			usersAdapter.clear();
-		}	
+		}
 	}
 
 	@Override

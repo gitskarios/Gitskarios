@@ -40,43 +40,49 @@ public class GithubDataCard extends Card implements View.OnClickListener {
 
 		setUpRepos(view);
 		setUpGists(view);
+		setUpPrivateGists(view);
 	}
 
 	private void setUpRepos(View view) {
-		if (user.public_repos > 0) {
-			ImageView icon = (ImageView) view.findViewById(R.id.iconRepositories);
+		ImageView icon = (ImageView) view.findViewById(R.id.iconRepositories);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_repo);
+		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_repo);
 
-			icon.setImageDrawable(githubIconDrawable);
+		icon.setImageDrawable(githubIconDrawable);
 
-			TextView text = (TextView) view.findViewById(R.id.textRepositories);
+		TextView text = (TextView) view.findViewById(R.id.textRepositories);
 
-			text.setText(view.getContext().getString(R.string.repos_num, user.public_repos));
+		text.setText(view.getContext().getString(R.string.repos_num, user.public_repos));
 
-			view.findViewById(R.id.repositories).setOnClickListener(this);
-		} else {
-			view.findViewById(R.id.repositories).setVisibility(View.GONE);
-			view.findViewById(R.id.dividerRepositories).setVisibility(View.GONE);
-		}
+		view.findViewById(R.id.repositories).setOnClickListener(this);
 	}
 
 	private void setUpGists(View view) {
-		if (user.public_gists > 0) {
-			ImageView icon = (ImageView) view.findViewById(R.id.iconGists);
+		ImageView icon = (ImageView) view.findViewById(R.id.iconGists);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_gist);
+		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_gist);
 
-			icon.setImageDrawable(githubIconDrawable);
+		icon.setImageDrawable(githubIconDrawable);
 
-			TextView text = (TextView) view.findViewById(R.id.textGists);
+		TextView text = (TextView) view.findViewById(R.id.textGists);
 
-			text.setText(view.getContext().getString(R.string.gists_num, user.public_gists));
+		text.setText(view.getContext().getString(R.string.gists_num, user.public_gists));
 
-			view.findViewById(R.id.gists).setOnClickListener(this);
-		} else {
-			view.findViewById(R.id.gists).setVisibility(View.GONE);
-		}
+		view.findViewById(R.id.gists).setOnClickListener(this);
+	}
+
+	private void setUpPrivateGists(View view) {
+		ImageView icon = (ImageView) view.findViewById(R.id.iconPrivateGists);
+
+		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_gist);
+
+		icon.setImageDrawable(githubIconDrawable);
+
+		TextView text = (TextView) view.findViewById(R.id.textPrivateGists);
+
+		text.setText(view.getContext().getString(R.string.private_gists_num, user.private_gists));
+
+		view.findViewById(R.id.gists).setOnClickListener(this);
 	}
 
 	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {

@@ -9,9 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_row_item_height"
         android:gravity="center_vertical"
-        android:id="@+id/repositories"
-        android:background="?android:selectableItemBackground"
-        android:clickable="true">
+        android:id="@+id/planName">
 
         <ImageView
             android:layout_width="@dimen/card_row_item_image_size"
@@ -21,19 +19,19 @@
             android:layout_marginStart="@dimen/card_row_item_margin"
             android:layout_marginRight="@dimen/card_row_item_margin"
             android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconRepositories"/>
+            android:id="@+id/iconPlanName"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/card_row_item_margin"
             android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textRepositories"
+            android:id="@+id/textPlanName"
             style="@style/card_row_item_text"/>
     </LinearLayout>
 
     <View
-        android:id="@+id/dividerRepositories"
+        android:id="@+id/dividerPlanName"
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_row_item_divider_height"
         android:background="@drawable/divider_inside_car"
@@ -45,8 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_row_item_height"
         android:gravity="center_vertical"
-        android:id="@+id/gists"
-        android:clickable="true">
+        android:id="@+id/planQuota">
 
         <ImageView
             android:layout_width="@dimen/card_row_item_image_size"
@@ -56,19 +53,19 @@
             android:layout_marginStart="@dimen/card_row_item_margin"
             android:layout_marginRight="@dimen/card_row_item_margin"
             android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconGists"/>
+            android:id="@+id/iconPlanQuota"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/card_row_item_margin"
             android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textGists"
+            android:id="@+id/textPlanQuota"
             style="@style/card_row_item_text"/>
     </LinearLayout>
 
     <View
-        android:id="@+id/dividerGists"
+        android:id="@+id/dividerPlanQuota"
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_row_item_divider_height"
         android:background="@drawable/divider_inside_car"
@@ -80,8 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_row_item_height"
         android:gravity="center_vertical"
-        android:id="@+id/privateGists"
-        android:clickable="true">
+        android:id="@+id/planCollaborators">
 
         <ImageView
             android:layout_width="@dimen/card_row_item_image_size"
@@ -91,14 +87,48 @@
             android:layout_marginStart="@dimen/card_row_item_margin"
             android:layout_marginRight="@dimen/card_row_item_margin"
             android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconPrivateGists"/>
+            android:id="@+id/iconPlanCollaborators"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/card_row_item_margin"
             android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textPrivateGists"
+            android:id="@+id/textPlanCollaborators"
+            style="@style/card_row_item_text"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dividerPlanColaborators"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_row_item_divider_height"
+        android:background="@drawable/divider_inside_car"
+        android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
+        android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_row_item_height"
+        android:gravity="center_vertical"
+        android:id="@+id/planRepos">
+
+        <ImageView
+            android:layout_width="@dimen/card_row_item_image_size"
+            android:layout_height="@dimen/card_row_item_image_size"
+            android:padding="@dimen/card_row_item_image_padding"
+            android:layout_marginLeft="@dimen/card_row_item_margin"
+            android:layout_marginStart="@dimen/card_row_item_margin"
+            android:layout_marginRight="@dimen/card_row_item_margin"
+            android:layout_marginEnd="@dimen/card_row_item_margin"
+            android:id="@+id/iconPlanRepos"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/card_row_item_margin"
+            android:layout_marginEnd="@dimen/card_row_item_margin"
+            android:id="@+id/textPlanRepos"
             style="@style/card_row_item_text"/>
     </LinearLayout>
 </LinearLayout>

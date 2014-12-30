@@ -62,6 +62,13 @@
                     android:layout_height="wrap_content"
                     style="@style/card_external"
                     app:card_layout_resourceID="@layout/native_card_layout"/>
+                
+                <it.gmariotti.cardslib.library.view.CardViewNative
+                    android:id="@+id/cardPlan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/card_external"
+                    app:card_layout_resourceID="@layout/native_card_layout"/>
             </LinearLayout>
         </ScrollView>
     </com.alorma.github.ui.view.FABCenterLayout>

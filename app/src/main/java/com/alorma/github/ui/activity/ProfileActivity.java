@@ -31,6 +31,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
+import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.githubicons.GithubIconDrawable;
@@ -64,6 +65,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private User user;
 	private int avatarSecondaryColor;
 	private boolean followingUser = false;
+	private CardViewNative cardPlan;
 
 	public static Intent createLauncherIntent(Context context) {
 		return new Intent(context, ProfileActivity.class);
@@ -104,9 +106,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
 
 		cardsContainer.setVisibility(View.INVISIBLE);
-		
+
 		cardBio = (CardViewNative) findViewById(R.id.cardBio);
 		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
+		cardPlan = (CardViewNative) findViewById(R.id.cardPlan);
 
 		BaseUsersClient<User> requestClient;
 		User user = null;
@@ -167,6 +170,18 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		cardRepos.setVisibility(View.VISIBLE);
 	}
 
+	private void fillCardPlan(User user) {
+		if (user.plan != null) {
+			GithubPlanCard card = new GithubPlanCard(this, user, avatarSecondaryColor);
+
+			cardPlan.setCard(card);
+			cardPlan.setVisibility(View.VISIBLE);
+		} else {
+			cardPlan.setVisibility(View.INVISIBLE);
+			cardsContainer.removeView(cardPlan);
+		}
+	}
+
 	@Override
 	public void onFail(RetrofitError error) {
 
@@ -202,11 +217,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fillCardBio(user);
 
-		if (user.public_repos > 0 && user.public_gists > 0) {
-			fillCardRepos(user);
-		} else {
-			cardsContainer.removeView(cardRepos);
-		}
+		fillCardRepos(user);
+
+		fillCardPlan(user);
+
 		cardsContainer.setVisibility(View.VISIBLE);
 	}
 
@@ -294,7 +308,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		fabLayout.setFabIcon(fabDrawable);
 		fabLayout.setFabClickListener(this, getTagFab());
 		fabLayout.setFabViewVisibility(View.VISIBLE, false);
-		
+
 		fabLayout.setFabClickListener(this, null);
 	}
 
