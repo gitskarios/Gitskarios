@@ -82,7 +82,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
 	@Override
 	protected void onResponse(ListCommit commits, boolean refreshing) {
-		if (commitsMap == null) {
+		if (commitsMap == null || refreshing) {
 			commitsMap = new ArrayList<>();
 		}
 		if (commits != null && commits.size() > 0) {
