@@ -54,4 +54,5 @@ dependencies {
     compile 'com.pnikosis:materialish-progress:1.0'
     
     compile 'net.danlew:android.joda:2.6.0'
+    compile 'se.emilsjolander:stickylistheaders:2.5.2'
 }

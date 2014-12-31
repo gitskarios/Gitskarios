@@ -22,14 +22,22 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
+import java.util.Map;
+
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsAdapter extends LazyAdapter<Commit> {
+public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHeadersAdapter {
 
 	public CommitsAdapter(Context context, List<Commit> objects) {
 		super(context, 0, objects);
+	}
+
+	@Override
+	public int getCount() {
+		return super.getCount();
 	}
 
 	@Override
@@ -58,7 +66,22 @@ public class CommitsAdapter extends LazyAdapter<Commit> {
 		} else {
 			user.setText(commit.committer.login);
 		}
-		
+
 		return v;
 	}
+
+	@Override
+	public View getHeaderView(int i, View view, ViewGroup viewGroup) {
+		TextView tv = new TextView(getContext());
+
+		tv.setText(getItem(i).days + " days ago");
+
+		return tv;
+	}
+
+	@Override
+	public long getHeaderId(int i) {
+		return getItem(i).days;
+	}
+
 }

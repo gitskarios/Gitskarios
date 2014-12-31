@@ -31,18 +31,20 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
 		super.onViewCreated(view, savedInstanceState);
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
-		if (useInnerSwipeRefresh()) {
-			swipe.setColorSchemeResources(R.color.accent,
-					R.color.gray_github_light,
-					R.color.accent,
-					R.color.gray_github_light);
-		} else {
-			swipe.setColorSchemeResources(android.R.color.transparent,
-					android.R.color.transparent,
-					android.R.color.transparent,
-					android.R.color.transparent);
+		if (swipe != null) {
+			if (useInnerSwipeRefresh()) {
+				swipe.setColorSchemeResources(R.color.accent,
+						R.color.gray_github_light,
+						R.color.accent,
+						R.color.gray_github_light);
+			} else {
+				swipe.setColorSchemeResources(android.R.color.transparent,
+						android.R.color.transparent,
+						android.R.color.transparent,
+						android.R.color.transparent);
+			}
+			swipe.setOnRefreshListener(this);
 		}
-		swipe.setOnRefreshListener(this);
 	}
 
 	protected boolean useInnerSwipeRefresh() {
