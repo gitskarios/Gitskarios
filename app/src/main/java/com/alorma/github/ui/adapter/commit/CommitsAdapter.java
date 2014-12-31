@@ -74,7 +74,27 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 	public View getHeaderView(int i, View view, ViewGroup viewGroup) {
 		TextView tv = new TextView(getContext());
 
-		tv.setText(getItem(i).days + " days ago");
+		String text = "";
+
+		switch (getItem(i).days) {
+			case 0:
+					text = "Today";
+				break;
+			case 1:
+					text = "Yesterday";
+				break;
+			case 7:
+					text = "This week";
+				break;
+			case 30:
+					text = "Less than a month ago";
+				break;
+			case Integer.MAX_VALUE:
+					text = "Long time ago (in a galaxy far far away)";
+				break;
+		}
+
+		tv.setText(text);
 
 		return tv;
 	}
