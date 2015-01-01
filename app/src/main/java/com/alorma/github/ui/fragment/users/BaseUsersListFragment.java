@@ -10,7 +10,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 
@@ -37,6 +37,14 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	}
 
 	@Override
+	public void setEmpty() {
+		super.setEmpty();
+		if (usersAdapter != null) {
+			usersAdapter.clear();
+		}
+	}
+
+	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 
@@ -47,8 +55,8 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_group;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_octoface;
 	}
 }
 

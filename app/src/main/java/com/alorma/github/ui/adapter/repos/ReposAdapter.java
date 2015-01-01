@@ -6,14 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,15 +46,13 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		reposHolder.textDescription.setText(repo.description);
 
 		String starText = getContext().getResources().getString(R.string.star_icon_text, repo.stargazers_count);
+		applyIcon(reposHolder.textStarts, GithubIconify.IconValue.octicon_star);
 		reposHolder.textStarts.setText(starText);
 
 		String forkText = getContext().getResources().getString(R.string.fork_icon_text, repo.forks_count);
-		if (repo.fork) {
-			reposHolder.textForks.setTextColor(accentColor);
-		}
+		applyIcon(reposHolder.textForks, GithubIconify.IconValue.octicon_repo_forked);
 		reposHolder.textForks.setText(forkText);
 
-		Iconify.addIcons(reposHolder.textStarts, reposHolder.textForks);
 
 		reposHolder.textDescription.setText(repo.description);
 
@@ -74,6 +71,15 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		reposHolder.authorDate.setText(getDate(repo.created_at));
 
 		return v;
+	}
+
+	private void applyIcon(TextView textView, GithubIconify.IconValue value) {
+		GithubIconDrawable drawableForks = new GithubIconDrawable(getContext(), value);
+		drawableForks.colorRes(R.color.secondary_text);
+		drawableForks.sizeRes(R.dimen.textSizeSmall);
+		textView.setCompoundDrawables(drawableForks, null, null, null);
+		int offset = getContext().getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);
+		textView.setCompoundDrawablePadding(offset);
 	}
 
 	private String getDate(Date created_at) {

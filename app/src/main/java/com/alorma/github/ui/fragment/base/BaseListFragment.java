@@ -3,38 +3,38 @@ package com.alorma.github.ui.fragment.base;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import com.alorma.github.ui.view.DirectionalScrollListener;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 12/08/2014.
  */
-public abstract class BaseListFragment extends ListFragment implements AbsListView.OnScrollListener, DirectionalScrollListener.OnDetectScrollListener, DirectionalScrollListener.OnCancelableDetectScrollListener, View.OnClickListener {
+public abstract class BaseListFragment extends Fragment implements AbsListView.OnScrollListener, DirectionalScrollListener.OnDetectScrollListener, DirectionalScrollListener.OnCancelableDetectScrollListener, View.OnClickListener, AdapterView.OnItemClickListener {
 
-	private static final long FAB_ANIM_DURATION = 400;
+	protected static final long FAB_ANIM_DURATION = 400;
 	protected TextView emptyText;
 	protected ImageView emptyIcon;
 	protected View emptyLy;
 	private FloatingActionButton fab;
 	private ValueAnimator animator;
 	private boolean fabVisible;
+	private ListView listView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,26 +46,33 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		getListView().setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+		setupListView(view);
 
-		getListView().setDivider(null);
-		getListView().setDividerHeight(0);
 
 		emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
 		emptyText = (TextView) view.findViewById(R.id.emptyText);
 		emptyLy = view.findViewById(R.id.emptyLayout);
 
-		ListView listView = getListView();
-
-		if (listView != null) {
-			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-		}
 
 		fab = (FloatingActionButton) view.findViewById(R.id.fabButton);
 
 		checkFAB();
 
 		loadArguments();
+	}
+
+	protected void setupListView(View view) {
+		listView = (ListView) view.findViewById(android.R.id.list);
+
+		if (listView != null) {
+		listView.setOnItemClickListener(this);
+
+		listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+
+		listView.setDivider(null);
+		listView.setDividerHeight(0);
+			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
+		}
 	}
 
 	protected void checkFAB() {
@@ -93,7 +100,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 		if (getActivity() != null) {
 			if (emptyText != null && emptyIcon != null) {
 				if (getNoDataIcon() != null && getNoDataText() > 0) {
-					IconDrawable iconDrawable = new IconDrawable(getActivity(), getNoDataIcon());
+					GithubIconDrawable iconDrawable = new GithubIconDrawable(getActivity(), getNoDataIcon());
 					iconDrawable.colorRes(R.color.gray_github_medium);
 					emptyIcon.setImageDrawable(iconDrawable);
 
@@ -105,12 +112,12 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 		}
 	}
 
-	protected abstract Iconify.IconValue getNoDataIcon();
+	protected abstract GithubIconify.IconValue getNoDataIcon();
 
 	protected abstract int getNoDataText();
 
 	private void showFab() {
-		if (!fabVisible) {
+		if (useFAB() && !fabVisible) {
 			fabVisible = true;
 			PropertyValuesHolder pvh = showAnimator(fab);
 			startAnimator(pvh);
@@ -118,7 +125,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	}
 
 	private void hideFab() {
-		if (fabVisible & (animator == null || !animator.isRunning())) {
+		if (useFAB() && fabVisible & (animator == null || !animator.isRunning())) {
 			fabVisible = false;
 			PropertyValuesHolder pvh = hideAnimator(fab);
 			startAnimator(pvh);
@@ -126,7 +133,7 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 	}
 
 	private void startAnimator(PropertyValuesHolder pvh) {
-		if (pvh != null) {
+		if (useFAB() && pvh != null) {
 			animator = ObjectAnimator.ofPropertyValuesHolder(fab, pvh);
 			animator.setDuration(FAB_ANIM_DURATION);
 			animator.setRepeatCount(0);
@@ -182,5 +189,33 @@ public abstract class BaseListFragment extends ListFragment implements AbsListVi
 
 	protected GithubIconify.IconValue getFABGithubIcon() {
 		return GithubIconify.IconValue.octicon_squirrel;
+	}
+
+	public ListView getListView() {
+		return listView;
+		
+	}
+	
+	public void setListAdapter(ListAdapter adapter) {
+		if (listView != null) {
+			listView.setAdapter(adapter);
+		}
+	}
+
+	public ListAdapter getListAdapter() {
+		if (listView != null) {
+			return listView.getAdapter();
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		onListItemClick(listView, view, position, id);
+	}
+
+	public void onListItemClick(ListView l, View v, int position, long id) {
+
 	}
 }

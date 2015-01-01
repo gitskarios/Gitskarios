@@ -125,31 +125,43 @@
                 android:layout_weight="1"
                 android:textSize="@dimen/textSizeSmall"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/starsIcon"
                 android:gravity="center"
                 android:drawablePadding="@dimen/gapSmall"
                 android:layout_marginRight="@dimen/gapMedium"
                 android:layout_marginEnd="@dimen/gapMedium"
                 android:layout_marginBottom="@dimen/gapSmall"
-                android:textColor="@color/gray_github_dark"
-                android:layout_weight="1"
-                android:textSize="@dimen/textSizeSmall"/>
+                android:layout_weight="1">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/starsIcon"
+                    android:gravity="center"
+                    android:textColor="@color/gray_github_dark"
+                    android:textSize="@dimen/textSizeSmall"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/forksIcon"
                 android:gravity="center"
                 android:drawablePadding="@dimen/gapSmall"
                 android:layout_marginRight="@dimen/gapMedium"
                 android:layout_marginEnd="@dimen/gapMedium"
                 android:layout_marginBottom="@dimen/gapSmall"
-                android:textColor="@color/gray_github_dark"
-                android:layout_weight="1"
-                android:textSize="@dimen/textSizeSmall"/>
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/forksIcon"
+                    android:gravity="center"
+                    android:textColor="@color/gray_github_dark"
+                    android:textSize="@dimen/textSizeSmall"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

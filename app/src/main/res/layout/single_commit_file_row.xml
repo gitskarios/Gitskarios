@@ -5,7 +5,7 @@
               android:layout_height="wrap_content"
               android:padding="8dp">
 
-    <it.gmariotti.cardslib.library.view.ForegroundLinearLayout
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,5 +23,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?android:selectableItemBackground"/>
-    </it.gmariotti.cardslib.library.view.ForegroundLinearLayout>
+    </LinearLayout>
 </LinearLayout>

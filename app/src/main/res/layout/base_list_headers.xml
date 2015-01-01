@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@id/listContentFL"
-    android:background="@color/gray_github_light">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@id/listContentFL">
 
     <FrameLayout
         android:id="@+id/listContainer"
@@ -15,20 +15,20 @@
             android:layout_height="match_parent"
             android:id="@+id/swipe">
 
-            <ListView
+            <se.emilsjolander.stickylistheaders.StickyListHeadersListView
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false" />
+                android:drawSelectorOnTop="false"/>
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
-    <include layout="@layout/fab"
+    <include
+        layout="@layout/fab"
         android:layout_width="@dimen/fab"
         android:layout_height="@dimen/fab"
         android:layout_margin="@dimen/gapLarge"
-        android:scaleType="centerInside"
-        android:layout_gravity="bottom|right|end" />
+        android:layout_gravity="bottom|right|end"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -42,7 +42,8 @@
             android:layout_height="200dp"
             android:src="@drawable/ic_launcher"
             android:id="@+id/emptyIcon"
-            android:layout_centerHorizontal="true" />
+            android:scaleType="centerInside"
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,7 +53,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/gapMedium"
             android:textSize="@dimen/textSizeLarge"
-            android:textColor="@color/gray_github_medium" />
+            android:textColor="@color/gray_github_medium"/>
     </RelativeLayout>
 
 </FrameLayout>

@@ -2,16 +2,18 @@ package com.alorma.github.ui.fragment.detail.issue;
 
 import android.animation.PropertyValuesHolder;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.GetIssueComments;
 import com.alorma.github.ui.adapter.detail.issue.IssuesCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 /**
  * Created by Bernat on 23/08/2014.
@@ -20,9 +22,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private IssuesCommentsAdapter adapter;
-	private float fabOldY;
-	private float fabNewY;
-	private IssueDiscussionListener issueDiscussionListener;
 	private IssueInfo issueInfo;
 
 	public static IssueDiscussionFragment newInstance(IssueInfo info) {
@@ -36,6 +35,22 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+
+		View v = inflater.inflate(R.layout.issues_discussion_list_fragment, null, false);
+
+		return v;
+	}
+
+	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
@@ -45,6 +60,12 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 			getListView().setPadding(0, int16, 0, 0);
 			getListView().setClipToPadding(false);
 		}
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+
 	}
 
 	@Override
@@ -83,9 +104,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 		if (issueComments != null && issueComments.size() > 0) {
 			if (adapter == null || refreshing) {
 				ListIssueComments comments = new ListIssueComments();
-				if (issueDiscussionListener != null) {
-					comments.add(issueDiscussionListener.requestIssue());
-				}
 				comments.addAll(issueComments);
 				adapter = new IssuesCommentsAdapter(getActivity(), comments);
 				setListAdapter(adapter);
@@ -97,8 +115,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_comment;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_comment_discussion;
 	}
 
 	@Override
@@ -107,40 +125,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
-	}
-
-	@Override
-	protected boolean useFAB() {
-		return true;
-	}
-
-	@Override
-	protected void fabClick() {
-		if (issueDiscussionListener != null) {
-			issueDiscussionListener.onAddComment();
-		}
-	}
-
-	@Override
-	protected PropertyValuesHolder showAnimator(View fab) {
-		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
-	}
-
-	@Override
 	protected PropertyValuesHolder hideAnimator(View fab) {
-		fabOldY = fab.getY();
-		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
+		float fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
-	}
-
-	public void setIssueDiscussionListener(IssueDiscussionListener issueDiscussionListener) {
-		this.issueDiscussionListener = issueDiscussionListener;
-	}
-
-	public interface IssueDiscussionListener {
-		IssueComment requestIssue();
-		void onAddComment();
 	}
 }

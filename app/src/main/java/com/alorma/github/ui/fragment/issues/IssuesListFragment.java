@@ -20,7 +20,6 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
-import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 22/08/2014.
@@ -89,8 +88,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_info_circle;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_issue_opened;
 	}
 
 	@Override
@@ -104,11 +103,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 			this.owner = getArguments().getString("OWNER");
 			this.repository = getArguments().getString("REPO");
 		}
-	}
-
-	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
 	}
 
 	@Override

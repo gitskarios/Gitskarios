@@ -15,9 +15,8 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.activity.base.BaseDialogActivity;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -25,7 +24,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 06/09/2014.
  */
-public class NewIssueCommentDialog extends BackActivity implements BaseClient.OnResultCallback<IssueComment> {
+public class NewIssueCommentActivity extends BackActivity implements BaseClient.OnResultCallback<IssueComment> {
 
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private EditText edit;
@@ -35,7 +34,7 @@ public class NewIssueCommentDialog extends BackActivity implements BaseClient.On
 		Bundle bundle = new Bundle();
 		bundle.putParcelable(ISSUE_INFO, issueInfo);
 
-		Intent intent = new Intent(context, NewIssueCommentDialog.class);
+		Intent intent = new Intent(context, NewIssueCommentActivity.class);
 
 		intent.putExtras(bundle);
 		return intent;
@@ -64,7 +63,7 @@ public class NewIssueCommentDialog extends BackActivity implements BaseClient.On
 
 		MenuItem itemSend = menu.findItem(R.id.action_send);
 		if (itemSend != null) {
-			IconDrawable iconDrawable = new IconDrawable(this, Iconify.IconValue.fa_send);
+			GithubIconDrawable iconDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_bug);
 			iconDrawable.color(Color.WHITE);
 			iconDrawable.actionBarSize();
 			itemSend.setIcon(iconDrawable);

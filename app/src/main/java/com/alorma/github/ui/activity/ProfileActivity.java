@@ -21,9 +21,9 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
-import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
-import com.alorma.github.sdk.services.user.RequestAutenticatedUserClient;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
+import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
 import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
@@ -31,7 +31,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
-import com.alorma.github.ui.fragment.profile.ProfileFragment;
+import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.githubicons.GithubIconDrawable;
@@ -51,6 +51,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		FABCenterLayout.FABScrollContentListener,
 		OnCheckFollowingUser {
 
+	private static final String USER = "USER";
+	private static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
+
+
 	private CardViewNative cardBio;
 	private CardViewNative cardRepos;
 	private ViewGroup cardsContainer;
@@ -61,16 +65,16 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private User user;
 	private int avatarSecondaryColor;
 	private boolean followingUser = false;
+	private CardViewNative cardPlan;
 
 	public static Intent createLauncherIntent(Context context) {
-		Intent intent = new Intent(context, ProfileActivity.class);
-		return intent;
+		return new Intent(context, ProfileActivity.class);
 	}
 
 	public static Intent createLauncherIntent(Context context, User user) {
 		Intent intent = new Intent(context, ProfileActivity.class);
 		if (user != null) {
-			intent.putExtra(ProfileFragment.USER, user);
+			intent.putExtra(USER, user);
 		}
 		return intent;
 	}
@@ -78,8 +82,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	public static Intent createIntentFilterLauncherActivity(Context context, User user) {
 		Intent intent = new Intent(context, ProfileActivity.class);
 		if (user != null) {
-			intent.putExtra(ProfileFragment.USER, user);
-			intent.putExtra(ProfileFragment.FROM_INTENT_FILTER, true);
+			intent.putExtra(USER, user);
+			intent.putExtra(FROM_INTENT_FILTER, true);
 		}
 		return intent;
 	}
@@ -102,15 +106,16 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
 
 		cardsContainer.setVisibility(View.INVISIBLE);
-		
+
 		cardBio = (CardViewNative) findViewById(R.id.cardBio);
 		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
+		cardPlan = (CardViewNative) findViewById(R.id.cardPlan);
 
 		BaseUsersClient<User> requestClient;
 		User user = null;
 		if (getIntent().getExtras() != null) {
-			if (getIntent().getExtras().containsKey(ProfileFragment.USER)) {
-				user = getIntent().getParcelableExtra(ProfileFragment.USER);
+			if (getIntent().getExtras().containsKey(USER)) {
+				user = getIntent().getParcelableExtra(USER);
 			}
 		}
 
@@ -118,7 +123,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new RequestUserClient(this, user.login);
 			getToolbar().setTitle(user.login);
 		} else {
-			requestClient = new RequestAutenticatedUserClient(this);
+			requestClient = new GetAuthUserClient(this);
 		}
 
 		requestClient.setOnResultCallback(this);
@@ -165,6 +170,18 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		cardRepos.setVisibility(View.VISIBLE);
 	}
 
+	private void fillCardPlan(User user) {
+		if (user.plan != null) {
+			GithubPlanCard card = new GithubPlanCard(this, user, avatarSecondaryColor);
+
+			cardPlan.setCard(card);
+			cardPlan.setVisibility(View.VISIBLE);
+		} else {
+			cardPlan.setVisibility(View.INVISIBLE);
+			cardsContainer.removeView(cardPlan);
+		}
+	}
+
 	@Override
 	public void onFail(RetrofitError error) {
 
@@ -200,11 +217,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fillCardBio(user);
 
-		if (user.public_repos > 0 && user.public_gists > 0) {
-			fillCardRepos(user);
-		} else {
-			cardsContainer.removeView(cardRepos);
-		}
+		fillCardRepos(user);
+
+		fillCardPlan(user);
+
 		cardsContainer.setVisibility(View.VISIBLE);
 	}
 
@@ -292,7 +308,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		fabLayout.setFabIcon(fabDrawable);
 		fabLayout.setFabClickListener(this, getTagFab());
 		fabLayout.setFabViewVisibility(View.VISIBLE, false);
-		
+
 		fabLayout.setFabClickListener(this, null);
 	}
 

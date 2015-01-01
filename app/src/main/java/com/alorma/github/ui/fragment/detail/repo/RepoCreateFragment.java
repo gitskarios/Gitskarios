@@ -10,24 +10,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
-import android.widget.ListPopupWindow;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateRepoRequestDTO;
-import com.alorma.github.sdk.bean.dto.response.GitIgnoreTemplates;
-import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.gtignore.GitIgnoreClient;
 import com.alorma.github.ui.popup.GitIgnorePopup;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Bernat on 28/09/2014.
@@ -109,7 +103,7 @@ public class RepoCreateFragment extends Fragment implements View.OnClickListener
 
 		MenuItem itemSend = menu.findItem(R.id.action_send);
 		if (itemSend != null) {
-			IconDrawable iconDrawable = new IconDrawable(getActivity(), Iconify.IconValue.fa_send);
+			GithubIconDrawable iconDrawable = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_plus);
 			iconDrawable.color(Color.WHITE);
 			iconDrawable.actionBarSize();
 			itemSend.setIcon(iconDrawable);

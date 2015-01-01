@@ -6,16 +6,11 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
-import com.alorma.github.sdk.services.repos.OrgsReposClient;
-import com.alorma.github.sdk.services.user.UserFollowersClient;
 import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
-
-import retrofit.client.Response;
 
 /**
  * Created by Bernat on 13/07/2014.
@@ -77,8 +72,8 @@ public class OrganzationsFragment extends PaginatedListFragment<ListOrganization
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_group;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_organization;
 	}
 
 	@Override

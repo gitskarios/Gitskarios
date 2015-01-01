@@ -2,9 +2,9 @@
 <resources>
     <color name="gray_github_light">#f3f3f3</color>
     <color name="gray_github_light_selected">#ffdedede</color>
-    <color name="gray_github_dark">#737373</color>
-    <color name="gray_github_medium">#ffaaaaaa</color>
-    <color name="gray_divider">#9fd2d2d2</color>
+    <color name="gray_github_dark">@color/primary_text</color>
+    <color name="gray_github_medium">@color/secondary_text</color>
+    <color name="gray_divider">@color/divider</color>
     <color name="white">#FFFFFF</color>
     <color name="issue_state_open">#54A141</color>
     <color name="issue_state_close">#ffd67a4c</color>
@@ -18,11 +18,11 @@
 
     <color name="lDialogPositve">@color/accent</color>
     <color name="lDialogNegative">@color/accent</color>
-    
+
     <color name="privateRepo">#a1882b</color>
-    
+
     <color name="privateRepoBackground">#f8eeca</color>
-    
+
     <color name="redError">#ffff1a29</color>
 
     <string name="lDialogPositve">#ffffffff</string>

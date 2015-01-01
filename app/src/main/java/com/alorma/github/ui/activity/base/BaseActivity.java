@@ -43,12 +43,6 @@ public class BaseActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (!BuildConfig.DEBUG) {
-			// Get tracker.
-			Tracker t = ((GitskariosApplication) getApplication()).getTracker();
-
-			// Send a screen view.
-			t.send(new HitBuilders.AppViewBuilder().build());
-
 			BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
 		}
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
@@ -61,12 +55,13 @@ public class BaseActivity extends ActionBarActivity {
 			toolbar = (Toolbar) findViewById(getToolbarId());
 
 			if (toolbar != null) {
+				toolbar.setTitle(R.string.app_name);
 				setSupportActionBar(toolbar);
 
 				mDrawerLayout = (DrawerLayout) findViewById(getDrawerLayout());
 
 				if (mDrawerLayout != null) {
-					actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
+					actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0);
 
 					actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
 
@@ -118,6 +113,24 @@ public class BaseActivity extends ActionBarActivity {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(UnAuthIntent.ACTION);
 		manager.registerReceiver(authReceiver, intentFilter);
+	}
+
+	@Override
+	public void setTitle(CharSequence title) {
+		if (toolbar != null) {
+			toolbar.setTitle(title);
+		} else {
+			super.setTitle(title);
+		}
+	}
+
+	@Override
+	public void setTitle(int titleId) {
+		if (toolbar != null) {
+			toolbar.setTitle(titleId);
+		} else {
+			super.setTitle(titleId);
+		}
 	}
 
 	@Override

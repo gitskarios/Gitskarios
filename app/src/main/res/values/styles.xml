@@ -15,7 +15,7 @@
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@android:color/white</item>
+        <item name="color">@color/icons</item>
     </style>
 
     <style name="tab_repos">
@@ -38,21 +38,6 @@
         <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingBottom">16dp</item>
         <item name="android:layout_gravity">right|bottom</item>
-    </style>
-    <style name="fab_inv">
-        <item name="android:layout_width">56dp</item>
-        <item name="android:layout_height">56dp</item>
-        <item name="android:textSize">40sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/fab_inv_button</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:layout_gravity">right|bottom</item>
-    </style>
-    <!-- EnhancedEditText -->
-    <style name="enhancedEditText" parent="android:style/Widget.EditText">
-        <item name="prefixColor">@color/defaultEnchancedColor</item>
-        <item name="suffixColor">@color/defaultEnchancedColor</item>
     </style>
 
     <style name="card_row_item_text">

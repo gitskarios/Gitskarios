@@ -23,7 +23,6 @@ import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
 import com.bugsense.trace.BugSenseHandler;
-import com.joanzapata.android.iconify.Iconify;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,8 +90,8 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return null;
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_file_text;
 	}
 
 	@Override
