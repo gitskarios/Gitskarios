@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.danlew.android.joda.DateUtils;
 
@@ -47,12 +49,15 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 		TextView title = (TextView) v.findViewById(R.id.title);
 		TextView user = (TextView) v.findViewById(R.id.user);
 		TextView sha = (TextView) v.findViewById(R.id.sha);
+		ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
 
 		Commit commit = getItem(position);
 
 		title.setText(commit.commit.message);
 		sha.setText(commit.sha.substring(0, 8));
 
+		ImageLoader.getInstance().displayImage(commit.author.avatar_url, avatar);
+		
 		if (commit.commit.author.date != null) {
 			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 			DateTime dt = formatter.parseDateTime(commit.commit.author.date);
@@ -72,27 +77,14 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
 	@Override
 	public View getHeaderView(int i, View view, ViewGroup viewGroup) {
-		TextView tv = new TextView(getContext());
+		View v = inflate(R.layout.commit_row_header, viewGroup, false);
+		TextView tv = (TextView) v.findViewById(android.R.id.text1);
 
-		String text = "";
+		Commit commit = getItem(i);
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		DateTime dt = formatter.parseDateTime(commit.commit.author.date);
 
-		switch (getItem(i).days) {
-			case 0:
-					text = "Today";
-				break;
-			case 1:
-					text = "Yesterday";
-				break;
-			case 7:
-					text = "This week";
-				break;
-			case 30:
-					text = "Less than a month ago";
-				break;
-			case Integer.MAX_VALUE:
-					text = "Long time ago (in a galaxy far far away)";
-				break;
-		}
+		String text = dt.toString("dd MMM yyyy");
 
 		tv.setText(text);
 

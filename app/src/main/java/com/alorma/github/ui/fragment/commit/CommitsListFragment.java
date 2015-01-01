@@ -77,6 +77,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
 			listView.setOnItemClickListener(this);
+			listView.setAreHeadersSticky(false);
 		}
 	}
 
@@ -112,7 +113,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
 				Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
-				commit.days = orderCommitsDay(days.getDays());
+				commit.days = days.getDays();
 				
 				commitsMap.add(commit);
 			}
