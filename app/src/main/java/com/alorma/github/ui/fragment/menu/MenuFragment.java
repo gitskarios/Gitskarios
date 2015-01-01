@@ -95,16 +95,16 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		adapter = new MenuItemsAdapter(getActivity(), objMenuItems);
 		adapter.setOnMenuItemSelectedListener(this);
 		recyclerView.setAdapter(adapter);
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
 
 		if (onMenuItemSelectedListener != null) {
 			onMenuItemSelectedListener.onReposSelected();
 			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem, true);
 		}
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
 	}
 
 	@Override
