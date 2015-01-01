@@ -1,24 +1,18 @@
 package com.alorma.github.ui.fragment.detail.issue;
 
 import android.animation.PropertyValuesHolder;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListIssueComments;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.GetIssueComments;
 import com.alorma.github.ui.adapter.detail.issue.IssuesCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.view.FABCenterLayout;
-import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
 /**
@@ -128,11 +122,6 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	@Override
 	protected int getNoDataText() {
 		return R.string.no_comments;
-	}
-
-	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
 	}
 
 	@Override

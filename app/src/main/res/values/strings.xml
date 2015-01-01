@@ -131,5 +131,6 @@
     <string name="quota_data">%s quota</string>
     <string name="collaborators_data">%d collaborators</string>
     <string name="repos_data_profile">Using %1$d of %2$d private repositories.</string>
+    <string name="about_title">About</string>
 
 </resources>

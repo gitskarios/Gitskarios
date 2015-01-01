@@ -65,7 +65,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		checkIab();
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, ReposFragment.newInstance());
 		menuFragment = MenuFragment.newInstance();
 		menuFragment.setOnMenuItemSelectedListener(this);
 		ft.replace(R.id.menuContent, menuFragment);
@@ -158,8 +157,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onMenuItemSelected(@NonNull MenuItem item) {
-		setTitle(item.text);
+	public void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle) {
+		if (changeTitle) {
+			setTitle(item.text);
+		}
 		closeMenu();
 	}
 
@@ -193,7 +194,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onAboutSelected() {
-
+		Intent intent = AboutActivity.launchIntent(this);
+		startActivity(intent);
 	}
 
 	@Override

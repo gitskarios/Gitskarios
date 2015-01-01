@@ -106,11 +106,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 	}
 
 	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
-	}
-
-	@Override
 	protected boolean useFAB() {
 		return permissions == null || permissions.pull;
 	}

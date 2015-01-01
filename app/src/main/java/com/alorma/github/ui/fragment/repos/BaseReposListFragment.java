@@ -11,7 +11,6 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
 import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
@@ -83,11 +82,6 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 		if (GitskariosSettings.KEY_REPO_SORT.equals(key)) {
 			executeRequest();
 		}
-	}
-
-	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
 	}
 
 	@Override

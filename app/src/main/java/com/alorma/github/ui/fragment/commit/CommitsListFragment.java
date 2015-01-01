@@ -31,9 +31,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -168,11 +166,6 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	@Override
 	protected int getNoDataText() {
 		return R.string.no_commits;
-	}
-
-	@Override
-	protected boolean useInnerSwipeRefresh() {
-		return true;
 	}
 
 	@Override

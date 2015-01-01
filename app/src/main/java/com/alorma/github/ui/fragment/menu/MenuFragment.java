@@ -36,7 +36,6 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 	private OnMenuItemSelectedListener onMenuItemSelectedListener;
 	private MenuItemsAdapter adapter;
-	private int currentSelectedItemId;
 	private MenuItem currentSelectedItem;
 	private TextView userName;
 	private TextView userLogin;
@@ -72,8 +71,6 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		userLogin.setOnClickListener(this);
 		userName.setOnClickListener(this);
 
-		currentSelectedItemId = 0;
-
 		List<MenuItem> objMenuItems = new ArrayList<MenuItem>();
 
 		objMenuItems.add(new MenuItem(0, 1, R.string.menu_organizations, GithubIconify.IconValue.octicon_organization));
@@ -90,11 +87,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		objMenuItems.add(new DividerMenuItem());
 		objMenuItems.add(new MenuItem(0, 4, R.string.navigation_settings, null));
 
-		objMenuItems.add(new MenuItem(1, 4, R.string.navigation_about, null));
-
-		if (onMenuItemSelectedListener != null) {
-			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem);
-		}
+		//objMenuItems.add(new MenuItem(1, 4, R.string.navigation_about, null));
 
 		RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -105,9 +98,19 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+
+		if (onMenuItemSelectedListener != null) {
+			onMenuItemSelectedListener.onReposSelected();
+			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem, true);
+		}
+	}
+
+	@Override
 	public void onMenuItemSelected(MenuItem item) {
 		if (item != null && onMenuItemSelectedListener != null) {
-			currentSelectedItemId = item.id;
+			boolean changeTitle = true;
 			switch (item.parentId) {
 				case 1:
 					itemUser(item);
@@ -119,10 +122,11 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 					itemPeople(item);
 					break;
 				case 4:
+					changeTitle = false;
 					itemExtras(item);
 					break;
 			}
-			onMenuItemSelectedListener.onMenuItemSelected(item);
+			onMenuItemSelectedListener.onMenuItemSelected(item, changeTitle);
 		}
 	}
 
@@ -210,7 +214,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 		void onFollowingSelected();
 
-		void onMenuItemSelected(@NonNull MenuItem item);
+		void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle);
 
 		void closeMenu();
 
