@@ -5,13 +5,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 /**
  * Created by Bernat on 05/08/2014.
@@ -35,22 +31,13 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
 		super.onViewCreated(view, savedInstanceState);
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
-		if (useInnerSwipeRefresh()) {
+		if (swipe != null) {
 			swipe.setColorSchemeResources(R.color.accent,
 					R.color.gray_github_light,
-					R.color.accentDark,
+					R.color.primary,
 					R.color.gray_github_light);
-		} else {
-			swipe.setColorSchemeResources(android.R.color.transparent,
-					android.R.color.transparent,
-					android.R.color.transparent,
-					android.R.color.transparent);
+			swipe.setOnRefreshListener(this);
 		}
-		swipe.setOnRefreshListener(this);
-	}
-
-	protected boolean useInnerSwipeRefresh() {
-		return true;
 	}
 
 	public void setRefreshListener(RefreshListener refreshListener) {
@@ -58,7 +45,7 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
 	}
 
 	protected void startRefresh() {
-		if (useInnerSwipeRefresh() && swipe != null) {
+		if (swipe != null) {
 			swipe.setRefreshing(true);
 		} else if (refreshListener != null) {
 			refreshListener.showRefresh();
@@ -66,7 +53,7 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
 	}
 
 	protected void stopRefresh() {
-		if (useInnerSwipeRefresh() && swipe != null) {
+		if (swipe != null) {
 			swipe.setRefreshing(false);
 		} else if (refreshListener != null) {
 			refreshListener.cancelRefresh();

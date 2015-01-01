@@ -3,18 +3,12 @@ package com.alorma.github.ui.activity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 
 import com.alorma.github.R;
 import com.alorma.github.inapp.IabConstants;
@@ -22,7 +16,12 @@ import com.alorma.github.inapp.IabHelper;
 import com.alorma.github.inapp.IabResult;
 import com.alorma.github.inapp.Inventory;
 import com.alorma.github.inapp.Purchase;
+import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
 import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
@@ -32,7 +31,8 @@ import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
 
-import java.util.UUID;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
 		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener {
@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
 	private OrganzationsFragment organizationsFragmet;
-	private DrawerLayout mDrawerLayout;
+	private EventsListFragment eventsFragment;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -59,26 +59,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		GetAuthUserClient client = new GetAuthUserClient(this);
+		client.execute();
 
 		checkIab();
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, ReposFragment.newInstance());
 		menuFragment = MenuFragment.newInstance();
 		menuFragment.setOnMenuItemSelectedListener(this);
 		ft.replace(R.id.menuContent, menuFragment);
 		ft.commit();
-	}
-
-	@Override
-	protected boolean useLogo() {
-		return true;
-	}
-
-	@Override
-	protected int getActionBarLogo() {
-		return R.drawable.ic_ab_drawer_mask;
 	}
 
 	private void checkIab() {
@@ -90,7 +80,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	public void onIabSetupFinished(IabResult result) {
 		iabEnabled = result.isSuccess();
 		if (iabEnabled) {
-			invalidateOptionsMenu();
 			try {
 				iabHelper.queryInventoryAsync(this);
 			} catch (Exception e) {
@@ -98,58 +87,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			}
 		}
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
-		getMenuInflater().inflate(R.menu.main, menu);
-
-		final View actionView = menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuPlaceHolder);
-
-		menu.findItem(R.id.action_menu).getActionView().findViewById(R.id.menuItem)
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						PopupMenu menu = new MainMenu(MainActivity.this, actionView);
-						if (iabEnabled) {
-							SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-							boolean iabDonatePurchased = preferences.getBoolean(IabConstants.SKU_DONATE, false);
-							if (!iabDonatePurchased) {
-								menu = new DonateMenu(MainActivity.this, actionView);
-							}
-						}
-						menu.show();
-					}
-				});
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			if (mDrawerLayout != null) {
-				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-					mDrawerLayout.closeDrawer(Gravity.START);
-				} else {
-					mDrawerLayout.openDrawer(Gravity.START);
-				}
-			}
-		} else if (item.getItemId() == R.id.action_donate) {
-			try {
-				iabHelper.launchPurchaseFlow(this, IabConstants.SKU_DONATE, 10001,
-						this, UUID.randomUUID().toString());
-				item.setEnabled(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (item.getItemId() == R.id.action_settings) {
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
-		}
-		return true;
 	}
 
 	@Override
@@ -166,6 +103,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.content, fragment);
 		ft.commit();
+	}
+
+	@Override
+	public void onProfileSelected() {
+		Intent launcherIntent = ProfileActivity.createLauncherIntent(this);
+		startActivity(launcherIntent);
 	}
 
 	@Override
@@ -214,16 +157,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onMenuItemSelected(@NonNull MenuItem item) {
-		setTitle(item.text);
-		closeMenu();
-	}
-
-	@Override
-	public void closeMenu() {
-		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
-			mDrawerLayout.closeDrawer(Gravity.START);
+	public void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle) {
+		if (changeTitle) {
+			setTitle(item.text);
 		}
+		closeMenu();
 	}
 
 	@Override
@@ -235,12 +173,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onBackPressed() {
-		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
-			closeMenu();
+	public void onUserEventsSelected() {
+		GitskariosSettings settings = new GitskariosSettings(this);
+		String user = settings.getAuthUser(null);
+		if (user != null) {
+			if (eventsFragment == null) {
+				eventsFragment = EventsListFragment.newInstance(user);
+			}
+			setFragment(eventsFragment);
 		} else {
-			super.onBackPressed();
+			// TODO SHOW Error no user
 		}
+	}
+
+	@Override
+	public void onSettingsSelected() {
+		Intent intent = new Intent(this, SettingsActivity.class);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onAboutSelected() {
+		Intent intent = AboutActivity.launchIntent(this);
+		startActivity(intent);
 	}
 
 	@Override
@@ -284,33 +239,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 				editor.apply();
 			}
 			invalidateOptionsMenu();
-		}
-	}
-
-	private class DonateMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
-
-		public DonateMenu(Context context, View anchor) {
-			super(context, anchor);
-			inflate(R.menu.main_menu_donate);
-			setOnMenuItemClickListener(this);
-		}
-
-		@Override
-		public boolean onMenuItemClick(android.view.MenuItem item) {
-			return onOptionsItemSelected(item);
-		}
-	}
-
-	private class MainMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
-		public MainMenu(Context context, View anchor) {
-			super(context, anchor);
-			inflate(R.menu.main_menu);
-			setOnMenuItemClickListener(this);
-		}
-
-		@Override
-		public boolean onMenuItemClick(android.view.MenuItem item) {
-			return onOptionsItemSelected(item);
 		}
 	}
 }

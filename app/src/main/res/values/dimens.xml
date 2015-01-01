@@ -35,4 +35,32 @@
     <dimen name="fab">56dp</dimen>
     <dimen name="floattingActivityWidth">300dp</dimen>
     <dimen name="floattingActivityHeight">400dp</dimen>
+    <dimen name="fab_size_normal">56dp</dimen>
+    <dimen name="fab_size_mini">40dp</dimen>
+
+    <dimen name="fab_icon_size">24dp</dimen>
+
+    <dimen name="fab_plus_icon_size">14dp</dimen>
+    <dimen name="fab_plus_icon_stroke">2dp</dimen>
+
+    <dimen name="fab_shadow_offset">3dp</dimen>
+    <dimen name="fab_shadow_radius">9dp</dimen>
+
+    <dimen name="fab_stroke_width">0.5dp</dimen>
+
+    <dimen name="fab_actions_spacing">16dp</dimen>
+
+    <dimen name="card_row_item_height">56dp</dimen>
+    <dimen name="card_row_item_margin">12dp</dimen>
+    <dimen name="card_row_item_image_size">40dp</dimen>
+    <dimen name="card_row_item_image_padding">10dp</dimen>
+    <dimen name="card_row_item_divider_height">1dp</dimen>
+    <dimen name="card_row_item_divider_left_margin">@dimen/card_row_item_height</dimen>
+    <dimen name="card_row_item_height_extra">73dp</dimen>
+    <dimen name="user_row_item_height">72dp</dimen>
+    <dimen name="user_row_item_image_size">40dp</dimen>
+    <dimen name="user_row_item_margin">16dp</dimen>
+    <dimen name="issue_discussion_header_unfold">400dp</dimen>
+    <dimen name="issue_discussion_header_fold">120dp</dimen>
+    <dimen name="translucent_status_dimen_padding_top">0dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.animation.PropertyValuesHolder;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -8,9 +9,11 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
+import com.alorma.github.ui.activity.NewRepoActivity;
 
 public class ReposFragment extends BaseReposListFragment {
 
+	private static final int NEW_REPO_REQUEST = 8978;
 	private String username;
 	private float fabOldY;
 	private float fabNewY;
@@ -74,7 +77,8 @@ public class ReposFragment extends BaseReposListFragment {
 	@Override
 	protected void fabClick() {
 		super.fabClick();
-		Toast.makeText(getActivity(), "Create repo", Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(getActivity(), NewRepoActivity.class);
+		startActivityForResult(intent, NEW_REPO_REQUEST);
 	}
 
 	@Override
@@ -88,4 +92,5 @@ public class ReposFragment extends BaseReposListFragment {
 		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
 		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
 	}
+
 }

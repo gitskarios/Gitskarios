@@ -5,7 +5,7 @@
     <declare-styleable name="CircularImageView">
 
         <!-- Specifies whether or not to draw a circular border around the image. -->
-        <attr name="border" format="boolean" />
+        <attr name="border" format="boolean"/>
         <!-- Specifies the color of the border draw around the image. (if enabled) -->
         <attr name="border_color" format="color"/>
         <!-- Makes the border this pixels wide. (if enabled) -->
@@ -23,10 +23,35 @@
     </declare-styleable>
 
     <declare-styleable name="CustomCircularImageViewTheme">
-        <attr name="circularImageViewStyle" format="reference" />
+        <attr name="circularImageViewStyle" format="reference"/>
     </declare-styleable>
     <declare-styleable name="FABCenterLayout">
-        <attr name="top_id" format="reference" />
+        <attr name="top_id" format="reference"/>
+        <attr name="scrollable_id" format="reference"/>
+        <attr name="folded_size" format="dimension"/>
+        <attr name="unfolded_size" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="FloatingActionButton">
+        <attr name="colorPressed" format="color"/>
+        <attr name="colorNormal" format="color"/>
+        <attr name="float_icon" format="reference"/>
+        <attr name="size" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="mini" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AddFloatingActionButton">
+        <attr name="plusIconColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="FloatingActionsMenu">
+        <attr name="addButtonColorPressed" format="color"/>
+        <attr name="addButtonColorNormal" format="color"/>
+        <attr name="addButtonPlusIconColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="TabTitle">
+        <attr format="reference|color" name="tabBarColor"/>
     </declare-styleable>
 
 </resources>

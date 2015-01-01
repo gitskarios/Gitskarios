@@ -2,14 +2,12 @@ package com.alorma.github.ui.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -17,13 +15,12 @@ import android.widget.Toast;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
-import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.bugsense.trace.BugSenseHandler;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -33,7 +30,6 @@ public class LoginActivity extends Activity {
 
 	private StoreCredentials credentials;
 	private WebView webview;
-	private SmoothProgressBar bar;
 	private ProgressDialog progressDialog;
 
 	@Override
@@ -45,8 +41,6 @@ public class LoginActivity extends Activity {
 		}
 
 		setContentView(R.layout.activity_login);
-
-		bar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 
 		credentials = new StoreCredentials(this);
 		if (credentials.token() != null) {
@@ -75,7 +69,6 @@ public class LoginActivity extends Activity {
 
 	private void endAcces(String accessToken) {
 		credentials.storeToken(accessToken);
-
 		MainActivity.startActivity(this);
 		finish();
 	}
@@ -87,19 +80,23 @@ public class LoginActivity extends Activity {
 	}
 
 	private void showDialog() {
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setMessage(getString(R.string.acces_token_request));
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.show();
+		try {
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage(getString(R.string.acces_token_request));
+			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
+			progressDialog.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {
 		private RequestTokenClient requestTokenClient;
 
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
-			bar.progressiveStart();
+			// TODO START LOADING
 			String accessTokenFragment = "access_token=";
 			String accessCodeFragment = "code";
 
@@ -135,7 +132,7 @@ public class LoginActivity extends Activity {
 		@Override
 		public void onPageFinished(WebView view, String url) {
 			super.onPageFinished(view, url);
-			bar.progressiveStop();
+			// TODO STOP LOADING
 		}
 
 		@Override

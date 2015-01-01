@@ -6,8 +6,15 @@
     <item name="pager" type="id">pager</item>
     <item name="smoothBar" type="id">smoothBar</item>
     <item name="top" type="id">top</item>
+    <item name="toolbar" type="id">toolbar</item>
     <item name="coloredLayout" type="id">coloredLayout</item>
     <item name="issueDetailInfo" type="id">issueDetailInfo</item>
     <item name="action_add_comment" type="id">action_add_comment</item>
     <item name="action_close_issue" type="id">action_close_issue</item>
+    <item name="action_fold_issue" type="id">action_fold_issue</item>
+    <item name="fab_expand_menu_button" type="id"/>
+    <item name="cardsContainerScroll" type="id">@id/scrollable</item>
+    <item name="listContentFL" type="id">@id/scrollable</item>
+    <item name="scrollable" type="id">scroll</item>
+    <item name="fabLayout" type="id">fabLayout</item>
 </resources>

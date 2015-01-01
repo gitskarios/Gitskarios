@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="72dp"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_card"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginRight="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_marginEnd="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_marginBottom="@dimen/gapSmall">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textColor="?attr/colorPrimaryDark"
+            android:text="Event in progress"/>
+
+    </LinearLayout>
+</LinearLayout>

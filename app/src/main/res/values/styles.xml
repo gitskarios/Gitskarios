@@ -1,32 +1,21 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <item name="android:windowBackground">@color/accent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:windowContentOverlay">@null</item>
-    </style>
-    <!-- Base application theme. -->
-    <style name="AppTheme.Dialog" parent="android:Theme.Holo.Dialog">
-        <item name="android:windowBackground">@color/gray_github_light</item>
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
-    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/accent</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:title" />
-        <item name="android:icon">@android:color/transparent</item>
-        <item name="android:height">56dp</item>
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+    <style name="AppTheme.Login">
+        <item name="android:windowBackground">@color/primary</item>
     </style>
 
-    <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/white</item>
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/icons</item>
     </style>
 
     <style name="tab_repos">
@@ -50,14 +39,14 @@
         <item name="android:paddingBottom">16dp</item>
         <item name="android:layout_gravity">right|bottom</item>
     </style>
-    <style name="fab_inv">
-        <item name="android:layout_width">56dp</item>
-        <item name="android:layout_height">56dp</item>
-        <item name="android:textSize">40sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/fab_inv_button</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:layout_gravity">right|bottom</item>
+
+    <style name="card_row_item_text">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">15sp</item>
     </style>
+    <style name="user_row_item">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
 </resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@id/listContentFL">
+
+    <FrameLayout
+        android:id="@+id/listContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_github_light">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/swipe">
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawSelectorOnTop="false"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/emptyLayout"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@color/gray_github_light">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_launcher"
+            android:id="@+id/emptyIcon"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emptyText"
+            android:layout_below="@id/emptyIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/gapMedium"
+            android:textSize="@dimen/textSizeLarge"
+            android:textColor="@color/gray_github_medium"/>
+    </RelativeLayout>
+
+</FrameLayout>

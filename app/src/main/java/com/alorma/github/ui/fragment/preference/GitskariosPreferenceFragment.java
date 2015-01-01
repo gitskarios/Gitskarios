@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
@@ -14,6 +13,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 public class GitskariosPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 	private static final String PREF_INTERCEPT = "pref_intercept";
 	public static final String REPOS_SORT = "repos_sort";
+	public static final String REPOS_FILE_TYPE = "repos_download_type";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,8 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 		findPreference(PREF_INTERCEPT).setOnPreferenceChangeListener(this);
 
 		findPreference(REPOS_SORT).setOnPreferenceChangeListener(this);
+
+		findPreference(REPOS_FILE_TYPE).setOnPreferenceChangeListener(this);
 
 	}
 
@@ -40,6 +42,9 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 		} else if (preference.getKey().equals(REPOS_SORT)) {
 			GitskariosSettings settings = new GitskariosSettings(getActivity());
 			settings.saveRepoSort(String.valueOf(newValue));
+		} else if (preference.getKey().equals(REPOS_FILE_TYPE)) {
+			GitskariosSettings settings = new GitskariosSettings(getActivity());
+			settings.saveDownloadFileType(String.valueOf(newValue));
 		}
 		return true;
 	}

@@ -1,80 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.alorma.github" >
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.alorma.github">
 
-    <uses-sdk tools:node="replace" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <application
-        android:name=".GitskariosApplication"
+        android:name="com.alorma.github.GitskariosApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".ui.activity.LoginActivity" >
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.alorma.github.ui.activity.LoginActivity"
+            android:theme="@style/AppTheme.Login">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ui.activity.MainActivity" >
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable_repos" />
-        </activity>
-        <activity android:name=".ui.activity.ProfileActivity" />
-        <activity android:name=".ui.activity.RepoDetailActivity" />
-        <activity android:name=".ui.dialog.NewCommentDialog"
-            android:theme="@style/AppTheme.Dialog"/>
-        <activity android:name=".ui.activity.FileActivity" />
-        <activity android:name=".ui.activity.SearchReposActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".Interceptor"
-            android:theme="@android:style/Theme.NoDisplay" >
+            android:name="com.alorma.github.ui.activity.MainActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.ProfileActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity"/>
+        <activity android:name=".ui.dialog.NewIssueCommentActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.FileActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.AboutActivity"/>
+        <activity
+            android:name="com.alorma.github.Interceptor"
+            android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
                 <data
                     android:host="github.com"
-                    android:scheme="http" />
+                    android:scheme="http"/>
                 <data
                     android:host="github.com"
-                    android:scheme="https" />
-                <data android:pathPattern=".*" />
+                    android:scheme="https"/>
+                <data android:pathPattern=".*"/>
 
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
 
         <activity
-            android:name=".ui.activity.NewIssueActivity"
+            android:name="com.alorma.github.ui.activity.NewIssueActivity"
             android:label="@string/title_activity_new_issue"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".ui.activity.IssueDetailActivity"
-            android:label="@string/title_activity_issue_detail" >
-        </activity>
+            android:name="com.alorma.github.ui.activity.NewRepoActivity"
+            android:label="@string/title_activity_new_issue"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:name="com.alorma.github.ui.activity.IssueDetailActivity"/>
+        <activity
+            android:name="com.alorma.github.ui.activity.SettingsActivity"
+            android:label="@string/title_activity_settings"/>
+        <activity
+            android:name="com.alorma.github.ui.activity.ReposActivity">
         </activity>
     </application>
 

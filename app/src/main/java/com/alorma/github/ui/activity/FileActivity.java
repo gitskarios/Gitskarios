@@ -29,7 +29,6 @@ import com.alorma.github.utils.ImageUtils;
 
 import java.io.UnsupportedEncodingException;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -43,10 +42,11 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	private static final String HEAD = "HEAD";
 	private static final String NAME = "NAME";
 	private static final String PATH = "PATH";
+	private static final String PATCH = "PATCH";
 	private WebView webView;
 	private ImageView imageView;
 	private Content content;
-	private SmoothProgressBar smoothBar;
+	private String patch;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, String head, String name, String path) {
 		Bundle bundle = new Bundle();
@@ -61,6 +61,15 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		return intent;
 	}
 
+	public static Intent createLauncherIntent(Context context, String patch) {
+		Bundle bundle = new Bundle();
+		bundle.putString(PATCH, patch);
+
+		Intent intent = new Intent(context, FileActivity.class);
+		intent.putExtras(bundle);
+		return intent;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,21 +77,20 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 
 		webView = (WebView) findViewById(R.id.webview);
 		imageView = (ImageView) findViewById(R.id.imageView);
-		smoothBar = (SmoothProgressBar) findViewById(R.id.smoothBar);
 
 		String owner = getIntent().getExtras().getString(OWNER);
 		String repo = getIntent().getExtras().getString(REPO);
 		String head = getIntent().getExtras().getString(HEAD);
 		String name = getIntent().getExtras().getString(NAME);
 		String path = getIntent().getExtras().getString(PATH);
+		patch = getIntent().getExtras().getString(PATCH);
 
-		setTitle(name);
-
-		smoothBar.progressiveStart();
-
-		GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
-		fileContentClient.setOnResultCallback(this);
-		fileContentClient.execute();
+		if (patch == null) {
+			GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
+			fileContentClient.setOnResultCallback(this);
+			fileContentClient.execute();
+			setTitle(name);
+		}
 
 		webView.clearCache(true);
 		webView.clearFormData();
@@ -98,6 +106,10 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 		webView.setWebChromeClient(new MyWebChromeClient());
 
+		if (patch != null) {
+			webView.loadUrl("file:///android_asset/diff.html");
+		}
+
 	}
 
 	@Override
@@ -111,19 +123,14 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 			markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
 				@Override
 				public void onResponseOk(final String s, Response r) {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							webView.clearCache(true);
-							webView.clearFormData();
-							webView.clearHistory();
-							webView.clearMatches();
-							webView.clearSslPreferences();
-							webView.getSettings().setUseWideViewPort(false);
-							webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-							webView.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
-						}
-					});
+					webView.clearCache(true);
+					webView.clearFormData();
+					webView.clearHistory();
+					webView.clearMatches();
+					webView.clearSslPreferences();
+					webView.getSettings().setUseWideViewPort(false);
+					webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+					webView.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
 				}
 
 				@Override
@@ -139,7 +146,7 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 				webView.setVisibility(View.GONE);
 				imageView.setVisibility(View.VISIBLE);
 				imageView.setImageBitmap(bitmap);
-				smoothBar.progressiveStop();
+				// TODO STOP loading
 			} catch (Exception e) {
 				Toast.makeText(this, R.string.error_loading_image, Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
@@ -150,21 +157,25 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	}
 
 	private String decodeContent() {
-		byte[] data = android.util.Base64.decode(content.content, android.util.Base64.DEFAULT);
-		try {
-			content.content = new String(data, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		if (patch == null) {
+			byte[] data = android.util.Base64.decode(content.content, android.util.Base64.DEFAULT);
+			try {
+				content.content = new String(data, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 
-		return content.content;
+			return content.content;
+		} else {
+			return patch;
+		}
 	}
 
 	final class MyWebChromeClient extends WebChromeClient {
 		@Override
 		public void onProgressChanged(WebView view, int progress) {
 			if (progress >= 100) {
-				smoothBar.progressiveStop();
+				// TODO STOP LOADING
 			}
 		}
 	}

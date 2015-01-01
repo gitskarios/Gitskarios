@@ -11,8 +11,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 
@@ -52,15 +51,25 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 
 	@Override
 	protected void onResponse(ListRepos repos, boolean refreshing) {
-		if (reposAdapter == null) {
-			setUpList();
+		if (repos.size() > 0) {
+			if (reposAdapter == null) {
+				setUpList();
+			}
+			reposAdapter.addAll(repos, paging);
 		}
-		reposAdapter.addAll(repos, paging);
 	}
 
 	@Override
-	protected Iconify.IconValue getNoDataIcon() {
-		return Iconify.IconValue.fa_code;
+	public void setEmpty() {
+		super.setEmpty();
+		if (reposAdapter != null) {
+			reposAdapter.clear();
+		}
+	}
+
+	@Override
+	protected GithubIconify.IconValue getNoDataIcon() {
+		return GithubIconify.IconValue.octicon_repo;
 	}
 
 	@Override

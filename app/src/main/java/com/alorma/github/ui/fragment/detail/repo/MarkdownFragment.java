@@ -18,6 +18,7 @@ import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.bugsense.trace.BugSenseHandler;
 
 import retrofit.RetrofitError;
@@ -26,7 +27,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class MarkdownFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager {
+public class MarkdownFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -84,12 +85,7 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 
 	@Override
 	public void onResponseOk(final String s, Response r) {
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
-			}
-		});
+		webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
 	}
 
 	@Override
@@ -123,6 +119,11 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 		if (refreshListener != null) {
 			refreshListener.cancelRefresh();
 		}
+	}
+
+	@Override
+	public CharSequence getTitle() {
+		return getString(R.string.markdown_fragment_title);
 	}
 
 	private class WebViewCustomClient extends WebViewClient {

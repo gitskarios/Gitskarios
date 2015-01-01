@@ -3,40 +3,37 @@ package com.alorma.github.ui.activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
-import com.alorma.github.sdk.services.issues.GetIssueClient;
-
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.sdk.services.issues.GetIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.dialog.NewCommentDialog;
+import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.alorma.github.ui.view.FABCenterLayout;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class IssueDetailActivity extends BackActivity implements RefreshListener
-		, IssueDiscussionFragment.IssueDiscussionListener {
+		, View.OnClickListener, BaseClient.OnResultCallback<Issue> {
 
 	public static final String ISSUE_INFO = "ISSUE_INFO";
 	public static final String PERMISSIONS = "PERMISSIONS";
@@ -47,8 +44,9 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	private Permissions permissions;
 	private boolean shouldRefreshOnBack;
 	private Issue issue;
-	private IssueResponse issueResponse;
 	private IssueInfo issueInfo;
+	private FABCenterLayout fabLayout;
+	private TextView issueBody;
 
 	public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
 		Bundle bundle = new Bundle();
@@ -70,10 +68,8 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 			permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
-			issueResponse = new IssueResponse();
-
 			GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
-			issuesClient.setOnResultCallback(issueResponse);
+			issuesClient.setOnResultCallback(this);
 			issuesClient.execute();
 
 			findViews();
@@ -81,15 +77,21 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	}
 
 	private void findViews() {
+		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+		fabLayout.setFabColor(getResources().getColor(R.color.accent));
+		fabLayout.setFabColorPressed(getResources().getColor(R.color.primary_dark));
+		GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
+		fabLayout.setFabIcon(drawable);
+		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
 
+		issueBody = (TextView) findViewById(R.id.issueBody);
+		issueBody.setMaxLines(3);
+		issueBody.setEllipsize(TextUtils.TruncateAt.END);
 	}
 
-	// TODO Set something todispay that is closed or not
-
 	private void setData() {
-		if (getActionBar() != null) {
-			getActionBar().setTitle(issue.title);
-			getActionBar().setSubtitle(Html.fromHtml(getString(R.string.issue_detail_title, issue.number)));
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().setTitle(issue.title);
 		}
 
 		addDiscussionFragment();
@@ -97,7 +99,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	private void addDiscussionFragment() {
 		issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
-		issueDiscussionFragment.setIssueDiscussionListener(this);
 		issueDiscussionFragment.setRefreshListener(this);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -116,10 +117,23 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		menu.clear();
 
 		if (permissions != null && permissions.push && issueState == IssueState.open) {
-			menu.add(0, R.id.action_close_issue, 0, getString(R.string.closeIssue));
-			menu.findItem(R.id.action_close_issue).setIcon(new IconDrawable(this, Iconify.IconValue.fa_times).actionBarSize().colorRes(R.color.white));
-			menu.findItem(R.id.action_close_issue).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+			menuItem.setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
+			menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
+
+		MenuItem menuItem;
+		GithubIconify.IconValue icon;
+		if (fabLayout.isFold()) {
+			menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.unfold_issue);
+			icon = GithubIconify.IconValue.octicon_unfold;
+		} else {
+			menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.fold_issue);
+			icon = GithubIconify.IconValue.octicon_fold;
+		}
+		menuItem.setIcon(new GithubIconDrawable(this, icon).actionBarSize().colorRes(R.color.white));
+		menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
 
 		return true;
 	}
@@ -136,6 +150,17 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			case R.id.action_close_issue:
 				closeIssueDialog();
 				break;
+			case R.id.action_fold_issue:
+				if (fabLayout.isFold()) {
+					issueBody.setMaxLines(Integer.MAX_VALUE);
+					issueBody.setEllipsize(null);
+				} else {
+					issueBody.setMaxLines(3);
+					issueBody.setEllipsize(TextUtils.TruncateAt.END);
+				}
+				fabLayout.setFold(!fabLayout.isFold());
+				invalidateOptionsMenu();
+				break;
 		}
 
 		return true;
@@ -151,14 +176,8 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	}
 
-	@Override
-	public IssueComment requestIssue() {
-		return issue;
-	}
-
-	@Override
 	public void onAddComment() {
-		Intent intent = NewCommentDialog.launchIntent(IssueDetailActivity.this, issueInfo);
+		Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
 		startActivityForResult(intent, NEW_COMMENT_REQUEST);
 	}
 
@@ -166,52 +185,53 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		String title = getString(R.string.closeIssue);
 		String accept = getString(R.string.accept);
 		String cancel = getString(R.string.cancel);
-		CustomDialog.Builder builder = new CustomDialog.Builder(this, title, accept);
-		builder.darkTheme(false);
-		builder.positiveColor(getString(R.string.lDialogPositve));
-		builder.darkTheme(false);
-		builder.negativeText(cancel);
-		builder.negativeColor(getString(R.string.lDialogNegative));
-		builder.darkTheme(true);
-		CustomDialog customDialog = builder.build();
-		customDialog.setClickListener(new CustomDialog.ClickListener() {
-			@Override
-			public void onConfirmClick() {
-				closeIssue();
-			}
 
-			@Override
-			public void onCancelClick() {
+		MaterialDialog dialog = new MaterialDialog.Builder(this)
+				.title(title)
+				.positiveText(accept)
+				.negativeText(cancel)
+				.callback(new MaterialDialog.SimpleCallback() {
+					@Override
+					public void onPositive(MaterialDialog materialDialog) {
+						closeIssue();
+					}
+				})
+				.build();
 
-			}
-		});
-		customDialog.show();
+		dialog.show();
 	}
 
 	private void closeIssue() {
 		CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.owner, issueInfo.repo, issueInfo.num);
-		closeIssueClient.setOnResultCallback(issueResponse);
+		closeIssueClient.setOnResultCallback(this);
 		closeIssueClient.execute();
-
 	}
 
-	private class IssueResponse implements BaseClient.OnResultCallback<Issue> {
-
-		@Override
-		public void onResponseOk(Issue issue, Response r) {
-			if (issue != null) {
-				IssueDetailActivity.this.issue = issue;
-				IssueDetailActivity.this.issueState = issue.state;
-				invalidateOptionsMenu();
-				setData();
-				shouldRefreshOnBack = true;
-			}
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == fabLayout.getFabId()) {
+			onAddComment();
 		}
+	}
 
-		@Override
-		public void onFail(RetrofitError error) {
-			ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Closing issue: ", error);
+	@Override
+	public void onResponseOk(Issue issue, Response r) {
+		if (issue != null) {
+			issueBody.setText(issue.body);
+			IssueDetailActivity.this.issue = issue;
+			IssueDetailActivity.this.issueState = issue.state;
+			invalidateOptionsMenu();
+			setData();
+			
+			//Spanned issueNumber = Html.fromHtml(getString(R.string.issue_detail_title, issue.number));
+
+			shouldRefreshOnBack = true;
 		}
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+		ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Closing issue: ", error);
 	}
 
 	@Override

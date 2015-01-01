@@ -44,8 +44,8 @@ public class TabTitle extends TextView {
 	private void init(Context context, AttributeSet attrs, int defStyle) {
 		TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.TabTitle, defStyle, 0);
 
-		if (attr.hasValue(R.styleable.TabTitle_barColor)) {
-			barColors = attr.getColorStateList(R.styleable.TabTitle_barColor);
+		if (attr.hasValue(R.styleable.TabTitle_tabBarColor)) {
+			barColors = attr.getColorStateList(R.styleable.TabTitle_tabBarColor);
 		} else {
 			barColors = getTextColors();
 		}

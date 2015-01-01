@@ -5,19 +5,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ListRepos;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.ui.view.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import it.gmariotti.cardslib.library.cards.actions.BaseSupplementalAction;
+import it.gmariotti.cardslib.library.cards.actions.IconSupplementalAction;
+import it.gmariotti.cardslib.library.cards.actions.TextSupplementalAction;
+import it.gmariotti.cardslib.library.cards.material.MaterialLargeImageCard;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.view.CardViewNative;
 
 /**
  * Created by Bernat on 14/07/2014.
@@ -34,24 +43,23 @@ public class UsersAdapter extends ArrayAdapter<User> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
 		View v = mInflater.inflate(R.layout.row_user, viewGroup, false);
-		UsersHolder userHolder = new UsersHolder(v);
-
 		User user = getItem(position);
 
-		userHolder.authorLogin.setText(user.login);
+		CircularImageView imageView = (CircularImageView) v.findViewById(R.id.avatarAuthorImage);
 
-		ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.authorAvatar);
+		ImageLoader.getInstance().displayImage(user.avatar_url, imageView);
 
-		if (user.created_at != null) {
-			userHolder.authorDate.setText(getDate(user.created_at));
+		TextView textView = (TextView) v.findViewById(R.id.textAuthorLogin);
+
+		textView.setText(user.login);
+
+		View divider = v.findViewById(R.id.divider);
+
+		if (position == getCount()) {
+			divider.setVisibility(View.GONE);
 		}
 
 		return v;
-	}
-
-	private String getDate(Date created_at) {
-		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-		return sdf.format(created_at);
 	}
 
 	public void addAll(Collection<? extends User> collection, boolean paging) {
