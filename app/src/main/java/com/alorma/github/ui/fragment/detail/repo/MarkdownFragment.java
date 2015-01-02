@@ -19,8 +19,6 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.bugsense.trace.BugSenseHandler;
-
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -110,11 +108,6 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 	private void onError(String tag, RetrofitError error) {
 
 		ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment", error);
-
-		if (error != null && error.getMessage() != null) {
-			BugSenseHandler.addCrashExtraData(tag, error.getMessage());
-			BugSenseHandler.flush(getActivity());
-		}
 
 		if (refreshListener != null) {
 			refreshListener.cancelRefresh();

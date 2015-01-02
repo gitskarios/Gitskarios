@@ -13,15 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.alorma.github.BuildConfig;
-import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.UnAuthIntent;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.bugsense.trace.BugSenseHandler;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -42,9 +37,6 @@ public class BaseActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (!BuildConfig.DEBUG) {
-			BugSenseHandler.initAndStartSession(BaseActivity.this, "77b1f1f6");
-		}
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
 	}
 
