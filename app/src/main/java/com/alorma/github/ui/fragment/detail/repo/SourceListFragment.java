@@ -22,7 +22,7 @@ import com.alorma.github.ui.fragment.base.BaseListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
-import com.bugsense.trace.BugSenseHandler;
+import com.crashlytics.android.Crashlytics;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -133,8 +133,7 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 					refreshListener.cancelRefresh();
 				}
 			} catch (Exception e) {
-				BugSenseHandler.addCrashExtraData("FilesTreeFragment", e.getMessage());
-				BugSenseHandler.flush(getActivity());
+				Crashlytics.logException(e);
 			}
 		}
 	}

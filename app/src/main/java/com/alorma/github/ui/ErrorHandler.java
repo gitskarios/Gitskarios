@@ -1,12 +1,11 @@
 package com.alorma.github.ui;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
-import com.bugsense.trace.BugSenseHandler;
+import com.crashlytics.android.Crashlytics;
 
 import retrofit.RetrofitError;
 
@@ -23,8 +22,7 @@ public class ErrorHandler {
 			}
 		} else {
 			if (error != null && error.getMessage() != null) {
-				BugSenseHandler.addCrashExtraData(tag, error.getMessage());
-				BugSenseHandler.flush(context);
+				Crashlytics.logException(error);
 			}
 		}
 	}

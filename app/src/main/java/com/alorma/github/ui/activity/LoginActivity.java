@@ -19,7 +19,7 @@ import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
-import com.bugsense.trace.BugSenseHandler;
+import com.crashlytics.android.Crashlytics;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -37,7 +37,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		if (!BuildConfig.DEBUG) {
-			BugSenseHandler.initAndStartSession(LoginActivity.this, "77b1f1f6");
+			Crashlytics.start(this);
 		}
 
 		setContentView(R.layout.activity_login);
