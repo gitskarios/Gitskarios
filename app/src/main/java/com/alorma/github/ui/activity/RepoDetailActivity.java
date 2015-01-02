@@ -106,8 +106,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			setTitle(repoInfo.repo);
 
-			setUpShare(repoInfo);
-
 			description = getIntent().getExtras().getString(DESCRIPTION);
 			fromIntentFilter = getIntent().getExtras().getBoolean(FROM_INTENT_FILTER);
 
@@ -186,13 +184,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		watcheClien.execute();
 	}
 
-	private void setUpShare(RepoInfo info) {
-		shareUri = Uri.parse(ApiConstants.WEB_URL);
-		shareUri = shareUri.buildUpon().appendPath(info.owner).appendPath(info.repo).build();
-
-		invalidateOptionsMenu();
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -223,7 +214,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			intent.setType("text/plain");
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
-			intent.putExtra(Intent.EXTRA_TEXT, currentRepo.url);
+			intent.putExtra(Intent.EXTRA_TEXT, currentRepo.svn_url);
 
 			mShareActionProvider.setShareIntent(intent);
 		}
