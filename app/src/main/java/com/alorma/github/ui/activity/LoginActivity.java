@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,6 +18,7 @@ import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.crashlytics.android.Crashlytics;
 
 import retrofit.RetrofitError;
@@ -29,7 +29,6 @@ public class LoginActivity extends Activity {
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
 	private StoreCredentials credentials;
-	private WebView webview;
 	private ProgressDialog progressDialog;
 
 	@Override
@@ -51,7 +50,7 @@ public class LoginActivity extends Activity {
 
 			url = url + "&scope=gist,user,repo,notifications";
 
-			webview = (WebView) findViewById(R.id.webview);
+			WebView webview = (WebView) findViewById(R.id.webview);
 			webview.getSettings().setJavaScriptEnabled(true);
 			webview.setWebViewClient(new WebViewCustomClient());
 
@@ -67,10 +66,12 @@ public class LoginActivity extends Activity {
 		}
 	}
 
-	private void endAcces(String accessToken) {
-		credentials.storeToken(accessToken);
-		MainActivity.startActivity(this);
-		finish();
+	private void endAccess(String accessToken) {
+		if (credentials != null) {
+			credentials.storeToken(accessToken);
+			MainActivity.startActivity(this);
+			finish();
+		}
 	}
 
 	@Override
@@ -89,6 +90,7 @@ public class LoginActivity extends Activity {
 			progressDialog.show();
 		} catch (Exception e) {
 			e.printStackTrace();
+			Crashlytics.logException(e);
 		}
 	}
 
@@ -96,28 +98,29 @@ public class LoginActivity extends Activity {
 		private RequestTokenClient requestTokenClient;
 
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
-			// TODO START LOADING
 			String accessTokenFragment = "access_token=";
 			String accessCodeFragment = "code";
 
 			// We hijack the GET request to extract the OAuth parameters
 
-			if (url.contains(accessTokenFragment)) {
-				// the GET request contains directly the token
-				String accessToken = url.substring(url.indexOf(accessTokenFragment));
+			if (url != null) {
+				if (url.contains(accessTokenFragment)) {
+					// the GET request contains directly the token
+					String accessToken = url.substring(url.indexOf(accessTokenFragment));
 
-				endAcces(accessToken);
-			} else if (url.contains(accessCodeFragment)) {
-				// the GET request contains an authorization code
+					endAccess(accessToken);
+				} else if (url.contains(accessCodeFragment)) {
+					// the GET request contains an authorization code
 
-				Uri uri = Uri.parse(url);
+					Uri uri = Uri.parse(url);
 
-				showDialog();
+					showDialog();
 
-				if (requestTokenClient == null) {
-					requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
-					requestTokenClient.setOnResultCallback(this);
-					requestTokenClient.execute();
+					if (requestTokenClient == null) {
+						requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
+						requestTokenClient.setOnResultCallback(this);
+						requestTokenClient.execute();
+					}
 				}
 			}
 		}
@@ -144,8 +147,10 @@ public class LoginActivity extends Activity {
 		@Override
 		public void onResponseOk(Token token, Response r) {
 			if (token.access_token != null) {
-				progressDialog.hide();
-				endAcces(token.access_token);
+				if (progressDialog != null) {
+					progressDialog.hide();
+				}
+				endAccess(token.access_token);
 			} else if (token.error != null) {
 				Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
 			}
@@ -153,9 +158,7 @@ public class LoginActivity extends Activity {
 
 		@Override
 		public void onFail(RetrofitError error) {
-			if (error.getResponse() != null) {
-				Log.e("RETROFIT", "Response error body: " + error.getResponse().getBody());
-			}
+			ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
 		}
 	}
 }
