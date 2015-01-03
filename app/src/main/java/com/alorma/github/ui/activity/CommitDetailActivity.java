@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,10 +37,10 @@ public class CommitDetailActivity extends BackActivity {
 
 			setTitle(getString(R.string.title_activity_commits, info, sha));
 
-			SingleCommitFragment reposFragment = SingleCommitFragment.newInstance(info, sha);
+			SingleCommitFragment singleCommitFragment = SingleCommitFragment.newInstance(info, sha);
 
-			android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-			ft.replace(R.id.content, reposFragment);
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.replace(R.id.content, singleCommitFragment);
 			ft.commit();
 		}
 	}

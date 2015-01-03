@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.commit;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -53,23 +54,33 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
 		Commit commit = getItem(position);
 
-		title.setText(commit.commit.message);
-		sha.setText(commit.sha.substring(0, 8));
+		if (commit.commit != null) {
+			title.setText(commit.commit.message);
+		}
+		if (commit.sha != null) {
+			sha.setText(commit.sha.substring(0, 8));
+		}
 
-		ImageLoader.getInstance().displayImage(commit.author.avatar_url, avatar);
-		
-		if (commit.commit.author.date != null) {
+		if (commit.author != null) {
+			if (commit.author.avatar_url != null) {
+				ImageLoader.getInstance().displayImage(commit.author.avatar_url, avatar);
+			} else {
+				avatar.setImageDrawable(new ColorDrawable(getContext().getResources().getColor(R.color.accent)));
+			}
+		}
+
+		if (commit.author != null && commit.commit.author != null && commit.commit.author.date != null) {
 			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 			DateTime dt = formatter.parseDateTime(commit.commit.author.date);
 
 			Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
-			if (commit.committer != null && commit.committer.login != null) {
-				String userDate = getContext().getResources().getString(R.string.commit_authored_at, commit.committer.login, days.getDays());
+			if (commit.author != null && commit.author.login != null) {
+				String userDate = getContext().getResources().getString(R.string.commit_authored_at, commit.author.login, days.getDays());
 				user.setText(userDate);
 			}
-		} else {
-			user.setText(commit.committer.login);
+		} else if (commit.author != null) {
+			user.setText(commit.author.login);
 		}
 
 		return v;
@@ -81,13 +92,15 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 		TextView tv = (TextView) v.findViewById(android.R.id.text1);
 
 		Commit commit = getItem(i);
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		DateTime dt = formatter.parseDateTime(commit.commit.author.date);
+		
+		if (commit.commit != null && commit.commit.author != null && commit.commit.author.date != null) {
+			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			DateTime dt = formatter.parseDateTime(commit.commit.author.date);
 
-		String text = dt.toString("dd MMM yyyy");
+			String text = dt.toString("dd MMM yyyy");
 
-		tv.setText(text);
-
+			tv.setText(text);
+		} 
 		return tv;
 	}
 
