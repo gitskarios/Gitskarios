@@ -28,7 +28,6 @@
             android:gravity="center_vertical"
             android:drawableLeft="@drawable/commit_stats_green"
             android:drawablePadding="8dp"
-            android:text="@string/commit_additions"
             android:id="@+id/additions"/>
 
         <TextView
@@ -38,7 +37,6 @@
             android:gravity="center_vertical"
             android:drawableLeft="@drawable/commit_stats_red"
             android:drawablePadding="8dp"
-            android:text="@string/commit_deletions"
             android:id="@+id/deletions"/>
 
     </LinearLayout>
