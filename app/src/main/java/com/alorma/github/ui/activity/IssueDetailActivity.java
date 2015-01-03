@@ -28,6 +28,7 @@ import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
+import com.crashlytics.android.Crashlytics;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -98,12 +99,18 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 	}
 
 	private void addDiscussionFragment() {
-		issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
-		issueDiscussionFragment.setRefreshListener(this);
+		try {
+			if (!isFinishing()) {
+				issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
+				issueDiscussionFragment.setRefreshListener(this);
 
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.discussionFeed, issueDiscussionFragment);
-		ft.commit();
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				ft.replace(R.id.discussionFeed, issueDiscussionFragment);
+				ft.commit();
+			}
+		} catch (IllegalStateException e) {
+			Crashlytics.logException(e);
+		}
 	}
 
 	@Override
