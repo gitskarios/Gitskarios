@@ -12,6 +12,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -69,7 +70,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 					ImageLoader.getInstance().displayImage(author.avatar_url, avatar);
 				} else {
 					GithubIconDrawable iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_octoface);
-					iconDrawable.colorRes(R.color.secondary_text);
+					iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext(), R.style.AppTheme_Repos));
 					iconDrawable.sizeDp(36);
 					iconDrawable.setAlpha(128);
 					avatar.setImageDrawable(iconDrawable);

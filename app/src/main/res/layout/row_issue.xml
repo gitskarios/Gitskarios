@@ -23,8 +23,7 @@
         android:layout_marginRight="@dimen/gapMedium"
         android:layout_marginEnd="@dimen/gapMedium"
         android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@color/gray_github_dark" />
+        android:singleLine="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,8 +58,7 @@
         android:layout_toRightOf="@id/avatarAuthor"
         android:layout_toEndOf="@id/avatarAuthor"
         android:layout_alignRight="@+id/textTitle"
-        android:layout_alignEnd="@+id/textTitle"
-        android:textColor="@color/gray_github_medium"  />
+        android:layout_alignEnd="@+id/textTitle" />
 
     <View
         android:layout_width="@dimen/gapSmall"

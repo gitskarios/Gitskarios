@@ -37,8 +37,7 @@
                 android:id="@+id/textAuthor"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="@dimen/gapMedium"
-                android:layout_marginStart="@dimen/gapMedium"
-                android:textColor="@color/gray_github_medium" />
+                android:layout_marginStart="@dimen/gapMedium"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.menu.DividerMenuItem;
 import com.alorma.github.ui.fragment.menu.MenuItem;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.Menu
 		this.context = context;
 		this.objects = objects;
 		mInflater = LayoutInflater.from(context);
-		color = context.getResources().getColor(R.color.gray_github_dark);
+		color = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
 	}
 
 	@Override

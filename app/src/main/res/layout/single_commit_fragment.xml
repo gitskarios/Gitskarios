@@ -9,9 +9,9 @@
         android:layout_height="56dp"
         android:padding="8dp"
         android:paddingLeft="?attr/actionBarSize"
-        android:background="@color/primary_light"
+        android:background="?attr/gitskarios_primary_light"
         android:id="@+id/message"
-        android:textColor="@color/secondary_text"
+        android:textColor="?attr/gitskarios_secondary_text"
         android:gravity="center"
         android:textSize="16sp"/>
 

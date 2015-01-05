@@ -26,6 +26,7 @@ import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.FABCenterLayout;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.crashlytics.android.Crashlytics;
@@ -79,8 +80,13 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 
 	private void findViews() {
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
-		fabLayout.setFabColor(getResources().getColor(R.color.accent));
-		fabLayout.setFabColorPressed(getResources().getColor(R.color.primary_dark));
+
+		int accent = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
+		int primaryDark = AttributesUtils.getPrimaryDarkColor(this, R.style.AppTheme_Repos);
+
+		fabLayout.setFabColor(accent);
+		fabLayout.setFabColorPressed(primaryDark);
+		
 		GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
 		fabLayout.setFabIcon(drawable);
 		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
@@ -229,7 +235,7 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 			IssueDetailActivity.this.issueState = issue.state;
 			invalidateOptionsMenu();
 			setData();
-			
+
 			//Spanned issueNumber = Html.fromHtml(getString(R.string.issue_detail_title, issue.number));
 
 			shouldRefreshOnBack = true;

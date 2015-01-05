@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,11 +26,16 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 	private final LayoutInflater mInflater;
 	private final int accentColor;
+	private final int primaryDark;
+	private final int secondaryTextColor;
 
 	public ReposAdapter(Context context, List<Repo> repos) {
 		super(context, 0, 0, repos);
 		this.mInflater = LayoutInflater.from(context);
-		this.accentColor = getContext().getResources().getColor(R.color.accent);
+
+		this.accentColor = AttributesUtils.getAccentColor(context, R.style.AppTheme_Repos);
+		this.primaryDark = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
+		this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
 	}
 
 	@Override
@@ -41,7 +47,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 		reposHolder.textTitle.setText(repo.name);
 
-		reposHolder.textTitle.setTextColor(getContext().getResources().getColor(R.color.primary_dark));
+		reposHolder.textTitle.setTextColor(primaryDark);
 
 		reposHolder.textDescription.setText(repo.description);
 
@@ -75,7 +81,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 
 	private void applyIcon(TextView textView, GithubIconify.IconValue value) {
 		GithubIconDrawable drawableForks = new GithubIconDrawable(getContext(), value);
-		drawableForks.colorRes(R.color.secondary_text);
+		drawableForks.color(secondaryTextColor);
 		drawableForks.sizeRes(R.dimen.textSizeSmall);
 		textView.setCompoundDrawables(drawableForks, null, null, null);
 		int offset = getContext().getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);

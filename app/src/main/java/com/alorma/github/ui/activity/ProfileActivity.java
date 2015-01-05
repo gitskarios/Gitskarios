@@ -34,6 +34,7 @@ import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
@@ -93,8 +94,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
 
-		avatarColor = getResources().getColor(R.color.icons);
-		avatarSecondaryColor = getResources().getColor(R.color.primary);
+		avatarColor = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
+		avatarSecondaryColor = AttributesUtils.getPrimaryColor(this, R.style.AppTheme_Repos);
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
@@ -302,7 +303,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (following) {
 			fabDrawable.color(avatarColor);
 		} else {
-			fabDrawable.colorRes(R.color.icons);
+			fabDrawable.color(AttributesUtils.getIconsColor(this, R.style.AppTheme_Repos));
 		}
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);

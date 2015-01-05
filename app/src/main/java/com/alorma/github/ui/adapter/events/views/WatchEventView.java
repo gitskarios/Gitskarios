@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
@@ -51,7 +52,7 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
 		if (eventPayload.action.equals("started")) {
-			drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_eye).colorRes(R.color.icons);
+			drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_eye).color(AttributesUtils.getIconsColor(getContext(), R.style.AppTheme_Repos));
 		}
 
 		if (drawable != null) {

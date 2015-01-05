@@ -6,7 +6,7 @@
           android:gravity="center_vertical"
           android:paddingLeft="24dp"
           android:id="@android:id/text1"
-          android:textColor="@color/secondary_text"
+          android:textColor="?attr/gitskarios_secondary_text"
           android:textSize="@dimen/textSizeSmall"
           android:textStyle="bold"
           android:background="@color/gray_github_light_selected"/>

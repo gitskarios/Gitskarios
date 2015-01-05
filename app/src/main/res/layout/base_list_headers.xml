@@ -52,8 +52,7 @@
             android:layout_below="@id/emptyIcon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/gapMedium"
-            android:textSize="@dimen/textSizeLarge"
-            android:textColor="@color/gray_github_medium"/>
+            android:textSize="@dimen/textSizeLarge"/>
     </RelativeLayout>
 
 </FrameLayout>

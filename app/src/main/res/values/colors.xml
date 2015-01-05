@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="gray_github_light">#f3f3f3</color>
+    <color name="gray_github_medium">#ffb9b9b9</color>
     <color name="gray_github_light_selected">#ffdedede</color>
-    <color name="gray_github_dark">@color/primary_text</color>
-    <color name="gray_github_medium">@color/secondary_text</color>
-    <color name="gray_divider">@color/divider</color>
+    
     <color name="white">#FFFFFF</color>
     <color name="issue_state_open">#54A141</color>
     <color name="issue_state_close">#ffd67a4c</color>
     <color name="defaultEnchancedColor">#00ff0000</color>
-
-    <integer-array name="colorsSmoothWhite">
-        <item>@color/gray_github_light</item>
-        <item>@color/gray_github_medium</item>
-        <item>@color/gray_github_dark</item>
-    </integer-array>
-
-    <color name="lDialogPositve">@color/accent</color>
-    <color name="lDialogNegative">@color/accent</color>
 
     <color name="privateRepo">#a1882b</color>
 
@@ -25,6 +15,6 @@
 
     <color name="redError">#ffff1a29</color>
 
-    <string name="lDialogPositve">#ffffffff</string>
+    <string name="lDialogPositive">#ffffffff</string>
     <string name="lDialogNegative">#ff808080</string>
 </resources>

@@ -24,7 +24,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/issue_discussion_header_fold"
-            android:background="@color/primary"
+            android:background="?attr/colorPrimary"
             android:id="@id/top">
 
             <TextView

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.CreatedEventPayload;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
@@ -50,7 +51,7 @@ public class CreatedEventView extends GithubEventView<CreatedEventPayload> {
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
 		if (eventPayload.ref_type.equals("repository")) {
-			drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo).colorRes(R.color.icons);
+			drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo).color(AttributesUtils.getIconsColor(getContext(), R.style.AppTheme_Repos));
 		}
 
 		if (drawable != null) {

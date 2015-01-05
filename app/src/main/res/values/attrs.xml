@@ -50,8 +50,12 @@
         <attr name="addButtonPlusIconColor" format="color"/>
     </declare-styleable>
 
-    <declare-styleable name="TabTitle">
-        <attr format="reference|color" name="tabBarColor"/>
+    <declare-styleable name="colors">
+        <attr name="gitskarios_divider" format="color" />
+        <attr name="gitskarios_primary_light" format="color" />
+        <attr name="gitskarios_primary_text" format="color" />
+        <attr name="gitskarios_secondary_text" format="color" />
+        <attr name="gitskarios_icons" format="color" />
     </declare-styleable>
 
 </resources>

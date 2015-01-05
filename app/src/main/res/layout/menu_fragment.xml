@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:padding="@dimen/actions_padding"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:id="@id/user">
 
         <com.alorma.github.ui.view.CircularImageView

@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.base;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.listeners.RefreshListener;
+import com.alorma.github.utils.AttributesUtils;
 
 /**
  * Created by Bernat on 05/08/2014.
@@ -31,10 +33,13 @@ public abstract class LoadingListFragment extends BaseListFragment implements Sw
 		super.onViewCreated(view, savedInstanceState);
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
+		int accent = AttributesUtils.getAttributeId(getActivity(), R.style.AppTheme_Repos, R.attr.colorAccent);
+		int primaryDark = AttributesUtils.getAttributeId(getActivity(), R.style.AppTheme_Repos, R.attr.colorPrimaryDark);
+
 		if (swipe != null) {
-			swipe.setColorSchemeResources(R.color.accent,
+			swipe.setColorSchemeResources(accent,
 					R.color.gray_github_light,
-					R.color.primary,
+					primaryDark,
 					R.color.gray_github_light);
 			swipe.setOnRefreshListener(this);
 		}

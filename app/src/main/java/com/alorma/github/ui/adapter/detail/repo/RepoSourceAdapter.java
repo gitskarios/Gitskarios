@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
@@ -54,7 +55,7 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
 		if (iconDrawable != null) {
 			iconDrawable.sizeDp(GithubIconDrawable.ANDROID_ACTIONBAR_ICON_SIZE_DP);
-			iconDrawable.colorRes(R.color.primary_light);
+			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext(), R.style.AppTheme_Repos));
 
 			image.setImageDrawable(iconDrawable);
 		}

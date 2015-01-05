@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.utils.AttributesUtils;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nineoldandroids.animation.IntEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
@@ -102,7 +103,8 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	private void createFabView() {
 		fabView = (FloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab_white, this, false);
 
-		fabView.setColorNormal(getResources().getColor(R.color.accent));
+		int accent = AttributesUtils.getAttributeId(getContext(), R.style.AppTheme_Repos, R.attr.colorAccent);
+		fabView.setColorNormal(getResources().getColor(accent));
 
 		fabView.setOnClickListener(fabClickListener);
 		setFabTag();
