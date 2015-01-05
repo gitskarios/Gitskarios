@@ -258,8 +258,8 @@ public class CircularImageView extends ImageView {
 
 	@Override
 	public void invalidate() {
-		super.invalidate();
 		image = drawableToBitmap(getDrawable());
+		super.invalidate();
 	}
 
 	@Override
