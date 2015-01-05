@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 
 import com.alorma.github.R;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -20,12 +22,14 @@ public class UniversalImageLoaderUtils {
 	}
 
 	public static DisplayImageOptions getDisplayImageOptions(Context context) {
-		DisplayImageOptions options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(new ColorDrawable(context.getResources().getColor(R.color.accent)))
+		GithubIconDrawable drawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_octoface);
+		drawable.colorRes(R.color.secondary_text);
+		drawable.sizeDp(24);
+		return new DisplayImageOptions.Builder()
+				.showImageOnLoading(drawable)
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
 				.build();
-		return options;
 
 	}
 }

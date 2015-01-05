@@ -10,7 +10,10 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.danlew.android.joda.DateUtils;
@@ -55,33 +58,49 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 		Commit commit = getItem(position);
 
 		if (commit.commit != null) {
+			User author = commit.author;
 			title.setText(commit.commit.message);
+			if (author == null) {
+				author = commit.commit.author;
+			}
+
+			if (author != null) {
+				if (author.avatar_url != null) {
+					ImageLoader.getInstance().displayImage(author.avatar_url, avatar);
+				} else {
+					GithubIconDrawable iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_octoface);
+					iconDrawable.colorRes(R.color.secondary_text);
+					iconDrawable.sizeDp(36);
+					iconDrawable.setAlpha(128);
+					avatar.setImageDrawable(iconDrawable);
+				}
+			}
+
+			if (commit.commit.author != null && commit.commit.author.date != null) {
+				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				DateTime dt = formatter.parseDateTime(commit.commit.author.date);
+
+				Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+
+				String name = "";
+				if (commit.author != null && commit.author.login != null) {
+					name = commit.author.login;
+				} else if (commit.commit.author != null && commit.commit.author.name != null) {
+					name = commit.commit.author.name;
+				}
+
+				String userDate = getContext().getResources().getString(R.string.commit_authored_at, name, days.getDays());
+				user.setText(userDate);
+				
+			} else if (commit.author != null) {
+				user.setText(commit.author.login);
+			}
 		}
+
 		if (commit.sha != null) {
 			sha.setText(commit.sha.substring(0, 8));
 		}
 
-		if (commit.author != null) {
-			if (commit.author.avatar_url != null) {
-				ImageLoader.getInstance().displayImage(commit.author.avatar_url, avatar);
-			} else {
-				avatar.setImageDrawable(new ColorDrawable(getContext().getResources().getColor(R.color.accent)));
-			}
-		}
-
-		if (commit.author != null && commit.commit.author != null && commit.commit.author.date != null) {
-			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-			DateTime dt = formatter.parseDateTime(commit.commit.author.date);
-
-			Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
-
-			if (commit.author != null && commit.author.login != null) {
-				String userDate = getContext().getResources().getString(R.string.commit_authored_at, commit.author.login, days.getDays());
-				user.setText(userDate);
-			}
-		} else if (commit.author != null) {
-			user.setText(commit.author.login);
-		}
 
 		return v;
 	}
@@ -92,7 +111,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 		TextView tv = (TextView) v.findViewById(android.R.id.text1);
 
 		Commit commit = getItem(i);
-		
+
 		if (commit.commit != null && commit.commit.author != null && commit.commit.author.date != null) {
 			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 			DateTime dt = formatter.parseDateTime(commit.commit.author.date);
@@ -100,7 +119,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 			String text = dt.toString("dd MMM yyyy");
 
 			tv.setText(text);
-		} 
+		}
 		return tv;
 	}
 
