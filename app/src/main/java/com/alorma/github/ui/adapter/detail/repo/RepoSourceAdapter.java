@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.detail.repo;
 
 import android.content.Context;
+import android.support.annotation.StyleRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,12 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
 	private final LayoutInflater inflater;
 	private Context context;
+	private int style;
 
-	public RepoSourceAdapter(Context context, List<Content> objects) {
+	public RepoSourceAdapter(Context context, List<Content> objects, @StyleRes int style) {
 		super(context, 0, objects);
 		this.context = context;
+		this.style = style;
 		inflater = LayoutInflater.from(context);
 	}
 
@@ -55,7 +58,7 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
 		if (iconDrawable != null) {
 			iconDrawable.sizeDp(GithubIconDrawable.ANDROID_ACTIONBAR_ICON_SIZE_DP);
-			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext(), R.style.AppTheme_Repos));
+			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext(), style));
 
 			image.setImageDrawable(iconDrawable);
 		}

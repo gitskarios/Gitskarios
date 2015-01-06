@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -109,6 +110,8 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 			try {
 				ListContents currentContents = treeContent.get(currentSelectedContent);
 
+				Context context = getActivity();
+				int style = R.style.AppTheme_Repos;
 				if (currentContents == null) {
 					int size = contents.size() + (currentSelectedContent.parent != null ? 1 : 0);
 					currentContents = new ListContents(size);
@@ -122,9 +125,9 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 					Collections.sort(contents, ListContents.SORT.TYPE);
 					currentContents.addAll(contents);
 
-					contentAdapter = new RepoSourceAdapter(getActivity(), currentContents);
+					contentAdapter = new RepoSourceAdapter(context, currentContents, style);
 				} else {
-					contentAdapter = new RepoSourceAdapter(getActivity(), contents);
+					contentAdapter = new RepoSourceAdapter(context, contents, style);
 				}
 
 				setListAdapter(contentAdapter);
