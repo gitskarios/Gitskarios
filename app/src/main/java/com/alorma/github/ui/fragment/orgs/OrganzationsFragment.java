@@ -52,14 +52,18 @@ public class OrganzationsFragment extends PaginatedListFragment<ListOrganization
 
 	@Override
 	protected void onResponse(ListOrganizations organizations, boolean refreshing) {
-		if (adapter == null) {
-			setUpList();
+		getListView().setDivider(null);
+		if (getListAdapter() != null) {
+			adapter.addAll(organizations, paging);
+		} else if (adapter == null) {
+			setUpList(organizations);
+		} else {
+			setListAdapter(adapter);
 		}
-		adapter.addAll(organizations, paging);
 	}
 
-	private void setUpList() {
-		adapter = new OrganizationsAdapter(getActivity(), new ArrayList<Organization>());
+	private void setUpList(ListOrganizations organizations) {
+		adapter = new OrganizationsAdapter(getActivity(), organizations);
 		setListAdapter(adapter);
 		getListView().setDivider(null);
 	}
