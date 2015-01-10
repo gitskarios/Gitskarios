@@ -39,6 +39,7 @@ import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
-	private ShareActionProvider mShareActionProvider;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -214,20 +214,20 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		super.onPrepareOptionsMenu(menu);
 		MenuItem item = menu.findItem(R.id.share_repo);
 
-		mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-
-		if (currentRepo != null) {
-			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
-			intent.putExtra(Intent.EXTRA_TEXT, currentRepo.svn_url);
-
-			mShareActionProvider.setShareIntent(intent);
-		}
+		item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+		
 		return true;
 	}
 
+	private Intent getShareIntent() {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
+		intent.putExtra(Intent.EXTRA_TEXT, currentRepo.svn_url);
+		return intent;
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
@@ -242,6 +242,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(this, owner, name, currentRepo.parent.description);
 				startActivity(launcherActivity);
 			}
+		} else if (item.getItemId() == R.id.share_repo) {
 			Intent intent = getShareIntent();
 			startActivity(intent);
 		}

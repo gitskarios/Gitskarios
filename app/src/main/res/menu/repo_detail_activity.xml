@@ -6,8 +6,7 @@
     <item
         android:id="@+id/share_repo"
         android:title="@string/action_share_repo"
-        app:showAsAction="always"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:title="@string/show_parent"
