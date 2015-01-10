@@ -2,8 +2,4 @@
 <resources>
 
     <string name="app_name">Gitskarios DEV</string>
-
-    <string name="client_id">60f30c819ae20252ab74</string>
-    <string name="client_secret">c46258762edf73a3ef2b695545950ec962c171ec</string>
-    <string name="client_callback">http://gitsksarios.com/oauth</string>
 </resources>
