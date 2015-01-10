@@ -132,5 +132,6 @@
     <string name="collaborators_data">%d collaborators</string>
     <string name="repos_data_profile">Using %1$d of %2$d private repositories.</string>
     <string name="about_title">About</string>
+    <string name="pull_requests_fragment_title">Pull requests</string>
 
 </resources>

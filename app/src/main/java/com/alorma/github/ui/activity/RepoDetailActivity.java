@@ -35,6 +35,7 @@ import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
+import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.githubicons.GithubIconDrawable;
@@ -65,9 +66,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private MarkdownFragment markdownFragment;
 	private SourceListFragment sourceListFragment;
 	private IssuesListFragment issuesListFragment;
+	private CommitsListFragment commitsListFragment;
+	private PullRequestsListFragment pullRequestsListFragment;
+	
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
-	private CommitsListFragment commitsListFragment;
 	private ShareActionProvider mShareActionProvider;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
@@ -120,12 +123,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null, this);
 			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			pullRequestsListFragment = PullRequestsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 
 			listFragments = new ArrayList<>();
 			listFragments.add(markdownFragment);
 			listFragments.add(sourceListFragment);
-			listFragments.add(issuesListFragment);
 			listFragments.add(commitsListFragment);
+			listFragments.add(issuesListFragment);
+			listFragments.add(pullRequestsListFragment);
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 			slidingTabLayout.setViewPager(viewPager);
@@ -162,9 +167,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				case 1:
 					return getString(R.string.files_fragment_title);
 				case 2:
-					return getString(R.string.issues_fragment_title);
-				case 3:
 					return getString(R.string.commits_fragment_title);
+				case 3:
+					return getString(R.string.issues_fragment_title);
+				case 4:
+					return getString(R.string.pull_requests_fragment_title);
 			}
 			return "";
 		}
@@ -235,6 +242,8 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(this, owner, name, currentRepo.parent.description);
 				startActivity(launcherActivity);
 			}
+			Intent intent = getShareIntent();
+			startActivity(intent);
 		}
 
 		return false;
