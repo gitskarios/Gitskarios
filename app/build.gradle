@@ -37,9 +37,15 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "CLIENT_ID", "\"" + DEV_ID + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + DEV_SECRET + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + DEV_CALLBACK + "\""
             applicationIdSuffix ".debug"
         }
         release {
+            buildConfigField "String", "CLIENT_ID", "\"" + PRO_ID + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + PRO_SECRET + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + PRO_CALLBACK + "\""
             minifyEnabled false
             signingConfig signingConfigs.playStore
         }
@@ -66,7 +72,7 @@ dependencies {
     //Optional for built-in cards
     compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.0.0'
     compile 'com.pnikosis:materialish-progress:1.0'
-    
+
     compile 'net.danlew:android.joda:2.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
     compile('de.psdev.licensesdialog:licensesdialog:1.6.0') {
