@@ -34,7 +34,7 @@ public class PullRequestDetailActivity extends BackActivity implements View.OnCl
 
 		bundle.putParcelable(ISSUE_INFO, issueInfo);
 
-		Intent intent = new Intent(context, IssueDetailActivity.class);
+		Intent intent = new Intent(context, PullRequestDetailActivity.class);
 		intent.putExtras(bundle);
 		return intent;
 	}
