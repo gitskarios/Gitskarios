@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment.repos;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
@@ -23,18 +24,6 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 	protected ReposAdapter reposAdapter;
 	private GitskariosSettings settings;
 
-	protected void setUpList() {
-
-		reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
-
-		getListView().setDivider(null);
-
-		setListAdapter(reposAdapter);
-
-		settings = new GitskariosSettings(getActivity());
-		settings.registerListener(this);
-	}
-
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -51,12 +40,25 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 
 	@Override
 	protected void onResponse(ListRepos repos, boolean refreshing) {
+		getListView().setDivider(null);
 		if (repos.size() > 0) {
-			if (reposAdapter == null) {
-				setUpList();
+			if (getListAdapter() != null) {
+				reposAdapter.addAll(repos, paging);
+			} else if (reposAdapter == null) {
+				setUpList(repos);
+			} else {
+				setListAdapter(reposAdapter);
 			}
-			reposAdapter.addAll(repos, paging);
 		}
+	}
+
+	protected void setUpList(ListRepos repos) {
+		settings = new GitskariosSettings(getActivity());
+		settings.registerListener(this);
+
+		reposAdapter = new ReposAdapter(getActivity(), repos);
+
+		setListAdapter(reposAdapter);
 	}
 
 	@Override
