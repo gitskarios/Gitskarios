@@ -39,6 +39,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 
 	@Override
 	protected void onResponse(ListEvents githubEvents, boolean refreshing) {
+		getListView().setDivider(null);
 		if (githubEvents != null && githubEvents.size() > 0) {
 
 			if (eventsAdapter == null || refreshing) {
@@ -51,6 +52,10 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 					eventsAdapter.setLazyLoading(false);
 					eventsAdapter.addAll(githubEvents);
 				}
+			}
+			
+			if (eventsAdapter != null) {
+				setListAdapter(eventsAdapter);
 			}
 		}
 	}
