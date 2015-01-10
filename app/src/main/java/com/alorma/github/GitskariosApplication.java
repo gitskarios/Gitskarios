@@ -36,9 +36,9 @@ public class GitskariosApplication extends Application {
 					PackageManager.DONT_KILL_APP);
 		}
 
-		ApiConstants.CLIENT_ID = getString(R.string.client_id);
-		ApiConstants.CLIENT_SECRET = getString(R.string.client_secret);
-		ApiConstants.CLIENT_CALLBACK = getString(R.string.client_callback);
+		ApiConstants.CLIENT_ID = BuildConfig.CLIENT_ID;
+		ApiConstants.CLIENT_SECRET = BuildConfig.CLIENT_SECRET;
+		ApiConstants.CLIENT_CALLBACK = BuildConfig.CLIENT_CALLBACK;
 
 		analytics = GoogleAnalytics.getInstance(this);
 

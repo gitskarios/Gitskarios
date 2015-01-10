@@ -12,10 +12,6 @@ local.properties
 # Gradle generated files
 .gradle/
 
-# Signing files
-.signing/
-gradle.properties
-
 # User-specific configurations
 .idea/*
 *.iml
