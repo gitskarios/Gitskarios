@@ -36,8 +36,8 @@
     <string name="source">Source</string>
     <string name="issues">Issues</string>
     <string name="info">info</string>
-    <string name="no_followers">There isn\'t any follower</string>
-    <string name="no_followings">There isn\'t any following you</string>
+    <string name="no_followers">There aren\'t any followers</string>
+    <string name="no_followings">There isn\'t anyone following you</string>
     <string name="no_repositories">No repositories found</string>
     <string name="no_watched_repositories">No watched repositories found</string>
     <string name="no_starred_repositories">No starred repositories found</string>
@@ -77,7 +77,7 @@
     <string name="row_private_repo">PRIVATE</string>
     <string name="tab_user_parent">User</string>
     <string name="menu_organizations">Organizations</string>
-    <string name="no_organizations">There isn\'t organizations</string>
+    <string name="no_organizations">There aren\'t any organizations</string>
     <string name="title_activity_comment_issue">CommentIssueActivity</string>
     <string name="add_comment">Add comment</string>
     <string name="no_commits">No commits here</string>
