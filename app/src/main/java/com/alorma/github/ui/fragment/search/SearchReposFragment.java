@@ -34,7 +34,6 @@ public class SearchReposFragment extends BaseReposListFragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		getListView().setDivider(null);
 		view.setBackgroundColor(Color.WHITE);
 
 		String query = getArguments().getString(SearchManager.QUERY);
