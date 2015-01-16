@@ -134,5 +134,7 @@
     <string name="about_title">About</string>
     <string name="pull_requests_fragment_title">Pull requests</string>
     <string name="no_prs_found">No pull requests found</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search</string>
 
 </resources>

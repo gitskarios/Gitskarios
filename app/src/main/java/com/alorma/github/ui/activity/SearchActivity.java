@@ -21,14 +21,14 @@ import com.alorma.github.ui.fragment.search.SearchReposFragment;
 /**
  * Created by Bernat on 08/08/2014.
  */
-public class SearchReposActivity extends BackActivity implements SearchReposFragment.OnSearchReposListener, View.OnClickListener, TextView.OnEditorActionListener, TextWatcher {
+public class SearchActivity extends BackActivity implements SearchReposFragment.OnSearchReposListener, View.OnClickListener, TextView.OnEditorActionListener, TextWatcher {
 
 	private EditText searchEdit;
 	private View searchIcon;
 	private View cleanIcon;
 
 	public static Intent createLauncherIntent(Context context) {
-		return new Intent(context, SearchReposActivity.class);
+		return new Intent(context, SearchActivity.class);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class SearchReposActivity extends BackActivity implements SearchReposFrag
 
 	private void onQuery(String query) {
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		SearchReposFragment fragment = SearchReposFragment.newInstance();
+		SearchReposFragment fragment = SearchReposFragment.newInstance(query);
 		fragment.setQuery(query);
 		fragment.setOnSearchReposListener(this);
 		ft.replace(R.id.content, fragment);
