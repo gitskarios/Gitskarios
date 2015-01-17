@@ -68,7 +68,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private SourceListFragment sourceListFragment;
 	private IssuesListFragment issuesListFragment;
 	private CommitsListFragment commitsListFragment;
-	private PullRequestsListFragment pullRequestsListFragment;
+	//private PullRequestsListFragment pullRequestsListFragment;
 	
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
@@ -123,14 +123,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null, this);
 			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
-			pullRequestsListFragment = PullRequestsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			//pullRequestsListFragment = PullRequestsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 
 			listFragments = new ArrayList<>();
 			listFragments.add(markdownFragment);
 			listFragments.add(sourceListFragment);
 			listFragments.add(commitsListFragment);
 			listFragments.add(issuesListFragment);
-			listFragments.add(pullRequestsListFragment);
+			//listFragments.add(pullRequestsListFragment);
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 			slidingTabLayout.setViewPager(viewPager);
