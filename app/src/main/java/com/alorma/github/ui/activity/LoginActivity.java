@@ -21,6 +21,7 @@ import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.crashlytics.android.Crashlytics;
 
+import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -29,7 +30,7 @@ public class LoginActivity extends Activity {
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
 	private StoreCredentials credentials;
-	private ProgressDialog progressDialog;
+	private SpotsDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +83,7 @@ public class LoginActivity extends Activity {
 
 	private void showDialog() {
 		try {
-			progressDialog = new ProgressDialog(this);
-			progressDialog.setIndeterminate(true);
-			progressDialog.setMessage(getString(R.string.acces_token_request));
+			progressDialog = new SpotsDialog(this, R.style.SpotDialog);
 			progressDialog.setCancelable(false);
 			progressDialog.setCanceledOnTouchOutside(false);
 			progressDialog.show();
@@ -148,7 +147,7 @@ public class LoginActivity extends Activity {
 		public void onResponseOk(Token token, Response r) {
 			if (token.access_token != null) {
 				if (progressDialog != null) {
-					progressDialog.hide();
+					progressDialog.dismiss();
 				}
 				endAccess(token.access_token);
 			} else if (token.error != null) {
