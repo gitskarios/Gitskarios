@@ -58,4 +58,11 @@
         <item name="android:textSize">15sp</item>
     </style>
     
+    <style name="SpotDialog" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">@string/acces_token_request</item>
+        <item name="DialogSpotColor">?colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+    </style>
+    
 </resources>

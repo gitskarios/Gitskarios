@@ -79,4 +79,5 @@ dependencies {
         exclude module: 'support-v4'
     }
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.github.d-max:spots-dialog:0.1'
 }
