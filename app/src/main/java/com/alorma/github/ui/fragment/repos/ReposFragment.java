@@ -49,9 +49,7 @@ public class ReposFragment extends BaseReposListFragment {
 	@Override
 	protected void executeRequest() {
 		super.executeRequest();
-		BaseReposClient client;
-		client = new UserReposClient(getActivity(), username);
-
+		BaseReposClient client = new UserReposClient(getActivity(), username);
 		client.setOnResultCallback(this);
 		client.execute();
 	}

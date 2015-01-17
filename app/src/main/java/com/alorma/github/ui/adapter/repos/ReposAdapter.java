@@ -25,7 +25,6 @@ import java.util.Locale;
 public class ReposAdapter extends ArrayAdapter<Repo> {
 
 	private final LayoutInflater mInflater;
-	private final int accentColor;
 	private final int primaryDark;
 	private final int secondaryTextColor;
 
@@ -33,7 +32,6 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
 		super(context, 0, 0, repos);
 		this.mInflater = LayoutInflater.from(context);
 
-		this.accentColor = AttributesUtils.getAccentColor(context, R.style.AppTheme_Repos);
 		this.primaryDark = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
 		this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
 	}

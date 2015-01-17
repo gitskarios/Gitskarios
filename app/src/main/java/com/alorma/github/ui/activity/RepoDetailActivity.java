@@ -35,9 +35,11 @@ import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
+import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +67,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private MarkdownFragment markdownFragment;
 	private SourceListFragment sourceListFragment;
 	private IssuesListFragment issuesListFragment;
+	private CommitsListFragment commitsListFragment;
+	private PullRequestsListFragment pullRequestsListFragment;
+	
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
-	private CommitsListFragment commitsListFragment;
-	private ShareActionProvider mShareActionProvider;
 
 	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
 		Bundle bundle = new Bundle();
@@ -120,12 +123,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null, this);
 			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			pullRequestsListFragment = PullRequestsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 
 			listFragments = new ArrayList<>();
 			listFragments.add(markdownFragment);
 			listFragments.add(sourceListFragment);
-			listFragments.add(issuesListFragment);
 			listFragments.add(commitsListFragment);
+			listFragments.add(issuesListFragment);
+			listFragments.add(pullRequestsListFragment);
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 			slidingTabLayout.setViewPager(viewPager);
@@ -162,9 +167,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				case 1:
 					return getString(R.string.files_fragment_title);
 				case 2:
-					return getString(R.string.issues_fragment_title);
-				case 3:
 					return getString(R.string.commits_fragment_title);
+				case 3:
+					return getString(R.string.issues_fragment_title);
+				case 4:
+					return getString(R.string.pull_requests_fragment_title);
 			}
 			return "";
 		}
@@ -207,20 +214,20 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		super.onPrepareOptionsMenu(menu);
 		MenuItem item = menu.findItem(R.id.share_repo);
 
-		mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-
-		if (currentRepo != null) {
-			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
-			intent.putExtra(Intent.EXTRA_TEXT, currentRepo.svn_url);
-
-			mShareActionProvider.setShareIntent(intent);
-		}
+		item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+		
 		return true;
 	}
 
+	private Intent getShareIntent() {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
+		intent.putExtra(Intent.EXTRA_TEXT, currentRepo.svn_url);
+		return intent;
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
@@ -235,6 +242,9 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(this, owner, name, currentRepo.parent.description);
 				startActivity(launcherActivity);
 			}
+		} else if (item.getItemId() == R.id.share_repo) {
+			Intent intent = getShareIntent();
+			startActivity(intent);
 		}
 
 		return false;

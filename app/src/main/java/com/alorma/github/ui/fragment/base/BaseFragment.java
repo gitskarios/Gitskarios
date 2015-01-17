@@ -11,7 +11,7 @@ import com.google.android.gms.analytics.Tracker;
  * Created by Bernat on 12/08/2014.
  */
 public class BaseFragment extends Fragment {
-
+/*
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -25,5 +25,5 @@ public class BaseFragment extends Fragment {
 
 		// Send a screen view.
 		t.send(new HitBuilders.AppViewBuilder().build());
-	}
+	}*/
 }

@@ -40,7 +40,6 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 
 	@Override
 	protected void onResponse(ListRepos repos, boolean refreshing) {
-		getListView().setDivider(null);
 		if (repos.size() > 0) {
 			if (getListAdapter() != null) {
 				reposAdapter.addAll(repos, paging);

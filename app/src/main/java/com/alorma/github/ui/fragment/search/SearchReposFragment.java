@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.search;
 
+import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -7,25 +8,26 @@ import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.bean.dto.response.search.ReposSearch;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 import com.alorma.githubicons.GithubIconify;
-
-import java.util.ArrayList;
 
 /**
  * Created by Bernat on 08/08/2014.
  */
-public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
+public class SearchReposFragment extends BaseReposListFragment {
 
 	private String query = null;
 	private ReposAdapter reposAdapter;
 	private OnSearchReposListener onSearchReposListener;
 
-	public static SearchReposFragment newInstance() {
-		return new SearchReposFragment();
+	public static SearchReposFragment newInstance(String query) {
+		Bundle args = Bundle.EMPTY;
+		args.putString(SearchManager.QUERY, query);
+		SearchReposFragment f = new SearchReposFragment();
+		f.setArguments(args);
+		return f;
 	}
 
 	@Override
@@ -33,6 +35,9 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
 		super.onViewCreated(view, savedInstanceState);
 
 		view.setBackgroundColor(Color.WHITE);
+
+		String query = getArguments().getString(SearchManager.QUERY);
+		setQuery(query);
 	}
 
 	@Override
@@ -52,39 +57,31 @@ public class SearchReposFragment extends PaginatedListFragment<ReposSearch> {
 
 	@Override
 	protected void executeRequest() {
-		if (query != null) {
-			super.executeRequest();
-			RepoSearchClient client = new RepoSearchClient(getActivity(), query);
-			client.setOnResultCallback(this);
-			client.execute();
+		if (getActivity() != null) {
+			if (query != null) {
+				super.executeRequest();
+				RepoSearchClient client = new RepoSearchClient(getActivity(), query);
+				client.setOnResultCallback(this);
+				client.execute();
+			}
 		}
 	}
 
 	@Override
 	protected void executePaginatedRequest(int page) {
-		if (query != null) {
-			super.executePaginatedRequest(page);
-			RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
-			client.setOnResultCallback(this);
-			client.execute();
+		if (getActivity() != null) {
+			if (query != null) {
+				super.executePaginatedRequest(page);
+				RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
+				client.setOnResultCallback(this);
+				client.execute();
+			}
 		}
-	}
-
-	@Override
-	protected void onResponse(ReposSearch reposSearch, boolean refreshing) {
-		if (reposAdapter == null) {
-			reposAdapter = new ReposAdapter(getActivity(), new ArrayList<Repo>());
-			setListAdapter(reposAdapter);
-		}
-
-		reposAdapter.addAll(reposSearch.items);
 	}
 
 	public void setQuery(String query) {
 		this.query = query;
-		if (getActivity() != null && isAdded()) {
-			executeRequest();
-		}
+		executeRequest();
 	}
 
 	@Override
