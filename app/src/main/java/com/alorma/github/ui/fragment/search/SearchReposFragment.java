@@ -19,12 +19,13 @@ import com.alorma.githubicons.GithubIconify;
 public class SearchReposFragment extends BaseReposListFragment {
 
 	private String query = null;
-	private ReposAdapter reposAdapter;
 	private OnSearchReposListener onSearchReposListener;
 
 	public static SearchReposFragment newInstance(String query) {
-		Bundle args = Bundle.EMPTY;
-		args.putString(SearchManager.QUERY, query);
+		Bundle args = new Bundle();
+		if (query != null) {
+			args.putString(SearchManager.QUERY, query);
+		}
 		SearchReposFragment f = new SearchReposFragment();
 		f.setArguments(args);
 		return f;
@@ -36,8 +37,12 @@ public class SearchReposFragment extends BaseReposListFragment {
 
 		view.setBackgroundColor(Color.WHITE);
 
-		String query = getArguments().getString(SearchManager.QUERY);
-		setQuery(query);
+		String query = getArguments().getString(SearchManager.QUERY, null);
+		if (query != null) {
+			setQuery(query);
+		} else {
+			setEmpty();
+		}
 	}
 
 	@Override

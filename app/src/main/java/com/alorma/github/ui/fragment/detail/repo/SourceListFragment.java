@@ -106,7 +106,7 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 	}
 
 	private void displayContent(ListContents contents) {
-		if (contents != null) {
+		if (getActivity() != null && contents != null) {
 			try {
 				ListContents currentContents = treeContent.get(currentSelectedContent);
 
