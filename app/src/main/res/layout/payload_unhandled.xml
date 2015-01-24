@@ -9,7 +9,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_card"
         android:layout_marginLeft="@dimen/gapMedium"
         android:layout_marginRight="@dimen/gapMedium"
         android:layout_marginStart="@dimen/gapMedium"

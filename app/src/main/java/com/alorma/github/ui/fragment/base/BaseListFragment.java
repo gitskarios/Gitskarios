@@ -65,12 +65,10 @@ public abstract class BaseListFragment extends Fragment implements AbsListView.O
 		listView = (ListView) view.findViewById(android.R.id.list);
 
 		if (listView != null) {
-		listView.setOnItemClickListener(this);
+			listView.setOnItemClickListener(this);
 
-		listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
 
-		listView.setDivider(null);
-		listView.setDividerHeight(0);
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 		}
 	}
@@ -193,9 +191,9 @@ public abstract class BaseListFragment extends Fragment implements AbsListView.O
 
 	public ListView getListView() {
 		return listView;
-		
+
 	}
-	
+
 	public void setListAdapter(ListAdapter adapter) {
 		if (listView != null) {
 			listView.setAdapter(adapter);

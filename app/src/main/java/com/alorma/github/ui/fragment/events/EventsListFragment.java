@@ -29,17 +29,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
-		if (getListView() != null) {
-			getListView().setDivider(null);
-		}
-	}
-
-	@Override
 	protected void onResponse(ListEvents githubEvents, boolean refreshing) {
-		getListView().setDivider(null);
 		if (githubEvents != null && githubEvents.size() > 0) {
 
 			if (eventsAdapter == null || refreshing) {
