@@ -57,7 +57,7 @@ public class SearchActivity extends BackActivity implements SearchReposFragment.
 
 	@Override
 	public void onRepoItemSelected(Repo repo) {
-		Intent intent = RepoDetailActivity.createLauncherActivity(this, repo.owner.login, repo.name, repo.description);
+		Intent intent = RepoDetailActivity.createLauncherIntent(this, repo.owner.login, repo.name);
 		startActivity(intent);
 	}
 

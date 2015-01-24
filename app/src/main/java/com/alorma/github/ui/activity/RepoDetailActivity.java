@@ -8,9 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +18,6 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
@@ -35,11 +32,8 @@ import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
-import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +49,8 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
 	public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
-	public static final String DESCRIPTION = "DESCRIPTION";
 
 	private Uri shareUri;
-	private String description;
 	private RepoInfo repoInfo;
 	private boolean fromIntentFilter;
 	private boolean repoStarred;
@@ -73,11 +65,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
 
-	public static Intent createLauncherActivity(Context context, String owner, String repo, String description) {
+	public static Intent createLauncherIntent(Context context, String owner, String repo) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
-		bundle.putString(DESCRIPTION, description);
 		bundle.putBoolean(FROM_INTENT_FILTER, false);
 
 		Intent intent = new Intent(context, RepoDetailActivity.class);
@@ -85,11 +76,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 		return intent;
 	}
 
-	public static Intent createIntentFilterLauncherActivity(Context context, String owner, String repo, String description) {
+	public static Intent createIntentFilterLauncherIntent(Context context, String owner, String repo) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
-		bundle.putString(DESCRIPTION, description);
 		bundle.putBoolean(FROM_INTENT_FILTER, true);
 
 		Intent intent = new Intent(context, RepoDetailActivity.class);
@@ -109,7 +99,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			setTitle(repoInfo.repo);
 
-			description = getIntent().getExtras().getString(DESCRIPTION);
 			fromIntentFilter = getIntent().getExtras().getBoolean(FROM_INTENT_FILTER);
 
 			SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
@@ -239,7 +228,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				String owner = split[0];
 				String name = split[1];
 
-				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(this, owner, name, currentRepo.parent.description);
+				Intent launcherActivity = RepoDetailActivity.createLauncherIntent(this, owner, name);
 				startActivity(launcherActivity);
 			}
 		} else if (item.getItemId() == R.id.share_repo) {

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
@@ -52,7 +53,7 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 
 		comment.setText(Html.fromHtml(eventPayload.comment.body));
 
-		GithubIconDrawable left = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_comment_discussion);
+		GithubIconDrawable left = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_comment_discussion).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
 
 		TextView action = (TextView) findViewById(R.id.action);
 		action.setCompoundDrawables(left, null, null, null);
