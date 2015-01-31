@@ -16,6 +16,7 @@
         <item name="gitskarios_primary_light">@color/repos_primary_light</item>
         <item name="gitskarios_icons">@color/repos_icons</item>
     </style>
+    
     <style name="AppTheme.Gists">
         <item name="colorPrimary">@color/gists_primary</item>
         <item name="colorPrimaryDark">@color/gists_primary_dark</item>

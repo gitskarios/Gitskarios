@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.Repos">
+        <item name="colorPrimary">@color/repos_primary</item>
+        <item name="colorPrimaryDark">@color/repos_primary_dark</item>
+        <item name="colorAccent">@color/repos_accent</item>
+        <item name="gitskarios_divider">@color/repos_divider</item>
+        <item name="gitskarios_primary_text">@color/repos_primary_text</item>
+        <item name="gitskarios_secondary_text">@color/repos_secondary_text</item>
+        <item name="gitskarios_primary_light">@color/repos_primary_light</item>
+        <item name="gitskarios_icons">@color/repos_icons</item>
+        <item name="android:navigationBarColor">@color/repos_primary</item>
+    </style>
+
+    <style name="AppTheme.Gists">
+        <item name="colorPrimary">@color/gists_primary</item>
+        <item name="colorPrimaryDark">@color/gists_primary_dark</item>
+        <item name="colorAccent">@color/gists_accent</item>
+        <item name="gitskarios_divider">@color/gists_divider</item>
+        <item name="gitskarios_primary_text">@color/gists_primary_text</item>
+        <item name="gitskarios_secondary_text">@color/gists_secondary_text</item>
+        <item name="gitskarios_primary_light">@color/gists_primary_light</item>
+        <item name="gitskarios_icons">@color/gists_icons</item>
+        <item name="android:navigationBarColor">@color/gists_primary</item>
+    </style>
+</resources>
