@@ -29,7 +29,7 @@ import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
-import com.alorma.github.ui.fragment.detail.repo.MarkdownFragment;
+import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -56,7 +56,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	private boolean repoStarred;
 	private boolean repoWatched;
 	private Repo currentRepo;
-	private MarkdownFragment markdownFragment;
+	private ReadmeFragment readmeFragment;
 	private SourceListFragment sourceListFragment;
 	private IssuesListFragment issuesListFragment;
 	private CommitsListFragment commitsListFragment;
@@ -108,14 +108,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			viewPager = (ViewPager) findViewById(R.id.pager);
 
-			markdownFragment = MarkdownFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			readmeFragment = ReadmeFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null, this);
 			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 			//pullRequestsListFragment = PullRequestsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 
 			listFragments = new ArrayList<>();
-			listFragments.add(markdownFragment);
+			listFragments.add(readmeFragment);
 			listFragments.add(sourceListFragment);
 			listFragments.add(commitsListFragment);
 			listFragments.add(issuesListFragment);

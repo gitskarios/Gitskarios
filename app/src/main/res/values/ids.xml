@@ -17,4 +17,5 @@
     <item name="scrollable" type="id">scroll</item>
     <item name="fabLayout" type="id">fabLayout</item>
     <item name="action_user_star" type="id">action_user_star</item>
+    <item name="action_repo_star" type="id">action_repo_star</item>
 </resources>

@@ -2,10 +2,14 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -19,13 +23,17 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.utils.AttributesUtils;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class MarkdownFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider {
+public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -35,12 +43,12 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 	private String owner;
 	private String repo;
 
-	public static MarkdownFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
+	public static ReadmeFragment newInstance(String owner, String repo, RefreshListener refreshListener) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
 
-		MarkdownFragment f = new MarkdownFragment();
+		ReadmeFragment f = new ReadmeFragment();
 		f.setRefreshListener(refreshListener);
 		f.setArguments(bundle);
 		return f;
@@ -49,7 +57,8 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return new WebView(getActivity());
+		View v = inflater.inflate(R.layout.readme_fragment, null);
+		return v;
 	}
 
 	@Override
@@ -60,7 +69,7 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 			owner = getArguments().getString(OWNER);
 			repo = getArguments().getString(REPO);
 
-			webview = (WebView) view;
+			webview = (WebView) view.findViewById(R.id.webContainer);
 			webview.setPadding(0, 24, 0, 0);
 			webview.getSettings().setJavaScriptEnabled(true);
 			webview.setWebViewClient(new WebViewCustomClient());
@@ -78,6 +87,26 @@ public class MarkdownFragment extends BaseFragment implements BaseClient.OnResul
 			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
 			repoMarkdownClient.setCallback(this);
 			repoMarkdownClient.execute();
+
+			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
+
+			Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+			Menu menu = toolbar.getMenu();
+
+			menu.add(0, R.id.action_repo_star, 0, R.string.menu_star);
+
+			MenuItem item = menu.findItem(R.id.action_repo_star);
+			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			
+			GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_star);
+			drawable.setStyle(Paint.Style.FILL);
+
+			drawable.color(color);
+
+			drawable.actionBarSize();
+			
+			item.setIcon(drawable);
 		}
 	}
 
