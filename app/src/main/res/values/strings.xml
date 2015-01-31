@@ -138,5 +138,6 @@
     <string name="search_hint">Search</string>
     <string name="loading_user">Loading user</string>
     <string name="navigation_people">People</string>
+    <string name="code_download">Source code is waiting for download</string>
 
 </resources>
