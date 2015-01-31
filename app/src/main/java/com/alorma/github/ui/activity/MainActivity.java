@@ -219,7 +219,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 	@Override
 	public void onPeopleSelected() {
-		Intent intent = new Intent(this, PeopleActivity.class);
+		Intent intent = PeopleActivity.launchIntent(this);
 		startActivity(intent);
 	}
 

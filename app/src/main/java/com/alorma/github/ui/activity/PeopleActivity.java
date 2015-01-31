@@ -2,6 +2,8 @@ package com.alorma.github.ui.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -22,6 +24,23 @@ import java.util.List;
  */
 public class PeopleActivity extends BackActivity {
 
+	private static final String USERNAME = "USERNAME";
+	
+	public static Intent launchIntent(Context context) {
+		return new Intent(context, PeopleActivity.class);
+	}
+	
+	public static Intent launchIntent(Context context, String username) {
+		Intent intent = launchIntent(context);
+		
+		Bundle extras = new Bundle();
+		extras.putString(USERNAME, username);
+		
+		intent.putExtras(extras);
+		
+		return intent;
+	}
+	
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
 
@@ -37,14 +56,19 @@ public class PeopleActivity extends BackActivity {
 
 		viewPager = (ViewPager) findViewById(R.id.pager);
 
-		FollowersFragment followersFragment = FollowersFragment.newInstance();
-		FollowingFragment followingFragment =  FollowingFragment.newInstance();
-		OrganzationsFragment organzationsFragment = new OrganzationsFragment();
+		String username = null;
+		if (getIntent().getExtras() != null) {
+			username = getIntent().getExtras().getString(USERNAME);
+		}
+		
+		FollowersFragment followersFragment = FollowersFragment.newInstance(username);
+		FollowingFragment followingFragment =  FollowingFragment.newInstance(username);
+		OrganzationsFragment organzationsFragment = OrganzationsFragment.newInstance(username);
 		
 		listFragments = new ArrayList<>();
 		listFragments.add(followersFragment);
 		listFragments.add(followingFragment);
-		listFragments.add(organzationsFragment);
+		//listFragments.add(organzationsFragment);
 
 		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 		slidingTabLayout.setViewPager(viewPager);
@@ -76,8 +100,8 @@ public class PeopleActivity extends BackActivity {
 					return getString(R.string.navigation_following);
 				case 1:
 					return getString(R.string.navigation_followers);
-				case 2:
-					return getString(R.string.menu_organizations);
+				/*case 2:
+					return getString(R.string.menu_organizations);*/
 			}
 			return "";
 		}

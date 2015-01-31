@@ -17,6 +17,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.adapter.MenuItemsAdapter;
 import com.alorma.github.ui.view.CircularImageView;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconify;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -68,7 +69,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		userLogin.setOnClickListener(this);
 		userName.setOnClickListener(this);
 
-		List<MenuItem> objMenuItems = new ArrayList<MenuItem>();
+		List<MenuItem> objMenuItems = new ArrayList<>();
 
 		objMenuItems.add(new MenuItem(1, 1, R.string.menu_events, GithubIconify.IconValue.octicon_calendar));
 
@@ -77,7 +78,9 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		objMenuItems.add(new MenuItem(1, 2, R.string.navigation_starred_repos, GithubIconify.IconValue.octicon_star));
 		objMenuItems.add(new MenuItem(2, 2, R.string.navigation_watched_repos, GithubIconify.IconValue.octicon_eye));
 
-		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_people, GithubIconify.IconValue.octicon_person));
+		int primarColorPeople = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_People);
+
+		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_people, GithubIconify.IconValue.octicon_person, primarColorPeople));
 
 		objMenuItems.add(new DividerMenuItem());
 		objMenuItems.add(new MenuItem(0, 4, R.string.navigation_settings, null));
