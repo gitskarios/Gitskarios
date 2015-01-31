@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:id="@+id/webContainer"
         android:layout_above="@id/toolbar"/>
-
+<!--
     <android.support.v7.widget.Toolbar
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@id/toolbar"
@@ -21,5 +21,5 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"/>-->
 </RelativeLayout>

@@ -87,7 +87,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
 			repoMarkdownClient.setCallback(this);
 			repoMarkdownClient.execute();
-
+/*
 			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
 
 			Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
@@ -106,7 +106,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
 			drawable.actionBarSize();
 			
-			item.setIcon(drawable);
+			item.setIcon(drawable);*/
 		}
 	}
 
