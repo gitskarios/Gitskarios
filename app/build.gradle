@@ -67,12 +67,7 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
     compile 'com.afollestad:material-dialogs:0.4.6'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
-    //Core
-    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.0'
-    //Optional for built-in cards
-    compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.0.0'
     compile 'com.pnikosis:materialish-progress:1.0'
-
     compile 'net.danlew:android.joda:2.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
     compile('de.psdev.licensesdialog:licensesdialog:1.6.0') {
@@ -80,4 +75,5 @@ dependencies {
     }
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.github.d-max:spots-dialog:0.1'
+    compile 'com.android.support:cardview-v7:21.0.3'
 }

@@ -1,75 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <com.alorma.github.ui.view.FABCenterLayout
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/image"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        android:layout_alignParentTop="true"/>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_alignParentTop="true"
+        android:gravity="bottom"
+        android:elevation="10dp"
+        android:layout_alignBottom="@+id/image"/>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:top_id="@id/top"
-        app:scrollable_id="@id/cardsContainerScroll"
-        android:id="@id/fabLayout">
+        android:id="@+id/cardsContainerScroll"
+        android:layout_below="@+id/image">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:background="?attr/colorPrimary"
-            android:id="@id/top">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/image"
-                android:scaleType="centerCrop"/>
+            <include layout="@layout/card_bio_layout"/>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@id/toolbar"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:minHeight="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            <include layout="@layout/card_github_data_layout"/>
 
-        </FrameLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="184dp"
-            android:clipToPadding="false"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:id="@id/cardsContainerScroll">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:id="@+id/cardsContainer">
-
-                <it.gmariotti.cardslib.library.view.CardViewNative
-                    android:id="@+id/cardBio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/card_external"
-                    app:card_layout_resourceID="@layout/native_card_layout"/>
-
-                <it.gmariotti.cardslib.library.view.CardViewNative
-                    android:id="@+id/cardRepos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/card_external"
-                    app:card_layout_resourceID="@layout/native_card_layout"/>
-                
-                <it.gmariotti.cardslib.library.view.CardViewNative
-                    android:id="@+id/cardPlan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/card_external"
-                    app:card_layout_resourceID="@layout/native_card_layout"/>
-            </LinearLayout>
-        </ScrollView>
-    </com.alorma.github.ui.view.FABCenterLayout>
-</LinearLayout>
+            <include layout="@layout/card_github_plan_layout"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

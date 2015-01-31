@@ -3,7 +3,6 @@ package com.alorma.github.ui.cards.profile;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,35 +14,23 @@ import com.alorma.githubicons.GithubIconify;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-
 /**
  * Created by Bernat on 22/11/2014.
  */
-public class BioCard extends Card implements View.OnClickListener {
+public class BioCard implements View.OnClickListener {
 
 	private BioCardListener bioCardListener;
 
 	private User user;
 	private int avatarColor;
 
-	public BioCard(Context context, User user, int avatarColor) {
-		super(context, R.layout.card_bio_layout);
+	public BioCard(User user, View view, int avatarColor) {
 		this.user = user;
 		this.avatarColor = avatarColor;
-		if (!TextUtils.isEmpty(user.name)) {
-			CardHeader header = new CardHeader(context);
-			header.setTitle(user.name);
-			addCardHeader(header);
-		}
-		setCardElevation(4f);
+		setupInnerViewElements(view);
 	}
 
-	@Override
-	public void setupInnerViewElements(ViewGroup parent, View view) {
-		super.setupInnerViewElements(parent, view);
-
+	public void setupInnerViewElements(View view) {
 		setUpCompany(view);
 		setUpLocation(view);
 		setUpMail(view);

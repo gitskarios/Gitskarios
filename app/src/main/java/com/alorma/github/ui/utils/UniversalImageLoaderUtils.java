@@ -1,7 +1,11 @@
 package com.alorma.github.ui.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 
 import com.alorma.github.R;
 import com.alorma.github.utils.AttributesUtils;
@@ -26,11 +30,25 @@ public class UniversalImageLoaderUtils {
 		GithubIconDrawable drawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_octoface);
 		drawable.color(AttributesUtils.getSecondaryTextColor(context, R.style.AppTheme_Repos));
 		drawable.sizeDp(24);
+		BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), drawableToBitmap(drawable));
 		return new DisplayImageOptions.Builder()
-				.showImageOnLoading(drawable)
+				.showImageOnLoading(bitmapDrawable)
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
 				.build();
 
+	}
+
+	public static Bitmap drawableToBitmap (Drawable drawable) {
+		if (drawable instanceof BitmapDrawable) {
+			return ((BitmapDrawable)drawable).getBitmap();
+		}
+
+		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		drawable.draw(canvas);
+
+		return bitmap;
 	}
 }

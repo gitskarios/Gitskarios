@@ -1,141 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bioCardLayout"
+                                    android:layout_margin="@dimen/gapMedium">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_height"
-        android:gravity="center_vertical"
-        android:id="@+id/company"
-        android:clickable="true">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="@dimen/card_row_item_image_size"
-            android:layout_height="@dimen/card_row_item_image_size"
-            android:padding="@dimen/card_row_item_image_padding"
-            android:layout_marginLeft="@dimen/card_row_item_margin"
-            android:layout_marginStart="@dimen/card_row_item_margin"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconCompany"/>
-
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textCompany"
-            style="@style/card_row_item_text"/>
-    </LinearLayout>
+            android:layout_height="@dimen/card_row_item_height"
+            android:gravity="center_vertical"
+            android:id="@+id/company"
+            android:clickable="true">
 
-    <View
-        android:id="@+id/dividerCompany"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_divider_height"
-        android:background="@drawable/divider_inside_car"
-        android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
-        android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
+            <ImageView
+                android:layout_width="@dimen/card_row_item_image_size"
+                android:layout_height="@dimen/card_row_item_image_size"
+                android:padding="@dimen/card_row_item_image_padding"
+                android:layout_marginLeft="@dimen/card_row_item_margin"
+                android:layout_marginStart="@dimen/card_row_item_margin"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/iconCompany"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_height"
-        android:gravity="center_vertical"
-        android:id="@+id/location"
-        android:background="?android:selectableItemBackground"
-        android:clickable="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/textCompany"
+                style="@style/card_row_item_text"/>
+        </LinearLayout>
 
-        <ImageView
-            android:layout_width="@dimen/card_row_item_image_size"
-            android:layout_height="@dimen/card_row_item_image_size"
-            android:padding="@dimen/card_row_item_image_padding"
-            android:layout_marginLeft="@dimen/card_row_item_margin"
-            android:layout_marginStart="@dimen/card_row_item_margin"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconLocation"/>
-
-        <TextView
+        <View
+            android:id="@+id/dividerCompany"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textLocation"
-            style="@style/card_row_item_text"/>
-    </LinearLayout>
+            android:layout_height="@dimen/card_row_item_divider_height"
+            android:background="@drawable/divider_inside_car"
+            android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
+            android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
 
-    <View
-        android:id="@+id/dividerLocation"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_divider_height"
-        android:background="@drawable/divider_inside_car"
-        android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
-        android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_height"
-        android:gravity="center_vertical"
-        android:id="@+id/mail"
-        android:background="?android:selectableItemBackground"
-        android:clickable="true">
-
-        <ImageView
-            android:layout_width="@dimen/card_row_item_image_size"
-            android:layout_height="@dimen/card_row_item_image_size"
-            android:padding="@dimen/card_row_item_image_padding"
-            android:layout_marginLeft="@dimen/card_row_item_margin"
-            android:layout_marginStart="@dimen/card_row_item_margin"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconMail"/>
-
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textMail"
-            style="@style/card_row_item_text"/>
-    </LinearLayout>
+            android:layout_height="@dimen/card_row_item_height"
+            android:gravity="center_vertical"
+            android:id="@+id/location"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true">
 
-    <View
-        android:id="@+id/dividerMail"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_divider_height"
-        android:background="@drawable/divider_inside_car"
-        android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
-        android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
+            <ImageView
+                android:layout_width="@dimen/card_row_item_image_size"
+                android:layout_height="@dimen/card_row_item_image_size"
+                android:padding="@dimen/card_row_item_image_padding"
+                android:layout_marginLeft="@dimen/card_row_item_margin"
+                android:layout_marginStart="@dimen/card_row_item_margin"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/iconLocation"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_row_item_height"
-        android:gravity="center_vertical"
-        android:id="@+id/date"
-        android:clickable="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/textLocation"
+                style="@style/card_row_item_text"/>
+        </LinearLayout>
 
-        <ImageView
-            android:layout_width="@dimen/card_row_item_image_size"
-            android:layout_height="@dimen/card_row_item_image_size"
-            android:padding="@dimen/card_row_item_image_padding"
-            android:layout_marginLeft="@dimen/card_row_item_margin"
-            android:layout_marginStart="@dimen/card_row_item_margin"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/iconDate"/>
-
-        <TextView
+        <View
+            android:id="@+id/dividerLocation"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/card_row_item_margin"
-            android:layout_marginEnd="@dimen/card_row_item_margin"
-            android:id="@+id/textDate"
-            style="@style/card_row_item_text"/>
-    </LinearLayout>
+            android:layout_height="@dimen/card_row_item_divider_height"
+            android:background="@drawable/divider_inside_car"
+            android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
+            android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
 
-</LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_row_item_height"
+            android:gravity="center_vertical"
+            android:id="@+id/mail"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="@dimen/card_row_item_image_size"
+                android:layout_height="@dimen/card_row_item_image_size"
+                android:padding="@dimen/card_row_item_image_padding"
+                android:layout_marginLeft="@dimen/card_row_item_margin"
+                android:layout_marginStart="@dimen/card_row_item_margin"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/iconMail"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/textMail"
+                style="@style/card_row_item_text"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/dividerMail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_row_item_divider_height"
+            android:background="@drawable/divider_inside_car"
+            android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
+            android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_row_item_height"
+            android:gravity="center_vertical"
+            android:id="@+id/date"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="@dimen/card_row_item_image_size"
+                android:layout_height="@dimen/card_row_item_image_size"
+                android:padding="@dimen/card_row_item_image_padding"
+                android:layout_marginLeft="@dimen/card_row_item_margin"
+                android:layout_marginStart="@dimen/card_row_item_margin"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/iconDate"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/card_row_item_margin"
+                android:layout_marginEnd="@dimen/card_row_item_margin"
+                android:id="@+id/textDate"
+                style="@style/card_row_item_text"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

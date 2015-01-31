@@ -2,7 +2,6 @@ package com.alorma.github.ui.cards.profile;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,37 +11,28 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-
 /**
  * Created by Bernat on 23/11/2014.
  */
-public class GithubDataCard extends Card implements View.OnClickListener {
+public class GithubDataCard implements View.OnClickListener {
 
 	private GithubDataCardListener githubDataCardListener;
 
 	private User user;
 	private int avatarColor;
 
-	public GithubDataCard(Context context, User user, int avatarColor) {
-		super(context, R.layout.card_github_data_layout);
+	public GithubDataCard(User user, View view, int avatarColor) {
 		this.user = user;
 		this.avatarColor = avatarColor;
-		CardHeader header = new CardHeader(context);
-		header.setTitle(context.getString(R.string.public_data));
-		addCardHeader(header);
-		setCardElevation(4f);
+		setupInnerViewElements(view);
 	}
 
-	@Override
-	public void setupInnerViewElements(ViewGroup parent, View view) {
-		super.setupInnerViewElements(parent, view);
+	public void setupInnerViewElements(View view) {
 
 		setUpRepos(view);
 		setUpGists(view);
 
-		GitskariosSettings gitskariosSettings = new GitskariosSettings(getContext());
+		GitskariosSettings gitskariosSettings = new GitskariosSettings(view.getContext());
 		String authUser = gitskariosSettings.getAuthUser(null);
 		if (authUser != null && authUser.equals(user.login)) {
 			setUpPrivateGists(view);

@@ -17,4 +17,17 @@
 
     <string name="lDialogPositive">#ffffffff</string>
     <string name="lDialogNegative">#ff808080</string>
+
+    <!-- Make sure to also update LetterTileProvider#NUM_OF_TILE_COLORS when adding or removing colors -->
+    <array name="letter_tile_colors">
+        <item>#d66161</item>
+        <item>#da8b60</item>
+        <item>#cf9443</item>
+        <item>#bcab45</item>
+        <item>#5e9a6c</item>
+        <item>#537788</item>
+        <item>#316f94</item>
+    </array>
+    <color name="letter_tile_default_color">#d66161</color>
+    <color name="letter_tile_font_color">#ffffff</color>
 </resources>
