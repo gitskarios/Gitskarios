@@ -16,7 +16,7 @@
         <item name="gitskarios_primary_light">@color/repos_primary_light</item>
         <item name="gitskarios_icons">@color/repos_icons</item>
     </style>
-    
+
     <style name="AppTheme.Gists">
         <item name="colorPrimary">@color/gists_primary</item>
         <item name="colorPrimaryDark">@color/gists_primary_dark</item>
@@ -58,12 +58,18 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">15sp</item>
     </style>
-    
+
     <style name="SpotDialog" parent="android:Theme.DeviceDefault.Dialog">
         <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
-        <item name="DialogTitleText">@string/acces_token_request</item>
         <item name="DialogSpotColor">?colorAccent</item>
         <item name="DialogSpotCount">4</item>
     </style>
-    
+
+    <style name="SpotDialog.Login">
+        <item name="DialogTitleText">@string/acces_token_request</item>
+    </style>
+    <style name="SpotDialog.LoadingUser">
+        <item name="DialogTitleText">@string/loading_user</item>
+    </style>
+
 </resources>

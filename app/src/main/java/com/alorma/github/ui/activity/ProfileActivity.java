@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -14,8 +15,6 @@ import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -35,10 +34,13 @@ import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
+import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
+import com.crashlytics.android.Crashlytics;
 
+import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -48,16 +50,23 @@ import retrofit.client.Response;
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
 		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener,
 		GithubDataCard.GithubDataCardListener,
-		OnCheckFollowingUser, GithubPlanCard.GithubDataCardListener {
+		FABCenterLayout.FABScrollContentListener,
+		OnCheckFollowingUser, GithubPlanCard.GithubDataCardListener, View.OnClickListener {
 
 	private static final String USER = "USER";
 	private static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
 
 	private ImageView image;
+	private FABCenterLayout fabLayout;
+
 	private int avatarColor;
+	private int avatarSecondaryColor;
+
 	private User user;
 	private boolean followingUser = false;
 	private boolean isAuthUser;
+	private GithubIconDrawable fabDrawable;
+	private SpotsDialog progressDialog;
 
 	public static Intent createLauncherIntent(Context context) {
 		return new Intent(context, ProfileActivity.class);
@@ -86,6 +95,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		setContentView(R.layout.profile_activity);
 
 		avatarColor = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
+		avatarSecondaryColor = AttributesUtils.getPrimaryColor(this, R.style.AppTheme_Repos);
+
+		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
+		fabLayout.setVisibility(View.INVISIBLE);
+
+		fabLayout.setFabScrollContentListener(this);
 		image = (ImageView) findViewById(R.id.image);
 
 		BaseUsersClient<User> requestClient;
@@ -103,8 +119,23 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new GetAuthUserClient(this);
 		}
 
+		showDialog();
+
 		requestClient.setOnResultCallback(this);
 		requestClient.execute();
+	}
+
+	private void showDialog() {
+		try {
+			progressDialog = new SpotsDialog(this, R.style.SpotDialog_LoadingUser);
+			progressDialog.setMessage(getString(R.string.loading_user));
+			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
+			progressDialog.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Crashlytics.logException(e);
+		}
 	}
 
 	@Override
@@ -112,11 +143,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
+		if (progressDialog != null){
+			progressDialog.dismiss();
+		}
+
 		GitskariosSettings gitskariosSettings = new GitskariosSettings(this);
 		String authUser = gitskariosSettings.getAuthUser(null);
 		isAuthUser = !TextUtils.isEmpty(authUser) && authUser.equals(user.login);
 
-		if (!isAuthUser) {
+		if (isAuthUser) {
+			fabLayout.removeFab();
+		} else {
 			CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
 			checkFollowingUser.setOnCheckFollowingUser(this);
 			checkFollowingUser.execute();
@@ -125,58 +162,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (getSupportActionBar() != null) {
 			new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
 		}
-	}
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-
-		if (!isAuthUser) {
-			menu.clear();
-
-			int title = R.string.follow;
-			if (followingUser) {
-				title = R.string.unfollow;
-			}
-			menu.add(0, R.id.action_user_star, 0, title);
-
-			MenuItem item = menu.findItem(R.id.action_user_star);
-
-			GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
-			drawable.setStyle(Paint.Style.FILL);
-			if (followingUser) {
-				drawable.color(avatarColor);
-			} else {
-				drawable.color(AttributesUtils.getIconsColor(this, R.style.AppTheme_Repos));
-			}
-			drawable.actionBarSize();
-
-			item.setIcon(drawable);
-			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-
-		switch (item.getItemId()) {
-			case R.id.action_user_star:
-				if (followingUser) {
-					UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
-					unfollowUserClient.setOnCheckFollowingUser(this);
-					unfollowUserClient.execute();
-				} else {
-					FollowUserClient followUserClient = new FollowUserClient(this, user.login);
-					followUserClient.setOnCheckFollowingUser(this);
-					followUserClient.execute();
-				}
-				break;
-		}
-
-		return true;
+		fabLayout.setVisibility(View.VISIBLE);
 	}
 
 	private void fillCardBio(User user) {
@@ -220,23 +207,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		image.setImageDrawable(drawable);
 		if (profileSwatchDark != null && profileSwatch != null) {
 			avatarColor = profileSwatchDark.getRgb();
+			avatarSecondaryColor = profileSwatch.getRgb();
 
-			if (avatarColor == 0 || avatarColor == -10790053 || avatarColor == -14343336 || avatarColor == -12566464 || avatarColor == -9826790) {
-				avatarColor = Color.GRAY;
-				getToolbar().setTitleTextColor(avatarColor);
-			}
-
-			if (profileSwatch.getRgb() != 0) {
-				if (!isAuthUser) {
-					invalidateOptionsMenu();
+			try {
+				if (avatarColor != 0) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+						getWindow().setStatusBarColor(avatarColor);
+						getWindow().setNavigationBarColor(avatarColor);
+					}
 				}
-			}
-
-			if (avatarColor != 0) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-					getWindow().setStatusBarColor(avatarColor);
-					getWindow().setNavigationBarColor(avatarColor);
-				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -283,9 +264,70 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	@Override
+	public void onClick(View v) {
+		showDialog();
+
+		fabLayout.setFabClickListener(null, getTagFab());
+		
+		if (followingUser) {
+			UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
+			unfollowUserClient.setOnCheckFollowingUser(this);
+			unfollowUserClient.execute();
+		} else {
+			FollowUserClient followUserClient = new FollowUserClient(this, user.login);
+			followUserClient.setOnCheckFollowingUser(this);
+			followUserClient.execute();
+		}
+		fabLayout.setFabClickListener(null, null);
+	}
+
+	@Override
+	public void onScrollFactor(int alpha, float factor) {
+		if (getSupportActionBar() != null) {
+			ColorDrawable cd = new ColorDrawable(avatarColor);
+
+			if (alpha < 0) {
+				alpha = -alpha;
+			}
+
+			if (alpha > 255) {
+				alpha = 255;
+			}
+
+			cd.setAlpha(alpha);
+
+			getSupportActionBar().setBackgroundDrawable(cd);
+		}
+	}
+
+	@Override
 	public void onCheckFollowUser(String username, boolean following) {
 		followingUser = following;
+		
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+		}
 
-		invalidateOptionsMenu();
+		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
+		fabDrawable.setStyle(Paint.Style.FILL);
+		if (following) {
+			fabDrawable.color(avatarColor);
+		} else {
+			fabDrawable.color(AttributesUtils.getIconsColor(this, R.style.AppTheme_Repos));
+		}
+		fabDrawable.actionBarSize();
+		fabLayout.setFabIcon(fabDrawable);
+
+		fabLayout.setFabColor(avatarSecondaryColor);
+		
+		fabLayout.setFabColorPressed(avatarColor);
+
+		fabLayout.setFabClickListener(this, getTagFab());
+		fabLayout.setFabViewVisibility(View.VISIBLE, false);
+	}
+
+	public String getTagFab() {
+		int string = followingUser ? R.string.unfollow : R.string.follow;
+		return getString(string);
 	}
 }

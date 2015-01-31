@@ -136,5 +136,6 @@
     <string name="no_prs_found">No pull requests found</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search</string>
+    <string name="loading_user">Loading user</string>
 
 </resources>

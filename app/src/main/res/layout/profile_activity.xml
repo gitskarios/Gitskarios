@@ -1,41 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<com.alorma.github.ui.view.FABCenterLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                           xmlns:app="http://schemas.android.com/apk/res-auto"
+                                           android:layout_width="match_parent"
+                                           android:layout_height="match_parent"
+                                           app:top_id="@id/top"
+                                           app:scrollable_id="@id/cardsContainerScroll"
+                                           android:id="@id/fabLayout"
+                                           android:background="@color/gray_github_light_selected">
 
-    <ImageView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:id="@+id/image"
-        android:scaleType="centerCrop"
-        android:contentDescription="@null"
-        android:layout_alignParentTop="true"/>
+        android:layout_height="240dp"
+        android:background="?attr/colorPrimary"
+        android:id="@id/top">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@id/toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:layout_alignParentTop="true"
-        android:gravity="bottom"
-        android:elevation="10dp"
-        android:layout_alignBottom="@+id/image"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/image"
+            android:scaleType="centerCrop"/>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@id/toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    </FrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/cardsContainerScroll"
-        android:layout_below="@+id/image">
+        android:paddingTop="184dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:id="@id/cardsContainerScroll">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/cardsContainer">
 
             <include layout="@layout/card_bio_layout"/>
 
@@ -44,4 +52,4 @@
             <include layout="@layout/card_github_plan_layout"/>
         </LinearLayout>
     </ScrollView>
-</RelativeLayout>
+</com.alorma.github.ui.view.FABCenterLayout>
