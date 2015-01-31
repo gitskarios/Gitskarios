@@ -218,21 +218,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onFollowersSelected() {
-		if (followersFragment == null) {
-			followersFragment = FollowersFragment.newInstance();
-		}
-
-		setFragment(followersFragment);
-	}
-
-	@Override
-	public void onFollowingSelected() {
-		if (followingFragment == null) {
-			followingFragment = FollowingFragment.newInstance();
-		}
-
-		setFragment(followingFragment);
+	public void onPeopleSelected() {
+		Intent intent = new Intent(this, PeopleActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
@@ -241,14 +229,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			setTitle(item.text);
 		}
 		closeMenu();
-	}
-
-	@Override
-	public void onOrganizationsSelected() {
-		if (organizationsFragmet == null) {
-			organizationsFragmet = OrganzationsFragment.newInstance();
-		}
-		setFragment(organizationsFragmet);
 	}
 
 	@Override

@@ -137,5 +137,6 @@
     <string name="action_search">Search</string>
     <string name="search_hint">Search</string>
     <string name="loading_user">Loading user</string>
+    <string name="navigation_people">People</string>
 
 </resources>

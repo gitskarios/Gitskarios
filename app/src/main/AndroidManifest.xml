@@ -24,7 +24,12 @@
         </activity>
         <activity
             android:name="com.alorma.github.ui.activity.MainActivity"/>
-        <activity android:name="com.alorma.github.ui.activity.ProfileActivity"/>
+        <activity
+            android:name="com.alorma.github.ui.activity.PeopleActivity"
+            android:theme="@style/AppTheme.People"/>
+        <activity
+            android:name="com.alorma.github.ui.activity.ProfileActivity"
+            android:theme="@style/AppTheme.People"/>
         <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity"/>
         <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity"/>
         <activity android:name=".ui.dialog.NewIssueCommentActivity"/>
@@ -57,10 +62,6 @@
 
         <activity
             android:name="com.alorma.github.ui.activity.NewIssueActivity"
-            android:label="@string/title_activity_new_issue"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity
-            android:name="com.alorma.github.ui.activity.NewRepoActivity"
             android:label="@string/title_activity_new_issue"
             android:windowSoftInputMode="adjustPan"/>
         <activity

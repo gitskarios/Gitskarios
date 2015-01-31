@@ -28,6 +28,17 @@
         <item name="gitskarios_icons">@color/gists_icons</item>
     </style>
 
+    <style name="AppTheme.People">
+        <item name="colorPrimary">@color/gists_primary</item>
+        <item name="colorPrimaryDark">@color/gists_primary_dark</item>
+        <item name="colorAccent">@color/gists_accent</item>
+        <item name="gitskarios_divider">@color/gists_divider</item>
+        <item name="gitskarios_primary_text">@color/gists_primary_text</item>
+        <item name="gitskarios_secondary_text">@color/gists_secondary_text</item>
+        <item name="gitskarios_primary_light">@color/gists_primary_light</item>
+        <item name="gitskarios_icons">@color/gists_icons</item>
+    </style>
+
     <style name="AppTheme.Login">
         <item name="android:windowBackground">@color/repos_primary</item>
     </style>

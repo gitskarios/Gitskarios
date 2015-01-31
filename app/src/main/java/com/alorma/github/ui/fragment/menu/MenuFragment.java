@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.menu;
 
 import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +15,9 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.MenuItemsAdapter;
 import com.alorma.github.ui.view.CircularImageView;
 import com.alorma.githubicons.GithubIconify;
-import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -73,7 +70,6 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 		List<MenuItem> objMenuItems = new ArrayList<MenuItem>();
 
-		objMenuItems.add(new MenuItem(0, 1, R.string.menu_organizations, GithubIconify.IconValue.octicon_organization));
 		objMenuItems.add(new MenuItem(1, 1, R.string.menu_events, GithubIconify.IconValue.octicon_calendar));
 
 		currentSelectedItem = new MenuItem(0, 2, R.string.navigation_repos, GithubIconify.IconValue.octicon_repo);
@@ -81,8 +77,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		objMenuItems.add(new MenuItem(1, 2, R.string.navigation_starred_repos, GithubIconify.IconValue.octicon_star));
 		objMenuItems.add(new MenuItem(2, 2, R.string.navigation_watched_repos, GithubIconify.IconValue.octicon_eye));
 
-		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_followers, GithubIconify.IconValue.octicon_person));
-		objMenuItems.add(new MenuItem(1, 3, R.string.navigation_following, GithubIconify.IconValue.octicon_person));
+		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_people, GithubIconify.IconValue.octicon_person));
 
 		objMenuItems.add(new DividerMenuItem());
 		objMenuItems.add(new MenuItem(0, 4, R.string.navigation_settings, null));
@@ -132,9 +127,6 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 	private void itemUser(MenuItem item) {
 		switch (item.id) {
-			case 0:
-				onMenuItemSelectedListener.onOrganizationsSelected();
-				break;
 			case 1:
 				onMenuItemSelectedListener.onUserEventsSelected();
 				break;
@@ -158,10 +150,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 	private void itemPeople(MenuItem item) {
 		switch (item.id) {
 			case 0:
-				onMenuItemSelectedListener.onFollowersSelected();
-				break;
-			case 1:
-				onMenuItemSelectedListener.onFollowingSelected();
+				onMenuItemSelectedListener.onPeopleSelected();
 				break;
 		}
 	}
@@ -210,15 +199,11 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 		void onWatchedSelected();
 
-		void onFollowersSelected();
-
-		void onFollowingSelected();
+		void onPeopleSelected();
 
 		void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle);
 
 		void closeMenu();
-
-		void onOrganizationsSelected();
 
 		void onUserEventsSelected();
 

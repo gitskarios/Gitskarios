@@ -18,4 +18,13 @@
     <color name="gists_secondary_text">#727272</color>
     <color name="gists_icons">#212121</color>
     <color name="gists_divider">#B6B6B6</color>
+
+    <color name="people_primary">#FF5722</color>
+    <color name="people_primary_dark">#E64A19</color>
+    <color name="people_primary_light">#FFCCBC</color>
+    <color name="people_accent">#FF9800</color>
+    <color name="people_primary_text">#212121</color>
+    <color name="people_secondary_text">#727272</color>
+    <color name="people_icons">#FFFFFF</color>
+    <color name="people_divider">#B6B6B6</color>
 </resources>
