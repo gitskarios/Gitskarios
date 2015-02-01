@@ -23,8 +23,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
-import com.alorma.github.ui.fragment.base.BaseListFragment;
-import com.alorma.github.ui.listeners.RefreshListener;
+import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
 import com.crashlytics.android.Crashlytics;
@@ -39,7 +38,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends BaseListFragment implements BaseClient.OnResultCallback<ListContents>,
+public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>,
 		BranchManager, TitleProvider {
 
 	public static final String OWNER = "OWNER";
@@ -48,21 +47,19 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 	private String owner;
 	private String repo;
 	private RepoSourceAdapter contentAdapter;
-	private RefreshListener refreshListener;
 	private Map<Content, ListContents> treeContent;
 	private Content rootContent = new Content();
 	private Content currentSelectedContent = rootContent;
 	private Branch currentBranch;
 	private String branch;
 
-	public static SourceListFragment newInstance(String owner, String repo, String branchName, RefreshListener refreshListener) {
+	public static SourceListFragment newInstance(String owner, String repo, String branchName) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
 		bundle.putString(BRANCH, branchName);
 
 		SourceListFragment f = new SourceListFragment();
-		f.setRefreshListener(refreshListener);
 		f.setArguments(bundle);
 		return f;
 	}
@@ -80,12 +77,8 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 
 			getContent();
 
-			treeContent = new HashMap<Content, ListContents>();
+			treeContent = new HashMap<>();
 			treeContent.put(currentSelectedContent, null);
-
-			if (refreshListener != null) {
-				refreshListener.showRefresh();
-			}
 		}
 	}
 
@@ -136,9 +129,6 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 
 				setListAdapter(contentAdapter);
 
-				if (refreshListener != null) {
-					refreshListener.cancelRefresh();
-				}
 			} catch (Exception e) {
 				Crashlytics.logException(e);
 			}
@@ -149,9 +139,6 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 	public void onFail(RetrofitError error) {
 		if (getActivity() != null) {
 			ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
-			if (refreshListener != null) {
-				refreshListener.cancelRefresh();
-			}
 		}
 	}
 
@@ -162,10 +149,6 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 		if (contentAdapter != null && contentAdapter.getCount() >= position) {
 			Content item = contentAdapter.getItem(position);
 			if (item.isDir()) {
-				if (refreshListener != null) {
-					refreshListener.showRefresh();
-				}
-
 				if (treeContent.get(item) == null) {
 					item.parent = currentSelectedContent;
 
@@ -190,10 +173,6 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 		}
 	}
 
-	public void setRefreshListener(RefreshListener refreshListener) {
-		this.refreshListener = refreshListener;
-	}
-
 	@Override
 	public void setCurrentBranch(Branch branch) {
 		this.currentBranch = branch;
@@ -201,7 +180,7 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 		rootContent = new Content();
 		currentSelectedContent = rootContent;
 
-		treeContent = new HashMap<Content, ListContents>();
+		treeContent = new HashMap<>();
 		treeContent.put(currentSelectedContent, null);
 
 		contentAdapter.clear();
@@ -209,10 +188,6 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 		contentAdapter = null;
 
 		getContent();
-
-		if (refreshListener != null) {
-			refreshListener.showRefresh();
-		}
 	}
 
 	private void getContent() {
@@ -257,6 +232,11 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), owner, repo);
 		repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback());
 		repoBranchesClient.execute();
+	}
+
+	@Override
+	public void onRefresh() {
+		getContent();
 	}
 
 	private class DownloadBranchesCallback extends BranchesCallback {

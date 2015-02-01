@@ -62,5 +62,10 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	protected GithubIconify.IconValue getNoDataIcon() {
 		return GithubIconify.IconValue.octicon_octoface;
 	}
+
+	@Override
+	public int getTheme() {
+		return R.style.AppTheme_People;
+	}
 }
 
