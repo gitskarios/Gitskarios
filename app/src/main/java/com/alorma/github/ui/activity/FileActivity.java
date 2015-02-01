@@ -47,6 +47,11 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	private ImageView imageView;
 	private Content content;
 	private String patch;
+	private String owner;
+	private String repo;
+	private String head;
+	private String name;
+	private String path;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo, String head, String name, String path) {
 		Bundle bundle = new Bundle();
@@ -78,17 +83,15 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		webView = (WebView) findViewById(R.id.webview);
 		imageView = (ImageView) findViewById(R.id.imageView);
 
-		String owner = getIntent().getExtras().getString(OWNER);
-		String repo = getIntent().getExtras().getString(REPO);
-		String head = getIntent().getExtras().getString(HEAD);
-		String name = getIntent().getExtras().getString(NAME);
-		String path = getIntent().getExtras().getString(PATH);
+		owner = getIntent().getExtras().getString(OWNER);
+		repo = getIntent().getExtras().getString(REPO);
+		head = getIntent().getExtras().getString(HEAD);
+		name = getIntent().getExtras().getString(NAME);
+		path = getIntent().getExtras().getString(PATH);
 		patch = getIntent().getExtras().getString(PATCH);
 
 		if (patch == null) {
-			GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
-			fileContentClient.setOnResultCallback(this);
-			fileContentClient.execute();
+			getContent();
 			setTitle(name);
 		}
 
@@ -110,6 +113,13 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 			webView.loadUrl("file:///android_asset/diff.html");
 		}
 
+	}
+
+	@Override
+	protected void getContent() {
+		GetFileContentClient fileContentClient = new GetFileContentClient(this, owner, repo, path, head);
+		fileContentClient.setOnResultCallback(this);
+		fileContentClient.execute();
 	}
 
 	@Override

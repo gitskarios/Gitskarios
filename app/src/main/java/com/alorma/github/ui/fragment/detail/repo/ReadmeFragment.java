@@ -1,8 +1,13 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,6 +44,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 	private WebView webview;
 	private String owner;
 	private String repo;
+	private UpdateReceiver updateReceiver;
 
 	public static ReadmeFragment newInstance(String owner, String repo) {
 		Bundle bundle = new Bundle();
@@ -77,10 +83,14 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			webview.clearSslPreferences();
 			webview.getSettings().setUseWideViewPort(false);
 			webview.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
-			repoMarkdownClient.setCallback(this);
-			repoMarkdownClient.execute();
+			getContent();
 		}
+	}
+
+	private void getContent() {
+		GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
+		repoMarkdownClient.setCallback(this);
+		repoMarkdownClient.execute();
 	}
 
 	@Override
@@ -147,4 +157,41 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			return true;
 		}
 	}
+	
+	public void reload() {
+		getContent();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		updateReceiver = new UpdateReceiver();
+		IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+		getActivity().registerReceiver(updateReceiver, intentFilter);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		getActivity().unregisterReceiver(updateReceiver);
+	}
+
+	public class UpdateReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			if (isOnline(context)) {
+				reload();
+			}
+		}
+
+		public boolean isOnline(Context context) {
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+			NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+		}
+	}
+	
 }

@@ -128,7 +128,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 			
-			//viewPager.setOffscreenPageLimit(listFragments.size());
+			viewPager.setOffscreenPageLimit(listFragments.size());
 					
 			slidingTabLayout.setViewPager(viewPager);
 			load();
@@ -179,6 +179,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 		repoClient.setOnResultCallback(this);
 		repoClient.execute();
 
+		getContent();
+	}
+
+	@Override
+	protected void getContent() {
 		CheckRepoStarredClient starredClient = new CheckRepoStarredClient(this, repoInfo.owner, repoInfo.repo);
 		starredClient.setOnResultCallback(new StarredResult());
 		starredClient.execute();

@@ -1,9 +1,13 @@
 package com.alorma.github.ui.activity;
 
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -68,12 +72,17 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 			issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 			permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
-			GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
-			issuesClient.setOnResultCallback(this);
-			issuesClient.execute();
+			getContent();
 
 			findViews();
 		}
+	}
+
+	@Override
+	protected void getContent() {
+		GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
+		issuesClient.setOnResultCallback(this);
+		issuesClient.execute();
 	}
 
 	private void findViews() {
@@ -84,7 +93,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
 		fabLayout.setFabColor(accent);
 		fabLayout.setFabColorPressed(primaryDark);
-		
+
 		GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
 		fabLayout.setFabIcon(drawable);
 		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
