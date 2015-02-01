@@ -25,15 +25,12 @@ import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
-import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
-import com.alorma.github.ui.fragment.users.FollowersFragment;
-import com.alorma.github.ui.fragment.users.FollowingFragment;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
+public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
 		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
 	private MenuFragment menuFragment;
@@ -151,16 +148,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			}
 		}
 
-	}
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.searchIcon:
-				Intent search = SearchActivity.createLauncherIntent(this);
-				startActivity(search);
-				break;
-		}
 	}
 
 	private void setFragment(Fragment fragment) {

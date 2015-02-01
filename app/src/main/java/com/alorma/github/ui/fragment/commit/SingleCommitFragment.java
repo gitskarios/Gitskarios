@@ -1,6 +1,13 @@
 package com.alorma.github.ui.fragment.commit;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +38,9 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	private TextView textMessage;
 	private TextView textAdditions;
 	private TextView textDeletions;
+	private UpdateReceiver updateReceiver;
+	private RepoInfo info;
+	private String sha;
 
 	public static SingleCommitFragment newInstance(RepoInfo info, String sha) {
 		SingleCommitFragment f = new SingleCommitFragment();
@@ -51,28 +61,32 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		if (getArguments() != null) {
-			RepoInfo info = getArguments().getParcelable(INFO);
-			String sha = getArguments().getString(SHA);
+			info = getArguments().getParcelable(INFO);
+			sha = getArguments().getString(SHA);
 
 			textMessage = (TextView) view.findViewById(R.id.message);
 			textAdditions = (TextView) view.findViewById(R.id.additions);
 			textDeletions = (TextView) view.findViewById(R.id.deletions);
-			
+
 			recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
 			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-						
-			GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info, sha);
-			client.setOnResultCallback(this);
-			client.execute();
+
+			getContent();
 		}
+	}
+
+	private void getContent() {
+		GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info, sha);
+		client.setOnResultCallback(this);
+		client.execute();
 	}
 
 	@Override
 	public void onResponseOk(Commit commit, Response r) {
 		getActivity().setTitle(commit.sha.substring(0, 8));
-		
+
 		textMessage.setText(commit.commit.message);
-		
+
 		String additions = getResources().getString(R.string.commit_additions, commit.stats.additions);
 		String deletions = getResources().getString(R.string.commit_deletions, commit.stats.deletions);
 
@@ -85,6 +99,43 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 
 	@Override
 	public void onFail(RetrofitError error) {
-		
+
+	}
+
+
+	public void reload() {
+		getContent();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		updateReceiver = new UpdateReceiver();
+		IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+		getActivity().registerReceiver(updateReceiver, intentFilter);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		getActivity().unregisterReceiver(updateReceiver);
+	}
+
+	public class UpdateReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			if (isOnline(context)) {
+				reload();
+			}
+		}
+
+		public boolean isOnline(Context context) {
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+			NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+		}
 	}
 }
