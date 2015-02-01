@@ -111,62 +111,69 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 			boolean changeTitle = true;
 			switch (item.parentId) {
 				case 1:
-					itemUser(item);
+					changeTitle = itemUser(item);
 					break;
 				case 2:
-					itemRepositories(item);
+					changeTitle = itemRepositories(item);
 					break;
 				case 3:
-					itemPeople(item);
+					changeTitle = itemPeople(item);
 					break;
 				case 4:
-					changeTitle = false;
-					itemExtras(item);
+					changeTitle = itemExtras(item);
 					break;
 			}
 			onMenuItemSelectedListener.onMenuItemSelected(item, changeTitle);
 		}
 	}
 
-	private void itemUser(MenuItem item) {
+	private boolean itemUser(MenuItem item) {
+		boolean change = true;
 		switch (item.id) {
 			case 1:
-				onMenuItemSelectedListener.onUserEventsSelected();
+				change = onMenuItemSelectedListener.onUserEventsSelected();
 				break;
 		}
+		return change;
 	}
 
-	private void itemRepositories(MenuItem item) {
+	private boolean itemRepositories(MenuItem item) {
+		boolean change = true;
 		switch (item.id) {
 			case 0:
-				onMenuItemSelectedListener.onReposSelected();
+				change = onMenuItemSelectedListener.onReposSelected();
 				break;
 			case 1:
-				onMenuItemSelectedListener.onStarredSelected();
+				change = onMenuItemSelectedListener.onStarredSelected();
 				break;
 			case 2:
-				onMenuItemSelectedListener.onWatchedSelected();
+				change = onMenuItemSelectedListener.onWatchedSelected();
 				break;
 		}
+		return change;
 	}
 
-	private void itemPeople(MenuItem item) {
+	private boolean itemPeople(MenuItem item) {
+		boolean change = true;
 		switch (item.id) {
 			case 0:
-				onMenuItemSelectedListener.onPeopleSelected();
+				change = onMenuItemSelectedListener.onPeopleSelected();
 				break;
 		}
+		return change;
 	}
 
-	private void itemExtras(MenuItem item) {
+	private boolean itemExtras(MenuItem item) {
+		boolean change = true;
 		switch (item.id) {
 			case 0:
-				onMenuItemSelectedListener.onSettingsSelected();
+				change = onMenuItemSelectedListener.onSettingsSelected();
 				break;
 			case 1:
-				onMenuItemSelectedListener.onAboutSelected();
+				change = onMenuItemSelectedListener.onAboutSelected();
 				break;
 		}
+		return change;
 	}
 
 	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
@@ -194,24 +201,24 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 	}
 
 	public interface OnMenuItemSelectedListener {
-		void onProfileSelected();
+		boolean onProfileSelected();
 
-		void onReposSelected();
+		boolean onReposSelected();
 
-		void onStarredSelected();
+		boolean onStarredSelected();
 
-		void onWatchedSelected();
+		boolean onWatchedSelected();
 
-		void onPeopleSelected();
+		boolean onPeopleSelected();
 
 		void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle);
 
 		void closeMenu();
 
-		void onUserEventsSelected();
+		boolean onUserEventsSelected();
 
-		void onSettingsSelected();
+		boolean onSettingsSelected();
 
-		void onAboutSelected();
+		boolean onAboutSelected();
 	}
 }

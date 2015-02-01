@@ -41,11 +41,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private ReposFragment reposFragment;
 	private StarredReposFragment starredFragment;
 	private WatchedReposFragment watchedFragment;
-	private FollowersFragment followersFragment;
-	private FollowingFragment followingFragment;
 	private IabHelper iabHelper;
 	private boolean iabEnabled;
-	private OrganzationsFragment organizationsFragmet;
 	private EventsListFragment eventsFragment;
 	private SearchReposFragment searchReposFragment;
 	private SearchView searchView;
@@ -185,42 +182,47 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onProfileSelected() {
+	public boolean onProfileSelected() {
 		Intent launcherIntent = ProfileActivity.createLauncherIntent(this);
 		startActivity(launcherIntent);
+		return false;
 	}
 
 	@Override
-	public void onReposSelected() {
+	public boolean onReposSelected() {
 		if (reposFragment == null) {
 			reposFragment = ReposFragment.newInstance();
 		}
 
 		setFragment(reposFragment);
+		return true;
 	}
 
 	@Override
-	public void onStarredSelected() {
+	public boolean onStarredSelected() {
 		if (starredFragment == null) {
 			starredFragment = StarredReposFragment.newInstance();
 		}
 
 		setFragment(starredFragment);
+		return true;
 	}
 
 	@Override
-	public void onWatchedSelected() {
+	public boolean onWatchedSelected() {
 		if (watchedFragment == null) {
 			watchedFragment = WatchedReposFragment.newInstance();
 		}
 
 		setFragment(watchedFragment);
+		return true;
 	}
 
 	@Override
-	public void onPeopleSelected() {
+	public boolean onPeopleSelected() {
 		Intent intent = PeopleActivity.launchIntent(this);
 		startActivity(intent);
+		return false;
 	}
 
 	@Override
@@ -232,7 +234,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onUserEventsSelected() {
+	public boolean onUserEventsSelected() {
 		GitskariosSettings settings = new GitskariosSettings(this);
 		String user = settings.getAuthUser(null);
 		if (user != null) {
@@ -241,18 +243,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			}
 			setFragment(eventsFragment);
 		}
+		return true;
 	}
 
 	@Override
-	public void onSettingsSelected() {
+	public boolean onSettingsSelected() {
 		Intent intent = new Intent(this, SettingsActivity.class);
 		startActivity(intent);
+		return false;
 	}
 
 	@Override
-	public void onAboutSelected() {
+	public boolean onAboutSelected() {
 		Intent intent = AboutActivity.launchIntent(this);
 		startActivity(intent);
+		return false;
 	}
 
 	@Override

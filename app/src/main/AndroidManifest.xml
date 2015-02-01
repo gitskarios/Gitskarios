@@ -26,7 +26,8 @@
             android:name="com.alorma.github.ui.activity.MainActivity"/>
         <activity
             android:name="com.alorma.github.ui.activity.PeopleActivity"
-            android:theme="@style/AppTheme.People"/>
+            android:theme="@style/AppTheme.People"
+            android:label="@string/navigation_people"/>
         <activity
             android:name="com.alorma.github.ui.activity.ProfileActivity"
             android:theme="@style/AppTheme.People"/>
