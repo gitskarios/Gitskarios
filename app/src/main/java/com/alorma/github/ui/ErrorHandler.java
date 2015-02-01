@@ -22,7 +22,7 @@ public class ErrorHandler {
 			}
 		} else {
 			if (error != null && error.getMessage() != null) {
-				Crashlytics.logException(error);
+				//Crashlytics.logException(error);
 			}
 		}
 	}

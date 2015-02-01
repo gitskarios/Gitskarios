@@ -24,7 +24,6 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
-import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
@@ -34,8 +33,7 @@ import com.crashlytics.android.Crashlytics;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements RefreshListener
-		, View.OnClickListener, BaseClient.OnResultCallback<Issue> {
+public class IssueDetailActivity extends BackActivity implements View.OnClickListener, BaseClient.OnResultCallback<Issue> {
 
 	public static final String ISSUE_INFO = "ISSUE_INFO";
 	public static final String PERMISSIONS = "PERMISSIONS";
@@ -108,7 +106,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		try {
 			if (!isFinishing()) {
 				issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
-				issueDiscussionFragment.setRefreshListener(this);
 
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
 				ft.replace(R.id.discussionFeed, issueDiscussionFragment);
@@ -177,16 +174,6 @@ public class IssueDetailActivity extends BackActivity implements RefreshListener
 		}
 
 		return true;
-	}
-
-	@Override
-	public void showRefresh() {
-
-	}
-
-	@Override
-	public void cancelRefresh() {
-
 	}
 
 	public void onAddComment() {

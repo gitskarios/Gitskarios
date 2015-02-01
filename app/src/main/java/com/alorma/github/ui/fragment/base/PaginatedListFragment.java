@@ -53,9 +53,8 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
 	@Override
 	public void onResponseOk(K k, Response r) {
+		stopRefresh();
 		if (getActivity() != null && isAdded()) {
-			stopRefresh();
-
 			if (k != null && k instanceof List) {
 				if (emptyLy != null && ((List) k).size() > 0) {
 					emptyLy.setVisibility(View.GONE);
@@ -74,8 +73,8 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
 	@Override
 	public void onFail(RetrofitError error) {
+		stopRefresh();
 		if (getActivity() != null) {
-			stopRefresh();
 			if (getListAdapter() == null || getListAdapter().getCount() == 0) {
 				setEmpty();
 			}

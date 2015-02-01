@@ -13,7 +13,6 @@ import com.alorma.github.sdk.services.pullrequest.GetPullRequestsClient;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
 
@@ -26,13 +25,12 @@ public class PullRequestsListFragment extends PaginatedListFragment<ListIssues> 
 	private String repository;
 	private IssuesAdapter pullRequestsAdapter;
 
-	public static PullRequestsListFragment newInstance(String owner, String repo, RefreshListener listener) {
+	public static PullRequestsListFragment newInstance(String owner, String repo) {
 		Bundle bundle = new Bundle();
 		bundle.putString("OWNER", owner);
 		bundle.putString("REPO", repo);
 
 		PullRequestsListFragment fragment = new PullRequestsListFragment();
-		fragment.setRefreshListener(listener);
 		fragment.setArguments(bundle);
 		return fragment;
 	}

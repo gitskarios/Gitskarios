@@ -33,7 +33,6 @@ import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
-import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
@@ -48,7 +47,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 17/07/2014.
  */
-public class RepoDetailActivity extends BackActivity implements RefreshListener, BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
+public class RepoDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
 	public static final String OWNER = "OWNER";
 	public static final String REPO = "REPO";
@@ -114,10 +113,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			viewPager = (ViewPager) findViewById(R.id.pager);
 
-			readmeFragment = ReadmeFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
-			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null, this);
-			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
-			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			readmeFragment = ReadmeFragment.newInstance(repoInfo.owner, repoInfo.repo);
+			sourceListFragment = SourceListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
+			commitsListFragment = CommitsListFragment.newInstance(repoInfo.owner, repoInfo.repo);
+			issuesListFragment = IssuesListFragment.newInstance(repoInfo.owner, repoInfo.repo);
 			//pullRequestsListFragment = PullRequestsListFragment.newInstance(repoInfo.owner, repoInfo.repo, null);
 
 			listFragments = new ArrayList<>();
@@ -129,7 +128,7 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 			
-			viewPager.setOffscreenPageLimit(listFragments.size());
+			//viewPager.setOffscreenPageLimit(listFragments.size());
 					
 			slidingTabLayout.setViewPager(viewPager);
 			load();
@@ -304,16 +303,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 	}
 
 	@Override
-	public void showRefresh() {
-		// TODO START LOADING
-	}
-
-	@Override
-	public void cancelRefresh() {
-		// TODO STOP LOADING
-	}
-
-	@Override
 	public void onResponseOk(Repo repo, Response r) {
 		if (repo != null) {
 			this.currentRepo = repo;
@@ -322,21 +311,15 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 
 			this.invalidateOptionsMenu();
 
-			cancelRefresh();
-
 			if (issuesListFragment != null) {
 				issuesListFragment.setPermissions(repo.permissions);
 			}
 		}
-
-
-		cancelRefresh();
 	}
 
 	@Override
 	public void onFail(RetrofitError error) {
 		ErrorHandler.onRetrofitError(this, "RepoDetailFragment", error);
-		cancelRefresh();
 	}
 
 	@Override
@@ -360,7 +343,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				repoStarred = true;
 				invalidateOptionsMenu();
 			}
-			cancelRefresh();
 		}
 
 		@Override
@@ -371,7 +353,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 					invalidateOptionsMenu();
 				}
 			}
-			cancelRefresh();
 		}
 	}
 
@@ -384,12 +365,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Toast.makeText(RepoDetailActivity.this, "Repo unstarred", Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 			}
-			cancelRefresh();
 		}
 
 		@Override
 		public void onFail(RetrofitError error) {
-			cancelRefresh();
+			
 		}
 	}
 
@@ -401,14 +381,14 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				repoStarred = true;
 				invalidateOptionsMenu();
 			}
-			cancelRefresh();
+			
 		}
 
 		@Override
 		public void onFail(RetrofitError error) {
 			if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
 			}
-			cancelRefresh();
+			
 		}
 	}
 
@@ -424,7 +404,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				repoWatched = true;
 				invalidateOptionsMenu();
 			}
-			cancelRefresh();
 		}
 
 		@Override
@@ -435,7 +414,6 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 					invalidateOptionsMenu();
 				}
 			}
-			cancelRefresh();
 		}
 	}
 
@@ -448,12 +426,11 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Toast.makeText(RepoDetailActivity.this, "Not watching repo", Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 			}
-			cancelRefresh();
 		}
 
 		@Override
 		public void onFail(RetrofitError error) {
-			cancelRefresh();
+			
 		}
 	}
 
@@ -466,12 +443,10 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 				Toast.makeText(RepoDetailActivity.this, "Watching repo", Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 			}
-			cancelRefresh();
 		}
 
 		@Override
 		public void onFail(RetrofitError error) {
-			cancelRefresh();
 		}
 	}
 
