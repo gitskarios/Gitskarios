@@ -19,4 +19,5 @@
     <item name="action_user_star" type="id">action_user_star</item>
     <item name="action_repo_star" type="id">action_repo_star</item>
     <item name="cardsContainerScroll" type="id">cardsContainerScroll</item>
+    <item name="action_repo_watch" type="id">action_repo_watch</item>
 </resources>

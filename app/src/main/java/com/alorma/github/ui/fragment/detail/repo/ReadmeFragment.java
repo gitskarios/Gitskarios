@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,16 +10,24 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
+import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
+import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
+import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
+import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
+import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
+import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.RefreshListener;
@@ -87,27 +96,33 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
 			repoMarkdownClient.setCallback(this);
 			repoMarkdownClient.execute();
-/*
-			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
-
-			Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-
-			Menu menu = toolbar.getMenu();
-
-			menu.add(0, R.id.action_repo_star, 0, R.string.menu_star);
-
-			MenuItem item = menu.findItem(R.id.action_repo_star);
-			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-			
-			GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_star);
-			drawable.setStyle(Paint.Style.FILL);
-
-			drawable.color(color);
-
-			drawable.actionBarSize();
-			
-			item.setIcon(drawable);*/
 		}
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		menu.add(0, R.id.action_repo_watch, 1, R.string.menu_watch);
+
+		int color = Color.WHITE;
+
+		MenuItem itemWatch = menu.findItem(R.id.action_repo_watch);
+		itemWatch.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		GithubIconDrawable drawableWatch = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_eye);
+		drawableWatch.setStyle(Paint.Style.FILL);
+		drawableWatch.color(color);
+		drawableWatch.actionBarSize();
+		itemWatch.setIcon(drawableWatch);
+
+		menu.add(0, R.id.action_repo_star, 0, R.string.menu_star);
+
+		MenuItem itemStar = menu.findItem(R.id.action_repo_star);
+		itemStar.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		GithubIconDrawable drawableStar = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_star);
+		drawableStar.setStyle(Paint.Style.FILL);
+		drawableStar.color(color);
+		drawableStar.actionBarSize();
+		itemStar.setIcon(drawableStar);
 	}
 
 	@Override
