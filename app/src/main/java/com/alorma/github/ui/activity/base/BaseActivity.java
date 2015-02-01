@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
@@ -27,6 +29,7 @@ public class BaseActivity extends ActionBarActivity {
 	private AuthReceiver authReceiver;
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle actionBarDrawerToggle;
+	private UpdateReceiver updateReceiver;
 
 	public Toolbar getToolbar() {
 		return toolbar;
@@ -156,6 +159,46 @@ public class BaseActivity extends ActionBarActivity {
 	public void closeMenu() {
 		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
 			mDrawerLayout.closeDrawer(Gravity.START);
+		}
+	}
+
+	public void reload() {
+		getContent();
+	}
+
+	protected void getContent() {
+
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		updateReceiver = new UpdateReceiver();
+		IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+		registerReceiver(updateReceiver, intentFilter);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		unregisterReceiver(updateReceiver);
+	}
+
+	public class UpdateReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			if (isOnline(context)) {
+				reload();
+			}
+		}
+
+		public boolean isOnline(Context context) {
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+			NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
 		}
 	}
 }
