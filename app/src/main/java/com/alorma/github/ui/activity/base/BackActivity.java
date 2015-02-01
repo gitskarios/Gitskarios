@@ -8,7 +8,7 @@ import android.view.MenuItem;
 public class BackActivity extends BaseActivity {
 
 	@Override
-	protected void onStart() {
+	public void onStart() {
 		super.onStart();
 		if (getSupportActionBar() != null) {
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);

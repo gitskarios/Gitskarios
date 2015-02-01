@@ -4,10 +4,17 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +53,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	private boolean fabVisible;
 	private ListView listView;
 	private SmoothProgressBar progressBar;
+	private UpdateReceiver updateReceiver;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,8 +88,8 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
-		int accent = AttributesUtils.getAttributeId(getActivity(), R.style.AppTheme_Repos, R.attr.colorAccent);
-		int primaryDark = AttributesUtils.getAttributeId(getActivity(), R.style.AppTheme_Repos, R.attr.colorPrimaryDark);
+		int accent = AttributesUtils.getAttributeId(getActivity(), getTheme(), R.attr.colorAccent);
+		int primaryDark = AttributesUtils.getAttributeId(getActivity(), getTheme(), R.attr.colorPrimaryDark);
 
 		if (swipe != null) {
 			swipe.setColorSchemeResources(accent,
@@ -90,6 +98,16 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 					R.color.gray_github_light);
 			swipe.setOnRefreshListener(this);
 		}
+
+		executeRequest();
+	}
+
+	protected void executeRequest() {
+		startRefresh();
+	}
+
+	protected void executePaginatedRequest(int page) {
+		startRefresh();
 	}
 
 	protected void startRefresh() {
@@ -279,5 +297,43 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	@StyleRes
 	public int getTheme() {
 		return R.style.AppTheme_Repos;
+	}
+
+	public void reload() {
+		if (getListAdapter() == null || getListAdapter().getCount() == 0) {
+			executeRequest();
+		}
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		updateReceiver = new UpdateReceiver();
+		IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+		getActivity().registerReceiver(updateReceiver, intentFilter);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		getActivity().unregisterReceiver(updateReceiver);
+	}
+
+	public class UpdateReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			if (isOnline(context)) {
+				reload();
+			}
+		}
+
+		public boolean isOnline(Context context) {
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+			NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+		}
 	}
 }
