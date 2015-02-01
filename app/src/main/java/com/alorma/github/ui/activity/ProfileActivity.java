@@ -104,6 +104,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		fabLayout.setFabScrollContentListener(this);
 		image = (ImageView) findViewById(R.id.image);
 
+		getContent();
+	}
+
+	@Override
+	protected void getContent() {
 		BaseUsersClient<User> requestClient;
 		User user = null;
 		if (getIntent().getExtras() != null) {
@@ -126,15 +131,15 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	private void showDialog() {
-		try {
-			progressDialog = new SpotsDialog(this, R.style.SpotDialog_LoadingUser);
-			progressDialog.setMessage(getString(R.string.loading_user));
-			progressDialog.setCancelable(false);
-			progressDialog.setCanceledOnTouchOutside(false);
-			progressDialog.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-			Crashlytics.logException(e);
+		if (progressDialog == null) {
+			try {
+				progressDialog = new SpotsDialog(this, R.style.SpotDialog_LoadingUser);
+				progressDialog.setMessage(getString(R.string.loading_user));
+				progressDialog.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Crashlytics.logException(e);
+			}
 		}
 	}
 
@@ -143,7 +148,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
-		if (progressDialog != null){
+		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
 
@@ -268,7 +273,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		showDialog();
 
 		fabLayout.setFabClickListener(null, getTagFab());
-		
+
 		if (followingUser) {
 			UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
 			unfollowUserClient.setOnCheckFollowingUser(this);
@@ -303,7 +308,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onCheckFollowUser(String username, boolean following) {
 		followingUser = following;
-		
+
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
@@ -319,7 +324,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		fabLayout.setFabIcon(fabDrawable);
 
 		fabLayout.setFabColor(avatarSecondaryColor);
-		
+
 		fabLayout.setFabColorPressed(avatarColor);
 
 		fabLayout.setFabClickListener(this, getTagFab());
