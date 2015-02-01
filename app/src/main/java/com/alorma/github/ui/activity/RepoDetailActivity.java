@@ -128,6 +128,9 @@ public class RepoDetailActivity extends BackActivity implements RefreshListener,
 			//listFragments.add(pullRequestsListFragment);
 
 			viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
+			
+			viewPager.setOffscreenPageLimit(listFragments.size());
+					
 			slidingTabLayout.setViewPager(viewPager);
 			load();
 		} else {
