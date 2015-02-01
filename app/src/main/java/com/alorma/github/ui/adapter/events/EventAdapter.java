@@ -17,9 +17,7 @@ import com.alorma.github.ui.adapter.events.views.WatchEventView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import it.gmariotti.cardslib.library.internal.Card;
 
 /**
  * Created by Bernat on 03/10/2014.

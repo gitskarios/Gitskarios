@@ -63,4 +63,5 @@
     <dimen name="issue_discussion_header_unfold">400dp</dimen>
     <dimen name="issue_discussion_header_fold">120dp</dimen>
     <dimen name="translucent_status_dimen_padding_top">0dp</dimen>
+    <dimen name="actions_padding">8dp</dimen>
 </resources>

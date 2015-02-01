@@ -49,7 +49,7 @@ public class ForkEventView extends GithubEventView<ForkEventPayload> {
 		authorName.setText(event.actor.login);
 
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
-		Drawable drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo_forked).color(AttributesUtils.getIconsColor(getContext(), R.style.AppTheme_Repos));
+		Drawable drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo_forked).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
 
 		if (drawable != null) {
 			actionImage.setImageDrawable(drawable);

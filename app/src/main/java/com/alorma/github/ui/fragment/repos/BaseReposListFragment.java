@@ -3,7 +3,6 @@ package com.alorma.github.ui.fragment.repos;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
@@ -13,8 +12,6 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.githubicons.GithubIconify;
-
-import java.util.ArrayList;
 
 /**
  * Created by Bernat on 17/07/2014.
@@ -32,7 +29,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 			if (item != null) {
 				String repo = item.name;
 				String owner = item.owner.login;
-				Intent launcherActivity = RepoDetailActivity.createLauncherActivity(getActivity(), owner, repo, item.description);
+				Intent launcherActivity = RepoDetailActivity.createLauncherIntent(getActivity(), owner, repo);
 				startActivity(launcherActivity);
 			}
 		}

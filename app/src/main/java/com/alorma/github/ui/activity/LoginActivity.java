@@ -83,7 +83,7 @@ public class LoginActivity extends Activity {
 
 	private void showDialog() {
 		try {
-			progressDialog = new SpotsDialog(this, R.style.SpotDialog);
+			progressDialog = new SpotsDialog(this, R.style.SpotDialog_Login);
 			progressDialog.setCancelable(false);
 			progressDialog.setCanceledOnTouchOutside(false);
 			progressDialog.show();

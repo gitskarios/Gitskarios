@@ -43,7 +43,7 @@ public class Interceptor extends Activity implements BaseClient.OnResultCallback
 							String owner = pathSegments.get(0);
 							String repo = pathSegments.get(1);
 
-							Intent repoIntent = RepoDetailActivity.createIntentFilterLauncherActivity(this, owner, repo, null);
+							Intent repoIntent = RepoDetailActivity.createIntentFilterLauncherIntent(this, owner, repo);
 							startActivity(repoIntent);
 							finish();
 						} else {

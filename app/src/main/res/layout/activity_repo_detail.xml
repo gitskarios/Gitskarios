@@ -5,33 +5,6 @@
 
     <include layout="@layout/toolbar"/>
 
-    <!--
-    <LinearLayout
-        android:id="@+id/repoDetailInfo"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            style="?android:borderlessButtonStyle"
-            android:text="@string/menu_star"
-            android:textColor="@color/white"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            style="?android:borderlessButtonStyle"
-            android:text="@string/menu_watch"
-            android:textColor="@color/white"/>
-
-    </LinearLayout>
-    -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

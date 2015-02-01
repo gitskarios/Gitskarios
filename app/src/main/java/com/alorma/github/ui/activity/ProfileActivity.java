@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -12,9 +13,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
@@ -37,8 +38,9 @@ import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
+import com.crashlytics.android.Crashlytics;
 
-import it.gmariotti.cardslib.library.view.CardViewNative;
+import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -48,25 +50,23 @@ import retrofit.client.Response;
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
 		PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener,
 		GithubDataCard.GithubDataCardListener,
-		View.OnClickListener,
 		FABCenterLayout.FABScrollContentListener,
-		OnCheckFollowingUser {
+		OnCheckFollowingUser, GithubPlanCard.GithubDataCardListener, View.OnClickListener {
 
 	private static final String USER = "USER";
 	private static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
 
-
-	private CardViewNative cardBio;
-	private CardViewNative cardRepos;
-	private ViewGroup cardsContainer;
-	private FABCenterLayout fabLayout;
 	private ImageView image;
-	private GithubIconDrawable fabDrawable;
+	private FABCenterLayout fabLayout;
+
 	private int avatarColor;
-	private User user;
 	private int avatarSecondaryColor;
+
+	private User user;
 	private boolean followingUser = false;
-	private CardViewNative cardPlan;
+	private boolean isAuthUser;
+	private GithubIconDrawable fabDrawable;
+	private SpotsDialog progressDialog;
 
 	public static Intent createLauncherIntent(Context context) {
 		return new Intent(context, ProfileActivity.class);
@@ -99,18 +99,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
+		fabLayout.setVisibility(View.INVISIBLE);
 
 		fabLayout.setFabScrollContentListener(this);
-
 		image = (ImageView) findViewById(R.id.image);
-
-		cardsContainer = (ViewGroup) findViewById(R.id.cardsContainer);
-
-		cardsContainer.setVisibility(View.INVISIBLE);
-
-		cardBio = (CardViewNative) findViewById(R.id.cardBio);
-		cardRepos = (CardViewNative) findViewById(R.id.cardRepos);
-		cardPlan = (CardViewNative) findViewById(R.id.cardPlan);
 
 		BaseUsersClient<User> requestClient;
 		User user = null;
@@ -127,8 +119,23 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new GetAuthUserClient(this);
 		}
 
+		showDialog();
+
 		requestClient.setOnResultCallback(this);
 		requestClient.execute();
+	}
+
+	private void showDialog() {
+		try {
+			progressDialog = new SpotsDialog(this, R.style.SpotDialog_LoadingUser);
+			progressDialog.setMessage(getString(R.string.loading_user));
+			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
+			progressDialog.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Crashlytics.logException(e);
+		}
 	}
 
 	@Override
@@ -136,13 +143,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
+		if (progressDialog != null){
+			progressDialog.dismiss();
+		}
+
 		GitskariosSettings gitskariosSettings = new GitskariosSettings(this);
 		String authUser = gitskariosSettings.getAuthUser(null);
+		isAuthUser = !TextUtils.isEmpty(authUser) && authUser.equals(user.login);
 
-		if (!TextUtils.isEmpty(authUser) && authUser.equals(user.login)) {
+		if (isAuthUser) {
 			fabLayout.removeFab();
 		} else {
-
 			CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
 			checkFollowingUser.setOnCheckFollowingUser(this);
 			checkFollowingUser.execute();
@@ -151,35 +162,32 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (getSupportActionBar() != null) {
 			new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
 		}
+
+		fabLayout.setVisibility(View.VISIBLE);
 	}
 
 	private void fillCardBio(User user) {
-		BioCard card = new BioCard(this, user, avatarSecondaryColor);
-
+		CardView view = (CardView) findViewById(R.id.bioCardLayout);
+		view.setCardElevation(4);
+		BioCard card = new BioCard(user, view, avatarColor);
 		card.setBioCardListener(this);
-
-		cardBio.setCard(card);
-		cardBio.setVisibility(View.VISIBLE);
 	}
 
 	private void fillCardRepos(User user) {
-		GithubDataCard card = new GithubDataCard(this, user, avatarSecondaryColor);
-
-		card.setGithubDataCardListener(this);
-
-		cardRepos.setCard(card);
-		cardRepos.setVisibility(View.VISIBLE);
+		CardView view = (CardView) findViewById(R.id.dataCardLayout);
+		view.setCardElevation(4);
+		GithubDataCard dataCard = new GithubDataCard(user, view, avatarColor);
+		dataCard.setGithubDataCardListener(this);
 	}
 
 	private void fillCardPlan(User user) {
+		CardView view = (CardView) findViewById(R.id.planCardLayout);
+		view.setCardElevation(4);
 		if (user.plan != null) {
-			GithubPlanCard card = new GithubPlanCard(this, user, avatarSecondaryColor);
-
-			cardPlan.setCard(card);
-			cardPlan.setVisibility(View.VISIBLE);
+			GithubPlanCard dataCard = new GithubPlanCard(user, view, avatarColor);
+			dataCard.setGithubDataCardListener(this);
 		} else {
-			cardPlan.setVisibility(View.INVISIBLE);
-			cardsContainer.removeView(cardPlan);
+			view.setVisibility(View.GONE);
 		}
 	}
 
@@ -200,19 +208,16 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (profileSwatchDark != null && profileSwatch != null) {
 			avatarColor = profileSwatchDark.getRgb();
 			avatarSecondaryColor = profileSwatch.getRgb();
-			if (profileSwatch.getRgb() != 0) {
-				fabLayout.setFabColor(avatarSecondaryColor);
-				if (fabDrawable != null) {
-					fabDrawable.color(avatarColor);
-					fabLayout.setFabIcon(fabDrawable);
-				}
-			}
 
-			if (avatarColor != 0) {
-				fabLayout.setFabColorPressed(avatarColor);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-					getWindow().setStatusBarColor(avatarColor);
+			try {
+				if (avatarColor != 0) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+						getWindow().setStatusBarColor(avatarColor);
+						getWindow().setNavigationBarColor(avatarColor);
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -221,8 +226,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		fillCardRepos(user);
 
 		fillCardPlan(user);
-
-		cardsContainer.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -262,6 +265,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onClick(View v) {
+		showDialog();
+
+		fabLayout.setFabClickListener(null, getTagFab());
+		
 		if (followingUser) {
 			UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
 			unfollowUserClient.setOnCheckFollowingUser(this);
@@ -296,7 +303,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onCheckFollowUser(String username, boolean following) {
 		followingUser = following;
-
+		
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+		}
 
 		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
 		fabDrawable.setStyle(Paint.Style.FILL);
@@ -307,10 +317,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		}
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);
+
+		fabLayout.setFabColor(avatarSecondaryColor);
+		
+		fabLayout.setFabColorPressed(avatarColor);
+
 		fabLayout.setFabClickListener(this, getTagFab());
 		fabLayout.setFabViewVisibility(View.VISIBLE, false);
-
-		fabLayout.setFabClickListener(this, null);
 	}
 
 	public String getTagFab() {

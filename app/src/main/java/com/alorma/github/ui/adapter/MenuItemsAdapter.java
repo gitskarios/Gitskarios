@@ -54,7 +54,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.Menu
 			case ROW:
 				return new RowMenuHolder(mInflater.inflate(R.layout.row_menu, viewGroup, false));
 			case DIVIDER:
-				default:
+			default:
 				return new DividerMenuHolder(mInflater.inflate(R.layout.row_divider, viewGroup, false));
 		}
 	}
@@ -67,7 +67,13 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.Menu
 				RowMenuHolder holder = (RowMenuHolder) menuHolder;
 				holder.text.setText(item.text);
 				if (item.icon != null) {
-					holder.image.setImageDrawable(new GithubIconDrawable(context, item.icon).color(color));
+					GithubIconDrawable dr = new GithubIconDrawable(context, item.icon);
+					if (item.color == -1) {
+						dr.color(color);
+					} else {
+						dr.color(item.color);
+					}
+					holder.image.setImageDrawable(dr);
 				}
 				break;
 		}

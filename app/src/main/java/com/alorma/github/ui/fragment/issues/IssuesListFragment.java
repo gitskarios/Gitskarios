@@ -159,13 +159,16 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 			info.repo = repository;
 			info.num = item.number;
 
+			Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info, permissions);
+			startActivity(intent);
+			/*
 			if (item.pullRequest != null) {
 				Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
 				startActivity(intent);
 			} else {
 				Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info, permissions);
 				startActivity(intent);
-			}
+			}*/
 		}
 	}
 

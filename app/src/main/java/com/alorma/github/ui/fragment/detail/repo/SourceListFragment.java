@@ -5,15 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
@@ -250,8 +254,53 @@ public class SourceListFragment extends BaseListFragment implements BaseClient.O
 
 	@Override
 	protected void fabClick() {
-		String downloadFileType = new GitskariosSettings(getActivity()).getDownloadFileType();
-		GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getActivity(), owner, repo, "master", downloadFileType);
-		getArchiveLinkService.execute();
+		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), owner, repo);
+		repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback());
+		repoBranchesClient.execute();
+	}
+
+	private class DownloadBranchesCallback extends BranchesCallback {
+
+		@Override
+		public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+			materialDialog.dismiss();
+			
+			Toast.makeText(getActivity(), R.string.code_download, Toast.LENGTH_LONG).show();
+
+			String downloadFileType = new GitskariosSettings(getActivity()).getDownloadFileType();
+			GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getActivity(), owner, repo, branches.get(i).name, downloadFileType);
+			getArchiveLinkService.execute();
+		}
+	}
+
+	private abstract class BranchesCallback implements BaseClient.OnResultCallback<ListBranches>, MaterialDialog.ListCallback {
+
+		protected ListBranches branches;
+
+		@Override
+		public void onResponseOk(ListBranches branches, Response r) {
+			this.branches = branches;
+			if (branches != null) {
+				MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+				String[] names = new String[branches.size()];
+				int selectedIndex = 0;
+				for (int i = 0; i < branches.size(); i++) {
+					String branchName = branches.get(i).name;
+					names[i] = branchName;
+					if (((currentBranch != null) && branchName.equalsIgnoreCase(currentBranch.toString())) || branchName.equalsIgnoreCase("master")) {
+						selectedIndex = i;
+					}
+				}
+				builder.autoDismiss(true);
+				builder.items(names);
+				builder.itemsCallbackSingleChoice(selectedIndex, this);
+				builder.build().show();
+			}
+		}
+
+		@Override
+		public void onFail(RetrofitError error) {
+
+		}
 	}
 }

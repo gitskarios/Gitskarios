@@ -4,12 +4,10 @@ import android.animation.PropertyValuesHolder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
-import com.alorma.github.ui.activity.NewRepoActivity;
 
 public class ReposFragment extends BaseReposListFragment {
 
@@ -65,30 +63,6 @@ public class ReposFragment extends BaseReposListFragment {
 	@Override
 	protected int getNoDataText() {
 		return R.string.no_repositories;
-	}
-
-	@Override
-	protected boolean useFAB() {
-		return false;
-	}
-
-	@Override
-	protected void fabClick() {
-		super.fabClick();
-		Intent intent = new Intent(getActivity(), NewRepoActivity.class);
-		startActivityForResult(intent, NEW_REPO_REQUEST);
-	}
-
-	@Override
-	protected PropertyValuesHolder showAnimator(View fab) {
-		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
-	}
-
-	@Override
-	protected PropertyValuesHolder hideAnimator(View fab) {
-		fabOldY = fab.getY();
-		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
-		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
 	}
 
 }
