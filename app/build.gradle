@@ -76,4 +76,5 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.github.d-max:spots-dialog:0.1'
     compile 'com.android.support:cardview-v7:21.0.3'
+    compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
 }

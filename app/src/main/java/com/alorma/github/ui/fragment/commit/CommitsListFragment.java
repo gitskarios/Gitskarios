@@ -20,7 +20,6 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.listeners.RefreshListener;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconify;
@@ -49,13 +48,12 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	private List<Commit> commitsMap;
 	private StickyListHeadersListView listView;
 
-	public static CommitsListFragment newInstance(String owner, String repo, RefreshListener listener) {
+	public static CommitsListFragment newInstance(String owner, String repo) {
 		Bundle bundle = new Bundle();
 		bundle.putString(OWNER, owner);
 		bundle.putString(REPO, repo);
 
 		CommitsListFragment fragment = new CommitsListFragment();
-		fragment.setRefreshListener(listener);
 		fragment.setArguments(bundle);
 		return fragment;
 	}
@@ -63,7 +61,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		return inflater.inflate(R.layout.base_list_headers
+		return inflater.inflate(R.layout.list_fragment_headers
 				, null);
 	}
 
@@ -115,20 +113,6 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 				
 				commitsMap.add(commit);
 			}
-		}
-	}
-
-	private int orderCommitsDay(int days) {
-		if (days == 0) {
-			return 0;
-		} else if (days == 1) {
-			return 1;
-		} else if (days < 8) {
-			return 7;
-		} else if (days < 30) {
-			return 30;
-		} else {
-			return Integer.MAX_VALUE;
 		}
 	}
 
