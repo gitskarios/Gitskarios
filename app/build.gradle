@@ -63,7 +63,7 @@ dependencies {
     // Submodules
     compile project(':libraries:AndroidGithubIcons')
     compile project(':libraries:android-floating-action-button')
-    compile project(':libraries:GitDiffTextView')
+    compile 'com.github.alorma:diff-textview:1.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
     compile 'com.afollestad:material-dialogs:0.4.6'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
