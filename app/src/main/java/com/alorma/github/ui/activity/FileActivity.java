@@ -42,11 +42,11 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 	private static final String NAME = "NAME";
 	private static final String PATH = "PATH";
 	private static final String PATCH = "PATCH";
-	
+
 	private WebView webView;
 	private ImageView imageView;
 	private Content content;
-	
+
 	private String patch;
 	private String name;
 	private String path;
@@ -78,16 +78,11 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 
 		webView = (WebView) findViewById(R.id.webview);
 		imageView = (ImageView) findViewById(R.id.imageView);
-		
+
 		repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 		name = getIntent().getExtras().getString(NAME);
 		path = getIntent().getExtras().getString(PATH);
 		patch = getIntent().getExtras().getString(PATCH);
-
-		if (patch == null) {
-			getContent();
-			setTitle(name);
-		}
 
 		webView.clearCache(true);
 		webView.clearFormData();
@@ -103,17 +98,21 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 		webView.setWebChromeClient(new MyWebChromeClient());
 
-		if (patch != null) {
+		if (patch == null) {
+			getContent();
+			setTitle(name);
+		} else {
 			webView.loadUrl("file:///android_asset/diff.html");
 		}
-
 	}
 
 	@Override
 	protected void getContent() {
-		GetFileContentClient fileContentClient = new GetFileContentClient(this, repoInfo, path);
-		fileContentClient.setOnResultCallback(this);
-		fileContentClient.execute();
+		if (repoInfo != null) {
+			GetFileContentClient fileContentClient = new GetFileContentClient(this, repoInfo, path);
+			fileContentClient.setOnResultCallback(this);
+			fileContentClient.execute();
+		}
 	}
 
 	@Override
