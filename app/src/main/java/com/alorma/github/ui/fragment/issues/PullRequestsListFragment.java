@@ -103,8 +103,8 @@ public class PullRequestsListFragment extends PaginatedListFragment<ListIssues> 
 		Issue item = pullRequestsAdapter.getItem(position);
 		if (item != null) {
 			IssueInfo info = new IssueInfo();
-			info.owner = owner;
-			info.repo = repository;
+			info.repo.owner = owner;
+			info.repo.name = repository;
 			info.num = item.number;
 
 			Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);

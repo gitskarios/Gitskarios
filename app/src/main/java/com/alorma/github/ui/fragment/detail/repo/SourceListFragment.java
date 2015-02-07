@@ -7,14 +7,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.dto.response.UpContent;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
@@ -23,6 +22,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
+import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.githubicons.GithubIconify;
@@ -41,23 +41,18 @@ import retrofit.client.Response;
 public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>,
 		BranchManager, TitleProvider {
 
-	public static final String OWNER = "OWNER";
-	public static final String REPO = "REPO";
-	public static final String BRANCH = "BRANCH";
-	private String owner;
-	private String repo;
+	private static final String REPO_INFO = "REPO_INFO";
+
+	private RepoInfo repoInfo;
+
 	private RepoSourceAdapter contentAdapter;
 	private Map<Content, ListContents> treeContent;
 	private Content rootContent = new Content();
 	private Content currentSelectedContent = rootContent;
-	private Branch currentBranch;
-	private String branch;
 
-	public static SourceListFragment newInstance(String owner, String repo, String branchName) {
+	public static SourceListFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
-		bundle.putString(OWNER, owner);
-		bundle.putString(REPO, repo);
-		bundle.putString(BRANCH, branchName);
+		bundle.putParcelable(REPO_INFO, repoInfo);
 
 		SourceListFragment f = new SourceListFragment();
 		f.setArguments(bundle);
@@ -71,9 +66,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
 
 		if (getArguments() != null) {
-			owner = getArguments().getString(OWNER);
-			repo = getArguments().getString(REPO);
-			branch = getArguments().getString(BRANCH);
 
 			getContent();
 
@@ -84,7 +76,9 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
 	@Override
 	protected void loadArguments() {
-
+		if (getArguments() != null) {
+			repoInfo = getArguments().getParcelable(REPO_INFO);
+		}
 	}
 
 	@Override
@@ -103,6 +97,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 	}
 
 	private void displayContent(ListContents contents) {
+		stopRefresh();
 		if (getActivity() != null && contents != null) {
 			try {
 				ListContents currentContents = treeContent.get(currentSelectedContent);
@@ -161,8 +156,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 				}
 
 			} else if (item.isFile()) {
-				Intent intent = FileActivity.createLauncherIntent(getActivity(), owner,
-						repo, currentBranch != null ? currentBranch.name : null, item.name, item.path);
+				Intent intent = FileActivity.createLauncherIntent(getActivity(), repoInfo, item.name, item.path);
 				startActivity(intent);
 			} else if (ContentType.up.equals(item.type)) {
 				if (item.parent != null) {
@@ -175,8 +169,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
 	@Override
 	public void setCurrentBranch(Branch branch) {
-		this.currentBranch = branch;
-
 		rootContent = new Content();
 		currentSelectedContent = rootContent;
 
@@ -191,24 +183,14 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 	}
 
 	private void getContent() {
-		if (branch == null) {
-			GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
-			repoContentsClient.setOnResultCallback(this);
-			repoContentsClient.execute();
-		} else {
-			GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo);
-			repoContentsClient.setOnResultCallback(this);
-			Branch branch = new Branch();
-			branch.name = this.branch;
-			repoContentsClient.setCurrentBranch(branch);
-			repoContentsClient.execute();
-		}
+		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
+		repoContentsClient.setOnResultCallback(this);
+		repoContentsClient.execute();
 	}
 
 	private void getPathContent(Content item) {
-		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), owner, repo, item.path);
+		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, item.path);
 		repoContentsClient.setOnResultCallback(this);
-		repoContentsClient.setCurrentBranch(currentBranch);
 		repoContentsClient.execute();
 	}
 
@@ -229,8 +211,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
 	@Override
 	protected void fabClick() {
-		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), owner, repo);
-		repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback());
+		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+		repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback(getActivity(), repoInfo));
 		repoBranchesClient.execute();
 	}
 
@@ -239,48 +221,23 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		getContent();
 	}
 
-	private class DownloadBranchesCallback extends BranchesCallback {
+	private class DownloadBranchesCallback extends DialogBranchesCallback {
+
+		public DownloadBranchesCallback(Context context, RepoInfo repoInfo) {
+			super(context, repoInfo);
+		}
 
 		@Override
-		public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-			materialDialog.dismiss();
-			
-			Toast.makeText(getActivity(), R.string.code_download, Toast.LENGTH_LONG).show();
+		protected void onBranchSelected(String branch) {
+			Toast.makeText(getContext(), R.string.code_download, Toast.LENGTH_LONG).show();
 
-			String downloadFileType = new GitskariosSettings(getActivity()).getDownloadFileType();
-			GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getActivity(), owner, repo, branches.get(i).name, downloadFileType);
+			String downloadFileType = new GitskariosSettings(getContext()).getDownloadFileType();
+			RepoInfo repoInfo = new RepoInfo();
+			repoInfo.owner = getRepoInfo().owner;
+			repoInfo.name = getRepoInfo().name;
+			repoInfo.branch = branch;
+			GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo, downloadFileType);
 			getArchiveLinkService.execute();
-		}
-	}
-
-	private abstract class BranchesCallback implements BaseClient.OnResultCallback<ListBranches>, MaterialDialog.ListCallback {
-
-		protected ListBranches branches;
-
-		@Override
-		public void onResponseOk(ListBranches branches, Response r) {
-			this.branches = branches;
-			if (branches != null) {
-				MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-				String[] names = new String[branches.size()];
-				int selectedIndex = 0;
-				for (int i = 0; i < branches.size(); i++) {
-					String branchName = branches.get(i).name;
-					names[i] = branchName;
-					if (((currentBranch != null) && branchName.equalsIgnoreCase(currentBranch.toString())) || branchName.equalsIgnoreCase("master")) {
-						selectedIndex = i;
-					}
-				}
-				builder.autoDismiss(true);
-				builder.items(names);
-				builder.itemsCallbackSingleChoice(selectedIndex, this);
-				builder.build().show();
-			}
-		}
-
-		@Override
-		public void onFail(RetrofitError error) {
-
 		}
 	}
 }

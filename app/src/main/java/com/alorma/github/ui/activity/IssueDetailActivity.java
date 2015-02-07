@@ -211,7 +211,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 	}
 
 	private void closeIssue() {
-		CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.owner, issueInfo.repo, issueInfo.num);
+		CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repo.owner, issueInfo.repo.name, issueInfo.num);
 		closeIssueClient.setOnResultCallback(this);
 		closeIssueClient.execute();
 	}

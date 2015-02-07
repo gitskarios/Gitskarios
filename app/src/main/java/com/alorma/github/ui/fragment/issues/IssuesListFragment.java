@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
@@ -25,19 +26,21 @@ import com.alorma.githubicons.GithubIconify;
  * Created by Bernat on 22/08/2014.
  */
 public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider {
-
+	
+	private static final String REPO_INFO = "REPO_INFO";
+	
 	private static final int ISSUE_REQUEST = 1234;
-	private String owner;
-	private String repository;
+	
+	private RepoInfo repoInfo;
+	
 	private float fabNewY;
 	private float fabOldY;
 	private IssuesAdapter issuesAdapter;
 	private Permissions permissions;
 
-	public static IssuesListFragment newInstance(String owner, String repo) {
+	public static IssuesListFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
-		bundle.putString("OWNER", owner);
-		bundle.putString("REPO", repo);
+		bundle.putParcelable(REPO_INFO, repoInfo);
 
 		IssuesListFragment fragment = new IssuesListFragment();
 		fragment.setArguments(bundle);
@@ -46,8 +49,9 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 
 	protected void executeRequest() {
 		super.executeRequest();
-		if (owner != null && repository != null) {
-			GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), owner, repository, 0);
+		if (repoInfo != null) {
+			IssueInfo issueInfo = new IssueInfo(repoInfo);
+			GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
 			issuesClient.setOnResultCallback(this);
 			issuesClient.execute();
 		}
@@ -61,8 +65,9 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 			issuesAdapter.setLazyLoading(true);
 		}
 
-		if (owner != null && repository != null) {
-			GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), owner, repository, 0, page);
+		if (repoInfo != null) {
+			IssueInfo issueInfo = new IssueInfo(repoInfo);
+			GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
 			issuesClient.setOnResultCallback(this);
 			issuesClient.execute();
 		}
@@ -99,8 +104,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 	@Override
 	protected void loadArguments() {
 		if (getArguments() != null) {
-			this.owner = getArguments().getString("OWNER");
-			this.repository = getArguments().getString("REPO");
+			repoInfo = getArguments().getParcelable(REPO_INFO);
 		}
 	}
 
@@ -126,7 +130,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 		super.fabClick();
 
 		if (permissions != null) {
-			Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), owner, repository, permissions.push);
+			Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo, permissions.push);
 			startActivityForResult(intent, ISSUE_REQUEST);
 		}
 
@@ -153,8 +157,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 		Issue item = issuesAdapter.getItem(position);
 		if (item != null) {
 			IssueInfo info = new IssueInfo();
-			info.owner = owner;
-			info.repo = repository;
+			info.repo = repoInfo;
 			info.num = item.number;
 
 			Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info, permissions);
