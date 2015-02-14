@@ -1,7 +1,9 @@
 package com.alorma.github.ui.fragment.commit;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -54,6 +56,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	private StickyListHeadersListView listView;
 	
 	private RepoInfo repoInfo;
+	private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
 
 	public static CommitsListFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
@@ -103,6 +106,43 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 					commitsAdapter.addAll(commits);
 				}
 			}
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		IntentFilter filter = new IntentFilter();
+
+		filter.addAction(Intent.ACTION_TIME_TICK);
+		filter.addAction(Intent.ACTION_TIME_CHANGED);
+		filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+
+		timeTickBroadcastReceiver = new TimeTickBroadcastReceiver();
+		
+		getActivity().registerReceiver(timeTickBroadcastReceiver, filter);
+	}
+
+	@Override
+	public void onPause() {
+		getActivity().unregisterReceiver(timeTickBroadcastReceiver);
+		super.onPause();
+	}
+
+	private class TimeTickBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (commitsAdapter != null) {
+						commitsAdapter.notifyDataSetChanged();
+					}
+				}
+			});
 		}
 	}
 
@@ -188,7 +228,9 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 		protected void onBranchSelected(String branch) {
 			repoInfo.branch = branch;
 
-			commitsAdapter.clear();
+			if (commitsAdapter != null) {
+				commitsAdapter.clear();
+			}
 			startRefresh();
 			refreshing = true;
 			executeRequest();
