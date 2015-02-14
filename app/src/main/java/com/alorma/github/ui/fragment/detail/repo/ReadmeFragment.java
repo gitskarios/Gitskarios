@@ -28,9 +28,11 @@ import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -41,10 +43,11 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
 	private static final String REPO_INFO = "REPO_INFO";
 	private RepoInfo repoInfo;
-	
+
 	private WebView webview;
 
 	private UpdateReceiver updateReceiver;
+	private SmoothProgressBar progressBar;
 
 	public static ReadmeFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
@@ -65,10 +68,16 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		
+
 		if (getArguments() != null) {
 			loadArguments();
-			
+
+			progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
+
+			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
+
+			progressBar.setSmoothProgressDrawableColor(color);
+
 			webview = (WebView) view.findViewById(R.id.webContainer);
 			webview.setPadding(0, 24, 0, 0);
 			webview.getSettings().setJavaScriptEnabled(true);
@@ -92,6 +101,12 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 	}
 
 	private void getContent() {
+
+		if (progressBar != null) {
+			progressBar.setVisibility(View.VISIBLE);
+			progressBar.progressiveStart();
+		}
+		
 		GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
 		repoMarkdownClient.setCallback(this);
 		repoMarkdownClient.execute();
@@ -99,6 +114,11 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
 	@Override
 	public void onResponseOk(final String s, Response r) {
+
+		if (progressBar != null) {
+			progressBar.progressiveStop();
+			progressBar.setVisibility(View.INVISIBLE);
+		}
 		webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
 	}
 
@@ -134,7 +154,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			return true;
 		}
 	}
-	
+
 	public void reload() {
 		getContent();
 	}
@@ -170,5 +190,5 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
 		}
 	}
-	
+
 }

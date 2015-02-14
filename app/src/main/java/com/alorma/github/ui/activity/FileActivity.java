@@ -97,7 +97,6 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 		settings.setBuiltInZoomControls(true);
 		settings.setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
-		webView.setWebChromeClient(new MyWebChromeClient());
 
 		if (patch == null) {
 			getContent();
@@ -168,19 +167,9 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-
 			return content.content;
 		} else {
 			return patch;
-		}
-	}
-
-	final class MyWebChromeClient extends WebChromeClient {
-		@Override
-		public void onProgressChanged(WebView view, int progress) {
-			if (progress >= 100) {
-				// TODO STOP LOADING
-			}
 		}
 	}
 
