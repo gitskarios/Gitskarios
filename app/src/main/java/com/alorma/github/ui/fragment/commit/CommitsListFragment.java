@@ -49,8 +49,6 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
 	private static final String REPO_INFO = "REPO_INFO";
 
-	private String currentBranch;
-	
 	private CommitsAdapter commitsAdapter;
 	private List<Commit> commitsMap;
 	private StickyListHeadersListView listView;
@@ -188,7 +186,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
 		@Override
 		protected void onBranchSelected(String branch) {
-			currentBranch = branch;
+			repoInfo.branch = branch;
 
 			commitsAdapter.clear();
 			startRefresh();

@@ -20,16 +20,21 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import net.danlew.android.joda.DateUtils;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Duration;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
 import org.joda.time.Period;
 import org.joda.time.ReadableDuration;
 import org.joda.time.ReadableInstant;
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -78,10 +83,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 			}
 
 			if (commit.commit.author != null && commit.commit.author.date != null) {
-				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-				DateTime dt = formatter.parseDateTime(commit.commit.author.date);
 
-				Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
 				String name = "";
 				if (commit.author != null && commit.author.login != null) {
@@ -89,10 +91,34 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 				} else if (commit.commit.author != null && commit.commit.author.name != null) {
 					name = commit.commit.author.name;
 				}
+				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				DateTime dt = formatter.parseDateTime(commit.commit.author.date);
+				DateTime dtNow = new DateTime(System.currentTimeMillis());
 
-				String userDate = getContext().getResources().getString(R.string.commit_authored_at, name, days.getDays());
+				Days days = Days.daysBetween(dt, dtNow);
+				int text = R.string.commit_authored_at_days;
+				int time = days.getDays();
+
+				if (time == 0) {
+					Hours hours = Hours.hoursBetween(dt, dtNow);
+					time = hours.getHours();
+					text = R.string.commit_authored_at_hours;
+
+					if (time == 0) {
+						Minutes minutes = Minutes.minutesBetween(dt, dtNow);
+						time = minutes.getMinutes();
+						text = R.string.commit_authored_at_minutes;
+						if (time == 0) {
+							Seconds seconds = Seconds.secondsBetween(dt, dtNow);
+							time = seconds.getSeconds();
+							text = R.string.commit_authored_at_seconds;
+						}
+					}
+				}
+
+				String userDate = getContext().getResources().getString(text, name, time);
 				user.setText(userDate);
-				
+
 			} else if (commit.author != null) {
 				user.setText(commit.author.login);
 			}

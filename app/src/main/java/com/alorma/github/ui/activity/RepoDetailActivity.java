@@ -120,15 +120,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 	}
 
 	private void setData() {
-		RepoInfo repoInfo = new RepoInfo();
-		repoInfo.owner = currentRepo.owner.login;
-		repoInfo.name = currentRepo.name;
-		repoInfo.branch = currentRepo.default_branch;
 		
-		readmeFragment = ReadmeFragment.newInstance(repoInfo);
-		sourceListFragment = SourceListFragment.newInstance(repoInfo);
-		commitsListFragment = CommitsListFragment.newInstance(repoInfo);
-		issuesListFragment = IssuesListFragment.newInstance(repoInfo);
+		readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
+		sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
+		commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
+		issuesListFragment = IssuesListFragment.newInstance(getRepoInfo());
 		//pullRequestsListFragment = PullRequestsListFragment.newInstance(currentRepo.owner.login, currentRepo.name, null);
 
 		listFragments = new ArrayList<>();
@@ -143,6 +139,15 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 		viewPager.setOffscreenPageLimit(listFragments.size());
 
 		slidingTabLayout.setViewPager(viewPager);		
+	}
+	
+	private RepoInfo getRepoInfo() {
+		RepoInfo repoInfo = new RepoInfo();
+		repoInfo.owner = currentRepo.owner.login;
+		repoInfo.name = currentRepo.name;
+		repoInfo.branch = currentRepo.default_branch;
+		
+		return repoInfo;
 	}
 
 	private class NavigationPagerAdapter extends FragmentPagerAdapter {
