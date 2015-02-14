@@ -16,6 +16,7 @@ import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,8 +53,6 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_submodule);
 		} else if (ContentType.file.equals(item.type)) {
 			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_text);
-		} else if (ContentType.up.equals(item.type)) {
-			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_arrow_left);
 		}
 
 		if (iconDrawable != null) {

@@ -102,7 +102,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
 			slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
-			slidingTabLayout.setSelectedIndicatorColors(Color.WHITE);
+			slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos));
 			slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
 			viewPager = (ViewPager) findViewById(R.id.pager);

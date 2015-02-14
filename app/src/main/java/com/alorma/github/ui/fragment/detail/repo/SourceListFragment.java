@@ -3,16 +3,18 @@ package com.alorma.github.ui.fragment.detail.repo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
-import com.alorma.github.sdk.bean.dto.response.UpContent;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
@@ -21,12 +23,16 @@ import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
+import com.alorma.github.ui.adapter.FakeAdapter;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.crashlytics.android.Crashlytics;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +55,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 	private Map<Content, ListContents> treeContent;
 	private Content rootContent = new Content();
 	private Content currentSelectedContent = rootContent;
+	private FloatingActionButton fabUp;
+	private FloatingActionsMenu fabMenu;
 
 	public static SourceListFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
@@ -60,17 +68,55 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 	}
 
 	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.list_fragment_breadcumbs, null);
+	}
+
+	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
 		view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
 
+		fabMenu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
+
+		FloatingActionButton fabDownload = (FloatingActionButton) view.findViewById(R.id.fab_download);
+		GithubIconDrawable downloadIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_cloud_download);
+		downloadIcon.colorRes(R.color.white);
+		downloadIcon.sizeRes(R.dimen.fab_size_mini_icon);
+		fabDownload.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+				repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback(getActivity(), repoInfo));
+				repoBranchesClient.execute();
+				fabMenu.collapse();
+			}
+		});
+
+		fabDownload.setIconDrawable(downloadIcon);
+
+		fabUp = (FloatingActionButton) view.findViewById(R.id.fab_up);
+		GithubIconDrawable upIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_arrow_up);
+		upIcon.colorRes(R.color.white);
+		upIcon.sizeRes(R.dimen.fab_size_mini_icon);
+		fabUp.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				currentSelectedContent = currentSelectedContent.parent;
+				if (treeContent.get(currentSelectedContent) != null) {
+					displayContent(treeContent.get(currentSelectedContent));
+				}
+			}
+		});
+
+		fabUp.setIconDrawable(upIcon);
+		fabUp.setVisibility(View.INVISIBLE);
+
 		if (getArguments() != null) {
 
 			getContent();
 
-			treeContent = new HashMap<>();
-			treeContent.put(currentSelectedContent, null);
 		}
 	}
 
@@ -79,6 +125,27 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		if (getArguments() != null) {
 			repoInfo = getArguments().getParcelable(REPO_INFO);
 		}
+	}
+
+	private void getContent() {
+		rootContent = new Content();
+		currentSelectedContent = rootContent;
+
+		treeContent = new HashMap<>();
+		treeContent.put(currentSelectedContent, null);
+
+		if (contentAdapter != null) {
+			contentAdapter.clear();
+		}
+
+		contentAdapter = null;
+		
+		fabUp.setVisibility(View.INVISIBLE);
+		fabMenu.collapse();
+		
+		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
+		repoContentsClient.setOnResultCallback(this);
+		repoContentsClient.execute();
 	}
 
 	@Override
@@ -93,41 +160,27 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
 	@Override
 	public void onResponseOk(ListContents contents, Response r) {
+
+		Collections.sort(contents, Content.Comparators.TYPE);
+		treeContent.put(currentSelectedContent, contents);
+
 		displayContent(contents);
 	}
 
 	private void displayContent(ListContents contents) {
 		stopRefresh();
-		if (getActivity() != null && contents != null) {
-			try {
-				ListContents currentContents = treeContent.get(currentSelectedContent);
 
-				Context context = getActivity();
-				int style = R.style.AppTheme_Repos;
-				if (currentContents == null) {
-					int size = contents.size() + (currentSelectedContent.parent != null ? 1 : 0);
-					currentContents = new ListContents(size);
-					treeContent.put(currentSelectedContent, currentContents);
-					if (currentSelectedContent.parent != null) {
-						Content up = new UpContent();
-						up.parent = currentSelectedContent.parent;
-						currentContents.add(up);
-					}
-
-					Collections.sort(contents, ListContents.SORT.TYPE);
-					currentContents.addAll(contents);
-
-					contentAdapter = new RepoSourceAdapter(context, currentContents, style);
-				} else {
-					contentAdapter = new RepoSourceAdapter(context, contents, style);
-				}
-
-				setListAdapter(contentAdapter);
-
-			} catch (Exception e) {
-				Crashlytics.logException(e);
-			}
+		if (currentSelectedContent.parent != null) {
+			fabUp.setVisibility(View.VISIBLE);
+			fabMenu.expand();
+		} else {
+			fabUp.setVisibility(View.INVISIBLE);
+			fabMenu.collapse();
 		}
+
+		int style = R.style.AppTheme_Repos;
+		contentAdapter = new RepoSourceAdapter(getActivity(), contents, style);
+		setListAdapter(contentAdapter);
 	}
 
 	@Override
@@ -148,47 +201,25 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 					item.parent = currentSelectedContent;
 
 					currentSelectedContent = item;
-					treeContent.put(item, null);
-
 					getPathContent(item);
 				} else {
+					currentSelectedContent = item;
 					displayContent(treeContent.get(item));
 				}
-
 			} else if (item.isFile()) {
 				Intent intent = FileActivity.createLauncherIntent(getActivity(), repoInfo, item.name, item.path);
 				startActivity(intent);
-			} else if (ContentType.up.equals(item.type)) {
-				if (item.parent != null) {
-					currentSelectedContent = item.parent;
-					displayContent(treeContent.get(currentSelectedContent));
-				}
 			}
 		}
 	}
 
 	@Override
 	public void setCurrentBranch(Branch branch) {
-		rootContent = new Content();
-		currentSelectedContent = rootContent;
-
-		treeContent = new HashMap<>();
-		treeContent.put(currentSelectedContent, null);
-
-		contentAdapter.clear();
-
-		contentAdapter = null;
-
 		getContent();
 	}
 
-	private void getContent() {
-		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
-		repoContentsClient.setOnResultCallback(this);
-		repoContentsClient.execute();
-	}
-
 	private void getPathContent(Content item) {
+		startRefresh();
 		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, item.path);
 		repoContentsClient.setOnResultCallback(this);
 		repoContentsClient.execute();
@@ -201,19 +232,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
 	@Override
 	protected boolean useFAB() {
-		return true;
-	}
-
-	@Override
-	protected GithubIconify.IconValue getFABGithubIcon() {
-		return GithubIconify.IconValue.octicon_cloud_download;
-	}
-
-	@Override
-	protected void fabClick() {
-		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-		repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback(getActivity(), repoInfo));
-		repoBranchesClient.execute();
+		return false;
 	}
 
 	@Override
