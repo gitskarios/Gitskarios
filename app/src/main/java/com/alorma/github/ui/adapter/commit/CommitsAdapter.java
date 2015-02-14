@@ -25,10 +25,12 @@ import org.joda.time.Days;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
+import org.joda.time.Months;
 import org.joda.time.Period;
 import org.joda.time.ReadableDuration;
 import org.joda.time.ReadableInstant;
 import org.joda.time.Seconds;
+import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -91,33 +93,8 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 				} else if (commit.commit.author != null && commit.commit.author.name != null) {
 					name = commit.commit.author.name;
 				}
-				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-				DateTime dt = formatter.parseDateTime(commit.commit.author.date);
-				DateTime dtNow = new DateTime(System.currentTimeMillis());
 
-				Days days = Days.daysBetween(dt, dtNow);
-				int text = R.string.commit_authored_at_days;
-				int time = days.getDays();
-
-				if (time == 0) {
-					Hours hours = Hours.hoursBetween(dt, dtNow);
-					time = hours.getHours();
-					text = R.string.commit_authored_at_hours;
-
-					if (time == 0) {
-						Minutes minutes = Minutes.minutesBetween(dt, dtNow);
-						time = minutes.getMinutes();
-						text = R.string.commit_authored_at_minutes;
-						if (time == 0) {
-							Seconds seconds = Seconds.secondsBetween(dt, dtNow);
-							time = seconds.getSeconds();
-							text = R.string.commit_authored_at_seconds;
-						}
-					}
-				}
-
-				String userDate = getContext().getResources().getString(text, name, time);
-				user.setText(userDate);
+				user.setText(getTimeString(name, commit.commit.author));
 
 			} else if (commit.author != null) {
 				user.setText(commit.author.login);
@@ -130,6 +107,49 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
 
 		return v;
+	}
+
+	private String getTimeString(String name, User author) {
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		DateTime dt = formatter.parseDateTime(author.date);
+		DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
+
+		Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
+		int text = R.string.commit_authored_at_years;
+		int time = years.getYears();
+
+		if (time == 0) {
+			Months months = Months.monthsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
+			text = R.string.commit_authored_at_days;
+			time = months.getMonths();
+
+			if (time == 0) {
+
+				Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
+				text = R.string.commit_authored_at_days;
+				time = days.getDays();
+
+				if (time == 0) {
+					Hours hours = Hours.hoursBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
+					time = hours.getHours();
+					text = R.string.commit_authored_at_hours;
+
+					if (time == 0) {
+						Minutes minutes = Minutes.minutesBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
+						time = minutes.getMinutes();
+						text = R.string.commit_authored_at_minutes;
+						if (time == 0) {
+							Seconds seconds = Seconds.secondsBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
+							time = seconds.getSeconds();
+							text = R.string.commit_authored_at_seconds;
+						}
+					}
+				}
+			}
+		}
+
+		return getContext().getResources().getString(text, name, time);
 	}
 
 	@Override
