@@ -189,19 +189,21 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 	}
 
 	private void displayContent(ListContents contents) {
-		stopRefresh();
+		if (getActivity() != null) {
+			stopRefresh();
 
-		if (currentSelectedContent.parent != null) {
-			fabUp.setVisibility(View.VISIBLE);
-			fabMenu.expand();
-		} else {
-			fabUp.setVisibility(View.INVISIBLE);
-			fabMenu.collapse();
+			if (currentSelectedContent.parent != null) {
+				fabUp.setVisibility(View.VISIBLE);
+				fabMenu.expand();
+			} else {
+				fabUp.setVisibility(View.INVISIBLE);
+				fabMenu.collapse();
+			}
+
+			int style = R.style.AppTheme_Repos;
+			contentAdapter = new RepoSourceAdapter(getActivity(), contents, style);
+			setListAdapter(contentAdapter);
 		}
-
-		int style = R.style.AppTheme_Repos;
-		contentAdapter = new RepoSourceAdapter(getActivity(), contents, style);
-		setListAdapter(contentAdapter);
 	}
 
 	@Override

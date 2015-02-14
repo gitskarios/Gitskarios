@@ -67,7 +67,11 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
 		if (commit.commit != null) {
 			User author = commit.author;
-			title.setText(commit.commit.message);
+			String message = commit.commit.message;
+			if (message != null && message.length() > 80) {
+				message = message.substring(0, 80);
+			}
+			title.setText(message);
 			if (author == null) {
 				author = commit.commit.author;
 			}
