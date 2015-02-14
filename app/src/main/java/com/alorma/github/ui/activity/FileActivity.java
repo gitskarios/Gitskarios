@@ -54,6 +54,7 @@ public class FileActivity extends BackActivity implements BaseClient.OnResultCal
 
 	public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String name, String path) {
 		Bundle bundle = new Bundle();
+		bundle.putParcelable(REPO_INFO, repoInfo);
 		bundle.putString(NAME, name);
 		bundle.putString(PATH, path);
 
