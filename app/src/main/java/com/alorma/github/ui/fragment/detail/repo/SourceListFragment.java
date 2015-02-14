@@ -44,8 +44,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>,
-		BranchManager, TitleProvider {
+public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider {
 
 	private static final String REPO_INFO = "REPO_INFO";
 
@@ -95,6 +94,28 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		});
 
 		fabDownload.setIconDrawable(downloadIcon);
+
+		FloatingActionButton fabBranches = (FloatingActionButton) view.findViewById(R.id.fab_branches);
+		GithubIconDrawable branchesIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_repo_forked);
+		branchesIcon.colorRes(R.color.white);
+		branchesIcon.sizeRes(R.dimen.fab_size_mini_icon);
+		fabBranches.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+				repoBranchesClient.setOnResultCallback(new DialogBranchesCallback(getActivity(), repoInfo) {
+
+					@Override
+					protected void onBranchSelected(String branch) {
+						setCurrentBranch(branch);
+					}
+				});
+				repoBranchesClient.execute();
+				fabMenu.collapse();
+			}
+		});
+
+		fabBranches.setIconDrawable(branchesIcon);
 
 		fabUp = (FloatingActionButton) view.findViewById(R.id.fab_up);
 		GithubIconDrawable upIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_arrow_up);
@@ -213,8 +234,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		}
 	}
 
-	@Override
-	public void setCurrentBranch(Branch branch) {
+	public void setCurrentBranch(String branch) {
+		repoInfo.branch = branch;
 		getContent();
 	}
 
