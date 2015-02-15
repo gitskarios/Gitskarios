@@ -122,7 +122,12 @@
     <string name="source_download_notification_finished">Source code from %1$s was downloaded</string>
     <string name="pref_repos_download_type">Download file extension</string>
     <string name="title_activity_commits">Commits</string>
-    <string name="commit_authored_at">%1$s authored %2$d days ago</string>
+    <string name="commit_authored_at_years">%1$s authored %2$d years ago</string>
+    <string name="commit_authored_at_months">%1$s authored %2$d month ago</string>
+    <string name="commit_authored_at_days">%1$s authored %2$d days ago</string>
+    <string name="commit_authored_at_hours">%1$s authored %2$d hours ago</string>
+    <string name="commit_authored_at_minutes">%1$s authored %2$d minutes ago</string>
+    <string name="commit_authored_at_seconds">%1$s authored %2$d seconds ago</string>
     <string name="commit_additions">Additions %d</string>
     <string name="commit_deletions">Deletions %d</string>
     <string name="unfollow">Unfollow</string>

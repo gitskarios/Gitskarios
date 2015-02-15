@@ -1,1 +1,1 @@
-include ':app', ':sdk', ':libraries:GitDiffTextView', ':libraries:AndroidGithubIcons', ':libraries:android-floating-action-button'
+include ':app', ':sdk', ':libraries:AndroidGithubIcons', ':libraries:android-floating-action-button'

@@ -16,6 +16,7 @@ import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
@@ -47,10 +48,10 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 	private MaterialEditText editTitle;
 	private MaterialEditText editBody;
 
-	public static Intent createLauncherIntent(Context context, String owner, String repo, boolean pushAcces) {
+	public static Intent createLauncherIntent(Context context, RepoInfo info, boolean pushAcces) {
 		Bundle bundle = new Bundle();
-		bundle.putString(OWNER, owner);
-		bundle.putString(REPO, repo);
+		bundle.putString(OWNER, info.owner);
+		bundle.putString(REPO, info.name);
 		bundle.putBoolean(PUSH, pushAcces);
 		Intent intent = new Intent(context, NewIssueActivity.class);
 		intent.putExtras(bundle);
@@ -80,7 +81,10 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 			} else {
 				findViewsAcces();
 
-				GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), owner, repo);
+				RepoInfo repoInfo = new RepoInfo();
+				repoInfo.owner = owner;
+				repoInfo.name = repo;
+				GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
 				contributorsClient.setOnResultCallback(new ContributorsCallback());
 				contributorsClient.execute();
 			}

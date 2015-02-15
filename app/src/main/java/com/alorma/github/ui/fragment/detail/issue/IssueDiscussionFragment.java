@@ -79,8 +79,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	protected void executeRequest() {
 		super.executeRequest();
 
-		if (issueInfo.owner != null && issueInfo.repo != null && issueInfo.num > 0) {
-			GetIssueComments issueComments = new GetIssueComments(getActivity(), issueInfo.owner, issueInfo.repo, issueInfo.num);
+		if (issueInfo.repo.owner != null && issueInfo.repo.name != null && issueInfo.num > 0) {
+			GetIssueComments issueComments = new GetIssueComments(getActivity(), issueInfo);
 			issueComments.setOnResultCallback(this);
 			issueComments.execute();
 		}
@@ -92,8 +92,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 
 		adapter.setLazyLoading(true);
 
-		if (issueInfo.owner != null && issueInfo.repo != null && issueInfo.num > 0) {
-			GetIssueComments issueComments = new GetIssueComments(getActivity(), issueInfo.owner, issueInfo.repo, issueInfo.num, page);
+		if (issueInfo.repo.owner != null && issueInfo.repo.name != null && issueInfo.num > 0) {
+			GetIssueComments issueComments = new GetIssueComments(getActivity(), issueInfo, page);
 			issueComments.setOnResultCallback(this);
 			issueComments.execute();
 		}

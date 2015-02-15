@@ -21,6 +21,7 @@ import com.alorma.github.ui.fragment.search.SearchUsersFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
+import com.alorma.github.utils.AttributesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class PeopleActivity extends BackActivity implements SearchView.OnQueryTe
 
 		SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
-		slidingTabLayout.setSelectedIndicatorColors(Color.WHITE);
+		slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_People));
 		slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
 		viewPager = (ViewPager) findViewById(R.id.pager);
@@ -79,7 +80,7 @@ public class PeopleActivity extends BackActivity implements SearchView.OnQueryTe
 		listFragments = new ArrayList<>();
 		listFragments.add(followersFragment);
 		listFragments.add(followingFragment);
-		//listFragments.add(organzationsFragment);
+		listFragments.add(organzationsFragment);
 
 		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 		slidingTabLayout.setViewPager(viewPager);
@@ -111,8 +112,8 @@ public class PeopleActivity extends BackActivity implements SearchView.OnQueryTe
 					return getString(R.string.navigation_following);
 				case 1:
 					return getString(R.string.navigation_followers);
-				/*case 2:
-					return getString(R.string.menu_organizations);*/
+				case 2:
+					return getString(R.string.menu_organizations);
 			}
 			return "";
 		}

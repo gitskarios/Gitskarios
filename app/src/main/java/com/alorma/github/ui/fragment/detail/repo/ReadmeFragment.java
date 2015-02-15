@@ -22,14 +22,17 @@ import android.webkit.WebViewClient;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -38,18 +41,17 @@ import retrofit.client.Response;
  */
 public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider {
 
-	public static final String OWNER = "OWNER";
-	public static final String REPO = "REPO";
+	private static final String REPO_INFO = "REPO_INFO";
+	private RepoInfo repoInfo;
 
 	private WebView webview;
-	private String owner;
-	private String repo;
-	private UpdateReceiver updateReceiver;
 
-	public static ReadmeFragment newInstance(String owner, String repo) {
+	private UpdateReceiver updateReceiver;
+	private SmoothProgressBar progressBar;
+
+	public static ReadmeFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
-		bundle.putString(OWNER, owner);
-		bundle.putString(REPO, repo);
+		bundle.putParcelable(REPO_INFO, repoInfo);
 
 		ReadmeFragment f = new ReadmeFragment();
 		f.setArguments(bundle);
@@ -68,8 +70,13 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 		super.onViewCreated(view, savedInstanceState);
 
 		if (getArguments() != null) {
-			owner = getArguments().getString(OWNER);
-			repo = getArguments().getString(REPO);
+			loadArguments();
+
+			progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
+
+			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
+
+			progressBar.setSmoothProgressDrawableColor(color);
 
 			webview = (WebView) view.findViewById(R.id.webContainer);
 			webview.setPadding(0, 24, 0, 0);
@@ -87,40 +94,31 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 		}
 	}
 
+	protected void loadArguments() {
+		if (getArguments() != null) {
+			repoInfo = getArguments().getParcelable(REPO_INFO);
+		}
+	}
+
 	private void getContent() {
-		GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
+
+		if (progressBar != null) {
+			progressBar.setVisibility(View.VISIBLE);
+			progressBar.progressiveStart();
+		}
+		
+		GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
 		repoMarkdownClient.setCallback(this);
 		repoMarkdownClient.execute();
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-		menu.add(0, R.id.action_repo_watch, 1, R.string.menu_watch);
-
-		int color = Color.WHITE;
-
-		MenuItem itemWatch = menu.findItem(R.id.action_repo_watch);
-		itemWatch.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		GithubIconDrawable drawableWatch = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_eye);
-		drawableWatch.setStyle(Paint.Style.FILL);
-		drawableWatch.color(color);
-		drawableWatch.actionBarSize();
-		itemWatch.setIcon(drawableWatch);
-
-		menu.add(0, R.id.action_repo_star, 0, R.string.menu_star);
-
-		MenuItem itemStar = menu.findItem(R.id.action_repo_star);
-		itemStar.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		GithubIconDrawable drawableStar = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_star);
-		drawableStar.setStyle(Paint.Style.FILL);
-		drawableStar.color(color);
-		drawableStar.actionBarSize();
-		itemStar.setIcon(drawableStar);
-	}
-
-	@Override
 	public void onResponseOk(final String s, Response r) {
+
+		if (progressBar != null) {
+			progressBar.progressiveStop();
+			progressBar.setVisibility(View.INVISIBLE);
+		}
 		webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
 	}
 
@@ -132,8 +130,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 	@Override
 	public void setCurrentBranch(Branch branch) {
 		if (getActivity() != null) {
-			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), owner, repo);
-			repoMarkdownClient.setCurrentBranch(branch);
+			GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
 			repoMarkdownClient.setCallback(this);
 			repoMarkdownClient.execute();
 		}
@@ -157,7 +154,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			return true;
 		}
 	}
-	
+
 	public void reload() {
 		getContent();
 	}
@@ -193,5 +190,5 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
 		}
 	}
-	
+
 }

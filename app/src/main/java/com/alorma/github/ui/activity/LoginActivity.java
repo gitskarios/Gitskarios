@@ -49,7 +49,7 @@ public class LoginActivity extends Activity {
 		} else {
 			String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
 
-			url = url + "&scope=gist,user,repo,notifications";
+			url = url + "&scope=gist,user,name,notifications";
 
 			WebView webview = (WebView) findViewById(R.id.webview);
 			webview.getSettings().setJavaScriptEnabled(true);

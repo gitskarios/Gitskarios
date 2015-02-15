@@ -1,11 +1,16 @@
 package com.alorma.github.ui.fragment.commit;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -16,9 +21,12 @@ import com.alorma.github.sdk.bean.dto.response.ListCommit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
+import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
+import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.DirectionalScrollListener;
@@ -40,18 +48,19 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * Created by Bernat on 07/09/2014.
  */
 public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider {
-	private static final String OWNER = "OWNER";
-	private static final String REPO = "REPO";
-	private RepoInfo info;
-	private Branch currentBranch;
+
+	private static final String REPO_INFO = "REPO_INFO";
+
 	private CommitsAdapter commitsAdapter;
 	private List<Commit> commitsMap;
 	private StickyListHeadersListView listView;
+	
+	private RepoInfo repoInfo;
+	private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
 
-	public static CommitsListFragment newInstance(String owner, String repo) {
+	public static CommitsListFragment newInstance(RepoInfo repoInfo) {
 		Bundle bundle = new Bundle();
-		bundle.putString(OWNER, owner);
-		bundle.putString(REPO, repo);
+		bundle.putParcelable(REPO_INFO, repoInfo);
 
 		CommitsListFragment fragment = new CommitsListFragment();
 		fragment.setArguments(bundle);
@@ -100,6 +109,43 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 		}
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		IntentFilter filter = new IntentFilter();
+
+		filter.addAction(Intent.ACTION_TIME_TICK);
+		filter.addAction(Intent.ACTION_TIME_CHANGED);
+		filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+
+		timeTickBroadcastReceiver = new TimeTickBroadcastReceiver();
+		
+		getActivity().registerReceiver(timeTickBroadcastReceiver, filter);
+	}
+
+	@Override
+	public void onPause() {
+		getActivity().unregisterReceiver(timeTickBroadcastReceiver);
+		super.onPause();
+	}
+
+	private class TimeTickBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (commitsAdapter != null) {
+						commitsAdapter.notifyDataSetChanged();
+					}
+				}
+			});
+		}
+	}
+
 	private void orderCommits(ListCommit commits) {
 
 		for (Commit commit : commits) {
@@ -119,7 +165,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	@Override
 	protected void executeRequest() {
 		super.executeRequest();
-		ListCommitsClient client = new ListCommitsClient(getActivity(), info, 0, currentBranch);
+		ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, 0);
 		client.setOnResultCallback(this);
 		client.execute();
 	}
@@ -128,17 +174,15 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	protected void executePaginatedRequest(int page) {
 		super.executePaginatedRequest(page);
 		commitsAdapter.setLazyLoading(true);
-		ListCommitsClient client = new ListCommitsClient(getActivity(), info, page, currentBranch);
+		ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, page);
 		client.setOnResultCallback(this);
 		client.execute();
 	}
 
 	@Override
 	protected void loadArguments() {
-		info = new RepoInfo();
 		if (getArguments() != null) {
-			info.owner = getArguments().getString(OWNER);
-			info.repo = getArguments().getString(REPO);
+			repoInfo = getArguments().getParcelable(REPO_INFO);
 		}
 	}
 
@@ -169,46 +213,24 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
 	@Override
 	protected void fabClick() {
-		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), info.owner, info.repo);
-		repoBranchesClient.setOnResultCallback(new BranchesCallback());
+		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+		repoBranchesClient.setOnResultCallback(new ChangeBranchCallback(getActivity(), repoInfo));
 		repoBranchesClient.execute();
 	}
 
-	private class BranchesCallback implements BaseClient.OnResultCallback<ListBranches>, MaterialDialog.ListCallback {
+	private class ChangeBranchCallback extends DialogBranchesCallback {
 
-		private ListBranches branches;
+		public ChangeBranchCallback(Context context, RepoInfo repoInfo) {
+			super(context, repoInfo);
+		}
 
 		@Override
-		public void onResponseOk(ListBranches branches, Response r) {
-			this.branches = branches;
-			if (branches != null) {
-				MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-				String[] names = new String[branches.size()];
-				int selectedIndex = 0;
-				for (int i = 0; i < branches.size(); i++) {
-					String branchName = branches.get(i).name;
-					names[i] = branchName;
-					if (((currentBranch != null) && branchName.equalsIgnoreCase(currentBranch.toString())) || branchName.equalsIgnoreCase("master")) {
-						selectedIndex = i;
-					}
-				}
-				builder.autoDismiss(true);
-				builder.items(names);
-				builder.itemsCallbackSingleChoice(selectedIndex, this);
-				builder.build().show();
+		protected void onBranchSelected(String branch) {
+			repoInfo.branch = branch;
+
+			if (commitsAdapter != null) {
+				commitsAdapter.clear();
 			}
-		}
-
-		@Override
-		public void onFail(RetrofitError error) {
-
-		}
-
-		@Override
-		public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-			currentBranch = branches.get(i);
-			materialDialog.dismiss();
-			commitsAdapter.clear();
 			startRefresh();
 			refreshing = true;
 			executeRequest();
@@ -220,7 +242,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 		super.onListItemClick(l, v, position, id);
 		Commit item = commitsAdapter.getItem(position);
 
-		Intent intent = CommitDetailActivity.launchIntent(getActivity(), info, item.sha);
+		Intent intent = CommitDetailActivity.launchIntent(getActivity(), repoInfo, item.sha);
 		startActivity(intent);
 	}
 }
