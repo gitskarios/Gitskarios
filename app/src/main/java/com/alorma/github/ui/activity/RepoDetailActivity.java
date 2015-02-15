@@ -120,7 +120,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 	}
 
 	private void setData() {
-		
+
 		readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
 		sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
 		commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
@@ -138,15 +138,15 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
 		viewPager.setOffscreenPageLimit(listFragments.size());
 
-		slidingTabLayout.setViewPager(viewPager);		
+		slidingTabLayout.setViewPager(viewPager);
 	}
-	
+
 	private RepoInfo getRepoInfo() {
 		RepoInfo repoInfo = new RepoInfo();
 		repoInfo.owner = currentRepo.owner.login;
 		repoInfo.name = currentRepo.name;
 		repoInfo.branch = currentRepo.default_branch;
-		
+
 		return repoInfo;
 	}
 
@@ -168,6 +168,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 		public int getCount() {
 			return listFragments.size();
 		}
+
 		@Override
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
@@ -321,9 +322,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 			setTitle(currentRepo.name);
 
 			getStarWatchData();
-			
+
 			setData();
-			
+
 			this.invalidateOptionsMenu();
 
 			if (issuesListFragment != null) {
@@ -384,7 +385,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
 		@Override
 		public void onFail(RetrofitError error) {
-			
+
 		}
 	}
 
@@ -396,14 +397,14 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 				repoStarred = true;
 				invalidateOptionsMenu();
 			}
-			
+
 		}
 
 		@Override
 		public void onFail(RetrofitError error) {
 			if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
 			}
-			
+
 		}
 	}
 
@@ -445,7 +446,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
 		@Override
 		public void onFail(RetrofitError error) {
-			
+
 		}
 	}
 
@@ -468,5 +469,14 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (viewPager.getCurrentItem() == 1) {
+			sourceListFragment.onBackPressed();
+		} else {
+			super.onBackPressed();
+		}
 	}
 }

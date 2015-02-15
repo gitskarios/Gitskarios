@@ -124,10 +124,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		fabUp.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				currentSelectedContent = currentSelectedContent.parent;
-				if (treeContent.get(currentSelectedContent) != null) {
-					displayContent(treeContent.get(currentSelectedContent));
-				}
+				navigateUp();
 			}
 		});
 
@@ -138,6 +135,17 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
 			getContent();
 
+		}
+	}
+
+	private void navigateUp() {
+		currentSelectedContent = currentSelectedContent.parent;
+		if (currentSelectedContent != null) {
+			if (treeContent.get(currentSelectedContent) != null) {
+				displayContent(treeContent.get(currentSelectedContent));
+			}
+		} else {
+			getActivity().finish();
 		}
 	}
 
@@ -160,10 +168,10 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		}
 
 		contentAdapter = null;
-		
+
 		fabUp.setVisibility(View.INVISIBLE);
 		fabMenu.collapse();
-		
+
 		GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
 		repoContentsClient.setOnResultCallback(this);
 		repoContentsClient.execute();
@@ -281,5 +289,9 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 			GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo, downloadFileType);
 			getArchiveLinkService.execute();
 		}
+	}
+
+	public void onBackPressed() {
+		navigateUp();
 	}
 }
