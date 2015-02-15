@@ -58,6 +58,14 @@
             fab:fab_colorNormal="@color/repos_accent"
             fab:fab_colorPressed="@color/repos_primary_light"
             android:id="@+id/fab_up"/>
+        
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_size="mini"
+            fab:fab_colorNormal="@color/repos_accent"
+            fab:fab_colorPressed="@color/repos_primary_light"
+            android:id="@+id/fab_branches"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -68,14 +76,6 @@
             android:id="@+id/fab_download"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-    <!--    <include
-            layout="@layout/fab"
-            android:layout_width="@dimen/fab"
-            android:layout_height="@dimen/fab"
-            android:layout_margin="@dimen/gapLarge"
-            android:scaleType="centerInside"
-            android:layout_gravity="bottom|right|end"/>-->
 
     <RelativeLayout
         android:layout_width="wrap_content"

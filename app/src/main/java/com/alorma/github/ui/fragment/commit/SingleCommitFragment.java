@@ -83,18 +83,20 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 
 	@Override
 	public void onResponseOk(Commit commit, Response r) {
-		getActivity().setTitle(commit.sha.substring(0, 8));
+		if (getActivity() != null) {
+			getActivity().setTitle(commit.sha.substring(0, 8));
 
-		textMessage.setText(commit.commit.message);
+			textMessage.setText(commit.commit.message);
 
-		String additions = getResources().getString(R.string.commit_additions, commit.stats.additions);
-		String deletions = getResources().getString(R.string.commit_deletions, commit.stats.deletions);
+			String additions = getResources().getString(R.string.commit_additions, commit.stats.additions);
+			String deletions = getResources().getString(R.string.commit_deletions, commit.stats.deletions);
 
-		textAdditions.setText(additions);
-		textDeletions.setText(deletions);
+			textAdditions.setText(additions);
+			textDeletions.setText(deletions);
 
-		CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), commit.files);
-		recyclerView.setAdapter(adapter);
+			CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), commit.files);
+			recyclerView.setAdapter(adapter);
+		}
 	}
 
 	@Override
