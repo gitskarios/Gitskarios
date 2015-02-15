@@ -125,7 +125,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
 		if (time == 0) {
 			Months months = Months.monthsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-			text = R.string.commit_authored_at_days;
+			text = R.string.commit_authored_at_months;
 			time = months.getMonths();
 
 			if (time == 0) {

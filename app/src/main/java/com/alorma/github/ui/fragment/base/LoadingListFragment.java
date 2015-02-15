@@ -324,7 +324,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (isOnline(context)) {
+			if (listView != null && listView.getAdapter() != null && listView.getAdapter().getCount() == 0 && isOnline(context)) {
 				reload();
 			}
 		}
