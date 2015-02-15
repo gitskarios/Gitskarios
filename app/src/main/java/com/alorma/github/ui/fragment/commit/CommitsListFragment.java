@@ -5,25 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.dto.response.ListCommit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
-import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
@@ -40,8 +32,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
@@ -54,7 +44,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	private CommitsAdapter commitsAdapter;
 	private List<Commit> commitsMap;
 	private StickyListHeadersListView listView;
-	
+
 	private RepoInfo repoInfo;
 	private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
 
@@ -87,7 +77,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	}
 
 	@Override
-	protected void onResponse(ListCommit commits, boolean refreshing) {
+	protected void onResponse(final ListCommit commits, boolean refreshing) {
 		if (commitsMap == null || refreshing) {
 			commitsMap = new ArrayList<>();
 		}
@@ -96,14 +86,24 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 			orderCommits(commits);
 
 			if (commitsAdapter == null || refreshing) {
-				commitsAdapter = new CommitsAdapter(getActivity(), commitsMap);
-				listView.setAdapter(commitsAdapter);
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						commitsAdapter = new CommitsAdapter(getActivity(), commitsMap);
+						listView.setAdapter(commitsAdapter);
+					}
+				});
 			}
 
 			if (commitsAdapter.isLazyLoading()) {
 				if (commitsAdapter != null) {
-					commitsAdapter.setLazyLoading(false);
-					commitsAdapter.addAll(commits);
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							commitsAdapter.setLazyLoading(false);
+							commitsAdapter.addAll(commits);
+						}
+					});
 				}
 			}
 		}
@@ -156,7 +156,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 				Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
 				commit.days = days.getDays();
-				
+
 				commitsMap.add(commit);
 			}
 		}
@@ -238,8 +238,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 	}
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
 		Commit item = commitsAdapter.getItem(position);
 
 		Intent intent = CommitDetailActivity.launchIntent(getActivity(), repoInfo, item.sha);
