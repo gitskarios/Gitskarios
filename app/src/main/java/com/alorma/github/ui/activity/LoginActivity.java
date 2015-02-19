@@ -25,7 +25,7 @@ import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginActivity extends Activity  {
+public class LoginActivity extends Activity {
 
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -54,10 +54,14 @@ public class LoginActivity extends Activity  {
 		webview.clearSslPreferences();
 
 		webview.getSettings().setUseWideViewPort(true);
-		
+
 		credentials = new StoreCredentials(this);
 		if (credentials.token() != null) {
-			updatingTokens();
+			if (credentials.scopeNoAsk()) {
+				openMain();
+			} else {
+				updatingTokens();
+			}
 		} else {
 			login();
 		}
@@ -89,23 +93,28 @@ public class LoginActivity extends Activity  {
 				public void onNegative(MaterialDialog dialog) {
 					super.onNegative(dialog);
 
-					MainActivity.startActivity(LoginActivity.this);
-					finish();
+					credentials.saveScopeNoAsk(true);
+					openMain();
 				}
 			});
 			builder.show();
-		}else {
+		} else {
 			MainActivity.startActivity(this);
 			finish();
 		}
+	}
+
+
+	private void openMain() {
+		MainActivity.startActivity(LoginActivity.this);
+		finish();
 	}
 
 	private void endAccess(String accessToken, String scope) {
 		if (credentials != null) {
 			credentials.storeToken(accessToken);
 			credentials.storeScopes(scope);
-			MainActivity.startActivity(this);
-			finish();
+			openMain();
 		}
 	}
 

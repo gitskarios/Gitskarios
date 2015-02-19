@@ -141,7 +141,7 @@ public class BaseActivity extends ActionBarActivity {
 		public void onReceive(Context context, Intent intent) {
 			Toast.makeText(context, R.string.unauthorized, Toast.LENGTH_SHORT).show();
 			Intent loginIntent = new Intent(context, LoginActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(loginIntent);
 			finish();
 		}
