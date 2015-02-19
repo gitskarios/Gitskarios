@@ -6,16 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.Notification;
-import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.events.EventType;
-import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
+import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
@@ -25,7 +19,6 @@ import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconify;
-import com.google.gson.Gson;
 
 import java.util.Collections;
 import java.util.HashMap;

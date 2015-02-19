@@ -1,9 +1,6 @@
 package com.alorma.github.ui.fragment.repos;
 
-import android.animation.PropertyValuesHolder;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
@@ -11,10 +8,7 @@ import com.alorma.github.sdk.services.repos.UserReposClient;
 
 public class ReposFragment extends BaseReposListFragment {
 
-	private static final int NEW_REPO_REQUEST = 8978;
 	private String username;
-	private float fabOldY;
-	private float fabNewY;
 
 	public static ReposFragment newInstance() {
 		return new ReposFragment();

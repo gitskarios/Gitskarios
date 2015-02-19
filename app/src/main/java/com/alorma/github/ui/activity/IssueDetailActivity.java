@@ -199,9 +199,10 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 				.title(title)
 				.positiveText(accept)
 				.negativeText(cancel)
-				.callback(new MaterialDialog.SimpleCallback() {
+				.callback(new MaterialDialog.ButtonCallback() {
 					@Override
 					public void onPositive(MaterialDialog materialDialog) {
+						super.onPositive(materialDialog);
 						closeIssue();
 					}
 				})

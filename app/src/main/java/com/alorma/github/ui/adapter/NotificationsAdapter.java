@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.Notification;
+import com.alorma.github.sdk.bean.dto.response.Notification;
 
 import java.util.List;
 

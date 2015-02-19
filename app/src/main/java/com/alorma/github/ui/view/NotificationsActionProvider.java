@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.Notification;
+import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.githubicons.GithubIconDrawable;
