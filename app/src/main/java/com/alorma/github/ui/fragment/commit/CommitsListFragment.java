@@ -64,7 +64,6 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 				, null);
 	}
 
-
 	@Override
 	protected void setupListView(View view) {
 		listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);

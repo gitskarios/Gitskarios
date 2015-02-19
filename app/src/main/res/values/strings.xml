@@ -144,5 +144,8 @@
     <string name="loading_user">Loading user</string>
     <string name="navigation_people">People</string>
     <string name="code_download">Source code is waiting for download</string>
+    <string name="action_notifications">Notifications</string>
+    <string name="no_notifications">No notifications</string>
+    <string name="notifications">Notifications</string>
 
 </resources>
