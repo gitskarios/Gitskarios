@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ActionProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import com.alorma.github.inapp.Purchase;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
@@ -29,9 +31,10 @@ import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
+import com.alorma.github.ui.view.NotificationsActionProvider;
 
 public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
-		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, NotificationsActionProvider.OnNotificationListener {
 
 	private MenuFragment menuFragment;
 
@@ -98,6 +101,13 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 			searchView.setSubmitButtonEnabled(true);
 			searchView.setOnQueryTextListener(this);
 			searchView.setOnCloseListener(this);
+
+			android.view.MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
+
+			NotificationsActionProvider notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
+
+			notificationProvider.setOnNotificationListener(this);
+
 		}
 
 		return true;
@@ -298,5 +308,15 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 		} else {
 			super.onBackPressed();
 		}
+	}
+
+	@Override
+	public void onNotificationRequested() {
+		setFragment(NotificationsFragment.newInstance());
+	}
+
+	@Override
+	public void onNotificationInfoReceived(int notifications) {
+
 	}
 }

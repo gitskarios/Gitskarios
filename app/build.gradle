@@ -68,7 +68,6 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.4.6'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     compile 'com.pnikosis:materialish-progress:1.0'
-    compile 'net.danlew:android.joda:2.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
     compile('de.psdev.licensesdialog:licensesdialog:1.6.0') {
         exclude module: 'support-v4'
