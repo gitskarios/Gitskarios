@@ -146,5 +146,6 @@
     <string name="code_download">Source code is waiting for download</string>
     <string name="action_notifications">Notifications</string>
     <string name="no_notifications">No notifications</string>
+    <string name="notifications">Notifications</string>
 
 </resources>

@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
@@ -108,6 +109,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 			issueInfo.num = issue.number;
 			String fullName = item.repo.name;
 			String[] parts = fullName.split("/");
+			issueInfo.repo =  new RepoInfo();
 			issueInfo.repo.owner = parts[0];
 			issueInfo.repo.name = parts[1];
 			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo, item.repo.permissions);

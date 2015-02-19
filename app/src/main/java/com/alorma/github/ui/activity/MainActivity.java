@@ -312,6 +312,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
 	@Override
 	public void onNotificationRequested() {
+		setTitle(R.string.notifications);
 		setFragment(NotificationsFragment.newInstance());
 	}
 
