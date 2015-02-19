@@ -80,21 +80,13 @@ public class LoginActivity extends Activity {
 			builder.title(R.string.repo_scope_title);
 			builder.content(R.string.repo_scope_message);
 			builder.positiveText(R.string.repo_scope_positive);
-			builder.negativeText(R.string.repo_scope_negative);
+			builder.cancelable(false);
 			builder.callback(new MaterialDialog.ButtonCallback() {
 				@Override
 				public void onPositive(MaterialDialog dialog) {
 					super.onPositive(dialog);
 					credentials.clear();
 					login();
-				}
-
-				@Override
-				public void onNegative(MaterialDialog dialog) {
-					super.onNegative(dialog);
-
-					credentials.saveScopeNoAsk(true);
-					openMain();
 				}
 			});
 			builder.show();

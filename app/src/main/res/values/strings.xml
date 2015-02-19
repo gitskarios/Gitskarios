@@ -148,8 +148,7 @@
     <string name="no_notifications">No notifications</string>
     <string name="notifications">Notifications</string>
     <string name="repo_scope_title">Update authorization</string>
-    <string name="repo_scope_message">This application needs to request new token, because i left to ask for repository permission.\nWithout this permission you are not able to see private repositories, private organizations, publish issues or star / watch a repository.\n\n</string>
+    <string name="repo_scope_message">We need you to reauthorize due to some changes on the API.\n\nBy reauthorizing the app you\'ll also have access to new features</string>
     <string name="repo_scope_positive">Ok, reauthorize</string>
-    <string name="repo_scope_negative">No, continue as is</string>
 
 </resources>
