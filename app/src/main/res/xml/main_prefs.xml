@@ -23,5 +23,9 @@
     <Preference
         android:title="@string/repo_scope_title"
         android:key="reauthorize"/>
+    
+<!--    <Preference
+        android:title="@string/action_donate"
+        android:key="donate"/>-->
 
 </PreferenceScreen>
