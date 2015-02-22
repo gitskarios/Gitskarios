@@ -14,7 +14,6 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
 }
 
-
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
@@ -22,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 21
-        versionName "1.9.1"
-        versionCode 191
+        versionName "1.9.3"
+        versionCode 193
     }
 
     signingConfigs {
