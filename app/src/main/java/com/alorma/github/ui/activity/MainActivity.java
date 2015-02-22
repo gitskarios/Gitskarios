@@ -4,24 +4,17 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.View;
 
 import com.alorma.github.R;
-import com.alorma.github.inapp.IabConstants;
-import com.alorma.github.inapp.IabHelper;
-import com.alorma.github.inapp.IabResult;
-import com.alorma.github.inapp.Inventory;
-import com.alorma.github.inapp.Purchase;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
 import com.alorma.github.ui.fragment.menu.MenuItem;
@@ -29,17 +22,15 @@ import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
+import com.alorma.github.ui.view.NotificationsActionProvider;
 
-public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener, IabHelper.OnIabSetupFinishedListener,
-		IabHelper.OnIabPurchaseFinishedListener, IabHelper.QueryInventoryFinishedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, NotificationsActionProvider.OnNotificationListener {
 
 	private MenuFragment menuFragment;
 
 	private ReposFragment reposFragment;
 	private StarredReposFragment starredFragment;
 	private WatchedReposFragment watchedFragment;
-	private IabHelper iabHelper;
-	private boolean iabEnabled;
 	private EventsListFragment eventsFragment;
 	private SearchReposFragment searchReposFragment;
 	private SearchView searchView;
@@ -58,18 +49,20 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 		GetAuthUserClient client = new GetAuthUserClient(this);
 		client.execute();
 
-		checkIab();
-
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		menuFragment = MenuFragment.newInstance();
-		menuFragment.setOnMenuItemSelectedListener(this);
-		ft.replace(R.id.menuContent, menuFragment);
-		ft.commit();
-	}
-
-	private void checkIab() {
-		iabHelper = new IabHelper(this, IabConstants.KEY);
-		iabHelper.startSetup(this);
+		if (savedInstanceState == null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			menuFragment = MenuFragment.newInstance();
+			ft.replace(R.id.menuContent, menuFragment, "menu");
+			ft.commit();
+		} else {
+			if (savedInstanceState.containsKey("TITLE")) {
+				setTitle(savedInstanceState.getString("TITLE"));
+			}
+			menuFragment = (MenuFragment) getFragmentManager().findFragmentByTag("menu");
+		}
+		if (menuFragment !=  null) {
+			menuFragment.setOnMenuItemSelectedListener(this, savedInstanceState == null);
+		}
 	}
 
 	@Override
@@ -98,6 +91,13 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 			searchView.setSubmitButtonEnabled(true);
 			searchView.setOnQueryTextListener(this);
 			searchView.setOnCloseListener(this);
+
+			android.view.MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
+
+			NotificationsActionProvider notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
+
+			notificationProvider.setOnNotificationListener(this);
+
 		}
 
 		return true;
@@ -135,19 +135,6 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 			searchReposFragment = SearchReposFragment.newInstance(query);
 			setFragment(searchReposFragment, true);
 		}
-	}
-
-	@Override
-	public void onIabSetupFinished(IabResult result) {
-		iabEnabled = result.isSuccess();
-		if (iabEnabled) {
-			try {
-				iabHelper.queryInventoryAsync(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 	private void setFragment(Fragment fragment) {
@@ -248,55 +235,30 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 	}
 
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (iabHelper != null) {
-			iabHelper.dispose();
-		}
-		iabHelper = null;
-	}
-
-	@Override
-	public void onIabPurchaseFinished(IabResult result, Purchase info) {
-		if (result.isFailure()) {
-			invalidateOptionsMenu();
-		} else if (info.getSku().equals(IabConstants.SKU_DONATE)) {
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putBoolean(IabConstants.SKU_DONATE, true);
-			editor.apply();
-			invalidateOptionsMenu();
-		}
-	}
-
-	@Override
-	public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-		if (result.isFailure()) {
-			if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_DEVELOPER_ERROR) {
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-				SharedPreferences.Editor editor = preferences.edit();
-				editor.putBoolean(IabConstants.SKU_DONATE, true);
-				editor.apply();
-			}
-			invalidateOptionsMenu();
-		} else {
-			boolean iabDonatePurchased = inv.hasPurchase(IabConstants.SKU_DONATE);
-			if (iabDonatePurchased) {
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-				SharedPreferences.Editor editor = preferences.edit();
-				editor.putBoolean(IabConstants.SKU_DONATE, true);
-				editor.apply();
-			}
-			invalidateOptionsMenu();
-		}
-	}
-
-	@Override
 	public void onBackPressed() {
 		if (!searchView.isIconified()) {
 			searchView.setIconified(true);
 		} else {
 			super.onBackPressed();
+		}
+	}
+
+	@Override
+	public void onNotificationRequested() {
+		setTitle(R.string.notifications);
+		setFragment(NotificationsFragment.newInstance());
+	}
+
+	@Override
+	public void onNotificationInfoReceived(int notifications) {
+
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (outState != null) {
+			outState.putString("TITLE", getToolbar().getTitle().toString());
 		}
 	}
 }

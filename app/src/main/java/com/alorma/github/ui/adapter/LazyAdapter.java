@@ -8,8 +8,10 @@ import android.widget.ArrayAdapter;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.User;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -70,5 +72,12 @@ public abstract class LazyAdapter<T> extends ArrayAdapter<T> {
 
 	public void setLazyLoading(boolean lazyLoading) {
 		this.lazyLoading = lazyLoading;
+	}
+
+	public void addAll(Collection<? extends T> collection, boolean paging) {
+		if (!paging) {
+			clear();
+		}
+		super.addAll(collection);
 	}
 }

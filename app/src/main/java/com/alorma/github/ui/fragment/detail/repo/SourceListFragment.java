@@ -281,12 +281,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 		protected void onBranchSelected(String branch) {
 			Toast.makeText(getContext(), R.string.code_download, Toast.LENGTH_LONG).show();
 
-			String downloadFileType = new GitskariosSettings(getContext()).getDownloadFileType();
 			RepoInfo repoInfo = new RepoInfo();
 			repoInfo.owner = getRepoInfo().owner;
 			repoInfo.name = getRepoInfo().name;
 			repoInfo.branch = branch;
-			GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo, downloadFileType);
+			GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
 			getArchiveLinkService.execute();
 		}
 	}

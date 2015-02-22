@@ -14,7 +14,6 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
 }
 
-
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
@@ -22,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 21
-        versionName "1.8.8"
-        versionCode 188
+        versionName "1.9.3"
+        versionCode 193
     }
 
     signingConfigs {
@@ -54,7 +53,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.google.android.gms:play-services:6.5.87'
+    //compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:support-v13:21.0.2'
     compile 'com.android.support:palette-v7:21.0.2'
@@ -65,10 +64,9 @@ dependencies {
     compile project(':libraries:android-floating-action-button')
     compile 'com.github.alorma:diff-textview:1.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.afollestad:material-dialogs:0.4.6'
+    compile 'com.afollestad:material-dialogs:0.6.3.0'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     compile 'com.pnikosis:materialish-progress:1.0'
-    compile 'net.danlew:android.joda:2.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
     compile('de.psdev.licensesdialog:licensesdialog:1.6.0') {
         exclude module: 'support-v4'

@@ -1,11 +1,6 @@
 package com.alorma.github.ui.fragment.base;
 
 import android.app.Fragment;
-import android.os.Bundle;
-
-import com.alorma.github.GitskariosApplication;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 /**
  * Created by Bernat on 12/08/2014.

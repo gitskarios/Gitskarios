@@ -123,9 +123,8 @@ public class BaseActivity extends ActionBarActivity {
 	public void setTitle(int titleId) {
 		if (toolbar != null) {
 			toolbar.setTitle(titleId);
-		} else {
-			super.setTitle(titleId);
 		}
+		super.setTitle(titleId);
 	}
 
 	@Override
@@ -141,7 +140,7 @@ public class BaseActivity extends ActionBarActivity {
 		public void onReceive(Context context, Intent intent) {
 			Toast.makeText(context, R.string.unauthorized, Toast.LENGTH_SHORT).show();
 			Intent loginIntent = new Intent(context, LoginActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(loginIntent);
 			finish();
 		}

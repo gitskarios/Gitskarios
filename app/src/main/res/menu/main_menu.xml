@@ -4,6 +4,11 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:title="@string/action_notifications"
+        android:id="@+id/action_notifications"
+        app:showAsAction="always"
+        app:actionProviderClass="com.alorma.github.ui.view.NotificationsActionProvider"/>
+    <item
         android:title="@string/action_search"
         android:id="@+id/action_search"
         app:showAsAction="always"

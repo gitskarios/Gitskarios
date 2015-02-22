@@ -11,13 +11,21 @@
         android:key="repos_sort"
         android:entries="@array/reposSort"
         android:entryValues="@array/reposSortValues"
-        android:defaultValue="@string/sort_full_name"/>
+        android:defaultValue="@string/sort_pushed_value"/>
 
     <ListPreference
         android:title="@string/pref_repos_download_type"
         android:key="repos_download_type"
         android:entries="@array/reposDownloadFileType"
         android:entryValues="@array/reposDownloadFileTypeValues"
-        android:defaultValue="@string/sort_full_name"/>
+        android:defaultValue="@string/download_zip_value"/>
+
+    <Preference
+        android:title="@string/repo_scope_title"
+        android:key="reauthorize"/>
+    
+   <Preference
+        android:title="@string/action_visit_gitskarios"
+        android:key="gitskarios"/>
 
 </PreferenceScreen>

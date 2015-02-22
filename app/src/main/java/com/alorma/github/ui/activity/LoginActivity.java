@@ -1,7 +1,6 @@
 package com.alorma.github.ui.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -11,6 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
@@ -31,6 +31,7 @@ public class LoginActivity extends Activity {
 
 	private StoreCredentials credentials;
 	private SpotsDialog progressDialog;
+	private WebView webview;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,36 +43,70 @@ public class LoginActivity extends Activity {
 
 		setContentView(R.layout.activity_login);
 
+		webview = (WebView) findViewById(R.id.webview);
+		webview.getSettings().setJavaScriptEnabled(true);
+		webview.setWebViewClient(new WebViewCustomClient());
+
+		webview.clearCache(true);
+		webview.clearFormData();
+		webview.clearHistory();
+		webview.clearMatches();
+		webview.clearSslPreferences();
+
+		webview.getSettings().setUseWideViewPort(true);
+
 		credentials = new StoreCredentials(this);
 		if (credentials.token() != null) {
-			MainActivity.startActivity(this);
-			finish();
+			if (credentials.scopeNoAsk()) {
+				openMain();
+			} else {
+				updatingTokens();
+			}
 		} else {
-			String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
-
-			url = url + "&scope=gist,user,name,notifications";
-
-			WebView webview = (WebView) findViewById(R.id.webview);
-			webview.getSettings().setJavaScriptEnabled(true);
-			webview.setWebViewClient(new WebViewCustomClient());
-
-			webview.clearCache(true);
-			webview.clearFormData();
-			webview.clearHistory();
-			webview.clearMatches();
-			webview.clearSslPreferences();
-
-			webview.getSettings().setUseWideViewPort(true);
-
-			webview.loadUrl(url);
+			login();
 		}
 	}
 
-	private void endAccess(String accessToken) {
-		if (credentials != null) {
-			credentials.storeToken(accessToken);
+	private void login() {
+		String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
+
+		url = url + "&scope=gist,user,name,notifications,repo";
+		webview.loadUrl(url);
+	}
+
+	private void updatingTokens() {
+		if (credentials.scopes() == null || (!credentials.scopes().contains("repo"))) {
+			MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+			builder.title(R.string.repo_scope_title);
+			builder.content(R.string.repo_scope_message);
+			builder.positiveText(R.string.repo_scope_positive);
+			builder.cancelable(false);
+			builder.callback(new MaterialDialog.ButtonCallback() {
+				@Override
+				public void onPositive(MaterialDialog dialog) {
+					super.onPositive(dialog);
+					credentials.clear();
+					login();
+				}
+			});
+			builder.show();
+		} else {
 			MainActivity.startActivity(this);
 			finish();
+		}
+	}
+
+
+	private void openMain() {
+		MainActivity.startActivity(LoginActivity.this);
+		finish();
+	}
+
+	private void endAccess(String accessToken, String scope) {
+		if (credentials != null) {
+			credentials.storeToken(accessToken);
+			credentials.storeScopes(scope);
+			openMain();
 		}
 	}
 
@@ -103,12 +138,7 @@ public class LoginActivity extends Activity {
 			// We hijack the GET request to extract the OAuth parameters
 
 			if (url != null) {
-				if (url.contains(accessTokenFragment)) {
-					// the GET request contains directly the token
-					String accessToken = url.substring(url.indexOf(accessTokenFragment));
-
-					endAccess(accessToken);
-				} else if (url.contains(accessCodeFragment)) {
+				if (url.contains(accessCodeFragment)) {
 					// the GET request contains an authorization code
 
 					Uri uri = Uri.parse(url);
@@ -149,7 +179,7 @@ public class LoginActivity extends Activity {
 				if (progressDialog != null) {
 					progressDialog.dismiss();
 				}
-				endAccess(token.access_token);
+				endAccess(token.access_token, token.scope);
 			} else if (token.error != null) {
 				Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
 			}

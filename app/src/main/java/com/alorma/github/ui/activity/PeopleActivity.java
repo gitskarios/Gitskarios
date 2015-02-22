@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.orgs.OrganzationsFragment;
+import com.alorma.github.ui.fragment.orgs.OrganizationsFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
@@ -75,12 +75,12 @@ public class PeopleActivity extends BackActivity implements SearchView.OnQueryTe
 
 		FollowersFragment followersFragment = FollowersFragment.newInstance(username);
 		FollowingFragment followingFragment = FollowingFragment.newInstance(username);
-		OrganzationsFragment organzationsFragment = OrganzationsFragment.newInstance(username);
+		OrganizationsFragment organizationsFragment = OrganizationsFragment.newInstance(username);
 
 		listFragments = new ArrayList<>();
 		listFragments.add(followersFragment);
 		listFragments.add(followingFragment);
-		listFragments.add(organzationsFragment);
+		listFragments.add(organizationsFragment);
 
 		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
 		slidingTabLayout.setViewPager(viewPager);

@@ -1,19 +1,29 @@
 package com.alorma.github.ui.fragment.preference;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
+import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.ui.activity.LoginActivity;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 
-public class GitskariosPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+public class GitskariosPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+
 	private static final String PREF_INTERCEPT = "pref_intercept";
 	public static final String REPOS_SORT = "repos_sort";
 	public static final String REPOS_FILE_TYPE = "repos_download_type";
+	public static final String REAUTHORIZE = "reauthorize";
+	public static final String GITSKARIOS = "gitskarios";
+
+	private StoreCredentials credentials;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -21,12 +31,39 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 
 		addPreferencesFromResource(R.xml.main_prefs);
 
-		findPreference(PREF_INTERCEPT).setOnPreferenceChangeListener(this);
+		CheckBoxPreference intercetor = (CheckBoxPreference) findPreference(PREF_INTERCEPT);
+		intercetor.setOnPreferenceChangeListener(this);
 
 		findPreference(REPOS_SORT).setOnPreferenceChangeListener(this);
 
 		findPreference(REPOS_FILE_TYPE).setOnPreferenceChangeListener(this);
 
+		Preference reauthorize = findPreference(REAUTHORIZE);
+
+		credentials = new StoreCredentials(getActivity());
+		if (credentials.scopes() != null && credentials.scopes().contains("repo")) {
+			reauthorize.setEnabled(false);
+		} else {
+			reauthorize.setEnabled(true);
+			reauthorize.setOnPreferenceClickListener(this);
+		}
+
+		Preference gitskarios = findPreference(GITSKARIOS);
+		gitskarios.setOnPreferenceClickListener(this);
+	}
+	@Override
+	public boolean onPreferenceClick(Preference preference) {
+		if (preference.getKey().equals(REAUTHORIZE)) {
+			credentials.clear();
+			Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
+			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(loginIntent);
+			getActivity().finish();
+		} else if (preference.getKey().equals(GITSKARIOS)) {
+			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "alorma", "gitskarios");
+			startActivity(intent);
+		}
+		return true;
 	}
 
 	@Override
