@@ -30,10 +30,10 @@
     </integer-array>
 
     <string-array name="reposSortValues">
-        <item>created</item>
-        <item>update</item>
-        <item>pushed</item>
-        <item>full_name</item>
+        <item>@string/sort_created_value</item>
+        <item>@string/sort_updated_value</item>
+        <item>@string/sort_pushed_value</item>
+        <item>@string/sort_full_name_value</item>
     </string-array>
 
     <integer-array name="reposDownloadFileType">
@@ -42,14 +42,23 @@
     </integer-array>
 
     <string-array name="reposDownloadFileTypeValues">
-        <item>zipball</item>
-        <item>tarball</item>
+        <item>@string/download_zip_value</item>
+        <item>@string/download_tar_value</item>
     </string-array>
 
     <string name="sort_created">Created</string>
     <string name="sort_updated">Updated</string>
     <string name="sort_pushed">Pushed</string>
     <string name="sort_full_name">Full name</string>
+    
+    <string name="sort_created_value">created</string>
+    <string name="sort_updated_value">updated</string>
+    <string name="sort_pushed_value">pushed</string>
+    <string name="sort_full_name_value">full_name</string>
+    
     <string name="download_zip">Zip</string>
     <string name="download_tar">Tar</string>
+    
+    <string name="download_zip_value">zipball</string>
+    <string name="download_tar_value">tarball</string>
 </resources>

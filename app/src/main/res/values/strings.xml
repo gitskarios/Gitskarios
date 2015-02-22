@@ -153,5 +153,6 @@
     <string name="navigation_orgs_repos">Repositories</string>
     <string name="navigation_orgs_members">Members</string>
     <string name="org_no_members">No members</string>
+    <string name="action_visit_gitskarios">Visit Gitskarios</string>
 
 </resources>
