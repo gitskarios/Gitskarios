@@ -23,7 +23,7 @@
     <string name="navigation_repos">My Repositories</string>
     <string name="navigation_watched_repos">Watched</string>
     <string name="navigation_starred_repos">Starred</string>
-    <string name="tab_people_parent">People</string>
+    <string name="tab_people_parent">People &#038; Organizations</string>
     <string name="navigation_following">Following</string>
     <string name="navigation_followers">Followers</string>
     <string name="title_followers">Followers</string>
@@ -142,7 +142,7 @@
     <string name="action_search">Search</string>
     <string name="search_hint">Search</string>
     <string name="loading_user">Loading user</string>
-    <string name="navigation_people">People</string>
+    <string name="navigation_people">People &#038; Organizations</string>
     <string name="code_download">Source code is waiting for download</string>
     <string name="action_notifications">Notifications</string>
     <string name="no_notifications">No notifications</string>
@@ -150,5 +150,8 @@
     <string name="repo_scope_title">Update authorization</string>
     <string name="repo_scope_message">We need you to reauthorize due to some changes on the API.\n\nBy reauthorizing the app you\'ll also have access to new features</string>
     <string name="repo_scope_positive">Ok, reauthorize</string>
+    <string name="navigation_orgs_repos">Repositories</string>
+    <string name="navigation_orgs_members">Members</string>
+    <string name="org_no_members">No members</string>
 
 </resources>

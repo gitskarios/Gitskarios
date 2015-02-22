@@ -38,6 +38,7 @@
         <activity android:name=".ui.dialog.NewIssueCommentActivity"/>
         <activity android:name="com.alorma.github.ui.activity.FileActivity"/>
         <activity android:name="com.alorma.github.ui.activity.AboutActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.OrganizationActivity"/>
         <activity
             android:name="com.alorma.github.Interceptor"
             android:theme="@android:style/Theme.NoDisplay">

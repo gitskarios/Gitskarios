@@ -4,25 +4,24 @@ import android.os.Bundle;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
-import com.alorma.github.sdk.services.repos.OrgsReposClient;
-import com.alorma.github.sdk.services.repos.UserReposClient;
+import com.alorma.github.sdk.services.orgs.OrgsReposClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 
 public class OrgsReposFragment extends BaseReposListFragment {
 
 	private String org;
 
-	private static final String ORGANIZATION = USERNAME;
+	private static final String ORGANIZATION = "ORG";
 
 	public static OrgsReposFragment newInstance() {
 		return new OrgsReposFragment();
 	}
 
-	public static OrgsReposFragment newInstance(String username) {
+	public static OrgsReposFragment newInstance(String orgName) {
 		OrgsReposFragment reposFragment = new OrgsReposFragment();
-		if (username != null) {
+		if (orgName != null) {
 			Bundle bundle = new Bundle();
-			bundle.putString(ORGANIZATION, username);
+			bundle.putString(ORGANIZATION, orgName);
 
 			reposFragment.setArguments(bundle);
 		}
