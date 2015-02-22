@@ -32,6 +32,7 @@ import retrofit.client.Response;
  */
 public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuItemSelectedListener, BaseClient.OnResultCallback<User>, View.OnClickListener {
 
+	private static final String MENU_ITEM = "MENU_ITEM";
 	private OnMenuItemSelectedListener onMenuItemSelectedListener;
 	private MenuItemsAdapter adapter;
 	private MenuItem currentSelectedItem;
@@ -39,6 +40,7 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 	private TextView userLogin;
 	private CircularImageView userAvatar;
 	private View userLayout;
+	private boolean loadFirstTime = false;
 
 	public static MenuFragment newInstance() {
 		return new MenuFragment();
@@ -73,14 +75,14 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 
 		objMenuItems.add(new MenuItem(1, 1, R.string.menu_events, GithubIconify.IconValue.octicon_calendar));
 
-		currentSelectedItem = new MenuItem(0, 2, R.string.navigation_repos, GithubIconify.IconValue.octicon_repo);
-		objMenuItems.add(currentSelectedItem);
+		MenuItem repos = new MenuItem(0, 2, R.string.navigation_repos, GithubIconify.IconValue.octicon_repo);
+		objMenuItems.add(repos);
 		objMenuItems.add(new MenuItem(1, 2, R.string.navigation_starred_repos, GithubIconify.IconValue.octicon_star));
 		objMenuItems.add(new MenuItem(2, 2, R.string.navigation_watched_repos, GithubIconify.IconValue.octicon_eye));
 
-		int primarColorPeople = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_People);
+		int primaryColorPeople = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_People);
 
-		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_people, GithubIconify.IconValue.octicon_person, primarColorPeople));
+		objMenuItems.add(new MenuItem(0, 3, R.string.navigation_people, GithubIconify.IconValue.octicon_person, primaryColorPeople));
 
 		objMenuItems.add(new DividerMenuItem());
 		objMenuItems.add(new MenuItem(0, 4, R.string.navigation_settings, null));
@@ -94,20 +96,25 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		adapter.setOnMenuItemSelectedListener(this);
 		recyclerView.setAdapter(adapter);
 
-		if (onMenuItemSelectedListener != null) {
-			onMenuItemSelectedListener.onReposSelected();
-			onMenuItemSelectedListener.onMenuItemSelected(currentSelectedItem, true);
+		if (savedInstanceState == null){
+			currentSelectedItem = repos;
+		} else {
+			currentSelectedItem = savedInstanceState.getParcelable(MENU_ITEM);
+		}
+		
+		onMenuItemSelected(currentSelectedItem);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		if (outState != null) {
+			outState.putParcelable(MENU_ITEM, currentSelectedItem);
 		}
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-	}
-
-	@Override
 	public void onMenuItemSelected(MenuItem item) {
-		if (item != null && onMenuItemSelectedListener != null) {
+		if (item != null && onMenuItemSelectedListener != null && loadFirstTime) {
 			boolean changeTitle = true;
 			switch (item.parentId) {
 				case 1:
@@ -123,8 +130,10 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 					changeTitle = itemExtras(item);
 					break;
 			}
+			currentSelectedItem = item;
 			onMenuItemSelectedListener.onMenuItemSelected(item, changeTitle);
 		}
+		loadFirstTime = true;
 	}
 
 	private boolean itemUser(MenuItem item) {
@@ -176,8 +185,9 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		return change;
 	}
 
-	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener) {
+	public void setOnMenuItemSelectedListener(OnMenuItemSelectedListener onMenuItemSelectedListener, boolean loadFirstTime) {
 		this.onMenuItemSelectedListener = onMenuItemSelectedListener;
+		this.loadFirstTime = loadFirstTime;
 	}
 
 	@Override

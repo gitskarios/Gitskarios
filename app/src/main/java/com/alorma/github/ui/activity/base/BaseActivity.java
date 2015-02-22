@@ -123,9 +123,8 @@ public class BaseActivity extends ActionBarActivity {
 	public void setTitle(int titleId) {
 		if (toolbar != null) {
 			toolbar.setTitle(titleId);
-		} else {
-			super.setTitle(titleId);
 		}
+		super.setTitle(titleId);
 	}
 
 	@Override

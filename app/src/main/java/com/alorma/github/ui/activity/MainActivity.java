@@ -49,11 +49,20 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 		GetAuthUserClient client = new GetAuthUserClient(this);
 		client.execute();
 
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		menuFragment = MenuFragment.newInstance();
-		menuFragment.setOnMenuItemSelectedListener(this);
-		ft.replace(R.id.menuContent, menuFragment);
-		ft.commit();
+		if (savedInstanceState == null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			menuFragment = MenuFragment.newInstance();
+			ft.replace(R.id.menuContent, menuFragment, "menu");
+			ft.commit();
+		} else {
+			if (savedInstanceState.containsKey("TITLE")) {
+				setTitle(savedInstanceState.getString("TITLE"));
+			}
+			menuFragment = (MenuFragment) getFragmentManager().findFragmentByTag("menu");
+		}
+		if (menuFragment !=  null) {
+			menuFragment.setOnMenuItemSelectedListener(this, savedInstanceState == null);
+		}
 	}
 
 	@Override
@@ -243,5 +252,13 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 	@Override
 	public void onNotificationInfoReceived(int notifications) {
 
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (outState != null) {
+			outState.putString("TITLE", getToolbar().getTitle().toString());
+		}
 	}
 }
