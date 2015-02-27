@@ -71,8 +71,8 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 	@Override
 	public void onResponseOk(List<Notification> notifications, Response r) {
 		if (bt != null && notifications != null) {
-			
 			if (currentNotifications != notifications.size()) {
+				currentNotifications = notifications.size();
 				bt.showNotificationBubble(notifications.size() > 0);
 				if (onNotificationListener != null) {
 					onNotificationListener.onNotificationInfoReceived(notifications.size());
