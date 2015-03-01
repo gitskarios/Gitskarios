@@ -50,7 +50,15 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = mInflater.inflate(R.layout.notification_row, parent, false);
 
+		
 		final Notification item = getItem(position);
+
+		v.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				bus.post(item);
+			}
+		});
 		
 		TextView text = (TextView) v.findViewById(R.id.text);
 		text.setText(item.subject.title);

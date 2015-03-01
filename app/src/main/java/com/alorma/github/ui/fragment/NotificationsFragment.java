@@ -71,7 +71,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 			listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
-			listView.setOnItemClickListener(this);
+			/*listView.setOnItemClickListener(this);*/
 			listView.setAreHeadersSticky(false);
 			listView.setOnItemClickListener(this);
 		}
@@ -142,14 +142,18 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 		return R.string.no_notifications;
 	}
 
-	@Override
+/*	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Notification item = notificationsAdapter.getItem(position);
+		manageNotificationClick(item);
+	}*/
+
+	@Subscribe
+	public void manageNotificationClick(Notification item) {
 		String type = item.subject.type;
-		
-		// https://api.github.com/repos/github/android/issues/666
+
 		Uri uri = Uri.parse(item.subject.url);
-		if (type.equalsIgnoreCase("Issue")) {
+		if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
 			List<String> segments = uri.getPathSegments();
 			String user = segments.get(1);
 			String repo = segments.get(2);
@@ -167,8 +171,9 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
 			startActivity(intent);
 		}
+		
 	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
