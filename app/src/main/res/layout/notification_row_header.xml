@@ -5,13 +5,13 @@
                 android:layout_height="56dp"
                 android:background="@color/gray_github_light_selected">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="@dimen/header_height"
               android:gravity="center_vertical"
               android:paddingLeft="24dp"
-              android:id="@android:id/text1"
+              android:id="@+id/text"
               android:textColor="?attr/gitskarios_secondary_text"
               android:textSize="@dimen/textSizeSmall"
               android:textStyle="bold"
@@ -25,5 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:padding="@dimen/gapLarge"
+        style="?android:borderlessButtonStyle"/>
 </RelativeLayout>
