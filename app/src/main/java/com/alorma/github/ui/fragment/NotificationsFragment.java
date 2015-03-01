@@ -7,8 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.bean.ClearNotification;
+import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -19,11 +23,15 @@ import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconify;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -35,8 +43,18 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	private StickyListHeadersListView listView;
 	public NotificationsAdapter notificationsAdapter;
 
+	@Inject
+	Bus bus;
+
 	public static NotificationsFragment newInstance() {
 		return new NotificationsFragment();
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		GitskariosApplication.get(getActivity()).inject(this);
 	}
 
 	@Override
@@ -50,9 +68,10 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	protected void setupListView(View view) {
 		listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
 		if (listView != null) {
+			listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
-			listView.setOnItemClickListener(this);
+			/*listView.setOnItemClickListener(this);*/
 			listView.setAreHeadersSticky(false);
 			listView.setOnItemClickListener(this);
 		}
@@ -92,7 +111,12 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
 					@Override
 					public void run() {
+
 						notificationsAdapter = new NotificationsAdapter(getActivity(), notifications);
+
+						GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
+						bus.register(notificationsAdapter);
+						
 						listView.setAdapter(notificationsAdapter);
 					}
 				});
@@ -118,14 +142,18 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 		return R.string.no_notifications;
 	}
 
-	@Override
+/*	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Notification item = notificationsAdapter.getItem(position);
+		manageNotificationClick(item);
+	}*/
+
+	@Subscribe
+	public void manageNotificationClick(Notification item) {
 		String type = item.subject.type;
-		
-		// https://api.github.com/repos/github/android/issues/666
+
 		Uri uri = Uri.parse(item.subject.url);
-		if (type.equalsIgnoreCase("Issue")) {
+		if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
 			List<String> segments = uri.getPathSegments();
 			String user = segments.get(1);
 			String repo = segments.get(2);
@@ -143,5 +171,36 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
 			startActivity(intent);
 		}
+		
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		bus.register(this);
+	}
+
+	@Override
+	public void onPause() {
+		if (notificationsAdapter != null) {
+			bus.unregister(notificationsAdapter);
+		}
+		bus.unregister(this);
+		super.onPause();
+	}
+	
+	@Subscribe
+	public void clearRepoNotifications(ClearNotification clearNotification) {
+		if (clearNotification.isAllRepository()){
+			Toast.makeText(getActivity(), "Mark as read all repo: " + clearNotification.getNotification().repository.full_name, Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getActivity(), "Mark as read: " + clearNotification.getNotification().subject.title, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	@Subscribe
+	public void unsubscribeThreadNotification(UnsubscribeThreadNotification unsubscribeThreadNotification) {
+		Toast.makeText(getActivity(), "Unsubscribe: " + unsubscribeThreadNotification.getNotification().subject.title, Toast.LENGTH_SHORT).show();
 	}
 }

@@ -154,5 +154,8 @@
     <string name="navigation_orgs_members">Members</string>
     <string name="org_no_members">No members</string>
     <string name="action_visit_gitskarios">Visit Gitskarios</string>
+    <string name="notifications_unsubscribe">Unsubscribe from this thread</string>
+    <string name="notifications_read">Mark as read</string>
+    <string name="notifications_full_read">Mark all %s notifications as read</string>
 
 </resources>
