@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -19,11 +22,15 @@ import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconify;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -35,8 +42,18 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	private StickyListHeadersListView listView;
 	public NotificationsAdapter notificationsAdapter;
 
+	@Inject
+	Bus bus;
+
 	public static NotificationsFragment newInstance() {
 		return new NotificationsFragment();
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		GitskariosApplication.get(getActivity()).inject(this);
 	}
 
 	@Override
@@ -92,7 +109,12 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
 					@Override
 					public void run() {
+
 						notificationsAdapter = new NotificationsAdapter(getActivity(), notifications);
+
+						GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
+						bus.register(notificationsAdapter);
+						
 						listView.setAdapter(notificationsAdapter);
 					}
 				});
@@ -143,5 +165,26 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		bus.register(this);
+	}
+
+	@Override
+	public void onPause() {
+		if (notificationsAdapter != null) {
+			bus.unregister(notificationsAdapter);
+		}
+		bus.unregister(this);
+		super.onPause();
+	}
+	
+	@Subscribe
+	public void clearRepoNotifications(ClearNotification clearNotification) {
+
 	}
 }

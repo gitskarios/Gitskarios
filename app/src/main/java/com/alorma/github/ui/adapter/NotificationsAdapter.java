@@ -1,24 +1,25 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.internal.widget.ViewUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
+import com.squareup.otto.Bus;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -29,6 +30,9 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 
 	private final LayoutInflater mInflater;
 	private final GithubIconDrawable iconDrawable;
+	
+	@Inject
+	Bus bus;
 
 	public NotificationsAdapter(Context context, List<Notification> notifications) {
 		super(context, 0, notifications);
@@ -63,11 +67,11 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 
 		ImageView iv = (ImageView) v.findViewById(R.id.clearNotifications);
 		iv.setImageDrawable(iconDrawable);
-		
+
 		iv.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(v.getContext(), item.repository.full_name, Toast.LENGTH_SHORT).show();
+				bus.post(new ClearNotification(item, true));
 			}
 		});
 
