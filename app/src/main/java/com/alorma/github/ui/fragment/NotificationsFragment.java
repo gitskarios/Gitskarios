@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.bean.ClearNotification;
+import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -67,6 +68,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	protected void setupListView(View view) {
 		listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
 		if (listView != null) {
+			listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
 			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
 			listView.setOnItemClickListener(this);
@@ -185,6 +187,15 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	
 	@Subscribe
 	public void clearRepoNotifications(ClearNotification clearNotification) {
-
+		if (clearNotification.isAllRepository()){
+			Toast.makeText(getActivity(), "Mark as read all repo: " + clearNotification.getNotification().repository.full_name, Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getActivity(), "Mark as read: " + clearNotification.getNotification().subject.title, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	@Subscribe
+	public void unsubscribeThreadNotification(UnsubscribeThreadNotification unsubscribeThreadNotification) {
+		Toast.makeText(getActivity(), "Unsubscribe: " + unsubscribeThreadNotification.getNotification().subject.title, Toast.LENGTH_SHORT).show();
 	}
 }
