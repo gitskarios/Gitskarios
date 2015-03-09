@@ -29,6 +29,7 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 	private final LayoutInflater inflater;
 	private final GitCommitFiles files;
 	private final ImageLoader uil;
+	private OnFileRequestListener onFileRequestListener;
 
 	public CommitFilesAdapter(Context context, GitCommitFiles files) {
 		this.context = context;
@@ -54,6 +55,10 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 			holder.diffTextView.setMaxLines(8);
 			holder.diffTextView.setText(commitFile.patch);
 		}
+		
+		if (onFileRequestListener != null && onFileRequestListener.openFirstFile() && position == 0) {
+			onFileRequestListener.onFileRequest(commitFile);
+		}
 	}
 
 	private String getFileName(String filename) {
@@ -75,6 +80,10 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 		return files != null ? files.size() : 0;
 	}
 
+	public void setOnFileRequestListener(OnFileRequestListener onFileRequestListener) {
+		this.onFileRequestListener = onFileRequestListener;
+	}
+
 	public class FileVH extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 		public DiffTextView diffTextView;
@@ -90,8 +99,14 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 
 		@Override
 		public void onClick(View v) {
-			Intent launcherIntent = FileActivity.createLauncherIntent(v.getContext(), files.get(getPosition()).patch);
-			v.getContext().startActivity(launcherIntent);
+			if (onFileRequestListener != null) {
+				onFileRequestListener.onFileRequest(files.get(getPosition()));
+			}
 		}
+	}
+	
+	public interface OnFileRequestListener {
+		void onFileRequest(CommitFile file);
+		boolean openFirstFile();
 	}
 }

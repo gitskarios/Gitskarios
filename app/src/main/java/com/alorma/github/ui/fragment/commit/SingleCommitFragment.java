@@ -41,6 +41,7 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	private UpdateReceiver updateReceiver;
 	private RepoInfo info;
 	private String sha;
+	private CommitFilesAdapter.OnFileRequestListener onFileRequestListener;
 
 	public static SingleCommitFragment newInstance(RepoInfo info, String sha) {
 		SingleCommitFragment f = new SingleCommitFragment();
@@ -95,6 +96,7 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 			textDeletions.setText(deletions);
 
 			CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), commit.files);
+			adapter.setOnFileRequestListener(onFileRequestListener);
 			recyclerView.setAdapter(adapter);
 		}
 	}
@@ -121,6 +123,10 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	public void onStop() {
 		super.onStop();
 		getActivity().unregisterReceiver(updateReceiver);
+	}
+
+	public void setOnFileRequestListener(CommitFilesAdapter.OnFileRequestListener onFileRequestListener) {
+		this.onFileRequestListener = onFileRequestListener;
 	}
 
 	public class UpdateReceiver extends BroadcastReceiver {
