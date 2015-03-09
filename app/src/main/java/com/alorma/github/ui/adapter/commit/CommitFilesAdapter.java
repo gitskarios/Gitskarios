@@ -28,14 +28,13 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 	private final Context context;
 	private final LayoutInflater inflater;
 	private final GitCommitFiles files;
-	private final ImageLoader uil;
 	private OnFileRequestListener onFileRequestListener;
+	private boolean firstTimeUsed = false;
 
 	public CommitFilesAdapter(Context context, GitCommitFiles files) {
 		this.context = context;
 		this.inflater = LayoutInflater.from(context);
 		this.files = files;
-		this.uil = ImageLoader.getInstance();
 	}
 
 	@Override
@@ -46,33 +45,23 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 	@Override
 	public void onBindViewHolder(FileVH holder, int position) {
 		CommitFile commitFile = files.get(position);
-		String fileName = getFileName(commitFile.filename);
+		String fileName = commitFile.getFileName();
 		if (fileName != null) {
 			holder.fileName.setText(fileName);
 		}
+
+		String additions = this.context.getResources().getString(R.string.commit_additions, commitFile.additions);
+		String deletions = this.context.getResources().getString(R.string.commit_deletions, commitFile.deletions);
+
+		holder.txtAdditions.setText(additions);
+		holder.txtDeletions.setText(deletions);
 		
-		if (commitFile.patch != null) {
-			holder.diffTextView.setMaxLines(8);
-			holder.diffTextView.setText(commitFile.patch);
-		}
+		holder.fileStatus.setText(commitFile.status);
 		
-		if (onFileRequestListener != null && onFileRequestListener.openFirstFile() && position == 0) {
+		if (onFileRequestListener != null && onFileRequestListener.openFirstFile() && position == 0 && !firstTimeUsed) {
+			firstTimeUsed = true;
 			onFileRequestListener.onFileRequest(commitFile);
 		}
-	}
-
-	private String getFileName(String filename) {
-		if (filename != null) {
-			String[] names = filename.split(File.separator);
-			if (names.length > 1) {
-				int last = names.length - 1;
-				return names[last];
-			} else {
-				return names[0];
-			}
-		}
-
-		return null;
 	}
 
 	@Override
@@ -86,15 +75,18 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 
 	public class FileVH extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-		public DiffTextView diffTextView;
 		public TextView fileName;
+		public TextView txtAdditions;
+		public TextView txtDeletions;
+		public TextView fileStatus;
 
 		public FileVH(View itemView) {
 			super(itemView);
-			diffTextView = (DiffTextView) itemView.findViewById(R.id.diffText);
 			fileName = (TextView) itemView.findViewById(R.id.fileName);
+			txtAdditions = (TextView) itemView.findViewById(R.id.additions);
+			txtDeletions = (TextView) itemView.findViewById(R.id.deletions);
+			fileStatus = (TextView) itemView.findViewById(R.id.fileStatus);
 			itemView.setOnClickListener(this);
-			diffTextView.setOnClickListener(this);
 		}
 
 		@Override

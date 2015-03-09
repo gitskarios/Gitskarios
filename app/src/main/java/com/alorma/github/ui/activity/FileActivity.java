@@ -39,7 +39,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FileActivity extends ActionBarActivity {
+public class FileActivity extends ActionBarActivity implements FileFragment.FileFragmentListener {
 
 	private static final String REPO_INFO = "REPO_INFO";
 	private static final String NAME = "NAME";
@@ -72,10 +72,15 @@ public class FileActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 
 		FileFragment fileFragment = new FileFragment();
+		fileFragment.setFileFragmentListener(this);
 		fileFragment.setArguments(getIntent().getExtras());
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(android.R.id.content, fileFragment);
 		ft.commit();
 	}
 
+	@Override
+	public boolean showUpIndicator() {
+		return true;
+	}
 }

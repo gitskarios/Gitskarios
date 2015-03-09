@@ -71,7 +71,6 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 
 			recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
 			recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-
 			getContent();
 		}
 	}

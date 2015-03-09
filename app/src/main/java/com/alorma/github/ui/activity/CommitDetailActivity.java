@@ -66,7 +66,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
 			Bundle bundle = new Bundle();
 			bundle.putString(FileFragment.PATCH, file.patch);
-			bundle.putString(FileFragment.NAME, file.filename);
+			bundle.putString(FileFragment.NAME, file.getFileName());
 
 			fileFragment.setArguments(bundle);
 
@@ -74,7 +74,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 			ft.replace(R.id.detail, fileFragment);
 			ft.commit();
 		} else {
-			Intent launcherIntent = FileActivity.createLauncherIntent(this, file.patch, file.filename);
+			Intent launcherIntent = FileActivity.createLauncherIntent(this, file.patch, file.getFileName());
 			startActivity(launcherIntent);
 		}
 	}
