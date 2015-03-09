@@ -278,7 +278,11 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
 	@Override
 	protected void onPause() {
-		bus.unregister(notificationProvider);
+		try {
+			bus.unregister(notificationProvider);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
 		bus.unregister(this);
 		super.onPause();
 	}
