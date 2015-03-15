@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
@@ -119,7 +120,15 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			progressBar.progressiveStop();
 			progressBar.setVisibility(View.INVISIBLE);
 		}
-		webview.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
+
+		Uri.Builder builder = Uri.parse("https://github.com/").buildUpon();
+
+		builder.appendPath(repoInfo.owner);
+		builder.appendPath(repoInfo.name);
+		builder.appendPath("raw");
+		builder.appendPath(repoInfo.branch);
+
+		webview.loadDataWithBaseURL(builder.build().toString() + "/", s, "text/html", "UTF-8", null);
 	}
 
 	@Override
@@ -137,7 +146,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 	}
 
 	private void onError(String tag, RetrofitError error) {
-		ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment", error);
+		ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment: " + tag, error);
 	}
 
 	@Override
