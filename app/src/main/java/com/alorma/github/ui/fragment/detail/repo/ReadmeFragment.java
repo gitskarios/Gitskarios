@@ -124,7 +124,10 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
 	@Override
 	public void onFail(RetrofitError error) {
-		onError("README", error);
+		if (progressBar != null) {
+			progressBar.progressiveStop();
+			progressBar.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	@Override
@@ -134,10 +137,6 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			repoMarkdownClient.setCallback(this);
 			repoMarkdownClient.execute();
 		}
-	}
-
-	private void onError(String tag, RetrofitError error) {
-		ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment", error);
 	}
 
 	@Override
