@@ -3,25 +3,51 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="8dp">
+              android:padding="8dp"
+              android:divider="@drawable/divider_inside_car"
+              android:showDividers="end"
+              android:foreground="?android:selectableItemBackground">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fileName"
+        android:textSize="@dimen/textSizeLarge"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fileStatus"
+        android:gravity="right"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/textSizeMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_marginBottom="@dimen/gapMedium"/>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/shape_card"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
         android:padding="8dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/fileName"
-            android:textStyle="bold"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/commit_stats_green"
+            android:drawablePadding="8dp"
+            android:id="@+id/additions"/>
 
-        <com.alorma.diff.lib.DiffTextView
-            android:id="@+id/diffText"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:foreground="?android:selectableItemBackground"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/commit_stats_red"
+            android:drawablePadding="8dp"
+            android:id="@+id/deletions"/>
+
     </LinearLayout>
+
 </LinearLayout>

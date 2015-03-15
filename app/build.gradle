@@ -20,9 +20,9 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 21
-        versionName "1.9.3"
-        versionCode 193
+        targetSdkVersion 22
+        versionName "1.9.4"
+        versionCode 194
     }
 
     signingConfigs {
