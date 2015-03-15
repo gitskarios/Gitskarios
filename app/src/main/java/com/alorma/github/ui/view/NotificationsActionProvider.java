@@ -13,13 +13,16 @@ import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.nineoldandroids.animation.ValueAnimator;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -31,6 +34,7 @@ import retrofit.client.Response;
  */
 public class NotificationsActionProvider extends ActionProvider implements BaseClient.OnResultCallback<List<Notification>>, View.OnClickListener {
 
+	private int currentNotifications = 0;
 	private NotificationImageView bt;
 	private OnNotificationListener onNotificationListener;
 
@@ -41,14 +45,14 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 	 */
 	public NotificationsActionProvider(Context context) {
 		super(context);
+
+		GitskariosApplication.get(context).inject(this);
 	}
 
 	@Override
 	public View onCreateActionView() {
 
-
 		int actionBarSize = getContext().getResources().getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_action_button_min_height_material);
-
 
 		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(actionBarSize, actionBarSize);
 
@@ -72,10 +76,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 	@Override
 	public void onResponseOk(List<Notification> notifications, Response r) {
 		if (bt != null && notifications != null) {
-			bt.showNotificationBubble(notifications.size() > 0);
-			if (onNotificationListener != null)  {
-				onNotificationListener.onNotificationInfoReceived(notifications.size());
-			}
+			newNotificationsSize(new NotificationsCount(notifications.size()));
 		}
 	}
 
@@ -90,22 +91,29 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			onNotificationListener.onNotificationRequested();
 		}
 	}
-
+	
+	@Subscribe
+	public void newNotificationsSize(NotificationsCount count) {
+		if (currentNotifications != count.getSize()) {
+			currentNotifications = count.getSize();
+			bt.showNotificationBubble(count.getSize() > 0);
+		}
+	}
+	
 	public void setOnNotificationListener(OnNotificationListener onNotificationListener) {
 		this.onNotificationListener = onNotificationListener;
 	}
 
 	public interface OnNotificationListener {
 		void onNotificationRequested();
-		void onNotificationInfoReceived(int notifications);
 	}
-	
+
 	private class NotificationImageView extends ImageView implements ValueAnimator.AnimatorUpdateListener {
 
 		private final Rect rect;
 		private Paint paint;
 		private boolean show;
-		
+
 		private long animationDuration = 500;
 		private ValueAnimator animator;
 		private int value;
@@ -151,7 +159,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			animator.setInterpolator(show ? new BounceInterpolator() : new AccelerateDecelerateInterpolator());
 			animator.addUpdateListener(this);
 			animator.start();
-			
+
 			this.postInvalidate();
 		}
 
@@ -160,6 +168,5 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			value = (int) animation.getAnimatedValue();
 			this.postInvalidate();
 		}
-
 	}
 }

@@ -10,6 +10,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
@@ -23,6 +24,9 @@ import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
+import com.squareup.otto.Bus;
+
+import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, NotificationsActionProvider.OnNotificationListener {
 
@@ -35,6 +39,10 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 	private SearchReposFragment searchReposFragment;
 	private SearchView searchView;
 	private android.view.MenuItem searchItem;
+	private NotificationsActionProvider notificationProvider;
+	
+	@Inject
+	Bus bus;
 
 	public static void startActivity(Activity context) {
 		Intent intent = new Intent(context, MainActivity.class);
@@ -44,6 +52,9 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		GitskariosApplication.get(this).inject(this);
+		
 		setContentView(R.layout.activity_main);
 
 		GetAuthUserClient client = new GetAuthUserClient(this);
@@ -94,9 +105,11 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
 			android.view.MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
 
-			NotificationsActionProvider notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
+			notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
 
 			notificationProvider.setOnNotificationListener(this);
+
+			bus.register(notificationProvider);
 
 		}
 
@@ -250,15 +263,27 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 	}
 
 	@Override
-	public void onNotificationInfoReceived(int notifications) {
-
-	}
-
-	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		if (outState != null) {
 			outState.putString("TITLE", getToolbar().getTitle().toString());
 		}
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		bus.register(this);
+	}
+
+	@Override
+	protected void onPause() {
+		try {
+			bus.unregister(notificationProvider);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		bus.unregister(this);
+		super.onPause();
 	}
 }
