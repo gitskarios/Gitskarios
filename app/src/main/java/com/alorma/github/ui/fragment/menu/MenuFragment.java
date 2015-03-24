@@ -1,37 +1,18 @@
 package com.alorma.github.ui.fragment.menu;
 
 import android.app.Fragment;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.adapter.MenuItemsAdapter;
-import com.alorma.github.ui.view.CircularImageView;
-import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconify;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Bernat on 13/08/2014.
  */
-public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuItemSelectedListener, BaseClient.OnResultCallback<User>, View.OnClickListener {
-
+public class MenuFragment extends Fragment /*implements MenuItemsAdapter.OnMenuItemSelectedListener, BaseClient.OnResultCallback<User>, View.OnClickListener*/ {
+/*
 	private static final String MENU_ITEM = "MENU_ITEM";
 	private OnMenuItemSelectedListener onMenuItemSelectedListener;
 	private MenuItemsAdapter adapter;
@@ -206,10 +187,9 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 	public void onClick(View v) {
 		if (onMenuItemSelectedListener != null) {
 			onMenuItemSelectedListener.onProfileSelected();
-			onMenuItemSelectedListener.closeMenu();
 		}
 	}
-
+*/
 	public interface OnMenuItemSelectedListener {
 		boolean onProfileSelected();
 
@@ -222,8 +202,6 @@ public class MenuFragment extends Fragment implements MenuItemsAdapter.OnMenuIte
 		boolean onPeopleSelected();
 
 		void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle);
-
-		void closeMenu();
 
 		boolean onUserEventsSelected();
 

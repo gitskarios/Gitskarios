@@ -28,11 +28,11 @@
             android:name="com.alorma.github.ui.activity.MainActivity"/>
         <activity
             android:name="com.alorma.github.ui.activity.PeopleActivity"
-            android:theme="@style/AppTheme.People"
+            android:theme="@style/AppTheme.Repos"
             android:label="@string/navigation_people"/>
         <activity
             android:name="com.alorma.github.ui.activity.ProfileActivity"
-            android:theme="@style/AppTheme.People"/>
+            android:theme="@style/AppTheme.Repos"/>
         <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity"/>
         <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity"/>
         <activity android:name=".ui.dialog.NewIssueCommentActivity"/>

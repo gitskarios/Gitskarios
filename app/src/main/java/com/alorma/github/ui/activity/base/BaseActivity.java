@@ -27,13 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class BaseActivity extends ActionBarActivity {
 
 	private AuthReceiver authReceiver;
-	private DrawerLayout mDrawerLayout;
-	private ActionBarDrawerToggle actionBarDrawerToggle;
 	private UpdateReceiver updateReceiver;
-
-	public Toolbar getToolbar() {
-		return toolbar;
-	}
 
 	private Toolbar toolbar;
 
@@ -52,16 +46,6 @@ public class BaseActivity extends ActionBarActivity {
 			if (toolbar != null) {
 				toolbar.setTitle(R.string.app_name);
 				setSupportActionBar(toolbar);
-
-				mDrawerLayout = (DrawerLayout) findViewById(getDrawerLayout());
-
-				if (mDrawerLayout != null) {
-					actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0);
-
-					actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-
-					mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
-				}
 			}
 		}
 	}
@@ -70,34 +54,12 @@ public class BaseActivity extends ActionBarActivity {
 		return true;
 	}
 
+	public Toolbar getToolbar() {
+		return toolbar;
+	}
+
 	public int getToolbarId() {
 		return R.id.toolbar;
-	}
-
-	public int getDrawerLayout() {
-		return R.id.drawer_layout;
-	}
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		if (actionBarDrawerToggle != null) {
-			actionBarDrawerToggle.syncState();
-		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			if (mDrawerLayout != null) {
-				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-					mDrawerLayout.closeDrawer(Gravity.START);
-				} else {
-					mDrawerLayout.openDrawer(Gravity.START);
-				}
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -143,21 +105,6 @@ public class BaseActivity extends ActionBarActivity {
 			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(loginIntent);
 			finish();
-		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
-			closeMenu();
-		} else {
-			super.onBackPressed();
-		}
-	}
-
-	public void closeMenu() {
-		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
-			mDrawerLayout.closeDrawer(Gravity.START);
 		}
 	}
 

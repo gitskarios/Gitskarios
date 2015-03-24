@@ -63,7 +63,7 @@ public class PeopleActivity extends BackActivity implements SearchView.OnQueryTe
 
 		SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
-		slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_People));
+		slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos));
 		slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
 		viewPager = (ViewPager) findViewById(R.id.pager);
