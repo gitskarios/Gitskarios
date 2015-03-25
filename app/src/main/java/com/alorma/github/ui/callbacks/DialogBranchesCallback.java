@@ -14,7 +14,7 @@ import com.alorma.github.ui.ErrorHandler;
 
 import retrofit.RetrofitError;
 
-public abstract class DialogBranchesCallback extends BranchesCallback implements MaterialDialog.ListCallback {
+public abstract class DialogBranchesCallback extends BranchesCallback implements MaterialDialog.ListCallbackSingleChoice {
 
 
 	private Context context;
@@ -36,10 +36,10 @@ public abstract class DialogBranchesCallback extends BranchesCallback implements
 	}
 
 	@Override
-	public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+	public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
 		materialDialog.dismiss();
-
 		onBranchSelected(branches[i]);
+		return true;
 	}
 
 	protected abstract void onBranchSelected(String branch);

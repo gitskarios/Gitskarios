@@ -15,14 +15,14 @@ repositories {
 }
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion '21.1.2'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "1.9.4"
-        versionCode 194
+        versionName "1.9.5"
+        versionCode 195
     }
 
     signingConfigs {
@@ -52,19 +52,18 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    //compile 'com.google.android.gms:play-services:6.5.87'
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:support-v13:21.0.3'
-    compile 'com.android.support:palette-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v13:22.0.0'
+    compile 'com.android.support:palette-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
     compile project(':sdk')
     // Submodules
     compile project(':libraries:AndroidGithubIcons')
     compile project(':libraries:android-floating-action-button')
     compile 'com.github.alorma:diff-textview:1.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.afollestad:material-dialogs:0.6.3.0'
+    compile 'com.afollestad:material-dialogs:0.6.5.2'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     compile 'com.pnikosis:materialish-progress:1.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
