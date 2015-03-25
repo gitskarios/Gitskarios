@@ -73,13 +73,13 @@ public class PeopleActivity extends BackActivity implements SearchView.OnQueryTe
 			username = getIntent().getExtras().getString(USERNAME);
 		}
 
-		FollowersFragment followersFragment = FollowersFragment.newInstance(username);
-		FollowingFragment followingFragment = FollowingFragment.newInstance(username);
+        FollowingFragment followingFragment = FollowingFragment.newInstance(username);
+        FollowersFragment followersFragment = FollowersFragment.newInstance(username);
 		OrganizationsFragment organizationsFragment = OrganizationsFragment.newInstance(username);
 
 		listFragments = new ArrayList<>();
-		listFragments.add(followersFragment);
-		listFragments.add(followingFragment);
+        listFragments.add(followingFragment);
+        listFragments.add(followersFragment);
 		listFragments.add(organizationsFragment);
 
 		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
