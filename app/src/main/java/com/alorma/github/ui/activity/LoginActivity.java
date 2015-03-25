@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,6 +29,7 @@ import retrofit.client.Response;
 
 public class LoginActivity extends Activity {
 
+	public static final String EXTRA_CLEAR = "EXTRA_CLEAR";
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
 	private StoreCredentials credentials;
@@ -41,19 +44,6 @@ public class LoginActivity extends Activity {
 			Crashlytics.start(this);
 		}
 
-		setContentView(R.layout.activity_login);
-
-		webview = (WebView) findViewById(R.id.webview);
-		webview.getSettings().setJavaScriptEnabled(true);
-		webview.setWebViewClient(new WebViewCustomClient());
-
-		webview.clearCache(true);
-		webview.clearFormData();
-		webview.clearHistory();
-		webview.clearMatches();
-		webview.clearSslPreferences();
-
-		webview.getSettings().setUseWideViewPort(true);
 
 		credentials = new StoreCredentials(this);
 		if (credentials.token() != null) {
@@ -63,6 +53,24 @@ public class LoginActivity extends Activity {
 				updatingTokens();
 			}
 		} else {
+			CookieSyncManager.createInstance(this);
+			CookieManager cookieManager = CookieManager.getInstance();
+			cookieManager.removeAllCookie();
+
+			setContentView(R.layout.activity_login);
+
+			webview = (WebView) findViewById(R.id.webview);
+			webview.getSettings().setJavaScriptEnabled(true);
+			webview.setWebViewClient(new WebViewCustomClient());
+
+			webview.clearCache(true);
+			webview.clearFormData();
+			webview.clearHistory();
+			webview.clearMatches();
+			webview.clearSslPreferences();
+
+			webview.getSettings().setUseWideViewPort(true);
+
 			login();
 		}
 	}

@@ -127,7 +127,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 
 			GithubIconDrawable drawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_inbox);
 			drawable.actionBarSize();
-			drawable.colorRes(R.color.repos_icons);
+			drawable.colorRes(R.color.white);
 			setImageDrawable(drawable);
 
 			this.show = false;

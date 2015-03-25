@@ -157,5 +157,6 @@
     <string name="notifications_unsubscribe">Unsubscribe from this thread</string>
     <string name="notifications_read">Mark as read</string>
     <string name="notifications_full_read">Mark all %s notifications as read</string>
+    <string name="navigation_sign_out">Sign out</string>
 
 </resources>

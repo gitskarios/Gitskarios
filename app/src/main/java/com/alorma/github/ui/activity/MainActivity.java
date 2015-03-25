@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
@@ -31,12 +32,9 @@ import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.mikepenz.iconics.typeface.FontAwesome;
-import com.mikepenz.iconics.typeface.IIcon;
-import com.mikepenz.iconics.typeface.ITypeface;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -45,7 +43,9 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
@@ -103,10 +103,34 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     public void onResponseOk(User user, Response r) {
         this.user = user;
         if (headerResult != null) {
-            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem()
-                    .withName(user.name)
-                    .withEmail(user.email);
+            final ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem()
+                    .withName(user.login)
+                    .withEmail(user.name != null ? user.name : user.email)
+                    .withIdentifier(0);
             headerResult.addProfile(profileDrawerItem, 0);
+
+            ImageLoader.getInstance().loadImage(user.avatar_url, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    profileDrawerItem.setIcon(new BitmapDrawable(getResources(), loadedImage));
+                    headerResult.updateProfileByIdentifier(profileDrawerItem);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
         }
     }
 
@@ -120,26 +144,30 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         headerResult = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                .withSelectionListEnabledForSingleProfile(false)
+                .withOnAccountHeaderSelectionViewClickListener(new AccountHeader.OnAccountHeaderSelectionViewClickListener() {
                     @Override
-                    public void onProfileChanged(View view, IProfile profile) {
+                    public void onClick(View view, IProfile iProfile) {
+                        onProfileSelected();
                     }
                 })
+                .withCompactStyle(true)
                 .build();
 
         //Now create your drawer and pass the AccountHeader.Result
-        Drawer.Result result = new Drawer()
+        new Drawer()
                 .withActivity(this)
                 .withToolbar(getToolbar())
                 .withAccountHeader(headerResult)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(getGithubDawable(GithubIconify.IconValue.octicon_calendar)).withIdentifier(0),
-                        new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(getGithubDawable(GithubIconify.IconValue.octicon_repo)).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(getGithubDawable(GithubIconify.IconValue.octicon_star)).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(getGithubDawable(GithubIconify.IconValue.octicon_eye)).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(getGithubDawable(GithubIconify.IconValue.octicon_person)).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_calendar)).withIdentifier(0),
+                        new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_repo)).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_star)).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_eye)).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_person)).withIdentifier(4),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(FontAwesome.Icon.faw_cog).withIdentifier(10)
+                        new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_settings)).withIdentifier(10),
+                        new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_sign_out)).withIdentifier(11)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -167,6 +195,9 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                             case 7:
                                 onSettingsSelected();
                                 break;
+                            case 8:
+                                signOut();
+                                break;
                         }
                     }
                 })
@@ -174,8 +205,9 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                 .build();
     }
 
-    private Drawable getGithubDawable(GithubIconify.IconValue icon) {
-        return new GithubIconDrawable(this, icon);
+    private Drawable getGithubDrawable(GithubIconify.IconValue icon) {
+        int iconColor = getResources().getColor(R.color.repos_icons);
+        return new GithubIconDrawable(this, icon).color(iconColor);
     }
 
     @Override
@@ -339,6 +371,16 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
         return false;
+    }
+
+    public void signOut() {
+        StoreCredentials credentials = new StoreCredentials(this);
+        credentials.clear();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(LoginActivity.EXTRA_CLEAR, true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     @Override
