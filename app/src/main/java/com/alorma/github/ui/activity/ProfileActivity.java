@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -121,7 +120,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new RequestUserClient(this, user.login);
 			getToolbar().setTitle(user.login);
 		} else {
-			requestClient = new GetAuthUserClient(this);
+			requestClient = new GetAuthUserClient(this, null);
 		}
 
 		showDialog();

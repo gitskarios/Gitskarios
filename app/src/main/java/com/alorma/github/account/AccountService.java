@@ -58,6 +58,7 @@ public class AccountService extends Service {
             Bundle reply = new Bundle();
             Intent intent = new Intent(context, LoginActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+            intent.putExtra(LoginActivity.ADDING_FROM_ACCOUNTS, true);
             intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, accountType);
             intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
             reply.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -75,6 +76,7 @@ public class AccountService extends Service {
             Bundle reply = new Bundle();
             Intent intent = new Intent(context, LoginActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+            intent.putExtra(LoginActivity.ADDING_FROM_ACCOUNTS, true);
             intent.putExtra(LoginActivity.EXTRA_CLEAR, true);
             intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, account.type);
             intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
