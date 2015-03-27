@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import android.accounts.AccountAuthenticatorActivity;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,9 +28,12 @@ import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AccountAuthenticatorActivity {
 
 	public static final String EXTRA_CLEAR = "EXTRA_CLEAR";
+	public static final String ARG_ACCOUNT_TYPE = "ARG_ACCOUNT_TYPE";
+	public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
+
 	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
 	private StoreCredentials credentials;
