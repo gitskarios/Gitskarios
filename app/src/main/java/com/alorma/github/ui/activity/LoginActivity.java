@@ -41,10 +41,10 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static final String ADDING_FROM_ACCOUNTS = "ADDING_FROM_ACCOUNTS";
     public static final String ACCOUNT_SCOPES = "ACCOUNT_SCOPES";
     public static final String USER_PIC = "USER_PIC";
+    public static final String USER_MAIL = "USER_MAIL";
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
-    private StoreCredentials credentials;
     private SpotsDialog progressDialog;
     private WebView webview;
     private String accessToken;
@@ -67,7 +67,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         if (!fromCreate && accounts != null && accounts.length > 0) {
             openMain();
         } else {
-            credentials = new StoreCredentials(this);
             CookieSyncManager.createInstance(this);
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.removeAllCookie();
@@ -97,7 +96,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         webview.loadUrl(url);
     }
 
-    private void updatingTokens() {
+/*    private void updatingTokens() {
         if (credentials.scopes() == null || (!credentials.scopes().contains("repo"))) {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
             builder.title(R.string.repo_scope_title);
@@ -117,8 +116,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             MainActivity.startActivity(this);
             finish();
         }
-    }
-
+    }*/
 
     private void openMain() {
         MainActivity.startActivity(LoginActivity.this);
@@ -140,6 +138,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         Bundle userData = new Bundle();
         userData.putString(LoginActivity.ACCOUNT_SCOPES, scope);
         userData.putString(LoginActivity.USER_PIC, user.avatar_url);
+        userData.putString(LoginActivity.USER_MAIL, user.email);
         userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
         AccountManager accountManager = AccountManager.get(this);
