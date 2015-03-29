@@ -2,13 +2,13 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,11 +23,7 @@ import android.widget.ImageView;
 
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.security.StoreCredentials;
-import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
@@ -40,7 +36,6 @@ import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
-import com.bumptech.glide.Glide;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -53,19 +48,13 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener,
         SearchView.OnQueryTextListener,
@@ -86,6 +75,9 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     private AccountHeader.Result headerResult;
     private StoreCredentials credentials;
+    private Drawer.Result result;
+    private HashMap<String, Account> accountMap;
+    private Account selectedAccount;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -100,85 +92,83 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         setContentView(R.layout.activity_main);
 
+
+        createDrawer();
+
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("TITLE")) {
+                setTitle(savedInstanceState.getString("TITLE"));
+            }
+        } else {
+            setTitle(R.string.navigation_repos);
+        }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        bus.register(this);
+
         AccountManager accountManager = AccountManager.get(this);
         Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
         if (accounts != null && accounts.length > 0) {
+            if (headerResult != null) {
+                if (headerResult.getProfiles() != null) {
+                    ArrayList<IProfile> iProfiles = new ArrayList<>(headerResult.getProfiles());
+                    for (IProfile iProfile : iProfiles) {
+                        headerResult.removeProfile(iProfile);
+                    }
+                }
+            }
+            accountMap = new HashMap<>();
+            int i = 0;
+            if (selectedAccount != null) {
+                addAccountToHeader(selectedAccount, i++);
+            }
+            for (Account account : accounts) {
+                if (selectedAccount == null || !selectedAccount.name.equals(account.name)) {
+                    addAccountToHeader(account, i++);
+                }
+            }
 
-            createDrawer(accounts);
+            ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_acount)).withDescription(getString(R.string.add_account_description)).withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(-1);
+
+            headerResult.addProfiles(itemAdd);
 
             selectAccount(accounts[0]);
-
-            if (savedInstanceState != null) {
-                if (savedInstanceState.containsKey("TITLE")) {
-                    setTitle(savedInstanceState.getString("TITLE"));
-                }
-            } else {
-                setTitle(R.string.navigation_repos);
-            }
-        } else {
-            signOut();
         }
     }
 
-    private void createDrawer(Account[] accounts) {
-        final Map<String, Account> accountMap = new HashMap<>();
-        // Create the AccountHeader
-
-        DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
-            @Override
-            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
-                Picasso.with(MainActivity.this).load(uri).placeholder(placeholder).into(imageView);
-            }
-
-            @Override
-            public void cancel(ImageView imageView) {
-
-            }
-        });
-
-        AccountHeader headerBuilder = new AccountHeader()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.header);
-
+    private void addAccountToHeader(Account account, int i) {
         AccountManager accountManager = AccountManager.get(this);
-        int i = 0;
-        for (Account account : accounts) {
-            accountMap.put(account.name, account);
-            String userAvatar = accountManager.getUserData(account, LoginActivity.USER_PIC);
-            String userMail = accountManager.getUserData(account, LoginActivity.USER_MAIL);
-            String userName = accountManager.getUserData(account, LoginActivity.USER_NAME);
-            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar)
-                    .withEmail(userMail != null ? userMail : userName).withIdentifier(i++);
-            headerBuilder.addProfiles(profileDrawerItem);
+        accountMap.put(account.name, account);
+        String userAvatar = accountManager.getUserData(account, LoginActivity.USER_PIC);
+        String userMail = accountManager.getUserData(account, LoginActivity.USER_MAIL);
+        String userName = accountManager.getUserData(account, LoginActivity.USER_NAME);
+        ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar)
+                .withEmail(userMail != null ? userMail : userName).withIdentifier(i);
+        headerResult.addProfiles(profileDrawerItem);
+    }
+
+    @Override
+    protected void onPause() {
+        try {
+            bus.unregister(notificationProvider);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
+        bus.unregister(this);
+        super.onPause();
+    }
 
-        ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_acount)).withDescription(getString(R.string.add_account_description)).withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(-1);
+    private void createDrawer() {
 
-        headerBuilder.addProfiles(itemAdd);
-
-        headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-            @Override
-            public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
-                if (iProfile.getIdentifier() != -1) {
-                    Account account = accountMap.get(iProfile.getName());
-                    selectAccount(account);
-                    return false;
-                } else {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    intent.putExtra(LoginActivity.ADDING_FROM_APP, true);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-            }
-        });
-
-        headerResult = headerBuilder.build();
-
+        buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
-        new Drawer()
+        result = new Drawer()
                 .withActivity(this)
                 .withToolbar(getToolbar())
                 .withAccountHeader(headerResult)
@@ -224,7 +214,49 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                 .build();
     }
 
+    private void buildHeader() {
+
+        // Create the AccountHeader
+
+        DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
+            @Override
+            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
+                Picasso.with(MainActivity.this).load(uri).placeholder(placeholder).into(imageView);
+            }
+
+            @Override
+            public void cancel(ImageView imageView) {
+
+            }
+        });
+
+        AccountHeader headerBuilder = new AccountHeader()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.header);
+
+        headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+            @Override
+            public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
+                if (iProfile.getIdentifier() != -1) {
+                    Account account = accountMap.get(iProfile.getName());
+                    selectAccount(account);
+                    return false;
+                } else {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.putExtra(LoginActivity.ADDING_FROM_APP, true);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+            }
+        });
+
+        headerResult = headerBuilder.build();
+    }
+
     private void selectAccount(final Account account) {
+        this.selectedAccount = account;
         clearFragments();
         credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
@@ -421,10 +453,19 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     public void signOut() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        if (selectedAccount != null) {
+            AccountManager.get(this).removeAccount(selectedAccount, this, new AccountManagerCallback<Bundle>() {
+                @Override
+                public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                    if (accountManagerFuture.isDone()) {
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }, new Handler());
+        }
     }
 
     @Override
@@ -455,22 +496,5 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         if (outState != null) {
             outState.putString("TITLE", getToolbar().getTitle().toString());
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        bus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        try {
-            bus.unregister(notificationProvider);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        bus.unregister(this);
-        super.onPause();
     }
 }
