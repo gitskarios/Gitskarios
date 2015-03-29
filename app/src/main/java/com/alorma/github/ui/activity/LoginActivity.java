@@ -5,10 +5,12 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
@@ -59,8 +61,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             Crashlytics.start(this);
         }
 
-
         AccountManager accountManager = AccountManager.get(this);
+
         Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
         boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
@@ -71,7 +73,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         } else if (accounts != null && accounts.length > 0) {
             openMain();
         } else {
-            login();
+            StoreCredentials storeCredentials = new StoreCredentials(this);
+            if (storeCredentials.token() != null) {
+                endAccess(storeCredentials.token(), storeCredentials.scopes());
+            } else {
+                login();
+            }
         }
     }
 

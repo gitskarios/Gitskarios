@@ -155,10 +155,12 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     @Override
     protected void onPause() {
-        try {
-            bus.unregister(notificationProvider);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        if (notificationProvider != null) {
+            try {
+                bus.unregister(notificationProvider);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
         }
         bus.unregister(this);
         super.onPause();
@@ -458,6 +460,10 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                 @Override
                 public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
                     if (accountManagerFuture.isDone()) {
+
+                        StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+                        storeCredentials.clear();
+
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
