@@ -142,24 +142,36 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                 .withHeaderBackground(R.drawable.header);
 
         AccountManager accountManager = AccountManager.get(this);
+        int i = 0;
         for (Account account : accounts) {
             accountMap.put(account.name, account);
             String userAvatar = accountManager.getUserData(account, LoginActivity.USER_PIC);
             String userMail = accountManager.getUserData(account, LoginActivity.USER_MAIL);
-            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar).withEmail(userMail);
+            String userName = accountManager.getUserData(account, LoginActivity.USER_NAME);
+            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar)
+                    .withEmail(userMail != null ? userMail : userName).withIdentifier(i++);
             headerBuilder.addProfiles(profileDrawerItem);
         }
 
-        ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName("Add Account").withDescription("Add new GitHub Account").withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(15);
+        ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_acount)).withDescription(getString(R.string.add_account_description)).withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(-1);
 
         headerBuilder.addProfiles(itemAdd);
 
         headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
             @Override
             public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
-                Account account = accountMap.get(iProfile.getName());
-                selectAccount(account);
-                return false;
+                if (iProfile.getIdentifier() != -1) {
+                    Account account = accountMap.get(iProfile.getName());
+                    selectAccount(account);
+                    return false;
+                } else {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.putExtra(LoginActivity.ADDING_FROM_APP, true);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
             }
         });
 
@@ -409,10 +421,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     public void signOut() {
-        StoreCredentials credentials = new StoreCredentials(this);
-        credentials.clear();
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra(LoginActivity.EXTRA_CLEAR, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

@@ -158,5 +158,8 @@
     <string name="notifications_read">Mark as read</string>
     <string name="notifications_full_read">Mark all %s notifications as read</string>
     <string name="navigation_sign_out">Sign out</string>
+    <string name="add_account">Add Account</string>
+    <string name="add_acount">Add Account</string>
+    <string name="add_account_description">Add new GitHub Account</string>
 
 </resources>

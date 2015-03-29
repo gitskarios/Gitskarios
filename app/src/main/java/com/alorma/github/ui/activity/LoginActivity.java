@@ -35,13 +35,14 @@ import retrofit.client.Response;
 
 public class LoginActivity extends AccountAuthenticatorActivity implements BaseClient.OnResultCallback<User> {
 
-    public static final String EXTRA_CLEAR = "EXTRA_CLEAR";
     public static final String ARG_ACCOUNT_TYPE = "ARG_ACCOUNT_TYPE";
     public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
     public static final String ADDING_FROM_ACCOUNTS = "ADDING_FROM_ACCOUNTS";
+    public static final String ADDING_FROM_APP = "ADDING_FROM_APP";
     public static final String ACCOUNT_SCOPES = "ACCOUNT_SCOPES";
     public static final String USER_PIC = "USER_PIC";
     public static final String USER_MAIL = "USER_MAIL";
+    public static final String USER_NAME = "USER_NAME";
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -62,61 +63,43 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         AccountManager accountManager = AccountManager.get(this);
         Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
-        boolean fromCreate = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
+        boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
+        boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
-        if (!fromCreate && accounts != null && accounts.length > 0) {
+        if (fromApp || fromAccounts) {
+            login();
+        } else if (accounts != null && accounts.length > 0) {
             openMain();
         } else {
-            CookieSyncManager.createInstance(this);
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-
-            setContentView(R.layout.activity_login);
-
-            webview = (WebView) findViewById(R.id.webview);
-            webview.getSettings().setJavaScriptEnabled(true);
-            webview.setWebViewClient(new WebViewCustomClient());
-
-            webview.clearCache(true);
-            webview.clearFormData();
-            webview.clearHistory();
-            webview.clearMatches();
-            webview.clearSslPreferences();
-
-            webview.getSettings().setUseWideViewPort(true);
-
             login();
         }
     }
 
     private void login() {
+        CookieSyncManager.createInstance(this);
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
+
+        setContentView(R.layout.activity_login);
+
+        webview = (WebView) findViewById(R.id.webview);
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.setWebViewClient(new WebViewCustomClient());
+
+        webview.clearCache(true);
+        webview.clearFormData();
+        webview.clearHistory();
+        webview.clearMatches();
+        webview.clearSslPreferences();
+
+        webview.getSettings().setUseWideViewPort(true);
+
+
         String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
 
         url = url + "&scope=gist,user,name,notifications,repo";
         webview.loadUrl(url);
     }
-
-/*    private void updatingTokens() {
-        if (credentials.scopes() == null || (!credentials.scopes().contains("repo"))) {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-            builder.title(R.string.repo_scope_title);
-            builder.content(R.string.repo_scope_message);
-            builder.positiveText(R.string.repo_scope_positive);
-            builder.cancelable(false);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    super.onPositive(dialog);
-                    credentials.clear();
-                    login();
-                }
-            });
-            builder.show();
-        } else {
-            MainActivity.startActivity(this);
-            finish();
-        }
-    }*/
 
     private void openMain() {
         MainActivity.startActivity(LoginActivity.this);
@@ -139,6 +122,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         userData.putString(LoginActivity.ACCOUNT_SCOPES, scope);
         userData.putString(LoginActivity.USER_PIC, user.avatar_url);
         userData.putString(LoginActivity.USER_MAIL, user.email);
+        userData.putString(LoginActivity.USER_NAME, user.name);
         userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
         AccountManager accountManager = AccountManager.get(this);
