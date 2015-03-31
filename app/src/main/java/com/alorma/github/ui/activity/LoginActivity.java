@@ -1,10 +1,16 @@
 package com.alorma.github.ui.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
@@ -16,10 +22,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
+import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.crashlytics.android.Crashlytics;
 
@@ -27,175 +35,208 @@ import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AccountAuthenticatorActivity implements BaseClient.OnResultCallback<User> {
 
-	public static final String EXTRA_CLEAR = "EXTRA_CLEAR";
-	public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
+    public static final String ARG_ACCOUNT_TYPE = "ARG_ACCOUNT_TYPE";
+    public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
+    public static final String ADDING_FROM_ACCOUNTS = "ADDING_FROM_ACCOUNTS";
+    public static final String ADDING_FROM_APP = "ADDING_FROM_APP";
+    public static final String ACCOUNT_SCOPES = "ACCOUNT_SCOPES";
+    public static final String USER_PIC = "USER_PIC";
+    public static final String USER_MAIL = "USER_MAIL";
+    public static final String USER_NAME = "USER_NAME";
 
-	private StoreCredentials credentials;
-	private SpotsDialog progressDialog;
-	private WebView webview;
+    public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    private SpotsDialog progressDialog;
+    private WebView webview;
+    private String accessToken;
+    private String scope;
 
-		if (!BuildConfig.DEBUG) {
-			Crashlytics.start(this);
-		}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+        if (!BuildConfig.DEBUG) {
+            Crashlytics.start(this);
+        }
 
-		credentials = new StoreCredentials(this);
-		if (credentials.token() != null) {
-			if (credentials.scopeNoAsk()) {
-				openMain();
-			} else {
-				updatingTokens();
-			}
-		} else {
-			CookieSyncManager.createInstance(this);
-			CookieManager cookieManager = CookieManager.getInstance();
-			cookieManager.removeAllCookie();
+        AccountManager accountManager = AccountManager.get(this);
 
-			setContentView(R.layout.activity_login);
+        Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
-			webview = (WebView) findViewById(R.id.webview);
-			webview.getSettings().setJavaScriptEnabled(true);
-			webview.setWebViewClient(new WebViewCustomClient());
+        boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
+        boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
-			webview.clearCache(true);
-			webview.clearFormData();
-			webview.clearHistory();
-			webview.clearMatches();
-			webview.clearSslPreferences();
+        if (fromApp || fromAccounts) {
+            login();
+        } else if (accounts != null && accounts.length > 0) {
+            openMain();
+        } else {
+            StoreCredentials storeCredentials = new StoreCredentials(this);
+            if (storeCredentials.token() != null) {
+                endAccess(storeCredentials.token(), storeCredentials.scopes());
+            } else {
+                login();
+            }
+        }
+    }
 
-			webview.getSettings().setUseWideViewPort(true);
+    private void login() {
+        CookieSyncManager.createInstance(this);
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
 
-			login();
-		}
-	}
+        setContentView(R.layout.activity_login);
 
-	private void login() {
-		String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
+        webview = (WebView) findViewById(R.id.webview);
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.setWebViewClient(new WebViewCustomClient());
 
-		url = url + "&scope=gist,user,name,notifications,repo";
-		webview.loadUrl(url);
-	}
+        webview.clearCache(true);
+        webview.clearFormData();
+        webview.clearHistory();
+        webview.clearMatches();
+        webview.clearSslPreferences();
 
-	private void updatingTokens() {
-		if (credentials.scopes() == null || (!credentials.scopes().contains("repo"))) {
-			MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-			builder.title(R.string.repo_scope_title);
-			builder.content(R.string.repo_scope_message);
-			builder.positiveText(R.string.repo_scope_positive);
-			builder.cancelable(false);
-			builder.callback(new MaterialDialog.ButtonCallback() {
-				@Override
-				public void onPositive(MaterialDialog dialog) {
-					super.onPositive(dialog);
-					credentials.clear();
-					login();
-				}
-			});
-			builder.show();
-		} else {
-			MainActivity.startActivity(this);
-			finish();
-		}
-	}
+        webview.getSettings().setUseWideViewPort(true);
 
 
-	private void openMain() {
-		MainActivity.startActivity(LoginActivity.this);
-		finish();
-	}
+        String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
 
-	private void endAccess(String accessToken, String scope) {
-		if (credentials != null) {
-			credentials.storeToken(accessToken);
-			credentials.storeScopes(scope);
-			openMain();
-		}
-	}
+        url = url + "&scope=gist,user,name,notifications,repo";
+        webview.loadUrl(url);
+    }
 
-	@Override
-	public void onBackPressed() {
-		setResult(RESULT_CANCELED);
-		finish();
-	}
+    private void openMain() {
+        MainActivity.startActivity(LoginActivity.this);
+        finish();
+    }
 
-	private void showDialog() {
-		try {
-			progressDialog = new SpotsDialog(this, R.style.SpotDialog_Login);
-			progressDialog.setCancelable(false);
-			progressDialog.setCanceledOnTouchOutside(false);
-			progressDialog.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-			Crashlytics.logException(e);
-		}
-	}
+    private void endAccess(String accessToken, String scope) {
+        this.accessToken = accessToken;
+        this.scope = scope;
 
-	private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {
-		private RequestTokenClient requestTokenClient;
+        GetAuthUserClient userClient = new GetAuthUserClient(this, accessToken);
+        userClient.setOnResultCallback(this);
+        userClient.execute();
+    }
 
-		public void onPageStarted(WebView view, String url, Bitmap favicon) {
-			String accessTokenFragment = "access_token=";
-			String accessCodeFragment = "code";
+    @Override
+    public void onResponseOk(User user, Response r) {
+        Account account = new Account(user.login, getString(R.string.account_type));
+        Bundle userData = new Bundle();
+        userData.putString(LoginActivity.ACCOUNT_SCOPES, scope);
+        userData.putString(LoginActivity.USER_PIC, user.avatar_url);
+        userData.putString(LoginActivity.USER_MAIL, user.email);
+        userData.putString(LoginActivity.USER_NAME, user.name);
+        userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
-			// We hijack the GET request to extract the OAuth parameters
+        AccountManager accountManager = AccountManager.get(this);
 
-			if (url != null) {
-				if (url.contains(accessCodeFragment)) {
-					// the GET request contains an authorization code
+        accountManager.addAccountExplicitly(account, null, userData);
+        accountManager.setAuthToken(account, getString(R.string.account_type), accessToken);
 
-					Uri uri = Uri.parse(url);
+        Bundle result = new Bundle();
+        result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+        result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+        result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
-					showDialog();
+        setAccountAuthenticatorResult(result);
 
-					if (requestTokenClient == null) {
-						requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
-						requestTokenClient.setOnResultCallback(this);
-						requestTokenClient.execute();
-					}
-				}
-			}
-		}
+        if (getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false)) {
+            Intent intent = new Intent();
+            intent.putExtras(result);
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            openMain();
+        }
+    }
 
-		@Override
-		public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			Uri uri = Uri.parse(url);
-			Uri callback = Uri.parse(ApiConstants.CLIENT_CALLBACK);
-			return (uri.getAuthority().equals(callback.getAuthority()));
-		}
+    @Override
+    public void onFail(RetrofitError error) {
 
-		@Override
-		public void onPageFinished(WebView view, String url) {
-			super.onPageFinished(view, url);
-			// TODO STOP LOADING
-		}
+    }
 
-		@Override
-		public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-			super.onReceivedSslError(view, handler, error);
-			handler.proceed();
-		}
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 
-		@Override
-		public void onResponseOk(Token token, Response r) {
-			if (token.access_token != null) {
-				if (progressDialog != null) {
-					progressDialog.dismiss();
-				}
-				endAccess(token.access_token, token.scope);
-			} else if (token.error != null) {
-				Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
-			}
-		}
+    private void showDialog() {
+        try {
+            progressDialog = new SpotsDialog(this, R.style.SpotDialog_Login);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+    }
 
-		@Override
-		public void onFail(RetrofitError error) {
-			ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
-		}
-	}
+    private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {
+        private RequestTokenClient requestTokenClient;
+
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            String accessTokenFragment = "access_token=";
+            String accessCodeFragment = "code";
+
+            // We hijack the GET request to extract the OAuth parameters
+
+            if (url != null) {
+                if (url.contains(accessCodeFragment)) {
+                    // the GET request contains an authorization code
+
+                    Uri uri = Uri.parse(url);
+
+                    showDialog();
+
+                    if (requestTokenClient == null) {
+                        requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
+                        requestTokenClient.setOnResultCallback(this);
+                        requestTokenClient.execute();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Uri uri = Uri.parse(url);
+            Uri callback = Uri.parse(ApiConstants.CLIENT_CALLBACK);
+            return (uri.getAuthority().equals(callback.getAuthority()));
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            // TODO STOP LOADING
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            super.onReceivedSslError(view, handler, error);
+            handler.proceed();
+        }
+
+        @Override
+        public void onResponseOk(Token token, Response r) {
+            if (token.access_token != null) {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+                endAccess(token.access_token, token.scope);
+            } else if (token.error != null) {
+                Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
+        }
+    }
 }

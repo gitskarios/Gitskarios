@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.alorma.github">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.alorma.github">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
     <!--<uses-permission android:name="com.android.vending.BILLING"/>-->
 
     <application
@@ -19,44 +23,43 @@
             android:name="com.alorma.github.ui.activity.LoginActivity"
             android:theme="@style/AppTheme.Login">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.alorma.github.ui.activity.MainActivity"/>
+        <activity android:name="com.alorma.github.ui.activity.MainActivity" />
         <activity
             android:name="com.alorma.github.ui.activity.PeopleActivity"
             android:theme="@style/AppTheme.Repos"
-            android:label="@string/navigation_people"/>
+            android:label="@string/navigation_people" />
         <activity
             android:name="com.alorma.github.ui.activity.ProfileActivity"
-            android:theme="@style/AppTheme.Repos"/>
-        <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity"/>
-        <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity"/>
-        <activity android:name=".ui.dialog.NewIssueCommentActivity"/>
-        <activity android:name="com.alorma.github.ui.activity.FileActivity"/>
-        <activity android:name="com.alorma.github.ui.activity.AboutActivity"/>
-        <activity android:name="com.alorma.github.ui.activity.OrganizationActivity"/>
+            android:theme="@style/AppTheme.Repos" />
+        <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity" />
+        <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity" />
+        <activity android:name=".ui.dialog.NewIssueCommentActivity" />
+        <activity android:name="com.alorma.github.ui.activity.FileActivity" />
+        <activity android:name="com.alorma.github.ui.activity.AboutActivity" />
+        <activity android:name="com.alorma.github.ui.activity.OrganizationActivity" />
         <activity
             android:name="com.alorma.github.Interceptor"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
                 <data
                     android:host="github.com"
-                    android:scheme="http"/>
+                    android:scheme="http" />
                 <data
                     android:host="github.com"
-                    android:scheme="https"/>
-                <data android:pathPattern=".*"/>
+                    android:scheme="https" />
+                <data android:pathPattern=".*" />
 
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
 
@@ -67,21 +70,26 @@
         <activity
             android:name="com.alorma.github.ui.activity.NewIssueActivity"
             android:label="@string/title_activity_new_issue"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity
-            android:name="com.alorma.github.ui.activity.IssueDetailActivity"/>
-        <activity
-            android:name="com.alorma.github.ui.activity.PullRequestDetailActivity"/>
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name="com.alorma.github.ui.activity.IssueDetailActivity" />
+        <activity android:name="com.alorma.github.ui.activity.PullRequestDetailActivity" />
         <activity
             android:name="com.alorma.github.ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings"/>
-        <activity
-            android:name="com.alorma.github.ui.activity.ReposActivity">
-        </activity>
+            android:label="@string/title_activity_settings" />
+        <activity android:name="com.alorma.github.ui.activity.ReposActivity" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080"/>
+            android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080" />
+
+        <service android:name=".account.AccountService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/account_authenticator" />
+        </service>
     </application>
 
 </manifest>

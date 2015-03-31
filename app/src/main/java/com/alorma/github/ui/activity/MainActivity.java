@@ -1,27 +1,29 @@
 package com.alorma.github.ui.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.security.StoreCredentials;
-import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
@@ -34,26 +36,30 @@ import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
-import com.mikepenz.iconics.typeface.FontAwesome;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.otto.Bus;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, NotificationsActionProvider.OnNotificationListener, BaseClient.OnResultCallback<User> {
+public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener,
+        SearchView.OnQueryTextListener,
+        SearchView.OnCloseListener,
+        NotificationsActionProvider.OnNotificationListener {
 
     private ReposFragment reposFragment;
     private StarredReposFragment starredFragment;
@@ -62,13 +68,16 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     private SearchReposFragment searchReposFragment;
     private SearchView searchView;
     private NotificationsActionProvider notificationProvider;
+    private Handler handler = new Handler();
 
     @Inject
     Bus bus;
 
-    private GetAuthUserClient client;
-    private User user;
     private AccountHeader.Result headerResult;
+    private StoreCredentials credentials;
+    private Drawer.Result result;
+    private HashMap<String, Account> accountMap;
+    private Account selectedAccount;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -83,11 +92,9 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         setContentView(R.layout.activity_main);
 
-        client = new GetAuthUserClient(this);
-        client.setOnResultCallback(this);
-        client.execute();
 
         createDrawer();
+
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("TITLE")) {
@@ -95,67 +102,75 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
             }
         } else {
             setTitle(R.string.navigation_repos);
-            onReposSelected();
         }
+
     }
 
     @Override
-    public void onResponseOk(User user, Response r) {
-        this.user = user;
-        if (headerResult != null) {
-            final ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem()
-                    .withName(user.login)
-                    .withEmail(user.name != null ? user.name : user.email)
-                    .withIdentifier(0);
-            headerResult.addProfile(profileDrawerItem, 0);
+    public void onStart() {
+        super.onStart();
+        bus.register(this);
 
-            ImageLoader.getInstance().loadImage(user.avatar_url, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
+        AccountManager accountManager = AccountManager.get(this);
+        Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
+        if (accounts != null && accounts.length > 0) {
+            if (headerResult != null) {
+                if (headerResult.getProfiles() != null) {
+                    ArrayList<IProfile> iProfiles = new ArrayList<>(headerResult.getProfiles());
+                    for (IProfile iProfile : iProfiles) {
+                        headerResult.removeProfile(iProfile);
+                    }
                 }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+            }
+            accountMap = new HashMap<>();
+            int i = 0;
+            if (selectedAccount != null) {
+                addAccountToHeader(selectedAccount, i++);
+            }
+            for (Account account : accounts) {
+                if (selectedAccount == null || !selectedAccount.name.equals(account.name)) {
+                    addAccountToHeader(account, i++);
                 }
+            }
 
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    profileDrawerItem.setIcon(new BitmapDrawable(getResources(), loadedImage));
-                    headerResult.updateProfileByIdentifier(profileDrawerItem);
-                }
+            ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_acount)).withDescription(getString(R.string.add_account_description)).withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(-1);
 
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
+            headerResult.addProfiles(itemAdd);
 
-                }
-            });
+            selectAccount(accounts[0]);
         }
     }
 
-    @Override
-    public void onFail(RetrofitError error) {
+    private void addAccountToHeader(Account account, int i) {
+        AccountManager accountManager = AccountManager.get(this);
+        accountMap.put(account.name, account);
+        String userAvatar = accountManager.getUserData(account, LoginActivity.USER_PIC);
+        String userMail = accountManager.getUserData(account, LoginActivity.USER_MAIL);
+        String userName = accountManager.getUserData(account, LoginActivity.USER_NAME);
+        ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar)
+                .withEmail(userMail != null ? userMail : userName).withIdentifier(i);
+        headerResult.addProfiles(profileDrawerItem);
+    }
 
+    @Override
+    protected void onPause() {
+        if (notificationProvider != null) {
+            try {
+                bus.unregister(notificationProvider);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
+        }
+        bus.unregister(this);
+        super.onPause();
     }
 
     private void createDrawer() {
-        // Create the AccountHeader
-        headerResult = new AccountHeader()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
-                .withSelectionListEnabledForSingleProfile(false)
-                .withOnAccountHeaderSelectionViewClickListener(new AccountHeader.OnAccountHeaderSelectionViewClickListener() {
-                    @Override
-                    public void onClick(View view, IProfile iProfile) {
-                        onProfileSelected();
-                    }
-                })
-                .withCompactStyle(true)
-                .build();
 
+        buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
-        new Drawer()
+        result = new Drawer()
                 .withActivity(this)
                 .withToolbar(getToolbar())
                 .withAccountHeader(headerResult)
@@ -173,29 +188,25 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         switch (position) {
-                            case 1:
-                                setTitle(R.string.menu_events);
+                            case 0:
                                 onUserEventsSelected();
                                 break;
-                            case 2:
-                                setTitle(R.string.navigation_repos);
+                            case 1:
                                 onReposSelected();
                                 break;
-                            case 3:
-                                setTitle(R.string.navigation_starred_repos);
+                            case 2:
                                 onStarredSelected();
                                 break;
-                            case 4:
-                                setTitle(R.string.navigation_watched_repos);
+                            case 3:
                                 onWatchedSelected();
                                 break;
-                            case 5:
+                            case 4:
                                 onPeopleSelected();
                                 break;
-                            case 7:
+                            case 6:
                                 onSettingsSelected();
                                 break;
-                            case 8:
+                            case 7:
                                 signOut();
                                 break;
                         }
@@ -203,6 +214,73 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                 })
                 .withSelectedItem(1)
                 .build();
+    }
+
+    private void buildHeader() {
+
+        // Create the AccountHeader
+
+        DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
+            @Override
+            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
+                Picasso.with(MainActivity.this).load(uri).placeholder(placeholder).into(imageView);
+            }
+
+            @Override
+            public void cancel(ImageView imageView) {
+
+            }
+        });
+
+        AccountHeader headerBuilder = new AccountHeader()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.header);
+
+        headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+            @Override
+            public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
+                if (iProfile.getIdentifier() != -1) {
+                    Account account = accountMap.get(iProfile.getName());
+                    selectAccount(account);
+                    return false;
+                } else {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.putExtra(LoginActivity.ADDING_FROM_APP, true);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+            }
+        });
+
+        headerResult = headerBuilder.build();
+    }
+
+    private void selectAccount(final Account account) {
+        this.selectedAccount = account;
+        clearFragments();
+        credentials = new StoreCredentials(MainActivity.this);
+        credentials.clear();
+
+        AccountManager manager = AccountManager.get(MainActivity.this);
+        String authToken = manager.getUserData(account, AccountManager.KEY_AUTHTOKEN);
+
+        credentials.storeToken(authToken);
+        credentials.storeUsername(account.name);
+
+        onReposSelected();
+    }
+
+    private void clearFragments() {
+        reposFragment = null;
+        starredFragment = null;
+        watchedFragment = null;
+        eventsFragment = null;
+        searchReposFragment = null;
+
+        getFragmentManager().popBackStack(FragmentManager.POP_BACK_STACK_INCLUSIVE, 0);
+        invalidateOptionsMenu();
     }
 
     private Drawable getGithubDrawable(GithubIconify.IconValue icon) {
@@ -311,6 +389,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     @Override
     public boolean onReposSelected() {
+        setTitle(R.string.navigation_repos);
         if (reposFragment == null) {
             reposFragment = ReposFragment.newInstance();
         }
@@ -321,6 +400,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     @Override
     public boolean onStarredSelected() {
+        setTitle(R.string.navigation_starred_repos);
         if (starredFragment == null) {
             starredFragment = StarredReposFragment.newInstance();
         }
@@ -331,6 +411,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     @Override
     public boolean onWatchedSelected() {
+        setTitle(R.string.navigation_watched_repos);
         if (watchedFragment == null) {
             watchedFragment = WatchedReposFragment.newInstance();
         }
@@ -355,14 +436,14 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     @Override
     public boolean onUserEventsSelected() {
-        GitskariosSettings settings = new GitskariosSettings(this);
-        String user = settings.getAuthUser(null);
+        setTitle(R.string.menu_events);
+        String user = new StoreCredentials(this).getUserName();
         if (user != null) {
             if (eventsFragment == null) {
                 eventsFragment = EventsListFragment.newInstance(user);
             }
-            setFragment(eventsFragment);
         }
+        setFragment(eventsFragment);
         return true;
     }
 
@@ -374,13 +455,23 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     public void signOut() {
-        StoreCredentials credentials = new StoreCredentials(this);
-        credentials.clear();
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra(LoginActivity.EXTRA_CLEAR, true);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        if (selectedAccount != null) {
+            AccountManager.get(this).removeAccount(selectedAccount, this, new AccountManagerCallback<Bundle>() {
+                @Override
+                public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                    if (accountManagerFuture.isDone()) {
+
+                        StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+                        storeCredentials.clear();
+
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }, new Handler());
+        }
     }
 
     @Override
@@ -411,22 +502,5 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         if (outState != null) {
             outState.putString("TITLE", getToolbar().getTitle().toString());
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        bus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        try {
-            bus.unregister(notificationProvider);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        bus.unregister(this);
-        super.onPause();
     }
 }
