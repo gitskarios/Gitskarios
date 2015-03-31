@@ -86,7 +86,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_row_item_height"
             android:gravity="center_vertical"
-            android:id="@+id/privateGists"
+            android:id="@+id/orgs"
+            android:background="?android:selectableItemBackground"
             android:clickable="true">
 
             <ImageView
@@ -97,14 +98,14 @@
                 android:layout_marginStart="@dimen/card_row_item_margin"
                 android:layout_marginRight="@dimen/card_row_item_margin"
                 android:layout_marginEnd="@dimen/card_row_item_margin"
-                android:id="@+id/iconPrivateGists"/>
+                android:id="@+id/iconOrgs"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/card_row_item_margin"
                 android:layout_marginEnd="@dimen/card_row_item_margin"
-                android:id="@+id/textPrivateGists"
+                android:id="@+id/textOrgs"
                 style="@style/card_row_item_text"/>
         </LinearLayout>
     </LinearLayout>

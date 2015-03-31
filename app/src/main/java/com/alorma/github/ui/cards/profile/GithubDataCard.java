@@ -6,10 +6,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Bernat on 23/11/2014.
@@ -20,6 +26,7 @@ public class GithubDataCard implements View.OnClickListener {
 
 	private User user;
 	private int avatarColor;
+	private TextView textOrgs;
 
 	public GithubDataCard(User user, View view, int avatarColor) {
 		this.user = user;
@@ -28,17 +35,9 @@ public class GithubDataCard implements View.OnClickListener {
 	}
 
 	public void setupInnerViewElements(View view) {
-
 		setUpRepos(view);
 		setUpGists(view);
-
-		GitskariosSettings gitskariosSettings = new GitskariosSettings(view.getContext());
-		String authUser = gitskariosSettings.getAuthUser(null);
-		if (authUser != null && authUser.equals(user.login)) {
-			setUpPrivateGists(view);
-		} else {
-			hidePrivateGists(view);
-		}
+		setUpOrgs(view);
 	}
 
 	private void setUpRepos(View view) {
@@ -69,23 +68,30 @@ public class GithubDataCard implements View.OnClickListener {
 		view.findViewById(R.id.gists).setOnClickListener(this);
 	}
 
-	private void setUpPrivateGists(View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconPrivateGists);
+	private void setUpOrgs(final View view) {
+		ImageView icon = (ImageView) view.findViewById(R.id.iconOrgs);
 
-		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_gist);
+		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_organization);
 
 		icon.setImageDrawable(githubIconDrawable);
 
-		TextView text = (TextView) view.findViewById(R.id.textPrivateGists);
+		textOrgs = (TextView) view.findViewById(R.id.textOrgs);
 
-		text.setText(view.getContext().getString(R.string.private_gists_num, user.private_gists));
+		view.findViewById(R.id.orgs).setOnClickListener(this);
 
-		view.findViewById(R.id.gists).setOnClickListener(this);
-	}
+		GetOrgsClient orgsClient = new GetOrgsClient(view.getContext(), user.login);
+		orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+			@Override
+			public void onResponseOk(ListOrganizations organizations, Response r) {
+				textOrgs.setText(view.getContext().getString(R.string.orgs_num, organizations.size()));
+			}
 
-	private void hidePrivateGists(View view) {
-		view.findViewById(R.id.dividerGists).setVisibility(View.GONE);
-		view.findViewById(R.id.privateGists).setVisibility(View.GONE);
+			@Override
+			public void onFail(RetrofitError error) {
+
+			}
+		});
+		orgsClient.execute();
 	}
 
 	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
@@ -104,6 +110,9 @@ public class GithubDataCard implements View.OnClickListener {
 				case R.id.repositories:
 					githubDataCardListener.onRepositoriesRequest(user.login);
 					break;
+				case R.id.orgs:
+					githubDataCardListener.onOrganizationsRequest(user.login);
+					break;
 			}
 		}
 	}
@@ -114,5 +123,7 @@ public class GithubDataCard implements View.OnClickListener {
 
 	public interface GithubDataCardListener {
 		void onRepositoriesRequest(String username);
+
+		void onOrganizationsRequest(String username);
 	}
 }

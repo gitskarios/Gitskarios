@@ -23,6 +23,7 @@ import android.widget.ImageView;
 
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
@@ -241,7 +242,18 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
             public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
                 if (iProfile.getIdentifier() != -1) {
                     Account account = accountMap.get(iProfile.getName());
-                    selectAccount(account);
+                    if (selectedAccount != null) {
+                        if (account.name.equals(selectedAccount.name)) {
+                            User user = new User();
+                            user.login = account.name;
+                            Intent launcherIntent = ProfileActivity.createLauncherIntent(MainActivity.this);
+                            startActivity(launcherIntent);
+                        } else {
+                            selectAccount(account);
+                        }
+                    } else {
+                        selectAccount(account);
+                    }
                     return false;
                 } else {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);

@@ -13,13 +13,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
@@ -27,7 +27,6 @@ import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
 import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
@@ -109,7 +108,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	protected void getContent() {
 		BaseUsersClient<User> requestClient;
-		User user = null;
+		user = null;
 		if (getIntent().getExtras() != null) {
 			if (getIntent().getExtras().containsKey(USER)) {
 				user = getIntent().getParcelableExtra(USER);
@@ -120,7 +119,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new RequestUserClient(this, user.login);
 			getToolbar().setTitle(user.login);
 		} else {
-			requestClient = new GetAuthUserClient(this, null);
+			requestClient = new GetAuthUserClient(this);
 		}
 
 		showDialog();
@@ -144,16 +143,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onResponseOk(User user, Response r) {
+		isAuthUser = this.user == null;
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
-
-		GitskariosSettings gitskariosSettings = new GitskariosSettings(this);
-		String authUser = gitskariosSettings.getAuthUser(null);
-		isAuthUser = !TextUtils.isEmpty(authUser) && authUser.equals(user.login);
 
 		if (isAuthUser) {
 			fabLayout.removeFab();
@@ -177,7 +173,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		card.setBioCardListener(this);
 	}
 
-	private void fillCardRepos(User user) {
+	private void fillCardGithubData(User user) {
 		CardView view = (CardView) findViewById(R.id.dataCardLayout);
 		view.setCardElevation(4);
 		GithubDataCard dataCard = new GithubDataCard(user, view, avatarColor);
@@ -227,7 +223,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fillCardBio(user);
 
-		fillCardRepos(user);
+		fillCardGithubData(user);
 
 		fillCardPlan(user);
 	}
@@ -264,6 +260,12 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onRepositoriesRequest(String username) {
 		Intent intent = ReposActivity.launchIntent(this, username);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onOrganizationsRequest(String username) {
+		Intent intent = OrganizationsActivity.launchIntent(this, username);
 		startActivity(intent);
 	}
 
