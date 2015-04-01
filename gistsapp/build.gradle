@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.0"
+
+    defaultConfig {
+        applicationId "com.alorma.gistsapp"
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        playStore {
+            storeFile file(SIGN_FILE)
+            storePassword SIGN_KEYSTORE_PASS
+            keyAlias SIGN_KEYSTORE_ALIAS
+            keyPassword SIGN_KEYSTORE_ALIAS_PASS
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "CLIENT_ID", "\"" + DEV_ID + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + DEV_SECRET + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + DEV_CALLBACK + "\""
+            applicationIdSuffix ".debug"
+        }
+        release {
+            buildConfigField "String", "CLIENT_ID", "\"" + PRO_ID + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + PRO_SECRET + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + PRO_CALLBACK + "\""
+            minifyEnabled false
+            signingConfig signingConfigs.playStore
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.github.d-max:spots-dialog:0.1'
+    compile project(':sdk')
+}

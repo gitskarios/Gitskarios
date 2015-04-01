@@ -1,16 +1,13 @@
-package com.alorma.github.ui.activity;
+package com.alorma.gistsapp;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
@@ -18,9 +15,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.alorma.github.BuildConfig;
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.security.ApiConstants;
@@ -28,8 +22,6 @@ import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.ui.ErrorHandler;
-import com.crashlytics.android.Crashlytics;
 
 import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
@@ -56,10 +48,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Toast.makeText(this, getPackageName(), Toast.LENGTH_SHORT).show();
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.start(this);
-        }
 
         AccountManager accountManager = AccountManager.get(this);
 
@@ -109,7 +99,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     }
 
     private void openMain() {
-        MainActivity.startActivity(LoginActivity.this);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 
@@ -167,13 +158,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void showDialog() {
         try {
-            progressDialog = new SpotsDialog(this, R.style.SpotDialog_Login);
+            progressDialog = new SpotsDialog(this);
             progressDialog.setCancelable(false);
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
-            Crashlytics.logException(e);
         }
     }
 
@@ -236,7 +226,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         @Override
         public void onFail(RetrofitError error) {
-            ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
+
         }
     }
 }
