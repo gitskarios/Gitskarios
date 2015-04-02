@@ -5,10 +5,9 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="2">
+        android:orientation="vertical">
 
         <include layout="@layout/toolbar" />
 
@@ -21,8 +20,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:orientation="vertical">
 
         <include layout="@layout/toolbar"
             android:id="@+id/toolbarDetail"/>

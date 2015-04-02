@@ -6,4 +6,5 @@
     <string name="add_acount">Add account</string>
     <string name="add_account_description">Add github account</string>
     <string name="no_gists">No gists</string>
+    <string name="num_of_files">%d files</string>
 </resources>

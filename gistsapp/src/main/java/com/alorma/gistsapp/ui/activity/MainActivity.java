@@ -40,7 +40,6 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
     private AccountHeader.Result header;
     private Account selectedAccount;
     private HashMap<String, Account> accountMap = new HashMap<>();
-    private PaginationLink bottomPaginationLink;
     private Toolbar toolbarDetail;
 
     @Override
@@ -54,6 +53,11 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
         toolbarDetail = (Toolbar) findViewById(R.id.toolbarDetail);
 
         createDrawer();
+
+        Account[] accounts = AccountManager.get(this).getAccountsByType(getString(R.string.account_type));
+        if (accounts.length > 0) {
+            selectAccount(accounts[0]);
+        }
     }
 
     private void createDrawer() {

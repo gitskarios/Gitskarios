@@ -1,15 +1,23 @@
 package com.alorma.gistsapp.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.alorma.gistsapp.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
+import com.alorma.github.sdk.bean.dto.response.GistFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by Bernat on 02/04/2015.
@@ -24,11 +32,27 @@ public class GistsAdapter extends LazyAdapter<Gist> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = mInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+        View view = mInflater.inflate(R.layout.row_gist, parent, false);
 
-        TextView textView = (TextView) view.findViewById(android.R.id.text1);
+        Gist gist = getItem(position);
 
-        textView.setText("" + getItem(position).description);
+        TextView textFileName = (TextView) view.findViewById(R.id.textFileName);
+        TextView textNumFiles = (TextView) view.findViewById(R.id.textNumFiles);
+
+        TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
+        GistFile firstFile = filesMap.firstEntry().getValue();
+        textFileName.setText(firstFile.filename);
+
+        textNumFiles.setText(view.getContext().getString(R.string.num_of_files, gist.files.size()));
+
+        TextView textDescription = (TextView) view.findViewById(R.id.textDescription);
+
+        if (!TextUtils.isEmpty(gist.description)) {
+            textDescription.setVisibility(View.VISIBLE);
+            textDescription.setText(gist.description);
+        } else {
+            textDescription.setVisibility(View.GONE);
+        }
 
         return view;
     }
