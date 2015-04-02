@@ -165,11 +165,11 @@ public class MainActivity extends ActionBarActivity implements BaseClient.OnResu
 
     @Override
     public void onResponseOk(ListGists gists, Response r) {
-        Toast.makeText(this, "Gists: " + gists.size(), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onFail(RetrofitError error) {
-        Toast.makeText(this, "Error: " + error, Toast.LENGTH_SHORT).show();
+
     }
 }

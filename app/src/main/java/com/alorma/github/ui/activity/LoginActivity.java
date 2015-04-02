@@ -33,6 +33,7 @@ import com.alorma.github.ui.ErrorHandler;
 import com.crashlytics.android.Crashlytics;
 
 import dmax.dialog.SpotsDialog;
+import io.fabric.sdk.android.Fabric;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -53,9 +54,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.start(this);
-        }
 
         AccountManager accountManager = AccountManager.get(this);
 

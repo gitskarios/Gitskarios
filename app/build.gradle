@@ -1,17 +1,17 @@
 buildscript {
     repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
@@ -71,7 +71,6 @@ dependencies {
     compile('de.psdev.licensesdialog:licensesdialog:1.6.0') {
         exclude module: 'support-v4'
     }
-    compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.github.d-max:spots-dialog:0.1'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
     compile 'com.squareup:otto:1.3.6'
@@ -82,4 +81,7 @@ dependencies {
         transitive = true
     }
     compile 'com.squareup.picasso:picasso:2.3.2'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+        transitive = true;
+    }
 }
