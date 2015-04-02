@@ -12,15 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.alorma.gistsapp.ui.adapter.GistsAdapter;
+import com.alorma.gistsapp.ui.fragment.GistDetailFragment;
 import com.alorma.gistsapp.ui.fragment.GistsFragment;
-import com.alorma.gistsapp.ui.fragment.PaginatedListFragment;
-import com.alorma.github.sdk.bean.dto.response.ListGists;
+import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
-import com.alorma.github.sdk.services.gists.UserGistsClient;
-import com.alorma.githubicons.GithubIconify;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -34,9 +31,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import retrofit.RetrofitError;
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements GistsFragment.GistsFragmentListener {
 
     private static final String MOPUB_NATIVE_AD_UNIT_ID = "e4190202617f48f7ade91e512b33d598";
 
@@ -45,6 +40,7 @@ public class MainActivity extends ActionBarActivity {
     private Account selectedAccount;
     private HashMap<String, Account> accountMap = new HashMap<>();
     private PaginationLink bottomPaginationLink;
+    private Toolbar toolbarDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +49,8 @@ public class MainActivity extends ActionBarActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        toolbarDetail = (Toolbar) findViewById(R.id.toolbarDetail);
 
         createDrawer();
     }
@@ -151,10 +149,24 @@ public class MainActivity extends ActionBarActivity {
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
 
+        GistsFragment gistsFragment = GistsFragment.newInstance();
+        gistsFragment.setGistsFragmentListener(this);
+
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content, GistsFragment.newInstance());
+        ft.replace(R.id.content, gistsFragment);
         ft.commit();
     }
 
 
+    @Override
+    public void onGistsRequest(Gist gist) {
+        if (toolbarDetail != null) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.contentDetail, GistDetailFragment.newInstance(gist.id));
+            fragmentTransaction.commit();
+        } else {
+            Intent intent = GistDetailActivity.createLauncherIntent(this, gist.id);
+            startActivity(intent);
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.alorma.gistsapp.ui.fragment;
+package com.alorma.gistsapp.ui.fragment.base;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -34,7 +35,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 /**
  * Created by Bernat on 05/08/2014.
  */
-public abstract class LoadingListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+public abstract class LoadingListFragment<T> extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
 		AbsListView.OnScrollListener,
 		DirectionalScrollListener.OnDetectScrollListener,
 		DirectionalScrollListener.OnCancelableDetectScrollListener,
@@ -51,6 +52,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	private ListView listView;
 	private SmoothProgressBar progressBar;
 	private UpdateReceiver updateReceiver;
+	private ArrayAdapter<T> listAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -248,33 +250,26 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 		return GithubIconify.IconValue.octicon_squirrel;
 	}
 
-	public ListView getListView() {
-		return listView;
-
-	}
-
-	public void setListAdapter(ListAdapter adapter) {
+	public void setListAdapter(ArrayAdapter<T> adapter) {
+		this.listAdapter = adapter;
 		if (listView != null) {
 			listView.setAdapter(adapter);
 		}
 	}
 
-	public ListAdapter getListAdapter() {
-		if (listView != null) {
-			return listView.getAdapter();
-		} else {
-			return null;
-		}
+	public ArrayAdapter<T> getListAdapter() {
+		return this.listAdapter;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		onListItemClick(listView, view, position, id);
+		if (listAdapter != null) {
+			T item = listAdapter.getItem(position);
+			onListItemClick(item);
+		}
 	}
 
-	public void onListItemClick(ListView l, View v, int position, long id) {
-
-	}
+	protected abstract void onListItemClick(T item);
 
 	@StyleRes
 	public int getTheme() {

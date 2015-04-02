@@ -1,4 +1,4 @@
-package com.alorma.gistsapp.ui.fragment;
+package com.alorma.gistsapp.ui.fragment.base;
 
 import android.os.CountDownTimer;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.alorma.gistsapp.ui.fragment;
+package com.alorma.gistsapp.ui.fragment.base;
 
 import android.view.View;
 import android.widget.AbsListView;
@@ -15,7 +15,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K> extends LoadingListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedListFragment<K, T> extends LoadingListFragment<T> implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
 
 	protected static final String USERNAME = "USERNAME";
 	protected boolean paging;
