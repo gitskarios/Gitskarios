@@ -69,4 +69,6 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
+
+    compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
 }

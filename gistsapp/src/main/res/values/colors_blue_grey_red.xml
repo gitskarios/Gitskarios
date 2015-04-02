@@ -9,4 +9,8 @@
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+
+    <color name="gray_github_light">#f3f3f3</color>
+    <color name="gray_github_medium">#ffb9b9b9</color>
+    <color name="gray_github_light_selected">#ffdedede</color>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
     <item name="toolbar" type="id">toolbar</item>
     <item name="fabButton" type="id">fabButton</item>
+    <item name="listContentFL" type="id">listContentFL</item>
 </resources>

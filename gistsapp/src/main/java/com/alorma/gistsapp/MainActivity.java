@@ -2,26 +2,24 @@ package com.alorma.gistsapp;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.alorma.gistsapp.ui.adapter.GistsAdapter;
+import com.alorma.gistsapp.ui.fragment.GistsFragment;
+import com.alorma.gistsapp.ui.fragment.PaginatedListFragment;
 import com.alorma.github.sdk.bean.dto.response.ListGists;
-import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
-import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
-import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -37,14 +35,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-public class MainActivity extends ActionBarActivity implements BaseClient.OnResultCallback<ListGists> {
+public class MainActivity extends ActionBarActivity {
+
+    private static final String MOPUB_NATIVE_AD_UNIT_ID = "e4190202617f48f7ade91e512b33d598";
 
     private Toolbar toolbar;
     private AccountHeader.Result header;
     private Account selectedAccount;
     private HashMap<String, Account> accountMap = new HashMap<>();
+    private PaginationLink bottomPaginationLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +53,6 @@ public class MainActivity extends ActionBarActivity implements BaseClient.OnResu
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         createDrawer();
     }
@@ -154,22 +151,10 @@ public class MainActivity extends ActionBarActivity implements BaseClient.OnResu
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
 
-        loadGists();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content, GistsFragment.newInstance());
+        ft.commit();
     }
 
-    private void loadGists() {
-        UserGistsClient gistsClient = new UserGistsClient(this);
-        gistsClient.setOnResultCallback(this);
-        gistsClient.execute();
-    }
 
-    @Override
-    public void onResponseOk(ListGists gists, Response r) {
-
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-
-    }
 }

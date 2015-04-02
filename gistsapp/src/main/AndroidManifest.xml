@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alorma.gistsapp"
-    android:sharedUserId="com.alorma.github"
-    android:sharedUserLabel="@string/account_name">
+    package="com.alorma.gistsapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
@@ -27,6 +26,7 @@
         </activity>
 
         <activity android:name=".MainActivity" />
+        <activity android:name=".GistDetailActivity" />
 
         <service android:name=".account.AccountService">
             <intent-filter>
@@ -39,6 +39,19 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080" />
+        <activity
+            android:name="com.mopub.mobileads.MoPubActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="com.mopub.mobileads.MraidActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="com.mopub.common.MoPubBrowser"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="com.mopub.mobileads.MraidVideoPlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
     </application>
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

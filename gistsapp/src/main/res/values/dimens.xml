@@ -2,4 +2,68 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
+         https://developer.android.com/design/patterns/navigation-drawer.html -->
+    <dimen name="navigation_drawer_width">240dp</dimen>
+    <dimen name="avatar_size">114dp</dimen>
+    <dimen name="avatar_size_list">48dp</dimen>
+    <dimen name="shape_size">56dp</dimen>
+    <dimen name="shape_half">23dp</dimen>
+    <dimen name="shape_half_inv">-23dp</dimen>
+    <dimen name="button_press">2dp</dimen>
+    <dimen name="button_press_elevation">4dp</dimen>
+    <dimen name="menuSize">48dp</dimen>
+    <dimen name="fabLayoutSpacing">100dp</dimen>
+
+    <!-- http://developer.android.com/design/style/metrics-grids.html -->
+    <dimen name="gapMicro">2dp</dimen>
+    <dimen name="gapSmall">4dp</dimen>
+    <dimen name="gapMedium">8dp</dimen>
+    <dimen name="gapLarge">16dp</dimen>
+    <dimen name="gapXLarge">32dp</dimen>
+    <dimen name="gapXXLarge">64dp</dimen>
+    <dimen name="gapXXXLarge">128dp</dimen>
+
+    <!-- http://developer.android.com/design/style/typography.html -->
+    <dimen name="textSizeXMicro">10sp</dimen>
+    <dimen name="textSizeMicro">12sp</dimen>
+    <dimen name="textSizeSmall">14sp</dimen>
+    <dimen name="textSizeMedium">18sp</dimen>
+    <dimen name="textSizeLarge">22sp</dimen>
+    <dimen name="textSizeXLarge">24sp</dimen>
+    <dimen name="fab">56dp</dimen>
+    <dimen name="floattingActivityWidth">300dp</dimen>
+    <dimen name="floattingActivityHeight">400dp</dimen>
+    <dimen name="fab_size_normal">56dp</dimen>
+    <dimen name="fab_size_mini">40dp</dimen>
+
+    <dimen name="fab_icon_size">24dp</dimen>
+
+    <dimen name="fab_plus_icon_size">14dp</dimen>
+    <dimen name="fab_plus_icon_stroke">2dp</dimen>
+
+    <dimen name="fab_shadow_offset">3dp</dimen>
+    <dimen name="fab_shadow_radius">9dp</dimen>
+
+    <dimen name="fab_stroke_width">0.5dp</dimen>
+
+    <dimen name="fab_actions_spacing">16dp</dimen>
+
+    <dimen name="card_row_item_height">56dp</dimen>
+    <dimen name="card_row_item_margin">12dp</dimen>
+    <dimen name="card_row_item_image_size">40dp</dimen>
+    <dimen name="card_row_item_image_padding">10dp</dimen>
+    <dimen name="card_row_item_divider_height">1dp</dimen>
+    <dimen name="card_row_item_divider_left_margin">@dimen/card_row_item_height</dimen>
+    <dimen name="card_row_item_height_extra">73dp</dimen>
+    <dimen name="user_row_item_height">72dp</dimen>
+    <dimen name="user_row_item_image_size">40dp</dimen>
+    <dimen name="user_row_item_margin">16dp</dimen>
+    <dimen name="issue_discussion_header_unfold">400dp</dimen>
+    <dimen name="issue_discussion_header_fold">120dp</dimen>
+    <dimen name="translucent_status_dimen_padding_top">0dp</dimen>
+    <dimen name="actions_padding">8dp</dimen>
+    <dimen name="fab_size_mini_icon">32dp</dimen>
+    <dimen name="header_height">56dp</dimen>
 </resources>
