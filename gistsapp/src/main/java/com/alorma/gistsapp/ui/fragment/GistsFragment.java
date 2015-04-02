@@ -1,8 +1,10 @@
 package com.alorma.gistsapp.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.alorma.gistsapp.R;
+import com.alorma.gistsapp.ui.activity.CreateGistActivity;
 import com.alorma.gistsapp.ui.adapter.GistsAdapter;
 import com.alorma.gistsapp.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.sdk.bean.dto.response.Gist;
@@ -107,5 +109,11 @@ public class GistsFragment extends PaginatedListFragment<ListGists, Gist> {
 
     public interface GistsFragmentListener {
         void onGistsRequest(Gist gist);
+    }
+
+    @Override
+    protected void fabClick() {
+        Intent intent = new Intent(getActivity(), CreateGistActivity.class);
+        startActivity(intent);
     }
 }
