@@ -1,14 +1,20 @@
 package com.alorma.gistsapp.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alorma.gistsapp.R;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
@@ -29,6 +35,7 @@ import java.util.Map;
 public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFilesAdapter.ViewHolder> {
 
     private final GithubIconDrawable noPreviewDrawable;
+    private final int colorAccent;
     private Map<String, GistFile> files;
     private List<GistFile> gistFileList;
 
@@ -37,6 +44,8 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
         noPreviewDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_package);
         noPreviewDrawable.sizeDp(100);
         noPreviewDrawable.colorRes(R.color.secondary_text);
+
+        colorAccent = context.getResources().getColor(R.color.accent);
     }
 
     @Override
@@ -65,7 +74,7 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
         try {
             content = splitLines(content);
         } catch (IOException exc) {
-
+            exc.printStackTrace();
         }
         textContent.setText(content);
     }
@@ -120,22 +129,41 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
         notifyItemInserted(files.size());
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements Toolbar.OnMenuItemClickListener {
         public final TextView textFileName;
         public final TextView textContent;
         public final ImageView imageContent;
+        private final Toolbar toolbar;
 
         public ViewHolder(View itemView) {
             super(itemView);
             textFileName = (TextView) itemView.findViewById(R.id.textFileName);
             textContent = (TextView) itemView.findViewById(R.id.textContent);
             imageContent = (ImageView) itemView.findViewById(R.id.imageContent);
-        }
-    }
 
-    public Bitmap decodeImage(String imageDataString) {
-        byte[] byteArray = imageDataString.getBytes();
-        Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        return bmp;
+            toolbar = (Toolbar) itemView.findViewById(R.id.toolbar);
+
+            if (toolbar != null) {
+                toolbar.inflateMenu(R.menu.row_gist_file);
+                toolbar.setOnMenuItemClickListener(this);
+            }
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            if (menuItem.getItemId() == R.id.action_toolbar_share) {
+                GistFile gistFile = gistFileList.get(getAdapterPosition());
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TITLE, gistFile.filename);
+                intent.putExtra(Intent.EXTRA_SUBJECT, gistFile.filename);
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(gistFile.rawUrl));
+                intent.putExtra(Intent.EXTRA_TEXT, gistFile.content);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+                textFileName.getContext().startActivity(Intent.createChooser(intent, "Send to"));
+            }
+            return false;
+        }
     }
 }

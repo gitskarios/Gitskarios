@@ -16,6 +16,7 @@ import com.alorma.gistsapp.R;
 import com.alorma.gistsapp.ui.fragment.GistDetailFragment;
 import com.alorma.gistsapp.ui.fragment.GistsFragment;
 import com.alorma.github.sdk.bean.dto.response.Gist;
+import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
@@ -31,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class MainActivity extends ActionBarActivity implements GistsFragment.GistsFragmentListener {
 
@@ -166,6 +168,10 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
     @Override
     public void onGistsRequest(Gist gist) {
         if (toolbarDetail != null) {
+            TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
+            GistFile firstFile = filesMap.firstEntry().getValue();
+            toolbarDetail.setTitle(firstFile.filename);
+            toolbarDetail.setSubtitle(getString(R.string.num_of_files, gist.files.size()));
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.contentDetail, GistDetailFragment.newInstance(gist.id));
             fragmentTransaction.commit();

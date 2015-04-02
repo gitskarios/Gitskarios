@@ -9,4 +9,8 @@
         <item name="colorControlHighlight">@color/accent_dark</item>
     </style>
 
+    <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorSecondary">@color/accent</item>
+    </style>
+
 </resources>

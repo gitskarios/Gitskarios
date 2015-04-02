@@ -26,6 +26,7 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
     public static final String GIST_ID = "GIST_ID";
     private RecyclerView recyclerView;
     private GistDetailFilesAdapter adapter;
+    private GistDetailListener gistDetailListener;
 
     public static GistDetailFragment newInstance(String id) {
         Bundle bundle = new Bundle();
@@ -63,11 +64,22 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
 
     @Override
     public void onResponseOk(Gist gist, Response r) {
+        if  (gistDetailListener != null) {
+            gistDetailListener.onGistLoaded(gist);
+        }
         adapter.addAll(gist.files);
     }
 
     @Override
     public void onFail(RetrofitError error) {
 
+    }
+
+    public void setGistDetailListener(GistDetailListener gistDetailListener) {
+        this.gistDetailListener = gistDetailListener;
+    }
+
+    public interface GistDetailListener {
+        void onGistLoaded(Gist gist);
     }
 }

@@ -10,11 +10,17 @@ import android.view.MenuItem;
 
 import com.alorma.gistsapp.R;
 import com.alorma.gistsapp.ui.fragment.GistDetailFragment;
+import com.alorma.github.sdk.bean.dto.response.Gist;
+import com.alorma.github.sdk.bean.dto.response.GistFile;
+
+import java.util.TreeMap;
 
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class GistDetailActivity extends ActionBarActivity {
+public class GistDetailActivity extends ActionBarActivity implements GistDetailFragment.GistDetailListener {
+
+    private Toolbar toolbar;
 
     public static Intent createLauncherIntent(Context context, String id) {
         Intent intent = new Intent(context, GistDetailActivity.class);
@@ -29,15 +35,17 @@ public class GistDetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generic_toolbar);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        GistDetailFragment detailFragment = GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID));
+        detailFragment.setGistDetailListener(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content, GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID)));
+        ft.replace(R.id.content, detailFragment);
         ft.commit();
     }
 
@@ -48,5 +56,13 @@ public class GistDetailActivity extends ActionBarActivity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onGistLoaded(Gist gist) {
+        TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
+        GistFile firstFile = filesMap.firstEntry().getValue();
+        toolbar.setTitle(firstFile.filename);
+        toolbar.setSubtitle(getString(R.string.num_of_files, gist.files.size()));
     }
 }
