@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
@@ -144,11 +145,10 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     private void addAccountToHeader(Account account, int i) {
-        AccountManager accountManager = AccountManager.get(this);
         accountMap.put(account.name, account);
-        String userAvatar = accountManager.getUserData(account, LoginActivity.USER_PIC);
-        String userMail = accountManager.getUserData(account, LoginActivity.USER_MAIL);
-        String userName = accountManager.getUserData(account, LoginActivity.USER_NAME);
+        String userAvatar = AccountsHelper.getUserAvatar(this, account);
+        String userMail = AccountsHelper.getUserMail(this, account);
+        String userName = AccountsHelper.getUserName(this, account);
         ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar)
                 .withEmail(userMail != null ? userMail : userName).withIdentifier(i);
         headerResult.addProfiles(profileDrawerItem);
@@ -274,9 +274,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         clearFragments();
         credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
-
-        AccountManager manager = AccountManager.get(MainActivity.this);
-        String authToken = manager.getUserData(account, AccountManager.KEY_AUTHTOKEN);
+        String authToken = AccountsHelper.getUserToken(this, account);
 
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);

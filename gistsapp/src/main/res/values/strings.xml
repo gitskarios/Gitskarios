@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Gists</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="add_acount">Add account</string>
+    <string name="add_account_description">Add github account</string>
+</resources>
