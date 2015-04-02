@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import com.alorma.gistsapp.LoginActivity;
+import com.alorma.gistsapp.ui.activity.LoginActivity;
 
 /**
  * Created by Bernat on 27/03/2015.

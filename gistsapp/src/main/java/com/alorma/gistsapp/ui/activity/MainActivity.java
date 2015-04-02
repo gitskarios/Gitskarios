@@ -1,4 +1,4 @@
-package com.alorma.gistsapp;
+package com.alorma.gistsapp.ui.activity;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.alorma.gistsapp.R;
 import com.alorma.gistsapp.ui.fragment.GistDetailFragment;
 import com.alorma.gistsapp.ui.fragment.GistsFragment;
 import com.alorma.github.sdk.bean.dto.response.Gist;
