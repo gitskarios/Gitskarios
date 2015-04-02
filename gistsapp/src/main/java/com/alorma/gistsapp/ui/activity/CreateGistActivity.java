@@ -1,9 +1,13 @@
 package com.alorma.gistsapp.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.alorma.gistsapp.R;
 
@@ -18,9 +22,20 @@ public class CreateGistActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        boolean sharingMode = Intent.ACTION_SEND.equals(getIntent().getAction());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (sharingMode) {
+            String text = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+            if (!TextUtils.isEmpty(text)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Add snippet");
+                builder.setMessage(text);
+                builder.show();
+            }
         }
 
     }
