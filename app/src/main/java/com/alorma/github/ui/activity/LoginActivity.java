@@ -23,6 +23,7 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
@@ -41,10 +42,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
     public static final String ADDING_FROM_ACCOUNTS = "ADDING_FROM_ACCOUNTS";
     public static final String ADDING_FROM_APP = "ADDING_FROM_APP";
-    public static final String ACCOUNT_SCOPES = "ACCOUNT_SCOPES";
-    public static final String USER_PIC = "USER_PIC";
-    public static final String USER_MAIL = "USER_MAIL";
-    public static final String USER_NAME = "USER_NAME";
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -56,7 +53,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, getPackageName(), Toast.LENGTH_SHORT).show();
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
         }
@@ -125,11 +121,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     @Override
     public void onResponseOk(User user, Response r) {
         Account account = new Account(user.login, getString(R.string.account_type));
-        Bundle userData = new Bundle();
-        userData.putString(LoginActivity.ACCOUNT_SCOPES, scope);
-        userData.putString(LoginActivity.USER_PIC, user.avatar_url);
-        userData.putString(LoginActivity.USER_MAIL, user.email);
-        userData.putString(LoginActivity.USER_NAME, user.name);
+        Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, scope);
         userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
         AccountManager accountManager = AccountManager.get(this);

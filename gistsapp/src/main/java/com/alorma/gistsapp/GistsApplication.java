@@ -11,7 +11,6 @@ import net.danlew.android.joda.JodaTimeAndroid;
  */
 public class GistsApplication extends Application {
 
-
 	@Override
 	public void onCreate() {
 		super.onCreate();

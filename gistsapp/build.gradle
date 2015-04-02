@@ -41,6 +41,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.github.d-max:spots-dialog:0.1'
+    compile 'com.squareup.picasso:picasso:2.3.2'
+    compile('com.mikepenz.materialdrawer:library:2.6.5@aar') {
+        transitive = true
+    }
+    compile project(':libraries:AndroidGithubIcons')
+    compile project(':libraries:android-floating-action-button')
     compile project(':sdk')
 }
