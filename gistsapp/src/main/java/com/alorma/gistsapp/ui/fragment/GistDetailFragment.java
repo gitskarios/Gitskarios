@@ -49,7 +49,7 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
 
-        adapter = new GistDetailFilesAdapter();
+        adapter = new GistDetailFilesAdapter(getActivity());
         recyclerView.setAdapter(adapter);
 
         if (getArguments() != null) {

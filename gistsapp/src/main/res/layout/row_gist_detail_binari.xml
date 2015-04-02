@@ -23,15 +23,13 @@
                 android:id="@+id/textFileName"
                 style="@style/TextAppearance.AppCompat.Headline"
                 android:textColor="?attr/colorControlNormal"
-                tools:text="MyFile.java"/>
+                tools:text="MyFile.java" />
 
-            <TextView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/textContent"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="@color/secondary_text"
-                android:textSize="@dimen/textSizeSmall" />
+                android:id="@+id/imageContent"
+                android:layout_marginTop="@dimen/gapMedium" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
