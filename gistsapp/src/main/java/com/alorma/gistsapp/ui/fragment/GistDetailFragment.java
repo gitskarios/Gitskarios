@@ -23,6 +23,7 @@ import com.alorma.gistsapp.R;
 import com.alorma.gistsapp.ui.activity.CreateGistActivity;
 import com.alorma.gistsapp.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.sdk.bean.dto.response.Gist;
+import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 
@@ -83,7 +84,7 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
         if (gistDetailListener != null) {
             gistDetailListener.onGistLoaded(gist);
         }
-        adapter.addAll(gist.files);
+        adapter.addAll(new ArrayList<GistFile>(gist.files.values()));
     }
 
     public int getMenuId() {

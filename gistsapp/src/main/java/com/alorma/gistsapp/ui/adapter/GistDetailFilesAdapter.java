@@ -35,17 +35,15 @@ import java.util.Map;
 public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFilesAdapter.ViewHolder> {
 
     private final GithubIconDrawable noPreviewDrawable;
-    private final int colorAccent;
-    private Map<String, GistFile> files;
     private List<GistFile> gistFileList;
+    boolean isInEditMode = false;
 
     public GistDetailFilesAdapter(Context context) {
-        files = new HashMap<>();
+        gistFileList = new ArrayList<>();
+
         noPreviewDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_package);
         noPreviewDrawable.sizeDp(100);
         noPreviewDrawable.colorRes(R.color.secondary_text);
-
-        colorAccent = context.getResources().getColor(R.color.accent);
     }
 
     @Override
@@ -57,15 +55,27 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
     public void onBindViewHolder(ViewHolder holder, int position) {
         GistFile gistFile = gistFileList.get(position);
 
-        holder.textFileName.setText(gistFile.filename);
+        if (holder.textFileName != null) {
+            holder.textFileName.setText(gistFile.filename);
+        }
 
-        if (gistFile.type.contains("image")) {
-            if (holder.imageContent != null) {
-                holder.imageContent.setImageDrawable(noPreviewDrawable);
+        if (gistFile.type != null) {
+            if (gistFile.type.contains("image")) {
+                if (holder.imageContent != null) {
+                    holder.imageContent.setImageDrawable(noPreviewDrawable);
+                }
+            } else {
+                if (holder.textContent != null) {
+                    printContent(holder.textContent, gistFile.content);
+                }
             }
-        } else {
-            if (holder.textContent != null) {
-                printContent(holder.textContent, gistFile.content);
+        }
+
+        if (holder.toolbar != null) {
+            if (isInEditMode) {
+                holder.toolbar.setVisibility(View.GONE);
+            } else {
+                holder.toolbar.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -104,29 +114,71 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
 
     @Override
     public int getItemCount() {
-        return files.size();
+        return gistFileList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
         GistFile gistFile = gistFileList.get(position);
-        if (gistFile.type.contains("image")) {
-            return R.layout.row_gist_detail_binari;
+        if (gistFile.type != null) {
+            if (gistFile.type.contains("image")) {
+                return R.layout.row_gist_detail_binari;
+            } else {
+                return R.layout.row_gist_detail_text;
+            }
         } else {
-            return R.layout.row_gist_detail_text;
+            return R.layout.row_gist_detail_empty;
         }
     }
 
-    public void add(String key, GistFile item) {
-        files.put(key, item);
-        gistFileList = new ArrayList<>(files.values());
-        notifyItemInserted(files.size());
+    public void add(GistFile item) {
+        gistFileList.add(item);
+        notifyItemInserted(gistFileList.size());
     }
 
-    public void addAll(Map<String, GistFile> items) {
-        files.putAll(items);
-        gistFileList = new ArrayList<>(files.values());
-        notifyItemInserted(files.size());
+    public void addAll(List<GistFile> items) {
+        gistFileList.addAll(items);
+        notifyItemInserted(gistFileList.size());
+    }
+
+    public List<GistFile> getGistFileList() {
+        return this.gistFileList;
+    }
+
+    public void newEmptyItem() {
+        GistFile gistFile = new GistFile();
+        gistFileList.add(0, gistFile);
+        notifyItemInserted(0);
+    }
+
+    public void updateCurrentItem(String title, String text) {
+        if (getItemCount() > 0) {
+            GistFile gistFile = gistFileList.get(0);
+            gistFile.filename = title;
+            gistFile.content = text;
+            gistFile.type = "text/plain";
+        }
+    }
+
+    public void setInEditMode(boolean inEditMode) {
+        this.isInEditMode = inEditMode;
+        notifyDataSetChanged();
+    }
+
+    public void addFile(GistFile file) {
+        if (getItemCount() > 0) {
+            gistFileList.remove(0);
+            notifyItemRemoved(0);
+            gistFileList.add(0, file);
+            notifyItemInserted(0);
+        }
+    }
+
+    public void clearCurrent() {
+        if (getItemCount() > 0) {
+            gistFileList.remove(0);
+            notifyItemRemoved(0);
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements Toolbar.OnMenuItemClickListener {
