@@ -1,5 +1,6 @@
 package com.alorma.gistsapp.ui.fragment;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -113,7 +114,11 @@ public class GistsFragment extends PaginatedListFragment<ListGists, Gist> {
 
     @Override
     protected void fabClick() {
-        Intent intent = new Intent(getActivity(), CreateGistActivity.class);
-        startActivity(intent);
+        try {
+            Intent intent = CreateGistActivity.createLauncherIntent(getActivity());
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

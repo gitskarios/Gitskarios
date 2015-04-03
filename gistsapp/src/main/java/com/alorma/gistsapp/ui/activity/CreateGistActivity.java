@@ -2,6 +2,7 @@ package com.alorma.gistsapp.ui.activity;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -45,6 +46,10 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
     private AlertDialog spotsDialog;
     private EditText gistDescription;
     private SwitchCompat gistPrivate;
+
+    public static Intent createLauncherIntent(Context context) {
+        return new Intent(context, CreateGistActivity.class);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,7 +142,7 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
 
     private void publishGist() {
         Gist gist = new Gist();
-        gist.isPublic = gistPrivate.isChecked();
+        gist.isPublic = !gistPrivate.isChecked();
         gist.description = gistDescription.getText().toString();
         Map<String, GistFile> files = new HashMap<>();
         for (GistFile gistFile : adapter.getGistFileList()) {
