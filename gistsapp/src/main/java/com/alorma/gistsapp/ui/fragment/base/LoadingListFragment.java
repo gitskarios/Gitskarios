@@ -77,9 +77,8 @@ public abstract class LoadingListFragment<T> extends Fragment implements SwipeRe
 
 		fab = (FloatingActionButton) view.findViewById(R.id.fabButton);
 
-		checkFAB();
-
 		loadArguments();
+		checkFAB();
 
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 

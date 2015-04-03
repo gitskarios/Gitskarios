@@ -99,16 +99,16 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_gist_share) {
-
             Uri uri = Uri.parse(gist.htmlUrl);
+            String owner = gist.user.login;
+            Uri newUri = new Uri.Builder().scheme(uri.getScheme()).authority(uri.getAuthority()).appendPath(owner).appendPath(uri.getLastPathSegment()).build();
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra(Intent.EXTRA_TEXT, newUri.toString());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 
             startActivity(Intent.createChooser(intent, getString(R.string.send_gist_to)));
-
         }
         return true;
     }

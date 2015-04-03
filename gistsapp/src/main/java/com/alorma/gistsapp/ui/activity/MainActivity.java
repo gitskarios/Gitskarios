@@ -45,6 +45,7 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
     private HashMap<String, Account> accountMap = new HashMap<>();
     private Toolbar toolbarDetail;
     private GistsFragment gistsFragment;
+    private boolean loadUserGists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +57,49 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
 
         toolbarDetail = (Toolbar) findViewById(R.id.toolbarDetail);
 
-        createDrawer();
+        String gistId = null;
+        String gistUser = null;
+        boolean containsUser = false;
 
+        if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
+            Uri uri = getIntent().getData();
+            if (uri == null && getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
+                try {
+                    uri = Uri.parse(getIntent().getStringExtra(Intent.EXTRA_TEXT));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (uri != null) {
+                gistId = uri.getLastPathSegment();
+                if (uri.getPathSegments().size() > 1) {
+                    containsUser = true;
+                    gistUser = uri.getPathSegments().get(0);
+                }
+            }
+        }
+
+        loadUserGists = true;
+
+        if (gistUser != null && gistId != null && toolbarDetail != null) {
+            loadUserGists = false;
+            setTitle(getString(R.string.user_gists, gistUser));
+            showGistsFragment(gistUser);
+            showGistDetailFragment(gistId);
+        } else if (gistId != null) {
+            Intent launcherIntent = GistDetailActivity.createLauncherIntent(this, gistId);
+            startActivity(launcherIntent);
+            finish();
+        }
+
+        if (!containsUser) {
+            createDrawer();
+        }
         Account[] accounts = AccountManager.get(this).getAccountsByType(getString(R.string.account_type));
         if (accounts.length > 0) {
             selectAccount(accounts[0]);
         }
+
     }
 
     private void createDrawer() {
@@ -84,6 +122,23 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
+                        if (iProfile.getIdentifier() != -1) {
+                            Account account = accountMap.get(iProfile.getName());
+                            selectAccount(account);
+                            return false;
+                        } else {
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            intent.putExtra(LoginActivity.ADDING_FROM_APP, true);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                            return true;
+                        }
+                    }
+                })
+                .withOnAccountHeaderSelectionViewClickListener(new AccountHeader.OnAccountHeaderSelectionViewClickListener() {
+                    @Override
+                    public boolean onClick(View view, IProfile iProfile) {
                         if (iProfile.getIdentifier() != -1) {
                             Account account = accountMap.get(iProfile.getName());
                             selectAccount(account);
@@ -158,9 +213,24 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
 
-        if (gistsFragment == null) {
-            gistsFragment = GistsFragment.newInstance();
+        if (loadUserGists) {
+            setTitle(getString(R.string.user_gists, account.name));
+            showGistsFragment(null);
         }
+    }
+
+    @Override
+    public void onGistsRequest(Gist gist) {
+        if (toolbarDetail != null) {
+            showGistDetailFragment(gist.id);
+        } else {
+            Intent intent = GistDetailActivity.createLauncherIntent(this, gist.id);
+            startActivity(intent);
+        }
+    }
+
+    private void showGistsFragment(String username) {
+        gistsFragment = GistsFragment.newInstance(username);
         gistsFragment.setGistsFragmentListener(this);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -168,35 +238,27 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
         ft.commit();
     }
 
+    private void showGistDetailFragment(String id) {
+        final GistDetailFragment gistDetailFragment = GistDetailFragment.newInstance(id);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.contentDetail, gistDetailFragment);
+        fragmentTransaction.commit();
 
-    @Override
-    public void onGistsRequest(Gist gist) {
-        if (toolbarDetail != null) {
-            TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
-            GistFile firstFile = filesMap.firstEntry().getValue();
-            toolbarDetail.setTitle(firstFile.filename);
-            toolbarDetail.setSubtitle(getString(R.string.num_of_files, gist.files.size()));
-            final GistDetailFragment gistDetailFragment = GistDetailFragment.newInstance(gist.id);
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.contentDetail, gistDetailFragment);
-            fragmentTransaction.commit();
-
-            gistDetailFragment.setGistDetailListener(new GistDetailFragment.GistDetailListener() {
-                @Override
-                public void onGistLoaded(Gist gist) {
-                    toolbarDetail.inflateMenu(gistDetailFragment.getMenuId());
-                    toolbarDetail.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            return gistDetailFragment.onOptionsItemSelected(menuItem);
-                        }
-                    });
-                }
-            });
-
-        } else {
-            Intent intent = GistDetailActivity.createLauncherIntent(this, gist.id);
-            startActivity(intent);
-        }
+        gistDetailFragment.setGistDetailListener(new GistDetailFragment.GistDetailListener() {
+            @Override
+            public void onGistLoaded(Gist gist) {
+                TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
+                GistFile firstFile = filesMap.firstEntry().getValue();
+                toolbarDetail.setTitle(firstFile.filename);
+                toolbarDetail.setSubtitle(getString(R.string.num_of_files, gist.files.size()));
+                toolbarDetail.inflateMenu(gistDetailFragment.getMenuId());
+                toolbarDetail.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return gistDetailFragment.onOptionsItemSelected(menuItem);
+                    }
+                });
+            }
+        });
     }
 }

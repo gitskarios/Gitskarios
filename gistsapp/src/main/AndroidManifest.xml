@@ -20,12 +20,29 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.MainActivity" />
+        <activity android:name="com.alorma.gistsapp.ui.activity.MainActivity">
+            <intent-filter android:label="@string/open_gist">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="gist.github.com"
+                    android:mimeType="text/*" />
+            </intent-filter>
+            <intent-filter android:label="@string/open_gist">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="http" android:host="gist.github.com" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:label="@string/open_gist">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="https" android:host="gist.github.com" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.activity.GistDetailActivity" />
         <activity
             android:name=".ui.activity.CreateGistActivity"

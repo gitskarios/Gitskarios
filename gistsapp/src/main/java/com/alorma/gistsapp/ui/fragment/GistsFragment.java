@@ -100,7 +100,7 @@ public class GistsFragment extends PaginatedListFragment<ListGists, Gist> {
 
     @Override
     protected boolean useFAB() {
-        return true;
+        return username == null;
     }
 
     public void setGistsFragmentListener(GistsFragmentListener gistsFragmentListener) {

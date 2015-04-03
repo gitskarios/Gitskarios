@@ -11,4 +11,6 @@
     <string name="Share">Share</string>
     <string name="send_file_to">Send %s</string>
     <string name="send_gist_to">Send gist</string>
+    <string name="open_gist">Open gist</string>
+    <string name="user_gists">%s gists</string>
 </resources>
