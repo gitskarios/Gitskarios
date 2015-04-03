@@ -60,6 +60,7 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
         String gistId = null;
         String gistUser = null;
         boolean containsUser = false;
+        boolean isAuthUser = false;
 
         if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
             Uri uri = getIntent().getData();
@@ -92,10 +93,18 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
             finish();
         }
 
-        if (!containsUser) {
+        Account[] accounts = AccountManager.get(this).getAccountsByType(getString(R.string.account_type));
+
+        for (Account account : accounts) {
+            if (account.name.equals(gistUser)) {
+                isAuthUser = true;
+                break;
+            }
+        }
+
+        if (!containsUser || isAuthUser) {
             createDrawer();
         }
-        Account[] accounts = AccountManager.get(this).getAccountsByType(getString(R.string.account_type));
         if (accounts.length > 0) {
             selectAccount(accounts[0]);
         }
