@@ -112,6 +112,9 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
                             .show();
                 }
             } else {
+                if (TextUtils.isEmpty(file.filename)) {
+                    file.filename = "File" + adapter.getItemCount() + ".txt";
+                }
                 adapter.addFile(file);
             }
         }
