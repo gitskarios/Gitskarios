@@ -71,4 +71,6 @@ dependencies {
     }
 
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
+
+    compile 'com.github.mrengineer13:snackbar:1.1.0'
 }
