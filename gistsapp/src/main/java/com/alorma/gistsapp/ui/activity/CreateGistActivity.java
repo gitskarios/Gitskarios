@@ -21,7 +21,7 @@ import com.github.mrengineer13.snackbar.SnackBar;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class CreateGistActivity extends ActionBarActivity implements GistEditorFragment.GistEditorListener {
+public class CreateGistActivity extends ActionBarActivity implements GistEditorFragment.GistEditorListener, GistDetailFilesAdapter.GistFilesAdapterListener {
     private RecyclerView recyclerView;
     private GistDetailFilesAdapter adapter;
     private GistEditorFragment editorFragment;
@@ -45,26 +45,38 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
 
         adapter = new GistDetailFilesAdapter(this);
         adapter.setInEditMode(true);
+        adapter.setGistFilesAdapterListener(this);
         recyclerView.setAdapter(adapter);
 
-        launchEditor(getIntent().getExtras());
+        launchEmptyEditor();
 
         findViewById(R.id.fabButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchEditor(null);
+                launchEmptyEditor();
             }
         });
     }
 
-    private void launchEditor(Bundle extras) {
-
+    private void launchEmptyEditor() {
         createEmptyFileAndAdd();
 
         editorFragment = null;
-        editorFragment = GistEditorFragment.newInstance(extras);
+        editorFragment = GistEditorFragment.newInstance(getIntent().getExtras());
         editorFragment.setGistEditorListener(this);
 
+        launchEditor(editorFragment);
+    }
+
+    private void launchEditor(int position, GistFile file) {
+        editorFragment = null;
+        editorFragment = GistEditorFragment.newInstance(position, file);
+        editorFragment.setGistEditorListener(this);
+
+        launchEditor(editorFragment);
+    }
+
+    private void launchEditor(GistEditorFragment editorFragment) {
         boolean fullScreen = getResources().getBoolean(R.bool.editor_fullscreen);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -86,13 +98,18 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
         return true;
     }
 
+    private void createEmptyFileAndAdd() {
+        adapter.newEmptyItem();
+    }
+
     @Override
     public void onGistEditorUpdate(String title, String text) {
         adapter.updateCurrentItem(title, text);
     }
 
-    private void createEmptyFileAndAdd() {
-        adapter.newEmptyItem();
+    @Override
+    public void onGistEditorUpdate(int position, GistFile file) {
+        adapter.updateItem(position, file);
     }
 
     @Override
@@ -118,5 +135,10 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
                 adapter.addFile(file);
             }
         }
+    }
+
+    @Override
+    public void onGistFilesSelected(int position, GistFile file) {
+        launchEditor(position, file);
     }
 }

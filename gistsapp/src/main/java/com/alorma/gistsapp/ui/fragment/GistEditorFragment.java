@@ -23,9 +23,11 @@ import com.alorma.github.sdk.bean.dto.response.GistFile;
  */
 public class GistEditorFragment extends DialogFragment {
 
+    private static final String POSITION = "POSITION";
     private GistEditorListener gistEditorListener;
     private EditText editTitle;
     private EditText editText;
+    private int position;
 
     public static GistEditorFragment newInstance(Bundle extras) {
         GistEditorFragment editorFragment = new GistEditorFragment();
@@ -34,6 +36,14 @@ public class GistEditorFragment extends DialogFragment {
             editorFragment.setArguments(extras);
         }
         return editorFragment;
+    }
+
+    public static GistEditorFragment newInstance(int position, GistFile file) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Intent.EXTRA_TITLE, file.filename);
+        bundle.putString(Intent.EXTRA_TEXT, file.content);
+        bundle.putInt(POSITION, position);
+        return newInstance(bundle);
     }
 
     @Nullable
@@ -62,10 +72,12 @@ public class GistEditorFragment extends DialogFragment {
 
         String title = null;
         String text = null;
+        position = 0;
 
         if (getArguments() != null) {
             title = getArguments().getString(Intent.EXTRA_TITLE);
             text = getArguments().getString(Intent.EXTRA_TEXT);
+            position = getArguments().getInt(POSITION, -1);
         }
 
         TextWatcher watcher = new TextWatcher() {
@@ -125,7 +137,11 @@ public class GistEditorFragment extends DialogFragment {
             file.type = "text/plain";
             file.filename = editTitle.getText().toString();
             file.content = editText.getText().toString();
-            gistEditorListener.onGistEditorFinish(file);
+            if (position != -1) {
+                gistEditorListener.onGistEditorFinish(file);
+            } else {
+                gistEditorListener.onGistEditorUpdate(position, file);
+            }
         }
     }
 
@@ -136,5 +152,6 @@ public class GistEditorFragment extends DialogFragment {
     public interface GistEditorListener {
         void onGistEditorUpdate(String title, String text);
         void onGistEditorFinish(GistFile file);
+        void onGistEditorUpdate(int position, GistFile file);
     }
 }

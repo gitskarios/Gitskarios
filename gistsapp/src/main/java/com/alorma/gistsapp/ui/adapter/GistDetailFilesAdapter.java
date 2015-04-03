@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
     private final GithubIconDrawable noPreviewDrawable;
     private List<GistFile> gistFileList;
     boolean isInEditMode = false;
+    private GistFilesAdapterListener gistFilesAdapterListener;
 
     public GistDetailFilesAdapter(Context context) {
         gistFileList = new ArrayList<>();
@@ -160,6 +162,15 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
         }
     }
 
+    public void updateItem(int position, GistFile updatedFile) {
+        if (updatedFile != null && getItemCount() >= position) {
+            GistFile file = gistFileList.get(position);
+            file.filename = updatedFile.filename;
+            file.content = updatedFile.content;
+            notifyItemChanged(position);
+        }
+    }
+
     public void setInEditMode(boolean inEditMode) {
         this.isInEditMode = inEditMode;
         notifyDataSetChanged();
@@ -181,6 +192,10 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
         }
     }
 
+    public void setGistFilesAdapterListener(GistFilesAdapterListener gistFilesAdapterListener) {
+        this.gistFilesAdapterListener = gistFilesAdapterListener;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements Toolbar.OnMenuItemClickListener {
         public final TextView textFileName;
         public final TextView textContent;
@@ -192,12 +207,25 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
             textFileName = (TextView) itemView.findViewById(R.id.textFileName);
             textContent = (TextView) itemView.findViewById(R.id.textContent);
             imageContent = (ImageView) itemView.findViewById(R.id.imageContent);
+            CardView cardView = (CardView) itemView.findViewById(R.id.cardView);
 
             toolbar = (Toolbar) itemView.findViewById(R.id.toolbar);
 
             if (toolbar != null) {
                 toolbar.inflateMenu(R.menu.row_gist_file);
                 toolbar.setOnMenuItemClickListener(this);
+            }
+
+            if (cardView != null) {
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (gistFilesAdapterListener != null) {
+                            GistFile file = gistFileList.get(getAdapterPosition());
+                            gistFilesAdapterListener.onGistFilesSelected(getAdapterPosition(), file);
+                        }
+                    }
+                });
             }
         }
 
@@ -217,5 +245,9 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
             }
             return false;
         }
+    }
+
+    public interface GistFilesAdapterListener {
+        void onGistFilesSelected(int position, GistFile file);
     }
 }
