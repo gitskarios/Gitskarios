@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alorma.gistsapp.R;
@@ -21,6 +22,8 @@ import java.util.TreeMap;
 public class GistDetailActivity extends ActionBarActivity implements GistDetailFragment.GistDetailListener {
 
     private Toolbar toolbar;
+    private GistDetailFragment detailFragment;
+    private Gist gist;
 
     public static Intent createLauncherIntent(Context context, String id) {
         Intent intent = new Intent(context, GistDetailActivity.class);
@@ -42,7 +45,7 @@ public class GistDetailActivity extends ActionBarActivity implements GistDetailF
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        GistDetailFragment detailFragment = GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID));
+        detailFragment = GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID));
         detailFragment.setGistDetailListener(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content, detailFragment);
@@ -50,19 +53,30 @@ public class GistDetailActivity extends ActionBarActivity implements GistDetailF
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (detailFragment != null && gist != null) {
+            getMenuInflater().inflate(detailFragment.getMenuId(), menu);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        } else {
+            detailFragment.onOptionsItemSelected(item);
         }
-
         return true;
     }
 
     @Override
     public void onGistLoaded(Gist gist) {
+        this.gist = gist;
         TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
         GistFile firstFile = filesMap.firstEntry().getValue();
         toolbar.setTitle(firstFile.filename);
         toolbar.setSubtitle(getString(R.string.num_of_files, gist.files.size()));
+        invalidateOptionsMenu();
     }
 }

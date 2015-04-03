@@ -161,7 +161,7 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
                 intent.putExtra(Intent.EXTRA_TEXT, gistFile.content);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-                textFileName.getContext().startActivity(Intent.createChooser(intent, "Send to"));
+                textFileName.getContext().startActivity(Intent.createChooser(intent, textFileName.getResources().getString(R.string.send_file_to) + gistFile.filename));
             }
             return false;
         }

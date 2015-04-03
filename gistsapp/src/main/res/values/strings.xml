@@ -9,4 +9,6 @@
     <string name="num_of_files">%d files</string>
     <string name="create_gist">Create new gist</string>
     <string name="Share">Share</string>
+    <string name="send_file_to">Send %s</string>
+    <string name="send_gist_to">Send gist</string>
 </resources>

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -43,6 +44,7 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
     private Account selectedAccount;
     private HashMap<String, Account> accountMap = new HashMap<>();
     private Toolbar toolbarDetail;
+    private GistsFragment gistsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +158,9 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
 
-        GistsFragment gistsFragment = GistsFragment.newInstance();
+        if (gistsFragment == null) {
+            gistsFragment = GistsFragment.newInstance();
+        }
         gistsFragment.setGistsFragmentListener(this);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -172,9 +176,24 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
             GistFile firstFile = filesMap.firstEntry().getValue();
             toolbarDetail.setTitle(firstFile.filename);
             toolbarDetail.setSubtitle(getString(R.string.num_of_files, gist.files.size()));
+            final GistDetailFragment gistDetailFragment = GistDetailFragment.newInstance(gist.id);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.contentDetail, GistDetailFragment.newInstance(gist.id));
+            fragmentTransaction.replace(R.id.contentDetail, gistDetailFragment);
             fragmentTransaction.commit();
+
+            gistDetailFragment.setGistDetailListener(new GistDetailFragment.GistDetailListener() {
+                @Override
+                public void onGistLoaded(Gist gist) {
+                    toolbarDetail.inflateMenu(gistDetailFragment.getMenuId());
+                    toolbarDetail.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            return gistDetailFragment.onOptionsItemSelected(menuItem);
+                        }
+                    });
+                }
+            });
+
         } else {
             Intent intent = GistDetailActivity.createLauncherIntent(this, gist.id);
             startActivity(intent);

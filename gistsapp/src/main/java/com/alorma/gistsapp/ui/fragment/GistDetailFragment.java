@@ -1,19 +1,33 @@
 package com.alorma.gistsapp.ui.fragment;
 
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.alorma.gistsapp.BuildConfig;
 import com.alorma.gistsapp.R;
+import com.alorma.gistsapp.ui.activity.CreateGistActivity;
 import com.alorma.gistsapp.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -27,6 +41,7 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
     private RecyclerView recyclerView;
     private GistDetailFilesAdapter adapter;
     private GistDetailListener gistDetailListener;
+    private Gist gist;
 
     public static GistDetailFragment newInstance(String id) {
         Bundle bundle = new Bundle();
@@ -64,10 +79,51 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
 
     @Override
     public void onResponseOk(Gist gist, Response r) {
-        if  (gistDetailListener != null) {
+        this.gist = gist;
+        if (gistDetailListener != null) {
             gistDetailListener.onGistLoaded(gist);
         }
         adapter.addAll(gist.files);
+    }
+
+    public int getMenuId() {
+        return R.menu.menu_gist;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        enableCreateGist(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_gist_share) {
+
+            Uri uri = Uri.parse(gist.htmlUrl);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+
+            startActivity(Intent.createChooser(intent, getString(R.string.send_gist_to)));
+
+        }
+        return true;
+    }
+
+    @Override
+    public void onStop() {
+        enableCreateGist(true);
+        super.onStop();
+    }
+
+    private void enableCreateGist(boolean b) {
+        int flag = b ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+        ComponentName componentName = new ComponentName(getActivity(), CreateGistActivity.class);
+        getActivity().getPackageManager().setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
     }
 
     @Override
