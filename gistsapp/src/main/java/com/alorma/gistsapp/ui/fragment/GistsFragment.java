@@ -19,10 +19,6 @@ public class GistsFragment extends PaginatedListFragment<ListGists, Gist> {
     public GistsFragmentListener gistsFragmentListener;
     private String username;
 
-    public static GistsFragment newInstance() {
-        return new GistsFragment();
-    }
-
     public static GistsFragment newInstance(String username) {
         Bundle bundle = new Bundle();
         bundle.putString(USERNAME, username);
@@ -71,9 +67,7 @@ public class GistsFragment extends PaginatedListFragment<ListGists, Gist> {
                     gistsAdapter.setLazyLoading(false);
                     gistsAdapter.addAll(gists);
                 }
-            }
-
-            if (gistsAdapter != null) {
+            } else {
                 setListAdapter(gistsAdapter);
             }
         }

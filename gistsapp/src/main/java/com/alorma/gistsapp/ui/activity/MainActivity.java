@@ -106,9 +106,6 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
             if (!containsUser || isAuthUser) {
                 createDrawer();
             }
-            if (accounts.length > 0) {
-                selectAccount(accounts[0]);
-            }
         } else {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

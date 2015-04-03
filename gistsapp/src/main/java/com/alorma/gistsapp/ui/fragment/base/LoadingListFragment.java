@@ -82,6 +82,7 @@ public abstract class LoadingListFragment<T> extends Fragment implements SwipeRe
 
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
+		swipe.setOnRefreshListener(this);
 		executeRequest();
 	}
 
