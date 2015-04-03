@@ -62,51 +62,59 @@ public class MainActivity extends ActionBarActivity implements GistsFragment.Gis
         boolean containsUser = false;
         boolean isAuthUser = false;
 
-        if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
-            Uri uri = getIntent().getData();
-            if (uri == null && getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
-                try {
-                    uri = Uri.parse(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (uri != null) {
-                gistId = uri.getLastPathSegment();
-                if (uri.getPathSegments().size() > 1) {
-                    containsUser = true;
-                    gistUser = uri.getPathSegments().get(0);
-                }
-            }
-        }
-
-        loadUserGists = true;
-
-        if (gistUser != null && gistId != null && toolbarDetail != null) {
-            loadUserGists = false;
-            setTitle(getString(R.string.user_gists, gistUser));
-            showGistsFragment(gistUser);
-            showGistDetailFragment(gistId);
-        } else if (gistId != null) {
-            Intent launcherIntent = GistDetailActivity.createLauncherIntent(this, gistId);
-            startActivity(launcherIntent);
-            finish();
-        }
-
         Account[] accounts = AccountManager.get(this).getAccountsByType(getString(R.string.account_type));
 
-        for (Account account : accounts) {
-            if (account.name.equals(gistUser)) {
-                isAuthUser = true;
-                break;
-            }
-        }
-
-        if (!containsUser || isAuthUser) {
-            createDrawer();
-        }
         if (accounts.length > 0) {
-            selectAccount(accounts[0]);
+            if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
+                Uri uri = getIntent().getData();
+                if (uri == null && getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
+                    try {
+                        uri = Uri.parse(getIntent().getStringExtra(Intent.EXTRA_TEXT));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (uri != null) {
+                    gistId = uri.getLastPathSegment();
+                    if (uri.getPathSegments().size() > 1) {
+                        containsUser = true;
+                        gistUser = uri.getPathSegments().get(0);
+                    }
+                }
+            }
+
+            loadUserGists = true;
+
+            if (gistUser != null && gistId != null && toolbarDetail != null) {
+                loadUserGists = false;
+                setTitle(getString(R.string.user_gists, gistUser));
+                showGistsFragment(gistUser);
+                showGistDetailFragment(gistId);
+            } else if (gistId != null) {
+                Intent launcherIntent = GistDetailActivity.createLauncherIntent(this, gistId);
+                startActivity(launcherIntent);
+                finish();
+            }
+
+            for (Account account : accounts) {
+                if (account.name.equals(gistUser)) {
+                    isAuthUser = true;
+                    break;
+                }
+            }
+
+            if (!containsUser || isAuthUser) {
+                createDrawer();
+            }
+            if (accounts.length > 0) {
+                selectAccount(accounts[0]);
+            }
+        } else {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(Intent.EXTRA_INTENT, getIntent());
+            startActivity(intent);
+            finish();
         }
 
     }

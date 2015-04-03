@@ -42,6 +42,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private WebView webview;
     private String accessToken;
     private String scope;
+    private boolean fromShareIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +54,21 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
         boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
+        fromShareIntent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT) != null;
 
-        if (fromApp || fromAccounts) {
+        if (fromApp || fromAccounts || fromShareIntent) {
             login();
         } else if (accounts != null && accounts.length > 0) {
             openMain();
         } else {
-            StoreCredentials storeCredentials = new StoreCredentials(this);
-            if (storeCredentials.token() != null) {
-                endAccess(storeCredentials.token(), storeCredentials.scopes());
-            } else {
-                login();
-            }
+            login();
         }
     }
 
     private void login() {
+        StoreCredentials credentials = new StoreCredentials(this);
+        credentials.clear();
+
         CookieSyncManager.createInstance(this);
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
@@ -96,6 +96,9 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void openMain() {
         Intent intent = new Intent(this, MainActivity.class);
+        if (fromShareIntent) {
+            intent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
+        }
         startActivity(intent);
         finish();
     }
