@@ -137,7 +137,7 @@ public class GistEditorFragment extends DialogFragment {
             file.type = "text/plain";
             file.filename = editTitle.getText().toString();
             file.content = editText.getText().toString();
-            if (position != -1) {
+            if (position == -1) {
                 gistEditorListener.onGistEditorFinish(file);
             } else {
                 gistEditorListener.onGistEditorUpdate(position, file);

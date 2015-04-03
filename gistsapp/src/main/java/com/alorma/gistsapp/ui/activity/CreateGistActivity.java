@@ -99,7 +99,6 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
     }
 
     private void launchEmptyEditor() {
-        createEmptyFileAndAdd();
 
         editorFragment = null;
         editorFragment = GistEditorFragment.newInstance(getIntent().getExtras());
@@ -117,6 +116,8 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
     }
 
     private void launchEditor(GistEditorFragment editorFragment) {
+        createEmptyFileAndAdd();
+
         boolean fullScreen = getResources().getBoolean(R.bool.editor_fullscreen);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -189,6 +190,10 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
 
     @Override
     public void onGistEditorUpdate(int position, GistFile file) {
+        if (editorFragment != null) {
+            editorFragment.setGistEditorListener(null);
+            getFragmentManager().beginTransaction().remove(editorFragment).commit();
+        }
         adapter.updateItem(position, file);
     }
 
