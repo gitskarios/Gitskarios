@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.alorma.gistsapp.BuildConfig;
 import com.alorma.gistsapp.R;
 import com.alorma.gistsapp.ui.activity.CreateGistActivity;
+import com.alorma.gistsapp.ui.activity.FileActivity;
 import com.alorma.gistsapp.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
@@ -36,7 +37,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class GistDetailFragment extends Fragment implements BaseClient.OnResultCallback<Gist> {
+public class GistDetailFragment extends Fragment implements BaseClient.OnResultCallback<Gist>,GistDetailFilesAdapter.GistFilesAdapterListener {
 
     public static final String GIST_ID = "GIST_ID";
     private RecyclerView recyclerView;
@@ -67,6 +68,7 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
 
         adapter = new GistDetailFilesAdapter(getActivity());
+        adapter.setGistFilesAdapterListener(this);
         recyclerView.setAdapter(adapter);
 
         if (getArguments() != null) {
@@ -134,6 +136,12 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
 
     public void setGistDetailListener(GistDetailListener gistDetailListener) {
         this.gistDetailListener = gistDetailListener;
+    }
+
+    @Override
+    public void onGistFilesSelected(int position, GistFile file) {
+        Intent launcherIntent = FileActivity.createLauncherIntent(getActivity(), file.filename, file.content);
+        startActivity(launcherIntent);
     }
 
     public interface GistDetailListener {

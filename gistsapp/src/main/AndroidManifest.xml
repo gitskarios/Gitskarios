@@ -43,6 +43,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.GistDetailActivity" />
+        <activity android:name=".ui.activity.FileActivity" />
         <activity
             android:name="com.alorma.gistsapp.ui.activity.CreateGistActivity"
             android:label="@string/create_gist">
