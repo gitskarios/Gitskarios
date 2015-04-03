@@ -6,13 +6,39 @@
     android:layout_height="match_parent"
     android:padding="@dimen/gapLarge">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textFileName"
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:textColor="?attr/colorPrimary"
-        tools:text="MyFile.java" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textFileName"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="?attr/colorPrimary"
+            tools:text="MyFile.java"
+            android:layout_toLeftOf="@+id/gistPrivate"
+            android:layout_toStartOf="@+id/gistPrivate"
+            android:layout_marginRight="@dimen/gapSmall"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gistPrivate"
+            android:padding="@dimen/gapSmall"
+            android:textSize="@dimen/textSizeXMicro"
+            android:textColor="@color/privateGist"
+            android:visibility="visible"
+            android:text="@string/row_private_gist"
+            android:gravity="center"
+            android:background="@drawable/private_gist"
+            android:layout_marginRight="@dimen/gapMedium"
+            android:layout_marginEnd="@dimen/gapMedium"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"

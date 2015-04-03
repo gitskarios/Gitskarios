@@ -11,6 +11,9 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
 
+    <color name="privateGist">#a1882b</color>
+    <color name="privateGistBackground">#f8eeca</color>
+
     <color name="gray_github_light">#f3f3f3</color>
     <color name="gray_github_medium">#ffb9b9b9</color>
     <color name="gray_github_light_selected">#ffdedede</color>

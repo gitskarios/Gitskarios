@@ -38,6 +38,7 @@ public class GistsAdapter extends LazyAdapter<Gist> {
 
         TextView textFileName = (TextView) view.findViewById(R.id.textFileName);
         TextView textNumFiles = (TextView) view.findViewById(R.id.textNumFiles);
+        TextView gistPrivate = (TextView) view.findViewById(R.id.gistPrivate);
 
         TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
         GistFile firstFile = filesMap.firstEntry().getValue();
@@ -52,6 +53,12 @@ public class GistsAdapter extends LazyAdapter<Gist> {
             textDescription.setText(gist.description);
         } else {
             textDescription.setVisibility(View.GONE);
+        }
+
+        if (gist.isPublic) {
+            gistPrivate.setVisibility(View.GONE);
+        } else {
+            gistPrivate.setVisibility(View.VISIBLE);
         }
 
         return view;

@@ -16,4 +16,10 @@
     <string name="editor_content_hint">Code</string>
     <string name="editor_title_hint">Filename</string>
     <string name="editor_discard">Empty file discarded</string>
+    <string name="publish_gist">Publish gist</string>
+    <string name="publishing_gist">Publishing</string>
+    <string name="publish_gist_fail">Gist not created</string>
+    <string name="gist_description">Description</string>
+    <string name="gist_private">Make gist private</string>
+    <string name="row_private_gist">PRIVATE</string>
 </resources>
