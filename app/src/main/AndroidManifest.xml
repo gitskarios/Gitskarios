@@ -17,14 +17,23 @@
         android:name="com.alorma.github.GitskariosApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme.Repos">
+        android:theme="@style/AppTheme.Repos"
+        android:launchMode="singleInstance">
         <activity
-            android:name="com.alorma.github.ui.activity.LoginActivity"
-            android:theme="@style/AppTheme.Login">
+            android:name="com.alorma.github.ui.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <data
+                    android:scheme="gitskarios" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
         <activity android:name="com.alorma.github.ui.activity.MainActivity" />
@@ -61,7 +70,8 @@
         </activity>
 
 
-        <activity android:name=".ui.activity.gists.GistsMainActivity"
+        <activity
+            android:name=".ui.activity.gists.GistsMainActivity"
             android:theme="@style/AppThemeGists"
             android:label="@string/title_gists">
             <intent-filter android:label="@string/open_gist">
@@ -73,16 +83,24 @@
             </intent-filter>
             <intent-filter android:label="@string/open_gist">
                 <action android:name="android.intent.action.VIEW" />
-                <data android:scheme="http" android:host="gist.github.com" />
-                <data android:scheme="https" android:host="gist.github.com" />
+
+                <data
+                    android:scheme="http"
+                    android:host="gist.github.com" />
+                <data
+                    android:scheme="https"
+                    android:host="gist.github.com" />
                 <data android:pathPattern=".*" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.gists.GistDetailActivity"
+        <activity
+            android:name=".ui.activity.gists.GistDetailActivity"
             android:theme="@style/AppThemeGists" />
-        <activity android:name=".ui.activity.gists.GistsFileActivity"
+        <activity
+            android:name=".ui.activity.gists.GistsFileActivity"
             android:theme="@style/AppThemeGists" />
         <activity
             android:name=".ui.activity.gists.CreateGistActivity"
