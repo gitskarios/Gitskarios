@@ -51,7 +51,9 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Bus;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -233,7 +235,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
             public void set(ImageView imageView, Uri uri, Drawable placeholder) {
-                Picasso.with(MainActivity.this).load(uri).placeholder(placeholder).into(imageView);
+                ImageLoader.getInstance().displayImage(uri.toString(), imageView);
             }
 
             @Override

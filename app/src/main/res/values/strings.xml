@@ -32,7 +32,7 @@
     <string name="title_repos">Repos</string>
     <string name="star_icon_text">%1$d</string>
     <string name="fork_icon_text">%1$d</string>
-    <string name="unauthorized">Unauthorized access</string>
+    <string name="unauthorized">Unauthorized access for %s</string>
     <string name="readme">Readme</string>
     <string name="source">Source</string>
     <string name="issues">Issues</string>
@@ -143,6 +143,7 @@
     <string name="no_prs_found">No pull requests found</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search</string>
+    <string name="loading_token">Loading token</string>
     <string name="loading_user">Loading user</string>
     <string name="navigation_people">People &#038; Organizations</string>
     <string name="code_download">Source code is waiting for download</string>

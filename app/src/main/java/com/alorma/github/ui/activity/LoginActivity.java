@@ -3,37 +3,34 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.alorma.github.BuildConfig;
+import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.ApiConstants;
-import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.adapter.AccountsAdapter;
 import com.crashlytics.android.Crashlytics;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 
 import dmax.dialog.SpotsDialog;
-import io.fabric.sdk.android.Fabric;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -47,62 +44,104 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
     private SpotsDialog progressDialog;
-    private WebView webview;
     private String accessToken;
     private String scope;
+    private RequestTokenClient requestTokenClient;
+    private boolean fromAccounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login();
+            }
+        });
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        enableCreateGist(false);
 
         AccountManager accountManager = AccountManager.get(this);
 
         Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
-        boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
-        boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
+        boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals("gitskarios");
+        fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
+        final boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
-        if (fromApp || fromAccounts) {
-            login();
-        } else if (accounts != null && accounts.length > 0) {
-            openMain();
-        } else {
-            StoreCredentials storeCredentials = new StoreCredentials(this);
-            if (storeCredentials.token() != null) {
-                endAccess(storeCredentials.token(), storeCredentials.scopes());
-            } else {
-                login();
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fromApp) {
+                    openMain();
+                } else {
+                    finish();
+                }
             }
+        });
+
+        AccountsAdapter adapter = new AccountsAdapter(this, accounts);
+        recyclerView.setAdapter(adapter);
+
+        if (fromLogin) {
+            findViewById(R.id.login).setEnabled(false);
+            showDialog();
+            Uri uri = getIntent().getData();
+            String code = uri.getQueryParameter("code");
+            if (requestTokenClient == null) {
+                requestTokenClient = new RequestTokenClient(LoginActivity.this, code);
+                requestTokenClient.setOnResultCallback(new BaseClient.OnResultCallback<Token>() {
+                    @Override
+                    public void onResponseOk(Token token, Response r) {
+                        if (token.access_token != null) {
+                            endAccess(token.access_token, token.scope);
+                        } else if (token.error != null) {
+                            Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(RetrofitError error) {
+                        ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
+                    }
+                });
+                requestTokenClient.execute();
+            }
+        } else if (fromAccounts) {
+            login();
+        } else if (!fromApp && accounts != null && accounts.length > 0) {
+            openMain();
         }
     }
 
     private void login() {
-        CookieSyncManager.createInstance(this);
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.removeAllCookie();
-
-        setContentView(R.layout.activity_login);
-
-        webview = (WebView) findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled(true);
-        webview.setWebViewClient(new WebViewCustomClient());
-
-        webview.clearCache(true);
-        webview.clearFormData();
-        webview.clearHistory();
-        webview.clearMatches();
-        webview.clearSslPreferences();
-
-        webview.getSettings().setUseWideViewPort(true);
-
-
         String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
 
-        url = url + "&scope=gist,user,name,notifications,repo";
-        webview.loadUrl(url);
+        url = url + "&scope=gist,user,notifications,repo";
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+        finish();
+    }
+
+    private void enableCreateGist(boolean b) {
+        int flag = b ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+        ComponentName componentName = new ComponentName(this, Interceptor.class);
+        getPackageManager().setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
     }
 
     private void openMain() {
+        enableCreateGist(true);
         MainActivity.startActivity(LoginActivity.this);
         finish();
     }
@@ -110,6 +149,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private void endAccess(String accessToken, String scope) {
         this.accessToken = accessToken;
         this.scope = scope;
+
+        progressDialog.setMessage(getString(R.string.loading_user));
 
         GetAuthUserClient userClient = new GetAuthUserClient(this, accessToken);
         userClient.setOnResultCallback(this);
@@ -134,14 +175,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         setAccountAuthenticatorResult(result);
 
-        if (getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false)) {
-            Intent intent = new Intent();
-            intent.putExtras(result);
-            setResult(RESULT_OK, intent);
-            finish();
-        } else {
-            openMain();
-        }
+        openMain();
     }
 
     @Override
@@ -164,69 +198,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         } catch (Exception e) {
             e.printStackTrace();
             Crashlytics.logException(e);
-        }
-    }
-
-    private class WebViewCustomClient extends WebViewClient implements BaseClient.OnResultCallback<Token> {
-        private RequestTokenClient requestTokenClient;
-
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            String accessTokenFragment = "access_token=";
-            String accessCodeFragment = "code";
-
-            // We hijack the GET request to extract the OAuth parameters
-
-            if (url != null) {
-                if (url.contains(accessCodeFragment)) {
-                    // the GET request contains an authorization code
-
-                    Uri uri = Uri.parse(url);
-
-                    showDialog();
-
-                    if (requestTokenClient == null) {
-                        requestTokenClient = new RequestTokenClient(LoginActivity.this, uri.getQueryParameter(accessCodeFragment));
-                        requestTokenClient.setOnResultCallback(this);
-                        requestTokenClient.execute();
-                    }
-                }
-            }
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Uri uri = Uri.parse(url);
-            Uri callback = Uri.parse(ApiConstants.CLIENT_CALLBACK);
-            return (uri.getAuthority().equals(callback.getAuthority()));
-        }
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            // TODO STOP LOADING
-        }
-
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            super.onReceivedSslError(view, handler, error);
-            handler.proceed();
-        }
-
-        @Override
-        public void onResponseOk(Token token, Response r) {
-            if (token.access_token != null) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
-                }
-                endAccess(token.access_token, token.scope);
-            } else if (token.error != null) {
-                Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
         }
     }
 }
