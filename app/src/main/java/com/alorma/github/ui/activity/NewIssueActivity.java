@@ -15,7 +15,9 @@ import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
+import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.PostNewIssueClient;
@@ -39,10 +41,10 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     public static final String OWNER = "OWNER";
     public static final String REPO = "REPO";
-    public static final String PUSH = "PUSH";
+    public static final String PERMISSIONS = "PERMISSIONS";
     private String owner;
     private String repo;
-    private boolean pushAcces;
+    private Permissions permissions;
     private View pushAccesLayout;
     private Spinner spinnerAssignee;
     private UsersAdapterSpinner assigneesAdapter;
@@ -52,11 +54,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private boolean creatingIssue = false;
     private SpotsDialog progressDialog;
 
-    public static Intent createLauncherIntent(Context context, RepoInfo info, boolean pushAcces) {
+    public static Intent createLauncherIntent(Context context, RepoInfo info, Permissions permissions) {
         Bundle bundle = new Bundle();
         bundle.putString(OWNER, info.owner);
         bundle.putString(REPO, info.name);
-        bundle.putBoolean(PUSH, pushAcces);
+        bundle.putParcelable(PERMISSIONS, permissions);
         Intent intent = new Intent(context, NewIssueActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -76,11 +78,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             owner = getIntent().getExtras().getString(OWNER);
             repo = getIntent().getExtras().getString(REPO);
 
-            pushAcces = getIntent().getExtras().getBoolean(PUSH, false);
+            permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
             findViews();
 
-            if (!pushAcces) {
+            if (!permissions.push) {
                 pushAccesLayout.setVisibility(View.INVISIBLE);
             } else {
                 findViewsAcces();
@@ -126,7 +128,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         issue.title = editTitle.getText().toString();
         issue.body = editBody.getText().toString();
 
-        if (pushAcces) {
+        if (permissions.push) {
             if (spinnerAssignee.getSelectedItemPosition() > 0) {
                 issue.assignee = assigneesAdapter.getItem(spinnerAssignee.getSelectedItemPosition()).login;
             }
@@ -212,7 +214,13 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             progressDialog.dismiss();
         }
         if (issue != null) {
-            setResult(RESULT_OK);
+            IssueInfo issueInfo = new IssueInfo();
+            issueInfo.repo = new RepoInfo();
+            issueInfo.repo.owner = owner;
+            issueInfo.repo.name = repo;
+            issueInfo.num = issue.number;
+            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo, permissions);
+            startActivity(launcherIntent);
             finish();
         }
     }
