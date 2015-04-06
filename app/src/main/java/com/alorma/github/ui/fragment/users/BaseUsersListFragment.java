@@ -65,7 +65,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 
 	@Override
 	public int getTheme() {
-		return R.style.AppTheme_People;
+		return R.style.AppTheme_Repos;
 	}
 }
 

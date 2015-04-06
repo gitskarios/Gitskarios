@@ -3,17 +3,17 @@ package com.alorma.github;
 import android.app.Application;
 import android.content.Context;
 
-import com.alorma.github.dagger.BusModule;
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.ui.UiModule;
+import com.crashlytics.android.Crashlytics;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import dagger.ObjectGraph;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Bernat on 08/07/2014.
@@ -25,6 +25,10 @@ public class GitskariosApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
+		if (!BuildConfig.DEBUG) {
+			Fabric.with(this, new Crashlytics());
+		}
 
 		JodaTimeAndroid.init(this);
 

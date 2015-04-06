@@ -1,17 +1,17 @@
 buildscript {
     repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
@@ -21,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "1.9.4"
-        versionCode 194
+        versionName "2.1.0"
+        versionCode 210
     }
 
     signingConfigs {
@@ -52,31 +52,38 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    //compile 'com.google.android.gms:play-services:6.5.87'
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:support-v13:21.0.2'
-    compile 'com.android.support:palette-v7:21.0.2'
-    compile 'com.android.support:recyclerview-v7:21.0.2'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v13:22.0.0'
+    compile 'com.android.support:palette-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.android.support:cardview-v7:21.0.3'
     compile project(':sdk')
     // Submodules
     compile project(':libraries:AndroidGithubIcons')
     compile project(':libraries:android-floating-action-button')
     compile 'com.github.alorma:diff-textview:1.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.afollestad:material-dialogs:0.6.3.0'
+    compile 'com.afollestad:material-dialogs:0.6.5.2'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     compile 'com.pnikosis:materialish-progress:1.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
     compile('de.psdev.licensesdialog:licensesdialog:1.6.0') {
         exclude module: 'support-v4'
     }
-    compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.github.d-max:spots-dialog:0.1'
-    compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
-    
     compile 'com.squareup:otto:1.3.6'
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile('com.mikepenz.materialdrawer:library:2.6.5@aar') {
+        transitive = true
+    }
+    compile 'com.squareup.picasso:picasso:2.3.2'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+        transitive = true;
+    }
+
+    compile 'com.github.mrengineer13:snackbar:1.1.0'
 }

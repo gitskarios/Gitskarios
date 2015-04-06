@@ -1,5 +1,9 @@
 package com.alorma.github.ui.activity.base;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +11,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +21,9 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.BuildConfig;
+import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.security.UnAuthIntent;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
@@ -26,178 +34,148 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class BaseActivity extends ActionBarActivity {
 
-	private AuthReceiver authReceiver;
-	private DrawerLayout mDrawerLayout;
-	private ActionBarDrawerToggle actionBarDrawerToggle;
-	private UpdateReceiver updateReceiver;
+    private AuthReceiver authReceiver;
+    private UpdateReceiver updateReceiver;
 
-	public Toolbar getToolbar() {
-		return toolbar;
-	}
+    private Toolbar toolbar;
 
-	private Toolbar toolbar;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
-	}
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        if (isToolbarEnabled()) {
+            toolbar = (Toolbar) findViewById(getToolbarId());
 
-	@Override
-	public void setContentView(int layoutResID) {
-		super.setContentView(layoutResID);
-		if (isToolbarEnabled()) {
-			toolbar = (Toolbar) findViewById(getToolbarId());
+            if (toolbar != null) {
+                toolbar.setTitle(R.string.app_name);
+                setSupportActionBar(toolbar);
+            }
+        }
+    }
 
-			if (toolbar != null) {
-				toolbar.setTitle(R.string.app_name);
-				setSupportActionBar(toolbar);
+    public boolean isToolbarEnabled() {
+        return true;
+    }
 
-				mDrawerLayout = (DrawerLayout) findViewById(getDrawerLayout());
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 
-				if (mDrawerLayout != null) {
-					actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0);
+    public int getToolbarId() {
+        return R.id.toolbar;
+    }
 
-					actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        authReceiver = new AuthReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(UnAuthIntent.ACTION);
+        manager.registerReceiver(authReceiver, intentFilter);
+    }
 
-					mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
-				}
-			}
-		}
-	}
+    @Override
+    public void setTitle(CharSequence title) {
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+        } else {
+            super.setTitle(title);
+        }
+    }
 
-	public boolean isToolbarEnabled() {
-		return true;
-	}
+    @Override
+    public void setTitle(int titleId) {
+        if (toolbar != null) {
+            toolbar.setTitle(titleId);
+        }
+        super.setTitle(titleId);
+    }
 
-	public int getToolbarId() {
-		return R.id.toolbar;
-	}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.unregisterReceiver(authReceiver);
+    }
 
-	public int getDrawerLayout() {
-		return R.id.drawer_layout;
-	}
+    private class AuthReceiver extends BroadcastReceiver {
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		if (actionBarDrawerToggle != null) {
-			actionBarDrawerToggle.syncState();
-		}
-	}
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            String token = intent.getStringExtra(UnAuthIntent.TOKEN);
 
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			if (mDrawerLayout != null) {
-				if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-					mDrawerLayout.closeDrawer(Gravity.START);
-				} else {
-					mDrawerLayout.openDrawer(Gravity.START);
-				}
-			}
-		}
-		return false;
-	}
+            AccountManager accountManager = AccountManager.get(context);
+            Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-		authReceiver = new AuthReceiver();
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(UnAuthIntent.ACTION);
-		manager.registerReceiver(authReceiver, intentFilter);
-	}
+            for (final Account account : accounts) {
+                if (AccountsHelper.getUserToken(context, account).equals(token)) {
+                    accountManager.removeAccount(account, BaseActivity.this, new AccountManagerCallback<Bundle>() {
+                        @Override
+                        public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                            if (accountManagerFuture.isDone()) {
 
-	@Override
-	public void setTitle(CharSequence title) {
-		if (toolbar != null) {
-			toolbar.setTitle(title);
-		} else {
-			super.setTitle(title);
-		}
-	}
+                                StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
+                                storeCredentials.clear();
 
-	@Override
-	public void setTitle(int titleId) {
-		if (toolbar != null) {
-			toolbar.setTitle(titleId);
-		}
-		super.setTitle(titleId);
-	}
+                                Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
+                                Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(loginIntent);
+                                finish();
+                            }
+                        }
+                    }, new Handler());
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-		manager.unregisterReceiver(authReceiver);
-	}
 
-	private class AuthReceiver extends BroadcastReceiver {
+                    break;
+                }
+            }
+        }
+    }
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Toast.makeText(context, R.string.unauthorized, Toast.LENGTH_SHORT).show();
-			Intent loginIntent = new Intent(context, LoginActivity.class);
-			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(loginIntent);
-			finish();
-		}
-	}
+    public void reload() {
+        getContent();
+    }
 
-	@Override
-	public void onBackPressed() {
-		if ((mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START))) {
-			closeMenu();
-		} else {
-			super.onBackPressed();
-		}
-	}
+    protected void getContent() {
 
-	public void closeMenu() {
-		if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START)) {
-			mDrawerLayout.closeDrawer(Gravity.START);
-		}
-	}
+    }
 
-	public void reload() {
-		getContent();
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateReceiver = new UpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(updateReceiver, intentFilter);
+    }
 
-	protected void getContent() {
+    @Override
+    public void onStop() {
+        super.onStop();
+        unregisterReceiver(updateReceiver);
+    }
 
-	}
+    public class UpdateReceiver extends BroadcastReceiver {
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		updateReceiver = new UpdateReceiver();
-		IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-		registerReceiver(updateReceiver, intentFilter);
-	}
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterReceiver(updateReceiver);
-	}
+            if (isOnline(context)) {
+                reload();
+            }
+        }
 
-	public class UpdateReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			if (isOnline(context)) {
-				reload();
-			}
-		}
-
-		public boolean isOnline(Context context) {
-			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-			NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
-		}
-	}
+        public boolean isOnline(Context context) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+        }
+    }
 }

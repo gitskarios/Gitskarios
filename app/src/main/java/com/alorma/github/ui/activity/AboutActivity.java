@@ -24,7 +24,7 @@ public class AboutActivity extends BackActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.generic_toolbar_no_drawer);
+		setContentView(R.layout.generic_toolbar);
 
 		setTitle(R.string.about_title);
 
