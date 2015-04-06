@@ -248,7 +248,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         AccountHeader headerBuilder = new AccountHeader()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.header);
+                .withHeaderBackground(R.color.repos_primary_dark);
 
         headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
             @Override
