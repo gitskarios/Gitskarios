@@ -40,6 +40,8 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.adapter.AccountsAdapter;
 import com.crashlytics.android.Crashlytics;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.Picasso;
 
 import dmax.dialog.SpotsDialog;
 import io.fabric.sdk.android.Fabric;
@@ -101,6 +103,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         recyclerView.setAdapter(adapter);
 
         if (fromLogin) {
+            findViewById(R.id.login).setEnabled(false);
+            showDialog();
             Uri uri = getIntent().getData();
             String code = uri.getQueryParameter("code");
             if (requestTokenClient == null) {
@@ -109,9 +113,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     @Override
                     public void onResponseOk(Token token, Response r) {
                         if (token.access_token != null) {
-                            if (progressDialog != null) {
-                                progressDialog.dismiss();
-                            }
                             endAccess(token.access_token, token.scope);
                         } else if (token.error != null) {
                             Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
@@ -159,6 +160,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private void endAccess(String accessToken, String scope) {
         this.accessToken = accessToken;
         this.scope = scope;
+
+        progressDialog.setMessage(getString(R.string.loading_user));
 
         GetAuthUserClient userClient = new GetAuthUserClient(this, accessToken);
         userClient.setOnResultCallback(this);

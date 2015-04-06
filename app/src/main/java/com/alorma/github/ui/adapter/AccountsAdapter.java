@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.login.AccountsHelper;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -40,8 +42,8 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.Holder
         String userAvatar = AccountsHelper.getUserAvatar(context, account);
         String userName = AccountsHelper.getUserName(context, account);
         String userMail = AccountsHelper.getUserMail(context, account);
+        ImageLoader.getInstance().displayImage(userAvatar, holder.profileIcon);
 
-        Picasso.with(context).load(userAvatar).into(holder.profileIcon);
         holder.name.setText(userName);
         holder.email.setText(userMail);
     }
