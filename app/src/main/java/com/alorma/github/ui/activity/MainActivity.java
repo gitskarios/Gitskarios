@@ -95,7 +95,6 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         setContentView(R.layout.generic_toolbar);
 
-
         createDrawer();
 
 
@@ -448,7 +447,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     public void onGistsSelected() {
-        Intent intent = new Intent(this, GistsMainActivity.class);
+        Intent intent = GistsMainActivity.createLauncherIntent(this);
         startActivity(intent);
     }
 

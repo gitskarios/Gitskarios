@@ -1,6 +1,7 @@
 package com.alorma.github.ui.activity.gists;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,21 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
     private Toolbar toolbar;
     private GistsFragment gistsFragment;
 
+    public static Intent createLauncherIntent(Context context) {
+        return createLauncherIntent(context, null);
+    }
+
+    public static Intent createLauncherIntent(Context context, String username) {
+        Intent intent = new Intent(context, GistsMainActivity.class);
+
+        if (username != null) {
+            Uri uri = Uri.parse("http://gist.github.com/" + username);
+            intent.setData(uri);
+        }
+
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +47,12 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle(R.string.title_gists);
 
-        String gistId = null;
-        String gistUser = null;
+        Uri uri = null;
 
         if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
-            Uri uri = getIntent().getData();
+            uri = getIntent().getData();
             if (uri == null && getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
                 try {
                     uri = Uri.parse(getIntent().getStringExtra(Intent.EXTRA_TEXT));
@@ -44,50 +60,64 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
                     e.printStackTrace();
                 }
             }
-            if (uri != null) {
-                gistId = uri.getLastPathSegment();
-                if (uri.getPathSegments().size() > 1) {
-                    gistUser = uri.getPathSegments().get(0);
-                }
+
+        } else if (getIntent().getData() != null) {
+            try {
+                uri = getIntent().getData();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
-        if (gistId != null && gistUser == null) {
-            GetGistDetailClient gistDetailClient = new GetGistDetailClient(this, gistId);
-            final String finalGistId = gistId;
-            gistDetailClient.setOnResultCallback(new BaseClient.OnResultCallback<Gist>() {
-                @Override
-                public void onResponseOk(Gist gist, Response r) {
-                    loadGistDetail(finalGistId);
-                    finish();
-                }
+        if (uri != null) {
+            String gistId = null;
+            String gistUser = null;
 
-                @Override
-                public void onFail(RetrofitError error) {
-                    UserGistsClient userGistsClient = new UserGistsClient(GistsMainActivity.this, finalGistId);
-                    userGistsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListGists>() {
-                        @Override
-                        public void onResponseOk(ListGists gists, Response r) {
-                            setTitle(getString(R.string.user_gists, finalGistId));
-                            showGistsFragment(finalGistId);
-                        }
+            gistId = uri.getLastPathSegment();
+            if (uri.getPathSegments().size() > 1) {
+                gistUser = uri.getPathSegments().get(0);
+            }
 
-                        @Override
-                        public void onFail(RetrofitError error) {
-                            Toast.makeText(GistsMainActivity.this, R.string.gist_not_loaded, Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
-                    userGistsClient.execute();
-                }
-            });
-            gistDetailClient.execute();
-        } else if (gistId != null) {
-            loadGistDetail(gistId);
-            finish();
+            if (gistId != null && gistUser == null) {
+                GetGistDetailClient gistDetailClient = new GetGistDetailClient(this, gistId);
+                final String finalGistId = gistId;
+                gistDetailClient.setOnResultCallback(new BaseClient.OnResultCallback<Gist>() {
+                    @Override
+                    public void onResponseOk(Gist gist, Response r) {
+                        loadGistDetail(finalGistId);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFail(RetrofitError error) {
+                        UserGistsClient userGistsClient = new UserGistsClient(GistsMainActivity.this, finalGistId);
+                        userGistsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListGists>() {
+                            @Override
+                            public void onResponseOk(ListGists gists, Response r) {
+                                setTitle(getString(R.string.user_gists, finalGistId));
+                                showGistsFragment(finalGistId);
+                            }
+
+                            @Override
+                            public void onFail(RetrofitError error) {
+                                Toast.makeText(GistsMainActivity.this, R.string.gist_not_loaded, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+                        userGistsClient.execute();
+                    }
+                });
+                gistDetailClient.execute();
+            } else if (gistId != null) {
+                loadGistDetail(gistId);
+                finish();
+            } else {
+                showGistsFragment(null);
+            }
         } else {
             showGistsFragment(null);
         }
+
     }
 
     @Override

@@ -52,7 +52,8 @@
             android:layout_height="@dimen/card_row_item_height"
             android:gravity="center_vertical"
             android:id="@+id/gists"
-            android:clickable="true">
+            android:clickable="true"
+            android:background="?android:selectableItemBackground">
 
             <ImageView
                 android:layout_width="@dimen/card_row_item_image_size"

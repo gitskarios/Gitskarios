@@ -113,6 +113,9 @@ public class GithubDataCard implements View.OnClickListener {
 				case R.id.orgs:
 					githubDataCardListener.onOrganizationsRequest(user.login);
 					break;
+				case R.id.gists:
+					githubDataCardListener.onGistsRequest(user.login);
+					break;
 			}
 		}
 	}
@@ -125,5 +128,7 @@ public class GithubDataCard implements View.OnClickListener {
 		void onRepositoriesRequest(String username);
 
 		void onOrganizationsRequest(String username);
+
+		void onGistsRequest(String username);
 	}
 }

@@ -28,6 +28,7 @@ import com.alorma.github.sdk.services.user.follow.FollowUserClient;
 import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.cards.profile.GithubPlanCard;
@@ -266,6 +267,12 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onOrganizationsRequest(String username) {
 		Intent intent = OrganizationsActivity.launchIntent(this, username);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onGistsRequest(String username) {
+		Intent intent = GistsMainActivity.createLauncherIntent(this, username);
 		startActivity(intent);
 	}
 

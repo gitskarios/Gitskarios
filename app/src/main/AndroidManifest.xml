@@ -62,7 +62,8 @@
 
 
         <activity android:name=".ui.activity.gists.GistsMainActivity"
-            android:theme="@style/AppThemeGists">
+            android:theme="@style/AppThemeGists"
+            android:label="@string/title_gists">
             <intent-filter android:label="@string/open_gist">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
