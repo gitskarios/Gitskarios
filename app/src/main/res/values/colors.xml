@@ -18,16 +18,17 @@
     <string name="lDialogPositive">#ffffffff</string>
     <string name="lDialogNegative">#ff808080</string>
 
-    <!-- Make sure to also update LetterTileProvider#NUM_OF_TILE_COLORS when adding or removing colors -->
-    <array name="letter_tile_colors">
-        <item>#d66161</item>
-        <item>#da8b60</item>
-        <item>#cf9443</item>
-        <item>#bcab45</item>
-        <item>#5e9a6c</item>
-        <item>#537788</item>
-        <item>#316f94</item>
-    </array>
-    <color name="letter_tile_default_color">#d66161</color>
-    <color name="letter_tile_font_color">#ffffff</color>
+    <color name="gist_primary">#607D8B</color>
+    <color name="gist_primary_dark">#455A64</color>
+    <color name="gist_primary_light">#CFD8DC</color>
+    <color name="gist_accent">#FF5252</color>
+    <color name="gist_accent_dark">#ffd74545</color>
+    <color name="gist_primary_text">#212121</color>
+    <color name="gist_secondary_text">#727272</color>
+    <color name="gist_third_text">#B6B6B6</color>
+    <color name="gist_icons">#FFFFFF</color>
+    <color name="gist_divider">#B6B6B6</color>
+
+    <color name="privateGist">#a1882b</color>
+    <color name="privateGistBackground">#f8eeca</color>
 </resources>

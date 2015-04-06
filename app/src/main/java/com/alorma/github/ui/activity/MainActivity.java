@@ -27,6 +27,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.ui.activity.base.BaseActivity;
+import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.MenuFragment;
@@ -136,7 +137,12 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                 }
             }
 
-            ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_acount)).withDescription(getString(R.string.add_account_description)).withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(-1);
+            ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem()
+                    .withName(getString(R.string.add_account))
+                    .withDescription(getString(R.string.add_account_description))
+                    .withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add)
+                            .actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
+                    .withIdentifier(-1);
 
             headerResult.addProfiles(itemAdd);
 
@@ -181,6 +187,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                         new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_star)).withIdentifier(2),
                         new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_eye)).withIdentifier(3),
                         new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_person)).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_gist)).withIdentifier(5),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_settings)).withIdentifier(10),
                         new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_sign_out)).withIdentifier(11)
@@ -204,10 +211,13 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
                             case 4:
                                 onPeopleSelected();
                                 break;
-                            case 6:
-                                onSettingsSelected();
+                            case 5:
+                                onGistsSelected();
                                 break;
                             case 7:
+                                onSettingsSelected();
+                                break;
+                            case 8:
                                 signOut();
                                 break;
                         }
@@ -435,6 +445,11 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         Intent intent = PeopleActivity.launchIntent(this);
         startActivity(intent);
         return false;
+    }
+
+    public void onGistsSelected() {
+        Intent intent = new Intent(this, GistsMainActivity.class);
+        startActivity(intent);
     }
 
     @Override

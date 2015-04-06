@@ -26,7 +26,7 @@
             android:visibility="visible"
             android:text="@string/row_private_repo"
             android:gravity="center"
-            android:background="@drawable/private_repo"
+            android:background="@drawable/private_label"
             android:layout_marginTop="@dimen/gapMedium"
             android:layout_marginRight="@dimen/gapMedium"
             android:layout_marginEnd="@dimen/gapMedium"

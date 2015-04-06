@@ -60,9 +60,39 @@
             </intent-filter>
         </activity>
 
-        <!--<meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>-->
+
+        <activity android:name=".ui.activity.gists.GistsMainActivity"
+            android:theme="@style/AppThemeGists">
+            <intent-filter android:label="@string/open_gist">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="gist.github.com"
+                    android:mimeType="text/*" />
+            </intent-filter>
+            <intent-filter android:label="@string/open_gist">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="http" android:host="gist.github.com" />
+                <data android:scheme="https" android:host="gist.github.com" />
+                <data android:pathPattern=".*" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activity.gists.GistDetailActivity"
+            android:theme="@style/AppThemeGists" />
+        <activity android:name=".ui.activity.gists.GistsFileActivity"
+            android:theme="@style/AppThemeGists" />
+        <activity
+            android:name=".ui.activity.gists.CreateGistActivity"
+            android:label="@string/create_gist"
+            android:theme="@style/AppThemeGists">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="com.alorma.github.ui.activity.NewIssueActivity"
@@ -77,7 +107,7 @@
         <activity android:name="com.alorma.github.ui.activity.OrganizationsActivity" />
 
         <meta-data
-            android:name="com.crashlytics.ApiKey"
+            android:name="io.fabric.ApiKey"
             android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080" />
 
         <service android:name=".account.AccountService">

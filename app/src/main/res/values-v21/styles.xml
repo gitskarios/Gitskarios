@@ -5,4 +5,13 @@
         <item name="android:navigationBarColor">@color/primary</item>
     </style>
 
+    <style name="AppThemeGists" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/gist_primary</item>
+        <item name="colorPrimaryDark">@color/gist_primary_dark</item>
+        <item name="colorAccent">@color/gist_accent</item>
+        <item name="colorControlNormal">@color/gist_accent</item>
+        <item name="colorControlHighlight">@color/gist_accent_dark</item>
+        <item name="android:navigationBarColor">@color/gist_primary</item>
+    </style>
+
 </resources>

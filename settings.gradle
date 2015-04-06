@@ -1,1 +1,1 @@
-include ':app', ':sdk', ':libraries:AndroidGithubIcons', ':libraries:android-floating-action-button', ':gistsapp'
+include ':app', ':sdk', ':libraries:AndroidGithubIcons', ':libraries:android-floating-action-button'

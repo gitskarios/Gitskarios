@@ -26,6 +26,19 @@
         <item name="color">@color/white</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="AppThemeGists" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/gist_primary</item>
+        <item name="colorPrimaryDark">@color/gist_primary_dark</item>
+        <item name="colorAccent">@color/gist_accent</item>
+        <item name="colorControlNormal">@color/gist_accent</item>
+        <item name="colorControlHighlight">@color/gist_accent_dark</item>
+    </style>
+
+    <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorSecondary">@color/gist_accent</item>
+    </style>
+
     <style name="fab">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>

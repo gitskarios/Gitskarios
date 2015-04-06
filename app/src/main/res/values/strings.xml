@@ -161,7 +161,23 @@
     <string name="notifications_full_read">Mark all %s notifications as read</string>
     <string name="navigation_sign_out">Sign out</string>
     <string name="add_account">Add Account</string>
-    <string name="add_acount">Add Account</string>
     <string name="add_account_description">Add new GitHub Account</string>
 
+    <string name="no_gists">No gists</string>
+    <string name="num_of_files">%d files</string>
+    <string name="create_gist">Create new gist</string>
+    <string name="Share">Share</string>
+    <string name="send_file_to">Send %s</string>
+    <string name="send_gist_to">Send gist</string>
+    <string name="open_gist">Open gist</string>
+    <string name="user_gists">%s gists</string>
+    <string name="editor_content_hint">Code</string>
+    <string name="editor_title_hint">Filename</string>
+    <string name="editor_discard">Empty file discarded</string>
+    <string name="publish_gist">Publish gist</string>
+    <string name="publishing_gist">Publishing</string>
+    <string name="publish_gist_fail">Gist not created</string>
+    <string name="gist_description">Description</string>
+    <string name="gist_private">Make gist private</string>
+    <string name="row_private_gist">PRIVATE</string>
 </resources>

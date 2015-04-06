@@ -84,4 +84,6 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
+
+    compile 'com.github.mrengineer13:snackbar:1.1.0'
 }

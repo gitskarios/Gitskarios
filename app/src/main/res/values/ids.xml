@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="action_donate" type="id">action_done</item>
+    <item name="toolbar" type="id">toolbar</item>
     <item name="fabButton" type="id">fabButton</item>
+    <item name="listContentFL" type="id">listContentFL</item>
+
+    <item name="action_donate" type="id">action_done</item>
     <item name="avatarAuthor" type="id">avatarAuthor</item>
     <item name="pager" type="id">pager</item>
     <item name="smoothBar" type="id">smoothBar</item>
     <item name="top" type="id">top</item>
-    <item name="toolbar" type="id">toolbar</item>
     <item name="coloredLayout" type="id">coloredLayout</item>
     <item name="issueDetailInfo" type="id">issueDetailInfo</item>
     <item name="action_add_comment" type="id">action_add_comment</item>
     <item name="action_close_issue" type="id">action_close_issue</item>
     <item name="action_fold_issue" type="id">action_fold_issue</item>
     <item name="fab_expand_menu_button" type="id"/>
-    <item name="listContentFL" type="id">@id/scrollable</item>
     <item name="scrollable" type="id">scroll</item>
     <item name="fabLayout" type="id">fabLayout</item>
     <item name="action_user_star" type="id">action_user_star</item>
     <item name="action_repo_star" type="id">action_repo_star</item>
     <item name="cardsContainerScroll" type="id">cardsContainerScroll</item>
     <item name="action_repo_watch" type="id">action_repo_watch</item>
+
 </resources>
