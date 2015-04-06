@@ -3,48 +3,34 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.alorma.github.BuildConfig;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.ApiConstants;
-import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.adapter.AccountsAdapter;
 import com.crashlytics.android.Crashlytics;
-import com.squareup.picasso.LruCache;
-import com.squareup.picasso.Picasso;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 
 import dmax.dialog.SpotsDialog;
-import io.fabric.sdk.android.Fabric;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -61,6 +47,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private String accessToken;
     private String scope;
     private RequestTokenClient requestTokenClient;
+    private boolean fromAccounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,18 +73,20 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
         boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals("gitskarios");
-        boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
-        boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
+        fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
+        final boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
-        if (fromApp) {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fromApp) {
                     openMain();
+                } else {
+                    finish();
                 }
-            });
-        }
+            }
+        });
 
         AccountsAdapter adapter = new AccountsAdapter(this, accounts);
         recyclerView.setAdapter(adapter);
@@ -186,14 +175,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         setAccountAuthenticatorResult(result);
 
-        if (getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false)) {
-            Intent intent = new Intent();
-            intent.putExtras(result);
-            setResult(RESULT_OK, intent);
-            finish();
-        } else {
-            openMain();
-        }
+        openMain();
     }
 
     @Override
