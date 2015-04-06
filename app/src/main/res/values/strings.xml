@@ -182,4 +182,5 @@
     <string name="gist_private">Make gist private</string>
     <string name="row_private_gist">PRIVATE</string>
     <string name="gist_not_loaded">Gist not loaded</string>
+    <string name="creating_issue">Creating issue</string>
 </resources>
