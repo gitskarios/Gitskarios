@@ -3,11 +3,18 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,9 +33,17 @@ import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.AccountsAdapter;
+import com.android.vending.billing.IInAppBillingService;
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
@@ -40,6 +55,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
     public static final String ADDING_FROM_ACCOUNTS = "ADDING_FROM_ACCOUNTS";
     public static final String ADDING_FROM_APP = "ADDING_FROM_APP";
+    private static final String SKU_MULTI_ACCOUNT = "com.alorma.github.multiaccount";
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -49,19 +65,36 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private RequestTokenClient requestTokenClient;
     private boolean fromAccounts;
 
+    private IInAppBillingService mService;
+
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            mService = IInAppBillingService.Stub.asInterface(service);
+        }
+    };
+    private Account[] accounts;
+    private String purchaseId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login();
-            }
-        });
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -70,7 +103,14 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         AccountManager accountManager = AccountManager.get(this);
 
-        Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
+        accounts = accountManager.getAccountsByType(getString(R.string.account_type));
+
+        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login();
+            }
+        });
 
         boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals("gitskarios");
         fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
@@ -123,6 +163,16 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     }
 
     private void login() {
+
+        if (accounts != null && accounts.length > 0) {
+            SKUTask task = new SKUTask();
+            task.execute(SKU_MULTI_ACCOUNT);
+        } else {
+            openExternalLogin();
+        }
+    }
+
+    private void openExternalLogin() {
         String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
 
         url = url + "&scope=gist,user,notifications,repo";
@@ -131,6 +181,77 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         intent.setData(Uri.parse(url));
         startActivity(intent);
         finish();
+    }
+
+    private class SKUTask extends AsyncTask<String, Void, Bundle> {
+
+        @Override
+        protected Bundle doInBackground(String... strings) {
+            ArrayList<String> skuList = new ArrayList<>();
+            Collections.addAll(skuList, strings);
+            Bundle querySkus = new Bundle();
+            querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+
+            try {
+                return mService.getPurchases(3, getPackageName(), "inapp", null);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bundle ownedItems) {
+            super.onPostExecute(ownedItems);
+            if (ownedItems != null) {
+                int response = ownedItems.getInt("RESPONSE_CODE");
+                if (response == 0) {
+                    ArrayList<String> ownedSkus = ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+
+                    if (ownedSkus.size() == 0) {
+                        showDialogBuyMultiAccount();
+                    } else {
+                        openExternalLogin();
+                    }
+                }
+            }
+        }
+    }
+
+    private void showDialogBuyMultiAccount() {
+        try {
+            purchaseId = UUID.randomUUID().toString();
+            Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(),
+                    SKU_MULTI_ACCOUNT, "inapp", purchaseId);
+            PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+            startIntentSenderForResult(pendingIntent.getIntentSender(),
+                    1001, new Intent(), 0, 0, 0);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1001) {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+
+            if (resultCode == RESULT_OK) {
+                try {
+                    JSONObject jo = new JSONObject(purchaseData);
+                    String sku = jo.getString("productId");
+                    String developerPayload = jo.getString("developerPayload");
+                    if (developerPayload.equals(purchaseId) && SKU_MULTI_ACCOUNT.equals(sku)) {
+                        openExternalLogin();
+                    }
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void enableCreateGist(boolean b) {
@@ -198,6 +319,14 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         } catch (Exception e) {
             e.printStackTrace();
             Crashlytics.logException(e);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mService != null) {
+            unbindService(mServiceConn);
         }
     }
 }
