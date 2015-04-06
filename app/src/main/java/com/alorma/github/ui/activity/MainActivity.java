@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         GitskariosApplication.get(this).inject(this);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.generic_toolbar);
 
 
         createDrawer();

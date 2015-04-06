@@ -59,7 +59,10 @@ public class GistDetailActivity extends BackActivity implements GistDetailFragme
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        detailFragment.onOptionsItemSelected(item);
+        boolean result = super.onOptionsItemSelected(item);
+        if (!result) {
+            detailFragment.onOptionsItemSelected(item);
+        }
         return true;
     }
 

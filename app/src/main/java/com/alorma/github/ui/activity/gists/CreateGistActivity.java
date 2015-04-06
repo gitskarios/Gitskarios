@@ -190,11 +190,15 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
 
     @Override
     public void onGistEditorUpdate(int position, GistFile file) {
-        if (editorFragment != null) {
-            editorFragment.setGistEditorListener(null);
-            getFragmentManager().beginTransaction().remove(editorFragment).commit();
+        if (adapter.getItemCount() == 1 && (TextUtils.isEmpty(file.filename) && TextUtils.isEmpty(file.content))) {
+            finish();
+        } else {
+            if (editorFragment != null) {
+                editorFragment.setGistEditorListener(null);
+                getFragmentManager().beginTransaction().remove(editorFragment).commit();
+            }
+            adapter.updateItem(position, file);
         }
-        adapter.updateItem(position, file);
     }
 
     @Override
