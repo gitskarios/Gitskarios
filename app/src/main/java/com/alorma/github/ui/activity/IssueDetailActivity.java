@@ -1,262 +1,268 @@
 package com.alorma.github.ui.activity;
 
-import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.issues.CloseIssueClient;
-import com.alorma.github.sdk.services.issues.GetIssueClient;
-import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.github.ui.view.FABCenterLayout;
-import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
-import com.crashlytics.android.Crashlytics;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements View.OnClickListener, BaseClient.OnResultCallback<Issue> {
+public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory> /*View.OnClickListener, BaseClient.OnResultCallback<Issue>, */ {
 
-	public static final String ISSUE_INFO = "ISSUE_INFO";
-	public static final String PERMISSIONS = "PERMISSIONS";
-	private static final int NEW_COMMENT_REQUEST = 1243;
+    public static final String ISSUE_INFO = "ISSUE_INFO";
+    public static final String PERMISSIONS = "PERMISSIONS";
+    private static final int NEW_COMMENT_REQUEST = 1243;
 
-	private IssueDiscussionFragment issueDiscussionFragment;
-	private IssueState issueState;
-	private Permissions permissions;
-	private boolean shouldRefreshOnBack;
-	private Issue issue;
-	private IssueInfo issueInfo;
-	private FABCenterLayout fabLayout;
-	private TextView issueBody;
+    private IssueDiscussionFragment issueDiscussionFragment;
+    private IssueState issueState;
+    private Permissions permissions;
+    private boolean shouldRefreshOnBack;
+    private Issue issue;
+    private IssueInfo issueInfo;
+    private FABCenterLayout fabLayout;
+    private TextView issueBody;
 
-	public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
-		Bundle bundle = new Bundle();
+    public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
+        Bundle bundle = new Bundle();
 
-		bundle.putParcelable(ISSUE_INFO, issueInfo);
-		bundle.putParcelable(PERMISSIONS, permissions);
+        bundle.putParcelable(ISSUE_INFO, issueInfo);
+        bundle.putParcelable(PERMISSIONS, permissions);
 
-		Intent intent = new Intent(context, IssueDetailActivity.class);
-		intent.putExtras(bundle);
-		return intent;
-	}
+        Intent intent = new Intent(context, IssueDetailActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_issue_detail);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_issue_detail);
 
-		if (getIntent().getExtras() != null) {
-			issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+
+        if (getIntent().getExtras() != null) {
+            issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+
+
+            IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
+            issueStoryLoader.setOnResultCallback(this);
+            issueStoryLoader.execute();
+        }
+
+
+		/*if (getIntent().getExtras() != null) {
+            issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 			permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
 			getContent();
 
 			findViews();
-		}
-	}
+		}*/
+    }
 
-	@Override
-	protected void getContent() {
-		GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
-		issuesClient.setOnResultCallback(this);
-		issuesClient.execute();
-	}
+    @Override
+    public void onResponseOk(IssueStory issueStory, Response r) {
 
-	private void findViews() {
-		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
+    }
 
-		int accent = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
-		int primaryDark = AttributesUtils.getPrimaryDarkColor(this, R.style.AppTheme_Repos);
+    @Override
+    public void onFail(RetrofitError error) {
 
-		fabLayout.setFabColor(accent);
-		fabLayout.setFabColorPressed(primaryDark);
+    }
 
-		GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
-		fabLayout.setFabIcon(drawable);
-		fabLayout.setFabClickListener(this, getString(R.string.add_comment));
+/*
+    @Override
+    protected void getContent() {
+        GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
+        issuesClient.setOnResultCallback(this);
+        issuesClient.execute();
+    }
 
-		issueBody = (TextView) findViewById(R.id.issueBody);
-		issueBody.setMaxLines(3);
-		issueBody.setEllipsize(TextUtils.TruncateAt.END);
-	}
+    private void findViews() {
+        fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 
-	private void setData() {
-		if (getSupportActionBar() != null) {
-			getSupportActionBar().setTitle(issue.title);
-		}
+        int accent = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
+        int primaryDark = AttributesUtils.getPrimaryDarkColor(this, R.style.AppTheme_Repos);
 
-		addDiscussionFragment();
-	}
+        fabLayout.setFabColor(accent);
+        fabLayout.setFabColorPressed(primaryDark);
 
-	private void addDiscussionFragment() {
-		try {
-			if (!isFinishing()) {
-				issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
+        GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
+        fabLayout.setFabIcon(drawable);
+        fabLayout.setFabClickListener(this, getString(R.string.add_comment));
 
-				FragmentTransaction ft = getFragmentManager().beginTransaction();
-				ft.replace(R.id.discussionFeed, issueDiscussionFragment);
-				ft.commit();
-			}
-		} catch (IllegalStateException e) {
-			Crashlytics.logException(e);
-		}
-	}
+        issueBody = (TextView) findViewById(R.id.issueBody);
+        issueBody.setMaxLines(3);
+        issueBody.setEllipsize(TextUtils.TruncateAt.END);
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.issue_detail, menu);
-		return true;
-	}
+    private void setData() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(issue.title);
+        }
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
+        addDiscussionFragment();
+    }
 
-		if (permissions != null && permissions.push && issueState == IssueState.open) {
-			MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
-			menuItem.setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
-			menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		}
+    private void addDiscussionFragment() {
+        try {
+            if (!isFinishing()) {
+                issueDiscussionFragment = IssueDiscussionFragment.newInstance(issueInfo);
 
-		MenuItem menuItem;
-		GithubIconify.IconValue icon;
-		if (fabLayout.isFold()) {
-			menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.unfold_issue);
-			icon = GithubIconify.IconValue.octicon_unfold;
-		} else {
-			menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.fold_issue);
-			icon = GithubIconify.IconValue.octicon_fold;
-		}
-		menuItem.setIcon(new GithubIconDrawable(this, icon).actionBarSize().colorRes(R.color.white));
-		menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.discussionFeed, issueDiscussionFragment);
+                ft.commit();
+            }
+        } catch (IllegalStateException e) {
+            Crashlytics.logException(e);
+        }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.issue_detail, menu);
+        return true;
+    }
 
-		return true;
-	}
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
+        if (permissions != null && permissions.push && issueState == IssueState.open) {
+            MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+            menuItem.setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
 
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
-				finish();
-				break;
-			case R.id.action_close_issue:
-				closeIssueDialog();
-				break;
-			case R.id.action_fold_issue:
-				if (fabLayout.isFold()) {
-					issueBody.setMaxLines(Integer.MAX_VALUE);
-					issueBody.setEllipsize(null);
-				} else {
-					issueBody.setMaxLines(3);
-					issueBody.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				fabLayout.setFold(!fabLayout.isFold());
-				invalidateOptionsMenu();
-				break;
-		}
+        MenuItem menuItem;
+        GithubIconify.IconValue icon;
+        if (fabLayout.isFold()) {
+            menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.unfold_issue);
+            icon = GithubIconify.IconValue.octicon_unfold;
+        } else {
+            menuItem = menu.add(0, R.id.action_fold_issue, 0, R.string.fold_issue);
+            icon = GithubIconify.IconValue.octicon_fold;
+        }
+        menuItem.setIcon(new GithubIconDrawable(this, icon).actionBarSize().colorRes(R.color.white));
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-		return true;
-	}
+        return true;
+    }
 
-	public void onAddComment() {
-		Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
-		startActivityForResult(intent, NEW_COMMENT_REQUEST);
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
 
-	private void closeIssueDialog() {
-		String title = getString(R.string.closeIssue);
-		String accept = getString(R.string.accept);
-		String cancel = getString(R.string.cancel);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
+                finish();
+                break;
+            case R.id.action_close_issue:
+                closeIssueDialog();
+                break;
+            case R.id.action_fold_issue:
+                if (fabLayout.isFold()) {
+                    issueBody.setMaxLines(Integer.MAX_VALUE);
+                    issueBody.setEllipsize(null);
+                } else {
+                    issueBody.setMaxLines(3);
+                    issueBody.setEllipsize(TextUtils.TruncateAt.END);
+                }
+                fabLayout.setFold(!fabLayout.isFold());
+                invalidateOptionsMenu();
+                break;
+        }
 
-		MaterialDialog dialog = new MaterialDialog.Builder(this)
-				.title(title)
-				.positiveText(accept)
-				.negativeText(cancel)
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog materialDialog) {
-						super.onPositive(materialDialog);
-						closeIssue();
-					}
-				})
-				.build();
+        return true;
+    }
 
-		dialog.show();
-	}
+    public void onAddComment() {
+        Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
+        startActivityForResult(intent, NEW_COMMENT_REQUEST);
+    }
 
-	private void closeIssue() {
-		CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repo.owner, issueInfo.repo.name, issueInfo.num);
-		closeIssueClient.setOnResultCallback(this);
-		closeIssueClient.execute();
-	}
+    private void closeIssueDialog() {
+        String title = getString(R.string.closeIssue);
+        String accept = getString(R.string.accept);
+        String cancel = getString(R.string.cancel);
 
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == fabLayout.getFabId()) {
-			onAddComment();
-		}
-	}
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(title)
+                .positiveText(accept)
+                .negativeText(cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        super.onPositive(materialDialog);
+                        closeIssue();
+                    }
+                })
+                .build();
 
-	@Override
-	public void onResponseOk(Issue issue, Response r) {
-		if (issue != null) {
-			issueBody.setText(issue.body);
-			IssueDetailActivity.this.issue = issue;
-			IssueDetailActivity.this.issueState = issue.state;
-			invalidateOptionsMenu();
-			setData();
+        dialog.show();
+    }
 
-			//Spanned issueNumber = Html.fromHtml(getString(R.string.issue_detail_title, issue.number));
+    private void closeIssue() {
+        CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repo.owner, issueInfo.repo.name, issueInfo.num);
+        closeIssueClient.setOnResultCallback(this);
+        closeIssueClient.execute();
+    }
 
-			shouldRefreshOnBack = true;
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == fabLayout.getFabId()) {
+            onAddComment();
+        }
+    }
 
-	@Override
-	public void onFail(RetrofitError error) {
-		ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Closing issue: ", error);
-	}
+    @Override
+    public void onResponseOk(Issue issue, Response r) {
+        if (issue != null) {
+            issueBody.setText(issue.body);
+            IssueDetailActivity.this.issue = issue;
+            IssueDetailActivity.this.issueState = issue.state;
+            invalidateOptionsMenu();
+            setData();
 
-	@Override
-	public void onBackPressed() {
-		setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
-		finish();
-	}
+            //Spanned issueNumber = Html.fromHtml(getString(R.string.issue_detail_title, issue.number));
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK) {
-			if (requestCode == NEW_COMMENT_REQUEST) {
-				addDiscussionFragment();
-			}
-		}
-	}
+            shouldRefreshOnBack = true;
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Closing issue: ", error);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == NEW_COMMENT_REQUEST) {
+                addDiscussionFragment();
+            }
+        }
+    }*/
 }

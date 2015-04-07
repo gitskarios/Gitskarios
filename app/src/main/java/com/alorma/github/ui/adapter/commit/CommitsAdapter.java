@@ -90,7 +90,6 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
 			if (commit.commit.author != null && commit.commit.author.date != null) {
 
-
 				String name = "";
 				if (commit.author != null && commit.author.login != null) {
 					name = commit.author.login;
