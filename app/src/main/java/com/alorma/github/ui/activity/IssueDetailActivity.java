@@ -193,7 +193,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         });
 
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setDuration(10000);
+        animatorSet.setDuration(1000);
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
         animatorSet.playTogether(colorAnimation, colorAnimationStatus, colorAnimationFab, colorAnimationFabPressed);
         animatorSet.start();
