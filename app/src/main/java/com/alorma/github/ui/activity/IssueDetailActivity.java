@@ -2,27 +2,41 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.widget.TextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
-import com.alorma.github.ui.view.FABCenterLayout;
+import com.alorma.github.utils.AttributesUtils;
+import com.alorma.githubicons.GithubIconDrawable;
+import com.alorma.githubicons.GithubIconify;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.github.mrengineer13.snackbar.SnackBar;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ArgbEvaluator;
+import com.nineoldandroids.animation.ValueAnimator;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory> /*View.OnClickListener, BaseClient.OnResultCallback<Issue>, */ {
+public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory> /*, BaseClient.OnResultCallback<Issue>, */ {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
     public static final String PERMISSIONS = "PERMISSIONS";
@@ -32,10 +46,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private IssueState issueState;
     private Permissions permissions;
     private boolean shouldRefreshOnBack;
-    private Issue issue;
     private IssueInfo issueInfo;
-    private FABCenterLayout fabLayout;
-    private TextView issueBody;
+    private RecyclerView recyclerView;
+    private FloatingActionButton fab;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
         Bundle bundle = new Bundle();
@@ -56,59 +69,148 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         if (getIntent().getExtras() != null) {
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+            permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
+            /*issueInfo.repo.owner = "github";
+            issueInfo.repo.name = "android";
+            issueInfo.num = 582;*/
 
-            IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
-            issueStoryLoader.setOnResultCallback(this);
-            issueStoryLoader.execute();
+            findViews();
+            getContent();
         }
+    }
 
+    private void findViews() {
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
-		/*if (getIntent().getExtras() != null) {
-            issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
-			permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
+        GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
 
-			getContent();
+        fab.setIconDrawable(drawable);
+    }
 
-			findViews();
-		}*/
+    @Override
+    protected void getContent() {
+        super.getContent();
+        IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
+        issueStoryLoader.setOnResultCallback(this);
+        issueStoryLoader.execute();
     }
 
     @Override
     public void onResponseOk(IssueStory issueStory, Response r) {
+        changeColor(issueStory.issue);
+        if (getSupportActionBar() != null) {
+            String issueName = issueInfo.repo.name;
+            if (issueStory.issue.pullRequest != null) {
+                getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
+            } else {
+                getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
+            }
+        }
+        String status = getString(R.string.issue_status_open);
+        if (IssueState.closed == issueStory.issue.state) {
+            status = getString(R.string.issue_status_close);
+        }
+        setTitle("#" + issueStory.issue.number + " " + status);
+        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory);
+        recyclerView.setAdapter(adapter);
+    }
 
+    private void changeColor(Issue issue) {
+        int colorState = getResources().getColor(R.color.issue_state_close);
+        int colorStateDark = getResources().getColor(R.color.issue_state_close_dark);
+        if (IssueState.open == issue.state) {
+            colorState = getResources().getColor(R.color.issue_state_open);
+            colorStateDark = getResources().getColor(R.color.issue_state_open_dark);
+        }
+
+        int primary = getResources().getColor(R.color.primary_alpha);
+        int accent = getResources().getColor(R.color.repos_accent);
+        int accentDark = getResources().getColor(R.color.repos_accent_dark);
+        int primaryDark = getResources().getColor(R.color.repos_primary_dark_alpha);
+
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                int color = (Integer) animator.getAnimatedValue();
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setNavigationBarColor(color);
+                }
+            }
+
+        });
+
+        ValueAnimator colorAnimationFab = ValueAnimator.ofObject(new ArgbEvaluator(), accent, colorState);
+        colorAnimationFab.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                int color = (Integer) animator.getAnimatedValue();
+
+                if (fab != null) {
+                    fab.setColorNormal(color);
+                }
+
+            }
+
+        });
+
+        ValueAnimator colorAnimationFabPressed = ValueAnimator.ofObject(new ArgbEvaluator(), accentDark, colorStateDark);
+        colorAnimationFabPressed.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                int color = (Integer) animator.getAnimatedValue();
+
+                if (fab != null) {
+                    fab.setColorPressed(color);
+                }
+
+            }
+
+        });
+
+        ValueAnimator colorAnimationStatus = ValueAnimator.ofObject(new ArgbEvaluator(), primaryDark, colorStateDark);
+        colorAnimationStatus.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                int color = (Integer) animator.getAnimatedValue();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(color);
+                }
+            }
+
+        });
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(10000);
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.playTogether(colorAnimation, colorAnimationStatus, colorAnimationFab, colorAnimationFabPressed);
+        animatorSet.start();
     }
 
     @Override
     public void onFail(RetrofitError error) {
-
+        try {
+            new SnackBar.Builder(this).withMessage(error.getResponse().getReason()).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 /*
-    @Override
-    protected void getContent() {
-        GetIssueClient issuesClient = new GetIssueClient(this, issueInfo);
-        issuesClient.setOnResultCallback(this);
-        issuesClient.execute();
-    }
 
-    private void findViews() {
-        fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 
-        int accent = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
-        int primaryDark = AttributesUtils.getPrimaryDarkColor(this, R.style.AppTheme_Repos);
-
-        fabLayout.setFabColor(accent);
-        fabLayout.setFabColorPressed(primaryDark);
-
-        GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
-        fabLayout.setFabIcon(drawable);
-        fabLayout.setFabClickListener(this, getString(R.string.add_comment));
-
-        issueBody = (TextView) findViewById(R.id.issueBody);
-        issueBody.setMaxLines(3);
-        issueBody.setEllipsize(TextUtils.TruncateAt.END);
-    }
 
     private void setData() {
         if (getSupportActionBar() != null) {

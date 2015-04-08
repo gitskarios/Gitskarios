@@ -25,6 +25,7 @@ import com.alorma.github.sdk.BuildConfig;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.security.UnAuthIntent;
+import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;

@@ -60,8 +60,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 	private SourceListFragment sourceListFragment;
 	private IssuesListFragment issuesListFragment;
 	private CommitsListFragment commitsListFragment;
-	//private PullRequestsListFragment pullRequestsListFragment;
-
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
 	private SlidingTabLayout slidingTabLayout;
@@ -125,7 +123,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 		sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
 		commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
 		issuesListFragment = IssuesListFragment.newInstance(getRepoInfo());
-		//pullRequestsListFragment = PullRequestsListFragment.newInstance(currentRepo.owner.login, currentRepo.name, null);
 
 		listFragments = new ArrayList<>();
 		listFragments.add(readmeFragment);
@@ -180,8 +177,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 					return getString(R.string.commits_fragment_title);
 				case 3:
 					return getString(R.string.issues_fragment_title);
-				case 4:
-					return getString(R.string.pull_requests_fragment_title);
 			}
 			return "";
 		}

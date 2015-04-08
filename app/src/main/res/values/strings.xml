@@ -139,7 +139,8 @@
     <string name="collaborators_data">%d collaborators</string>
     <string name="repos_data_profile">Using %1$d of %2$d private repositories.</string>
     <string name="about_title">About</string>
-    <string name="pull_requests_fragment_title">Pull requests</string>
+    <string name="pull_requests_subtitle">Pull requests on %s</string>
+    <string name="issue_subtitle">Issue on %s</string>
     <string name="no_prs_found">No pull requests found</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search</string>
@@ -183,4 +184,6 @@
     <string name="row_private_gist">PRIVATE</string>
     <string name="gist_not_loaded">Gist not loaded</string>
     <string name="creating_issue">Creating issue</string>
+    <string name="issue_status_open">Open</string>
+    <string name="issue_status_close">Closed</string>
 </resources>
