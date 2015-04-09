@@ -69,5 +69,8 @@
     <style name="SpotDialog.LoadingUser">
         <item name="DialogTitleText">@string/loading_user</item>
     </style>
+    <style name="SpotDialog.CreatingIssue">
+        <item name="DialogTitleText">@string/creating_issue</item>
+    </style>
 
 </resources>

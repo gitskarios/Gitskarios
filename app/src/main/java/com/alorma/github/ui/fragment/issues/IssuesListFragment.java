@@ -47,6 +47,13 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 		return fragment;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		issuesAdapter = null;
+		executeRequest();
+	}
+
 	protected void executeRequest() {
 		super.executeRequest();
 		if (repoInfo != null) {
@@ -130,7 +137,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 		super.fabClick();
 
 		if (permissions != null) {
-			Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo, permissions.push);
+			Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo, permissions);
 			startActivityForResult(intent, ISSUE_REQUEST);
 		}
 

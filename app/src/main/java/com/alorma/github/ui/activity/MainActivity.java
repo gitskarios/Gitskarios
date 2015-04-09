@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -83,6 +84,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     private Drawer.Result result;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
+    private Fragment lastUsedFragment;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -246,7 +248,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         AccountHeader headerBuilder = new AccountHeader()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.header);
+                .withHeaderBackground(R.color.repos_primary_dark);
 
         headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
             @Override
@@ -282,15 +284,20 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     private void selectAccount(final Account account) {
         this.selectedAccount = account;
-        clearFragments();
         credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
         String authToken = AccountsHelper.getUserToken(this, account);
 
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
-
-        onReposSelected();
+        if (searchView == null || TextUtils.isEmpty(searchView.getQuery())) {
+            if (lastUsedFragment != null) {
+                setFragment(lastUsedFragment);
+            } else {
+                clearFragments();
+                onReposSelected();
+            }
+        }
     }
 
     private void clearFragments() {
@@ -393,6 +400,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
+        this.lastUsedFragment = fragment;
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content, fragment);
         if (addToBackStack) {
