@@ -23,6 +23,7 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.githubicons.GithubIconify;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -39,208 +40,222 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  */
 public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider {
 
-	private static final String REPO_INFO = "REPO_INFO";
+    private static final String REPO_INFO = "REPO_INFO";
 
-	private CommitsAdapter commitsAdapter;
-	private List<Commit> commitsMap;
-	private StickyListHeadersListView listView;
+    private CommitsAdapter commitsAdapter;
+    private List<Commit> commitsMap;
+    private StickyListHeadersListView listView;
 
-	private RepoInfo repoInfo;
-	private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
+    private RepoInfo repoInfo;
+    private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
+    private View snackView;
+    private SnackBar branchSnackBar;
 
-	public static CommitsListFragment newInstance(RepoInfo repoInfo) {
-		Bundle bundle = new Bundle();
-		bundle.putParcelable(REPO_INFO, repoInfo);
+    public static CommitsListFragment newInstance(RepoInfo repoInfo) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
-		CommitsListFragment fragment = new CommitsListFragment();
-		fragment.setArguments(bundle);
-		return fragment;
-	}
+        CommitsListFragment fragment = new CommitsListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		return inflater.inflate(R.layout.list_fragment_headers
-				, null);
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.list_fragment_headers, null, false);
+    }
 
-	@Override
-	protected void setupListView(View view) {
-		listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
-		if (listView != null) {
-			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
-			listView.setOnItemClickListener(this);
-			listView.setAreHeadersSticky(false);
-		}
-	}
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-	@Override
-	protected void onResponse(final ListCommit commits, boolean refreshing) {
-		if (commitsMap == null || refreshing) {
-			commitsMap = new ArrayList<>();
-		}
-		if (commits != null && commits.size() > 0) {
+        snackView = view.findViewById(R.id.snackBar);
+    }
 
-			orderCommits(commits);
+    @Override
+    protected void setupListView(View view) {
+        listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
+        if (listView != null) {
+            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
+            listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+            listView.setOnItemClickListener(this);
+            listView.setAreHeadersSticky(false);
+        }
+    }
 
-			if (commitsAdapter == null || refreshing) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						commitsAdapter = new CommitsAdapter(getActivity(), commitsMap);
-						listView.setAdapter(commitsAdapter);
-					}
-				});
-			}
+    @Override
+    protected void onResponse(final ListCommit commits, boolean refreshing) {
+        if (commitsMap == null || refreshing) {
+            commitsMap = new ArrayList<>();
+        }
+        if (commits != null && commits.size() > 0) {
 
-			if (commitsAdapter.isLazyLoading()) {
-				if (commitsAdapter != null) {
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							commitsAdapter.setLazyLoading(false);
-							commitsAdapter.addAll(commits);
-						}
-					});
-				}
-			}
-		}
-	}
+            orderCommits(commits);
 
-	@Override
-	public void onResume() {
-		super.onResume();
+            if (commitsAdapter == null || refreshing) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        commitsAdapter = new CommitsAdapter(getActivity(), commitsMap);
+                        listView.setAdapter(commitsAdapter);
+                    }
+                });
+            }
 
-		IntentFilter filter = new IntentFilter();
+            if (commitsAdapter.isLazyLoading()) {
+                if (commitsAdapter != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            commitsAdapter.setLazyLoading(false);
+                            commitsAdapter.addAll(commits);
+                        }
+                    });
+                }
+            }
+        }
 
-		filter.addAction(Intent.ACTION_TIME_TICK);
-		filter.addAction(Intent.ACTION_TIME_CHANGED);
-		filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        if (branchSnackBar != null) {
+            branchSnackBar.clear(false);
+        }
+        branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
 
-		timeTickBroadcastReceiver = new TimeTickBroadcastReceiver();
-		
-		getActivity().registerReceiver(timeTickBroadcastReceiver, filter);
-	}
+    }
 
-	@Override
-	public void onPause() {
-		getActivity().unregisterReceiver(timeTickBroadcastReceiver);
-		super.onPause();
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
 
-	private class TimeTickBroadcastReceiver extends BroadcastReceiver {
+        IntentFilter filter = new IntentFilter();
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
 
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					if (commitsAdapter != null) {
-						commitsAdapter.notifyDataSetChanged();
-					}
-				}
-			});
-		}
-	}
+        timeTickBroadcastReceiver = new TimeTickBroadcastReceiver();
 
-	private void orderCommits(ListCommit commits) {
+        getActivity().registerReceiver(timeTickBroadcastReceiver, filter);
+    }
 
-		for (Commit commit : commits) {
-			if (commit.commit.author.date != null) {
-				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-				DateTime dt = formatter.parseDateTime(commit.commit.author.date);
+    @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(timeTickBroadcastReceiver);
+        super.onPause();
+    }
 
-				Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+    private class TimeTickBroadcastReceiver extends BroadcastReceiver {
 
-				commit.days = days.getDays();
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-				commitsMap.add(commit);
-			}
-		}
-	}
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (commitsAdapter != null) {
+                        commitsAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    }
 
-	@Override
-	protected void executeRequest() {
-		super.executeRequest();
-		ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, 0);
-		client.setOnResultCallback(this);
-		client.execute();
-	}
+    private void orderCommits(ListCommit commits) {
 
-	@Override
-	protected void executePaginatedRequest(int page) {
-		super.executePaginatedRequest(page);
-		commitsAdapter.setLazyLoading(true);
-		ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, page);
-		client.setOnResultCallback(this);
-		client.execute();
-	}
+        for (Commit commit : commits) {
+            if (commit.commit.author.date != null) {
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                DateTime dt = formatter.parseDateTime(commit.commit.author.date);
 
-	@Override
-	protected void loadArguments() {
-		if (getArguments() != null) {
-			repoInfo = getArguments().getParcelable(REPO_INFO);
-		}
-	}
+                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
-	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_file_diff;
-	}
+                commit.days = days.getDays();
 
-	@Override
-	protected int getNoDataText() {
-		return R.string.no_commits;
-	}
+                commitsMap.add(commit);
+            }
+        }
+    }
 
-	@Override
-	public CharSequence getTitle() {
-		return getString(R.string.commits_fragment_title);
-	}
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
+        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, 0);
+        client.setOnResultCallback(this);
+        client.execute();
+    }
 
-	@Override
-	protected boolean useFAB() {
-		return true;
-	}
+    @Override
+    protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
+        commitsAdapter.setLazyLoading(true);
+        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, page);
+        client.setOnResultCallback(this);
+        client.execute();
+    }
 
-	@Override
-	protected GithubIconify.IconValue getFABGithubIcon() {
-		return GithubIconify.IconValue.octicon_repo_forked;
-	}
+    @Override
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            repoInfo = getArguments().getParcelable(REPO_INFO);
+        }
+    }
 
-	@Override
-	protected void fabClick() {
-		GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-		repoBranchesClient.setOnResultCallback(new ChangeBranchCallback(getActivity(), repoInfo));
-		repoBranchesClient.execute();
-	}
+    @Override
+    protected GithubIconify.IconValue getNoDataIcon() {
+        return GithubIconify.IconValue.octicon_file_diff;
+    }
 
-	private class ChangeBranchCallback extends DialogBranchesCallback {
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_commits;
+    }
 
-		public ChangeBranchCallback(Context context, RepoInfo repoInfo) {
-			super(context, repoInfo);
-		}
+    @Override
+    public CharSequence getTitle() {
+        return getString(R.string.commits_fragment_title);
+    }
 
-		@Override
-		protected void onBranchSelected(String branch) {
-			repoInfo.branch = branch;
+    @Override
+    protected boolean useFAB() {
+        return true;
+    }
 
-			if (commitsAdapter != null) {
-				commitsAdapter.clear();
-			}
-			startRefresh();
-			refreshing = true;
-			executeRequest();
-		}
-	}
+    @Override
+    protected GithubIconify.IconValue getFABGithubIcon() {
+        return GithubIconify.IconValue.octicon_repo_forked;
+    }
 
-	@Override
-	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
-		Commit item = commitsAdapter.getItem(position);
+    @Override
+    protected void fabClick() {
+        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+        repoBranchesClient.setOnResultCallback(new ChangeBranchCallback(getActivity(), repoInfo));
+        repoBranchesClient.execute();
+    }
 
-		Intent intent = CommitDetailActivity.launchIntent(getActivity(), repoInfo, item.sha);
-		startActivity(intent);
-	}
+    private class ChangeBranchCallback extends DialogBranchesCallback {
+
+        public ChangeBranchCallback(Context context, RepoInfo repoInfo) {
+            super(context, repoInfo);
+        }
+
+        @Override
+        protected void onBranchSelected(String branch) {
+            repoInfo.branch = branch;
+
+            if (commitsAdapter != null) {
+                commitsAdapter.clear();
+            }
+            startRefresh();
+            refreshing = true;
+            executeRequest();
+        }
+    }
+
+    @Override
+    public void onListItemClick(final ListView l, final View v, final int position, final long id) {
+        Commit item = commitsAdapter.getItem(position);
+
+        Intent intent = CommitDetailActivity.launchIntent(getActivity(), repoInfo, item.sha);
+        startActivity(intent);
+    }
 }

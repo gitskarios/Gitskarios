@@ -88,11 +88,11 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 	private void findViews() {
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 
-		int accent = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
-		int primaryDark = AttributesUtils.getPrimaryDarkColor(this, R.style.AppTheme_Repos);
+		int accent = AttributesUtils.getControlNormal(this, R.style.AppTheme_Repos);
+		int accentDark = AttributesUtils.getControlHighlight(this, R.style.AppTheme_Repos);
 
 		fabLayout.setFabColor(accent);
-		fabLayout.setFabColorPressed(primaryDark);
+		fabLayout.setFabColorPressed(accentDark);
 
 		GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
 		fabLayout.setFabIcon(drawable);

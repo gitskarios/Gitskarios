@@ -1,29 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:id="@id/listContentFL">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@id/listContentFL">
 
     <FrameLayout
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/swipe">
+            android:orientation="vertical">
 
-            <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-                android:id="@android:id/list"
+            <android.support.v4.widget.SwipeRefreshLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
+                android:id="@+id/swipe">
 
-        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+                <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+                    android:id="@android:id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawSelectorOnTop="false" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:id="@+id/snackBar"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <include
+                layout="@layout/fab"
+                android:layout_width="@dimen/fab"
+                android:layout_height="@dimen/fab"
+                android:layout_gravity="bottom|right|end"
+                android:layout_above="@+id/snackBar"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
@@ -37,16 +60,9 @@
             app:spb_mirror_mode="false"
             app:spb_progressiveStart_activated="true"
             app:spb_progressiveStart_speed="1.5"
-            app:spb_progressiveStop_speed="3.4"/>
+            app:spb_progressiveStop_speed="3.4" />
 
     </FrameLayout>
-
-    <include
-        layout="@layout/fab"
-        android:layout_width="@dimen/fab"
-        android:layout_height="@dimen/fab"
-        android:layout_margin="@dimen/gapLarge"
-        android:layout_gravity="bottom|right|end"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -61,7 +77,7 @@
             android:src="@drawable/ic_launcher"
             android:id="@+id/emptyIcon"
             android:scaleType="centerInside"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,7 +86,7 @@
             android:layout_below="@id/emptyIcon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/gapMedium"
-            android:textSize="@dimen/textSizeLarge"/>
+            android:textSize="@dimen/textSizeLarge" />
     </RelativeLayout>
 
 </FrameLayout>
