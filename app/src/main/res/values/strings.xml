@@ -130,6 +130,12 @@
     <string name="commit_authored_at_hours">%1$s authored %2$d hours ago</string>
     <string name="commit_authored_at_minutes">%1$s authored %2$d minutes ago</string>
     <string name="commit_authored_at_seconds">%1$s authored %2$d seconds ago</string>
+    <string name="time_ago_at_years">%d years ago</string>
+    <string name="time_ago_at_months">%d month ago</string>
+    <string name="time_ago_at_days">%d days ago</string>
+    <string name="time_ago_at_hours">%d hours ago</string>
+    <string name="time_ago_at_minutes">%d minutes ago</string>
+    <string name="time_ago_at_seconds">%d seconds ago</string>
     <string name="commit_additions">Additions %d</string>
     <string name="commit_deletions">Deletions %d</string>
     <string name="unfollow">Unfollow</string>
@@ -153,7 +159,7 @@
     <string name="notifications">Notifications</string>
     <string name="repo_scope_title">Update authorization</string>
     <string name="repo_scope_message">We need you to reauthorize due to some changes on the API.\n\nBy reauthorizing the app you\'ll also have access to new features</string>
-    <string name="repo_scope_positive">Ok, reauthorize</string>
+    <string name="repo_scope_positive">OK reauthorize</string>
     <string name="navigation_orgs_repos">Repositories</string>
     <string name="navigation_orgs_members">Members</string>
     <string name="org_no_members">No members</string>

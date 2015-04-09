@@ -1,13 +1,9 @@
 package com.alorma.github.ui.adapter.issues;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +30,7 @@ public class IssuesAdapter extends LazyAdapter<Issue> {
 		View v = inflate(R.layout.row_issue, parent, false);
 
 		TextView title = (TextView) v.findViewById(R.id.textTitle);
-		TextView num = (TextView) v.findViewById(R.id.textNum);
+		TextView num = (TextView) v.findViewById(R.id.textTime);
 		TextView autor = (TextView) v.findViewById(R.id.textAuthor);
 		ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
 		ImageView pullRequest = (ImageView) v.findViewById(R.id.pullRequest);

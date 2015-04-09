@@ -97,7 +97,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 					name = commit.commit.author.name;
 				}
 
-				user.setText(getTimeString(name, commit.commit.author));
+				user.setText(getTimeString(name, commit.commit.author.date));
 
 			} else if (commit.author != null) {
 				user.setText(commit.author.login);
@@ -112,10 +112,10 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 		return v;
 	}
 
-	private String getTimeString(String name, User author) {
+	private String getTimeString(String name, String date) {
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-		DateTime dt = formatter.parseDateTime(author.date);
+		DateTime dt = formatter.parseDateTime(date);
 		DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
 
 		Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
