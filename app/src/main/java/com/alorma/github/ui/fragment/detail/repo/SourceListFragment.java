@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment.detail.repo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -92,7 +93,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 				fabMenu.collapse();
 			}
 		});
-
 		fabDownload.setIconDrawable(downloadIcon);
 
 		FloatingActionButton fabBranches = (FloatingActionButton) view.findViewById(R.id.fab_branches);
@@ -114,7 +114,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 				fabMenu.collapse();
 			}
 		});
-
 		fabBranches.setIconDrawable(branchesIcon);
 
 		fabUp = (FloatingActionButton) view.findViewById(R.id.fab_up);
@@ -127,7 +126,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 				navigateUp();
 			}
 		});
-
 		fabUp.setIconDrawable(upIcon);
 		fabUp.setVisibility(View.INVISIBLE);
 
@@ -203,6 +201,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 			if (currentSelectedContent.parent != null) {
 				fabUp.setVisibility(View.VISIBLE);
 				fabMenu.expand();
+				delayClose();
 			} else {
 				fabUp.setVisibility(View.INVISIBLE);
 				fabMenu.collapse();
@@ -212,6 +211,17 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 			contentAdapter = new RepoSourceAdapter(getActivity(), contents, style);
 			setListAdapter(contentAdapter);
 		}
+	}
+
+	private void delayClose() {
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (fabMenu.isExpanded()) {
+					fabMenu.collapse();
+				}
+			}
+		}, 2500);
 	}
 
 	@Override

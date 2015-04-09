@@ -42,37 +42,42 @@
     </FrameLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:layout_width="@dimen/fab"
-        android:layout_height="@dimen/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/gapLarge"
         android:scaleType="centerInside"
         android:layout_gravity="bottom|right|end"
-        fab:fab_addButtonColorNormal="@color/repos_accent"
-        fab:fab_addButtonColorPressed="@color/repos_primary_light"
+        fab:fab_addButtonColorNormal="?colorControlNormal"
+        fab:fab_addButtonColorPressed="?colorControlHighlight"
+        fab:fab_labelsPosition="left"
+        fab:fab_labelStyle="@style/menu_labels_style"
         android:id="@+id/fab_menu">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_size="mini"
-            fab:fab_colorNormal="@color/repos_accent"
-            fab:fab_colorPressed="@color/repos_primary_light"
+            fab:fab_title="@string/navigate_up"
+            fab:fab_colorNormal="?colorControlNormal"
+            fab:fab_colorPressed="?colorControlHighlight"
             android:id="@+id/fab_up"/>
         
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_size="mini"
-            fab:fab_colorNormal="@color/repos_accent"
-            fab:fab_colorPressed="@color/repos_primary_light"
+            fab:fab_title="@string/change_branch"
+            fab:fab_colorNormal="?colorControlNormal"
+            fab:fab_colorPressed="?colorControlHighlight"
             android:id="@+id/fab_branches"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_size="mini"
-            fab:fab_colorNormal="@color/repos_accent"
-            fab:fab_colorPressed="@color/repos_primary_light"
+            fab:fab_title="@string/download"
+            fab:fab_colorNormal="?colorControlNormal"
+            fab:fab_colorPressed="?colorControlHighlight"
             android:id="@+id/fab_download"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

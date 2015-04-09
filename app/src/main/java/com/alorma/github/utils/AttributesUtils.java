@@ -34,6 +34,13 @@ public class AttributesUtils {
 	public static int getAccentColor(Context context, @StyleRes int style) {
 		return context.getResources().getColor(getAttributeId(context, style, R.attr.colorAccent));
 	}
+	public static int getControlNormal(Context context, @StyleRes int style) {
+		return context.getResources().getColor(getAttributeId(context, style, R.attr.colorControlNormal));
+	}
+
+	public static int getControlHighlight(Context context, @StyleRes int style) {
+		return context.getResources().getColor(getAttributeId(context, style, R.attr.colorControlHighlight));
+	}
 
 	public static int getAttributeId(Context context, int style, int attr) {
 		TypedArray a = context.getTheme().obtainStyledAttributes(style, new int[]{attr});
