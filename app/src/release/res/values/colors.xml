@@ -6,6 +6,7 @@
   <color name="repos_primary_dark">#303F9F</color>
   <color name="repos_primary_light">#C5CAE9</color>
   <color name="repos_accent">#009688</color>
+  <color name="repos_accent_dark">#ff007a6c</color>
   <color name="repos_primary_text">#212121</color>
   <color name="repos_secondary_text">#727272</color>
   <color name="repos_icons">#B6B6B6</color>
