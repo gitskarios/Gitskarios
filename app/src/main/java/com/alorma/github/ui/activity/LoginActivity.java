@@ -318,7 +318,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             progressDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
-            Crashlytics.logException(e);
         }
     }
 

@@ -163,7 +163,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             progressDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
-            Crashlytics.logException(e);
         }
     }
 
