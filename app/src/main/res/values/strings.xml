@@ -183,4 +183,8 @@
     <string name="row_private_gist">PRIVATE</string>
     <string name="gist_not_loaded">Gist not loaded</string>
     <string name="creating_issue">Creating issue</string>
+    <string name="download">Download</string>
+    <string name="change_branch">Change branch</string>
+    <string name="navigate_up">Up</string>
+    <string name="no_content">No files</string>
 </resources>
