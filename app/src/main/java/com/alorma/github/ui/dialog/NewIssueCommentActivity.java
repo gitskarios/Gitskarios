@@ -78,6 +78,7 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
 
 		if (item.getItemId() == R.id.action_send) {
 			String body = edit.getText().toString();
+			showProgressDialog(R.style.SpotDialog_CommentIssue);
 			NewIssueCommentClient client = new NewIssueCommentClient(this, issueInfo, body);
 			client.setOnResultCallback(this);
 			client.execute();
@@ -88,12 +89,14 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
 
 	@Override
 	public void onResponseOk(IssueComment issueComment, Response r) {
+		hideProgressDialog();
 		setResult(RESULT_OK);
 		finish();
 	}
 
 	@Override
 	public void onFail(RetrofitError error) {
+		hideProgressDialog();
 		ErrorHandler.onRetrofitError(this, "NewCommentDialog", error);
 	}
 }
