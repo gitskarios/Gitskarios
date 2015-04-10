@@ -58,4 +58,24 @@
         <attr name="gitskarios_icons" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="TimelineView">
+        <attr name="tl_lineWidth" format="dimension" />
+        <attr name="tl_lineColor" format="color" />
+
+        <attr name="tl_middleSize" format="float" />
+        <attr name="tl_middleColor" format="color" />
+
+        <attr name="tl_firstSize" format="float" />
+        <attr name="tl_firstColor" format="color" />
+
+        <attr name="tl_lastSize" format="float" />
+        <attr name="tl_lastColor" format="color" />
+
+        <attr name="tl_timeline_type" format="enum">
+            <enum name="start" value="-1" />
+            <enum name="middle" value="0" />
+            <enum name="line" value="1" />
+            <enum name="end" value="2" />
+        </attr>
+    </declare-styleable>
 </resources>

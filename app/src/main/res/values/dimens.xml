@@ -69,4 +69,7 @@
 
     <dimen name="editor_popup_width">600dp</dimen>
     <dimen name="editor_popup_heigth">400dp</dimen>
+
+    <dimen name="label_size_height">32dp</dimen>
+    <dimen name="label_size_width">56dp</dimen>
 </resources>

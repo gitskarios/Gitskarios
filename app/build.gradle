@@ -86,4 +86,5 @@ dependencies {
     }
 
     compile 'com.github.mrengineer13:snackbar:1.1.0'
+    compile 'com.wefika:flowlayout:0.4.0'
 }

@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -133,7 +134,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         if (fromLogin) {
             findViewById(R.id.login).setEnabled(false);
-            showDialog();
+            showProgressDialog(R.style.SpotDialog_Login);
             Uri uri = getIntent().getData();
             String code = uri.getQueryParameter("code");
             if (requestTokenClient == null) {
@@ -159,6 +160,17 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             login();
         } else if (!fromApp && accounts != null && accounts.length > 0) {
             openMain();
+        }
+    }
+
+    public void showProgressDialog(@StyleRes int style) {
+        try {
+            progressDialog = new SpotsDialog(this, style);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -308,17 +320,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         finish();
-    }
-
-    private void showDialog() {
-        try {
-            progressDialog = new SpotsDialog(this, R.style.SpotDialog_Login);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

@@ -1,39 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
-    <com.alorma.github.ui.view.FABCenterLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:top_id="@id/top"
-        app:folded_size="@dimen/issue_discussion_header_fold"
-        app:unfolded_size="@dimen/issue_discussion_header_unfold"
-        android:id="@id/fabLayout">
+        android:layout_height="match_parent">
 
-        <FrameLayout
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/discussionFeed"
-            android:layout_marginTop="@dimen/issue_discussion_header_fold"/>
+            android:id="@+id/recycler"
+            android:paddingBottom="56dp"
+            android:clipToPadding="false"/>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/issue_discussion_header_fold"
-            android:background="?attr/colorPrimary"
-            android:id="@id/top">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:layout_marginLeft="128dp"
-                android:textColor="@color/white"
-                android:id="@+id/issueBody"/>
-        </FrameLayout>
-    </com.alorma.github.ui.view.FABCenterLayout>
+        <include layout="@layout/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/gapMedium" />
+    </RelativeLayout>
 </LinearLayout>

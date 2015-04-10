@@ -72,8 +72,12 @@
     <style name="SpotDialog.LoadingUser">
         <item name="DialogTitleText">@string/loading_user</item>
     </style>
+
     <style name="SpotDialog.CreatingIssue">
         <item name="DialogTitleText">@string/creating_issue</item>
+    </style>
+    <style name="SpotDialog.CommentIssue">
+        <item name="DialogTitleText">@string/comment_issue</item>
     </style>
 
     <style name="menu_labels_style">
@@ -81,4 +85,5 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <string name="comment_issue">Adding comment</string>
 </resources>
