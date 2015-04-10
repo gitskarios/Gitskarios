@@ -16,6 +16,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.ui.view.LabelView;
+import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
@@ -35,11 +36,12 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class IssueDetailView extends LinearLayout {
 
+    private Issue issue;
+
     private TextView title;
     private TextView body;
     private ViewGroup labelsLayout;
     private WebView bodyHtml;
-    private Issue issue;
     private ImageView profileIcon;
     private TextView profileName;
     private TextView profileEmail;
@@ -85,7 +87,7 @@ public class IssueDetailView extends LinearLayout {
 
             if (issue.user != null) {
                 profileName.setText(issue.user.login);
-                profileEmail.setText(getTimeString(issue.created_at));
+                profileEmail.setText(TimeUtils.getTimeString(getContext(), issue.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(issue.user.avatar_url, profileIcon);
             }
@@ -105,7 +107,7 @@ public class IssueDetailView extends LinearLayout {
                 bodyHtml.setVisibility(View.GONE);
             }
 
-            if (issue.labels != null) {
+            if (issue.labels != null && issue.labels.size() > 0) {
                 labelsLayout.setVisibility(View.VISIBLE);
                 for (Label label : issue.labels) {
                     LabelView labelView = new LabelView(getContext());
@@ -125,48 +127,5 @@ public class IssueDetailView extends LinearLayout {
                 labelsLayout.setVisibility(View.GONE);
             }
         }
-    }
-
-    private String getTimeString(String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-        DateTime dt = formatter.parseDateTime(date);
-        DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
-
-        Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-        int text = R.string.time_ago_at_years;
-        int time = years.getYears();
-
-        if (time == 0) {
-            Months months = Months.monthsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-            text = R.string.time_ago_at_months;
-            time = months.getMonths();
-
-            if (time == 0) {
-
-                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-                text = R.string.time_ago_at_days;
-                time = days.getDays();
-
-                if (time == 0) {
-                    Hours hours = Hours.hoursBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                    time = hours.getHours();
-                    text = R.string.time_ago_at_hours;
-
-                    if (time == 0) {
-                        Minutes minutes = Minutes.minutesBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                        time = minutes.getMinutes();
-                        text = R.string.time_ago_at_minutes;
-                        if (time == 0) {
-                            Seconds seconds = Seconds.secondsBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                            time = seconds.getSeconds();
-                            text = R.string.time_ago_at_seconds;
-                        }
-                    }
-                }
-            }
-        }
-
-        return getContext().getResources().getString(text, time);
     }
 }

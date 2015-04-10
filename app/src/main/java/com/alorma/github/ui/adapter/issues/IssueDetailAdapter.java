@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 
 /**
@@ -20,6 +22,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
 
     private static final int VIEW_ISSUE = 0;
     private static final int VIEW_EVENT = 1;
+    private static final int VIEW_COMMENT = 2;
 
     private Context context;
     private LayoutInflater inflater;
@@ -36,8 +39,10 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         switch (viewType) {
             case VIEW_ISSUE:
                 return new IssueHolder(new IssueDetailView(context));
+            case VIEW_COMMENT:
+                return new CommentHolder(new IssueCommentView(context));
             case VIEW_EVENT:
-                default:
+            default:
                 return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
         }
     }
@@ -45,12 +50,13 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         if (position == 0) {
-            ((IssueHolder)holder).issueDetailView.setIssue(issueStory.issue);
+            ((IssueHolder) holder).issueDetailView.setIssue(issueStory.issue);
+        } else if (holder instanceof CommentHolder){
+            IssueStoryComment issueStoryDetail = (IssueStoryComment) issueStory.details.get(position - 1).second;
+            ((CommentHolder) holder).issueCommentView.setComment(issueStoryDetail);
         } else {
-            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second.get(0);
-            if (issueStoryDetail instanceof IssueStoryComment) {
-                holder.text.setText(((IssueStoryComment) issueStoryDetail).comment.body);
-            } else if (issueStoryDetail instanceof IssueStoryEvent) {
+            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second;
+            if (issueStoryDetail instanceof IssueStoryEvent) {
                 holder.text.setText(((IssueStoryEvent) issueStoryDetail).event.event);
             }
         }
@@ -66,12 +72,27 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         if (position == 0) {
             return VIEW_ISSUE;
         } else {
-            return VIEW_EVENT;
+            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second;
+            if (issueStoryDetail instanceof IssueStoryComment) {
+                return VIEW_COMMENT;
+            } else {
+                return VIEW_EVENT;
+            }
+        }
+    }
+
+    private class CommentHolder extends Holder {
+        private final IssueCommentView issueCommentView;
+
+        public CommentHolder(IssueCommentView itemView) {
+            super(itemView);
+            issueCommentView = itemView;
         }
     }
 
     private class IssueHolder extends Holder {
         private final IssueDetailView issueDetailView;
+
         public IssueHolder(IssueDetailView issueDetailView) {
             super(issueDetailView);
             this.issueDetailView = issueDetailView;
@@ -80,6 +101,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
 
     public class Holder extends RecyclerView.ViewHolder {
         private final TextView text;
+
         public Holder(View itemView) {
             super(itemView);
             text = (TextView) itemView.findViewById(android.R.id.text1);

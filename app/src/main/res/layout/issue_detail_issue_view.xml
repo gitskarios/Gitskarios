@@ -44,8 +44,7 @@
                     android:paddingLeft="@dimen/material_drawer_vertical_padding"
                     android:paddingStart="@dimen/material_drawer_vertical_padding"
                     android:paddingRight="@dimen/material_drawer_vertical_padding"
-                    android:paddingEnd="@dimen/material_drawer_vertical_padding"
-                    android:layout_margin="@dimen/gapMedium">
+                    android:paddingEnd="@dimen/material_drawer_vertical_padding">
 
                     <com.mikepenz.materialdrawer.view.BezelImageView
                         android:id="@+id/profileIcon"

@@ -15,8 +15,6 @@
         <item name="gitskarios_secondary_text">@color/repos_secondary_text</item>
         <item name="gitskarios_primary_light">@color/repos_primary_light</item>
         <item name="gitskarios_icons">@color/repos_icons</item>
-        <item name="colorControlNormal">@color/repos_accent</item>
-        <item name="colorControlHighlight">@color/repos_accent_dark</item>
     </style>
 
     <style name="AppTheme.Repos">

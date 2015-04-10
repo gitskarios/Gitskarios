@@ -140,10 +140,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
                 }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setNavigationBarColor(color);
-                }
             }
 
         });
