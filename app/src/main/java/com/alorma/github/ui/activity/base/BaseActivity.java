@@ -210,19 +210,22 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected void showProgressDialog(@StyleRes int style) {
-        try {
-            progressDialog = new SpotsDialog(this, style);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (progressDialog == null) {
+            try {
+                progressDialog = new SpotsDialog(this, style);
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     protected void hideProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 }

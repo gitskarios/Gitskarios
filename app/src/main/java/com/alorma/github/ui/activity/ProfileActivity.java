@@ -101,8 +101,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fabLayout.setFabScrollContentListener(this);
 		image = (ImageView) findViewById(R.id.image);
-
-		getContent();
 	}
 
 	@Override
@@ -178,7 +176,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onFail(RetrofitError error) {
-
+		hideProgressDialog();
 	}
 
 	@Override
@@ -244,7 +242,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onRepositoriesRequest(String username) {
-		Intent intent = ReposActivity.launchIntent(this, username);
+		Intent intent = ReposActivity.launchIntent(this, username, user.type);
 		startActivity(intent);
 	}
 
