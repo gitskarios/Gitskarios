@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
@@ -87,14 +89,11 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -112,7 +111,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             }
         });
 
-        boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals("gitskarios");
+        boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals(getString(R.string.oauth_scheme));
         fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
         final boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
@@ -133,7 +132,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         if (fromLogin) {
             findViewById(R.id.login).setEnabled(false);
-            showDialog();
+            showProgressDialog(R.style.SpotDialog_Login);
             Uri uri = getIntent().getData();
             String code = uri.getQueryParameter("code");
             if (requestTokenClient == null) {
@@ -162,9 +161,20 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
     }
 
+    public void showProgressDialog(@StyleRes int style) {
+        try {
+            progressDialog = new SpotsDialog(this, style);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void login() {
 
-        if (accounts != null && accounts.length > 0) {
+        if (!BuildConfig.DEBUG && accounts != null && accounts.length > 0) {
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
@@ -308,17 +318,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         finish();
-    }
-
-    private void showDialog() {
-        try {
-            progressDialog = new SpotsDialog(this, R.style.SpotDialog_Login);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

@@ -21,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.1.3"
-        versionCode 213
+        versionName "2.2.0"
+        versionCode 220
     }
 
     signingConfigs {
@@ -86,4 +86,5 @@ dependencies {
     }
 
     compile 'com.github.mrengineer13:snackbar:1.1.0'
+    compile 'com.wefika:flowlayout:0.4.0'
 }

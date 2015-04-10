@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -26,9 +27,12 @@ import com.alorma.github.sdk.BuildConfig;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.security.UnAuthIntent;
+import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import dmax.dialog.SpotsDialog;
 
 /**
  * Created by Bernat on 19/07/2014.
@@ -39,11 +43,11 @@ public class BaseActivity extends ActionBarActivity {
     private UpdateReceiver updateReceiver;
 
     private Toolbar toolbar;
+    private SpotsDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
     }
 
     @Override
@@ -201,6 +205,26 @@ public class BaseActivity extends ActionBarActivity {
             NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+        }
+    }
+
+    protected void showProgressDialog(@StyleRes int style) {
+        if (progressDialog == null) {
+            try {
+                progressDialog = new SpotsDialog(this, style);
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected void hideProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 }

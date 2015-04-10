@@ -4,4 +4,5 @@
     <string name="app_name">Gitskarios DEV</string>
     <string name="account_name">Github account DEV</string>
     <string name="account_type">com.alorma.github.debug.account</string>
+    <string name="oauth_scheme">gitskariosdevel</string>
 </resources>

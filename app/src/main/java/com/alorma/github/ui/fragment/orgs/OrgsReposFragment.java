@@ -1,10 +1,15 @@
 package com.alorma.github.ui.fragment.orgs;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.orgs.OrgsReposClient;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 
 public class OrgsReposFragment extends BaseReposListFragment {
@@ -63,4 +68,5 @@ public class OrgsReposFragment extends BaseReposListFragment {
 	protected int getNoDataText() {
 		return R.string.no_repositories;
 	}
+
 }

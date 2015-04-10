@@ -65,7 +65,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private boolean followingUser = false;
 	private boolean isAuthUser;
 	private GithubIconDrawable fabDrawable;
-	private SpotsDialog progressDialog;
 
 	public static Intent createLauncherIntent(Context context) {
 		return new Intent(context, ProfileActivity.class);
@@ -102,8 +101,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fabLayout.setFabScrollContentListener(this);
 		image = (ImageView) findViewById(R.id.image);
-
-		getContent();
 	}
 
 	@Override
@@ -123,23 +120,10 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			requestClient = new GetAuthUserClient(this);
 		}
 
-		showDialog();
+		showProgressDialog(R.style.SpotDialog_LoadingUser);
 
 		requestClient.setOnResultCallback(this);
 		requestClient.execute();
-	}
-
-	private void showDialog() {
-		if (progressDialog == null) {
-			try {
-				progressDialog = new SpotsDialog(this, R.style.SpotDialog_LoadingUser);
-				progressDialog.setMessage(getString(R.string.loading_user));
-				progressDialog.show();
-			} catch (Exception e) {
-				e.printStackTrace();
-				Crashlytics.logException(e);
-			}
-		}
 	}
 
 	@Override
@@ -148,9 +132,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
-		if (progressDialog != null) {
-			progressDialog.dismiss();
-		}
+		hideProgressDialog();
 
 		if (isAuthUser) {
 			fabLayout.removeFab();
@@ -194,7 +176,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onFail(RetrofitError error) {
-
+		hideProgressDialog();
 	}
 
 	@Override
@@ -260,7 +242,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onRepositoriesRequest(String username) {
-		Intent intent = ReposActivity.launchIntent(this, username);
+		Intent intent = ReposActivity.launchIntent(this, username, user.type);
 		startActivity(intent);
 	}
 
@@ -278,7 +260,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onClick(View v) {
-		showDialog();
+		showProgressDialog(R.style.SpotDialog_LoadingUser);
 
 		fabLayout.setFabClickListener(null, getTagFab());
 
@@ -317,9 +299,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	public void onCheckFollowUser(String username, boolean following) {
 		followingUser = following;
 
-		if (progressDialog != null) {
-			progressDialog.dismiss();
-		}
+		hideProgressDialog();
 
 		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
 		fabDrawable.setStyle(Paint.Style.FILL);

@@ -29,8 +29,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
-                <data
-                    android:scheme="gitskarios" />
+                <data android:scheme="@string/oauth_scheme" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -118,7 +117,6 @@
             android:label="@string/title_activity_new_issue"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.alorma.github.ui.activity.IssueDetailActivity" />
-        <activity android:name="com.alorma.github.ui.activity.PullRequestDetailActivity" />
         <activity
             android:name="com.alorma.github.ui.activity.SettingsActivity"
             android:label="@string/title_activity_settings" />

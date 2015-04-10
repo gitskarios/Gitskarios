@@ -52,7 +52,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private MaterialEditText editTitle;
     private MaterialEditText editBody;
     private boolean creatingIssue = false;
-    private SpotsDialog progressDialog;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info, Permissions permissions) {
         Bundle bundle = new Bundle();
@@ -152,18 +151,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
         createIssue(issue);
 
-        showDialog();
-    }
-
-    private void showDialog() {
-        try {
-            progressDialog = new SpotsDialog(this, R.style.SpotDialog_CreatingIssue);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        showProgressDialog(R.style.SpotDialog_CreatingIssue);
     }
 
     @Override
@@ -209,9 +197,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     @Override
     public void onResponseOk(Issue issue, Response r) {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        hideProgressDialog();
         if (issue != null) {
             IssueInfo issueInfo = new IssueInfo();
             issueInfo.repo = new RepoInfo();
@@ -226,9 +212,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     @Override
     public void onFail(RetrofitError error) {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        hideProgressDialog();
         creatingIssue = false;
         ErrorHandler.onRetrofitError(this, "Creating issue", error);
         invalidateOptionsMenu();

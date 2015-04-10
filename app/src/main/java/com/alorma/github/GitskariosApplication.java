@@ -5,7 +5,9 @@ import android.content.Context;
 
 import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.ui.UiModule;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -37,6 +39,9 @@ public class GitskariosApplication extends Application {
 		ApiConstants.CLIENT_CALLBACK = BuildConfig.CLIENT_CALLBACK;
 
 		graph = ObjectGraph.create(getModules().toArray());
+
+		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+
 	}
 
 	protected List<Object> getModules() {
