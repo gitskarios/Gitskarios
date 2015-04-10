@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -116,23 +117,47 @@ public class BaseActivity extends ActionBarActivity {
 
             for (final Account account : accounts) {
                 if (AccountsHelper.getUserToken(context, account).equals(token)) {
-                    accountManager.removeAccount(account, BaseActivity.this, new AccountManagerCallback<Bundle>() {
-                        @Override
-                        public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                            if (accountManagerFuture.isDone()) {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                            AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
+                                @Override
+                                public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                                    if (accountManagerFuture.isDone()) {
 
-                                StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
-                                storeCredentials.clear();
+                                        StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
+                                        storeCredentials.clear();
 
-                                Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
-                                Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
-                                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(loginIntent);
-                                finish();
-                            }
+                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
+                                        Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(loginIntent);
+                                        finish();
+                                    }
+                                }
+                            };
+                            accountManager.removeAccount(account, BaseActivity.this, callback, new Handler());
+                        } else {
+                            AccountManagerCallback<Boolean> callback = new AccountManagerCallback<Boolean>() {
+                                @Override
+                                public void run(AccountManagerFuture<Boolean> accountManagerFuture) {
+                                    if (accountManagerFuture.isDone()) {
+
+                                        StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
+                                        storeCredentials.clear();
+
+                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
+                                        Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(loginIntent);
+                                        finish();
+                                    }
+                                }
+                            };
+                            accountManager.removeAccount(account, callback, new Handler());
                         }
-                    }, new Handler());
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     break;
                 }

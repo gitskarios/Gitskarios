@@ -11,6 +11,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -490,21 +491,45 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
     public void signOut() {
         if (selectedAccount != null) {
-            AccountManager.get(this).removeAccount(selectedAccount, this, new AccountManagerCallback<Bundle>() {
-                @Override
-                public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                    if (accountManagerFuture.isDone()) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
+                        @Override
+                        public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                            if (accountManagerFuture.isDone()) {
 
-                        StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
-                        storeCredentials.clear();
+                                StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+                                storeCredentials.clear();
 
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    };
+                    AccountManager.get(this).removeAccount(selectedAccount, this, callback, new Handler());
+                } else {
+                    AccountManagerCallback<Boolean> callback = new AccountManagerCallback<Boolean>() {
+                        @Override
+                        public void run(AccountManagerFuture<Boolean> accountManagerFuture) {
+                            if (accountManagerFuture.isDone()) {
+
+                                StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+                                storeCredentials.clear();
+
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    };
+                    AccountManager.get(this).removeAccount(selectedAccount, callback, new Handler());
                 }
-            }, new Handler());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
