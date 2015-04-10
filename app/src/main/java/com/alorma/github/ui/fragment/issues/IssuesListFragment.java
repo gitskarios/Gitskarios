@@ -25,164 +25,168 @@ import com.alorma.githubicons.GithubIconify;
  * Created by Bernat on 22/08/2014.
  */
 public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider {
-	
-	private static final String REPO_INFO = "REPO_INFO";
-	
-	private static final int ISSUE_REQUEST = 1234;
-	
-	private RepoInfo repoInfo;
-	
-	private float fabNewY;
-	private float fabOldY;
-	private IssuesAdapter issuesAdapter;
-	private Permissions permissions;
 
-	public static IssuesListFragment newInstance(RepoInfo repoInfo) {
-		Bundle bundle = new Bundle();
-		bundle.putParcelable(REPO_INFO, repoInfo);
+    private static final String REPO_INFO = "REPO_INFO";
 
-		IssuesListFragment fragment = new IssuesListFragment();
-		fragment.setArguments(bundle);
-		return fragment;
-	}
+    private static final int ISSUE_REQUEST = 1234;
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		issuesAdapter = null;
-		executeRequest();
-	}
+    private RepoInfo repoInfo;
 
-	protected void executeRequest() {
-		super.executeRequest();
-		if (repoInfo != null) {
-			IssueInfo issueInfo = new IssueInfo(repoInfo);
-			GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
-			issuesClient.setOnResultCallback(this);
-			issuesClient.execute();
-		}
-	}
+    private float fabNewY;
+    private float fabOldY;
+    private IssuesAdapter issuesAdapter;
+    private Permissions permissions;
 
-	@Override
-	protected void executePaginatedRequest(int page) {
-		super.executePaginatedRequest(page);
+    public static IssuesListFragment newInstance(RepoInfo repoInfo) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
-		if (issuesAdapter != null) {
-			issuesAdapter.setLazyLoading(true);
-		}
+        IssuesListFragment fragment = new IssuesListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
-		if (repoInfo != null) {
-			IssueInfo issueInfo = new IssueInfo(repoInfo);
-			GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
-			issuesClient.setOnResultCallback(this);
-			issuesClient.execute();
-		}
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+        issuesAdapter = null;
+        executeRequest();
+    }
 
-	@Override
-	protected void onResponse(ListIssues issues, boolean refreshing) {
-		if (issues != null && issues.size() > 0) {
+    protected void executeRequest() {
+        super.executeRequest();
+        if (repoInfo != null) {
+            IssueInfo issueInfo = new IssueInfo(repoInfo);
+            GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
+            issuesClient.setOnResultCallback(this);
+            issuesClient.execute();
+        }
+    }
 
-			if (issuesAdapter == null || refreshing) {
-				issuesAdapter = new IssuesAdapter(getActivity(), issues);
-				setListAdapter(issuesAdapter);
-			}
+    @Override
+    protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
 
-			if (issuesAdapter.isLazyLoading()) {
-				if (issuesAdapter != null) {
-					issuesAdapter.setLazyLoading(false);
-					issuesAdapter.addAll(issues);
-				}
-			}
-		}
-	}
+        if (issuesAdapter != null) {
+            issuesAdapter.setLazyLoading(true);
+        }
 
-	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_issue_opened;
-	}
+        if (repoInfo != null) {
+            IssueInfo issueInfo = new IssueInfo(repoInfo);
+            GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
+            issuesClient.setOnResultCallback(this);
+            issuesClient.execute();
+        }
+    }
 
-	@Override
-	protected int getNoDataText() {
-		return R.string.no_issues_found;
-	}
+    @Override
+    protected void onResponse(ListIssues issues, boolean refreshing) {
+        if (issues != null && issues.size() > 0) {
 
-	@Override
-	protected void loadArguments() {
-		if (getArguments() != null) {
-			repoInfo = getArguments().getParcelable(REPO_INFO);
-		}
-	}
+            if (issuesAdapter == null || refreshing) {
+                issuesAdapter = new IssuesAdapter(getActivity(), issues);
+                setListAdapter(issuesAdapter);
+            }
 
-	@Override
-	protected boolean useFAB() {
-		return permissions == null || permissions.pull;
-	}
+            if (issuesAdapter.isLazyLoading()) {
+                if (issuesAdapter != null) {
+                    issuesAdapter.setLazyLoading(false);
+                    issuesAdapter.addAll(issues);
+                }
+            } else {
+                setListAdapter(issuesAdapter);
+            }
+        }
+    }
 
-	@Override
-	protected PropertyValuesHolder showAnimator(View fab) {
-		return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
-	}
+    @Override
+    protected GithubIconify.IconValue getNoDataIcon() {
+        return GithubIconify.IconValue.octicon_issue_opened;
+    }
 
-	@Override
-	protected PropertyValuesHolder hideAnimator(View fab) {
-		fabOldY = fab.getY();
-		fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
-		return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
-	}
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_issues_found;
+    }
 
-	@Override
-	protected void fabClick() {
-		super.fabClick();
+    @Override
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            repoInfo = getArguments().getParcelable(REPO_INFO);
+        }
+    }
 
-		if (permissions != null) {
-			Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo, permissions);
-			startActivityForResult(intent, ISSUE_REQUEST);
-		}
+    @Override
+    protected boolean useFAB() {
+        return permissions == null || permissions.pull;
+    }
 
-	}
+    @Override
+    protected PropertyValuesHolder showAnimator(View fab) {
+        return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
+    }
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_FIRST_USER) {
-			invalidate();
-		} else if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
-			invalidate();
-		}
-	}
+    @Override
+    protected PropertyValuesHolder hideAnimator(View fab) {
+        fabOldY = fab.getY();
+        fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
+        return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
+    }
 
-	public void invalidate() {
-		onRefresh();
-	}
+    @Override
+    protected void fabClick() {
+        super.fabClick();
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+        if (permissions != null) {
+            Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo, permissions);
+            startActivityForResult(intent, ISSUE_REQUEST);
+        }
 
-		Issue item = issuesAdapter.getItem(position);
-		if (item != null) {
-			IssueInfo info = new IssueInfo();
-			info.repo = repoInfo;
-			info.num = item.number;
+    }
 
-			Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info, permissions);
-			startActivity(intent);
-		}
-	}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_FIRST_USER) {
+            invalidate();
+        } else if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
+            invalidate();
+        }
+    }
 
-	public void setPermissions(Permissions permissions) {
-		this.permissions = permissions;
-		checkFAB();
-	}
+    public void invalidate() {
+        onRefresh();
+    }
 
-	@Override
-	protected GithubIconify.IconValue getFABGithubIcon() {
-		return GithubIconify.IconValue.octicon_bug;
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-	@Override
-	public CharSequence getTitle() {
-		return getString(R.string.issues_fragment_title);
-	}
+        if (issuesAdapter != null) {
+            Issue item = issuesAdapter.getItem(position);
+            if (item != null) {
+                IssueInfo info = new IssueInfo();
+                info.repo = repoInfo;
+                info.num = item.number;
+
+                Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info, permissions);
+                startActivity(intent);
+            }
+        }
+    }
+
+    public void setPermissions(Permissions permissions) {
+        this.permissions = permissions;
+        checkFAB();
+    }
+
+    @Override
+    protected GithubIconify.IconValue getFABGithubIcon() {
+        return GithubIconify.IconValue.octicon_bug;
+    }
+
+    @Override
+    public CharSequence getTitle() {
+        return getString(R.string.issues_fragment_title);
+    }
 }
