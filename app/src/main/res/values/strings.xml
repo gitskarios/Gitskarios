@@ -196,4 +196,13 @@
     <string name="change_branch">Change branch</string>
     <string name="navigate_up">Up</string>
     <string name="no_content">No files</string>
+
+    <string name="issue_labeled">Added the %1$s label %2$s</string>
+    <string name="issue_unlabeled">Removed the %1$s label %2$s</string>
+    <string name="issue_assigned">Assigned to %1$s %2$s</string>
+    <string name="issue_unassigned">Removed %1$s assignment %2$s</string>
+    <string name="issue_milestoned">Added to %1$s milestone %2$s</string>
+    <string name="issue_demilestoned">Removed %1$s milestone %2$s</string>
+    <string name="issue_merged">Merged into %1$1 %2$s</string>
+    <string name="issue_referenced">Referenced in %1$1 %2$s</string>
 </resources>

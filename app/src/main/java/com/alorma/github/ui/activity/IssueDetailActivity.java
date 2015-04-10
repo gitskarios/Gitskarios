@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -36,7 +37,7 @@ import com.nineoldandroids.animation.ValueAnimator;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory> /*, BaseClient.OnResultCallback<Issue>, */ {
+public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener /*, BaseClient.OnResultCallback<Issue>, */ {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
     public static final String PERMISSIONS = "PERMISSIONS";
@@ -71,12 +72,15 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
             permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
-            /*issueInfo.repo.owner = "github";
+
+/*
+            issueInfo.repo.owner = "forkhubs";
             issueInfo.repo.name = "android";
-            issueInfo.num = 582;*/
+            issueInfo.num = 736;
+*/
+
 
             findViews();
-            getContent();
         }
     }
 
@@ -101,6 +105,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public void onResponseOk(IssueStory issueStory, Response r) {
         changeColor(issueStory.issue);
+
+        fab.setVisibility(issueStory.issue.locked ? View.GONE : View.VISIBLE);
+        fab.setOnClickListener(issueStory.issue.locked ? null : this);
+
         if (getSupportActionBar() != null) {
             String issueName = issueInfo.repo.name;
             if (issueStory.issue.pullRequest != null) {
@@ -203,6 +211,12 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
 
 /*
 

@@ -29,8 +29,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.alorma.github.R;
 
 public abstract class TimelineView extends View {
 
@@ -75,23 +78,23 @@ public abstract class TimelineView extends View {
                     attrs, R.styleable.TimelineView, defStyle, 0);
 
             if (a != null) {
-                mLineColor = a.getColor(R.styleable.TimelineView_lineColor, mLineColor);
+                mLineColor = a.getColor(R.styleable.TimelineView_tl_lineColor, mLineColor);
 
-                mLineWidth = a.getDimension(R.styleable.TimelineView_lineWidth, mLineWidth);
+                mLineWidth = a.getDimension(R.styleable.TimelineView_tl_lineWidth, mLineWidth);
 
-                mColorMiddle = a.getColor(R.styleable.TimelineView_middleColor, mColorMiddle);
+                mColorMiddle = a.getColor(R.styleable.TimelineView_tl_middleColor, mColorMiddle);
 
-                mMiddleSize = a.getFloat(R.styleable.TimelineView_middleSize, mMiddleSize);
+                mMiddleSize = a.getFloat(R.styleable.TimelineView_tl_middleSize, mMiddleSize);
 
-                mFirstColor = a.getColor(R.styleable.TimelineView_firstColor, mFirstColor);
+                mFirstColor = a.getColor(R.styleable.TimelineView_tl_firstColor, mFirstColor);
 
-                mStartSize = a.getFloat(R.styleable.TimelineView_firstSize, mStartSize);
+                mStartSize = a.getFloat(R.styleable.TimelineView_tl_firstSize, mStartSize);
 
-                mLastColor = a.getColor(R.styleable.TimelineView_lastColor, mLastColor);
+                mLastColor = a.getColor(R.styleable.TimelineView_tl_lastColor, mLastColor);
 
-                mEndSize = a.getFloat(R.styleable.TimelineView_lastSize, mEndSize);
+                mEndSize = a.getFloat(R.styleable.TimelineView_tl_lastSize, mEndSize);
 
-                int type = a.getInt(R.styleable.TimelineView_timeline_type, 0);
+                int type = a.getInt(R.styleable.TimelineView_tl_timeline_type, 0);
 
                 this.timelineType = TimelineType.fromId(type);
 
@@ -109,6 +112,11 @@ public abstract class TimelineView extends View {
         if (mLastColor == -1) {
             mLastColor = mLineColor;
         }
+
+        createPaints();
+    }
+
+    private void createPaints() {
 
         linePaint = new Paint();
         linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -133,6 +141,17 @@ public abstract class TimelineView extends View {
         lastPaint.setStrokeWidth(mEndSize);
     }
 
+    public void setColorRes(@ColorRes int color) {
+        setColor(getResources().getColor(color));
+    }
+
+    public void setColor(int color) {
+        mColorMiddle = color;
+        mFirstColor = color;
+        mLastColor = color;
+        createPaints();
+        invalidate();
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {

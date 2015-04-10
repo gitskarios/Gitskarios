@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.alorma.github.ui.view.timeline.RoundTimelineView
+        android:layout_width="?android:listPreferredItemHeight"
+        android:layout_height="?android:listPreferredItemHeight"
+        app:tl_lineColor="@color/gray_github_medium"
+        app:tl_lineWidth="1dp"
+        app:tl_middleColor="@color/gray_github_medium"
+        app:tl_middleSize="10"
+        app:tl_firstColor="@color/gray_github_medium"
+        app:tl_firstSize="20"
+        app:tl_lastColor="@color/gray_github_medium"
+        app:tl_lastSize="18"
+        android:id="@+id/timeline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/text"
+            android:gravity="center_vertical"
+            style="@style/Base.TextAppearance.AppCompat.Caption"
+            android:textSize="@dimen/textSizeSmall" />
+    </LinearLayout>
+
+</LinearLayout>

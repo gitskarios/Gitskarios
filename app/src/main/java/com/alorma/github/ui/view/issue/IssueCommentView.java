@@ -65,32 +65,28 @@ public class IssueCommentView extends LinearLayout {
     }
 
     public void setComment(IssueStoryComment issueStoryDetail) {
-        if (this.issueComment == null) {
-            this.issueComment = issueStoryDetail.comment;
+        this.issueComment = issueStoryDetail.comment;
 
-            if (issueComment.user != null) {
-                profileName.setText(issueComment.user.login);
-                profileEmail.setText(TimeUtils.getTimeString(getContext(), issueComment.created_at));
-                ImageLoader instance = ImageLoader.getInstance();
-                instance.displayImage(issueComment.user.avatar_url, profileIcon);
-            }
+        if (issueComment.user != null) {
+            profileName.setText(issueComment.user.login);
+            profileEmail.setText(TimeUtils.getTimeString(getContext(), issueComment.created_at));
+            ImageLoader instance = ImageLoader.getInstance();
+            instance.displayImage(issueComment.user.avatar_url, profileIcon);
+        }
 
-            if (issueComment.body_html != null) {
-                bodyHtml.loadData(issueComment.body_html, "text/html", "UTF-8");
-                bodyHtml.setBackgroundColor(Color.TRANSPARENT);
-                bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-                bodyHtml.setVisibility(View.VISIBLE);
-                body.setVisibility(View.GONE);
-            } else if (issueComment.body != null) {
-                body.setText(issueComment.body);
-                body.setVisibility(View.VISIBLE);
-                bodyHtml.setVisibility(View.GONE);
-            } else {
-                body.setVisibility(View.GONE);
-                bodyHtml.setVisibility(View.GONE);
-            }
-
-
+        if (issueComment.body_html != null) {
+            bodyHtml.loadData(issueComment.body_html, "text/html", "UTF-8");
+            bodyHtml.setBackgroundColor(Color.TRANSPARENT);
+            bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+            bodyHtml.setVisibility(View.VISIBLE);
+            body.setVisibility(View.GONE);
+        } else if (issueComment.body != null) {
+            body.setText(issueComment.body);
+            body.setVisibility(View.VISIBLE);
+            bodyHtml.setVisibility(View.GONE);
+        } else {
+            body.setVisibility(View.GONE);
+            bodyHtml.setVisibility(View.GONE);
         }
     }
 }
