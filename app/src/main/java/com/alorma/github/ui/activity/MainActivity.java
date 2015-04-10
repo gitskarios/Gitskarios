@@ -284,6 +284,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     }
 
     private void selectAccount(final Account account) {
+        boolean changingUser = selectedAccount != null && !selectedAccount.name.equals(account.name);
         this.selectedAccount = account;
         credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
@@ -292,7 +293,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
         if (searchView == null || TextUtils.isEmpty(searchView.getQuery())) {
-            if (lastUsedFragment != null) {
+            if (lastUsedFragment != null && !changingUser) {
                 setFragment(lastUsedFragment);
             } else {
                 clearFragments();

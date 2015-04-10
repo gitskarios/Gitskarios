@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
@@ -88,14 +89,11 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -113,7 +111,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             }
         });
 
-        boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals("gitskarios");
+        boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals(getString(R.string.oauth_scheme));
         fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
         final boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
@@ -176,7 +174,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void login() {
 
-        if (accounts != null && accounts.length > 0) {
+        if (!BuildConfig.DEBUG && accounts != null && accounts.length > 0) {
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
