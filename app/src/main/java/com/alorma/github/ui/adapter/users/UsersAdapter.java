@@ -22,6 +22,8 @@ import java.util.List;
 public class UsersAdapter extends LazyAdapter<User> {
 
 
+	private String owner;
+
 	public UsersAdapter(Context context, List<User> users) {
 		super(context, 0, users);
 	}
@@ -45,11 +47,22 @@ public class UsersAdapter extends LazyAdapter<User> {
 			divider.setVisibility(View.GONE);
 		}
 
+		TextView userRepoOwner = (TextView) v.findViewById(R.id.userRepoOwner);
+		if (owner != null && owner.equalsIgnoreCase(user.login)) {
+			userRepoOwner.setVisibility(View.VISIBLE);
+		} else {
+			userRepoOwner.setVisibility(View.INVISIBLE);
+		}
+
 		return v;
 	}
 
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
 		return getView(position, convertView, parent);
+	}
+
+	public void setRepoOwner(String owner) {
+		this.owner = owner;
 	}
 }

@@ -28,6 +28,7 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.fragment.RepoCollaboratorsFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
@@ -63,6 +64,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 	private ViewPager viewPager;
 	private List<Fragment> listFragments;
 	private SlidingTabLayout slidingTabLayout;
+	private RepoCollaboratorsFragment repoCollaboratorsFragment;
 
 	public static Intent createLauncherIntent(Context context, String owner, String repo) {
 		Bundle bundle = new Bundle();
@@ -117,27 +119,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 		repoClient.execute();
 	}
 
-	private void setData() {
-
-		readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
-		sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
-		commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
-		issuesListFragment = IssuesListFragment.newInstance(getRepoInfo());
-
-		listFragments = new ArrayList<>();
-		listFragments.add(readmeFragment);
-		listFragments.add(sourceListFragment);
-		listFragments.add(commitsListFragment);
-		listFragments.add(issuesListFragment);
-		//listFragments.add(pullRequestsListFragment);
-
-		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
-
-		viewPager.setOffscreenPageLimit(listFragments.size());
-
-		slidingTabLayout.setViewPager(viewPager);
-	}
-
 	private RepoInfo getRepoInfo() {
 		RepoInfo repoInfo = new RepoInfo();
 		repoInfo.owner = currentRepo.owner.login;
@@ -177,6 +158,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 					return getString(R.string.commits_fragment_title);
 				case 3:
 					return getString(R.string.issues_fragment_title);
+				case 4:
+					return getString(R.string.collaborators_fragment_title);
 			}
 			return "";
 		}
@@ -326,6 +309,31 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 				issuesListFragment.setPermissions(repo.permissions);
 			}
 		}
+	}
+
+	private void setData() {
+
+		readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
+		sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
+		commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
+		issuesListFragment = IssuesListFragment.newInstance(getRepoInfo());
+
+		listFragments = new ArrayList<>();
+		listFragments.add(readmeFragment);
+		listFragments.add(sourceListFragment);
+		listFragments.add(commitsListFragment);
+		listFragments.add(issuesListFragment);
+
+		if (this.currentRepo.permissions.push) {
+			repoCollaboratorsFragment = RepoCollaboratorsFragment.newInstance(getRepoInfo());
+			listFragments.add(repoCollaboratorsFragment);
+		}
+
+		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
+
+		viewPager.setOffscreenPageLimit(listFragments.size());
+
+		slidingTabLayout.setViewPager(viewPager);
 	}
 
 	@Override
