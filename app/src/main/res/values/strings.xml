@@ -208,4 +208,6 @@
     <string name="no_collaborators">No collaborators</string>
     <string name="collaborators_fragment_title">Collaborators</string>
     <string name="owner">Owner</string>
+    <string name="no_contributors">No contributors</string>
+    <string name="contributors_fragment_title">Contributors</string>
 </resources>
