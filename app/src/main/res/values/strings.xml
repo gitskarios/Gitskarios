@@ -210,4 +210,5 @@
     <string name="owner">Owner</string>
     <string name="no_contributors">No contributors</string>
     <string name="contributors_fragment_title">Contributors</string>
+    <string name="navigation_repos_search">Repositories</string>
 </resources>

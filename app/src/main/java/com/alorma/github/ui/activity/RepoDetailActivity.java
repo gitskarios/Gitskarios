@@ -206,6 +206,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         if (repoWatched != null) {
             int colorWatched = repoWatched ? Color.WHITE : colorPrimyDark;
+            if (menu.findItem(R.id.action_repo_watch) != null) {
+                menu.removeItem(R.id.action_repo_watch);
+            }
             menu.add(0, R.id.action_repo_watch, 1, R.string.menu_watch);
             MenuItem itemWatch = menu.findItem(R.id.action_repo_watch);
             itemWatch.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -218,6 +221,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         if (repoStarred != null) {
             int colorStarred = repoStarred ? Color.WHITE : colorPrimyDark;
+            if (menu.findItem(R.id.action_repo_star) != null) {
+                menu.removeItem(R.id.action_repo_star);
+            }
             menu.add(0, R.id.action_repo_star, 0, R.string.menu_star);
 
             MenuItem itemStar = menu.findItem(R.id.action_repo_star);
