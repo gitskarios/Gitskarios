@@ -14,11 +14,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -32,12 +30,10 @@ import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
-import com.alorma.github.ui.fragment.menu.MenuFragment;
-import com.alorma.github.ui.fragment.menu.MenuItem;
+import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
-import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
@@ -55,27 +51,20 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Bus;
-import com.squareup.picasso.LruCache;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity implements MenuFragment.OnMenuItemSelectedListener,
-        SearchView.OnQueryTextListener,
-        SearchView.OnCloseListener,
+public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener,
         NotificationsActionProvider.OnNotificationListener {
 
     private ReposFragment reposFragment;
     private StarredReposFragment starredFragment;
     private WatchedReposFragment watchedFragment;
     private EventsListFragment eventsFragment;
-    private SearchReposFragment searchReposFragment;
-    private SearchView searchView;
     private NotificationsActionProvider notificationProvider;
-    private Handler handler = new Handler();
 
     @Inject
     Bus bus;
@@ -292,13 +281,12 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
 
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
-        if (searchView == null || TextUtils.isEmpty(searchView.getQuery())) {
-            if (lastUsedFragment != null && !changingUser) {
-                setFragment(lastUsedFragment);
-            } else {
-                clearFragments();
-                onReposSelected();
-            }
+
+        if (lastUsedFragment != null && !changingUser) {
+            setFragment(lastUsedFragment);
+        } else {
+            clearFragments();
+            onReposSelected();
         }
     }
 
@@ -307,7 +295,6 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         starredFragment = null;
         watchedFragment = null;
         eventsFragment = null;
-        searchReposFragment = null;
 
         getFragmentManager().popBackStack(FragmentManager.POP_BACK_STACK_INCLUSIVE, 0);
         invalidateOptionsMenu();
@@ -325,27 +312,7 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         if (getToolbar() != null) {
             getToolbar().inflateMenu(R.menu.main_menu);
 
-            android.view.MenuItem searchItem = menu.findItem(R.id.action_search);
-
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(android.view.MenuItem item) {
-                    return false;
-                }
-
-                @Override
-                public boolean onMenuItemActionCollapse(android.view.MenuItem item) {
-                    clearSearch();
-                    return false;
-                }
-            });
-
-            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            searchView.setSubmitButtonEnabled(true);
-            searchView.setOnQueryTextListener(this);
-            searchView.setOnCloseListener(this);
-
-            android.view.MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
+            MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
 
             notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
 
@@ -358,46 +325,18 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         return true;
     }
 
-    private void clearSearch() {
-        if (searchReposFragment != null) {
-            getFragmentManager().popBackStack();
-            searchReposFragment = null;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_search) {
+            Intent intent = SearchActivity.launchIntent(this);
+            startActivity(intent);
         }
 
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String s) {
-        search(s);
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean onClose() {
-        clearSearch();
-        return false;
-    }
-
-    private void search(String query) {
-        if (searchReposFragment != null) {
-            searchReposFragment.setQuery(query);
-        } else {
-            searchReposFragment = SearchReposFragment.newInstance(query);
-            setFragment(searchReposFragment, true);
-        }
+        return true;
     }
 
     private void setFragment(Fragment fragment) {
-        if (searchView != null) {
-            if (!searchView.isIconified()) {
-                searchView.setIconified(true);
-            }
-        }
         setFragment(fragment, false);
     }
 
@@ -461,13 +400,6 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
     public void onGistsSelected() {
         Intent intent = GistsMainActivity.createLauncherIntent(this);
         startActivity(intent);
-    }
-
-    @Override
-    public void onMenuItemSelected(@NonNull MenuItem item, boolean changeTitle) {
-        if (changeTitle) {
-            setTitle(item.text);
-        }
     }
 
     @Override
@@ -539,15 +471,6 @@ public class MainActivity extends BaseActivity implements MenuFragment.OnMenuIte
         Intent intent = AboutActivity.launchIntent(this);
         startActivity(intent);
         return false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override

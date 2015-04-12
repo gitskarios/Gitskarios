@@ -18,7 +18,8 @@
             <android.support.v4.widget.SwipeRefreshLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/swipe">
+                android:id="@+id/swipe"
+                android:layout_above="@+id/snackBar">
 
                 <se.emilsjolander.stickylistheaders.StickyListHeadersListView
                     android:id="@android:id/list"

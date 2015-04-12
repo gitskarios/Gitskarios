@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -18,15 +18,40 @@
             android:layout_marginStart="@dimen/user_row_item_margin"
             android:layout_marginRight="@dimen/user_row_item_margin"
             android:layout_marginEnd="@dimen/user_row_item_margin"
-            android:id="@+id/avatarAuthorImage"/>
+            android:id="@+id/avatarAuthorImage" />
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/user_row_item_margin"
-            android:layout_marginEnd="@dimen/user_row_item_margin"
-            android:id="@+id/textAuthorLogin"
-            style="@style/user_row_item"/>
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/user_row_item_margin"
+                android:layout_marginEnd="@dimen/user_row_item_margin"
+                android:id="@+id/textAuthorLogin"
+                style="@style/user_row_item" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/userRepoOwner"
+                android:padding="@dimen/gapSmall"
+                android:textSize="@dimen/textSizeXMicro"
+                android:textColor="@color/privateRepo"
+                android:visibility="visible"
+                android:text="@string/owner"
+                android:gravity="center"
+                android:background="@drawable/private_label"
+                android:layout_marginTop="@dimen/gapMedium"
+                android:layout_marginRight="@dimen/gapMedium"
+                android:layout_marginEnd="@dimen/gapMedium"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignRight="@+id/textAuthorLogin"
+                android:layout_alignEnd="@+id/textAuthorLogin" />
+        </RelativeLayout>
     </LinearLayout>
 
     <View
@@ -35,6 +60,6 @@
         android:layout_height="@dimen/card_row_item_divider_height"
         android:background="@drawable/divider_inside_car"
         android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
-        android:layout_marginStart="@dimen/card_row_item_divider_left_margin"/>
+        android:layout_marginStart="@dimen/card_row_item_divider_left_margin" />
 
 </LinearLayout>

@@ -53,6 +53,13 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
         executeRequest();
     }
 
+    @Override
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            repoInfo = getArguments().getParcelable(REPO_INFO);
+        }
+    }
+
     protected void executeRequest() {
         super.executeRequest();
         if (repoInfo != null) {
@@ -107,13 +114,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     @Override
     protected int getNoDataText() {
         return R.string.no_issues_found;
-    }
-
-    @Override
-    protected void loadArguments() {
-        if (getArguments() != null) {
-            repoInfo = getArguments().getParcelable(REPO_INFO);
-        }
     }
 
     @Override

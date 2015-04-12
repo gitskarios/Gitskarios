@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:title="@string/action_notifications"
         android:id="@+id/action_notifications"
         app:showAsAction="always"
-        app:actionProviderClass="com.alorma.github.ui.view.NotificationsActionProvider"/>
+        app:actionProviderClass="com.alorma.github.ui.view.NotificationsActionProvider" />
     <item
         android:title="@string/action_search"
         android:id="@+id/action_search"
         app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget.SearchView"/>
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha" />
 
 </menu>

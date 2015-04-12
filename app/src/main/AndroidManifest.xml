@@ -45,6 +45,7 @@
             android:theme="@style/AppTheme.Repos" />
         <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity" />
         <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity" />
+        <activity android:name="com.alorma.github.ui.activity.SearchActivity" />
         <activity android:name=".ui.dialog.NewIssueCommentActivity" />
         <activity android:name="com.alorma.github.ui.activity.FileActivity" />
         <activity android:name="com.alorma.github.ui.activity.AboutActivity" />

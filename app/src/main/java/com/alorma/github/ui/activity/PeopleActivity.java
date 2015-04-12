@@ -29,175 +29,122 @@ import java.util.List;
 /**
  * Created by Bernat on 31/01/2015.
  */
-public class PeopleActivity extends BackActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class PeopleActivity extends BackActivity {
 
-	private static final String USERNAME = "USERNAME";
-	private MenuItem searchItem;
-	private SearchView searchView;
-	private SearchUsersFragment searchUsersFragment;
+    private static final String USERNAME = "USERNAME";
+    private SearchUsersFragment searchUsersFragment;
 
-	public static Intent launchIntent(Context context) {
-		return new Intent(context, PeopleActivity.class);
-	}
+    public static Intent launchIntent(Context context) {
+        return new Intent(context, PeopleActivity.class);
+    }
 
-	public static Intent launchIntent(Context context, String username) {
-		Intent intent = launchIntent(context);
+    public static Intent launchIntent(Context context, String username) {
+        Intent intent = launchIntent(context);
 
-		Bundle extras = new Bundle();
-		extras.putString(USERNAME, username);
+        Bundle extras = new Bundle();
+        extras.putString(USERNAME, username);
 
-		intent.putExtras(extras);
+        intent.putExtras(extras);
 
-		return intent;
-	}
+        return intent;
+    }
 
-	private ViewPager viewPager;
-	private List<Fragment> listFragments;
+    private ViewPager viewPager;
+    private List<Fragment> listFragments;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.people_activity);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.people_activity);
 
-		setTitle(R.string.navigation_people);
+        setTitle(R.string.navigation_people);
 
-		SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
+        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
-		slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos));
-		slidingTabLayout.setDividerColors(Color.TRANSPARENT);
+        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos));
+        slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
-		viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
 
-		String username = null;
-		if (getIntent().getExtras() != null) {
-			username = getIntent().getExtras().getString(USERNAME);
-		}
+        String username = null;
+        if (getIntent().getExtras() != null) {
+            username = getIntent().getExtras().getString(USERNAME);
+        }
 
         FollowingFragment followingFragment = FollowingFragment.newInstance(username);
         FollowersFragment followersFragment = FollowersFragment.newInstance(username);
-		OrganizationsFragment organizationsFragment = OrganizationsFragment.newInstance(username);
+        OrganizationsFragment organizationsFragment = OrganizationsFragment.newInstance(username);
 
-		listFragments = new ArrayList<>();
+        listFragments = new ArrayList<>();
         listFragments.add(followingFragment);
         listFragments.add(followersFragment);
-		listFragments.add(organizationsFragment);
+        listFragments.add(organizationsFragment);
 
-		viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
-		slidingTabLayout.setViewPager(viewPager);
-	}
+        viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
+        slidingTabLayout.setViewPager(viewPager);
+    }
 
-	private class NavigationPagerAdapter extends FragmentPagerAdapter {
+    private class NavigationPagerAdapter extends FragmentPagerAdapter {
 
-		private List<Fragment> listFragments;
+        private List<Fragment> listFragments;
 
-		public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-			super(fm);
-			this.listFragments = listFragments;
-		}
+        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
+            super(fm);
+            this.listFragments = listFragments;
+        }
 
-		@Override
-		public Fragment getItem(int position) {
-			return listFragments.get(position);
-		}
+        @Override
+        public Fragment getItem(int position) {
+            return listFragments.get(position);
+        }
 
-		@Override
-		public int getCount() {
-			return listFragments.size();
-		}
+        @Override
+        public int getCount() {
+            return listFragments.size();
+        }
 
-		@Override
-		public CharSequence getPageTitle(int position) {
-			switch (position) {
-				case 0:
-					return getString(R.string.navigation_following);
-				case 1:
-					return getString(R.string.navigation_followers);
-				case 2:
-					return getString(R.string.menu_organizations);
-			}
-			return "";
-		}
-	}
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.navigation_following);
+                case 1:
+                    return getString(R.string.navigation_followers);
+                case 2:
+                    return getString(R.string.menu_organizations);
+            }
+            return "";
+        }
+    }
 
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
 
-		if (getToolbar() != null) {
-			getToolbar().inflateMenu(R.menu.people_menu);
+        if (getToolbar() != null) {
+            getToolbar().inflateMenu(R.menu.people_menu);
+        }
 
-			searchItem = menu.findItem(R.id.action_search);
+        return true;
+    }
 
-			MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-				@Override
-				public boolean onMenuItemActionExpand(android.view.MenuItem item) {
-					return false;
-				}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-				@Override
-				public boolean onMenuItemActionCollapse(android.view.MenuItem item) {
-					clearSearch();
-					return false;
-				}
-			});
+        if (item.getItemId() == R.id.action_search) {
+            Intent intent = SearchActivity.launchIntent(this);
+            startActivity(intent);
+        }
 
-			searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-			searchView.setSubmitButtonEnabled(true);
-			searchView.setOnQueryTextListener(this);
-			searchView.setOnCloseListener(this);
-		}
+        return true;
+    }
 
-		return true;
-	}
+    private void setFragment(Fragment fragment, boolean addToBackStack) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fragment);
+        if (addToBackStack) {
+            ft.addToBackStack(null);
+        }
+        ft.commit();
+    }
 
-	private void clearSearch() {
-		if (searchUsersFragment != null) {
-			getFragmentManager().popBackStack();
-			searchUsersFragment = null;
-		}
-
-	}
-
-	@Override
-	public boolean onQueryTextSubmit(String s) {
-		search(s);
-		return false;
-	}
-
-	@Override
-	public boolean onQueryTextChange(String s) {
-		return false;
-	}
-
-	@Override
-	public boolean onClose() {
-		clearSearch();
-		return false;
-	}
-
-	private void search(String query) {
-		if (searchUsersFragment != null) {
-			searchUsersFragment.setQuery(query);
-		} else {
-			searchUsersFragment = SearchUsersFragment.newInstance(query);
-			setFragment(searchUsersFragment, true);
-		}
-	}
-
-	private void setFragment(Fragment fragment, boolean addToBackStack) {
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.content, fragment);
-		if (addToBackStack) {
-			ft.addToBackStack(null);
-		}
-		ft.commit();
-	}
-
-	@Override
-	public void onBackPressed() {
-		if (!searchView.isIconified()) {
-			searchView.setIconified(true);
-		} else {
-			super.onBackPressed();
-		}
-	}
 }

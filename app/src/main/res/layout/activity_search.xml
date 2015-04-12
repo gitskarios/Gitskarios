@@ -1,63 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorPrimary">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menuSize"
-        android:padding="@dimen/gapMedium">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_card"
-            android:paddingStart="@dimen/gapMedium"
-            android:paddingLeft="@dimen/gapMedium">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:hint="@string/search"
-                android:id="@+id/edit"
-                android:imeActionLabel="@string/search"
-                android:layout_toStartOf="@+id/searchIcon"
-                android:layout_toLeftOf="@+id/searchIcon"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:singleLine="true"
-                android:textSize="@dimen/textSizeSmall"/>
-
-            <ImageButton
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/cleanIcon"
-                android:layout_toStartOf="@+id/searchIcon"
-                android:layout_alignTop="@+id/searchIcon"
-                android:layout_toLeftOf="@+id/searchIcon"
-                android:visibility="invisible"
-                android:src="@drawable/ic_suggestions_delete" />
-
-            <ImageButton
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/searchIcon"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_search" />
-        </RelativeLayout>
-    </LinearLayout>
+    <include layout="@layout/toolbar"/>
 
     <FrameLayout
-        android:id="@+id/content"
-        android:background="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:orientation="horizontal">
+
+                <com.alorma.github.ui.view.SlidingTabLayout
+                    android:id="@+id/tabStrip"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

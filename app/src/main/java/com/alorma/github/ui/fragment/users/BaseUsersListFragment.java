@@ -35,9 +35,10 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 		}
 	}
 
-	private void setUpList(ListUsers users) {
+	protected UsersAdapter setUpList(ListUsers users) {
 		usersAdapter = new UsersAdapter(getActivity(), users);
 		setListAdapter(usersAdapter);
+		return usersAdapter;
 	}
 
 	@Override
