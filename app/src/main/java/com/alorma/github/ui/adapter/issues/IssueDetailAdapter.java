@@ -60,9 +60,11 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
             IssueStoryComment issueStoryDetail = (IssueStoryComment) issueStory.details.get(position - 1).second;
             ((CommentHolder) holder).issueCommentView.setComment(issueStoryDetail);
         } else if (holder instanceof TimelineHolder) {
-            IssueStoryEvent issueStoryDetail = (IssueStoryEvent) issueStory.details.get(position - 1).second;
-            ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
-            ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
+            if (issueStory.details.get(position - 1).second instanceof IssueStoryEvent) {
+                IssueStoryEvent issueStoryDetail = (IssueStoryEvent) issueStory.details.get(position - 1).second;
+                ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
+                ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
+            }
         } else {
             IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second;
             if (issueStoryDetail instanceof IssueStoryEvent) {
