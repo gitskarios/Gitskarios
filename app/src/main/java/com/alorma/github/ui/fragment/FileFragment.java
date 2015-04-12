@@ -132,14 +132,16 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 			markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
 				@Override
 				public void onResponseOk(final String s, Response r) {
-					webView.clearCache(true);
-					webView.clearFormData();
-					webView.clearHistory();
-					webView.clearMatches();
-					webView.clearSslPreferences();
-					webView.getSettings().setUseWideViewPort(false);
-					webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-					webView.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
+					if (getActivity() != null && isAdded()) {
+						webView.clearCache(true);
+						webView.clearFormData();
+						webView.clearHistory();
+						webView.clearMatches();
+						webView.clearSslPreferences();
+						webView.getSettings().setUseWideViewPort(false);
+						webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+						webView.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
+					}
 				}
 
 				@Override
@@ -149,19 +151,23 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 			});
 			markdownClient.execute();
 		} else if (ImageUtils.isImage(content.name)) {
-			try {
-				byte[] imageAsBytes = Base64.decode(content.content);
-				Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-				webView.setVisibility(View.GONE);
-				imageView.setVisibility(View.VISIBLE);
-				imageView.setImageBitmap(bitmap);
-				// TODO STOP loading
-			} catch (Exception e) {
-				Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
-				e.printStackTrace();
+			if (getActivity() != null && isAdded()) {
+				try {
+					byte[] imageAsBytes = Base64.decode(content.content);
+					Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+					webView.setVisibility(View.GONE);
+					imageView.setVisibility(View.VISIBLE);
+					imageView.setImageBitmap(bitmap);
+					// TODO STOP loading
+				} catch (Exception e) {
+					Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
+					e.printStackTrace();
+				}
 			}
 		} else {
-			webView.loadUrl("file:///android_asset/source.html");
+			if (getActivity() != null && isAdded()) {
+				webView.loadUrl("file:///android_asset/source.html");
+			}
 		}
 	}
 

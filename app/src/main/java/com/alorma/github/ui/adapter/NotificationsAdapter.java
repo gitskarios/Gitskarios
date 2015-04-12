@@ -56,7 +56,9 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 		v.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				bus.post(item);
+				if (bus != null && item != null) {
+					bus.post(item);
+				}
 			}
 		});
 		
@@ -77,7 +79,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 							
 							case R.id.action_notification_unsubscribe:
 								bus.post(new UnsubscribeThreadNotification(item));
-								break;
+								break;	
 							case R.id.action_notification_mark_read:
 								bus.post(new ClearNotification(item, false));
 								break;

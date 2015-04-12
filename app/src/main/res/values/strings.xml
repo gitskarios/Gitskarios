@@ -203,8 +203,8 @@
     <string name="issue_unassigned">Removed %1$s assignment %2$s</string>
     <string name="issue_milestoned">Added to %1$s milestone %2$s</string>
     <string name="issue_demilestoned">Removed %1$s milestone %2$s</string>
-    <string name="issue_merged">Merged into %1$1 %2$s</string>
-    <string name="issue_referenced">Referenced in %1$1 %2$s</string>
+    <string name="issue_merged">Merged into %1$s %2$s</string>
+    <string name="issue_referenced">Referenced in %1$s %2$s</string>
     <string name="no_collaborators">No collaborators</string>
     <string name="collaborators_fragment_title">Collaborators</string>
     <string name="owner">Owner</string>

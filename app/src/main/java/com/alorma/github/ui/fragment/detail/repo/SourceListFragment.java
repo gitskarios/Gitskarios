@@ -147,8 +147,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             if (treeContent.get(currentSelectedContent) != null) {
                 displayContent(treeContent.get(currentSelectedContent));
             }
-        } else {
-            getActivity().finish();
         }
     }
 

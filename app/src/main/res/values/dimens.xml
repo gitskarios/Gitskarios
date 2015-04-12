@@ -72,4 +72,6 @@
 
     <dimen name="label_size_height">32dp</dimen>
     <dimen name="label_size_width">56dp</dimen>
+
+    <dimen name="notification_bubble">6dp</dimen>
 </resources>
