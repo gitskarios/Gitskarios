@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
+    private NotificationsFragment notificationsFragment;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -316,7 +317,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
             notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
 
-            notificationProvider.setOnNotificationListener(this);
+            if (notificationProvider != null) {
+                notificationProvider.setOnNotificationListener(this);
+            }
 
             bus.register(notificationProvider);
 
@@ -476,7 +479,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     @Override
     public void onNotificationRequested() {
         setTitle(R.string.notifications);
-        setFragment(NotificationsFragment.newInstance());
+        if (notificationsFragment == null) {
+            notificationsFragment = NotificationsFragment.newInstance();
+        }
+        setFragment(notificationsFragment, true);
     }
 
     @Override

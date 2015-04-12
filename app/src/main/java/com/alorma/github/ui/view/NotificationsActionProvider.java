@@ -151,8 +151,8 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 		public void showNotificationBubble(boolean show) {
 			this.show = show;
 
-			int start = show ? 0 : 16;
-			int end = show ? 16 : 0;
+			int start = show ? 0 : getSize();
+			int end = show ? getSize() : 0;
 
 			animator = ValueAnimator.ofInt(start, end);
 			animator.setDuration(animationDuration);
@@ -161,6 +161,10 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			animator.start();
 
 			this.postInvalidate();
+		}
+
+		public int getSize() {
+			return getResources().getDimensionPixelSize(R.dimen.notification_bubble);
 		}
 
 		@Override

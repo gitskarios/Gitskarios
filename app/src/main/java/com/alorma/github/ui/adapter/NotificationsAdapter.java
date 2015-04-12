@@ -56,7 +56,9 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 		v.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				bus.post(item);
+				if (bus != null && item != null) {
+					bus.post(item);
+				}
 			}
 		});
 		
