@@ -21,13 +21,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
+import com.alorma.github.ui.fragment.ChangelogDialogSupport;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
@@ -101,6 +104,21 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             setTitle(R.string.navigation_repos);
         }
 
+        checkChangeLog();
+    }
+
+    private boolean checkChangeLog() {
+        int currentVersion = BuildConfig.VERSION_CODE;
+        GitskariosSettings settings = new GitskariosSettings(this);
+        int version = settings.getVersion(0);
+
+        if (currentVersion > version) {
+            settings.saveVersion(currentVersion);
+            ChangelogDialogSupport dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
+            dialog.show(getSupportFragmentManager(), "changelog");
+        }
+
+        return false;
     }
 
     @Override
