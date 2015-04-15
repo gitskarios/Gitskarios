@@ -6,12 +6,12 @@
     <item android:title="@string/issue_edit_milestone"
         android:id="@+id/issue_edit_milestone"
         app:showAsAction="never"/>
-
+<!--
     <item android:title="@string/issue_edit_labels"
         android:id="@+id/issue_edit_labels"
         app:showAsAction="never"/>
 
     <item android:title="@string/issue_edit_assigne"
         android:id="@+id/issue_edit_assigne"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
 </menu>
