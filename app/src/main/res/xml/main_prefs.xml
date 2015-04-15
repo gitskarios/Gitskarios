@@ -28,4 +28,8 @@
         android:title="@string/action_visit_gitskarios"
         android:key="gitskarios"/>
 
+   <Preference
+        android:title="@string/changelog"
+        android:key="changelog"/>
+
 </PreferenceScreen>

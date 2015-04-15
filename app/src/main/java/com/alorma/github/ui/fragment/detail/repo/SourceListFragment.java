@@ -191,15 +191,17 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     @Override
     public void onResponseOk(ListContents contents, Response r) {
 
-        Collections.sort(contents, Content.Comparators.TYPE);
-        treeContent.put(currentSelectedContent, contents);
+        if (getActivity() != null) {
+            Collections.sort(contents, Content.Comparators.TYPE);
+            treeContent.put(currentSelectedContent, contents);
 
-        displayContent(contents);
+            displayContent(contents);
 
-        if (branchSnackBar != null) {
-            branchSnackBar.clear(false);
+            if (branchSnackBar != null) {
+                branchSnackBar.clear(false);
+            }
+            branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
         }
-        branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
     }
 
     private void displayContent(ListContents contents) {

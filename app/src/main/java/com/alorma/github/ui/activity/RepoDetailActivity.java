@@ -385,7 +385,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoStarred = false;
-                Toast.makeText(RepoDetailActivity.this, "Repo unstarred", Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
             }
         }
@@ -446,7 +445,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoWatched = false;
-                Toast.makeText(RepoDetailActivity.this, "Not watching name", Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
             }
         }
@@ -463,7 +461,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         public void onResponseOk(Object o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
-                Toast.makeText(RepoDetailActivity.this, "Watching name", Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
             }
         }
