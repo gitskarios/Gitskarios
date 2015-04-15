@@ -324,12 +324,16 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         return new GithubIconDrawable(this, icon).color(iconColor);
     }
 
+    private boolean hasInflated = false;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         if (getToolbar() != null) {
-            getToolbar().inflateMenu(R.menu.main_menu);
+            if (!hasInflated) {
+                getToolbar().inflateMenu(R.menu.main_menu);
+                hasInflated = true;
+            }
 
             MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
 
@@ -337,10 +341,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
             if (notificationProvider != null) {
                 notificationProvider.setOnNotificationListener(this);
+                bus.register(notificationProvider);
             }
-
-            bus.register(notificationProvider);
-
         }
 
         return true;
