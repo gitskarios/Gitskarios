@@ -129,7 +129,7 @@ public class PeopleActivity extends BackActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_search) {
             Intent intent = SearchActivity.launchIntent(this);
             startActivity(intent);

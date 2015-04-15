@@ -12,21 +12,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
+import com.alorma.github.sdk.services.issues.EditIssueClient;
+import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
-import com.alorma.github.ui.fragment.detail.issue.IssueDiscussionFragment;
 import com.alorma.githubicons.GithubIconDrawable;
 import com.alorma.githubicons.GithubIconify;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -34,6 +40,8 @@ import com.github.mrengineer13.snackbar.SnackBar;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
+
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -44,7 +52,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public static final String PERMISSIONS = "PERMISSIONS";
     private static final int NEW_COMMENT_REQUEST = 1243;
 
-    private IssueDiscussionFragment issueDiscussionFragment;
     private Permissions permissions;
     private boolean shouldRefreshOnBack;
     private IssueInfo issueInfo;
@@ -68,18 +75,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
 
-
         if (getIntent().getExtras() != null) {
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
             permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
-
-
-/*
-            issueInfo.repo.owner = "forkhubs";
-            issueInfo.repo.name = "android";
-            issueInfo.num = 736;
-*/
-
 
             findViews();
         }
@@ -98,6 +96,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     protected void getContent() {
         super.getContent();
+        showProgressDialog(R.style.SpotDialog_loading_issue);
         IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
         issueStoryLoader.setOnResultCallback(this);
         issueStoryLoader.execute();
@@ -105,6 +104,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public void onResponseOk(IssueStory issueStory, Response r) {
+        hideProgressDialog();
         this.issueStory = issueStory;
         applyIssue();
     }
@@ -123,6 +123,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
             }
         }
+
         String status = getString(R.string.issue_status_open);
         if (IssueState.closed == issueStory.issue.state) {
             status = getString(R.string.issue_status_close);
@@ -232,7 +233,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
-            getMenuInflater().inflate(R.menu.issue_detail, menu);
+            if (permissions != null && permissions.push) {
+                getMenuInflater().inflate(R.menu.issue_detail, menu);
+            }
         }
         return true;
     }
@@ -240,8 +243,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
-            menu.clear();
+
             if (permissions != null && permissions.push && issueStory.issue.state == IssueState.open) {
+                if (menu.findItem(R.id.action_close_issue) != null) {
+                    menu.removeItem(R.id.action_close_issue);
+                }
                 MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
                 menuItem.setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -271,9 +277,131 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             case R.id.action_fold_issue:
                 invalidateOptionsMenu();
                 break;
+            case R.id.issue_edit_milestone:
+                editMilestone();
+                break;
         }
 
         return true;
+    }
+
+    private void editMilestone() {
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo);
+        milestonesClient.setOnResultCallback(new MilestonesCallback());
+        milestonesClient.execute();
+
+        showProgressDialog(R.style.SpotDialog_loading_milestones);
+    }
+
+    private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
+        @Override
+        public void onResponseOk(final List<Milestone> milestones, Response r) {
+            hideProgressDialog();
+            if (milestones.size() == 0) {
+                showCreateMilestone();
+            } else {
+                String[] itemsMilestones = new String[milestones.size()];
+
+                for (int i = 0; i < milestones.size(); i++) {
+                    itemsMilestones[i] = milestones.get(i).title;
+                }
+
+                int selectedMilestone = -1;
+                for (int i = 0; i < milestones.size(); i++) {
+                    if (IssueDetailActivity.this.issueStory.issue.milestone != null) {
+                        String currentMilestone = IssueDetailActivity.this.issueStory.issue.milestone.title;
+                        if (currentMilestone != null && currentMilestone.equals(milestones.get(i).title)) {
+                            selectedMilestone = i;
+                            break;
+                        }
+                    }
+                }
+
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this)
+                        .title(R.string.select_milestone)
+                        .items(itemsMilestones)
+                        .itemsCallbackSingleChoice(selectedMilestone, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence text) {
+
+                                addMilestone(milestones.get(i));
+
+                                return false;
+                            }
+                        })
+                        .forceStacking(true)
+                        .widgetColorRes(R.color.primary)
+                        .negativeText(R.string.add_milestone)
+                        .callback(new MaterialDialog.ButtonCallback() {
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                                showCreateMilestone();
+                            }
+                        });
+
+                builder.show();
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+
+        }
+    }
+
+    private void showCreateMilestone() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.title(R.string.add_milestone);
+        builder.content(R.string.add_milestone_description);
+        builder.input(R.string.add_milestone_hint, 0, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(MaterialDialog materialDialog, CharSequence milestoneName) {
+                createMilestone(milestoneName.toString());
+            }
+        })
+        .negativeText(R.string.cancel);
+
+        builder.show();
+    }
+
+    private void createMilestone(String milestoneName) {
+        CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
+
+        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repo, createMilestoneRequestDTO);
+        createMilestoneClient.setOnResultCallback(new BaseClient.OnResultCallback<Milestone>() {
+            @Override
+            public void onResponseOk(Milestone milestone, Response r) {
+                addMilestone(milestone);
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        createMilestoneClient.execute();
+    }
+
+    private void addMilestone(Milestone milestone) {
+        showProgressDialog(R.style.SpotDialog_loading_adding_milestones);
+        EditIssueRequestDTO editIssueRequestDTO = new EditIssueRequestDTO();
+        editIssueRequestDTO.milestone = milestone.number;
+        EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
+        client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
+            @Override
+            public void onResponseOk(Issue issue, Response r) {
+                hideProgressDialog();
+                getContent();
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        client.execute();
     }
 
     private void closeIssueDialog() {

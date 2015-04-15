@@ -28,8 +28,7 @@ public class ChangelogDialogSupport extends DialogFragment {
         dialog.setArguments(args);
         return dialog;
     } 
- 
- 
+
     @NonNull
     @Override 
     public Dialog onCreateDialog(Bundle savedInstanceState) {

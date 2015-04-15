@@ -71,7 +71,7 @@ dependencies {
     compile project(':libraries:android-floating-action-button')
     compile 'com.github.alorma:diff-textview:1.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.afollestad:material-dialogs:0.6.5.2'
+    compile 'com.afollestad:material-dialogs:0.7.2.0'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     compile 'com.pnikosis:materialish-progress:1.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'

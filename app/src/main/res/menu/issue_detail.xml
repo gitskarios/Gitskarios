@@ -1,4 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.alorma.github.ui.activity.IssueDetailActivity" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.alorma.github.ui.activity.IssueDetailActivity">
+
+    <item android:title="@string/issue_edit_milestone"
+        android:id="@+id/issue_edit_milestone"
+        app:showAsAction="never"/>
+
+    <item android:title="@string/issue_edit_labels"
+        android:id="@+id/issue_edit_labels"
+        app:showAsAction="never"/>
+
+    <item android:title="@string/issue_edit_assigne"
+        android:id="@+id/issue_edit_assigne"
+        app:showAsAction="never"/>
 </menu>

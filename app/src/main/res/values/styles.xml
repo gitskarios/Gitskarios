@@ -17,8 +17,7 @@
         <item name="gitskarios_icons">@color/repos_icons</item>
     </style>
 
-    <style name="AppTheme.Repos">
-    </style>
+    <style name="AppTheme.Repos"></style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
@@ -69,6 +68,7 @@
     <style name="SpotDialog.Login">
         <item name="DialogTitleText">@string/acces_token_request</item>
     </style>
+
     <style name="SpotDialog.LoadingUser">
         <item name="DialogTitleText">@string/loading_user</item>
     </style>
@@ -76,8 +76,21 @@
     <style name="SpotDialog.CreatingIssue">
         <item name="DialogTitleText">@string/creating_issue</item>
     </style>
+
     <style name="SpotDialog.CommentIssue">
         <item name="DialogTitleText">@string/comment_issue</item>
+    </style>
+
+    <style name="SpotDialog.loading_milestones">
+        <item name="DialogTitleText">@string/loading_milestones</item>
+    </style>
+
+    <style name="SpotDialog.loading_adding_milestones">
+        <item name="DialogTitleText">@string/adding_milestone</item>
+    </style>
+
+    <style name="SpotDialog.loading_issue">
+        <item name="DialogTitleText">@string/loading_issue</item>
     </style>
 
     <style name="menu_labels_style">
@@ -86,4 +99,7 @@
     </style>
 
     <string name="comment_issue">Adding comment</string>
+    <string name="loading_milestones">Loading milestones</string>
+    <string name="adding_milestone">Adding milestone</string>
+    <string name="loading_issue">Loading issue</string>
 </resources>
