@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFilesAdapter.ViewHolder> {
 
-    private final GithubIconDrawable noPreviewDrawable;
+    private final IconicsDrawable noPreviewDrawable;
     private List<GistFile> gistFileList;
     boolean isInEditMode = false;
     private GistFilesAdapterListener gistFilesAdapterListener;
@@ -37,7 +37,7 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
     public GistDetailFilesAdapter(Context context) {
         gistFileList = new ArrayList<>();
 
-        noPreviewDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_package);
+        noPreviewDrawable = new IconicsDrawable(context, Octicons.Icon.oct_package);
         noPreviewDrawable.sizeDp(100);
         noPreviewDrawable.colorRes(R.color.secondary_text);
     }

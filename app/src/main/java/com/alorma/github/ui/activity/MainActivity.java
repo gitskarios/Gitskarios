@@ -38,8 +38,6 @@ import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -52,6 +50,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Bus;
 
@@ -187,6 +186,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private void createDrawer() {
 
+        int iconColor = getResources().getColor(R.color.repos_icons);
+
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
         result = new Drawer()
@@ -194,15 +195,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 .withToolbar(getToolbar())
                 .withAccountHeader(headerResult)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_calendar)).withIdentifier(0),
-                        new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_repo)).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_star)).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_eye)).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_person)).withIdentifier(4),
-                        new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_gist)).withIdentifier(5),
+                        new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(0),
+                        new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(5),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_settings)).withIdentifier(10),
-                        new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_sign_out)).withIdentifier(11)
+                        new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_settings).withIconColor(iconColor).withIdentifier(10),
+                        new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(11)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -317,11 +318,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         getFragmentManager().popBackStack(FragmentManager.POP_BACK_STACK_INCLUSIVE, 0);
         invalidateOptionsMenu();
-    }
-
-    private Drawable getGithubDrawable(GithubIconify.IconValue icon) {
-        int iconColor = getResources().getColor(R.color.repos_icons);
-        return new GithubIconDrawable(this, icon).color(iconColor);
     }
 
     private boolean hasInflated = false;

@@ -10,9 +10,9 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.CreatedEventPayload;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -51,7 +51,7 @@ public class CreatedEventView extends GithubEventView<CreatedEventPayload> {
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
 		if (eventPayload.ref_type.equals("repository")) {
-			drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_repo).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
+			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
 		}
 
 		if (drawable != null) {

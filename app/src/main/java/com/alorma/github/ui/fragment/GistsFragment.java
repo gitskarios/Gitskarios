@@ -11,7 +11,7 @@ import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
 import com.alorma.github.ui.fragment.base.SecondaryPaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gist> {
 
@@ -37,8 +37,8 @@ public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gis
     }
 
     @Override
-    protected GithubIconify.IconValue getNoDataIcon() {
-        return GithubIconify.IconValue.octicon_gist;
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_gist;
     }
 
     @Override

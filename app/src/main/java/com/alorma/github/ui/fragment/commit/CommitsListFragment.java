@@ -22,8 +22,8 @@ import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.DirectionalScrollListener;
-import com.alorma.githubicons.GithubIconify;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -201,8 +201,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     }
 
     @Override
-    protected GithubIconify.IconValue getNoDataIcon() {
-        return GithubIconify.IconValue.octicon_file_diff;
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_diff;
     }
 
     @Override
@@ -221,8 +221,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     }
 
     @Override
-    protected GithubIconify.IconValue getFABGithubIcon() {
-        return GithubIconify.IconValue.octicon_repo_forked;
+    protected Octicons.Icon getFABGithubIcon() {
+        return Octicons.Icon.oct_repo_forked;
     }
 
     @Override

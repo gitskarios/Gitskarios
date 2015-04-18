@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 23/11/2014.
@@ -50,7 +50,7 @@ public class GithubPlanCard implements View.OnClickListener {
 	private void setUpQuota(View view) {
 		ImageView icon = (ImageView) view.findViewById(R.id.iconPlanQuota);
 
-		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_database);
+		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_database);
 
 		icon.setImageDrawable(githubIconDrawable);
 
@@ -70,7 +70,7 @@ public class GithubPlanCard implements View.OnClickListener {
 	private void setUpCollaborators(View view) {
 		ImageView icon = (ImageView) view.findViewById(R.id.iconPlanCollaborators);
 
-		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_organization);
+		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
 
 		icon.setImageDrawable(githubIconDrawable);
 
@@ -83,7 +83,7 @@ public class GithubPlanCard implements View.OnClickListener {
 	private void setUpRepos(View view) {
 		ImageView icon = (ImageView) view.findViewById(R.id.iconPlanRepos);
 
-		GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_repo_forked);
+		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_repo_forked);
 
 		icon.setImageDrawable(githubIconDrawable);
 
@@ -93,8 +93,8 @@ public class GithubPlanCard implements View.OnClickListener {
 
 	}
 
-	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
-		GithubIconDrawable githubIconDrawable = new GithubIconDrawable(context, icon);
+	private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
+		IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
 
 		githubIconDrawable.sizeDp(30);
 		githubIconDrawable.color(avatarColor);

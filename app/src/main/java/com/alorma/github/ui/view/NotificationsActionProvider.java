@@ -19,8 +19,8 @@ import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.squareup.otto.Subscribe;
 
@@ -125,7 +125,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			paint.setAntiAlias(true);
 			paint.setColor(color);
 
-			GithubIconDrawable drawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_inbox);
+			IconicsDrawable drawable = new IconicsDrawable(context, Octicons.Icon.oct_inbox);
 			drawable.actionBarSize();
 			drawable.colorRes(R.color.white);
 			setImageDrawable(drawable);

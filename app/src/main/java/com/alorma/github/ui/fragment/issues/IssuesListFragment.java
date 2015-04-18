@@ -19,7 +19,7 @@ import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 22/08/2014.
@@ -107,8 +107,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    protected GithubIconify.IconValue getNoDataIcon() {
-        return GithubIconify.IconValue.octicon_issue_opened;
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_issue_opened;
     }
 
     @Override
@@ -181,8 +181,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    protected GithubIconify.IconValue getFABGithubIcon() {
-        return GithubIconify.IconValue.octicon_bug;
+    protected Octicons.Icon getFABGithubIcon() {
+        return Octicons.Icon.oct_bug;
     }
 
     @Override

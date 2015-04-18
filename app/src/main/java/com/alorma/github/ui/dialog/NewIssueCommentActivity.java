@@ -15,8 +15,8 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -63,7 +63,7 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
 
 		MenuItem itemSend = menu.findItem(R.id.action_send);
 		if (itemSend != null) {
-			GithubIconDrawable iconDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_bug);
+			IconicsDrawable iconDrawable = new IconicsDrawable(this, Octicons.Icon.oct_bug);
 			iconDrawable.color(Color.WHITE);
 			iconDrawable.actionBarSize();
 			itemSend.setIcon(iconDrawable);

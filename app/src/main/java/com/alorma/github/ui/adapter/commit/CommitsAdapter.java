@@ -1,10 +1,8 @@
 package com.alorma.github.ui.adapter.commit;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,30 +11,22 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.LazyAdapter;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import net.danlew.android.joda.DateUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
-import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
-import org.joda.time.Period;
-import org.joda.time.ReadableDuration;
-import org.joda.time.ReadableInstant;
 import org.joda.time.Seconds;
 import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -80,7 +70,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 				if (author.avatar_url != null) {
 					ImageLoader.getInstance().displayImage(author.avatar_url, avatar);
 				} else {
-					GithubIconDrawable iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_octoface);
+					IconicsDrawable iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_octoface);
 					iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext(), R.style.AppTheme_Repos));
 					iconDrawable.sizeDp(36);
 					iconDrawable.setAlpha(128);

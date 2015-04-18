@@ -13,7 +13,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.GetIssueComments;
 import com.alorma.github.ui.adapter.detail.issue.IssuesCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 23/08/2014.
@@ -115,8 +115,8 @@ public class IssueDiscussionFragment extends PaginatedListFragment<ListIssueComm
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_comment_discussion;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_comment_discussion;
 	}
 
 	@Override

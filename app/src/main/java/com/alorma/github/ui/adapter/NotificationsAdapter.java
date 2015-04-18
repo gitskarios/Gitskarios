@@ -16,8 +16,8 @@ import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
 
 import java.util.List;
@@ -32,7 +32,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class NotificationsAdapter extends ArrayAdapter<Notification> implements StickyListHeadersAdapter {
 
 	private final LayoutInflater mInflater;
-	private final GithubIconDrawable iconDrawable;
+	private final IconicsDrawable iconDrawable;
 	
 	@Inject
 	Bus bus;
@@ -41,7 +41,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 		super(context, 0, notifications);
 		mInflater = LayoutInflater.from(context);
 
-		iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_check);
+		iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_check);
 		iconDrawable.sizeRes(R.dimen.gapLarge);
 		iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext(), R.style.AppTheme_Repos));
 	}

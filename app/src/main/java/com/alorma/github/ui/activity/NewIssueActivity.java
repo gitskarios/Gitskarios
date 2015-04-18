@@ -25,9 +25,8 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
-import com.crashlytics.android.Crashlytics;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -161,7 +160,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
         MenuItem item = menu.findItem(R.id.action_send);
         if (item != null) {
-            GithubIconDrawable githubIconDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_plus);
+            IconicsDrawable githubIconDrawable = new IconicsDrawable(this, Octicons.Icon.oct_plus);
             githubIconDrawable.actionBarSize();
             githubIconDrawable.colorRes(R.color.white);
             item.setIcon(githubIconDrawable);

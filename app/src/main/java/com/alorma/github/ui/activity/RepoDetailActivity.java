@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -27,17 +26,16 @@ import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.RepoContributorsFragment;
+import com.alorma.github.ui.fragment.RepoContributorsFragment;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.RepoCollaboratorsFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,8 +210,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             menu.add(0, R.id.action_repo_watch, 1, R.string.menu_watch);
             MenuItem itemWatch = menu.findItem(R.id.action_repo_watch);
             itemWatch.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            GithubIconDrawable drawableWatch = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_eye);
-            drawableWatch.setStyle(Paint.Style.FILL);
+            IconicsDrawable drawableWatch = new IconicsDrawable(this, Octicons.Icon.oct_eye);
             drawableWatch.color(colorWatched);
             drawableWatch.actionBarSize();
             itemWatch.setIcon(drawableWatch);
@@ -228,8 +225,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             MenuItem itemStar = menu.findItem(R.id.action_repo_star);
             itemStar.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            GithubIconDrawable drawableStar = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_star);
-            drawableStar.setStyle(Paint.Style.FILL);
+            IconicsDrawable drawableStar = new IconicsDrawable(this, Octicons.Icon.oct_star);
             drawableStar.color(colorStarred);
             drawableStar.actionBarSize();
             itemStar.setIcon(drawableStar);

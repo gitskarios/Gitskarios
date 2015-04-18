@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -21,20 +18,17 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.FileActivity;
-import com.alorma.github.ui.adapter.FakeAdapter;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
-import com.crashlytics.android.Crashlytics;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,7 +78,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         fabMenu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
 
         FloatingActionButton fabDownload = (FloatingActionButton) view.findViewById(R.id.fab_download);
-        GithubIconDrawable downloadIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_cloud_download);
+        IconicsDrawable downloadIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_cloud_download);
         downloadIcon.colorRes(R.color.white);
         downloadIcon.sizeRes(R.dimen.fab_size_mini_icon);
         fabDownload.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +93,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         fabDownload.setIconDrawable(downloadIcon);
 
         FloatingActionButton fabBranches = (FloatingActionButton) view.findViewById(R.id.fab_branches);
-        GithubIconDrawable branchesIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_repo_forked);
+        IconicsDrawable branchesIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_repo_forked);
         branchesIcon.colorRes(R.color.white);
         branchesIcon.sizeRes(R.dimen.fab_size_mini_icon);
         fabBranches.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +114,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         fabBranches.setIconDrawable(branchesIcon);
 
         fabUp = (FloatingActionButton) view.findViewById(R.id.fab_up);
-        GithubIconDrawable upIcon = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_arrow_up);
+        IconicsDrawable upIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_arrow_up);
         upIcon.colorRes(R.color.white);
         upIcon.sizeRes(R.dimen.fab_size_mini_icon);
         fabUp.setOnClickListener(new View.OnClickListener() {
@@ -179,8 +173,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    protected GithubIconify.IconValue getNoDataIcon() {
-        return GithubIconify.IconValue.octicon_file_text;
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_file_text;
     }
 
     @Override

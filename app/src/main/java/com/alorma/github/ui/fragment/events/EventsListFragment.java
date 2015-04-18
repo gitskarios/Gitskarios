@@ -18,8 +18,8 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 03/10/2014.
@@ -86,8 +86,8 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_calendar;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_calendar;
 	}
 
 	@Override

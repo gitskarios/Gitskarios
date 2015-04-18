@@ -5,15 +5,14 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -52,7 +51,7 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
 		if (eventPayload.action.equals("started")) {
-			drawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_eye).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
+			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_eye).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
 		}
 
 		if (drawable != null) {

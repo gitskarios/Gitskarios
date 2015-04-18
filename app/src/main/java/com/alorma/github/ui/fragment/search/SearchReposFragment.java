@@ -9,9 +9,8 @@ import android.widget.ListView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
-import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 08/08/2014.
@@ -46,8 +45,8 @@ public class SearchReposFragment extends BaseReposListFragment {
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_repo;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_repo;
 	}
 
 	@Override

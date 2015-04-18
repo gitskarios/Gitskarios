@@ -33,10 +33,10 @@ import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
@@ -88,7 +88,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
-        GithubIconDrawable drawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_comment_discussion).color(Color.WHITE).fabSize();
+        IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
         fab.setIconDrawable(drawable);
     }
@@ -249,7 +249,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     menu.removeItem(R.id.action_close_issue);
                 }
                 MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
-                menuItem.setIcon(new GithubIconDrawable(this, GithubIconify.IconValue.octicon_x).actionBarSize().colorRes(R.color.white));
+                menuItem.setIcon(new IconicsDrawable(this, Octicons.Icon.oct_x).actionBarSize().colorRes(R.color.white));
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }

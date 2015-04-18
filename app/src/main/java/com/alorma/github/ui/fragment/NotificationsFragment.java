@@ -25,7 +25,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.view.DirectionalScrollListener;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -151,8 +151,8 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_inbox;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_inbox;
 	}
 
 	@Override

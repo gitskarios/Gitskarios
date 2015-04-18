@@ -9,6 +9,8 @@ import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.mikepenz.iconics.Iconics;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -45,6 +47,7 @@ public class GitskariosApplication extends Application {
 
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
 
+		Iconics.registerFont(new Octicons());
 	}
 
 	public Tracker getTracker() {

@@ -1,8 +1,6 @@
 package com.alorma.github.ui.adapter.repos;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +10,11 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class ReposAdapter extends ArrayAdapter<Repo> {
 
@@ -48,11 +41,11 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         reposHolder.textTitle.setTextColor(primaryDark);
 
         String starText = getContext().getResources().getString(R.string.star_icon_text, repo.stargazers_count);
-        applyIcon(reposHolder.textStarts, GithubIconify.IconValue.octicon_star);
+        applyIcon(reposHolder.textStarts, Octicons.Icon.oct_star);
         reposHolder.textStarts.setText(starText);
 
         String forkText = getContext().getResources().getString(R.string.fork_icon_text, repo.forks_count);
-        applyIcon(reposHolder.textForks, GithubIconify.IconValue.octicon_repo_forked);
+        applyIcon(reposHolder.textForks, Octicons.Icon.oct_repo_forked);
         reposHolder.textForks.setText(forkText);
 
         if (repo.description != null) {
@@ -70,8 +63,8 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         return v;
     }
 
-    private void applyIcon(TextView textView, GithubIconify.IconValue value) {
-        GithubIconDrawable drawableForks = new GithubIconDrawable(getContext(), value);
+    private void applyIcon(TextView textView, Octicons.Icon value) {
+        IconicsDrawable drawableForks = new IconicsDrawable(getContext(), value);
         drawableForks.sizeRes(R.dimen.textSizeSmall);
         drawableForks.colorRes(R.color.repos_icons);
         textView.setCompoundDrawables(null, null, drawableForks, null);

@@ -13,8 +13,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,17 +46,17 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
 		textName.setText(item.name);
 
-		GithubIconDrawable iconDrawable = null;
+		IconicsDrawable iconDrawable = null;
 		if (ContentType.dir.equals(item.type)) {
-			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_directory);
+			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_directory);
 		} else if (ContentType.submodule.equals(item.type)) {
-			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_submodule);
+			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_submodule);
 		} else if (ContentType.file.equals(item.type)) {
-			iconDrawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_file_text);
+			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_text);
 		}
 
 		if (iconDrawable != null) {
-			iconDrawable.sizeDp(GithubIconDrawable.ANDROID_ACTIONBAR_ICON_SIZE_DP);
+			iconDrawable.sizeDp(24);
 			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext(), style));
 
 			image.setImageDrawable(iconDrawable);
