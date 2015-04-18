@@ -225,4 +225,5 @@
     <string name="loading_milestones">Loading milestones</string>
     <string name="adding_milestone">Adding milestone</string>
     <string name="loading_issue">Loading issue</string>
+    <string name="loading_content">Loading content</string>
 </resources>

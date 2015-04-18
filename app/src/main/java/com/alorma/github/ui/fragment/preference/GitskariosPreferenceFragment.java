@@ -43,14 +43,6 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 
 		Preference reauthorize = findPreference(REAUTHORIZE);
 
-		credentials = new StoreCredentials(getActivity());
-		if (credentials.scopes() != null && credentials.scopes().contains("repo")) {
-			reauthorize.setEnabled(false);
-		} else {
-			reauthorize.setEnabled(true);
-			reauthorize.setOnPreferenceClickListener(this);
-		}
-
 		Preference gitskarios = findPreference(GITSKARIOS);
 		gitskarios.setOnPreferenceClickListener(this);
 
@@ -59,14 +51,8 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 	}
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-		if (preference.getKey().equals(REAUTHORIZE)) {
-			credentials.clear();
-			Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(loginIntent);
-			getActivity().finish();
-		} else if (preference.getKey().equals(GITSKARIOS)) {
-			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "alorma", "gitskarios");
+		if (preference.getKey().equals(GITSKARIOS)) {
+			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "gitskarios", "Gitskarios");
 			startActivity(intent);
 		}else if (preference.getKey().equals(CHANGELOG)) {
 			ChangelogDialog dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));

@@ -54,6 +54,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     private FloatingActionsMenu fabMenu;
     private View snackView;
     private SnackBar branchSnackBar;
+    private boolean expandedFab = false;
 
     public static SourceListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -101,7 +102,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             public void onClick(View v) {
                 GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
                 repoBranchesClient.setOnResultCallback(new DialogBranchesCallback(getActivity(), repoInfo) {
-
                     @Override
                     protected void onBranchSelected(String branch) {
                         setCurrentBranch(branch);
@@ -129,9 +129,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         snackView = view.findViewById(R.id.snackBar);
 
         if (getArguments() != null) {
-
             getContent();
-
         }
     }
 
@@ -167,6 +165,10 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         fabUp.setVisibility(View.INVISIBLE);
         fabMenu.collapse();
 
+        if (branchSnackBar == null) {
+            branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
+        }
+
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
         repoContentsClient.setOnResultCallback(this);
         repoContentsClient.execute();
@@ -184,17 +186,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
     @Override
     public void onResponseOk(ListContents contents, Response r) {
-
         if (getActivity() != null) {
             Collections.sort(contents, Content.Comparators.TYPE);
             treeContent.put(currentSelectedContent, contents);
 
             displayContent(contents);
-
-            if (branchSnackBar != null) {
-                branchSnackBar.clear(false);
-            }
-            branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
         }
     }
 
@@ -204,7 +200,10 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
             if (currentSelectedContent.parent != null) {
                 fabUp.setVisibility(View.VISIBLE);
-                fabMenu.expand();
+                if (!expandedFab) {
+                    expandedFab = true;
+                    fabMenu.expand();
+                }
                 delayClose();
             } else {
                 fabUp.setVisibility(View.INVISIBLE);
@@ -260,6 +259,12 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
     public void setCurrentBranch(String branch) {
         repoInfo.branch = branch;
+
+        if (branchSnackBar != null) {
+            branchSnackBar.clear();
+            branchSnackBar = null;
+        }
+        branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
         getContent();
     }
 

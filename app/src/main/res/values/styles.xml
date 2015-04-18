@@ -56,6 +56,9 @@
     <style name="SpotDialog.CommentIssue">
         <item name="DialogTitleText">@string/comment_issue</item>
     </style>
+    <style name="SpotDialog.LoadingContent">
+        <item name="DialogTitleText">@string/loading_content</item>
+    </style>
 
     <style name="SpotDialog.loading_milestones">
         <item name="DialogTitleText">@string/loading_milestones</item>
@@ -63,6 +66,10 @@
 
     <style name="SpotDialog.loading_adding_milestones">
         <item name="DialogTitleText">@string/adding_milestone</item>
+    </style>
+
+    <style name="SpotDialog.clear_milestones">
+        <item name="DialogTitleText">@string/clear_milestone</item>
     </style>
 
     <style name="SpotDialog.loading_issue">

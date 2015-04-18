@@ -50,13 +50,13 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 		if (ContentType.dir.equals(item.type)) {
 			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_directory);
 		} else if (ContentType.submodule.equals(item.type)) {
-			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_submodule);
+			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_symlink_directory);
 		} else if (ContentType.file.equals(item.type)) {
 			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_text);
 		}
 
 		if (iconDrawable != null) {
-			iconDrawable.sizeDp(24);
+			iconDrawable.sizeDp(20);
 			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext(), style));
 
 			image.setImageDrawable(iconDrawable);

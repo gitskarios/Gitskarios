@@ -20,10 +20,6 @@
         android:entryValues="@array/reposDownloadFileTypeValues"
         android:defaultValue="@string/download_zip_value"/>
 
-    <Preference
-        android:title="@string/repo_scope_title"
-        android:key="reauthorize"/>
-    
    <Preference
         android:title="@string/action_visit_gitskarios"
         android:key="gitskarios"/>

@@ -12,11 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -244,13 +244,18 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
 
-            if (permissions != null && permissions.push && issueStory.issue.state == IssueState.open) {
+            if (issueStory.issue.state == IssueState.closed) {
                 if (menu.findItem(R.id.action_close_issue) != null) {
                     menu.removeItem(R.id.action_close_issue);
                 }
-                MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
-                menuItem.setIcon(new IconicsDrawable(this, Octicons.Icon.oct_x).actionBarSize().colorRes(R.color.white));
-                menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            } else {
+                if (permissions != null && permissions.push) {
+                    if (menu.findItem(R.id.action_close_issue) != null) {
+                        menu.removeItem(R.id.action_close_issue);
+                    }
+                    MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
             }
         }
 
@@ -331,15 +336,26 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                         })
                         .forceStacking(true)
                         .widgetColorRes(R.color.primary)
-                        .negativeText(R.string.add_milestone)
-                        .callback(new MaterialDialog.ButtonCallback() {
+                        .negativeText(R.string.add_milestone);
 
-                            @Override
-                            public void onNegative(MaterialDialog dialog) {
-                                super.onNegative(dialog);
-                                showCreateMilestone();
-                            }
-                        });
+                if (selectedMilestone != -1) {
+                    builder.neutralText(R.string.clear_milestone);
+                }
+
+                builder.callback(new MaterialDialog.ButtonCallback() {
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        showCreateMilestone();
+                    }
+
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        super.onNeutral(dialog);
+                        clearMilestone();
+                    }
+                });
 
                 builder.show();
             }
@@ -361,7 +377,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 createMilestone(milestoneName.toString());
             }
         })
-        .negativeText(R.string.cancel);
+                .negativeText(R.string.cancel);
 
         builder.show();
     }
@@ -378,7 +394,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             @Override
             public void onFail(RetrofitError error) {
-
+                hideProgressDialog();
             }
         });
         createMilestoneClient.execute();
@@ -386,7 +402,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     private void addMilestone(Milestone milestone) {
         showProgressDialog(R.style.SpotDialog_loading_adding_milestones);
-        EditIssueRequestDTO editIssueRequestDTO = new EditIssueRequestDTO();
+        EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
         editIssueRequestDTO.milestone = milestone.number;
         EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
@@ -398,7 +414,27 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             @Override
             public void onFail(RetrofitError error) {
+                hideProgressDialog();
+            }
+        });
+        client.execute();
+    }
 
+    private void clearMilestone() {
+        showProgressDialog(R.style.SpotDialog_clear_milestones);
+        EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
+        editIssueRequestDTO.milestone = null;
+        EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
+        client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
+            @Override
+            public void onResponseOk(Issue issue, Response r) {
+                hideProgressDialog();
+                getContent();
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+                hideProgressDialog();
             }
         });
         client.execute();

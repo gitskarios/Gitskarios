@@ -51,17 +51,6 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //if (!BuildConfig.DEBUG) {
-            // Get tracker.
-            Tracker t = ((GitskariosApplication) getApplication()).getTracker();
-
-            // Set screen name.
-            t.setScreenName(getClass().getSimpleName()  );
-
-            // Send a screen view.
-            t.send(new HitBuilders.ScreenViewBuilder().build());
-        //}
     }
 
     @Override
