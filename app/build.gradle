@@ -31,10 +31,14 @@ android {
 
     signingConfigs {
         playStore {
-            storeFile file(SIGN_FILE)
-            storePassword SIGN_KEYSTORE_PASS
-            keyAlias SIGN_KEYSTORE_ALIAS
-            keyPassword SIGN_KEYSTORE_ALIAS_PASS
+            try {
+                storeFile file(SIGN_FILE)
+                storePassword SIGN_KEYSTORE_PASS
+                keyAlias SIGN_KEYSTORE_ALIAS
+                keyPassword SIGN_KEYSTORE_ALIAS_PASS
+            } catch (Exception e) {
+
+            }
         }
     }
 
