@@ -198,7 +198,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         drawer.addDrawerItems(
                 new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(0),
                 new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(1),
-                new PrimaryDrawerItem().withName(R.string.navigation_repos_org).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(6),
                 new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(2),
                 new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(3),
                 new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(4),
@@ -230,9 +229,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         break;
                     case 5:
                         onGistsSelected();
-                        break;
-                    case 6:
-                        //onGistsSelected();
                         break;
                     case 10:
                         onSettingsSelected();
@@ -501,8 +497,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         new Libs.Builder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
-                        .withActivityTheme(R.style.AppTheme_Normal)
-                //start the activity
+                .withActivityTheme(R.style.AppTheme_Normal)
+                .withActivityTitle(getString(R.string.app_name))
+                        //start the activity
                 .start(this);
         return false;
     }

@@ -74,4 +74,9 @@
     <dimen name="label_size_width">56dp</dimen>
 
     <dimen name="notification_bubble">6dp</dimen>
+
+    <dimen name="first_keyline">16dp</dimen>
+    <dimen name="second_keyline">56dp</dimen>
+    <dimen name="toolbar_h_padding">4dp</dimen>
+
 </resources>

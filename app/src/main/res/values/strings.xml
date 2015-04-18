@@ -220,4 +220,9 @@
     <string name="add_milestone_description">Use Milestones to create collections of Issues and Pull Requests for a particular release or project.</string>
     <string name="clear_milestone">Clear milestone</string>
     <string name="navigation_repos_org">Org repositories</string>
+
+    <string name="comment_issue">Adding comment</string>
+    <string name="loading_milestones">Loading milestones</string>
+    <string name="adding_milestone">Adding milestone</string>
+    <string name="loading_issue">Loading issue</string>
 </resources>
