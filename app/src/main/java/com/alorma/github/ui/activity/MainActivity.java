@@ -57,6 +57,7 @@ import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -74,11 +75,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private AccountHeader.Result headerResult;
     private StoreCredentials credentials;
-    private Drawer.Result result;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
     private NotificationsFragment notificationsFragment;
+    private Drawer.Result resultDrawer;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -234,7 +235,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             }
         });
         drawer.withSelectedItem(1);
-        drawer.build();
+        resultDrawer = drawer.build();
     }
 
     private void buildHeader() {
@@ -302,7 +303,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (lastUsedFragment != null && !changingUser) {
             setFragment(lastUsedFragment);
         } else {
-            clearFragments();
             onReposSelected();
         }
     }
@@ -313,8 +313,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         watchedFragment = null;
         eventsFragment = null;
 
-        getFragmentManager().popBackStack(FragmentManager.POP_BACK_STACK_INCLUSIVE, 0);
-        invalidateOptionsMenu();
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     private boolean hasInflated = false;
@@ -506,6 +505,22 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         super.onSaveInstanceState(outState);
         if (outState != null) {
             outState.putString("TITLE", getToolbar().getTitle().toString());
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (resultDrawer != null && resultDrawer.isDrawerOpen()) {
+            resultDrawer.closeDrawer();
+        } else {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            if (fragments != null) {
+                if (fragments.get(0) instanceof ReposFragment) {
+                    finish();
+                } else {
+                    super.onBackPressed();
+                }
+            }
         }
     }
 }
