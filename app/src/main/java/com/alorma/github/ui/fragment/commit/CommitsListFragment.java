@@ -165,7 +165,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         for (Commit commit : commits) {
             if (commit.commit.author.date != null) {
                 DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                DateTime dt = formatter.parseDateTime(commit.commit.author.date);
+                DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
 
                 Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
