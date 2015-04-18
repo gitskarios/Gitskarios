@@ -38,6 +38,7 @@ import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
+import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -190,54 +191,63 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
-        result = new Drawer()
-                .withActivity(this)
-                .withToolbar(getToolbar())
-                .withAccountHeader(headerResult)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(0),
-                        new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(4),
-                        new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(5),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_settings).withIconColor(iconColor).withIdentifier(10),
-                        new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(11)
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                        switch (position) {
-                            case 0:
-                                onUserEventsSelected();
-                                break;
-                            case 1:
-                                onReposSelected();
-                                break;
-                            case 2:
-                                onStarredSelected();
-                                break;
-                            case 3:
-                                onWatchedSelected();
-                                break;
-                            case 4:
-                                onPeopleSelected();
-                                break;
-                            case 5:
-                                onGistsSelected();
-                                break;
-                            case 7:
-                                onSettingsSelected();
-                                break;
-                            case 8:
-                                signOut();
-                                break;
-                        }
-                    }
-                })
-                .withSelectedItem(1)
-                .build();
+        Drawer drawer = new Drawer();
+        drawer.withActivity(this);
+        drawer.withToolbar(getToolbar());
+        drawer.withAccountHeader(headerResult);
+        drawer.addDrawerItems(
+                new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(0),
+                new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(1),
+                new PrimaryDrawerItem().withName(R.string.navigation_repos_org).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(6),
+                new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(2),
+                new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(3),
+                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(4),
+                new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(5),
+                new DividerDrawerItem(),
+                new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(10),
+                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(11),
+                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(12)
+        );
+        drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                int identifier = drawerItem.getIdentifier();
+                switch (identifier) {
+                    case 0:
+                        onUserEventsSelected();
+                        break;
+                    case 1:
+                        onReposSelected();
+                        break;
+                    case 2:
+                        onStarredSelected();
+                        break;
+                    case 3:
+                        onWatchedSelected();
+                        break;
+                    case 4:
+                        onPeopleSelected();
+                        break;
+                    case 5:
+                        onGistsSelected();
+                        break;
+                    case 6:
+                        //onGistsSelected();
+                        break;
+                    case 10:
+                        onSettingsSelected();
+                        break;
+                    case 11:
+                        onAboutSelected();
+                        break;
+                    case 12:
+                        signOut();
+                        break;
+                }
+            }
+        });
+        drawer.withSelectedItem(1);
+        drawer.build();
     }
 
     private void buildHeader() {
@@ -321,6 +331,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private boolean hasInflated = false;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -487,8 +498,12 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onAboutSelected() {
-        Intent intent = AboutActivity.launchIntent(this);
-        startActivity(intent);
+        new Libs.Builder()
+                //Pass the fields of your application to the lib so it can find all external lib information
+                .withFields(R.string.class.getFields())
+                        .withActivityTheme(R.style.AppTheme_Normal)
+                //start the activity
+                .start(this);
         return false;
     }
 

@@ -17,6 +17,23 @@
         <item name="gitskarios_icons">@color/repos_icons</item>
     </style>
 
+    <style name="AppTheme.Normal" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/repos_primary_dark</item>
+        <item name="colorAccent">@color/repos_accent</item>
+        <item name="colorControlNormal">@color/repos_accent</item>
+        <item name="colorControlActivated">@color/repos_accent_dark</item>
+        <item name="colorControlHighlight">@color/repos_accent_dark</item>
+        <item name="gitskarios_divider">@color/repos_divider</item>
+        <item name="gitskarios_primary_text">@color/repos_primary_text</item>
+        <item name="gitskarios_secondary_text">@color/repos_secondary_text</item>
+        <item name="gitskarios_primary_light">@color/repos_primary_light</item>
+        <item name="gitskarios_icons">@color/repos_icons</item>
+    </style>
+
     <style name="AppTheme.Repos"></style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

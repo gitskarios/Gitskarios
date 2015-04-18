@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aboutLibraries_description_showIcon">true</string>
+    <string name="aboutLibraries_description_showVersion">true</string>
+    <string name="aboutLibraries_description_text">Access seamlessly to your GitHub account from a new and fresh app from your device!
+
+Check your GitHub repositories, who you follow, who follows you and your favorite repositories among many other things.</string>
+</resources>
