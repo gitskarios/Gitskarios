@@ -279,9 +279,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             case R.id.action_close_issue:
                 closeIssueDialog();
                 break;
-            case R.id.action_fold_issue:
-                invalidateOptionsMenu();
-                break;
             case R.id.issue_edit_milestone:
                 editMilestone();
                 break;

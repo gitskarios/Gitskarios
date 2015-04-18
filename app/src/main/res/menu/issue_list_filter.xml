@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/issue_list_filter"
+        app:showAsAction="never"
+        android:id="@+id/issue_list_filter">
+
+        <menu>
+            <item
+                android:title="@string/issue_list_filter_closed"
+                android:id="@+id/issue_list_filter_closed" />
+            <item
+                android:title="@string/issue_list_filter_open"
+                android:id="@+id/issue_list_filter_open" />
+        </menu>
+
+    </item>
+
+</menu>

@@ -83,6 +83,13 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		getActivity().setTitle(R.string.notifications);
+	}
+
+	@Override
 	protected void executeRequest() {
 		super.executeRequest();
 
@@ -107,9 +114,16 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
 	@Override
 	protected void onResponse(final List<Notification> notifications, boolean refreshing) {
+		if (refreshing) {
+			notificationsAdapter.clear();
+		}
 		if (notifications != null) {
 			bus.post(new NotificationsCount(notifications.size()));
 			if (notifications.size() > 0) {
+				if (notificationsAdapter != null && notificationsAdapter.getCount() > 0) {
+					hideEmpty();
+				}
+
 				Map<String, Integer> ids = new HashMap<>();
 
 				int id = 0;

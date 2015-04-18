@@ -74,18 +74,18 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 				popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 					@Override
 					public boolean onMenuItemClick(MenuItem menuItem) {
-						
+
 						switch (menuItem.getItemId()) {
-							
+
 							case R.id.action_notification_unsubscribe:
 								bus.post(new UnsubscribeThreadNotification(item));
 								break;
 							case R.id.action_notification_mark_read:
 								bus.post(new ClearNotification(item, false));
 								break;
-							
+
 						}
-						
+
 						return true;
 					}
 				});
@@ -130,4 +130,5 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 	public long getHeaderId(int i) {
 		return getItem(i).adapter_repo_parent_id;
 	}
+
 }

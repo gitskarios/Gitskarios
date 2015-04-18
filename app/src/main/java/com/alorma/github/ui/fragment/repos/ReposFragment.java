@@ -26,16 +26,17 @@ public class ReposFragment extends BaseReposListFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			username = getArguments().getString(USERNAME);
-		}
+	public void onResume() {
+		super.onResume();
+
+		getActivity().setTitle(R.string.navigation_repos);
 	}
 
 	@Override
 	protected void loadArguments() {
-
+		if (getArguments() != null) {
+			username = getArguments().getString(USERNAME);
+		}
 	}
 
 	@Override

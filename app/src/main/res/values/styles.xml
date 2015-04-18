@@ -56,6 +56,19 @@
     <style name="SpotDialog.CommentIssue">
         <item name="DialogTitleText">@string/comment_issue</item>
     </style>
+    <style name="SpotDialog.StarringRepo">
+        <item name="DialogTitleText">@string/star_repo</item>
+    </style>
+    <style name="SpotDialog.UnstarringRepo">
+        <item name="DialogTitleText">@string/unstar_repo</item>
+    </style>
+    <style name="SpotDialog.WatchRepo">
+        <item name="DialogTitleText">@string/watch_repo</item>
+    </style>
+    <style name="SpotDialog.UnwatchRepo">
+        <item name="DialogTitleText">@string/unwatch_repo</item>
+    </style>
+
     <style name="SpotDialog.LoadingContent">
         <item name="DialogTitleText">@string/loading_content</item>
     </style>
@@ -101,7 +114,7 @@
     </style>
 
 
-    <style name="Custom.Widget.Actionbar" parent="Widget.AppCompat.ActionBar.Solid"></style>
+    <style name="Custom.Widget.Actionbar" parent="Widget.AppCompat.ActionBar.Solid" />
 
 
     <style name="Custom.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">

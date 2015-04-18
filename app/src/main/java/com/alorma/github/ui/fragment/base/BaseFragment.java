@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.app.Fragment;
+
+import android.support.v4.app.Fragment;
 
 /**
  * Created by Bernat on 12/08/2014.

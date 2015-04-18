@@ -1,13 +1,13 @@
 package com.alorma.github.ui.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,16 +26,14 @@ import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.fragment.RepoContributorsFragment;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.fragment.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +50,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     public static final String REPO = "REPO";
     public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
 
-    private Boolean repoStarred = null;
-    private Boolean repoWatched = null;
+    private Boolean repoStarred = false;
+    private Boolean repoWatched = false;
 
     private Repo currentRepo;
     private ReadmeFragment readmeFragment;
@@ -166,29 +164,19 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     }
 
     protected void getStarWatchData() {
-        CheckRepoStarredClient starredClient = new CheckRepoStarredClient(this, currentRepo.owner.login, currentRepo.name);
-        starredClient.setOnResultCallback(new StarredResult());
-        starredClient.execute();
+        CheckRepoStarredClient repoStarredClient = new CheckRepoStarredClient(this, currentRepo.owner.login, currentRepo.name);
+        repoStarredClient.setOnResultCallback(new StarredResult());
+        repoStarredClient.execute();
 
-        CheckRepoWatchedClient watcheClien = new CheckRepoWatchedClient(this, currentRepo.owner.login, currentRepo.name);
-        watcheClien.setOnResultCallback(new WatchedResult());
-        watcheClien.execute();
+        CheckRepoWatchedClient repoWatchedClient = new CheckRepoWatchedClient(this, currentRepo.owner.login, currentRepo.name);
+        repoWatchedClient.setOnResultCallback(new WatchedResult());
+        repoWatchedClient.execute();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
-
-        if (menu != null) {
-
-            if (currentRepo == null || currentRepo.parent == null) {
-                MenuItem parentItem = menu.findItem(R.id.action_show_parent);
-                if (parentItem != null) {
-                    menu.removeItem(parentItem.getItemId());
-                }
-            }
-        }
 
         return true;
     }
@@ -198,37 +186,31 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         super.onPrepareOptionsMenu(menu);
         MenuItem item = menu.findItem(R.id.share_repo);
 
-        item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+        } else {
+            item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+        }
 
-        int colorPrimyDark = AttributesUtils.getPrimaryDarkColor(this, R.style.AppTheme_Repos);
-
-        if (repoWatched != null) {
-            int colorWatched = repoWatched ? Color.WHITE : colorPrimyDark;
-            if (menu.findItem(R.id.action_repo_watch) != null) {
-                menu.removeItem(R.id.action_repo_watch);
+        if (currentRepo == null || currentRepo.parent == null) {
+            MenuItem parentItem = menu.findItem(R.id.action_show_parent);
+            if (parentItem != null) {
+                menu.removeItem(parentItem.getItemId());
             }
-            menu.add(0, R.id.action_repo_watch, 1, R.string.menu_watch);
-            MenuItem itemWatch = menu.findItem(R.id.action_repo_watch);
-            itemWatch.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            IconicsDrawable drawableWatch = new IconicsDrawable(this, Octicons.Icon.oct_eye);
-            drawableWatch.color(colorWatched);
-            drawableWatch.actionBarSize();
-            itemWatch.setIcon(drawableWatch);
         }
 
         if (repoStarred != null) {
-            int colorStarred = repoStarred ? Color.WHITE : colorPrimyDark;
-            if (menu.findItem(R.id.action_repo_star) != null) {
-                menu.removeItem(R.id.action_repo_star);
+            MenuItem starredItem = menu.findItem(R.id.action_repo_star);
+            if (starredItem != null) {
+                starredItem.setTitle(repoStarred ? R.string.menu_unstar : R.string.menu_star);
             }
-            menu.add(0, R.id.action_repo_star, 0, R.string.menu_star);
+        }
 
-            MenuItem itemStar = menu.findItem(R.id.action_repo_star);
-            itemStar.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            IconicsDrawable drawableStar = new IconicsDrawable(this, Octicons.Icon.oct_star);
-            drawableStar.color(colorStarred);
-            drawableStar.actionBarSize();
-            itemStar.setIcon(drawableStar);
+        if (repoWatched != null) {
+            MenuItem watchedItem = menu.findItem(R.id.action_repo_watch);
+            if (watchedItem != null) {
+                watchedItem.setTitle(repoWatched ? R.string.menu_unwatch : R.string.menu_watch);
+            }
         }
 
         return true;
@@ -273,10 +255,12 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     private void changeStarStatus() {
         if (repoStarred) {
+            showProgressDialog(R.style.SpotDialog_UnstarringRepo);
             UnstarRepoClient unstarRepoClient = new UnstarRepoClient(this, currentRepo.owner.login, currentRepo.name);
             unstarRepoClient.setOnResultCallback(new UnstarActionResult());
             unstarRepoClient.execute();
         } else {
+            showProgressDialog(R.style.SpotDialog_StarringRepo);
             StarRepoClient starRepoClient = new StarRepoClient(this, currentRepo.owner.login, currentRepo.name);
             starRepoClient.setOnResultCallback(new StarActionResult());
             starRepoClient.execute();
@@ -285,10 +269,12 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     private void changeWatchedStatus() {
         if (repoWatched) {
+            showProgressDialog(R.style.SpotDialog_UnwatchRepo);
             UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(this, currentRepo.owner.login, currentRepo.name);
             unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
             unwatchRepoClient.execute();
         } else {
+            showProgressDialog(R.style.SpotDialog_WatchRepo);
             WatchRepoClient watchRepoClient = new WatchRepoClient(this, currentRepo.owner.login, currentRepo.name);
             watchRepoClient.setOnResultCallback(new WatchActionResult());
             watchRepoClient.execute();
@@ -329,7 +315,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         listFragments.add(issuesListFragment);
         listFragments.add(repoCollaboratorsFragment);
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
 
         viewPager.setOffscreenPageLimit(listFragments.size());
 
@@ -358,6 +344,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onResponseOk(Object o, Response r) {
+            hideProgressDialog();
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
                 invalidateOptionsMenu();
@@ -366,6 +353,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onFail(RetrofitError error) {
+            hideProgressDialog();
             if (error != null) {
                 if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
                     repoStarred = false;
@@ -379,6 +367,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onResponseOk(Object o, Response r) {
+            hideProgressDialog();
             if (r != null && r.getStatus() == 204) {
                 repoStarred = false;
                 invalidateOptionsMenu();
@@ -387,7 +376,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onFail(RetrofitError error) {
-
+            hideProgressDialog();
         }
     }
 
@@ -395,6 +384,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onResponseOk(Object o, Response r) {
+            hideProgressDialog();
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
                 invalidateOptionsMenu();
@@ -404,9 +394,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onFail(RetrofitError error) {
-            if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-            }
-
+            hideProgressDialog();
         }
     }
 
@@ -439,6 +427,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onResponseOk(Object o, Response r) {
+            hideProgressDialog();
             if (r != null && r.getStatus() == 204) {
                 repoWatched = false;
                 invalidateOptionsMenu();
@@ -447,7 +436,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onFail(RetrofitError error) {
-
+            hideProgressDialog();
         }
     }
 
@@ -455,6 +444,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onResponseOk(Object o, Response r) {
+            hideProgressDialog();
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
                 invalidateOptionsMenu();
@@ -463,6 +453,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public void onFail(RetrofitError error) {
+            hideProgressDialog();
         }
     }
 

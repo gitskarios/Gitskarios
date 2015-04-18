@@ -1,13 +1,12 @@
 package com.alorma.github.ui.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
@@ -15,13 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.orgs.OrganizationsFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
-import com.alorma.github.ui.fragment.users.FollowersFragment;
-import com.alorma.github.ui.fragment.users.FollowingFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
 
@@ -66,7 +61,7 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
         listFragments.add(searchReposFragment);
         listFragments.add(searchUsersFragment);
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
         slidingTabLayout.setViewPager(viewPager);
     }
 

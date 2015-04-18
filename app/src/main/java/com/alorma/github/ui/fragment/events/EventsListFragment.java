@@ -40,6 +40,13 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		getActivity().setTitle(R.string.menu_events);
+	}
+
+	@Override
 	protected void onResponse(ListEvents githubEvents, boolean refreshing) {
 		if (githubEvents != null && githubEvents.size() > 0) {
 

@@ -61,7 +61,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 		layout.setGravity(Gravity.CENTER);
 		layout.setOnClickListener(this);
 
-		bt = new NotificationImageView(getContext(), getContext().getResources().getColor(R.color.repos_accent));
+		bt = new NotificationImageView(getContext());
 		bt.setOnClickListener(this);
 
 		layout.addView(bt);
@@ -91,12 +91,12 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			onNotificationListener.onNotificationRequested();
 		}
 	}
-	
+
 	@Subscribe
 	public void newNotificationsSize(NotificationsCount count) {
+		bt.setNotificationVisible(currentNotifications != count.getSize());
 		if (currentNotifications != count.getSize()) {
 			currentNotifications = count.getSize();
-			bt.showNotificationBubble(count.getSize() > 0);
 		}
 	}
 	
@@ -108,69 +108,22 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 		void onNotificationRequested();
 	}
 
-	private class NotificationImageView extends ImageView implements ValueAnimator.AnimatorUpdateListener {
+	private class NotificationImageView extends ImageView  {
 
-		private final Rect rect;
-		private Paint paint;
-		private boolean show;
-
-		private long animationDuration = 500;
-		private ValueAnimator animator;
-		private int value;
-
-		public NotificationImageView(Context context, int color) {
+		public NotificationImageView(Context context) {
 			super(context);
-			rect = new Rect();
-			paint = new Paint();
-			paint.setAntiAlias(true);
-			paint.setColor(color);
+		}
 
-			IconicsDrawable drawable = new IconicsDrawable(context, Octicons.Icon.oct_inbox);
+		public void setNotificationVisible(boolean notificationVisible) {
+
+			IconicsDrawable drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_inbox);
 			drawable.actionBarSize();
-			drawable.colorRes(R.color.white);
-			setImageDrawable(drawable);
-
-			this.show = false;
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
-
-			if (show || (animator != null && animator.isRunning())) {
-				canvas.getClipBounds(rect);
-
-				int radius = value;
-				int top = rect.top + (int) animator.getAnimatedValue();
-				int right = rect.right - (int) animator.getAnimatedValue();
-
-				canvas.drawCircle(right, top, radius, paint);
+			if (notificationVisible) {
+				drawable.colorRes(R.color.repos_accent);
+			} else {
+				drawable.colorRes(R.color.white);
 			}
-		}
-
-		public void showNotificationBubble(boolean show) {
-			this.show = show;
-
-			int start = show ? 0 : getSize();
-			int end = show ? getSize() : 0;
-
-			animator = ValueAnimator.ofInt(start, end);
-			animator.setDuration(animationDuration);
-			animator.setInterpolator(show ? new BounceInterpolator() : new AccelerateDecelerateInterpolator());
-			animator.addUpdateListener(this);
-			animator.start();
-
-			this.postInvalidate();
-		}
-
-		public int getSize() {
-			return getResources().getDimensionPixelSize(R.dimen.notification_bubble);
-		}
-
-		@Override
-		public void onAnimationUpdate(ValueAnimator animation) {
-			value = (int) animation.getAnimatedValue();
-			this.postInvalidate();
+			setImageDrawable(drawable);
 		}
 	}
 }

@@ -226,4 +226,11 @@
     <string name="adding_milestone">Adding milestone</string>
     <string name="loading_issue">Loading issue</string>
     <string name="loading_content">Loading content</string>
+    <string name="issue_list_filter">Filter issues</string>
+    <string name="issue_list_filter_closed">Show closed</string>
+    <string name="issue_list_filter_open">Show open</string>
+    <string name="star_repo">Starring user</string>
+    <string name="unstar_repo">Unstarring repo</string>
+    <string name="watch_repo">Watch repo</string>
+    <string name="unwatch_repo">Unwatch repo</string>
 </resources>

@@ -5,15 +5,15 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -94,15 +94,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         setContentView(R.layout.generic_toolbar);
 
         createDrawer();
-
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("TITLE")) {
-                setTitle(savedInstanceState.getString("TITLE"));
-            }
-        } else {
-            setTitle(R.string.navigation_repos);
-        }
 
         checkChangeLog();
     }
@@ -363,12 +354,12 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private void setFragment(Fragment fragment) {
-        setFragment(fragment, false);
+        setFragment(fragment, true);
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
         this.lastUsedFragment = fragment;
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, fragment);
         if (addToBackStack) {
             ft.addToBackStack(null);
@@ -385,18 +376,18 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onReposSelected() {
-        setTitle(R.string.navigation_repos);
+        clearFragments();
+
         if (reposFragment == null) {
             reposFragment = ReposFragment.newInstance();
         }
 
-        setFragment(reposFragment);
+        setFragment(reposFragment, false);
         return true;
     }
 
     @Override
     public boolean onStarredSelected() {
-        setTitle(R.string.navigation_starred_repos);
         if (starredFragment == null) {
             starredFragment = StarredReposFragment.newInstance();
         }
@@ -407,7 +398,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onWatchedSelected() {
-        setTitle(R.string.navigation_watched_repos);
         if (watchedFragment == null) {
             watchedFragment = WatchedReposFragment.newInstance();
         }
@@ -430,7 +420,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onUserEventsSelected() {
-        setTitle(R.string.menu_events);
         String user = new StoreCredentials(this).getUserName();
         if (user != null) {
             if (eventsFragment == null) {
@@ -506,7 +495,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public void onNotificationRequested() {
-        setTitle(R.string.notifications);
         if (notificationsFragment == null) {
             notificationsFragment = NotificationsFragment.newInstance();
         }

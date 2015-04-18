@@ -4,11 +4,15 @@ import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -36,6 +40,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     private float fabOldY;
     private IssuesAdapter issuesAdapter;
     private Permissions permissions;
+    private IssueState currentState = IssueState.open;
 
     public static IssuesListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -44,6 +49,59 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
         IssuesListFragment fragment = new IssuesListFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.issue_list_filter, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (getActivity() != null) {
+
+            MenuItem itemFilter = menu.findItem(R.id.issue_list_filter);
+            if (itemFilter != null) {
+                if (itemFilter.getSubMenu() != null) {
+                    MenuItem openIssues = itemFilter.getSubMenu().findItem(R.id.issue_list_filter_open);
+                    MenuItem closedIssues = itemFilter.getSubMenu().findItem(R.id.issue_list_filter_closed);
+
+                    if (currentState == IssueState.open && openIssues != null) {
+                        openIssues.setVisible(false);
+                        closedIssues.setVisible(true);
+                    } else if (currentState == IssueState.closed && closedIssues != null) {
+                        openIssues.setVisible(true);
+                        closedIssues.setVisible(false);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.issue_list_filter_open:
+                currentState = IssueState.open;
+                issuesAdapter.clear();
+                onRefresh();
+                break;
+            case R.id.issue_list_filter_closed:
+                currentState = IssueState.closed;
+                issuesAdapter.clear();
+                onRefresh();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -64,6 +122,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
         super.executeRequest();
         if (repoInfo != null) {
             IssueInfo issueInfo = new IssueInfo(repoInfo);
+            issueInfo.state = currentState;
             GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
             issuesClient.setOnResultCallback(this);
             issuesClient.execute();
@@ -80,6 +139,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 
         if (repoInfo != null) {
             IssueInfo issueInfo = new IssueInfo(repoInfo);
+            issueInfo.state = currentState;
             GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
             issuesClient.setOnResultCallback(this);
             issuesClient.execute();

@@ -3,7 +3,6 @@ package com.alorma.github.ui.fragment.base;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -174,7 +174,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 	public void setEmpty() {
 		if (getActivity() != null) {
-			if (emptyText != null && emptyIcon != null) {
+			if (getListAdapter() != null && getListAdapter().getCount() == 0 && emptyText != null && emptyIcon != null) {
 				if (getNoDataIcon() != null && getNoDataText() > 0) {
 					IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), getNoDataIcon());
 					iconicsDrawable.colorRes(R.color.gray_github_medium);
@@ -184,6 +184,14 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 					emptyLy.setVisibility(View.VISIBLE);
 				}
+			}
+		}
+	}
+
+	public void hideEmpty() {
+		if (getActivity() != null) {
+			if (emptyLy != null) {
+				emptyLy.setVisibility(View.INVISIBLE);
 			}
 		}
 	}

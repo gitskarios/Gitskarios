@@ -22,6 +22,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	protected void onResponse(ListUsers users, boolean refreshing) {
 		getListView().setDivider(null);
 		if (users.size() > 0) {
+			hideEmpty();
 			if (getListAdapter() != null) {
 				usersAdapter.addAll(users, paging);
 			} else if (usersAdapter == null) {

@@ -1,9 +1,9 @@
 package com.alorma.github.ui.activity;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
@@ -32,7 +32,7 @@ public class OrganizationsActivity extends BackActivity {
 
         OrganizationsFragment orgsFragment = OrganizationsFragment.newInstance(user);
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, orgsFragment);
         ft.commit();
     }
