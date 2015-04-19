@@ -190,7 +190,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             issueInfo.repo = new RepoInfo();
             issueInfo.repo.owner = user;
             issueInfo.repo.name = repo;
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo, item.repository.permissions);
+            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
             startActivity(launcherIntent);
         } else {
             String fullName = item.repository.full_name;
@@ -199,6 +199,14 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void onRefresh() {
+        super.onRefresh();
+        if (notificationsAdapter != null) {
+            notificationsAdapter.clear();
+        }
     }
 
     @Override

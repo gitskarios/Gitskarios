@@ -55,6 +55,13 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	private UpdateReceiver updateReceiver;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		loadArguments();
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 
@@ -83,8 +90,6 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 		checkFAB();
 
-		loadArguments();
-
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
 		int accent = AttributesUtils.getAttributeId(getActivity(), getTheme(), R.attr.colorAccent);
@@ -98,7 +103,9 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 			swipe.setOnRefreshListener(this);
 		}
 
-		executeRequest();
+		if (autoStart()) {
+			executeRequest();
+		}
 	}
 
 	protected void executeRequest() {
@@ -345,4 +352,9 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 			return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
 		}
 	}
+
+	protected boolean autoStart() {
+		return true;
+	}
+
 }

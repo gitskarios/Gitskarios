@@ -14,6 +14,9 @@
             <item
                 android:title="@string/issue_list_filter_open"
                 android:id="@+id/issue_list_filter_open" />
+            <item
+                android:title="@string/issue_list_filter_search"
+                android:id="@+id/issue_list_filter_search" />
         </menu>
 
     </item>

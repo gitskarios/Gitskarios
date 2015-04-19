@@ -49,21 +49,19 @@ import retrofit.client.Response;
 public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
-    public static final String PERMISSIONS = "PERMISSIONS";
+
     private static final int NEW_COMMENT_REQUEST = 1243;
 
-    private Permissions permissions;
     private boolean shouldRefreshOnBack;
     private IssueInfo issueInfo;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private IssueStory issueStory;
 
-    public static Intent createLauncherIntent(Context context, IssueInfo issueInfo, Permissions permissions) {
+    public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(ISSUE_INFO, issueInfo);
-        bundle.putParcelable(PERMISSIONS, permissions);
 
         Intent intent = new Intent(context, IssueDetailActivity.class);
         intent.putExtras(bundle);
@@ -77,7 +75,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         if (getIntent().getExtras() != null) {
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
-            permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
 
             findViews();
         }
@@ -233,7 +230,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
-            if (permissions != null && permissions.push) {
+            if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
                 getMenuInflater().inflate(R.menu.issue_detail, menu);
             }
         }
@@ -249,7 +246,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     menu.removeItem(R.id.action_close_issue);
                 }
             } else {
-                if (permissions != null && permissions.push) {
+                if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
                     if (menu.findItem(R.id.action_close_issue) != null) {
                         menu.removeItem(R.id.action_close_issue);
                     }

@@ -3,10 +3,13 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
@@ -14,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
@@ -27,72 +32,40 @@ import java.util.List;
 /**
  * Created by Bernat on 31/01/2015.
  */
-public class SearchActivity extends BackActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class SearchIssuesActivity extends BackActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, IssuesListFragment.SearchClientRequest {
+
+    private static String REPO_INFO = "REPO_INFO";
 
     private SearchView searchView;
-    private SearchReposFragment searchReposFragment;
-    private SearchUsersFragment searchUsersFragment;
-    private ViewPager viewPager;
-    private List<Fragment> listFragments;
+    private RepoInfo repoInfo;
+    private String query;
+    private IssuesListFragment issuesListFragment;
 
-    public static Intent launchIntent(Context context) {
-        return new Intent(context, SearchActivity.class);
+    public static Intent launchIntent(Context context, RepoInfo repoInfo) {
+        Intent intent =  new Intent(context, SearchIssuesActivity.class);
+
+        intent.putExtra(REPO_INFO, repoInfo);
+
+        return intent;
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_issues_search);
 
         setTitle("");
 
-        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
+        if (getIntent().getExtras() != null) {
+            repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
-        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos));
-        slidingTabLayout.setDividerColors(Color.TRANSPARENT);
+            issuesListFragment = IssuesListFragment.newInstance(repoInfo, true);
+            issuesListFragment.setSearchClientRequest(this);
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
-
-        searchReposFragment = SearchReposFragment.newInstance(null);
-        searchUsersFragment = SearchUsersFragment.newInstance(null);
-
-        listFragments = new ArrayList<>();
-        listFragments.add(searchReposFragment);
-        listFragments.add(searchUsersFragment);
-
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        slidingTabLayout.setViewPager(viewPager);
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.navigation_repos_search);
-                case 1:
-                    return getString(R.string.navigation_people);
-            }
-            return "";
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content, issuesListFragment);
+            ft.commit();
         }
     }
 
@@ -100,7 +73,7 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
         super.onCreateOptionsMenu(menu);
 
         if (getToolbar() != null) {
-            getToolbar().inflateMenu(R.menu.people_menu);
+            getToolbar().inflateMenu(R.menu.search_issues_menu);
 
             MenuItem searchItem = menu.findItem(R.id.action_search);
 
@@ -116,7 +89,6 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
                     return false;
                 }
             });
-
 
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setIconifiedByDefault(false);
@@ -142,10 +114,6 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
     }
 
     private void clearSearch() {
-        if (searchUsersFragment != null) {
-            getFragmentManager().popBackStack();
-            searchUsersFragment = null;
-        }
 
     }
 
@@ -166,17 +134,36 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
         return false;
     }
 
-    private void search(String query) {
-        if (searchReposFragment != null) {
-            searchReposFragment.setQuery(query);
-        }
-        if (searchUsersFragment != null) {
-            searchUsersFragment.setQuery(query);
+    @Override
+    public void request() {
+        if (query != null) {
+            IssuesSearchClient searchClient = new IssuesSearchClient(this, query);
+            searchClient.setOnResultCallback(issuesListFragment);
+            searchClient.execute();
         }
     }
 
     @Override
-    public void onBackPressed() {
-        finish();
+    public void requestPaginated(int page) {
+        if (query != null) {
+            IssuesSearchClient searchClient = new IssuesSearchClient(this, query, page);
+            searchClient.setOnResultCallback(issuesListFragment);
+            searchClient.execute();
+        }
+    }
+
+    private void search(String query) {
+        if (query == null) {
+            query = "";
+        }
+
+        query += "+repo:" + repoInfo.owner + "/" + repoInfo.name;
+
+        issuesListFragment.setRefreshing();
+        issuesListFragment.clear();
+
+        this.query = query;
+
+        request();
     }
 }

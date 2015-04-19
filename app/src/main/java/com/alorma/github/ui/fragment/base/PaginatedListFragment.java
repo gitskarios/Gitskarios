@@ -101,4 +101,8 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 		refreshing = true;
 		executeRequest();
 	}
+
+	public void setRefreshing() {
+		this.refreshing = true;
+	}
 }

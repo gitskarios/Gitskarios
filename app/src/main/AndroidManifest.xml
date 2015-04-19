@@ -122,6 +122,7 @@
             android:label="@string/title_activity_settings" />
         <activity android:name="com.alorma.github.ui.activity.ReposActivity" />
         <activity android:name="com.alorma.github.ui.activity.OrganizationsActivity" />
+        <activity android:name="com.alorma.github.ui.activity.SearchIssuesActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

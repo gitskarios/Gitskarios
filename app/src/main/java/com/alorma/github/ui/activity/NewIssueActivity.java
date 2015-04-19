@@ -38,12 +38,9 @@ import retrofit.client.Response;
 
 public class NewIssueActivity extends BackActivity implements BaseClient.OnResultCallback<Issue> {
 
-    public static final String OWNER = "OWNER";
-    public static final String REPO = "REPO";
-    public static final String PERMISSIONS = "PERMISSIONS";
-    private String owner;
-    private String repo;
-    private Permissions permissions;
+    public static final String REPO_INFO = "REPO_INFO";
+
+
     private View pushAccesLayout;
     private Spinner spinnerAssignee;
     private UsersAdapterSpinner assigneesAdapter;
@@ -51,12 +48,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private MaterialEditText editTitle;
     private MaterialEditText editBody;
     private boolean creatingIssue = false;
+    private RepoInfo repoInfo;
 
-    public static Intent createLauncherIntent(Context context, RepoInfo info, Permissions permissions) {
+    public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
-        bundle.putString(OWNER, info.owner);
-        bundle.putString(REPO, info.name);
-        bundle.putParcelable(PERMISSIONS, permissions);
+        bundle.putParcelable(REPO_INFO, info);
         Intent intent = new Intent(context, NewIssueActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -73,21 +69,14 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         setContentView(R.layout.activity_new_issue);
 
         if (getIntent().getExtras() != null) {
-            owner = getIntent().getExtras().getString(OWNER);
-            repo = getIntent().getExtras().getString(REPO);
-
-            permissions = getIntent().getExtras().getParcelable(PERMISSIONS);
+            repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
             findViews();
 
-            if (!permissions.push) {
+            if (repoInfo.permissions != null && !repoInfo.permissions.push) {
                 pushAccesLayout.setVisibility(View.INVISIBLE);
             } else {
                 findViewsAcces();
-
-                RepoInfo repoInfo = new RepoInfo();
-                repoInfo.owner = owner;
-                repoInfo.name = repo;
                 GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
                 contributorsClient.setOnResultCallback(new ContributorsCallback());
                 contributorsClient.execute();
@@ -126,7 +115,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         issue.title = editTitle.getText().toString();
         issue.body = editBody.getText().toString();
 
-        if (permissions.push) {
+        if (repoInfo.permissions.push) {
             if (spinnerAssignee.getSelectedItemPosition() > 0) {
                 issue.assignee = assigneesAdapter.getItem(spinnerAssignee.getSelectedItemPosition()).login;
             }
@@ -189,7 +178,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     }
 
     private void createIssue(IssueRequest issue) {
-        PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, owner, repo, issue);
+        PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, repoInfo, issue);
         postNewIssueClient.setOnResultCallback(this);
         postNewIssueClient.execute();
     }
@@ -199,11 +188,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         hideProgressDialog();
         if (issue != null) {
             IssueInfo issueInfo = new IssueInfo();
-            issueInfo.repo = new RepoInfo();
-            issueInfo.repo.owner = owner;
-            issueInfo.repo.name = repo;
-            issueInfo.num = issue.number;
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo, permissions);
+            issueInfo.repo = repoInfo;
+            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo);
             startActivity(launcherIntent);
             finish();
         }

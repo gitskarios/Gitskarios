@@ -438,6 +438,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     public void signOut() {
         if (selectedAccount != null) {
+            GitskariosSettings settings = new GitskariosSettings(this);
+            settings.saveVersion(0);
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                     AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
