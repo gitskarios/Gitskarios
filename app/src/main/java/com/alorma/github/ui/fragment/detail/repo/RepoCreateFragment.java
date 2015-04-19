@@ -18,8 +18,8 @@ import android.widget.EditText;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateRepoRequestDTO;
 import com.alorma.github.ui.popup.GitIgnorePopup;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import retrofit.RetrofitError;
 
@@ -103,7 +103,7 @@ public class RepoCreateFragment extends Fragment implements View.OnClickListener
 
 		MenuItem itemSend = menu.findItem(R.id.action_send);
 		if (itemSend != null) {
-			GithubIconDrawable iconDrawable = new GithubIconDrawable(getActivity(), GithubIconify.IconValue.octicon_plus);
+			IconicsDrawable iconDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_plus);
 			iconDrawable.color(Color.WHITE);
 			iconDrawable.actionBarSize();
 			itemSend.setIcon(iconDrawable);

@@ -10,9 +10,9 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -53,7 +53,7 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 
 		comment.setText(Html.fromHtml(eventPayload.comment.body));
 
-		GithubIconDrawable left = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_comment_discussion).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
+		IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_comment_discussion).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
 
 		TextView action = (TextView) findViewById(R.id.action);
 		action.setCompoundDrawables(left, null, null, null);

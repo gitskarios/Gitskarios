@@ -5,15 +5,15 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,13 +21,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
+import com.alorma.github.ui.fragment.ChangelogDialogSupport;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
@@ -35,8 +38,7 @@ import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -49,11 +51,13 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -71,11 +75,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private AccountHeader.Result headerResult;
     private StoreCredentials credentials;
-    private Drawer.Result result;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
     private NotificationsFragment notificationsFragment;
+    private Drawer.Result resultDrawer;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -92,15 +96,21 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         createDrawer();
 
+        checkChangeLog();
+    }
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("TITLE")) {
-                setTitle(savedInstanceState.getString("TITLE"));
-            }
-        } else {
-            setTitle(R.string.navigation_repos);
+    private boolean checkChangeLog() {
+        int currentVersion = BuildConfig.VERSION_CODE;
+        GitskariosSettings settings = new GitskariosSettings(this);
+        int version = settings.getVersion(0);
+
+        if (currentVersion > version) {
+            settings.saveVersion(currentVersion);
+            ChangelogDialogSupport dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
+            dialog.show(getSupportFragmentManager(), "changelog");
         }
 
+        return false;
     }
 
     @Override
@@ -169,56 +179,63 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private void createDrawer() {
 
+        int iconColor = getResources().getColor(R.color.repos_icons);
+
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
-        result = new Drawer()
-                .withActivity(this)
-                .withToolbar(getToolbar())
-                .withAccountHeader(headerResult)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_calendar)).withIdentifier(0),
-                        new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_repo)).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_star)).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_eye)).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_person)).withIdentifier(4),
-                        new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_gist)).withIdentifier(5),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_settings)).withIdentifier(10),
-                        new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(getGithubDrawable(GithubIconify.IconValue.octicon_sign_out)).withIdentifier(11)
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                        switch (position) {
-                            case 0:
-                                onUserEventsSelected();
-                                break;
-                            case 1:
-                                onReposSelected();
-                                break;
-                            case 2:
-                                onStarredSelected();
-                                break;
-                            case 3:
-                                onWatchedSelected();
-                                break;
-                            case 4:
-                                onPeopleSelected();
-                                break;
-                            case 5:
-                                onGistsSelected();
-                                break;
-                            case 7:
-                                onSettingsSelected();
-                                break;
-                            case 8:
-                                signOut();
-                                break;
-                        }
-                    }
-                })
-                .withSelectedItem(1)
-                .build();
+        Drawer drawer = new Drawer();
+        drawer.withActivity(this);
+        drawer.withToolbar(getToolbar());
+        drawer.withAccountHeader(headerResult);
+        drawer.addDrawerItems(
+                new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(0),
+                new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(1),
+                new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(2),
+                new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(3),
+                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(4),
+                new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(5),
+                new DividerDrawerItem(),
+                new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(10),
+                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(11),
+                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(12)
+        );
+        drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                int identifier = drawerItem.getIdentifier();
+                switch (identifier) {
+                    case 0:
+                        onUserEventsSelected();
+                        break;
+                    case 1:
+                        onReposSelected();
+                        break;
+                    case 2:
+                        onStarredSelected();
+                        break;
+                    case 3:
+                        onWatchedSelected();
+                        break;
+                    case 4:
+                        onPeopleSelected();
+                        break;
+                    case 5:
+                        onGistsSelected();
+                        break;
+                    case 10:
+                        onSettingsSelected();
+                        break;
+                    case 11:
+                        onAboutSelected();
+                        break;
+                    case 12:
+                        signOut();
+                        break;
+                }
+            }
+        });
+        drawer.withSelectedItem(1);
+        resultDrawer = drawer.build();
     }
 
     private void buildHeader() {
@@ -286,7 +303,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (lastUsedFragment != null && !changingUser) {
             setFragment(lastUsedFragment);
         } else {
-            clearFragments();
             onReposSelected();
         }
     }
@@ -297,21 +313,20 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         watchedFragment = null;
         eventsFragment = null;
 
-        getFragmentManager().popBackStack(FragmentManager.POP_BACK_STACK_INCLUSIVE, 0);
-        invalidateOptionsMenu();
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    private Drawable getGithubDrawable(GithubIconify.IconValue icon) {
-        int iconColor = getResources().getColor(R.color.repos_icons);
-        return new GithubIconDrawable(this, icon).color(iconColor);
-    }
+    private boolean hasInflated = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         if (getToolbar() != null) {
-            getToolbar().inflateMenu(R.menu.main_menu);
+            if (!hasInflated) {
+                getToolbar().inflateMenu(R.menu.main_menu);
+                hasInflated = true;
+            }
 
             MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
 
@@ -319,10 +334,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
             if (notificationProvider != null) {
                 notificationProvider.setOnNotificationListener(this);
+                bus.register(notificationProvider);
             }
-
-            bus.register(notificationProvider);
-
         }
 
         return true;
@@ -340,12 +353,12 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private void setFragment(Fragment fragment) {
-        setFragment(fragment, false);
+        setFragment(fragment, true);
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
         this.lastUsedFragment = fragment;
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, fragment);
         if (addToBackStack) {
             ft.addToBackStack(null);
@@ -362,18 +375,18 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onReposSelected() {
-        setTitle(R.string.navigation_repos);
+        clearFragments();
+
         if (reposFragment == null) {
             reposFragment = ReposFragment.newInstance();
         }
 
-        setFragment(reposFragment);
+        setFragment(reposFragment, false);
         return true;
     }
 
     @Override
     public boolean onStarredSelected() {
-        setTitle(R.string.navigation_starred_repos);
         if (starredFragment == null) {
             starredFragment = StarredReposFragment.newInstance();
         }
@@ -384,7 +397,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onWatchedSelected() {
-        setTitle(R.string.navigation_watched_repos);
         if (watchedFragment == null) {
             watchedFragment = WatchedReposFragment.newInstance();
         }
@@ -407,7 +419,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onUserEventsSelected() {
-        setTitle(R.string.menu_events);
         String user = new StoreCredentials(this).getUserName();
         if (user != null) {
             if (eventsFragment == null) {
@@ -427,6 +438,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     public void signOut() {
         if (selectedAccount != null) {
+            GitskariosSettings settings = new GitskariosSettings(this);
+            settings.saveVersion(0);
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                     AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
@@ -471,14 +484,18 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onAboutSelected() {
-        Intent intent = AboutActivity.launchIntent(this);
-        startActivity(intent);
+        new Libs.Builder()
+                //Pass the fields of your application to the lib so it can find all external lib information
+                .withFields(R.string.class.getFields())
+                .withActivityTheme(R.style.AppTheme_Normal)
+                .withActivityTitle(getString(R.string.app_name))
+                        //start the activity
+                .start(this);
         return false;
     }
 
     @Override
     public void onNotificationRequested() {
-        setTitle(R.string.notifications);
         if (notificationsFragment == null) {
             notificationsFragment = NotificationsFragment.newInstance();
         }
@@ -490,6 +507,28 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         super.onSaveInstanceState(outState);
         if (outState != null) {
             outState.putString("TITLE", getToolbar().getTitle().toString());
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (resultDrawer != null && resultDrawer.isDrawerOpen()) {
+            resultDrawer.closeDrawer();
+        } else {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            if (fragments != null) {
+                if (fragments.size() == 1) {
+                    if (fragments.get(0) instanceof ReposFragment) {
+                        finish();
+                    } else {
+                        super.onBackPressed();
+                    }
+                } else if (fragments.get(fragments.size() - 1) instanceof ReposFragment) {
+                    finish();
+                } else {
+                    super.onBackPressed();
+                }
+            }
         }
     }
 }

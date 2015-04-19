@@ -40,10 +40,10 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	@Override
 	public void onResponseOk(K k, Response r) {
 		stopRefresh();
+		hideEmpty();
 		if (getActivity() != null && isAdded()) {
 			if (k != null && k instanceof List) {
-				if (emptyLy != null && ((List) k).size() > 0) {
-					emptyLy.setVisibility(View.GONE);
+				if (((List) k).size() > 0) {
 					getLinkData(r);
 					onResponse(k, refreshing);
 					paging = false;
@@ -60,9 +60,16 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	@Override
 	public void onFail(RetrofitError error) {
 		stopRefresh();
+		hideEmpty();
 		if (getActivity() != null) {
-			if (getListAdapter() == null || getListAdapter().getCount() == 0) {
+			if (getListAdapter() == null) {
 				setEmpty();
+			} else {
+				if (getListAdapter().getCount() == 0) {
+					setEmpty();
+				} else {
+					hideEmpty();
+				}
 			}
 			ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
 		}
@@ -93,5 +100,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	public void onRefresh() {
 		refreshing = true;
 		executeRequest();
+	}
+
+	public void setRefreshing() {
+		this.refreshing = true;
 	}
 }

@@ -4,13 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 import com.alorma.github.R;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -27,7 +26,7 @@ public class UniversalImageLoaderUtils {
 	}
 
 	public static DisplayImageOptions getDisplayImageOptions(Context context) {
-		GithubIconDrawable drawable = new GithubIconDrawable(context, GithubIconify.IconValue.octicon_octoface);
+		IconicsDrawable drawable = new IconicsDrawable(context, Octicons.Icon.oct_octoface);
 		drawable.color(AttributesUtils.getSecondaryTextColor(context, R.style.AppTheme_Repos));
 		drawable.sizeDp(24);
 		BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), drawableToBitmap(drawable));

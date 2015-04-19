@@ -4,15 +4,11 @@ import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
-import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 08/08/2014.
@@ -80,8 +76,8 @@ public class SearchUsersFragment extends BaseUsersListFragment {
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_person;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_person;
 	}
 
 	@Override

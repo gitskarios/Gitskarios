@@ -11,7 +11,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 17/07/2014.
@@ -38,6 +38,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 	@Override
 	protected void onResponse(ListRepos repos, boolean refreshing) {
 		if (repos.size() > 0) {
+			hideEmpty();
 			if (getListAdapter() != null) {
 				reposAdapter.addAll(repos, paging);
 			} else if (reposAdapter == null) {
@@ -66,8 +67,8 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_repo;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_repo;
 	}
 
 	@Override

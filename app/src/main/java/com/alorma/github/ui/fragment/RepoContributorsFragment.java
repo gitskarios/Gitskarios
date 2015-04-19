@@ -1,4 +1,4 @@
-package com.alorma.github.ui;
+package com.alorma.github.ui.fragment;
 
 import android.os.Bundle;
 
@@ -12,7 +12,7 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -70,8 +70,8 @@ public class RepoContributorsFragment extends BaseUsersListFragment {
     }
 
     @Override
-    protected GithubIconify.IconValue getNoDataIcon() {
-        return GithubIconify.IconValue.octicon_person;
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_person;
     }
 
     @Override

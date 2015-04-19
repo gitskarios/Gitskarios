@@ -26,9 +26,9 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.view.DirectionalScrollListener;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
@@ -140,7 +140,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 				fabVisible = true;
 				fab.setOnClickListener(this);
 				fab.setSize(FloatingActionButton.SIZE_NORMAL);
-				GithubIconDrawable drawable = new GithubIconDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).fabSize();
+				IconicsDrawable drawable = new IconicsDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).sizeDp(24);
 
 				fab.setIconDrawable(drawable);
 			} else {
@@ -159,7 +159,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 		if (getActivity() != null) {
 			if (emptyText != null && emptyIcon != null) {
 				if (getNoDataIcon() != null && getNoDataText() > 0) {
-					GithubIconDrawable iconDrawable = new GithubIconDrawable(getActivity(), getNoDataIcon());
+					IconicsDrawable iconDrawable = new IconicsDrawable(getActivity(), getNoDataIcon());
 					iconDrawable.colorRes(R.color.gray_github_medium);
 					emptyIcon.setImageDrawable(iconDrawable);
 
@@ -171,7 +171,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 		}
 	}
 
-	protected abstract GithubIconify.IconValue getNoDataIcon();
+	protected abstract Octicons.Icon getNoDataIcon();
 
 	protected abstract int getNoDataText();
 
@@ -246,8 +246,8 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 
 	}
 
-	protected GithubIconify.IconValue getFABGithubIcon() {
-		return GithubIconify.IconValue.octicon_squirrel;
+	protected Octicons.Icon getFABGithubIcon() {
+		return Octicons.Icon.oct_squirrel;
 	}
 
 	public void setListAdapter(ArrayAdapter<T> adapter) {

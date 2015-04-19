@@ -7,6 +7,10 @@ import com.alorma.github.sdk.security.ApiConstants;
 import com.alorma.github.ui.UiModule;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+import com.mikepenz.iconics.Iconics;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -23,6 +27,7 @@ import io.fabric.sdk.android.Fabric;
 public class GitskariosApplication extends Application {
 
 	private ObjectGraph graph;
+	private Tracker tracker;
 
 	@Override
 	public void onCreate() {
@@ -42,6 +47,16 @@ public class GitskariosApplication extends Application {
 
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
 
+		Iconics.registerFont(new Octicons());
+	}
+
+	public Tracker getTracker() {
+		if (tracker == null) {
+			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+			tracker = analytics.newTracker(R.xml.global_tracker);
+			tracker.enableAdvertisingIdCollection(true);
+		}
+		return tracker;
 	}
 
 	protected List<Object> getModules() {

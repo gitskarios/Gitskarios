@@ -24,9 +24,9 @@ import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.ui.fragment.GistEditorFragment;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +90,7 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
         if (adapter != null && adapter.getItemCount() > 0) {
             getMenuInflater().inflate(R.menu.menu_create_gist, menu);
             MenuItem publishItem = menu.findItem(R.id.action_publish_gist);
-            GithubIconDrawable publishIcon = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_package);
+            IconicsDrawable publishIcon = new IconicsDrawable(this, Octicons.Icon.oct_package);
             publishIcon.actionBarSize();
             publishIcon.colorRes(R.color.icons);
             publishItem.setIcon(publishIcon);

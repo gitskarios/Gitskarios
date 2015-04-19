@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -41,7 +41,7 @@ public class BioCard implements View.OnClickListener {
 		if (!TextUtils.isEmpty(user.company)) {
 			ImageView icon = (ImageView) view.findViewById(R.id.iconCompany);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_organization);
+			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
 
 			icon.setImageDrawable(githubIconDrawable);
 
@@ -60,7 +60,7 @@ public class BioCard implements View.OnClickListener {
 		if (!TextUtils.isEmpty(user.location)) {
 			ImageView icon = (ImageView) view.findViewById(R.id.iconLocation);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_location);
+			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_location);
 
 			icon.setImageDrawable(githubIconDrawable);
 
@@ -79,7 +79,7 @@ public class BioCard implements View.OnClickListener {
 		if (!TextUtils.isEmpty(user.email)) {
 			ImageView icon = (ImageView) view.findViewById(R.id.iconMail);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_mail);
+			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_mail);
 
 			icon.setImageDrawable(githubIconDrawable);
 
@@ -98,7 +98,7 @@ public class BioCard implements View.OnClickListener {
 		if (user.created_at != null) {
 			ImageView icon = (ImageView) view.findViewById(R.id.iconDate);
 
-			GithubIconDrawable githubIconDrawable = drawable(view.getContext(), GithubIconify.IconValue.octicon_clock);
+			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_clock);
 
 			icon.setImageDrawable(githubIconDrawable);
 
@@ -114,8 +114,8 @@ public class BioCard implements View.OnClickListener {
 		}
 	}
 
-	private GithubIconDrawable drawable(Context context, GithubIconify.IconValue icon) {
-		GithubIconDrawable githubIconDrawable = new GithubIconDrawable(context, icon);
+	private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
+		IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
 
 		githubIconDrawable.sizeDp(30);
 		githubIconDrawable.color(avatarColor);

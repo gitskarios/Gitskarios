@@ -8,7 +8,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 11/04/2015.
@@ -59,8 +59,8 @@ public class RepoCollaboratorsFragment extends BaseUsersListFragment {
     }
 
     @Override
-    protected GithubIconify.IconValue getNoDataIcon() {
-        return GithubIconify.IconValue.octicon_person;
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_person;
     }
 
     @Override

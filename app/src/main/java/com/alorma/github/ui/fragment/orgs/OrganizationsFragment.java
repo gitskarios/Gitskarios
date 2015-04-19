@@ -12,7 +12,7 @@ import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 13/07/2014.
@@ -77,8 +77,8 @@ public class OrganizationsFragment extends PaginatedListFragment<ListOrganizatio
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_organization;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_organization;
 	}
 
 	@Override

@@ -1,16 +1,14 @@
 package com.alorma.github.ui.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -80,7 +78,7 @@ public class PeopleActivity extends BackActivity {
         listFragments.add(followersFragment);
         listFragments.add(organizationsFragment);
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getFragmentManager(), listFragments));
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
         slidingTabLayout.setViewPager(viewPager);
     }
 
@@ -129,7 +127,7 @@ public class PeopleActivity extends BackActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_search) {
             Intent intent = SearchActivity.launchIntent(this);
             startActivity(intent);
@@ -139,7 +137,7 @@ public class PeopleActivity extends BackActivity {
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, fragment);
         if (addToBackStack) {
             ft.addToBackStack(null);

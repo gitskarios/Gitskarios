@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,18 +24,22 @@ import com.alorma.github.R;
 import com.alorma.github.inapp.Base64;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Content;
+import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
+import com.alorma.github.utils.uris.RepoUri;
 
 import java.io.UnsupportedEncodingException;
 
+import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -57,6 +63,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 	private RepoInfo repoInfo;
 
 	private FileFragmentListener fileFragmentListener;
+	private SpotsDialog progressDialog;
 
 	@Nullable
 	@Override
@@ -115,6 +122,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 
 	protected void getContent() {
 		if (repoInfo != null) {
+			showProgressDialog(R.style.SpotDialog_CommentIssue);
 			GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), repoInfo, path);
 			fileContentClient.setOnResultCallback(this);
 			fileContentClient.execute();
@@ -124,6 +132,9 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 	@Override
 	public void onResponseOk(Content content, Response r) {
 		this.content = content;
+
+		hideProgressDialog();
+
 
 		if (MarkdownUtils.isMarkdown(content.name)) {
 			RequestMarkdownDTO request = new RequestMarkdownDTO();
@@ -163,6 +174,13 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 					Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
 					e.printStackTrace();
 				}
+			}
+		} else if (content.isSubmodule()){
+			if (getActivity() != null && isAdded()) {
+				RepoUri uri = new RepoUri().create(content.git_url);
+				Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), uri.getOwner(), uri.getRepo());
+				startActivity(intent);
+				getActivity().finish();
 			}
 		} else {
 			if (getActivity() != null && isAdded()) {
@@ -214,6 +232,25 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 
 	public interface FileFragmentListener {
 		boolean showUpIndicator();
+	}
 
+	protected void showProgressDialog(@StyleRes int style) {
+		if (progressDialog == null) {
+			try {
+				progressDialog = new SpotsDialog(getActivity(), style);
+				progressDialog.setCancelable(false);
+				progressDialog.setCanceledOnTouchOutside(false);
+				progressDialog.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void hideProgressDialog() {
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
 	}
 }

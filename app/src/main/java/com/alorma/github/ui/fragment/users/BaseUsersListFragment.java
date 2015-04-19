@@ -6,13 +6,10 @@ import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
-
-import java.util.ArrayList;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 13/07/2014.
@@ -25,6 +22,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	protected void onResponse(ListUsers users, boolean refreshing) {
 		getListView().setDivider(null);
 		if (users.size() > 0) {
+			hideEmpty();
 			if (getListAdapter() != null) {
 				usersAdapter.addAll(users, paging);
 			} else if (usersAdapter == null) {
@@ -60,8 +58,8 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_octoface;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_octoface;
 	}
 
 	@Override

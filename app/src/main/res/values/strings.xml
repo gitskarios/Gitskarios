@@ -211,4 +211,28 @@
     <string name="no_contributors">No contributors</string>
     <string name="contributors_fragment_title">Contributors</string>
     <string name="navigation_repos_search">Repositories</string>
+    <string name="issue_edit_milestone">Set milestone</string>
+    <string name="issue_edit_labels">Set labels</string>
+    <string name="issue_edit_assigne">Assign issue</string>
+    <string name="add_milestone">Add new milestone</string>
+    <string name="select_milestone">Select milestone</string>
+    <string name="add_milestone_hint">Milestone name</string>
+    <string name="add_milestone_description">Use Milestones to create collections of Issues and Pull Requests for a particular release or project.</string>
+    <string name="clear_milestone">Clear milestone</string>
+    <string name="navigation_repos_org">Org repositories</string>
+
+    <string name="comment_issue">Adding comment</string>
+    <string name="loading_milestones">Loading milestones</string>
+    <string name="adding_milestone">Adding milestone</string>
+    <string name="loading_issue">Loading issue</string>
+    <string name="loading_content">Loading content</string>
+    <string name="issue_list_filter">Filter issues</string>
+    <string name="issue_list_filter_closed">Show closed</string>
+    <string name="issue_list_filter_open">Show open</string>
+    <string name="star_repo">Starring user</string>
+    <string name="unstar_repo">Unstarring repo</string>
+    <string name="watch_repo">Watch repo</string>
+    <string name="unwatch_repo">Unwatch repo</string>
+    <string name="issue_subscription">Manage subscription</string>
+    <string name="issue_list_filter_search">Advanced filter</string>
 </resources>

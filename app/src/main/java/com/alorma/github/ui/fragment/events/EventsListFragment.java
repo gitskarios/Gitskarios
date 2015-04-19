@@ -18,8 +18,8 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.githubicons.GithubIconify;
 import com.google.gson.Gson;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 03/10/2014.
@@ -37,6 +37,13 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 		f.setArguments(bundle);
 
 		return f;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		getActivity().setTitle(R.string.menu_events);
 	}
 
 	@Override
@@ -86,8 +93,8 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 	}
 
 	@Override
-	protected GithubIconify.IconValue getNoDataIcon() {
-		return GithubIconify.IconValue.octicon_calendar;
+	protected Octicons.Icon getNoDataIcon() {
+		return Octicons.Icon.oct_calendar;
 	}
 
 	@Override
@@ -112,7 +119,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 			issueInfo.repo =  new RepoInfo();
 			issueInfo.repo.owner = parts[0];
 			issueInfo.repo.name = parts[1];
-			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo, item.repo.permissions);
+			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
 			startActivity(launcherIntent);
 		} else {
 			String fullName = item.repo.name;

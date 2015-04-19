@@ -16,8 +16,8 @@ import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
 
 import java.util.List;
@@ -32,7 +32,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class NotificationsAdapter extends ArrayAdapter<Notification> implements StickyListHeadersAdapter {
 
 	private final LayoutInflater mInflater;
-	private final GithubIconDrawable iconDrawable;
+	private final IconicsDrawable iconDrawable;
 	
 	@Inject
 	Bus bus;
@@ -41,7 +41,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 		super(context, 0, notifications);
 		mInflater = LayoutInflater.from(context);
 
-		iconDrawable = new GithubIconDrawable(getContext(), GithubIconify.IconValue.octicon_check);
+		iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_check);
 		iconDrawable.sizeRes(R.dimen.gapLarge);
 		iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext(), R.style.AppTheme_Repos));
 	}
@@ -74,18 +74,18 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 				popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 					@Override
 					public boolean onMenuItemClick(MenuItem menuItem) {
-						
+
 						switch (menuItem.getItemId()) {
-							
+
 							case R.id.action_notification_unsubscribe:
 								bus.post(new UnsubscribeThreadNotification(item));
 								break;
 							case R.id.action_notification_mark_read:
 								bus.post(new ClearNotification(item, false));
 								break;
-							
+
 						}
-						
+
 						return true;
 					}
 				});
@@ -118,7 +118,6 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 			@Override
 			public boolean onLongClick(View v) {
 				String text = v.getContext().getString(R.string.notifications_full_read, item.repository.full_name);
-				Toast.makeText(v.getContext(), text, Toast.LENGTH_SHORT).show();
 				return true;
 			}
 		});
@@ -130,4 +129,5 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 	public long getHeaderId(int i) {
 		return getItem(i).adapter_repo_parent_id;
 	}
+
 }

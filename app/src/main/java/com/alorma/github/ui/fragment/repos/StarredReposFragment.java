@@ -25,6 +25,12 @@ public class StarredReposFragment extends BaseReposListFragment {
 		}
 		return reposFragment;
 	}
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		getActivity().setTitle(R.string.navigation_starred_repos);
+	}
 
 	@Override
 	protected void executeRequest() {
@@ -40,6 +46,7 @@ public class StarredReposFragment extends BaseReposListFragment {
 		client.setOnResultCallback(this);
 		client.execute();
 	}
+
 
 	@Override
 	protected void executePaginatedRequest(int page) {

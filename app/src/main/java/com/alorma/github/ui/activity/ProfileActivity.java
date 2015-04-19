@@ -35,9 +35,9 @@ import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.githubicons.GithubIconDrawable;
-import com.alorma.githubicons.GithubIconify;
 import com.crashlytics.android.Crashlytics;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
@@ -64,7 +64,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	private User user;
 	private boolean followingUser = false;
 	private boolean isAuthUser;
-	private GithubIconDrawable fabDrawable;
+	private IconicsDrawable fabDrawable;
 
 	public static Intent createLauncherIntent(Context context) {
 		return new Intent(context, ProfileActivity.class);
@@ -301,8 +301,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		hideProgressDialog();
 
-		fabDrawable = new GithubIconDrawable(this, GithubIconify.IconValue.octicon_heart);
-		fabDrawable.setStyle(Paint.Style.FILL);
+		fabDrawable = new IconicsDrawable(this, Octicons.Icon.oct_heart);
 		if (following) {
 			fabDrawable.color(avatarColor);
 		} else {

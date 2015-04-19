@@ -14,6 +14,8 @@ import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.fragment.ChangelogDialog;
+import com.alorma.github.ui.fragment.ChangelogDialogSupport;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
@@ -22,6 +24,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 	public static final String REPOS_FILE_TYPE = "repos_download_type";
 	public static final String REAUTHORIZE = "reauthorize";
 	public static final String GITSKARIOS = "gitskarios";
+	public static final String CHANGELOG = "changelog";
 
 	private StoreCredentials credentials;
 
@@ -40,28 +43,20 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 
 		Preference reauthorize = findPreference(REAUTHORIZE);
 
-		credentials = new StoreCredentials(getActivity());
-		if (credentials.scopes() != null && credentials.scopes().contains("repo")) {
-			reauthorize.setEnabled(false);
-		} else {
-			reauthorize.setEnabled(true);
-			reauthorize.setOnPreferenceClickListener(this);
-		}
-
 		Preference gitskarios = findPreference(GITSKARIOS);
 		gitskarios.setOnPreferenceClickListener(this);
+
+		Preference changelog = findPreference(CHANGELOG);
+		changelog.setOnPreferenceClickListener(this);
 	}
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-		if (preference.getKey().equals(REAUTHORIZE)) {
-			credentials.clear();
-			Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(loginIntent);
-			getActivity().finish();
-		} else if (preference.getKey().equals(GITSKARIOS)) {
-			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "alorma", "gitskarios");
+		if (preference.getKey().equals(GITSKARIOS)) {
+			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "gitskarios", "Gitskarios");
 			startActivity(intent);
+		}else if (preference.getKey().equals(CHANGELOG)) {
+			ChangelogDialog dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));
+			dialog.show(getFragmentManager(), "changelog");
 		}
 		return true;
 	}
