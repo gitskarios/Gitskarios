@@ -24,7 +24,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 31/07/2014.
  */
-public class Interceptor extends Activity implements BaseClient.OnResultCallback<User> {
+public class Interceptor extends Activity implements BaseClient.OnResultCallback<User>, com.alorma.gitskarios.basesdk.client.BaseClient.OnResultCallback<User> {
 
 	private Uri uri;
 

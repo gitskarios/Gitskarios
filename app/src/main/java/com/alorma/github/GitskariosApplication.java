@@ -39,10 +39,6 @@ public class GitskariosApplication extends Application {
 
 		JodaTimeAndroid.init(this);
 
-		ApiConstants.CLIENT_ID = BuildConfig.CLIENT_ID;
-		ApiConstants.CLIENT_SECRET = BuildConfig.CLIENT_SECRET;
-		ApiConstants.CLIENT_CALLBACK = BuildConfig.CLIENT_CALLBACK;
-
 		graph = ObjectGraph.create(getModules().toArray());
 
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));

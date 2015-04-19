@@ -30,11 +30,13 @@ import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.ApiConstants;
+import com.alorma.github.sdk.security.GitHub;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.AccountsAdapter;
+import com.alorma.gitskarios.basesdk.ApiClient;
 import com.android.vending.billing.IInAppBillingService;
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -178,12 +180,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
-            openExternalLogin();
+            openExternalLogin(new GitHub());
         }
     }
 
-    private void openExternalLogin() {
-        String url = OAUTH_URL + "?client_id=" + ApiConstants.CLIENT_ID;
+    private void openExternalLogin(ApiClient client) {
+        String url = OAUTH_URL + "?client_id=" + client.getApiClient();
 
         url = url + "&scope=gist,user,notifications,repo";
 
@@ -221,7 +223,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     if (ownedSkus.size() == 0) {
                         showDialogBuyMultiAccount();
                     } else {
-                        openExternalLogin();
+                        openExternalLogin(new GitHub());
                     }
                 }
             }
@@ -254,7 +256,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     String sku = jo.getString("productId");
                     String developerPayload = jo.getString("developerPayload");
                     if (developerPayload.equals(purchaseId) && SKU_MULTI_ACCOUNT.equals(sku)) {
-                        openExternalLogin();
+                        openExternalLogin(new GitHub());
                     }
                 } catch (JSONException e) {
 

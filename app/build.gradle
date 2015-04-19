@@ -44,15 +44,9 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "CLIENT_ID", "\"" + DEV_ID + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + DEV_SECRET + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + DEV_CALLBACK + "\""
             applicationIdSuffix ".debug"
         }
         release {
-            buildConfigField "String", "CLIENT_ID", "\"" + PRO_ID + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + PRO_SECRET + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + PRO_CALLBACK + "\""
             minifyEnabled false
             signingConfig signingConfigs.playStore
         }
@@ -68,7 +62,11 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-analytics:7.0.0'
 
-    compile project(':sdk')
+
+	debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
+	releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
+
+
     // Submodules
     //compile project(':libraries:AndroidGithubIcons')
     compile project(':libraries:android-floating-action-button')
