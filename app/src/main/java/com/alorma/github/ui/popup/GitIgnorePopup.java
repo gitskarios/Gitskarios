@@ -10,7 +10,7 @@ import android.widget.PopupWindow;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GitIgnoreTemplates;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.gtignore.GitIgnoreClient;
 
 import retrofit.RetrofitError;

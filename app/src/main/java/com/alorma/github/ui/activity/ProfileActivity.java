@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,8 +17,8 @@ import android.widget.ImageView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.services.client.BaseClient;
-import com.alorma.github.sdk.services.orgs.GetOrgsClient;
+import com.alorma.github.sdk.services.user.GithubUsersClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
@@ -35,11 +34,9 @@ import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
-import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -105,7 +102,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	protected void getContent() {
-		BaseUsersClient<User> requestClient;
+		GithubUsersClient<User> requestClient;
 		user = null;
 		if (getIntent().getExtras() != null) {
 			if (getIntent().getExtras().containsKey(USER)) {

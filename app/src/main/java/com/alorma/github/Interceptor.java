@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
@@ -24,7 +24,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 31/07/2014.
  */
-public class Interceptor extends Activity implements BaseClient.OnResultCallback<User>, com.alorma.gitskarios.basesdk.client.BaseClient.OnResultCallback<User> {
+public class Interceptor extends Activity implements BaseClient.OnResultCallback<User> {
 
 	private Uri uri;
 

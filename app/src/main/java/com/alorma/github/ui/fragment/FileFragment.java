@@ -1,10 +1,8 @@
 package com.alorma.github.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -24,18 +22,16 @@ import com.alorma.github.R;
 import com.alorma.github.inapp.Base64;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ContentType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
 import com.alorma.github.utils.uris.RepoUri;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
 

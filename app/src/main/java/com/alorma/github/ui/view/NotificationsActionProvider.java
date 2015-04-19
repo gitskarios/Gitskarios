@@ -1,15 +1,10 @@
 package com.alorma.github.ui.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.v4.view.ActionProvider;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -17,11 +12,10 @@ import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.sdk.bean.dto.response.Notification;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
