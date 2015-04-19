@@ -515,7 +515,13 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         } else {
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
             if (fragments != null) {
-                if (fragments.get(0) instanceof ReposFragment) {
+                if (fragments.size() == 1) {
+                    if (fragments.get(0) instanceof ReposFragment) {
+                        finish();
+                    } else {
+                        super.onBackPressed();
+                    }
+                } else if (fragments.get(fragments.size() - 1) instanceof ReposFragment) {
                     finish();
                 } else {
                     super.onBackPressed();

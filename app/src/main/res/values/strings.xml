@@ -233,4 +233,5 @@
     <string name="unstar_repo">Unstarring repo</string>
     <string name="watch_repo">Watch repo</string>
     <string name="unwatch_repo">Unwatch repo</string>
+    <string name="issue_subscription">Manage subscription</string>
 </resources>

@@ -19,7 +19,9 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
+import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
+import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
@@ -45,210 +47,232 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  */
 public class NotificationsFragment extends PaginatedListFragment<List<Notification>> {
 
-	private StickyListHeadersListView listView;
-	public NotificationsAdapter notificationsAdapter;
+    private StickyListHeadersListView listView;
+    public NotificationsAdapter notificationsAdapter;
 
-	@Inject
-	Bus bus;
+    @Inject
+    Bus bus;
 
-	public static NotificationsFragment newInstance() {
-		return new NotificationsFragment();
-	}
+    public static NotificationsFragment newInstance() {
+        return new NotificationsFragment();
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		GitskariosApplication.get(getActivity()).inject(this);
-	}
+        GitskariosApplication.get(getActivity()).inject(this);
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		return inflater.inflate(R.layout.list_fragment_headers
-				, null);
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.list_fragment_headers
+                , null);
+    }
 
-	@Override
-	protected void setupListView(View view) {
-		listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
-		if (listView != null) {
-			listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-			listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
-			/*listView.setOnItemClickListener(this);*/
-			listView.setAreHeadersSticky(false);
-			listView.setOnItemClickListener(this);
-		}
-	}
+    @Override
+    protected void setupListView(View view) {
+        listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
+        if (listView != null) {
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
+            listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+            listView.setAreHeadersSticky(false);
+            listView.setOnItemClickListener(this);
+        }
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
+    @Override
+    public void onResume() {
+        super.onResume();
 
-		getActivity().setTitle(R.string.notifications);
-	}
+        getActivity().setTitle(R.string.notifications);
+    }
 
-	@Override
-	protected void executeRequest() {
-		super.executeRequest();
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
 
-		GetNotificationsClient client = new GetNotificationsClient(getActivity());
-		client.setOnResultCallback(this);
-		client.execute();
-	}
+        GetNotificationsClient client = new GetNotificationsClient(getActivity());
+        client.setOnResultCallback(this);
+        client.execute();
+    }
 
-	@Override
-	protected void executePaginatedRequest(int page) {
+    @Override
+    protected void executePaginatedRequest(int page) {
 
-	}
+    }
 
-	@Override
-	public void onResponseOk(final List<Notification> notifications, Response r) {
-		stopRefresh();
-		if (notifications != null) {
-			bus.post(new NotificationsCount(notifications.size()));
-		}
-		super.onResponseOk(notifications, r);
-	}
+    @Override
+    public void onResponseOk(final List<Notification> notifications, Response r) {
+        stopRefresh();
+        if (notifications != null) {
+            bus.post(new NotificationsCount(notifications.size()));
+        }
+        super.onResponseOk(notifications, r);
+    }
 
-	@Override
-	protected void onResponse(final List<Notification> notifications, boolean refreshing) {
-		if (refreshing) {
-			notificationsAdapter.clear();
-		}
-		if (notifications != null) {
-			bus.post(new NotificationsCount(notifications.size()));
-			if (notifications.size() > 0) {
-				if (notificationsAdapter != null && notificationsAdapter.getCount() > 0) {
-					hideEmpty();
-				}
+    @Override
+    protected void onResponse(final List<Notification> notifications, boolean refreshing) {
+        if (refreshing) {
+            notificationsAdapter.clear();
+        }
+        if (notifications != null) {
+            bus.post(new NotificationsCount(notifications.size()));
+            if (notifications.size() > 0) {
+                if (notificationsAdapter != null && notificationsAdapter.getCount() > 0) {
+                    hideEmpty();
+                }
 
-				Map<String, Integer> ids = new HashMap<>();
+                Map<String, Integer> ids = new HashMap<>();
 
-				int id = 0;
-				for (Notification notification : notifications) {
-					if (ids.get(notification.repository.name) == null) {
-						ids.put(notification.repository.name, id++);
-					}
-					notification.adapter_repo_parent_id = ids.get(notification.repository.name);
-				}
+                int id = 0;
+                for (Notification notification : notifications) {
+                    if (ids.get(notification.repository.name) == null) {
+                        ids.put(notification.repository.name, id++);
+                    }
+                    notification.adapter_repo_parent_id = ids.get(notification.repository.name);
+                }
 
-				Collections.sort(notifications, Notification.Comparators.REPO_ID);
+                Collections.sort(notifications, Notification.Comparators.REPO_ID);
 
-				getActivity().runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
 
-					@Override
-					public void run() {
+                    @Override
+                    public void run() {
 
-						notificationsAdapter = new NotificationsAdapter(getActivity(), notifications);
+                        notificationsAdapter = new NotificationsAdapter(getActivity(), notifications);
 
-						GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
-						bus.register(notificationsAdapter);
+                        GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
+                        bus.register(notificationsAdapter);
 
-						listView.setAdapter(notificationsAdapter);
-					}
-				});
+                        listView.setAdapter(notificationsAdapter);
+                    }
+                });
 
-			} else {
-				if (notificationsAdapter != null) {
-					notificationsAdapter.clear();
-				}
-				setEmpty();
-			}
-		}
-	}
+            } else {
+                if (notificationsAdapter != null) {
+                    notificationsAdapter.clear();
+                }
+                setEmpty();
+            }
+        }
+    }
 
-	@Override
-	protected void loadArguments() {
+    @Override
+    protected void loadArguments() {
 
-	}
+    }
 
-	@Override
-	protected Octicons.Icon getNoDataIcon() {
-		return Octicons.Icon.oct_inbox;
-	}
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_inbox;
+    }
 
-	@Override
-	protected int getNoDataText() {
-		return R.string.no_notifications;
-	}
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_notifications;
+    }
 
-/*	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		Notification item = notificationsAdapter.getItem(position);
-		manageNotificationClick(item);
-	}*/
+    @Subscribe
+    public void manageNotificationClick(Notification item) {
+        String type = item.subject.type;
 
-	@Subscribe
-	public void manageNotificationClick(Notification item) {
-		String type = item.subject.type;
+        Uri uri = Uri.parse(item.subject.url);
+        if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
+            List<String> segments = uri.getPathSegments();
+            String user = segments.get(1);
+            String repo = segments.get(2);
+            String number = segments.get(4);
+            IssueInfo issueInfo = new IssueInfo();
+            issueInfo.num = Integer.valueOf(number);
+            issueInfo.repo = new RepoInfo();
+            issueInfo.repo.owner = user;
+            issueInfo.repo.name = repo;
+            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo, item.repository.permissions);
+            startActivity(launcherIntent);
+        } else {
+            String fullName = item.repository.full_name;
+            String[] parts = fullName.split("/");
+            Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
+            startActivity(intent);
+        }
 
-		Uri uri = Uri.parse(item.subject.url);
-		if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
-			List<String> segments = uri.getPathSegments();
-			String user = segments.get(1);
-			String repo = segments.get(2);
-			String number = segments.get(4);
-			IssueInfo issueInfo = new IssueInfo();
-			issueInfo.num = Integer.valueOf(number);
-			issueInfo.repo = new RepoInfo();
-			issueInfo.repo.owner = user;
-			issueInfo.repo.name = repo;
-			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo, item.repository.permissions);
-			startActivity(launcherIntent);
-		} else {
-			String fullName = item.repository.full_name;
-			String[] parts = fullName.split("/");
-			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
-			startActivity(intent);
-		}
+    }
 
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
 
-	@Override
-	public void onStart() {
-		super.onStart();
+        bus.register(this);
+    }
 
-		bus.register(this);
-	}
+    @Override
+    public void onPause() {
+        if (notificationsAdapter != null) {
+            bus.unregister(notificationsAdapter);
+        }
+        bus.unregister(this);
+        super.onPause();
+    }
 
-	@Override
-	public void onPause() {
-		if (notificationsAdapter != null) {
-			bus.unregister(notificationsAdapter);
-		}
-		bus.unregister(this);
-		super.onPause();
-	}
+    @Subscribe
+    public void clearRepoNotifications(final ClearNotification clearNotification) {
+        if (clearNotification.isAllRepository()) {
+            RepoInfo repoInfo = new RepoInfo();
+            repoInfo.owner = clearNotification.getNotification().repository.owner.login;
+            repoInfo.name = clearNotification.getNotification().repository.name;
+            MarkRepoNotificationsRead client = new MarkRepoNotificationsRead(getActivity(), repoInfo);
+            client.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+                @Override
+                public void onResponseOk(Response response, Response r) {
+                    executeRequest();
+                }
 
-	@Subscribe
-	public void clearRepoNotifications(ClearNotification clearNotification) {
-		if (clearNotification.isAllRepository()) {
-			RepoInfo repoInfo = new RepoInfo();
-			repoInfo.owner = clearNotification.getNotification().repository.owner.login;
-			repoInfo.name = clearNotification.getNotification().repository.name;
-			MarkRepoNotificationsRead client = new MarkRepoNotificationsRead(getActivity(), repoInfo);
-			client.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
-				@Override
-				public void onResponseOk(Response response, Response r) {
-					executeRequest();
-				}
+                @Override
+                public void onFail(RetrofitError error) {
 
-				@Override
-				public void onFail(RetrofitError error) {
+                }
+            });
+            client.execute();
+        } else {
+            final MarkNotificationAsRead notificationAsRead = new MarkNotificationAsRead(getActivity(), clearNotification.getNotification());
+            notificationAsRead.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+                @Override
+                public void onResponseOk(Response response, Response r) {
+                    if (response != null && response.getStatus() == 205) {
+                        notificationsAdapter.remove(clearNotification.getNotification());
+                        notificationsAdapter.notifyDataSetChanged();
+                    }
+                }
 
-				}
-			});
-			client.execute();
-			Toast.makeText(getActivity(), "Mark as read all repo: " + clearNotification.getNotification().repository.full_name, Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(getActivity(), "Mark as read: " + clearNotification.getNotification().subject.title, Toast.LENGTH_SHORT).show();
-		}
-	}
+                @Override
+                public void onFail(RetrofitError error) {
 
-	@Subscribe
-	public void unsubscribeThreadNotification(UnsubscribeThreadNotification unsubscribeThreadNotification) {
-		Toast.makeText(getActivity(), "Unsubscribe: " + unsubscribeThreadNotification.getNotification().subject.title, Toast.LENGTH_SHORT).show();
-	}
+                }
+            });
+            notificationAsRead.execute();
+        }
+    }
+
+    @Subscribe
+    public void unsubscribeThreadNotification(final UnsubscribeThreadNotification unsubscribeThreadNotification) {
+        final UnsubscribeThread unsubscribeThread = new UnsubscribeThread(getActivity(), unsubscribeThreadNotification.getNotification());
+        unsubscribeThread.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+            @Override
+            public void onResponseOk(Response response, Response r) {
+                if (response != null && response.getStatus() == 204) {
+                    notificationsAdapter.remove(unsubscribeThreadNotification.getNotification());
+                    notificationsAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        unsubscribeThread.execute();
+    }
 }

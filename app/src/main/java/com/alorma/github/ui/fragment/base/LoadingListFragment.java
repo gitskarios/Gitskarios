@@ -174,7 +174,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 	public void setEmpty() {
 		if (getActivity() != null) {
-			if (getListAdapter() != null && getListAdapter().getCount() == 0 && emptyText != null && emptyIcon != null) {
+			if (emptyText != null && emptyIcon != null) {
 				if (getNoDataIcon() != null && getNoDataText() > 0) {
 					IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), getNoDataIcon());
 					iconicsDrawable.colorRes(R.color.gray_github_medium);

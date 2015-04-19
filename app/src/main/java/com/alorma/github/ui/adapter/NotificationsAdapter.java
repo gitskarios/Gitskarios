@@ -118,7 +118,6 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 			@Override
 			public boolean onLongClick(View v) {
 				String text = v.getContext().getString(R.string.notifications_full_read, item.repository.full_name);
-				Toast.makeText(v.getContext(), text, Toast.LENGTH_SHORT).show();
 				return true;
 			}
 		});

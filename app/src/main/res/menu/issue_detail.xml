@@ -14,4 +14,7 @@
     <item android:title="@string/issue_edit_assigne"
         android:id="@+id/issue_edit_assigne"
         app:showAsAction="never"/>-->
+    <item android:title="@string/issue_subscription"
+        android:id="@+id/issue_subscription"
+        app:showAsAction="never"/>
 </menu>
