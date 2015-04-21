@@ -160,6 +160,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	protected void checkFAB() {
 		if (getActivity() != null && fab != null) {
 			if (useFAB()) {
+				fab.setVisibility(View.VISIBLE);
 				fabVisible = true;
 				fab.setOnClickListener(this);
 				fab.setSize(FloatingActionButton.SIZE_NORMAL);
