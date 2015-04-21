@@ -227,22 +227,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
-        if (fab != null) {
-            fab.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void hideEmpty() {
-        super.hideEmpty();
-        if (fab != null) {
-            fab.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
     protected Octicons.Icon getNoDataIcon() {
         return Octicons.Icon.oct_issue_opened;
     }
