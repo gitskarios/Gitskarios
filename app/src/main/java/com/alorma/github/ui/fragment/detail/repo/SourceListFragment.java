@@ -134,10 +134,12 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     private void navigateUp() {
-        currentSelectedContent = currentSelectedContent.parent;
         if (currentSelectedContent != null) {
-            if (treeContent.get(currentSelectedContent) != null) {
-                displayContent(treeContent.get(currentSelectedContent));
+            currentSelectedContent = currentSelectedContent.parent;
+            if (currentSelectedContent != null) {
+                if (treeContent.get(currentSelectedContent) != null) {
+                    displayContent(treeContent.get(currentSelectedContent));
+                }
             }
         }
     }
@@ -187,10 +189,24 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     @Override
     public void onResponseOk(ListContents contents, Response r) {
         if (getActivity() != null) {
-            Collections.sort(contents, Content.Comparators.TYPE);
-            treeContent.put(currentSelectedContent, contents);
+            if (contents != null && contents.size() > 0) {
+                Collections.sort(contents, Content.Comparators.TYPE);
+                treeContent.put(currentSelectedContent, contents);
 
-            displayContent(contents);
+                displayContent(contents);
+            } else if (contentAdapter == null || contentAdapter.getCount() == 0) {
+                setEmpty();
+            }
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        if (getActivity() != null) {
+            if (contentAdapter == null || contentAdapter.getCount() == 0) {
+                setEmpty();
+            }
+            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
         }
     }
 
@@ -225,13 +241,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 }
             }
         }, 2500);
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        if (getActivity() != null) {
-            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
-        }
     }
 
     @Override

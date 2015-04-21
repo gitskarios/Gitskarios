@@ -57,6 +57,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 
 		bt = new NotificationImageView(getContext());
 		bt.setOnClickListener(this);
+		newNotificationsSize(new NotificationsCount(0));
 
 		layout.addView(bt);
 

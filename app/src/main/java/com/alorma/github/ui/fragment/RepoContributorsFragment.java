@@ -82,20 +82,29 @@ public class RepoContributorsFragment extends BaseUsersListFragment {
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
-            ListUsers users = new ListUsers();
 
-            users.add(owner);
-            for (Contributor contributor : contributors) {
-                if (!contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-                    users.add(users.size(), contributor.author);
+            if (contributors != null) {
+                ListUsers users = new ListUsers();
+
+                users.add(owner);
+                for (Contributor contributor : contributors) {
+                    if (!contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                        users.add(users.size(), contributor.author);
+                    }
                 }
+                RepoContributorsFragment.this.onResponseOk(users, r);
             }
-            RepoContributorsFragment.this.onResponseOk(users, r);
+
+            if (contributors == null || contributors.size() == 0 && (getListAdapter() != null && getListAdapter().getCount() == 0)) {
+                setEmpty();
+            }
         }
 
         @Override
         public void onFail(RetrofitError error) {
-
+            if (getListAdapter() != null && getListAdapter().getCount() == 0) {
+                setEmpty();
+            }
         }
     }
 }

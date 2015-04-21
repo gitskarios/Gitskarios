@@ -277,18 +277,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             case R.id.issue_edit_milestone:
                 editMilestone();
                 break;
-            case R.id.issue_subscription:
-                manageSubscription();
-                break;
         }
 
         return true;
     }
-
-    private void manageSubscription() {
-
-    }
-
     private void editMilestone() {
         GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());

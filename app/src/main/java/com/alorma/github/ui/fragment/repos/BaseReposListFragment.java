@@ -13,6 +13,8 @@ import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import retrofit.RetrofitError;
+
 /**
  * Created by Bernat on 17/07/2014.
  */
@@ -46,6 +48,16 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 			} else {
 				setListAdapter(reposAdapter);
 			}
+		} else if (reposAdapter == null || reposAdapter.getCount() == 0) {
+			setEmpty();
+		}
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+		super.onFail(error);
+		if (reposAdapter == null || reposAdapter.getCount() == 0) {
+			setEmpty();
 		}
 	}
 

@@ -45,11 +45,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 					onResponse(k, refreshing);
 					paging = false;
 					refreshing = false;
-				} else {
-					setEmpty();
 				}
-			} else {
-				setEmpty();
 			}
 		}
 	}
@@ -57,17 +53,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	@Override
 	public void onFail(RetrofitError error) {
 		stopRefresh();
-		hideEmpty();
 		if (getActivity() != null) {
-			if (getListAdapter() == null) {
-				setEmpty();
-			} else {
-				if (getListAdapter().getCount() == 0) {
-					setEmpty();
-				} else {
-					hideEmpty();
-				}
-			}
 			ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
 		}
 	}

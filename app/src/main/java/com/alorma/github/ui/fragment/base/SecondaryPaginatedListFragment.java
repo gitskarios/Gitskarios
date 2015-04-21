@@ -45,11 +45,7 @@ public abstract class SecondaryPaginatedListFragment<K, T> extends SecondaryLoad
 					onResponse(k, refreshing);
 					paging = false;
 					refreshing = false;
-				} else {
-					setEmpty();
 				}
-			} else {
-				setEmpty();
 			}
 		}
 	}

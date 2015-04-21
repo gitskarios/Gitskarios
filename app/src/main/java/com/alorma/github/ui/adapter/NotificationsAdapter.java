@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import com.alorma.github.R;
 import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -104,6 +106,13 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 
 		TextView tv = (TextView) v.findViewById(R.id.text);
 		tv.setText(item.repository.full_name);
+		tv.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = RepoDetailActivity.createLauncherIntent(view.getContext(), item.repository.owner.login, item.repository.name);
+				view.getContext().startActivity(intent);
+			}
+		});
 
 		ImageView iv = (ImageView) v.findViewById(R.id.clearNotifications);
 		iv.setImageDrawable(iconDrawable);
@@ -112,13 +121,6 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 			@Override
 			public void onClick(View v) {
 				bus.post(new ClearNotification(item, true));
-			}
-		});
-		iv.setOnLongClickListener(new View.OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				String text = v.getContext().getString(R.string.notifications_full_read, item.repository.full_name);
-				return true;
 			}
 		});
 

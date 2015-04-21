@@ -110,6 +110,13 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             bus.post(new NotificationsCount(notifications.size()));
         }
         super.onResponseOk(notifications, r);
+        if (notifications != null) {
+            if (notifications.size() == 0 && (notificationsAdapter == null || notificationsAdapter.getCount() == 0)) {
+                setEmpty();
+            }
+        } else {
+            setEmpty();
+        }
     }
 
     @Override
@@ -117,7 +124,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         if (refreshing) {
             notificationsAdapter.clear();
         }
-        if (notifications != null) {
+        if (notifications != null && notifications.size() > 0) {
             bus.post(new NotificationsCount(notifications.size()));
             if (notifications.size() > 0) {
                 if (notificationsAdapter != null && notificationsAdapter.getCount() > 0) {
@@ -151,11 +158,19 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                 });
 
             } else {
-                if (notificationsAdapter != null) {
-                    notificationsAdapter.clear();
+                if (notificationsAdapter == null || notificationsAdapter.getCount() == 0) {
+                    setEmpty();
                 }
-                setEmpty();
+
             }
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        super.onFail(error);
+        if (notificationsAdapter == null || notificationsAdapter.getCount() == 0) {
+            setEmpty();
         }
     }
 

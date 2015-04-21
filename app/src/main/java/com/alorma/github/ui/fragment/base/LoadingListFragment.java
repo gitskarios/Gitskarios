@@ -117,6 +117,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	}
 
 	protected void startRefresh() {
+		hideEmpty();
 		if (swipe != null) {
 			swipe.setRefreshing(true);
 		}

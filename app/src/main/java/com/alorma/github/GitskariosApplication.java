@@ -27,7 +27,6 @@ import io.fabric.sdk.android.Fabric;
 public class GitskariosApplication extends Application {
 
 	private ObjectGraph graph;
-	private Tracker tracker;
 
 	@Override
 	public void onCreate() {
@@ -35,6 +34,10 @@ public class GitskariosApplication extends Application {
 
 		if (!BuildConfig.DEBUG) {
 			Fabric.with(this, new Crashlytics());
+
+			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+			Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+			tracker.enableAdvertisingIdCollection(true);
 		}
 
 		JodaTimeAndroid.init(this);
@@ -44,15 +47,6 @@ public class GitskariosApplication extends Application {
 		ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
 
 		Iconics.registerFont(new Octicons());
-	}
-
-	public Tracker getTracker() {
-		if (tracker == null) {
-			GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-			tracker = analytics.newTracker(R.xml.global_tracker);
-			tracker.enableAdvertisingIdCollection(true);
-		}
-		return tracker;
 	}
 
 	protected List<Object> getModules() {
