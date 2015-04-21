@@ -20,6 +20,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	protected static final String USERNAME = "USERNAME";
 	protected boolean paging;
 	private PaginationLink bottomPaginationLink;
+
 	protected boolean refreshing;
 
 	@Override
@@ -87,5 +88,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
 	public void setRefreshing() {
 		this.refreshing = true;
+	}
+
+	public boolean isRefreshing() {
+		return refreshing;
 	}
 }

@@ -266,6 +266,22 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         }
     }
 
+    @Override
+    public void setEmpty() {
+        super.setEmpty();
+        if (fabMenu != null) {
+            fabMenu.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void hideEmpty() {
+        super.hideEmpty();
+        if (fabMenu != null) {
+            fabMenu.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void setCurrentBranch(String branch) {
         repoInfo.branch = branch;
 

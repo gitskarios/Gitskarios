@@ -104,12 +104,16 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
             switch (item.getItemId()) {
                 case R.id.issue_list_filter_open:
                     currentState = IssueState.open;
-                    issuesAdapter.clear();
+                    if (issuesAdapter != null) {
+                        issuesAdapter.clear();
+                    }
                     onRefresh();
                     break;
                 case R.id.issue_list_filter_closed:
                     currentState = IssueState.closed;
-                    issuesAdapter.clear();
+                    if (issuesAdapter != null) {
+                        issuesAdapter.clear();
+                    }
                     onRefresh();
                     break;
                 case R.id.issue_list_filter_search:
@@ -182,6 +186,11 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     public void onResponseOk(ListIssues issues, Response r) {
         super.onResponseOk(issues, r);
 
+        if (refreshing) {
+            if (issuesAdapter != null) {
+                issuesAdapter.clear();
+            }
+        }
         if (issues == null || issues.size() == 0 && (issuesAdapter == null || issuesAdapter.getCount() == 0)) {
             setEmpty();
         }
@@ -214,6 +223,22 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
         super.onFail(error);
         if (issuesAdapter == null || issuesAdapter.getCount() == 0) {
             setEmpty();
+        }
+    }
+
+    @Override
+    public void setEmpty() {
+        super.setEmpty();
+        if (fab != null) {
+            fab.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void hideEmpty() {
+        super.hideEmpty();
+        if (fab != null) {
+            fab.setVisibility(View.VISIBLE);
         }
     }
 

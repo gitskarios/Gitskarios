@@ -204,15 +204,17 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
-            List<User> users = new ArrayList<User>(contributors.size());
-            User cleanUser = new User();
-            cleanUser.login = "No assignee";
-            users.add(cleanUser);
-            for (Contributor contributor : contributors) {
-                users.add(contributor.author);
+            if (contributors != null) {
+                List<User> users = new ArrayList<User>(contributors.size());
+                User cleanUser = new User();
+                cleanUser.login = "No assignee";
+                users.add(cleanUser);
+                for (Contributor contributor : contributors) {
+                    users.add(contributor.author);
+                }
+                assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
+                spinnerAssignee.setAdapter(assigneesAdapter);
             }
-            assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
-            spinnerAssignee.setAdapter(assigneesAdapter);
         }
 
         @Override

@@ -47,7 +47,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	protected TextView emptyText;
 	protected ImageView emptyIcon;
 	protected View emptyLy;
-	private FloatingActionButton fab;
+	protected FloatingActionButton fab;
 	private ValueAnimator animator;
 	private boolean fabVisible;
 	private ListView listView;
