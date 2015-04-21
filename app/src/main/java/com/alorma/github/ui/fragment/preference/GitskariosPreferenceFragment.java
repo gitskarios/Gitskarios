@@ -35,13 +35,16 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 		addPreferencesFromResource(R.xml.main_prefs);
 
 		CheckBoxPreference intercetor = (CheckBoxPreference) findPreference(PREF_INTERCEPT);
+
+		ComponentName componentName = new ComponentName(getActivity(), Interceptor.class);
+		int componentEnabledSetting = getActivity().getPackageManager().getComponentEnabledSetting(componentName);
+		intercetor.setChecked(componentEnabledSetting == PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
+
 		intercetor.setOnPreferenceChangeListener(this);
 
 		findPreference(REPOS_SORT).setOnPreferenceChangeListener(this);
 
 		findPreference(REPOS_FILE_TYPE).setOnPreferenceChangeListener(this);
-
-		Preference reauthorize = findPreference(REAUTHORIZE);
 
 		Preference gitskarios = findPreference(GITSKARIOS);
 		gitskarios.setOnPreferenceClickListener(this);

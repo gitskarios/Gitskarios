@@ -11,7 +11,7 @@ import android.widget.EditText;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;

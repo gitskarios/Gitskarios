@@ -47,7 +47,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	protected TextView emptyText;
 	protected ImageView emptyIcon;
 	protected View emptyLy;
-	private FloatingActionButton fab;
+	protected FloatingActionButton fab;
 	private ValueAnimator animator;
 	private boolean fabVisible;
 	private ListView listView;
@@ -117,6 +117,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	}
 
 	protected void startRefresh() {
+		hideEmpty();
 		if (swipe != null) {
 			swipe.setRefreshing(true);
 		}
@@ -159,6 +160,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	protected void checkFAB() {
 		if (getActivity() != null && fab != null) {
 			if (useFAB()) {
+				fab.setVisibility(View.VISIBLE);
 				fabVisible = true;
 				fab.setOnClickListener(this);
 				fab.setSize(FloatingActionButton.SIZE_NORMAL);

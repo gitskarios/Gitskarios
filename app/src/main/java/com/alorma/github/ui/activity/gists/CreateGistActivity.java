@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.ui.fragment.GistEditorFragment;

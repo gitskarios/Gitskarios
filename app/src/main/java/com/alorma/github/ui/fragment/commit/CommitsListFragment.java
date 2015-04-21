@@ -33,6 +33,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.RetrofitError;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
@@ -114,6 +115,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
                     });
                 }
             }
+        } else if (commitsAdapter == null || commitsAdapter.getCount() == 0) {
+            setEmpty();
         }
 
         if (branchSnackBar != null) {
@@ -121,6 +124,30 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         }
         branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
 
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        super.onFail(error);
+        if (commitsAdapter == null || commitsAdapter.getCount() == 0) {
+            setEmpty();
+        }
+    }
+
+    @Override
+    public void setEmpty() {
+        super.setEmpty();
+        if (fab != null) {
+            fab.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void hideEmpty() {
+        super.hideEmpty();
+        if (fab != null) {
+            fab.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
@@ -82,20 +82,29 @@ public class RepoContributorsFragment extends BaseUsersListFragment {
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
-            ListUsers users = new ListUsers();
 
-            users.add(owner);
-            for (Contributor contributor : contributors) {
-                if (!contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-                    users.add(users.size(), contributor.author);
+            if (contributors != null) {
+                ListUsers users = new ListUsers();
+
+                users.add(owner);
+                for (Contributor contributor : contributors) {
+                    if (!contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                        users.add(users.size(), contributor.author);
+                    }
                 }
+                RepoContributorsFragment.this.onResponseOk(users, r);
             }
-            RepoContributorsFragment.this.onResponseOk(users, r);
+
+            if (contributors == null || contributors.size() == 0 && (getListAdapter() != null && getListAdapter().getCount() == 0)) {
+                setEmpty();
+            }
         }
 
         @Override
         public void onFail(RetrofitError error) {
-
+            if (getListAdapter() != null && getListAdapter().getCount() == 0) {
+                setEmpty();
+            }
         }
     }
 }

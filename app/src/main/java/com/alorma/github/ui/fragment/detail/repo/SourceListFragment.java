@@ -14,7 +14,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
@@ -134,10 +134,12 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     private void navigateUp() {
-        currentSelectedContent = currentSelectedContent.parent;
         if (currentSelectedContent != null) {
-            if (treeContent.get(currentSelectedContent) != null) {
-                displayContent(treeContent.get(currentSelectedContent));
+            currentSelectedContent = currentSelectedContent.parent;
+            if (currentSelectedContent != null) {
+                if (treeContent.get(currentSelectedContent) != null) {
+                    displayContent(treeContent.get(currentSelectedContent));
+                }
             }
         }
     }
@@ -187,10 +189,24 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     @Override
     public void onResponseOk(ListContents contents, Response r) {
         if (getActivity() != null) {
-            Collections.sort(contents, Content.Comparators.TYPE);
-            treeContent.put(currentSelectedContent, contents);
+            if (contents != null && contents.size() > 0) {
+                Collections.sort(contents, Content.Comparators.TYPE);
+                treeContent.put(currentSelectedContent, contents);
 
-            displayContent(contents);
+                displayContent(contents);
+            } else if (contentAdapter == null || contentAdapter.getCount() == 0) {
+                setEmpty();
+            }
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        if (getActivity() != null) {
+            if (contentAdapter == null || contentAdapter.getCount() == 0) {
+                setEmpty();
+            }
+            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
         }
     }
 
@@ -228,13 +244,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public void onFail(RetrofitError error) {
-        if (getActivity() != null) {
-            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
-        }
-    }
-
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
@@ -254,6 +263,22 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 Intent intent = FileActivity.createLauncherIntent(getActivity(), repoInfo, item.name, item.path);
                 startActivity(intent);
             }
+        }
+    }
+
+    @Override
+    public void setEmpty() {
+        super.setEmpty();
+        if (fabMenu != null) {
+            fabMenu.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void hideEmpty() {
+        super.hideEmpty();
+        if (fabMenu != null) {
+            fabMenu.setVisibility(View.VISIBLE);
         }
     }
 

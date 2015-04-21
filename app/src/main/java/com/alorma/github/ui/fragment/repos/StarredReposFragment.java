@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
+import com.alorma.github.sdk.services.repos.GithubReposClient;
 import com.alorma.github.sdk.services.repos.StarredReposClient;
 
 public class StarredReposFragment extends BaseReposListFragment {
@@ -35,7 +36,7 @@ public class StarredReposFragment extends BaseReposListFragment {
 	@Override
 	protected void executeRequest() {
 		super.executeRequest();
-		BaseReposClient client;
+		GithubReposClient client;
 
 		if (getArguments() != null) {
 			username = getArguments().getString(USERNAME);

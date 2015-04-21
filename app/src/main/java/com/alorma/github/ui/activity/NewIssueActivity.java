@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -15,11 +14,10 @@ import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
@@ -32,7 +30,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
-import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -207,15 +204,17 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
-            List<User> users = new ArrayList<User>(contributors.size());
-            User cleanUser = new User();
-            cleanUser.login = "No assignee";
-            users.add(cleanUser);
-            for (Contributor contributor : contributors) {
-                users.add(contributor.author);
+            if (contributors != null) {
+                List<User> users = new ArrayList<User>(contributors.size());
+                User cleanUser = new User();
+                cleanUser.login = "No assignee";
+                users.add(cleanUser);
+                for (Contributor contributor : contributors) {
+                    users.add(contributor.author);
+                }
+                assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
+                spinnerAssignee.setAdapter(assigneesAdapter);
             }
-            assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
-            spinnerAssignee.setAdapter(assigneesAdapter);
         }
 
         @Override

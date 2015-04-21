@@ -322,20 +322,18 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (getToolbar() != null) {
-            if (!hasInflated) {
-                getToolbar().inflateMenu(R.menu.main_menu);
-                hasInflated = true;
-            }
+        if (!hasInflated) {
+            getMenuInflater().inflate(R.menu.main_menu, menu);
+            hasInflated = true;
+        }
 
-            MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
+        MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
 
-            notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
+        notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
 
-            if (notificationProvider != null) {
-                notificationProvider.setOnNotificationListener(this);
-                bus.register(notificationProvider);
-            }
+        if (notificationProvider != null) {
+            notificationProvider.setOnNotificationListener(this);
+            bus.register(notificationProvider);
         }
 
         return true;

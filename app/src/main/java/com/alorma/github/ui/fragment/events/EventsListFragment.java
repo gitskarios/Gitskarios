@@ -21,6 +21,8 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.google.gson.Gson;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import retrofit.RetrofitError;
+
 /**
  * Created by Bernat on 03/10/2014.
  */
@@ -65,6 +67,16 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 			if (eventsAdapter != null) {
 				setListAdapter(eventsAdapter);
 			}
+		} else if (eventsAdapter == null || eventsAdapter.getCount() == 0) {
+			setEmpty();
+		}
+	}
+
+	@Override
+	public void onFail(RetrofitError error) {
+		super.onFail(error);
+		if (eventsAdapter == null || eventsAdapter.getCount() == 0) {
+			setEmpty();
 		}
 	}
 

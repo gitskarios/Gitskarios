@@ -9,6 +9,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
 import com.alorma.github.sdk.services.orgs.OrgsReposClient;
+import com.alorma.github.sdk.services.repos.GithubReposClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 
@@ -49,8 +50,7 @@ public class OrgsReposFragment extends BaseReposListFragment {
 	@Override
 	protected void executeRequest() {
 		super.executeRequest();
-		BaseReposClient client;
-		client = new OrgsReposClient(getActivity(), org);
+		GithubReposClient client = new OrgsReposClient(getActivity(), org);
 
 		client.setOnResultCallback(this);
 		client.execute();

@@ -11,60 +11,72 @@ import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import retrofit.RetrofitError;
+
 /**
  * Created by Bernat on 13/07/2014.
  */
 public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUsers> {
 
-	private UsersAdapter usersAdapter;
+    private UsersAdapter usersAdapter;
 
-	@Override
-	protected void onResponse(ListUsers users, boolean refreshing) {
-		getListView().setDivider(null);
-		if (users.size() > 0) {
-			hideEmpty();
-			if (getListAdapter() != null) {
-				usersAdapter.addAll(users, paging);
-			} else if (usersAdapter == null) {
-				setUpList(users);
-			} else {
-				setListAdapter(usersAdapter);
-			}
-		}
-	}
+    @Override
+    protected void onResponse(ListUsers users, boolean refreshing) {
+        getListView().setDivider(null);
+        if (users.size() > 0) {
+            hideEmpty();
+            if (getListAdapter() != null) {
+                usersAdapter.addAll(users, paging);
+            } else if (usersAdapter == null) {
+                setUpList(users);
+            } else {
+                setListAdapter(usersAdapter);
+            }
+        } else if (usersAdapter == null || usersAdapter.getCount() == 0) {
+            setEmpty();
+        }
+    }
 
-	protected UsersAdapter setUpList(ListUsers users) {
-		usersAdapter = new UsersAdapter(getActivity(), users);
-		setListAdapter(usersAdapter);
-		return usersAdapter;
-	}
+    @Override
+    public void onFail(RetrofitError error) {
+        super.onFail(error);
+        if (usersAdapter == null || usersAdapter.getCount() == 0) {
+            setEmpty();
+        }
+    }
 
-	@Override
-	public void setEmpty() {
-		super.setEmpty();
-		if (usersAdapter != null) {
-			usersAdapter.clear();
-		}
-	}
+    protected UsersAdapter setUpList(ListUsers users) {
+        usersAdapter = new UsersAdapter(getActivity(), users);
+        setListAdapter(usersAdapter);
+        return usersAdapter;
+    }
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+    @Override
+    public void setEmpty() {
+        super.setEmpty();
+        if (usersAdapter != null) {
+            usersAdapter.clear();
+        }
+    }
 
-		if (usersAdapter != null && usersAdapter.getItem(position) != null) {
-			Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
-			startActivity(launcherIntent);
-		}
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-	@Override
-	protected Octicons.Icon getNoDataIcon() {
-		return Octicons.Icon.oct_octoface;
-	}
+        if (usersAdapter != null && usersAdapter.getItem(position) != null) {
+            Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), usersAdapter.getItem(position));
+            startActivity(launcherIntent);
+        }
+    }
 
-	@Override
-	public int getTheme() {
-		return R.style.AppTheme_Repos;
-	}
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_octoface;
+    }
+
+    @Override
+    public int getTheme() {
+        return R.style.AppTheme_Repos;
+    }
 }
 

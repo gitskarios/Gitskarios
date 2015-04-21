@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.BaseReposClient;
+import com.alorma.github.sdk.services.repos.GithubReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
 
 public class ReposFragment extends BaseReposListFragment {
@@ -42,7 +43,7 @@ public class ReposFragment extends BaseReposListFragment {
 	@Override
 	protected void executeRequest() {
 		super.executeRequest();
-		BaseReposClient client = new UserReposClient(getActivity(), username);
+		GithubReposClient client = new UserReposClient(getActivity(), username);
 		client.setOnResultCallback(this);
 		client.execute();
 	}

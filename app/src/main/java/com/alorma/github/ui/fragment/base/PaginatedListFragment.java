@@ -1,14 +1,11 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.os.Bundle;
-import android.view.View;
 import android.widget.AbsListView;
 
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.view.DirectionalScrollListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +20,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	protected static final String USERNAME = "USERNAME";
 	protected boolean paging;
 	private PaginationLink bottomPaginationLink;
+
 	protected boolean refreshing;
 
 	@Override
@@ -48,11 +46,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 					onResponse(k, refreshing);
 					paging = false;
 					refreshing = false;
-				} else {
-					setEmpty();
 				}
-			} else {
-				setEmpty();
 			}
 		}
 	}
@@ -60,17 +54,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	@Override
 	public void onFail(RetrofitError error) {
 		stopRefresh();
-		hideEmpty();
 		if (getActivity() != null) {
-			if (getListAdapter() == null) {
-				setEmpty();
-			} else {
-				if (getListAdapter().getCount() == 0) {
-					setEmpty();
-				} else {
-					hideEmpty();
-				}
-			}
 			ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
 		}
 	}
@@ -104,5 +88,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
 	public void setRefreshing() {
 		this.refreshing = true;
+	}
+
+	public boolean isRefreshing() {
+		return refreshing;
 	}
 }

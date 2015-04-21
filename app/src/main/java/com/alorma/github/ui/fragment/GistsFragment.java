@@ -13,6 +13,8 @@ import com.alorma.github.ui.adapter.GistsAdapter;
 import com.alorma.github.ui.fragment.base.SecondaryPaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import retrofit.RetrofitError;
+
 public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gist> {
 
     private GistsAdapter gistsAdapter;
@@ -70,6 +72,16 @@ public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gis
             } else {
                 setListAdapter(gistsAdapter);
             }
+        } else if (gistsAdapter == null || gistsAdapter.getCount() == 0) {
+            setEmpty();
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        super.onFail(error);
+        if (gistsAdapter == null || gistsAdapter.getCount() == 0) {
+            setEmpty();
         }
     }
 

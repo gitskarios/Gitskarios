@@ -5,7 +5,7 @@ import android.widget.AbsListView;
 
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,11 +45,7 @@ public abstract class SecondaryPaginatedListFragment<K, T> extends SecondaryLoad
 					onResponse(k, refreshing);
 					paging = false;
 					refreshing = false;
-				} else {
-					setEmpty();
 				}
-			} else {
-				setEmpty();
 			}
 		}
 	}

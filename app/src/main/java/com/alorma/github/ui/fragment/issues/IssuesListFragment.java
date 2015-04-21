@@ -26,6 +26,9 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by Bernat on 22/08/2014.
  */
@@ -101,12 +104,16 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
             switch (item.getItemId()) {
                 case R.id.issue_list_filter_open:
                     currentState = IssueState.open;
-                    issuesAdapter.clear();
+                    if (issuesAdapter != null) {
+                        issuesAdapter.clear();
+                    }
                     onRefresh();
                     break;
                 case R.id.issue_list_filter_closed:
                     currentState = IssueState.closed;
-                    issuesAdapter.clear();
+                    if (issuesAdapter != null) {
+                        issuesAdapter.clear();
+                    }
                     onRefresh();
                     break;
                 case R.id.issue_list_filter_search:
@@ -176,6 +183,20 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
+    public void onResponseOk(ListIssues issues, Response r) {
+        super.onResponseOk(issues, r);
+
+        if (refreshing) {
+            if (issuesAdapter != null) {
+                issuesAdapter.clear();
+            }
+        }
+        if (issues == null || issues.size() == 0 && (issuesAdapter == null || issuesAdapter.getCount() == 0)) {
+            setEmpty();
+        }
+    }
+
+    @Override
     protected void onResponse(ListIssues issues, boolean refreshing) {
         if (issues != null && issues.size() > 0) {
 
@@ -192,6 +213,16 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
             } else {
                 setListAdapter(issuesAdapter);
             }
+        } else if (issuesAdapter == null || issuesAdapter.getCount() == 0) {
+            setEmpty();
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        super.onFail(error);
+        if (issuesAdapter == null || issuesAdapter.getCount() == 0) {
+            setEmpty();
         }
     }
 
@@ -263,8 +294,11 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     public void setPermissions(Permissions permissions) {
-        this.repoInfo.permissions = permissions;
-        checkFAB();
+        if (this.repoInfo != null) {
+            this.repoInfo.permissions = permissions;
+            checkFAB();
+        }
+
     }
 
     @Override

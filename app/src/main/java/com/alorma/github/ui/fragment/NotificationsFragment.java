@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
@@ -17,7 +16,7 @@ import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
@@ -111,6 +110,13 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             bus.post(new NotificationsCount(notifications.size()));
         }
         super.onResponseOk(notifications, r);
+        if (notifications != null) {
+            if (notifications.size() == 0 && (notificationsAdapter == null || notificationsAdapter.getCount() == 0)) {
+                setEmpty();
+            }
+        } else {
+            setEmpty();
+        }
     }
 
     @Override
@@ -118,7 +124,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         if (refreshing) {
             notificationsAdapter.clear();
         }
-        if (notifications != null) {
+        if (notifications != null && notifications.size() > 0) {
             bus.post(new NotificationsCount(notifications.size()));
             if (notifications.size() > 0) {
                 if (notificationsAdapter != null && notificationsAdapter.getCount() > 0) {
@@ -152,11 +158,19 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                 });
 
             } else {
-                if (notificationsAdapter != null) {
-                    notificationsAdapter.clear();
+                if (notificationsAdapter == null || notificationsAdapter.getCount() == 0) {
+                    setEmpty();
                 }
-                setEmpty();
+
             }
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+        super.onFail(error);
+        if (notificationsAdapter == null || notificationsAdapter.getCount() == 0) {
+            setEmpty();
         }
     }
 

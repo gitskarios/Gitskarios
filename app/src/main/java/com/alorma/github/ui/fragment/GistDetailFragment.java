@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistsFileActivity;

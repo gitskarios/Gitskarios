@@ -17,14 +17,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
-import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
-import com.alorma.github.sdk.services.client.BaseClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.issues.CloseIssueClient;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
@@ -279,18 +277,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             case R.id.issue_edit_milestone:
                 editMilestone();
                 break;
-            case R.id.issue_subscription:
-                manageSubscription();
-                break;
         }
 
         return true;
     }
-
-    private void manageSubscription() {
-
-    }
-
     private void editMilestone() {
         GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
