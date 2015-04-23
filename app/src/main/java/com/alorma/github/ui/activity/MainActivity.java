@@ -40,6 +40,7 @@ import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.util.Colors;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.IconicsDrawableOld;
@@ -500,9 +501,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         new Libs.Builder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
-                .withActivityTheme(R.style.AppTheme)
                 .withActivityTitle(getString(R.string.app_name))
-                        //start the activity
                 .start(this);
         return false;
     }
@@ -511,14 +510,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     public void onNotificationRequested() {
         Intent intent = NotificationsActivity.launchIntent(this);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (outState != null) {
-            outState.putString("TITLE", getToolbar().getTitle().toString());
-        }
     }
 
     @Override
@@ -532,12 +523,14 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     if (fragments.get(0) instanceof ReposFragment) {
                         finish();
                     } else {
-                        super.onBackPressed();
+                        clearFragments();
+                        onReposSelected();
                     }
                 } else if (fragments.get(fragments.size() - 1) instanceof ReposFragment) {
                     finish();
                 } else {
-                    super.onBackPressed();
+                    clearFragments();
+                    onReposSelected();
                 }
             }
         }

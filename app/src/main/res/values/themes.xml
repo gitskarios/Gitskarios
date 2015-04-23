@@ -18,8 +18,6 @@
         <item name="gitskarios_icons">@color/repos_icons</item>
     </style>
 
-    <style name="AppTheme.Normal" parent="Theme.AppCompat.Light.DarkActionBar" />
-
     <!-- Default application theme. -->
     <style name="AppTheme.AppCompat.Default" parent="Theme.AppCompat.Light.NoActionBar">
 
