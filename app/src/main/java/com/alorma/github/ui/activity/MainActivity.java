@@ -347,11 +347,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    protected void onResume() {
+        super.onResume();
         if (notificationProvider != null) {
             notificationProvider.refresh();
         }
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

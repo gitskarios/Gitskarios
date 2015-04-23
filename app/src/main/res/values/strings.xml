@@ -238,4 +238,5 @@
     <string name="sync_folder">Refresh</string>
     <string name="ups">Ups…</string>
     <string name="issue_detail_error">There was an error loading %1$s\n%2$s</string>
+    <string name="action_share_issue">Share issue</string>
 </resources>

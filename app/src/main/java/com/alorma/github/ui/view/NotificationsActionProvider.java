@@ -87,7 +87,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 
 	@Subscribe
 	public void newNotificationsSize(NotificationsCount count) {
-		bt.setNotificationVisible(currentNotifications != count.getSize());
+		bt.setNotificationVisible(count.getSize() > 0);
 		if (currentNotifications != count.getSize()) {
 			currentNotifications = count.getSize();
 		}
