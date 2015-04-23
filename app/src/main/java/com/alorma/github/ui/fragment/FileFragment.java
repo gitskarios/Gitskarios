@@ -147,7 +147,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 						webView.clearSslPreferences();
 						webView.getSettings().setUseWideViewPort(false);
 						webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-						webView.loadDataWithBaseURL("http://github.com", s, "text/html", "UTF-8", null);
+						webView.loadDataWithBaseURL("http://github.com", s, "text/html; charset=UTF-8", null, null);
 					}
 				}
 

@@ -120,7 +120,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 		builder.appendPath("raw");
 		builder.appendPath(repoInfo.branch);
 
-		webview.loadDataWithBaseURL(builder.build().toString() + "/", s, "text/html", "UTF-8", null);
+		webview.loadDataWithBaseURL(builder.build().toString() + "/", s, "text/html; charset=UTF-8", null, null);
 	}
 
 	@Override

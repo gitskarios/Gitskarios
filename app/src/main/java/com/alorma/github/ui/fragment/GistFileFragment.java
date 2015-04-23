@@ -56,7 +56,9 @@ public class GistFileFragment extends Fragment {
             settings.setJavaScriptEnabled(true);
             webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 
-                webView.loadUrl("file:///android_asset/diff.html");
+            webView.loadUrl("file:///android_asset/diff.html");
+
+            webView.getSettings().setDefaultTextEncodingName("utf-8");
 
         }
     }

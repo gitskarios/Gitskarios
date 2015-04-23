@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,7 +94,7 @@ public class IssueDetailView extends LinearLayout {
             }
 
             if (issue.body_html != null) {
-                bodyHtml.loadData(issue.body_html, "text/html", "UTF-8");
+                bodyHtml.loadData(issue.body_html, "text/html; charset=UTF-8", null);
                 bodyHtml.setBackgroundColor(Color.TRANSPARENT);
                 bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
                 bodyHtml.setVisibility(View.VISIBLE);
