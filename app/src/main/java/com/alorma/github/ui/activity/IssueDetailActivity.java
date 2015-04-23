@@ -209,11 +209,26 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public void onFail(RetrofitError error) {
-        try {
-            new SnackBar.Builder(this).withMessage(error.getResponse().getReason()).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        hideProgressDialog();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.title(R.string.ups);
+        builder.content(getString(R.string.issue_detail_error, issueInfo.toString(), error.getResponse().getReason()));
+        builder.positiveText(R.string.retry);
+        builder.negativeText(R.string.accept);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                getContent();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                finish();
+            }
+        });
+        builder.show();
     }
 
     @Override

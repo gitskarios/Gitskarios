@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.fragment.FileFragment;
@@ -12,7 +13,7 @@ import com.alorma.github.ui.fragment.FileFragment;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FileActivity extends ActionBarActivity implements FileFragment.FileFragmentListener {
+public class FileActivity extends AppCompatActivity implements FileFragment.FileFragmentListener {
 
 	private static final String REPO_INFO = "REPO_INFO";
 	private static final String NAME = "NAME";

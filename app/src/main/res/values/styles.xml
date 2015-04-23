@@ -56,6 +56,9 @@
     <style name="SpotDialog.CommentIssue">
         <item name="DialogTitleText">@string/comment_issue</item>
     </style>
+    <style name="SpotDialog.OpeningFile">
+        <item name="DialogTitleText">@string/opening_file</item>
+    </style>
     <style name="SpotDialog.StarringRepo">
         <item name="DialogTitleText">@string/star_repo</item>
     </style>
@@ -126,4 +129,6 @@
     <style name="Custom.Widget.ActionButton.CloseMode" parent="Widget.AppCompat.ActionButton.CloseMode">
         <item name="android:layout_marginRight">20dp</item>
     </style>
+
+    <string name="opening_file">Opening file</string>
 </resources>

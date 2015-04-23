@@ -118,7 +118,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 
 	protected void getContent() {
 		if (repoInfo != null) {
-			showProgressDialog(R.style.SpotDialog_CommentIssue);
+			showProgressDialog(R.style.SpotDialog_OpeningFile);
 			GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), repoInfo, path);
 			fileContentClient.setOnResultCallback(this);
 			fileContentClient.execute();

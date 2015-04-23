@@ -229,11 +229,13 @@
     <string name="issue_list_filter">Filter issues</string>
     <string name="issue_list_filter_closed">Show closed</string>
     <string name="issue_list_filter_open">Show open</string>
-    <string name="star_repo">Starring user</string>
+    <string name="star_repo">Starring repo</string>
     <string name="unstar_repo">Unstarring repo</string>
     <string name="watch_repo">Watch repo</string>
     <string name="unwatch_repo">Unwatch repo</string>
     <string name="issue_subscription">Manage subscription</string>
     <string name="issue_list_filter_search">Advanced filter</string>
     <string name="sync_folder">Refresh</string>
+    <string name="ups">Ups…</string>
+    <string name="issue_detail_error">There was an error loading %1$s\n%2$s</string>
 </resources>
