@@ -89,8 +89,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
 
-		avatarColor = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
-		avatarSecondaryColor = AttributesUtils.getPrimaryColor(this, R.style.AppTheme_Repos);
+		avatarColor = AttributesUtils.getAccentColor(this);
+		avatarSecondaryColor = AttributesUtils.getPrimaryColor(this);
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
@@ -302,7 +302,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (following) {
 			fabDrawable.color(avatarColor);
 		} else {
-			fabDrawable.color(AttributesUtils.getIconsColor(this, R.style.AppTheme_Repos));
+			fabDrawable.color(AttributesUtils.getIconsColor(this));
 		}
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);

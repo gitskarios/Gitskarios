@@ -53,7 +53,7 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 
 		comment.setText(Html.fromHtml(eventPayload.comment.body));
 
-		IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_comment_discussion).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
+		IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_comment_discussion).color(AttributesUtils.getAccentColor(getContext()));
 
 		TextView action = (TextView) findViewById(R.id.action);
 		action.setCompoundDrawables(left, null, null, null);

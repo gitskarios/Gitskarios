@@ -26,8 +26,8 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         super(context, 0, 0, repos);
         this.mInflater = LayoutInflater.from(context);
 
-        this.primaryDark = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
-        this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
+        this.primaryDark = AttributesUtils.getPrimaryDarkColor(context);
+        this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -41,6 +42,7 @@ import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.IconicsDrawableOld;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -252,6 +254,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             public void cancel(ImageView imageView) {
 
             }
+
+            @Override
+            public Drawable placeholder(Context context) {
+                return new IconicsDrawable(context, Octicons.Icon.oct_octoface);
+            }
         });
 
         AccountHeader headerBuilder = new AccountHeader()
@@ -337,6 +344,14 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (notificationProvider != null) {
+            notificationProvider.refresh();
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -485,7 +500,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         new Libs.Builder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
-                .withActivityTheme(R.style.AppTheme_Normal)
+                .withActivityTheme(R.style.AppTheme)
                 .withActivityTitle(getString(R.string.app_name))
                         //start the activity
                 .start(this);
@@ -494,10 +509,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public void onNotificationRequested() {
-        if (notificationsFragment == null) {
-            notificationsFragment = NotificationsFragment.newInstance();
-        }
-        setFragment(notificationsFragment, true);
+        Intent intent = NotificationsActivity.launchIntent(this);
+        startActivity(intent);
     }
 
     @Override

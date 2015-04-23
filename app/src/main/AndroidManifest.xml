@@ -16,7 +16,7 @@
         android:name="com.alorma.github.GitskariosApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme.Repos"
+        android:theme="@style/AppTheme"
         android:launchMode="singleInstance">
         <activity
             android:name="com.alorma.github.ui.activity.LoginActivity">
@@ -37,11 +37,9 @@
         <activity android:name="com.alorma.github.ui.activity.MainActivity" />
         <activity
             android:name="com.alorma.github.ui.activity.PeopleActivity"
-            android:theme="@style/AppTheme.Repos"
             android:label="@string/navigation_people" />
         <activity
-            android:name="com.alorma.github.ui.activity.ProfileActivity"
-            android:theme="@style/AppTheme.Repos" />
+            android:name="com.alorma.github.ui.activity.ProfileActivity" />
         <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity" />
         <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity" />
         <activity android:name="com.alorma.github.ui.activity.SearchActivity" />
@@ -71,7 +69,6 @@
 
         <activity
             android:name=".ui.activity.gists.GistsMainActivity"
-            android:theme="@style/AppThemeGists"
             android:label="@string/title_gists">
             <intent-filter android:label="@string/open_gist">
                 <action android:name="android.intent.action.SEND" />
@@ -96,15 +93,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.gists.GistDetailActivity"
-            android:theme="@style/AppThemeGists" />
+            android:name=".ui.activity.NotificationsActivity"/>
         <activity
-            android:name=".ui.activity.gists.GistsFileActivity"
-            android:theme="@style/AppThemeGists" />
+            android:name=".ui.activity.gists.GistDetailActivity"/>
+        <activity
+            android:name=".ui.activity.gists.GistsFileActivity"/>
         <activity
             android:name=".ui.activity.gists.CreateGistActivity"
-            android:label="@string/create_gist"
-            android:theme="@style/AppThemeGists">
+            android:label="@string/create_gist">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

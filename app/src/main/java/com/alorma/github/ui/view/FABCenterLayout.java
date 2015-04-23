@@ -103,7 +103,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 	private void createFabView() {
 		fabView = (FloatingActionButton) LayoutInflater.from(getContext()).inflate(R.layout.fab, this, false);
 
-		int accent = AttributesUtils.getAttributeId(getContext(), R.style.AppTheme_Repos, R.attr.colorAccent);
+		int accent = AttributesUtils.getAttributeId(getContext(), R.attr.colorAccent);
 		fabView.setColorNormal(getResources().getColor(accent));
 
 		fabView.setOnClickListener(fabClickListener);

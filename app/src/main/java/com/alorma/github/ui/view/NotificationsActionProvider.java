@@ -61,9 +61,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 
 		layout.addView(bt);
 
-		GetNotificationsClient client = new GetNotificationsClient(getContext());
-		client.setOnResultCallback(this);
-		client.execute();
+		refresh();
 
 		return layout;
 	}
@@ -97,6 +95,12 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 	
 	public void setOnNotificationListener(OnNotificationListener onNotificationListener) {
 		this.onNotificationListener = onNotificationListener;
+	}
+
+	public void refresh() {
+		GetNotificationsClient client = new GetNotificationsClient(getContext());
+		client.setOnResultCallback(this);
+		client.execute();
 	}
 
 	public interface OnNotificationListener {

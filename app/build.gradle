@@ -54,8 +54,8 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.1.0'
+    compile 'com.android.support:support-v4:22.1.0'
     compile 'com.android.support:palette-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.android.support:cardview-v7:21.0.3'
@@ -72,7 +72,7 @@ dependencies {
     compile project(':libraries:android-floating-action-button')
     compile 'com.github.alorma:diff-textview:1.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.afollestad:material-dialogs:0.7.2.0'
+    compile 'com.afollestad:material-dialogs:0.7.2.7'
     compile 'com.rengwuxian.materialedittext:library:1.4.3'
     compile 'com.pnikosis:materialish-progress:1.0'
     compile 'se.emilsjolander:stickylistheaders:2.5.2'
@@ -88,14 +88,14 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
     compile 'com.github.bumptech.glide:glide:3.5.2'
-    compile('com.mikepenz.materialdrawer:library:2.6.5@aar') {
+    compile('com.mikepenz.materialdrawer:library:2.8.1@aar') {
         transitive = true
     }
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
-    compile('com.mikepenz.aboutlibraries:library:4.5.9@aar') {
+    compile('com.mikepenz.aboutlibraries:library:4.6.5@aar') {
         transitive = true
     }
 

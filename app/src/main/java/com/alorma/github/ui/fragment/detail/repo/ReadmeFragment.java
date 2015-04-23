@@ -67,7 +67,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
 			progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
 
-			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
+			int color = AttributesUtils.getPrimaryColor(getActivity());
 
 			progressBar.setSmoothProgressDrawableColor(color);
 

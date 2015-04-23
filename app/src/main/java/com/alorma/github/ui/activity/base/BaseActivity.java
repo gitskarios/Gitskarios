@@ -18,6 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ import dmax.dialog.SpotsDialog;
 /**
  * Created by Bernat on 19/07/2014.
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     private AuthReceiver authReceiver;
     private UpdateReceiver updateReceiver;

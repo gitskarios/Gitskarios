@@ -226,8 +226,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 fabMenu.collapse();
             }
 
-            int style = R.style.AppTheme_Repos;
-            contentAdapter = new RepoSourceAdapter(getActivity(), contents, style);
+            contentAdapter = new RepoSourceAdapter(getActivity(), contents);
             setListAdapter(contentAdapter);
         }
     }

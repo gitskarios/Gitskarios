@@ -27,7 +27,7 @@ public class UniversalImageLoaderUtils {
 
 	public static DisplayImageOptions getDisplayImageOptions(Context context) {
 		IconicsDrawable drawable = new IconicsDrawable(context, Octicons.Icon.oct_octoface);
-		drawable.color(AttributesUtils.getSecondaryTextColor(context, R.style.AppTheme_Repos));
+		drawable.color(AttributesUtils.getSecondaryTextColor(context));
 		drawable.sizeDp(24);
 		BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), drawableToBitmap(drawable));
 		return new DisplayImageOptions.Builder()
