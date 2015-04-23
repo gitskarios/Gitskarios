@@ -235,4 +235,5 @@
     <string name="unwatch_repo">Unwatch repo</string>
     <string name="issue_subscription">Manage subscription</string>
     <string name="issue_list_filter_search">Advanced filter</string>
+    <string name="sync_folder">Refresh</string>
 </resources>

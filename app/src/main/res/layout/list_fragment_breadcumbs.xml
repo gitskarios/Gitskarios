@@ -108,6 +108,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     fab:fab_size="mini"
+                    fab:fab_title="@string/sync_folder"
+                    fab:fab_colorNormal="?colorControlNormal"
+                    fab:fab_colorPressed="?colorControlHighlight"
+                    android:id="@+id/fab_sync" />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
                     fab:fab_title="@string/change_branch"
                     fab:fab_colorNormal="?colorControlNormal"
                     fab:fab_colorPressed="?colorControlHighlight"
