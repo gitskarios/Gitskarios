@@ -75,7 +75,7 @@ public class IssueCommentView extends LinearLayout {
         }
 
         if (issueComment.body_html != null) {
-            bodyHtml.loadData(issueComment.body_html, "text/html", "UTF-8");
+            bodyHtml.loadData(issueComment.body_html, "text/html; charset=UTF-8", null);
             bodyHtml.setBackgroundColor(Color.TRANSPARENT);
             bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
             bodyHtml.setVisibility(View.VISIBLE);
