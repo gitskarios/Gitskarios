@@ -526,6 +526,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     }
                 } else if (fragments.get(fragments.size() - 1) instanceof ReposFragment) {
                     finish();
+                }  else if (fragments.get(fragments.size() - 1) == null) {
+                    finish();
                 } else {
                     clearFragments();
                     onReposSelected();
