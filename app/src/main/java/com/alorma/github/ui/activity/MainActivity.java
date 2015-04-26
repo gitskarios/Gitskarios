@@ -40,10 +40,8 @@ import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.util.Colors;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.IconicsDrawableOld;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -182,7 +180,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private void createDrawer() {
 
-        int iconColor = getResources().getColor(R.color.repos_icons);
+        int iconColor = getResources().getColor(R.color.icons);
 
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
@@ -264,7 +262,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         AccountHeader headerBuilder = new AccountHeader()
                 .withActivity(this)
-                .withHeaderBackground(R.color.repos_primary_dark);
+                .withHeaderBackground(R.color.primary_dark);
 
         headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
             @Override

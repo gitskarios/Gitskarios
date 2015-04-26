@@ -118,7 +118,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			IconicsDrawable drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_inbox);
 			drawable.actionBarSize();
 			if (notificationVisible) {
-				drawable.colorRes(R.color.repos_accent);
+				drawable.colorRes(R.color.accent);
 			} else {
 				drawable.colorRes(R.color.white);
 			}

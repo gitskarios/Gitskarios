@@ -10,7 +10,7 @@
 
 
     <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:textColorSecondary">@color/gist_accent</item>
+        <item name="android:textColorSecondary">@color/accent</item>
     </style>
 
     <style name="fab">
@@ -123,6 +123,7 @@
     <style name="Custom.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
         <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
         <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
+        <item name="android:background">@color/primary</item>
     </style>
 
 

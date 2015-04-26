@@ -32,7 +32,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -139,8 +138,8 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         }
 
         int primary = getResources().getColor(R.color.primary_alpha);
-        int accent = getResources().getColor(R.color.repos_accent);
-        int accentDark = getResources().getColor(R.color.repos_accent_dark);
+        int accent = getResources().getColor(R.color.accent);
+        int accentDark = getResources().getColor(R.color.accent_dark);
         int primaryDark = getResources().getColor(R.color.repos_primary_dark_alpha);
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
