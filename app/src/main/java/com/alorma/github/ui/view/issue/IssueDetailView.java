@@ -17,6 +17,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.ui.view.LabelView;
+import com.alorma.github.ui.view.WebViewUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
@@ -74,6 +75,7 @@ public class IssueDetailView extends LinearLayout {
         title = (TextView) findViewById(R.id.textTitle);
         body = (TextView) findViewById(R.id.textBody);
         bodyHtml = (WebView) findViewById(R.id.webBody);
+        WebViewUtils.manageUrls(bodyHtml);
         labelsLayout = (ViewGroup) findViewById(R.id.labelsLayout);
         View authorView = findViewById(R.id.author);
         profileIcon = (ImageView) authorView.findViewById(R.id.profileIcon);

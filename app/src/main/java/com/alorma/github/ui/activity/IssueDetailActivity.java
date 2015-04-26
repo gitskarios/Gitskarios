@@ -140,7 +140,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         int primary = getResources().getColor(R.color.primary_alpha);
         int accent = getResources().getColor(R.color.accent);
         int accentDark = getResources().getColor(R.color.accent_dark);
-        int primaryDark = getResources().getColor(R.color.repos_primary_dark_alpha);
+        int primaryDark = getResources().getColor(R.color.primary_dark_alpha);
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

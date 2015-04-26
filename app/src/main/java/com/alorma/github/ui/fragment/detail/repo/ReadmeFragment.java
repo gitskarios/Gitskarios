@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.view.WebViewUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
@@ -83,6 +84,9 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			webview.clearSslPreferences();
 			webview.getSettings().setUseWideViewPort(false);
 			webview.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+
+			WebViewUtils.manageUrls(webview);
+
 			getContent();
 		}
 	}
