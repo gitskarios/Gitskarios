@@ -75,12 +75,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     Bus bus;
 
     private AccountHeader.Result headerResult;
-    private StoreCredentials credentials;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
-    private NotificationsFragment notificationsFragment;
     private Drawer.Result resultDrawer;
+    private int itemSelectedIdentifier;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -204,38 +203,44 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                 int identifier = drawerItem.getIdentifier();
+                boolean change = true;
                 switch (identifier) {
                     case 0:
-                        onUserEventsSelected();
+                        change = onUserEventsSelected();
                         break;
                     case 1:
-                        onReposSelected();
+                        change = onReposSelected();
                         break;
                     case 2:
-                        onStarredSelected();
+                        change = onStarredSelected();
                         break;
                     case 3:
-                        onWatchedSelected();
+                        change = onWatchedSelected();
                         break;
                     case 4:
-                        onPeopleSelected();
+                        change = onPeopleSelected();
                         break;
                     case 5:
-                        onGistsSelected();
+                        change = onGistsSelected();
                         break;
                     case 10:
-                        onSettingsSelected();
+                        change = onSettingsSelected();
                         break;
                     case 11:
-                        onAboutSelected();
+                        change = onAboutSelected();
                         break;
                     case 12:
                         signOut();
                         break;
                 }
+
+                if (change) {
+                    MainActivity.this.itemSelectedIdentifier = identifier;
+                }
             }
         });
-        drawer.withSelectedItem(1);
+        itemSelectedIdentifier = 1;
+        drawer.withSelectedItem(itemSelectedIdentifier);
         resultDrawer = drawer.build();
     }
 
@@ -299,7 +304,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private void selectAccount(final Account account) {
         boolean changingUser = selectedAccount != null && !selectedAccount.name.equals(account.name);
         this.selectedAccount = account;
-        credentials = new StoreCredentials(MainActivity.this);
+        StoreCredentials credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
         String authToken = AccountsHelper.getUserToken(this, account);
 
@@ -350,6 +355,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         super.onResume();
         if (notificationProvider != null) {
             notificationProvider.refresh();
+        }
+
+        if (resultDrawer != null) {
+            resultDrawer.setSelectionByIdentifier(itemSelectedIdentifier, false);
         }
     }
 
@@ -424,9 +433,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         return false;
     }
 
-    public void onGistsSelected() {
+    public boolean onGistsSelected() {
         Intent intent = GistsMainActivity.createLauncherIntent(this);
         startActivity(intent);
+        return false;
     }
 
     @Override
