@@ -17,7 +17,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme"
-        android:launchMode="singleInstance">
+        android:launchMode="singleInstance"
+        android:label="@string/app_name">
         <activity
             android:name="com.alorma.github.ui.activity.LoginActivity"
             android:label="@string/app_name">

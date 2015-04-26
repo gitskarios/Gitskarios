@@ -15,11 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
+import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
@@ -38,14 +40,14 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class CreateGistActivity extends ActionBarActivity implements GistEditorFragment.GistEditorListener, GistDetailFilesAdapter.GistFilesAdapterListener {
+public class CreateGistActivity extends BackActivity implements GistEditorFragment.GistEditorListener, GistDetailFilesAdapter.GistFilesAdapterListener {
     private RecyclerView recyclerView;
     private GistDetailFilesAdapter adapter;
     private GistEditorFragment editorFragment;
     private boolean sharingMode;
     private AlertDialog spotsDialog;
     private EditText gistDescription;
-    private SwitchCompat gistPrivate;
+    private Switch gistPrivate;
 
     public static Intent createLauncherIntent(Context context) {
         return new Intent(context, CreateGistActivity.class);
@@ -65,7 +67,7 @@ public class CreateGistActivity extends ActionBarActivity implements GistEditorF
         }
 
         gistDescription = (EditText) findViewById(R.id.gistDescription);
-        gistPrivate = (SwitchCompat) findViewById(R.id.gistPrivate);
+        gistPrivate = (Switch) findViewById(R.id.gistPrivate);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
