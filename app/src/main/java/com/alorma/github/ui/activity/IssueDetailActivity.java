@@ -308,6 +308,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 break;
             case R.id.issue_edit_milestone:
                 editMilestone();
+                break;
             case R.id.share_issue:
                 if (issueStory != null && issueStory.issue != null) {
                     Intent intent = getShareIntent();
