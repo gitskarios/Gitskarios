@@ -58,15 +58,13 @@
         android:background="@color/gray_github_light"
         android:orientation="vertical">
 
-        <com.rengwuxian.materialedittext.MaterialEditText
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/labels"
             android:layout_marginTop="@dimen/gapLarge"
             android:background="@drawable/edit_text_material_dark"
-            android:id="@+id/editLabels"
-            app:floatingLabel="normal"
-            app:primaryColor="?attr/colorPrimary"/>
+            android:id="@+id/editLabels"/>
 
         <Spinner
             android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,15 +18,14 @@ import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +41,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private View pushAccesLayout;
     private Spinner spinnerAssignee;
     private UsersAdapterSpinner assigneesAdapter;
-    private MaterialEditText editLabels;
-    private MaterialEditText editTitle;
-    private MaterialEditText editBody;
+    private EditText editLabels;
+    private EditText editTitle;
+    private EditText editBody;
     private boolean creatingIssue = false;
     private RepoInfo repoInfo;
 
@@ -85,8 +85,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void findViews() {
         pushAccesLayout = findViewById(R.id.pushAccessLayout);
-        editTitle = (MaterialEditText) findViewById(R.id.editTitle);
-        editBody = (MaterialEditText) findViewById(R.id.editBody);
+        editTitle = (EditText) findViewById(R.id.editTitle);
+        editBody = (EditText) findViewById(R.id.editBody);
     }
 
     private void findViewsAcces() {
@@ -99,7 +99,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
         spinnerAssignee.setAdapter(assigneesAdapter);
 
-        editLabels = (MaterialEditText) findViewById(R.id.editLabels);
+        editLabels = (EditText) findViewById(R.id.editLabels);
     }
 
     private void checkDataAndCreateIssue() {
