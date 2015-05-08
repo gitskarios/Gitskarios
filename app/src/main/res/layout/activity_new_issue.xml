@@ -26,18 +26,14 @@
             tools:context="com.alorma.github.ui.activity.NewIssueActivity"
             android:orientation="vertical">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
+            <EditText
                 android:hint="@string/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/editTitle"
-                android:textSize="@dimen/textSizeLarge"
-                app:floatingLabel="highlight"
-                app:baseColor="@color/white"
-                app:errorColor="@color/redError"
-                app:primaryColor="@color/white"/>
+                android:textSize="@dimen/textSizeLarge"/>
 
-            <com.rengwuxian.materialedittext.MaterialEditText
+            <EditText
                 android:lines="3"
                 android:layout_marginTop="@dimen/gapLarge"
                 android:hint="@string/leave_a_comment"
@@ -45,11 +41,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:id="@+id/editBody"
-                android:textSize="@dimen/textSizeMedium"
-                app:errorColor="@color/redError"
-                app:floatingLabel="highlight"
-                app:baseColor="@color/white"
-                app:primaryColor="@color/white"/>
+                android:textSize="@dimen/textSizeMedium"/>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
