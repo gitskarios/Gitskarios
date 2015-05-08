@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.LruCache;
-import com.squareup.picasso.Picasso;
 
 /**
  * Created by Bernat on 06/04/2015.
