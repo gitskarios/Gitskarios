@@ -53,7 +53,11 @@ public class TimeUtils {
                         if (time == 0) {
                             Seconds seconds = Seconds.secondsBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
                             time = seconds.getSeconds();
-                            text = R.string.time_ago_at_seconds;
+                            if (time > 5) {
+                                text = R.string.time_ago_at_seconds;
+                            } else {
+                                text = R.string.time_ago_just_now;
+                            }
                         }
                     }
                 }

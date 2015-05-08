@@ -4,7 +4,7 @@
     <color name="primary">#9C27B0</color>
     <color name="primary_dark">#7B1FA2</color>
     <color name="primary_alpha">#FF9C27B0</color>
-    <color name="repos_primary_dark_alpha">#FF7B1FA2</color>
+    <color name="primary_dark_alpha">#FF7B1FA2</color>
 
     <color name="primary_light">#E1BEE7</color>
     <color name="accent">#FF5722</color>
