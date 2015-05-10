@@ -73,6 +73,7 @@
                     android:hint="@string/new_issue_hint_labels"
                     style="@style/new_issue_push_access_row"
                     android:singleLine="false"
+                    android:lines="3"
                     android:maxLines="3" />
 
             </LinearLayout>
