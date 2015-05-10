@@ -2,10 +2,8 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,24 +14,23 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
-import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
-import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
+import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.github.ui.adapter.users.UsersHolder;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -59,6 +56,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private TextView milestoneTextView;
     private TextView labelsTextView;
     private Milestone issueMilestone;
+
+    private Integer[] positionsSelectedLabels;
+    private CharSequence[] selectedLabels;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -86,10 +86,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         }
     }
 
-    private void openLabels() {
-
-    }
-
     private void findViews() {
         editTitle = (EditText) findViewById(R.id.editTitle);
         editBody = (EditText) findViewById(R.id.editBody);
@@ -115,7 +111,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
                         case R.id.milestone:
                             openMilestone();
                             break;
-                        case R.id.label:
+                        case R.id.labels:
                             openLabels();
                             break;
                     }
@@ -147,7 +143,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         return true;
     }
 
-
     private void checkDataAndCreateIssue() {
         if (editTitle.length() <= 0) {
             editTitle.setError(getString(R.string.issue_title_mandatory));
@@ -163,17 +158,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
                 issue.assignee = issueAssignee.login;
             }
 
-            /*if (editLabels.length() > 0) {
-                String[] labels = editLabels.getText().toString().split(",");
-
-                String[] clearLabels = new String[labels.length];
-
-                for (int i = 0; i < labels.length; i++) {
-                    clearLabels[i] = labels[i].trim();
-                }
-
-                issue.labels = clearLabels;
-            }*/
+            if (selectedLabels != null) {
+                issue.labels = selectedLabels;
+            }
 
             if (issueMilestone != null) {
                 issue.milestone = issueMilestone.number;
@@ -188,6 +175,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
         showProgressDialog(R.style.SpotDialog_CreatingIssue);
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -314,14 +302,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
-
-        showProgressDialog(R.style.SpotDialog_loading_milestones);
     }
 
     private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
         @Override
         public void onResponseOk(final List<Milestone> milestones, Response r) {
-            hideProgressDialog();
             if (milestones.size() == 0) {
                 showCreateMilestone();
             } else {
@@ -412,5 +397,90 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void clearMilestone() {
         milestoneTextView.setText(null);
+    }
+
+    /**
+     * Labels
+     */
+
+    private void openLabels() {
+        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo);
+        labelsClient.setOnResultCallback(new LabelsCallback());
+        labelsClient.execute();
+    }
+
+    private class LabelsCallback implements BaseClient.OnResultCallback<List<Label>> {
+
+        @Override
+        public void onResponseOk(List<Label> labels, Response r) {
+            if (labels != null) {
+                List<String> items = new ArrayList<>();
+                for (Label label : labels) {
+                    items.add(label.name);
+                }
+
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
+                builder.items(items.toArray(new String[items.size()]));
+                builder.alwaysCallMultiChoiceCallback();
+                builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
+                        selectedLabels = charSequences;
+                        positionsSelectedLabels = integers;
+                        return true;
+                    }
+                });
+                builder.forceStacking(true);
+                builder.positiveText(R.string.ok);
+//                builder.neutralText(R.string.add_new_label);
+                builder.negativeText(R.string.clear_labels);
+                builder.callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        setLabels(selectedLabels);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        selectedLabels = null;
+                        positionsSelectedLabels = null;
+                        setLabels(null);
+                    }
+
+//                    @Override
+//                    public void onNeutral(MaterialDialog dialog) {
+//                        super.onNeutral(dialog);
+//                    }
+                });
+                builder.show();
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+
+        }
+    }
+
+    private void setLabels(CharSequence[] selectedLabels) {
+        if (selectedLabels != null) {
+            StringBuilder builder = new StringBuilder();
+            for (CharSequence selectedLabel : selectedLabels) {
+                builder.append(selectedLabel);
+                builder.append(", ");
+            }
+
+            if (selectedLabels.length > 0) {
+                String labels = builder.toString();
+                int lastIndexOf = labels.lastIndexOf(", ");
+                labels = labels.substring(0, lastIndexOf);
+                labelsTextView.setText(labels);
+            }
+
+        } else {
+            labelsTextView.setText(null);
+        }
     }
 }

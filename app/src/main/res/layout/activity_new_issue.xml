@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/new_issue_hint_milestone"
-                    style="@style/new_issue_push_access_row"/>
+                    style="@style/new_issue_push_access_row" />
 
             </LinearLayout>
 
@@ -71,7 +71,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/new_issue_hint_labels"
-                    style="@style/new_issue_push_access_row"/>
+                    style="@style/new_issue_push_access_row"
+                    android:singleLine="false"
+                    android:maxLines="3" />
 
             </LinearLayout>
 

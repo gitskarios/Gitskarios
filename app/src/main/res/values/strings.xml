@@ -248,4 +248,7 @@
     <string name="new_issue_hint_assignee">Assign to …</string>
     <string name="new_issue_hint_milestone">Set milestone</string>
     <string name="new_issue_hint_labels">Add labels …</string>
+    <string name="add_new_label">Add new label</string>
+    <string name="clear_labels">No labels</string>
+    <string name="ok">OK</string>
 </resources>
