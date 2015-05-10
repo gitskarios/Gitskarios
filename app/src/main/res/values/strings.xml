@@ -245,4 +245,7 @@
     <string name="action_add_milestone">Set milestone</string>
     <string name="title_activity_new_issue_extra">Expand</string>
     <string name="no_assignee">No assignee</string>
+    <string name="new_issue_hint_assignee">Assign to …</string>
+    <string name="new_issue_hint_milestone">Set milestone</string>
+    <string name="new_issue_hint_labels">Add labels …</string>
 </resources>

@@ -35,7 +35,12 @@ public class UsersHolder {
         this.authorLogin.setVisibility(View.VISIBLE);
         this.authorEmail.setVisibility(View.VISIBLE);
 
-        ImageLoader.getInstance().displayImage(user.avatar_url, authorAvatar);
+        if (!TextUtils.isEmpty(user.avatar_url)) {
+            ImageLoader.getInstance().displayImage(user.avatar_url, authorAvatar);
+            authorAvatar.setVisibility(View.VISIBLE);
+        } else {
+            authorAvatar.setVisibility(View.GONE);
+        }
         if (!TextUtils.isEmpty(user.login)) {
             authorLogin.setText(user.login);
         }

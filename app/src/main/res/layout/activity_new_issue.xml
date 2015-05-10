@@ -29,7 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/pushAccessLayout">
+            android:id="@+id/pushAccessLayout"
+            android:padding="@dimen/gapMedium">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,13 +40,10 @@
 
                 <TextView
                     android:id="@+id/assignee"
-                    android:fontFamily="sans-serif-medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/textSizeSmall"
-                    android:gravity="center_vertical|left"
-                    android:lines="1"
-                    android:singleLine="true" />
+                    android:hint="@string/new_issue_hint_assignee"
+                    style="@style/new_issue_push_access_row" />
 
             </LinearLayout>
 
@@ -56,13 +54,10 @@
 
                 <TextView
                     android:id="@+id/milestone"
-                    android:fontFamily="sans-serif-medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/textSizeSmall"
-                    android:gravity="center_vertical|left"
-                    android:lines="1"
-                    android:singleLine="true" />
+                    android:hint="@string/new_issue_hint_milestone"
+                    style="@style/new_issue_push_access_row"/>
 
             </LinearLayout>
 
@@ -73,13 +68,10 @@
 
                 <TextView
                     android:id="@+id/labels"
-                    android:fontFamily="sans-serif-medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/textSizeSmall"
-                    android:gravity="center_vertical|left"
-                    android:lines="1"
-                    android:singleLine="true" />
+                    android:hint="@string/new_issue_hint_labels"
+                    style="@style/new_issue_push_access_row"/>
 
             </LinearLayout>
 

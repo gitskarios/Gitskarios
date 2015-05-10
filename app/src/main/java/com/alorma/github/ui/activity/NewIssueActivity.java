@@ -17,16 +17,20 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
+import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.adapter.users.UsersHolder;
@@ -36,12 +40,13 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class NewIssueActivity extends BackActivity /*implements BaseClient.OnResultCallback<Issue>*/ {
+public class NewIssueActivity extends BackActivity implements BaseClient.OnResultCallback<Issue> {
 
     public static final String REPO_INFO = "REPO_INFO";
 
@@ -53,6 +58,7 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
     private TextView userTextView;
     private TextView milestoneTextView;
     private TextView labelsTextView;
+    private Milestone issueMilestone;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -80,16 +86,6 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
         }
     }
 
-    public Drawable actionBarIcon(IIcon icon) {
-        return new IconicsDrawable(this, icon).actionBar().color(Color.WHITE);
-    }
-
-    private void openAssignee() {
-        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
-        contributorsClient.execute();
-    }
-
     private void openLabels() {
 
     }
@@ -106,8 +102,29 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
             labelsTextView = (TextView) findViewById(R.id.labels);
 
             userTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_person), null, null, null);
-            milestoneTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_tag), null, null, null);
-            labelsTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_milestone), null, null, null);
+            milestoneTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_milestone), null, null, null);
+            labelsTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_tag), null, null, null);
+
+            View.OnClickListener pushAccessListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (view.getId()) {
+                        case R.id.assignee:
+                            openAssignee();
+                            break;
+                        case R.id.milestone:
+                            openMilestone();
+                            break;
+                        case R.id.label:
+                            openLabels();
+                            break;
+                    }
+                }
+            };
+
+            userTextView.setOnClickListener(pushAccessListener);
+            milestoneTextView.setOnClickListener(pushAccessListener);
+            labelsTextView.setOnClickListener(pushAccessListener);
         }
     }
 
@@ -130,7 +147,7 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
         return true;
     }
 
-/*
+
     private void checkDataAndCreateIssue() {
         if (editTitle.length() <= 0) {
             editTitle.setError(getString(R.string.issue_title_mandatory));
@@ -141,12 +158,12 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
         issue.title = editTitle.getText().toString();
         issue.body = editBody.getText().toString();
 
-        if (repoInfo.permissions.push) {
-            if (spinnerAssignee.getSelectedItemPosition() > 0) {
-                issue.assignee = assigneesAdapter.getItem(spinnerAssignee.getSelectedItemPosition()).login;
+        if (repoInfo != null && repoInfo.permissions != null && repoInfo.permissions.push) {
+            if (issueAssignee != null) {
+                issue.assignee = issueAssignee.login;
             }
 
-            if (editLabels.length() > 0) {
+            /*if (editLabels.length() > 0) {
                 String[] labels = editLabels.getText().toString().split(",");
 
                 String[] clearLabels = new String[labels.length];
@@ -156,6 +173,10 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
                 }
 
                 issue.labels = clearLabels;
+            }*/
+
+            if (issueMilestone != null) {
+                issue.milestone = issueMilestone.number;
             }
         }
 
@@ -216,37 +237,56 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
         Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
     }
 
-    */
+    /**
+     * Assignee
+     */
+
+    private void openAssignee() {
+        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
+        contributorsClient.setOnResultCallback(new ContributorsCallback());
+        contributorsClient.execute();
+    }
 
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
+            final List<User> users = new ArrayList<>();
+            String owner = repoInfo.owner;
+            boolean exist = false;
             if (contributors != null) {
-                final List<User> users = new ArrayList<>(contributors.size());
                 for (Contributor contributor : contributors) {
+                    exist = contributor.author.login.equals(owner);
                     users.add(contributor.author);
                 }
-                UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
-
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
-                builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                        User user = users.get(i);
-                        setAssigneeUser(user);
-                        materialDialog.dismiss();
-                    }
-                });
-                builder.negativeText(R.string.no_assignee);
-                builder.callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onNegative(dialog);
-                        setAssigneeUser(null);
-                    }
-                });
-                builder.show();
             }
+
+            if (!exist) {
+                User user = new User();
+                user.login = owner;
+                users.add(user);
+            }
+
+            Collections.reverse(users);
+            UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
+
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
+            builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
+                @Override
+                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                    User user = users.get(i);
+                    setAssigneeUser(user);
+                    materialDialog.dismiss();
+                }
+            });
+            builder.negativeText(R.string.no_assignee);
+            builder.callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    super.onNegative(dialog);
+                    setAssigneeUser(null);
+                }
+            });
+            builder.show();
         }
 
         @Override
@@ -366,6 +406,7 @@ public class NewIssueActivity extends BackActivity /*implements BaseClient.OnRes
     }
 
     private void addMilestone(Milestone milestone) {
+        this.issueMilestone = milestone;
         milestoneTextView.setText(milestone.title);
     }
 
