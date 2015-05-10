@@ -320,7 +320,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 

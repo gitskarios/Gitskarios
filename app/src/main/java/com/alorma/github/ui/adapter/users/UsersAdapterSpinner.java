@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.users;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,18 +32,12 @@ public class UsersAdapterSpinner extends ArrayAdapter<User> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
-		View v = mInflater.inflate(R.layout.row_user_spinner, viewGroup, false);
+		View v = mInflater.inflate(R.layout.material_drawer_item_profile, viewGroup, false);
 		UsersHolder userHolder = new UsersHolder(v);
 
 		User user = getItem(position);
 
-		userHolder.authorLogin.setText(user.login);
-
-		ImageLoader.getInstance().displayImage(user.avatar_url, userHolder.authorAvatar);
-
-		if (user.created_at != null) {
-			userHolder.authorDate.setText(getDate(user.created_at));
-		}
+		userHolder.fill(user);
 
 		return v;
 	}
@@ -57,10 +52,5 @@ public class UsersAdapterSpinner extends ArrayAdapter<User> {
 			clear();
 		}
 		super.addAll(collection);
-	}
-
-	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		return getView(position, convertView, parent);
 	}
 }

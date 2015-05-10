@@ -240,4 +240,9 @@
     <string name="issue_detail_error">There was an error loading %1$s\n%2$s</string>
     <string name="action_share_issue">Share issue</string>
     <string name="time_ago_just_now">just now</string>
+    <string name="action_add_assignee">Add assignee</string>
+    <string name="action_add_labels">Add labels</string>
+    <string name="action_add_milestone">Set milestone</string>
+    <string name="title_activity_new_issue_extra">Expand</string>
+    <string name="no_assignee">No assignee</string>
 </resources>

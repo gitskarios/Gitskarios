@@ -90,6 +90,7 @@ public class FABCenterLayout extends RelativeLayout implements ViewTreeObserver.
 			if (attr.hasValue(R.styleable.FABCenterLayout_unfolded_size)) {
 				topUnfoldedSize = attr.getDimensionPixelOffset(R.styleable.FABCenterLayout_unfolded_size, topUnfoldedSize);
 			}
+			attr.recycle();
 		}
 	}
 

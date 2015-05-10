@@ -529,23 +529,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (resultDrawer != null && resultDrawer.isDrawerOpen()) {
             resultDrawer.closeDrawer();
         } else {
-            List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            if (fragments != null) {
-                if (fragments.size() == 1) {
-                    if (fragments.get(0) instanceof ReposFragment) {
-                        finish();
-                    } else {
-                        clearFragments();
-                        onReposSelected();
-                    }
-                } else if (fragments.get(fragments.size() - 1) instanceof ReposFragment) {
-                    finish();
-                }  else if (fragments.get(fragments.size() - 1) == null) {
-                    finish();
-                } else {
-                    clearFragments();
-                    onReposSelected();
-                }
+            if (lastUsedFragment instanceof ReposFragment) {
+                finish();
+            } else {
+                clearFragments();
+                onReposSelected();
             }
         }
     }
