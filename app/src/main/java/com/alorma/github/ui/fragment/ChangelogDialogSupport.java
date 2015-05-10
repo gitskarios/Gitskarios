@@ -82,9 +82,8 @@ public class ChangelogDialogSupport extends DialogFragment {
         WebViewUtils.manageUrls(webView);
 
         return dialog;
-    } 
- 
- 
+    }
+
     private String colorToHex(int color) {
         return Integer.toHexString(color).substring(2);
     } 

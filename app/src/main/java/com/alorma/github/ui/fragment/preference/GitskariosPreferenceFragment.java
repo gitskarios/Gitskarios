@@ -27,6 +27,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 	public static final String CHANGELOG = "changelog";
 
 	private StoreCredentials credentials;
+	private ChangelogDialog dialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "gitskarios", "Gitskarios");
 			startActivity(intent);
 		}else if (preference.getKey().equals(CHANGELOG)) {
-			ChangelogDialog dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));
+			dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));
 			dialog.show(getFragmentManager(), "changelog");
 		}
 		return true;
@@ -82,5 +83,16 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 			settings.saveDownloadFileType(String.valueOf(newValue));
 		}
 		return true;
+	}
+
+
+	@Override
+	public void onStop() {
+		try {
+			dialog.dismiss();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		super.onStop();
 	}
 }

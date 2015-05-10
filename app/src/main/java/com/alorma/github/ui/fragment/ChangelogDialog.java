@@ -80,7 +80,6 @@ public class ChangelogDialog extends DialogFragment {
         return dialog;
     }
 
-
     private String colorToHex(int color) {
         return Integer.toHexString(color).substring(2);
     }

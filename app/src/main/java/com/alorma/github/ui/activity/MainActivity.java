@@ -81,6 +81,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private Account selectedAccount;
     private Fragment lastUsedFragment;
     private Drawer.Result resultDrawer;
+    private ChangelogDialogSupport dialog;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -107,7 +108,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         if (currentVersion > version) {
             settings.saveVersion(currentVersion);
-            ChangelogDialogSupport dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
+            dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
             dialog.show(getSupportFragmentManager(), "changelog");
         }
 
@@ -536,5 +537,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 onReposSelected();
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        try {
+            dialog.dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onStop();
     }
 }

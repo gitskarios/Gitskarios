@@ -25,10 +25,9 @@ public class WebViewUtils {
                     Intent intent = IssueDetailActivity.createLauncherIntent(webView.getContext(), issueInfo);
                     webView.getContext().startActivity(intent);
 
-                    return true;
                 }
 
-                return false;
+                return true;
             }
         });
     }
