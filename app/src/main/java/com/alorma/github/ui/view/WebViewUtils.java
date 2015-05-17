@@ -1,6 +1,7 @@
 package com.alorma.github.ui.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -25,9 +26,14 @@ public class WebViewUtils {
                     Intent intent = IssueDetailActivity.createLauncherIntent(webView.getContext(), issueInfo);
                     webView.getContext().startActivity(intent);
 
+                    return true;
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    webView.getContext().startActivity(intent);
+                    return false;
                 }
 
-                return true;
+
             }
         });
     }
