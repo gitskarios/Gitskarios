@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.view.WebViewUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
@@ -67,7 +68,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
 			progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
 
-			int color = AttributesUtils.getPrimaryColor(getActivity(), R.style.AppTheme_Repos);
+			int color = AttributesUtils.getPrimaryColor(getActivity());
 
 			progressBar.setSmoothProgressDrawableColor(color);
 
@@ -83,6 +84,9 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 			webview.clearSslPreferences();
 			webview.getSettings().setUseWideViewPort(false);
 			webview.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+
+			WebViewUtils.manageUrls(webview);
+
 			getContent();
 		}
 	}
@@ -120,7 +124,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 		builder.appendPath("raw");
 		builder.appendPath(repoInfo.branch);
 
-		webview.loadDataWithBaseURL(builder.build().toString() + "/", s, "text/html", "UTF-8", null);
+		webview.loadDataWithBaseURL(builder.build().toString() + "/", s, "text/html; charset=UTF-8", null, null);
 	}
 
 	@Override

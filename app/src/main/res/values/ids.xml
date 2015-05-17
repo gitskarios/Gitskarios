@@ -22,5 +22,14 @@
     <item name="scrollable" type="id">scroll</item>
     <item name="fabLayout" type="id">fabLayout</item>
     <item name="cardsContainerScroll" type="id">cardsContainerScroll</item>
+    <item name="nav_drawer_events" type="id">nav_drawer_events</item>
+    <item name="nav_drawer_repositories" type="id">nav_drawer_repositories</item>
+    <item name="nav_drawer_starred_repositories" type="id">nav_drawer_starred_repositories</item>
+    <item name="nav_drawer_watched_repositories" type="id">nav_drawer_watched_repositories</item>
+    <item name="nav_drawer_people" type="id">nav_drawer_people</item>
+    <item name="nav_drawer_gists" type="id">nav_drawer_gists</item>
+    <item name="nav_drawer_settings" type="id">nav_drawer_settings</item>
+    <item name="nav_drawer_about" type="id">nav_drawer_about</item>
+    <item name="nav_drawer_sign_out" type="id">nav_drawer_sign_out</item>
 
 </resources>

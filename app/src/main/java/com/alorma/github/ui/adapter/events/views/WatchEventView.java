@@ -51,7 +51,7 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
 		if (eventPayload.action.equals("started")) {
-			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_eye).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
+			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_eye).color(AttributesUtils.getAccentColor(getContext()));
 		}
 
 		if (drawable != null) {

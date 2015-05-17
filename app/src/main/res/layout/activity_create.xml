@@ -28,14 +28,14 @@
                 android:orientation="vertical"
                 android:padding="@dimen/gapMedium">
 
-                <android.support.v7.internal.widget.TintEditText
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/gist_description"
                     android:id="@+id/gistDescription"
                     android:maxLines="4"/>
 
-                <android.support.v7.widget.SwitchCompat
+                <Switch
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/gist_private"

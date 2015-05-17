@@ -32,7 +32,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -139,9 +138,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         }
 
         int primary = getResources().getColor(R.color.primary_alpha);
-        int accent = getResources().getColor(R.color.repos_accent);
-        int accentDark = getResources().getColor(R.color.repos_accent_dark);
-        int primaryDark = getResources().getColor(R.color.repos_primary_dark_alpha);
+        int accent = getResources().getColor(R.color.accent);
+        int accentDark = getResources().getColor(R.color.accent_dark);
+        int primaryDark = getResources().getColor(R.color.primary_dark_alpha);
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -209,11 +208,26 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public void onFail(RetrofitError error) {
-        try {
-            new SnackBar.Builder(this).withMessage(error.getResponse().getReason()).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        hideProgressDialog();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.title(R.string.ups);
+        builder.content(getString(R.string.issue_detail_error, issueInfo.toString(), error.getResponse().getReason()));
+        builder.positiveText(R.string.retry);
+        builder.negativeText(R.string.accept);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                getContent();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                finish();
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -230,6 +244,14 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         if (this.issueStory != null) {
             if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
                 getMenuInflater().inflate(R.menu.issue_detail, menu);
+
+                MenuItem item = menu.findItem(R.id.share_issue);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+                } else {
+                    item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+                }
             }
         }
         return true;
@@ -257,6 +279,15 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         return true;
     }
 
+    private Intent getShareIntent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(Intent.EXTRA_SUBJECT, issueInfo.toString());
+        intent.putExtra(Intent.EXTRA_TEXT, issueStory.issue.html_url);
+        return intent;
+    }
+
     public void onAddComment() {
         Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
         startActivityForResult(intent, NEW_COMMENT_REQUEST);
@@ -277,12 +308,19 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             case R.id.issue_edit_milestone:
                 editMilestone();
                 break;
+            case R.id.share_issue:
+                if (issueStory != null && issueStory.issue != null) {
+                    Intent intent = getShareIntent();
+                    startActivity(intent);
+                }
+                break;
         }
 
         return true;
     }
+
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 

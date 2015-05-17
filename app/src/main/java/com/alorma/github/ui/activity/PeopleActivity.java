@@ -59,7 +59,7 @@ public class PeopleActivity extends BackActivity {
 
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
-        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos));
+        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
         slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
         viewPager = (ViewPager) findViewById(R.id.pager);

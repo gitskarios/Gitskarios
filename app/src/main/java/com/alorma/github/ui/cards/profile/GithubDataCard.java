@@ -21,113 +21,118 @@ import retrofit.client.Response;
  */
 public class GithubDataCard implements View.OnClickListener {
 
-	private GithubDataCardListener githubDataCardListener;
+    private GithubDataCardListener githubDataCardListener;
 
-	private User user;
-	private int avatarColor;
-	private TextView textOrgs;
+    private User user;
+    private int avatarColor;
+    private TextView textOrgs;
 
-	public GithubDataCard(User user, View view, int avatarColor) {
-		this.user = user;
-		this.avatarColor = avatarColor;
-		setupInnerViewElements(view);
-	}
+    public GithubDataCard(User user, View view, int avatarColor) {
+        this.user = user;
+        this.avatarColor = avatarColor;
+        setupInnerViewElements(view);
+    }
 
-	public void setupInnerViewElements(View view) {
-		setUpRepos(view);
-		setUpGists(view);
-		setUpOrgs(view);
-	}
+    public void setupInnerViewElements(View view) {
+        setUpRepos(view);
+        setUpGists(view);
+        setUpOrgs(view);
+    }
 
-	private void setUpRepos(View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconRepositories);
+    private void setUpRepos(View view) {
+        ImageView icon = (ImageView) view.findViewById(R.id.iconRepositories);
 
-		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_repo);
+        IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_repo);
 
-		icon.setImageDrawable(githubIconDrawable);
+        icon.setImageDrawable(githubIconDrawable);
 
-		TextView text = (TextView) view.findViewById(R.id.textRepositories);
+        TextView text = (TextView) view.findViewById(R.id.textRepositories);
 
-		text.setText(view.getContext().getString(R.string.repos_num, user.public_repos));
+        text.setText(view.getContext().getString(R.string.repos_num, user.public_repos));
 
-		view.findViewById(R.id.repositories).setOnClickListener(this);
-	}
+        view.findViewById(R.id.repositories).setOnClickListener(this);
+    }
 
-	private void setUpGists(View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconGists);
+    private void setUpGists(View view) {
+        ImageView icon = (ImageView) view.findViewById(R.id.iconGists);
 
-		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_gist);
+        IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_gist);
 
-		icon.setImageDrawable(githubIconDrawable);
+        icon.setImageDrawable(githubIconDrawable);
 
-		TextView text = (TextView) view.findViewById(R.id.textGists);
+        TextView text = (TextView) view.findViewById(R.id.textGists);
 
-		text.setText(view.getContext().getString(R.string.gists_num, user.public_gists));
+        text.setText(view.getContext().getString(R.string.gists_num, user.public_gists));
 
-		view.findViewById(R.id.gists).setOnClickListener(this);
-	}
+        view.findViewById(R.id.gists).setOnClickListener(this);
+    }
 
-	private void setUpOrgs(final View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconOrgs);
+    private void setUpOrgs(final View view) {
+        final ImageView icon = (ImageView) view.findViewById(R.id.iconOrgs);
 
-		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
+        IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
 
-		icon.setImageDrawable(githubIconDrawable);
+        icon.setImageDrawable(githubIconDrawable);
 
-		textOrgs = (TextView) view.findViewById(R.id.textOrgs);
+        textOrgs = (TextView) view.findViewById(R.id.textOrgs);
 
-		view.findViewById(R.id.orgs).setOnClickListener(this);
+        view.findViewById(R.id.orgs).setOnClickListener(this);
 
-		GetOrgsClient orgsClient = new GetOrgsClient(view.getContext(), user.login);
-		orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
-			@Override
-			public void onResponseOk(ListOrganizations organizations, Response r) {
-				textOrgs.setText(view.getContext().getString(R.string.orgs_num, organizations.size()));
-			}
+        GetOrgsClient orgsClient = new GetOrgsClient(view.getContext(), user.login);
+        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+            @Override
+            public void onResponseOk(ListOrganizations organizations, Response r) {
+                if (organizations != null && organizations.size() > 0) {
+                    textOrgs.setText(view.getContext().getString(R.string.orgs_num, organizations.size()));
+                } else {
+                    view.findViewById(R.id.orgs).setVisibility(View.GONE);
+                    view.findViewById(R.id.dividerGists).setVisibility(View.GONE);
+                }
+            }
 
-			@Override
-			public void onFail(RetrofitError error) {
+            @Override
+            public void onFail(RetrofitError error) {
 
-			}
-		});
-		orgsClient.execute();
-	}
+            }
+        });
+        orgsClient.execute();
+    }
 
-	private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
-		IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
+    private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
+        IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
 
-		githubIconDrawable.sizeDp(30);
-		githubIconDrawable.color(avatarColor);
+        githubIconDrawable.sizeDp(30);
+        githubIconDrawable.color(avatarColor);
 
-		return githubIconDrawable;
-	}
+        return githubIconDrawable;
+    }
 
-	@Override
-	public void onClick(View v) {
-		if (githubDataCardListener != null) {
-			switch (v.getId()) {
-				case R.id.repositories:
-					githubDataCardListener.onRepositoriesRequest(user.login);
-					break;
-				case R.id.orgs:
-					githubDataCardListener.onOrganizationsRequest(user.login);
-					break;
-				case R.id.gists:
-					githubDataCardListener.onGistsRequest(user.login);
-					break;
-			}
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (githubDataCardListener != null) {
+            switch (v.getId()) {
+                case R.id.repositories:
+                    githubDataCardListener.onRepositoriesRequest(user.login);
+                    break;
+                case R.id.orgs:
+                    githubDataCardListener.onOrganizationsRequest(user.login);
+                    break;
+                case R.id.gists:
+                    githubDataCardListener.onGistsRequest(user.login);
+                    break;
+            }
+        }
+    }
 
-	public void setGithubDataCardListener(GithubDataCardListener githubDataCardListener) {
-		this.githubDataCardListener = githubDataCardListener;
-	}
+    public void setGithubDataCardListener(GithubDataCardListener githubDataCardListener) {
+        this.githubDataCardListener = githubDataCardListener;
+    }
 
-	public interface GithubDataCardListener {
-		void onRepositoriesRequest(String username);
+    public interface GithubDataCardListener {
+        void onRepositoriesRequest(String username);
 
-		void onOrganizationsRequest(String username);
+        void onOrganizationsRequest(String username);
 
-		void onGistsRequest(String username);
-	}
+        void onGistsRequest(String username);
+    }
 }

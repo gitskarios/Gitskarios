@@ -28,10 +28,9 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 	private Context context;
 	private int style;
 
-	public RepoSourceAdapter(Context context, List<Content> objects, @StyleRes int style) {
+	public RepoSourceAdapter(Context context, List<Content> objects) {
 		super(context, 0, objects);
 		this.context = context;
-		this.style = style;
 		inflater = LayoutInflater.from(context);
 	}
 
@@ -57,7 +56,7 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
 		if (iconDrawable != null) {
 			iconDrawable.sizeDp(20);
-			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext(), style));
+			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext()));
 
 			image.setImageDrawable(iconDrawable);
 		}

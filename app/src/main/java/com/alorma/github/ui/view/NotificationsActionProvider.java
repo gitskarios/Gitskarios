@@ -61,9 +61,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 
 		layout.addView(bt);
 
-		GetNotificationsClient client = new GetNotificationsClient(getContext());
-		client.setOnResultCallback(this);
-		client.execute();
+		refresh();
 
 		return layout;
 	}
@@ -89,7 +87,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 
 	@Subscribe
 	public void newNotificationsSize(NotificationsCount count) {
-		bt.setNotificationVisible(currentNotifications != count.getSize());
+		bt.setNotificationVisible(count.getSize() > 0);
 		if (currentNotifications != count.getSize()) {
 			currentNotifications = count.getSize();
 		}
@@ -97,6 +95,12 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 	
 	public void setOnNotificationListener(OnNotificationListener onNotificationListener) {
 		this.onNotificationListener = onNotificationListener;
+	}
+
+	public void refresh() {
+		GetNotificationsClient client = new GetNotificationsClient(getContext());
+		client.setOnResultCallback(this);
+		client.execute();
 	}
 
 	public interface OnNotificationListener {
@@ -114,7 +118,7 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
 			IconicsDrawable drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_inbox);
 			drawable.actionBarSize();
 			if (notificationVisible) {
-				drawable.colorRes(R.color.repos_accent);
+				drawable.colorRes(R.color.accent);
 			} else {
 				drawable.colorRes(R.color.white);
 			}

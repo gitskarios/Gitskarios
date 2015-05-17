@@ -71,7 +71,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 					ImageLoader.getInstance().displayImage(author.avatar_url, avatar);
 				} else {
 					IconicsDrawable iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_octoface);
-					iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext(), R.style.AppTheme_Repos));
+					iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));
 					iconDrawable.sizeDp(36);
 					iconDrawable.setAlpha(128);
 					avatar.setImageDrawable(iconDrawable);

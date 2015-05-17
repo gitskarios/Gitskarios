@@ -229,10 +229,26 @@
     <string name="issue_list_filter">Filter issues</string>
     <string name="issue_list_filter_closed">Show closed</string>
     <string name="issue_list_filter_open">Show open</string>
-    <string name="star_repo">Starring user</string>
+    <string name="star_repo">Starring repo</string>
     <string name="unstar_repo">Unstarring repo</string>
     <string name="watch_repo">Watch repo</string>
     <string name="unwatch_repo">Unwatch repo</string>
     <string name="issue_subscription">Manage subscription</string>
     <string name="issue_list_filter_search">Advanced filter</string>
+    <string name="sync_folder">Refresh</string>
+    <string name="ups">Ups…</string>
+    <string name="issue_detail_error">There was an error loading %1$s\n%2$s</string>
+    <string name="action_share_issue">Share issue</string>
+    <string name="time_ago_just_now">just now</string>
+    <string name="action_add_assignee">Add assignee</string>
+    <string name="action_add_labels">Add labels</string>
+    <string name="action_add_milestone">Set milestone</string>
+    <string name="title_activity_new_issue_extra">Expand</string>
+    <string name="no_assignee">No assignee</string>
+    <string name="new_issue_hint_assignee">Assign to …</string>
+    <string name="new_issue_hint_milestone">Set milestone</string>
+    <string name="new_issue_hint_labels">Add labels …</string>
+    <string name="add_new_label">Add new label</string>
+    <string name="clear_labels">No labels</string>
+    <string name="ok">OK</string>
 </resources>

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.GithubUsersClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
@@ -34,6 +35,7 @@ import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.basesdk.client.StoreCredentials;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -89,8 +91,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_activity);
 
-		avatarColor = AttributesUtils.getAccentColor(this, R.style.AppTheme_Repos);
-		avatarSecondaryColor = AttributesUtils.getPrimaryColor(this, R.style.AppTheme_Repos);
+		avatarColor = AttributesUtils.getAccentColor(this);
+		avatarSecondaryColor = AttributesUtils.getPrimaryColor(this);
 
 		fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
 		fabLayout.setFabViewVisibility(View.INVISIBLE, false);
@@ -110,10 +112,18 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			}
 		}
 
+		StoreCredentials settings = new StoreCredentials(this);
+
 		if (user != null) {
-			requestClient = new RequestUserClient(this, user.login);
-			getToolbar().setTitle(user.login);
+			if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                isAuthUser = true;
+				requestClient = new GetAuthUserClient(this);
+			} else {
+				requestClient = new RequestUserClient(this, user.login);
+				getToolbar().setTitle(user.login);
+			}
 		} else {
+            isAuthUser = true;
 			requestClient = new GetAuthUserClient(this);
 		}
 
@@ -125,7 +135,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onResponseOk(User user, Response r) {
-		isAuthUser = this.user == null;
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
@@ -133,6 +142,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		if (isAuthUser) {
 			fabLayout.removeFab();
+
 		} else {
 			CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
 			checkFollowingUser.setOnCheckFollowingUser(this);
@@ -145,6 +155,38 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fabLayout.setVisibility(View.VISIBLE);
 	}
+
+    @Override
+    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
+
+        Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
+        Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
+
+        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
+
+        image.setImageDrawable(drawable);
+        if (profileSwatchDark != null && profileSwatch != null) {
+            avatarColor = profileSwatchDark.getRgb();
+            avatarSecondaryColor = profileSwatch.getRgb();
+
+            try {
+                if (avatarColor != 0) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(avatarColor);
+                        getWindow().setNavigationBarColor(avatarColor);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        fillCardBio(user);
+
+        fillCardGithubData(user);
+
+        fillCardPlan(user);
+    }
 
 	private void fillCardBio(User user) {
 		CardView view = (CardView) findViewById(R.id.bioCardLayout);
@@ -174,38 +216,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onFail(RetrofitError error) {
 		hideProgressDialog();
-	}
-
-	@Override
-	public void onImageLoaded(Bitmap loadedImage, Palette palette) {
-
-		Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
-		Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
-
-		Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
-
-		image.setImageDrawable(drawable);
-		if (profileSwatchDark != null && profileSwatch != null) {
-			avatarColor = profileSwatchDark.getRgb();
-			avatarSecondaryColor = profileSwatch.getRgb();
-
-			try {
-				if (avatarColor != 0) {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-						getWindow().setStatusBarColor(avatarColor);
-						getWindow().setNavigationBarColor(avatarColor);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		fillCardBio(user);
-
-		fillCardGithubData(user);
-
-		fillCardPlan(user);
 	}
 
 	@Override
@@ -302,7 +312,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (following) {
 			fabDrawable.color(avatarColor);
 		} else {
-			fabDrawable.color(AttributesUtils.getIconsColor(this, R.style.AppTheme_Repos));
+			fabDrawable.color(AttributesUtils.getIconsColor(this));
 		}
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);

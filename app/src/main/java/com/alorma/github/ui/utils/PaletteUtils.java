@@ -63,29 +63,18 @@ public class PaletteUtils {
 	public void loadImageAndPalette(String url, final PaletteUtilsListener listener) {
 		ImageLoader.getInstance().loadImage(url, new SimpleImageLoadingListener() {
 			@Override
-			public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+			public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
 				super.onLoadingComplete(imageUri, view, loadedImage);
-				Palette.generateAsync(loadedImage, new PaletteListener(loadedImage, listener));
+				new Palette.Builder(loadedImage).maximumColorCount(3).generate(new Palette.PaletteAsyncListener() {
+					@Override
+					public void onGenerated(Palette palette) {
+						if (listener != null) {
+							listener.onImageLoaded(loadedImage, palette);
+						}
+					}
+				});
 			}
 		});
-	}
-
-	private class PaletteListener implements Palette.PaletteAsyncListener {
-
-		private Bitmap loadedImage;
-		private PaletteUtilsListener listener;
-
-		public PaletteListener(Bitmap loadedImage, PaletteUtilsListener listener) {
-			this.loadedImage = loadedImage;
-			this.listener = listener;
-		}
-
-		@Override
-		public void onGenerated(Palette palette) {
-			if (listener != null) {
-				listener.onImageLoaded(loadedImage, palette);
-			}
-		}
 	}
 
 	public interface PaletteUtilsListener {

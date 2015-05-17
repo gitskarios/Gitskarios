@@ -78,7 +78,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 		progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
 
-		int color = AttributesUtils.getPrimaryColor(getActivity(), getTheme());
+		int color = AttributesUtils.getPrimaryColor(getActivity());
 
 		progressBar.setSmoothProgressDrawableColor(color);
 
@@ -92,8 +92,8 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 		swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
-		int accent = AttributesUtils.getAttributeId(getActivity(), getTheme(), R.attr.colorAccent);
-		int primaryDark = AttributesUtils.getAttributeId(getActivity(), getTheme(), R.attr.colorPrimaryDark);
+		int accent = AttributesUtils.getAttributeId(getActivity(), R.attr.colorAccent);
+		int primaryDark = AttributesUtils.getAttributeId(getActivity(), R.attr.colorPrimaryDark);
 
 		if (swipe != null) {
 			swipe.setColorSchemeResources(accent,
@@ -310,11 +310,6 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
-	}
-
-	@StyleRes
-	public int getTheme() {
-		return R.style.AppTheme_Repos;
 	}
 
 	public void reload() {

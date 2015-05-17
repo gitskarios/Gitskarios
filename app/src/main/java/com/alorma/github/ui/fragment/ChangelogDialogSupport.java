@@ -1,18 +1,26 @@
 package com.alorma.github.ui.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.IssueDetailActivity;
+import com.alorma.github.ui.view.WebViewUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -69,11 +77,13 @@ public class ChangelogDialogSupport extends DialogFragment {
                     , "text/html", "UTF-8"); 
         } catch (Throwable e) {
             webView.loadData("<h1>Unable to load</h1><p>" + e.getLocalizedMessage() + "</p>", "text/html", "UTF-8");
-        } 
+        }
+
+        WebViewUtils.manageUrls(webView);
+
         return dialog;
-    } 
- 
- 
+    }
+
     private String colorToHex(int color) {
         return Integer.toHexString(color).substring(2);
     } 

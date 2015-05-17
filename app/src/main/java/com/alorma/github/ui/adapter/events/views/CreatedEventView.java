@@ -51,7 +51,7 @@ public class CreatedEventView extends GithubEventView<CreatedEventPayload> {
 		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
 		Drawable drawable = null;
 		if (eventPayload.ref_type.equals("repository")) {
-			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).color(AttributesUtils.getAccentColor(getContext(), R.style.AppTheme_Repos));
+			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).color(AttributesUtils.getAccentColor(getContext()));
 		}
 
 		if (drawable != null) {

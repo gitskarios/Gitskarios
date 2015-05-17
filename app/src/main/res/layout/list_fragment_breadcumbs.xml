@@ -16,7 +16,6 @@
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/ic_launcher"
             android:id="@+id/emptyIcon"
             android:layout_centerHorizontal="true" />
 
@@ -103,6 +102,15 @@
                     fab:fab_colorNormal="?colorControlNormal"
                     fab:fab_colorPressed="?colorControlHighlight"
                     android:id="@+id/fab_up" />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_title="@string/sync_folder"
+                    fab:fab_colorNormal="?colorControlNormal"
+                    fab:fab_colorPressed="?colorControlHighlight"
+                    android:id="@+id/fab_sync" />
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:layout_width="wrap_content"

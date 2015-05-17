@@ -45,7 +45,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
 
 		iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_check);
 		iconDrawable.sizeRes(R.dimen.gapLarge);
-		iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext(), R.style.AppTheme_Repos));
+		iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));
 	}
 
 	@Override

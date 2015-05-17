@@ -1,24 +1,15 @@
 package com.alorma.github.ui.adapter.commit;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alorma.diff.lib.DiffTextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.GitCommitFiles;
-import com.alorma.github.ui.activity.FileActivity;
-import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.io.File;
 
 /**
  * Created by Bernat on 22/12/2014.

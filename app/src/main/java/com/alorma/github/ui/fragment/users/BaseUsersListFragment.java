@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
@@ -74,9 +73,5 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
         return Octicons.Icon.oct_octoface;
     }
 
-    @Override
-    public int getTheme() {
-        return R.style.AppTheme_Repos;
-    }
 }
 

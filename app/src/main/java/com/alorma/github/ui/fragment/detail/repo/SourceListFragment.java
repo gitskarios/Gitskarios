@@ -126,6 +126,23 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         fabUp.setIconDrawable(upIcon);
         fabUp.setVisibility(View.INVISIBLE);
 
+
+        FloatingActionButton fabRefresh = (FloatingActionButton) view.findViewById(R.id.fab_sync);
+        IconicsDrawable refreshIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_sync);
+        refreshIcon.colorRes(R.color.white);
+        refreshIcon.sizeRes(R.dimen.fab_size_mini_icon);
+        fabRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getPathContent(currentSelectedContent);
+
+                fabMenu.collapse();
+            }
+        });
+        fabRefresh.setIconDrawable(refreshIcon);
+
+
         snackView = view.findViewById(R.id.snackBar);
 
         if (getArguments() != null) {
@@ -226,8 +243,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 fabMenu.collapse();
             }
 
-            int style = R.style.AppTheme_Repos;
-            contentAdapter = new RepoSourceAdapter(getActivity(), contents, style);
+            contentAdapter = new RepoSourceAdapter(getActivity(), contents);
             setListAdapter(contentAdapter);
         }
     }

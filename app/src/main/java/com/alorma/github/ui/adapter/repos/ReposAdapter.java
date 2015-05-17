@@ -26,8 +26,8 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
         super(context, 0, 0, repos);
         this.mInflater = LayoutInflater.from(context);
 
-        this.primaryDark = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
-        this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context, R.style.AppTheme_Repos);
+        this.primaryDark = AttributesUtils.getPrimaryDarkColor(context);
+        this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ReposAdapter extends ArrayAdapter<Repo> {
     private void applyIcon(TextView textView, Octicons.Icon value) {
         IconicsDrawable drawableForks = new IconicsDrawable(getContext(), value);
         drawableForks.sizeRes(R.dimen.textSizeSmall);
-        drawableForks.colorRes(R.color.repos_icons);
+        drawableForks.colorRes(R.color.icons);
         textView.setCompoundDrawables(null, null, drawableForks, null);
         int offset = getContext().getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);
         textView.setCompoundDrawablePadding(offset);

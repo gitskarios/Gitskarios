@@ -1,16 +1,14 @@
 <resources>
 
 
-
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@color/white</item>
     </style>
 
 
-
     <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:textColorSecondary">@color/gist_accent</item>
+        <item name="android:textColorSecondary">@color/accent</item>
     </style>
 
     <style name="fab">
@@ -56,15 +54,23 @@
     <style name="SpotDialog.CommentIssue">
         <item name="DialogTitleText">@string/comment_issue</item>
     </style>
+
+    <style name="SpotDialog.OpeningFile">
+        <item name="DialogTitleText">@string/opening_file</item>
+    </style>
+
     <style name="SpotDialog.StarringRepo">
         <item name="DialogTitleText">@string/star_repo</item>
     </style>
+
     <style name="SpotDialog.UnstarringRepo">
         <item name="DialogTitleText">@string/unstar_repo</item>
     </style>
+
     <style name="SpotDialog.WatchRepo">
         <item name="DialogTitleText">@string/watch_repo</item>
     </style>
+
     <style name="SpotDialog.UnwatchRepo">
         <item name="DialogTitleText">@string/unwatch_repo</item>
     </style>
@@ -120,10 +126,24 @@
     <style name="Custom.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
         <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
         <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
+        <item name="android:background">@color/primary</item>
     </style>
 
 
     <style name="Custom.Widget.ActionButton.CloseMode" parent="Widget.AppCompat.ActionButton.CloseMode">
         <item name="android:layout_marginRight">20dp</item>
     </style>
+
+    <style name="new_issue_push_access_row">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/textSizeSmall</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:textColorHint">@color/secondary_text</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:drawablePadding">@dimen/gapMedium</item>
+        <item name="android:background">?selectableItemBackground</item>
+    </style>
+
+    <string name="opening_file">Opening file</string>
 </resources>

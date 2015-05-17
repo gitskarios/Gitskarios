@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +39,7 @@ import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
+import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -74,12 +77,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     Bus bus;
 
     private AccountHeader.Result headerResult;
-    private StoreCredentials credentials;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
-    private NotificationsFragment notificationsFragment;
     private Drawer.Result resultDrawer;
+    private ChangelogDialogSupport dialog;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -106,7 +108,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         if (currentVersion > version) {
             settings.saveVersion(currentVersion);
-            ChangelogDialogSupport dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
+            dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
             dialog.show(getSupportFragmentManager(), "changelog");
         }
 
@@ -157,11 +159,24 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private void addAccountToHeader(Account account, int i) {
         accountMap.put(account.name, account);
         String userAvatar = AccountsHelper.getUserAvatar(this, account);
+        ProfileDrawerItem profileDrawerItem = new GitskariosProfileDrawerItem()
+                .withName(account.name)
+                .withIcon(userAvatar)
+                .withEmail(getUserExtraName(account))
+                .withIdentifier(i);
+        headerResult.addProfiles(profileDrawerItem);
+    }
+
+    private String getUserExtraName(Account account) {
+        String accountName = account.name;
         String userMail = AccountsHelper.getUserMail(this, account);
         String userName = AccountsHelper.getUserName(this, account);
-        ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name).withIcon(userAvatar)
-                .withEmail(userMail != null ? userMail : userName).withIdentifier(i);
-        headerResult.addProfiles(profileDrawerItem);
+        if (!TextUtils.isEmpty(userMail)) {
+            return userMail;
+        } else if (!TextUtils.isEmpty(userName)) {
+            return userName;
+        }
+        return accountName;
     }
 
     @Override
@@ -179,7 +194,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private void createDrawer() {
 
-        int iconColor = getResources().getColor(R.color.repos_icons);
+        int iconColor = getResources().getColor(R.color.icons);
 
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
@@ -188,47 +203,47 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         drawer.withToolbar(getToolbar());
         drawer.withAccountHeader(headerResult);
         drawer.addDrawerItems(
-                new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(0),
-                new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(1),
-                new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(2),
-                new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(3),
-                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(4),
-                new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(5),
+                new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_events),
+                new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_repositories),
+                new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_starred_repositories),
+                new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_watched_repositories),
+                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people).withCheckable(false),
+                new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withCheckable(false),
                 new DividerDrawerItem(),
-                new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(10),
-                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(11),
-                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(12)
+                new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withCheckable(false),
+                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withCheckable(false),
+                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withCheckable(false)
         );
         drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                 int identifier = drawerItem.getIdentifier();
                 switch (identifier) {
-                    case 0:
+                    case R.id.nav_drawer_events:
                         onUserEventsSelected();
                         break;
-                    case 1:
+                    case R.id.nav_drawer_repositories:
                         onReposSelected();
                         break;
-                    case 2:
+                    case R.id.nav_drawer_starred_repositories:
                         onStarredSelected();
                         break;
-                    case 3:
+                    case R.id.nav_drawer_watched_repositories:
                         onWatchedSelected();
                         break;
-                    case 4:
+                    case R.id.nav_drawer_people:
                         onPeopleSelected();
                         break;
-                    case 5:
+                    case R.id.nav_drawer_gists:
                         onGistsSelected();
                         break;
-                    case 10:
+                    case R.id.nav_drawer_settings:
                         onSettingsSelected();
                         break;
-                    case 11:
+                    case R.id.nav_drawer_about:
                         onAboutSelected();
                         break;
-                    case 12:
+                    case R.id.nav_drawer_sign_out:
                         signOut();
                         break;
                 }
@@ -252,11 +267,16 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             public void cancel(ImageView imageView) {
 
             }
+
+            @Override
+            public Drawable placeholder(Context context) {
+                return new IconicsDrawable(context, Octicons.Icon.oct_octoface);
+            }
         });
 
         AccountHeader headerBuilder = new AccountHeader()
                 .withActivity(this)
-                .withHeaderBackground(R.color.repos_primary_dark);
+                .withHeaderBackground(R.color.primary_dark);
 
         headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
             @Override
@@ -293,7 +313,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private void selectAccount(final Account account) {
         boolean changingUser = selectedAccount != null && !selectedAccount.name.equals(account.name);
         this.selectedAccount = account;
-        credentials = new StoreCredentials(MainActivity.this);
+        StoreCredentials credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
         String authToken = AccountsHelper.getUserToken(this, account);
 
@@ -337,6 +357,14 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         }
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (notificationProvider != null) {
+            notificationProvider.refresh();
+        }
     }
 
     @Override
@@ -410,9 +438,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         return false;
     }
 
-    public void onGistsSelected() {
+    public boolean onGistsSelected() {
         Intent intent = GistsMainActivity.createLauncherIntent(this);
         startActivity(intent);
+        return false;
     }
 
     @Override
@@ -485,27 +514,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         new Libs.Builder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
-                .withActivityTheme(R.style.AppTheme_Normal)
                 .withActivityTitle(getString(R.string.app_name))
-                        //start the activity
                 .start(this);
         return false;
     }
 
     @Override
     public void onNotificationRequested() {
-        if (notificationsFragment == null) {
-            notificationsFragment = NotificationsFragment.newInstance();
-        }
-        setFragment(notificationsFragment, true);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (outState != null) {
-            outState.putString("TITLE", getToolbar().getTitle().toString());
-        }
+        Intent intent = NotificationsActivity.launchIntent(this);
+        startActivity(intent);
     }
 
     @Override
@@ -513,20 +530,22 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (resultDrawer != null && resultDrawer.isDrawerOpen()) {
             resultDrawer.closeDrawer();
         } else {
-            List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            if (fragments != null) {
-                if (fragments.size() == 1) {
-                    if (fragments.get(0) instanceof ReposFragment) {
-                        finish();
-                    } else {
-                        super.onBackPressed();
-                    }
-                } else if (fragments.get(fragments.size() - 1) instanceof ReposFragment) {
-                    finish();
-                } else {
-                    super.onBackPressed();
-                }
+            if (lastUsedFragment instanceof ReposFragment) {
+                finish();
+            } else {
+                clearFragments();
+                onReposSelected();
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        try {
+            dialog.dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onStop();
     }
 }
