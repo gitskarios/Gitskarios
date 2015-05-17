@@ -16,9 +16,13 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
+import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.ui.view.WebViewUtils;
 import com.alorma.github.utils.TimeUtils;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
@@ -47,6 +51,8 @@ public class IssueDetailView extends LinearLayout {
     private ImageView profileIcon;
     private TextView profileName;
     private TextView profileEmail;
+    private TextView textMilestone;
+    private TextView textAssignee;
 
     public IssueDetailView(Context context) {
         super(context);
@@ -81,6 +87,8 @@ public class IssueDetailView extends LinearLayout {
         profileIcon = (ImageView) authorView.findViewById(R.id.profileIcon);
         profileName = (TextView) authorView.findViewById(R.id.name);
         profileEmail = (TextView) authorView.findViewById(R.id.email);
+        textMilestone = (TextView) findViewById(R.id.textMilestone);
+        textAssignee = (TextView) findViewById(R.id.textAssignee);
     }
 
     public void setIssue(Issue issue) {
@@ -128,6 +136,28 @@ public class IssueDetailView extends LinearLayout {
                 }
             } else {
                 labelsLayout.setVisibility(View.GONE);
+            }
+
+            if (textMilestone != null) {
+                Milestone milestone = issue.milestone;
+                if (milestone != null) {
+                    textMilestone.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_milestone).actionBar().colorRes(R.color.primary), null, null, null);
+                    textMilestone.setText(milestone.title);
+                    textMilestone.setVisibility(View.VISIBLE);
+                } else {
+                    textMilestone.setVisibility(View.GONE);
+                }
+            }
+
+            if (textAssignee != null) {
+                User assignee = issue.assignee;
+                if (assignee != null) {
+                    textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(R.color.primary), null, null, null);
+                    textAssignee.setText(assignee.login);
+                    textMilestone.setVisibility(View.VISIBLE);
+                } else {
+                    textAssignee.setVisibility(View.GONE);
+                }
             }
         }
     }

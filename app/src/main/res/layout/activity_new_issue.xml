@@ -41,7 +41,7 @@
                 <TextView
                     android:id="@+id/assignee"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
                     android:hint="@string/new_issue_hint_assignee"
                     style="@style/new_issue_push_access_row" />
 
@@ -55,7 +55,7 @@
                 <TextView
                     android:id="@+id/milestone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
                     android:hint="@string/new_issue_hint_milestone"
                     style="@style/new_issue_push_access_row" />
 
@@ -69,7 +69,7 @@
                 <TextView
                     android:id="@+id/labels"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
                     android:hint="@string/new_issue_hint_labels"
                     style="@style/new_issue_push_access_row"
                     android:singleLine="false"

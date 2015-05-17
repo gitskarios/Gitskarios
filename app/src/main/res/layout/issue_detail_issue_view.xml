@@ -91,12 +91,29 @@
                     </LinearLayout>
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/textAssignee"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:hint="@string/new_issue_hint_milestone"
+                    style="@style/new_issue_push_access_row"
+                    android:layout_marginLeft="@dimen/gapLarge" />
+
+                <TextView
+                    android:id="@+id/textMilestone"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:hint="@string/new_issue_hint_milestone"
+                    style="@style/new_issue_push_access_row"
+                    android:layout_marginLeft="@dimen/gapLarge"/>
+
                 <com.wefika.flowlayout.FlowLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/labelsLayout"
                     android:gravity="start|top"
-                    android:layout_margin="@dimen/gapMedium" />
+                    android:layout_margin="@dimen/gapMedium"
+                    android:layout_marginLeft="@dimen/gapLarge" />
 
             </LinearLayout>
 
