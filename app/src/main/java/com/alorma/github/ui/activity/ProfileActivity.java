@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.GithubUsersClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.user.BaseUsersClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
@@ -34,6 +35,7 @@ import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.FABCenterLayout;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.basesdk.client.StoreCredentials;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -110,10 +112,18 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 			}
 		}
 
+		StoreCredentials settings = new StoreCredentials(this);
+
 		if (user != null) {
-			requestClient = new RequestUserClient(this, user.login);
-			getToolbar().setTitle(user.login);
+			if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                isAuthUser = true;
+				requestClient = new GetAuthUserClient(this);
+			} else {
+				requestClient = new RequestUserClient(this, user.login);
+				getToolbar().setTitle(user.login);
+			}
 		} else {
+            isAuthUser = true;
 			requestClient = new GetAuthUserClient(this);
 		}
 
@@ -125,7 +135,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 	@Override
 	public void onResponseOk(User user, Response r) {
-		isAuthUser = this.user == null;
 		this.user = user;
 		getToolbar().setTitle(user.login);
 
