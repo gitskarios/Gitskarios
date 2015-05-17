@@ -88,7 +88,10 @@ public class RepoContributorsFragment extends BaseUsersListFragment {
 
                 users.add(owner);
                 for (Contributor contributor : contributors) {
-                    if (!contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                    if (contributor != null
+                            && contributor.author != null
+                            && contributor.author.login != null
+                            && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
                         users.add(users.size(), contributor.author);
                     }
                 }
