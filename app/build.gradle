@@ -21,8 +21,9 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.3.7"
-        versionCode 237
+        versionName "2.3.8"
+        versionCode 238
+        resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
     lintOptions {
@@ -37,7 +38,7 @@ android {
                 keyAlias SIGN_KEYSTORE_ALIAS
                 keyPassword SIGN_KEYSTORE_ALIAS_PASS
             } catch (Exception e) {
-
+                e.printStackTrace()
             }
         }
     }
@@ -51,6 +52,14 @@ android {
             signingConfig signingConfigs.playStore
         }
     }
+}
+
+def getVersionCode() {
+    return 'git rev-list --count HEAD'.execute().text.toInteger()
+}
+
+def getCurrentGitHash() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
 dependencies {

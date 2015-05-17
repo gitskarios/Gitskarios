@@ -27,5 +27,10 @@
    <Preference
         android:title="@string/changelog"
         android:key="changelog"/>
+   <Preference
+        android:title="@string/app_git_hash_title"
+       android:summary="@string/app_git_hash"
+        android:key="git_hash"
+       android:selectable="false"/>
 
 </PreferenceScreen>

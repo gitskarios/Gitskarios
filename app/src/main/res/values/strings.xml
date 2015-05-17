@@ -251,4 +251,5 @@
     <string name="add_new_label">Add new label</string>
     <string name="clear_labels">No labels</string>
     <string name="ok">OK</string>
+    <string name="app_git_hash_title">Git build hash</string>
 </resources>
