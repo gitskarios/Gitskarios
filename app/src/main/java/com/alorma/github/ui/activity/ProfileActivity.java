@@ -142,6 +142,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		if (isAuthUser) {
 			fabLayout.removeFab();
+
 		} else {
 			CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
 			checkFollowingUser.setOnCheckFollowingUser(this);
@@ -154,6 +155,38 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
 		fabLayout.setVisibility(View.VISIBLE);
 	}
+
+    @Override
+    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
+
+        Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
+        Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
+
+        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
+
+        image.setImageDrawable(drawable);
+        if (profileSwatchDark != null && profileSwatch != null) {
+            avatarColor = profileSwatchDark.getRgb();
+            avatarSecondaryColor = profileSwatch.getRgb();
+
+            try {
+                if (avatarColor != 0) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(avatarColor);
+                        getWindow().setNavigationBarColor(avatarColor);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        fillCardBio(user);
+
+        fillCardGithubData(user);
+
+        fillCardPlan(user);
+    }
 
 	private void fillCardBio(User user) {
 		CardView view = (CardView) findViewById(R.id.bioCardLayout);
@@ -183,38 +216,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	@Override
 	public void onFail(RetrofitError error) {
 		hideProgressDialog();
-	}
-
-	@Override
-	public void onImageLoaded(Bitmap loadedImage, Palette palette) {
-
-		Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
-		Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
-
-		Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
-
-		image.setImageDrawable(drawable);
-		if (profileSwatchDark != null && profileSwatch != null) {
-			avatarColor = profileSwatchDark.getRgb();
-			avatarSecondaryColor = profileSwatch.getRgb();
-
-			try {
-				if (avatarColor != 0) {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-						getWindow().setStatusBarColor(avatarColor);
-						getWindow().setNavigationBarColor(avatarColor);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		fillCardBio(user);
-
-		fillCardGithubData(user);
-
-		fillCardPlan(user);
 	}
 
 	@Override
