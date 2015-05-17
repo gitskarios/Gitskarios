@@ -21,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.3.8"
-        versionCode 238
+        versionName "2.3.9"
+        versionCode 239
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
