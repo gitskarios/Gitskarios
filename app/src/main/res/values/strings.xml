@@ -212,8 +212,6 @@
     <string name="contributors_fragment_title">Contributors</string>
     <string name="navigation_repos_search">Repositories</string>
     <string name="issue_edit_milestone">Set milestone</string>
-    <string name="issue_edit_labels">Set labels</string>
-    <string name="issue_edit_assigne">Assign issue</string>
     <string name="add_milestone">Add new milestone</string>
     <string name="select_milestone">Select milestone</string>
     <string name="add_milestone_hint">Milestone name</string>
@@ -224,6 +222,7 @@
     <string name="comment_issue">Adding comment</string>
     <string name="loading_milestones">Loading milestones</string>
     <string name="adding_milestone">Adding milestone</string>
+    <string name="adding_assignee">Adding assignee</string>
     <string name="loading_issue">Loading issue</string>
     <string name="loading_content">Loading content</string>
     <string name="issue_list_filter">Filter issues</string>
@@ -252,4 +251,8 @@
     <string name="clear_labels">No labels</string>
     <string name="ok">OK</string>
     <string name="app_git_hash_title">Git build hash</string>
+    <string name="org_no_teams">No teams</string>
+    <string name="navigation_orgs_teams">teams</string>
+    <string name="issue_edit_assignee">Assign to</string>
+    <string name="issue_edit_labels">Set labels</string>
 </resources>

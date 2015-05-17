@@ -57,11 +57,6 @@ public class UsersAdapter extends LazyAdapter<User> {
 		return v;
 	}
 
-	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		return getView(position, convertView, parent);
-	}
-
 	public void setRepoOwner(String owner) {
 		this.owner = owner;
 	}

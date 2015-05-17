@@ -13,6 +13,7 @@ import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
+import com.alorma.github.ui.fragment.orgs.OrgsTeamsFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
 
@@ -38,7 +39,6 @@ public class OrganizationActivity extends BackActivity {
 		return intent;
 	}
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,11 +58,15 @@ public class OrganizationActivity extends BackActivity {
 			orgName = getIntent().getExtras().getString(ORG);
 		}
 
+		setTitle(orgName);
+
 		OrgsReposFragment orgReposFragment = OrgsReposFragment.newInstance(orgName);
+		//OrgsTeamsFragment orgsTeamsFragment = OrgsTeamsFragment.newInstance(orgName);
 		OrgsMembersFragment orgMembersFragment = OrgsMembersFragment.newInstance(orgName);
 
 		ArrayList<Fragment> listFragments = new ArrayList<>();
 		listFragments.add(orgReposFragment);
+		//listFragments.add(orgsTeamsFragment);
 		listFragments.add(orgMembersFragment);
 
 		viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
@@ -93,7 +97,11 @@ public class OrganizationActivity extends BackActivity {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 				case 0:
-					return getString(R.string.navigation_orgs_repos);
+					return getString(R.string.navigation_orgs_repos);/*
+				case 1:
+					return getString(R.string.navigation_orgs_teams);
+				case 2:
+					return getString(R.string.navigation_orgs_members);*/
 				case 1:
 					return getString(R.string.navigation_orgs_members);
 			}
