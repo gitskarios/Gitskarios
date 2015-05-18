@@ -324,7 +324,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     @Override
     public void onFail(RetrofitError error) {
-        ErrorHandler.onRetrofitError(this, "RepoDetailFragment", error);
+        ErrorHandler.onRetrofitError(this, "RepoDetailActivity", error);
     }
 
     @Override
