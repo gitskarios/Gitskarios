@@ -118,6 +118,8 @@
             android:name="com.alorma.github.ui.activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity android:name="com.alorma.github.ui.activity.ReposActivity" />
+        <activity android:name="com.alorma.github.ui.activity.StarredReposActivity" />
+        <activity android:name="com.alorma.github.ui.activity.WatchedReposActivity" />
         <activity android:name="com.alorma.github.ui.activity.OrganizationsActivity" />
         <activity android:name="com.alorma.github.ui.activity.SearchIssuesActivity" />
 

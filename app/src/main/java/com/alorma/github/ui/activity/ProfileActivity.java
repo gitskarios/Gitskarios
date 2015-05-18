@@ -266,6 +266,18 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	@Override
+	public void onStarredRequest(String username) {
+		Intent intent = StarredReposActivity.launchIntent(this, username);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onWatchedRequest(String username) {
+		Intent intent = WatchedReposActivity.launchIntent(this, username);
+		startActivity(intent);
+	}
+
+	@Override
 	public void onClick(View v) {
 		showProgressDialog(R.style.SpotDialog_LoadingUser);
 

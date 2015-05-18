@@ -7,7 +7,10 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
+import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.dto.response.UserType;
+import com.alorma.github.sdk.services.repos.StarredReposClient;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -37,6 +40,8 @@ public class GithubDataCard implements View.OnClickListener {
         setUpRepos(view);
         setUpGists(view);
         setUpOrgs(view);
+        setUpStarred(view);
+        setUpWatched(view);
     }
 
     private void setUpRepos(View view) {
@@ -98,6 +103,38 @@ public class GithubDataCard implements View.OnClickListener {
         orgsClient.execute();
     }
 
+    private void setUpStarred(View view) {
+        if (user.type == UserType.User) {
+            ImageView icon = (ImageView) view.findViewById(R.id.iconStarreds);
+
+            IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_star);
+
+            icon.setImageDrawable(githubIconDrawable);
+
+            view.findViewById(R.id.starreds).setOnClickListener(this);
+        } else {
+            view.findViewById(R.id.starreds).setVisibility(View.GONE);
+            view.findViewById(R.id.dividerOrgs).setVisibility(View.GONE);
+        }
+
+    }
+
+    private void setUpWatched(View view) {
+        if (user.type == UserType.User) {
+            ImageView icon = (ImageView) view.findViewById(R.id.iconWatcheds);
+
+            IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_eye);
+
+            icon.setImageDrawable(githubIconDrawable);
+
+            view.findViewById(R.id.watcheds).setOnClickListener(this);
+        } else {
+            view.findViewById(R.id.watcheds).setVisibility(View.GONE);
+            view.findViewById(R.id.dividerStarreds).setVisibility(View.GONE);
+        }
+
+    }
+
     private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
         IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
 
@@ -120,6 +157,12 @@ public class GithubDataCard implements View.OnClickListener {
                 case R.id.gists:
                     githubDataCardListener.onGistsRequest(user.login);
                     break;
+                case R.id.starreds:
+                    githubDataCardListener.onStarredRequest(user.login);
+                    break;
+                case R.id.watcheds:
+                    githubDataCardListener.onWatchedRequest(user.login);
+                    break;
             }
         }
     }
@@ -134,5 +177,9 @@ public class GithubDataCard implements View.OnClickListener {
         void onOrganizationsRequest(String username);
 
         void onGistsRequest(String username);
+
+        void onStarredRequest(String username);
+
+        void onWatchedRequest(String username);
     }
 }
