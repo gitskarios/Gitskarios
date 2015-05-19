@@ -62,8 +62,11 @@ public class UrlsManager {
                 Intent intent = checkUrl(url);
                 if (intent != null) {
                     view.getContext().startActivity(intent);
+                } else {
+                    Intent intentView = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    view.getContext().startActivity(intentView);
                 }
-                return intent != null;
+                return true;
             }
         });
     }
