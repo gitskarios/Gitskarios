@@ -29,6 +29,7 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
+import com.alorma.github.ui.view.UrlsManager;
 import com.alorma.github.utils.ImageUtils;
 import com.alorma.github.utils.uris.RepoUri;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
@@ -173,9 +174,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 			}
 		} else if (content.isSubmodule()){
 			if (getActivity() != null && isAdded()) {
-				RepoUri uri = new RepoUri().create(content.git_url);
-				Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), uri.getOwner(), uri.getRepo());
-				startActivity(intent);
+				startActivity(new UrlsManager(getActivity()).manageRepos(content.git_url));
 				getActivity().finish();
 			}
 		} else {

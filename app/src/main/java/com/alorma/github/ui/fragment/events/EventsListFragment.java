@@ -18,6 +18,7 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.view.UrlsManager;
 import com.google.gson.Gson;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -134,10 +135,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
 			startActivity(launcherIntent);
 		} else {
-			String fullName = item.repo.name;
-			String[] parts = fullName.split("/");
-			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
-			startActivity(intent);
+			startActivity(new UrlsManager(getActivity()).manageRepos(item.repo.html_url));
 		}
 	}
 }

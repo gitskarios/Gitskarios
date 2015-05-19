@@ -16,6 +16,7 @@ import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.view.UrlsManager;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
@@ -207,10 +208,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
             startActivity(launcherIntent);
         } else {
-            String fullName = item.repository.full_name;
-            String[] parts = fullName.split("/");
-            Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
-            startActivity(intent);
+            startActivity(new UrlsManager(getActivity()).manageRepos(item.repository.html_url));
         }
 
     }

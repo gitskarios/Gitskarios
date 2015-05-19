@@ -77,15 +77,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		return intent;
 	}
 
-	public static Intent createIntentFilterLauncherActivity(Context context, User user) {
-		Intent intent = new Intent(context, ProfileActivity.class);
-		if (user != null) {
-			intent.putExtra(USER, user);
-			intent.putExtra(FROM_INTENT_FILTER, true);
-		}
-		return intent;
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

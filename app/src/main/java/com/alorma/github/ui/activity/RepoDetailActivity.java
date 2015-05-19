@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.view.UrlsManager;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
@@ -46,9 +47,7 @@ import retrofit.client.Response;
  */
 public class RepoDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
-    public static final String OWNER = "OWNER";
-    public static final String REPO = "REPO";
-    public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
+    public static final String REPO_INFO = "REPO_INFO";
 
     private Boolean repoStarred = false;
     private Boolean repoWatched = false;
@@ -62,23 +61,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private List<Fragment> listFragments;
     private SlidingTabLayout slidingTabLayout;
     private RepoContributorsFragment repoCollaboratorsFragment;
+    private RepoInfo requestRepoInfo;
 
-    public static Intent createLauncherIntent(Context context, String owner, String repo) {
+    public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putString(OWNER, owner);
-        bundle.putString(REPO, repo);
-        bundle.putBoolean(FROM_INTENT_FILTER, false);
-
-        Intent intent = new Intent(context, RepoDetailActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent createIntentFilterLauncherIntent(Context context, String owner, String repo) {
-        Bundle bundle = new Bundle();
-        bundle.putString(OWNER, owner);
-        bundle.putString(REPO, repo);
-        bundle.putBoolean(FROM_INTENT_FILTER, true);
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
         Intent intent = new Intent(context, RepoDetailActivity.class);
         intent.putExtras(bundle);
@@ -91,9 +78,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         setContentView(R.layout.activity_repo_detail);
 
         if (getIntent().getExtras() != null) {
-            RepoInfo repoInfo = new RepoInfo();
-            repoInfo.owner = getIntent().getExtras().getString(OWNER);
-            repoInfo.name = getIntent().getExtras().getString(REPO);
+            RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
             setTitle(repoInfo.name);
 
@@ -111,6 +96,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     }
 
     private void load(RepoInfo repoInfo) {
+        this.requestRepoInfo = repoInfo;
         GetRepoClient repoClient = new GetRepoClient(this, repoInfo);
         repoClient.setOnResultCallback(this);
         repoClient.execute();
@@ -120,7 +106,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         RepoInfo repoInfo = new RepoInfo();
         repoInfo.owner = currentRepo.owner.login;
         repoInfo.name = currentRepo.name;
-        repoInfo.branch = currentRepo.default_branch;
+        if (requestRepoInfo != null && requestRepoInfo.branch != null) {
+            repoInfo.branch = requestRepoInfo.branch;
+        } else {
+            repoInfo.branch = currentRepo.default_branch;
+        }
 
         return repoInfo;
     }
@@ -231,13 +221,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         if (item.getItemId() == R.id.action_show_parent) {
             if (currentRepo != null && currentRepo.parent != null) {
-                String parentFullName = currentRepo.parent.full_name;
-                String[] split = parentFullName.split("/");
-                String owner = split[0];
-                String name = split[1];
-
-                Intent launcherActivity = RepoDetailActivity.createLauncherIntent(this, owner, name);
-                startActivity(launcherActivity);
+                startActivity(new UrlsManager(this).manageRepos(currentRepo.parent.html_url));
             }
         } else if (item.getItemId() == R.id.share_repo) {
             if (currentRepo != null) {

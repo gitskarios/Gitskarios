@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,14 +9,11 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.ui.activity.IssueDetailActivity;
-import com.alorma.github.ui.view.WebViewUtils;
+import com.alorma.github.ui.view.UrlsManager;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -76,7 +72,7 @@ public class ChangelogDialog extends DialogFragment {
         } catch (Throwable e) {
             webView.loadData("<h1>Unable to load</h1><p>" + e.getLocalizedMessage() + "</p>", "text/html", "UTF-8");
         }
-        WebViewUtils.manageUrls(webView);
+        new UrlsManager(getActivity()).manageUrls(webView);
         return dialog;
     }
 

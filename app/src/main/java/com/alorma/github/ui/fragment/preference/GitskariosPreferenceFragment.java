@@ -16,6 +16,7 @@ import com.alorma.github.ui.activity.LoginActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.ChangelogDialog;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
+import com.alorma.github.ui.view.UrlsManager;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
@@ -56,8 +57,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		if (preference.getKey().equals(GITSKARIOS)) {
-			Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), "gitskarios", "Gitskarios");
-			startActivity(intent);
+			startActivity(new UrlsManager(getActivity()).manageRepos("https://github.com/gitskarios/Gitskarios"));
 		}else if (preference.getKey().equals(CHANGELOG)) {
 			dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));
 			dialog.show(getFragmentManager(), "changelog");
