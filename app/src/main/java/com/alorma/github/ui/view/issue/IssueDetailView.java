@@ -3,6 +3,7 @@ package com.alorma.github.ui.view.issue;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -20,6 +21,8 @@ import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.TimeUtils;
@@ -82,7 +85,7 @@ public class IssueDetailView extends LinearLayout {
         textAssignee = (TextView) findViewById(R.id.textAssignee);
     }
 
-    public void setIssue(Issue issue) {
+    public void setIssue(RepoInfo repoInfo, Issue issue) {
         if (this.issue == null) {
             this.issue = issue;
             title.setText(issue.title);
@@ -97,6 +100,8 @@ public class IssueDetailView extends LinearLayout {
             if (issue.body_html != null) {
                 String htmlCode = HtmlUtils.format(issue.body_html).toString();
                 HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+
+                imageGetter.repoInfo(repoInfo);
                 imageGetter.bind(body, htmlCode, issue.number);
 
                 body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
@@ -121,7 +126,6 @@ public class IssueDetailView extends LinearLayout {
             } else {
                 labelsLayout.setVisibility(View.GONE);
             }
-
 
             if (textMilestone != null) {
                 Milestone milestone = issue.milestone;

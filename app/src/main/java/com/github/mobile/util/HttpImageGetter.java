@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +31,7 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.gh4a.utils.FileUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -47,11 +49,12 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 /**
- *
  * Original source https://github.com/github/android/blob/master/app/src/main/java/com/github/mobile/util/HttpImageGetter.java
  * Getter for an image
  */
 public class HttpImageGetter implements ImageGetter {
+
+    private RepoInfo repoInfo;
 
     private static class LoadingImageGetter implements ImageGetter {
 
@@ -179,7 +182,7 @@ public class HttpImageGetter implements ImageGetter {
      * @return this image getter
      */
     public HttpImageGetter bind(final TextView view, final String html,
-            final Object id) {
+                                final Object id) {
         if (TextUtils.isEmpty(html))
             return hide(view);
 
@@ -214,6 +217,7 @@ public class HttpImageGetter implements ImageGetter {
         String html;
         Object id;
         TextView view;
+
         @Override
         protected CharSequence doInBackground(Object... params) {
             html = (String) params[0];
@@ -234,44 +238,59 @@ public class HttpImageGetter implements ImageGetter {
         }
     }
 
+    public void repoInfo(RepoInfo repoInfo) {
+        this.repoInfo = repoInfo;
+    }
+
     private InputStream fetch(String urlString) throws IOException {
+        if (!urlString.contains("http")) {
+            Uri.Builder builder = Uri.parse("https://github.com/").buildUpon();
+
+            builder.appendPath(repoInfo.owner);
+            builder.appendPath(repoInfo.name);
+            builder.appendPath("raw");
+            builder.appendPath(repoInfo.branch);
+            builder.appendPath(urlString);
+            urlString = builder.build().toString();
+        }
         URL url = new URL(urlString);
         return url.openStream();
     }
 
     public Drawable getDrawable(String source) {
-        File output = null;
-        if (destroyed) {
-            return loading.getDrawable(source);
-        }
-        try {
-            output = File.createTempFile("image", ".jpg", dir);
-            InputStream is = fetch(source);
-            if (is != null) {
-                boolean success = FileUtils.save(output, is);
-                if (success) {
-                    Bitmap bitmap = ImageUtils.getBitmap(output, width, Integer.MAX_VALUE);
-                    if (bitmap == null) {
-                        return loading.getDrawable(source);
-                    }
-                    loadedBitmaps.add(new WeakReference<Bitmap>(bitmap));
-                    BitmapDrawable drawable = new BitmapDrawable(
-                            context.getResources(), bitmap);
-                    drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
-                    return drawable;
-                }
-                else {
-                    return loading.getDrawable(source);
-                }
-            }
-            else {
+        if (loading != null) {
+            File output = null;
+            if (destroyed) {
                 return loading.getDrawable(source);
             }
-        } catch (IOException e) {
-            return loading.getDrawable(source);
-        } finally {
-            if (output != null)
-                output.delete();
+            try {
+                output = File.createTempFile("image", ".jpg", dir);
+                InputStream is = fetch(source);
+                if (is != null) {
+                    boolean success = FileUtils.save(output, is);
+                    if (success) {
+                        Bitmap bitmap = ImageUtils.getBitmap(output, width, Integer.MAX_VALUE);
+                        if (bitmap == null) {
+                            return loading.getDrawable(source);
+                        }
+                        loadedBitmaps.add(new WeakReference<Bitmap>(bitmap));
+                        BitmapDrawable drawable = new BitmapDrawable(
+                                context.getResources(), bitmap);
+                        drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
+                        return drawable;
+                    } else {
+                        return loading.getDrawable(source);
+                    }
+                } else {
+                    return loading.getDrawable(source);
+                }
+            } catch (IOException e) {
+                return loading.getDrawable(source);
+            } finally {
+                if (output != null)
+                    output.delete();
+            }
         }
+        return null;
     }
 }

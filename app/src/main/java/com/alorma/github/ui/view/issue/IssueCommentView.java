@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.TimeUtils;
@@ -64,7 +65,7 @@ public class IssueCommentView extends LinearLayout {
         profileEmail = (TextView) authorView.findViewById(R.id.email);
     }
 
-    public void setComment(IssueStoryComment issueStoryDetail) {
+    public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
         IssueComment issueComment = issueStoryDetail.comment;
 
         if (issueComment.user != null) {
@@ -77,6 +78,7 @@ public class IssueCommentView extends LinearLayout {
         if (issueComment.body_html != null) {
             String htmlCode = HtmlUtils.format(issueComment.body_html).toString();
             HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+            imageGetter.repoInfo(repoInfo);
             imageGetter.bind(body, htmlCode, issueComment.hashCode());
             body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
         }

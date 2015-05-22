@@ -50,8 +50,6 @@ import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -138,7 +136,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             status = getString(R.string.issue_status_close);
         }
         setTitle("#" + issueStory.issue.number + " " + status);
-        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory);
+        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repo);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
