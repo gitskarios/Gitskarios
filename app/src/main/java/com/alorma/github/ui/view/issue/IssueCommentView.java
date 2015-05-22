@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.WebView;
@@ -14,8 +16,11 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.IssueComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.TimeUtils;
+import com.gh4a.utils.UiUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -23,10 +28,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class IssueCommentView extends LinearLayout {
 
-    private IssueComment issueComment;
-
     private TextView body;
-    private WebView bodyHtml;
     private ImageView profileIcon;
     private TextView profileName;
     private TextView profileEmail;
@@ -56,8 +58,6 @@ public class IssueCommentView extends LinearLayout {
         inflate(getContext(), R.layout.issue_detail_issue_comment_view, this);
         setOrientation(VERTICAL);
         body = (TextView) findViewById(R.id.textBody);
-        bodyHtml = (WebView) findViewById(R.id.webBody);
-        new UrlsManager(getContext()).manageUrls(bodyHtml);
         View authorView = findViewById(R.id.author);
         profileIcon = (ImageView) authorView.findViewById(R.id.profileIcon);
         profileName = (TextView) authorView.findViewById(R.id.name);
@@ -65,7 +65,7 @@ public class IssueCommentView extends LinearLayout {
     }
 
     public void setComment(IssueStoryComment issueStoryDetail) {
-        this.issueComment = issueStoryDetail.comment;
+        IssueComment issueComment = issueStoryDetail.comment;
 
         if (issueComment.user != null) {
             profileName.setText(issueComment.user.login);
@@ -75,18 +75,10 @@ public class IssueCommentView extends LinearLayout {
         }
 
         if (issueComment.body_html != null) {
-            bodyHtml.loadData(issueComment.body_html, "text/html; charset=UTF-8", null);
-            bodyHtml.setBackgroundColor(Color.TRANSPARENT);
-            bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-            bodyHtml.setVisibility(View.VISIBLE);
-            body.setVisibility(View.GONE);
-        } else if (issueComment.body != null) {
-            body.setText(issueComment.body);
-            body.setVisibility(View.VISIBLE);
-            bodyHtml.setVisibility(View.GONE);
-        } else {
-            body.setVisibility(View.GONE);
-            bodyHtml.setVisibility(View.GONE);
+            String htmlCode = HtmlUtils.format(issueComment.body_html).toString();
+            HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+            imageGetter.bind(body, htmlCode, issueComment.hashCode());
+            body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
         }
     }
 }

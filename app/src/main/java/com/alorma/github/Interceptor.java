@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.alorma.github.ui.view.UrlsManager;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

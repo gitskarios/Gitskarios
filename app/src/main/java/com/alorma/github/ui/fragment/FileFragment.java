@@ -26,12 +26,10 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.ImageUtils;
-import com.alorma.github.utils.uris.RepoUri;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
@@ -174,8 +172,11 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 			}
 		} else if (content.isSubmodule()){
 			if (getActivity() != null && isAdded()) {
-				startActivity(new UrlsManager(getActivity()).manageRepos(content.git_url));
-				getActivity().finish();
+				Intent intent = new UrlsManager(getActivity()).manageRepos(content.git_url);
+				if (intent != null) {
+					startActivity(new UrlsManager(getActivity()).manageRepos(content.git_url));
+					getActivity().finish();
+				}
 			}
 		} else {
 			if (getActivity() != null && isAdded()) {

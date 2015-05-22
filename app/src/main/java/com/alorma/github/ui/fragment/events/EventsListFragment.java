@@ -15,10 +15,9 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.google.gson.Gson;
 import com.mikepenz.octicons_typeface_library.Octicons;
 

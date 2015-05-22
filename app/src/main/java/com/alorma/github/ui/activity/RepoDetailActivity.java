@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;

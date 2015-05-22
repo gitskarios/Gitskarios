@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +16,16 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.LabelView;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.TimeUtils;
+import com.gh4a.utils.UiUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -35,7 +41,6 @@ public class IssueDetailView extends LinearLayout {
     private TextView title;
     private TextView body;
     private ViewGroup labelsLayout;
-    private WebView bodyHtml;
     private ImageView profileIcon;
     private TextView profileName;
     private TextView profileEmail;
@@ -68,8 +73,6 @@ public class IssueDetailView extends LinearLayout {
         setOrientation(VERTICAL);
         title = (TextView) findViewById(R.id.textTitle);
         body = (TextView) findViewById(R.id.textBody);
-        bodyHtml = (WebView) findViewById(R.id.webBody);
-        new UrlsManager(getContext()).manageUrls(bodyHtml);
         labelsLayout = (ViewGroup) findViewById(R.id.labelsLayout);
         View authorView = findViewById(R.id.author);
         profileIcon = (ImageView) authorView.findViewById(R.id.profileIcon);
@@ -92,18 +95,11 @@ public class IssueDetailView extends LinearLayout {
             }
 
             if (issue.body_html != null) {
-                bodyHtml.loadData(issue.body_html, "text/html; charset=UTF-8", null);
-                bodyHtml.setBackgroundColor(Color.TRANSPARENT);
-                bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-                bodyHtml.setVisibility(View.VISIBLE);
-                body.setVisibility(View.GONE);
-            } else if (issue.body != null) {
-                body.setText(issue.body);
-                body.setVisibility(View.VISIBLE);
-                bodyHtml.setVisibility(View.GONE);
-            } else {
-                body.setVisibility(View.GONE);
-                bodyHtml.setVisibility(View.GONE);
+                String htmlCode = HtmlUtils.format(issue.body_html).toString();
+                HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+                imageGetter.bind(body, htmlCode, issue.number);
+
+                body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
             }
 
             if (issue.labels != null && issue.labels.size() > 0) {
@@ -126,10 +122,11 @@ public class IssueDetailView extends LinearLayout {
                 labelsLayout.setVisibility(View.GONE);
             }
 
+
             if (textMilestone != null) {
                 Milestone milestone = issue.milestone;
                 if (milestone != null) {
-                    textMilestone.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_milestone).actionBar().colorRes(R.color.primary), null, null, null);
+                    textMilestone.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_milestone).actionBar().paddingDp(8).colorRes(getColorIcons()), null, null, null);
                     textMilestone.setText(milestone.title);
                     textMilestone.setVisibility(View.VISIBLE);
                 } else {
@@ -140,13 +137,21 @@ public class IssueDetailView extends LinearLayout {
             if (textAssignee != null) {
                 User assignee = issue.assignee;
                 if (assignee != null) {
-                    textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(R.color.primary), null, null, null);
+                    textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
                     textAssignee.setText(assignee.login);
                     textMilestone.setVisibility(View.VISIBLE);
                 } else {
                     textAssignee.setVisibility(View.GONE);
                 }
             }
+        }
+    }
+
+    public int getColorIcons() {
+        if (issue.state == IssueState.open) {
+            return R.color.issue_state_open;
+        } else {
+            return R.color.issue_state_close;
         }
     }
 }

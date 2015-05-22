@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.repos;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.ListView;
@@ -8,10 +7,9 @@ import android.widget.ListView;
 import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.utils.GitskariosSettings;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import retrofit.RetrofitError;

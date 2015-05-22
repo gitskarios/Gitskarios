@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.preference;
 
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -12,11 +11,8 @@ import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.utils.GitskariosSettings;
-import com.alorma.github.ui.activity.LoginActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.ChangelogDialog;
-import com.alorma.github.ui.fragment.ChangelogDialogSupport;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 

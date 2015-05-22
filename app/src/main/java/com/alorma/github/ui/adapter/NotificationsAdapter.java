@@ -1,7 +1,6 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -10,14 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
-import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;

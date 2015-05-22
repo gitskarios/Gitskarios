@@ -315,7 +315,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (following) {
 			fabDrawable.color(avatarColor);
 		} else {
-			fabDrawable.color(AttributesUtils.getIconsColor(this));
+			fabDrawable.color(PaletteUtils.colorTextFromBackgroundColor(avatarSecondaryColor));
 		}
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);

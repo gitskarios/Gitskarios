@@ -13,17 +13,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.view.UrlsManager;
+import com.alorma.github.UrlsManager;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
+import com.gh4a.utils.UiUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
@@ -37,7 +41,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     private static final String REPO_INFO = "REPO_INFO";
     private RepoInfo repoInfo;
 
-    private WebView webview;
+    private TextView htmlContentView;
 
     private UpdateReceiver updateReceiver;
     private SmoothProgressBar progressBar;
@@ -66,23 +70,11 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
             loadArguments();
 
             progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
+            htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
 
             int color = AttributesUtils.getPrimaryColor(getActivity());
 
             progressBar.setSmoothProgressDrawableColor(color);
-
-            webview = (WebView) view.findViewById(R.id.webContainer);
-            webview.setPadding(0, 24, 0, 0);
-            webview.getSettings().setJavaScriptEnabled(true);
-
-            webview.clearCache(true);
-            webview.clearFormData();
-            webview.clearHistory();
-            webview.clearMatches();
-            webview.clearSslPreferences();
-            webview.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-
-            new UrlsManager(getActivity()).manageUrls(webview);
 
             getContent();
         }
@@ -107,21 +99,20 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     }
 
     @Override
-    public void onResponseOk(final String s, Response r) {
+    public void onResponseOk(final String htmlContent, Response r) {
 
         if (progressBar != null) {
             progressBar.progressiveStop();
             progressBar.setVisibility(View.INVISIBLE);
         }
 
-        Uri.Builder builder = Uri.parse("https://github.com/").buildUpon();
+        if (htmlContent != null) {
+            String htmlCode = HtmlUtils.format(htmlContent).toString();
+            HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
+            imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
 
-        builder.appendPath(repoInfo.owner);
-        builder.appendPath(repoInfo.name);
-        builder.appendPath("raw");
-        builder.appendPath(repoInfo.branch);
-
-        webview.loadDataWithBaseURL(builder.build().toString() + "/", s, "text/html; charset=UTF-8", null, null);
+            htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+        }
     }
 
     @Override

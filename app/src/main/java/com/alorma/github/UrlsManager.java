@@ -1,4 +1,4 @@
-package com.alorma.github.ui.view;
+package com.alorma.github;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,15 +6,14 @@ import android.content.UriMatcher;
 import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.crashlytics.android.Crashlytics;
 
-import java.util.Arrays;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Bernat on 27/04/2015.
@@ -73,12 +72,12 @@ public class UrlsManager {
 
     public Intent checkUrl(String url) {
 
-        Uri uri = Uri.parse(url);
-
-        return checkUri(uri);
+        return checkUri(Uri.parse(url));
     }
 
     public Intent checkUri(Uri uri) {
+
+        uri = normalizeUri(uri);
 
         boolean matched = uriMatcher.match(uri) > -1 && uriMatcher.match(uri) < 1000;
         if (matched) {
@@ -98,14 +97,29 @@ public class UrlsManager {
             return intent;
         }
 
+        if (Fabric.isInitialized()) {
+            Crashlytics.log(uri.toString());
+        }
         return null;
+    }
+
+    private Uri normalizeUri(Uri uri) {
+        if (uri.getAuthority().contains("api.")) {
+            String authority = uri.getAuthority().replace("api.", "");
+            uri = uri.buildUpon().authority(authority).build();
+        }
+        return uri;
     }
 
     public Intent manageRepos(String url) {
         return manageRepos(Uri.parse(url));
     }
 
+    // https://api.github.com/repos/gitskarios/GithubAndroidSdk/git/trees/6d54a5beb8235f7bc935289d37085f3413f0c1c6
     public Intent manageRepos(Uri uri) {
+
+        uri = normalizeUri(uri);
+
         switch (uriMatcher.match(uri)) {
             case URI_REPO:
             case URI_REPO_BRANCH:
@@ -114,6 +128,9 @@ public class UrlsManager {
             case URI_REPO_BRANCH_HOTFIX:
                 RepoInfo repoInfo = extractRepo(uri);
                 return RepoDetailActivity.createLauncherIntent(context, repoInfo);
+        }
+        if (Fabric.isInitialized()) {
+            Crashlytics.log(uri.toString());
         }
         return null;
     }
