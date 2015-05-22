@@ -72,13 +72,13 @@ public class HttpImageGetter implements ImageGetter {
         return html.contains("<img");
     }
 
-    private final LoadingImageGetter loading;
+    private LoadingImageGetter loading;
 
     private final Context context;
 
-    private final File dir;
+    private File dir;
 
-    private final int width;
+    private int width;
 
     private final Map<Object, CharSequence> rawHtmlCache = new HashMap<>();
 
@@ -95,17 +95,19 @@ public class HttpImageGetter implements ImageGetter {
      */
     public HttpImageGetter(Context context) {
         this.context = context;
-        dir = context.getCacheDir();
+        if (context != null) {
+            dir = context.getCacheDir();
 
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        if (Build.VERSION.SDK_INT < 13) {
-            width = fetchDisplayWidthPreHoneycomb(wm);
-        } else {
-            width = fetchDisplayWidth(wm);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            if (Build.VERSION.SDK_INT < 13) {
+                width = fetchDisplayWidthPreHoneycomb(wm);
+            } else {
+                width = fetchDisplayWidth(wm);
+            }
+
+            loadedBitmaps = new ArrayList<>();
+            loading = new LoadingImageGetter(context, 24);
         }
-
-        loadedBitmaps = new ArrayList<>();
-        loading = new LoadingImageGetter(context, 24);
     }
 
     public void destroy() {
