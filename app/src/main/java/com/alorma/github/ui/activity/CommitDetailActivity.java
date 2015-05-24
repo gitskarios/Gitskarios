@@ -38,7 +38,11 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 		if (getIntent().getExtras() != null) {
 			CommitInfo info = getIntent().getExtras().getParcelable(SingleCommitFragment.INFO);
 
-			setTitle(getString(R.string.title_activity_commits, info.repoInfo, info.sha));
+			setTitle(getString(R.string.title_activity_commit_detail, info.sha));
+
+			if (getSupportActionBar() != null) {
+				getSupportActionBar().setSubtitle(String.valueOf(info.repoInfo));
+			}
 
 			tablet = findViewById(R.id.detail) != null;
 
