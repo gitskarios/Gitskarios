@@ -4,37 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 
-import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.R;
+import com.alorma.github.sdk.bean.info.FileInfo;
+import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.FileFragment;
 
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FileActivity extends AppCompatActivity implements FileFragment.FileFragmentListener {
+public class FileActivity extends BackActivity {
 
-	private static final String REPO_INFO = "REPO_INFO";
-	private static final String NAME = "NAME";
-	private static final String PATH = "PATH";
-	private static final String PATCH = "PATCH";
 
-	public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String name, String path) {
+	public static Intent createLauncherIntent(Context context, FileInfo fileInfo) {
 		Bundle bundle = new Bundle();
-		bundle.putParcelable(REPO_INFO, repoInfo);
-		bundle.putString(NAME, name);
-		bundle.putString(PATH, path);
-
-		Intent intent = new Intent(context, FileActivity.class);
-		intent.putExtras(bundle);
-		return intent;
-	}
-
-	public static Intent createLauncherIntent(Context context, String patch, String name) {
-		Bundle bundle = new Bundle();
-		bundle.putString(PATCH, patch);
-		bundle.putString(NAME, name);
+		bundle.putParcelable(FileFragment.FILE_INFO, fileInfo);
 
 		Intent intent = new Intent(context, FileActivity.class);
 		intent.putExtras(bundle);
@@ -44,17 +28,14 @@ public class FileActivity extends AppCompatActivity implements FileFragment.File
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.generic_toolbar);
 
-		FileFragment fileFragment = new FileFragment();
-		fileFragment.setFileFragmentListener(this);
+		FileInfo info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
+
+		FileFragment fileFragment = FileFragment.getInstance(info);
 		fileFragment.setArguments(getIntent().getExtras());
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(android.R.id.content, fileFragment);
+		ft.replace(R.id.content, fileFragment);
 		ft.commit();
-	}
-
-	@Override
-	public boolean showUpIndicator() {
-		return true;
 	}
 }

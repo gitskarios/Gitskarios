@@ -33,6 +33,7 @@ public class UrlsManager {
     private static final int URI_REPO_BRANCH_FEATURE = 6;
     private static final int URI_REPO_BRANCH_RELEASE = 7;
     private static final int URI_REPO_BRANCH_HOTFIX = 8;
+    private static final int URI_FILE = 9;
 
 
     private final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -55,6 +56,7 @@ public class UrlsManager {
         uriMatcher.addURI("github.com", "*/*/tree/*", URI_REPO_BRANCH);
         uriMatcher.addURI("github.com", "*/*/issues/#", URI_ISSUE);
         uriMatcher.addURI("github.com", "*/*/commit/*", URI_COMMIT);
+        uriMatcher.addURI("github.com", "*/*/blob/*", URI_FILE);
     }
 
     public void manageUrls(final WebView webView) {
@@ -102,6 +104,9 @@ public class UrlsManager {
                     break;
                 case URI_ISSUE:
                     intent = manageIssue(uri);
+                    break;
+                case URI_FILE:
+                    intent = manageFile(uri);
                     break;
             }
             return intent;
@@ -194,5 +199,11 @@ public class UrlsManager {
         info.num = Integer.parseInt(lastPathSegment);
 
         return IssueDetailActivity.createLauncherIntent(context, info);
+    }
+
+    private Intent manageFile(Uri uri) {
+
+
+        return null;
     }
 }
