@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
-import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.FileFragment;
@@ -20,10 +20,9 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
 	private boolean tablet;
 
-	public static Intent launchIntent(Context context, RepoInfo info, String sha) {
+	public static Intent launchIntent(Context context, CommitInfo commitInfo) {
 		Bundle b = new Bundle();
-		b.putParcelable(SingleCommitFragment.INFO, info);
-		b.putString(SingleCommitFragment.SHA, sha);
+		b.putParcelable(SingleCommitFragment.INFO, commitInfo);
 
 		Intent intent = new Intent(context, CommitDetailActivity.class);
 		intent.putExtras(b);
@@ -37,14 +36,13 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 		setContentView(R.layout.commit_activity);
 
 		if (getIntent().getExtras() != null) {
-			RepoInfo info = getIntent().getExtras().getParcelable(SingleCommitFragment.INFO);
-			String sha = getIntent().getExtras().getString(SingleCommitFragment.SHA);
+			CommitInfo info = getIntent().getExtras().getParcelable(SingleCommitFragment.INFO);
 
-			setTitle(getString(R.string.title_activity_commits, info, sha));
+			setTitle(getString(R.string.title_activity_commits, info.repoInfo, info.sha));
 
 			tablet = findViewById(R.id.detail) != null;
 
-			SingleCommitFragment singleCommitFragment = SingleCommitFragment.newInstance(info, sha);
+			SingleCommitFragment singleCommitFragment = SingleCommitFragment.newInstance(info);
 			singleCommitFragment.setOnFileRequestListener(this);
 
 			FileFragment fileFragment = new FileFragment();

@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.ListCommit;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
@@ -282,7 +283,11 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     public void onListItemClick(final ListView l, final View v, final int position, final long id) {
         Commit item = commitsAdapter.getItem(position);
 
-        Intent intent = CommitDetailActivity.launchIntent(getActivity(), repoInfo, item.sha);
+        CommitInfo info = new CommitInfo();
+        info.repoInfo = repoInfo;
+        info.sha = item.sha;
+
+        Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
         startActivity(intent);
     }
 }

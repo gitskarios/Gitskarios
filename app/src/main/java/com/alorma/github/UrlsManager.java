@@ -8,7 +8,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
@@ -93,6 +95,9 @@ public class UrlsManager {
                 case URI_USER:
                     intent = manageUsers(uri);
                     break;
+                case URI_COMMIT:
+                    intent = manageCommit(uri);
+                    break;
             }
             return intent;
         }
@@ -152,6 +157,19 @@ public class UrlsManager {
 
     public Intent manageUsers(String url) {
         return manageUsers(Uri.parse(url));
+    }
+
+    private Intent manageCommit(Uri uri) {
+        CommitInfo info = new CommitInfo();
+
+        // https://github.com/alorma/test_uris/commit/ff85079f374f0cf264f9efd11c501cbc8465a7c0
+
+        RepoInfo repoInfo = extractRepo(uri);
+        info.repoInfo = repoInfo;
+
+        info.sha = uri.getLastPathSegment();
+
+        return CommitDetailActivity.launchIntent(context, info);
     }
 
     public Intent manageUsers(Uri uri) {

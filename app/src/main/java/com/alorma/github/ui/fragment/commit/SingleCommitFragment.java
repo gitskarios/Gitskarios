@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
@@ -31,22 +32,19 @@ import retrofit.client.Response;
  */
 public class SingleCommitFragment extends BaseFragment implements BaseClient.OnResultCallback<Commit> {
 
-	public static final String SHA = "SHA";
 	public static final String INFO = "INFO";
 	private RecyclerView recyclerView;
 	private TextView textMessage;
 	private TextView textAdditions;
 	private TextView textDeletions;
 	private UpdateReceiver updateReceiver;
-	private RepoInfo info;
-	private String sha;
+	private CommitInfo info;
 	private CommitFilesAdapter.OnFileRequestListener onFileRequestListener;
 
-	public static SingleCommitFragment newInstance(RepoInfo info, String sha) {
+	public static SingleCommitFragment newInstance(CommitInfo info) {
 		SingleCommitFragment f = new SingleCommitFragment();
 		Bundle b = new Bundle();
 		b.putParcelable(INFO, info);
-		b.putString(SHA, sha);
 		f.setArguments(b);
 		return f;
 	}
@@ -62,7 +60,6 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 		super.onViewCreated(view, savedInstanceState);
 		if (getArguments() != null) {
 			info = getArguments().getParcelable(INFO);
-			sha = getArguments().getString(SHA);
 
 			textMessage = (TextView) view.findViewById(R.id.message);
 			textAdditions = (TextView) view.findViewById(R.id.additions);
@@ -75,7 +72,7 @@ public class SingleCommitFragment extends BaseFragment implements BaseClient.OnR
 	}
 
 	private void getContent() {
-		GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info, sha);
+		GetSingleCommitClient client = new GetSingleCommitClient(getActivity(), info);
 		client.setOnResultCallback(this);
 		client.execute();
 	}
