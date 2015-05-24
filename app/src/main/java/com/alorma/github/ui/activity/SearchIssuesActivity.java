@@ -157,7 +157,7 @@ public class SearchIssuesActivity extends BackActivity implements SearchView.OnQ
             query = "";
         }
 
-        query += "+repo:" + repoInfo.owner + "/" + repoInfo.name;
+        query += "+repoInfo:" + repoInfo.owner + "/" + repoInfo.name;
 
         issuesListFragment.setRefreshing();
         issuesListFragment.clear();

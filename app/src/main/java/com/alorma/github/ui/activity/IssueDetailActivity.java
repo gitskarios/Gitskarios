@@ -123,7 +123,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         fab.setOnClickListener(issueStory.issue.locked ? null : this);
 
         if (getSupportActionBar() != null) {
-            String issueName = issueInfo.repo.name;
+            String issueName = issueInfo.repoInfo.name;
             if (issueStory.issue.pullRequest != null) {
                 getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
             } else {
@@ -136,7 +136,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             status = getString(R.string.issue_status_close);
         }
         setTitle("#" + issueStory.issue.number + " " + status);
-        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repo);
+        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
@@ -255,7 +255,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
-            if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
+            if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 getMenuInflater().inflate(R.menu.issue_detail, menu);
             } else {
                 getMenuInflater().inflate(R.menu.issue_detail_no_permissions, menu);
@@ -282,7 +282,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     menu.removeItem(R.id.action_close_issue);
                 }
             } else {
-                if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
+                if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                     if (menu.findItem(R.id.action_close_issue) != null) {
                         menu.removeItem(R.id.action_close_issue);
                     }
@@ -342,7 +342,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 
@@ -436,7 +436,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private void createMilestone(String milestoneName) {
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repo, createMilestoneRequestDTO);
+        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repoInfo, createMilestoneRequestDTO);
         createMilestoneClient.setOnResultCallback(new BaseClient.OnResultCallback<Milestone>() {
             @Override
             public void onResponseOk(Milestone milestone, Response r) {
@@ -471,7 +471,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
      */
 
     private void openAssignee() {
-        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), issueInfo.repo);
+        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), issueInfo.repoInfo);
         contributorsClient.setOnResultCallback(new ContributorsCallback());
         contributorsClient.execute();
     }
@@ -480,7 +480,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         @Override
         public void onResponseOk(ListContributors contributors, Response r) {
             final List<User> users = new ArrayList<>();
-            String owner = issueInfo.repo.owner;
+            String owner = issueInfo.repoInfo.owner;
             boolean exist = false;
             if (contributors != null) {
                 for (Contributor contributor : contributors) {
@@ -558,7 +558,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
      */
 
     private void openLabels() {
-        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repo);
+        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo);
         labelsClient.setOnResultCallback(new LabelsCallback());
         labelsClient.execute();
     }
@@ -686,7 +686,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void closeIssue() {
-        CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repo.owner, issueInfo.repo.name, issueInfo.num);
+        CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repoInfo.owner, issueInfo.repoInfo.name, issueInfo.num);
         closeIssueClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {

@@ -208,7 +208,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         hideProgressDialog();
         if (issue != null) {
             IssueInfo issueInfo = new IssueInfo();
-            issueInfo.repo = repoInfo;
+            issueInfo.repoInfo = repoInfo;
             issueInfo.num = issue.number;
             Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo);
             startActivity(launcherIntent);

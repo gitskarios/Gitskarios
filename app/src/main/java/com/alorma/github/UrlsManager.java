@@ -9,8 +9,10 @@ import android.webkit.WebViewClient;
 
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.CommitDetailActivity;
+import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
@@ -98,6 +100,9 @@ public class UrlsManager {
                 case URI_COMMIT:
                     intent = manageCommit(uri);
                     break;
+                case URI_ISSUE:
+                    intent = manageIssue(uri);
+                    break;
             }
             return intent;
         }
@@ -159,22 +164,35 @@ public class UrlsManager {
         return manageUsers(Uri.parse(url));
     }
 
+    public Intent manageUsers(Uri uri) {
+        User user = new User();
+        user.login = uri.getLastPathSegment();
+        return ProfileActivity.createLauncherIntent(context, user);
+    }
     private Intent manageCommit(Uri uri) {
         CommitInfo info = new CommitInfo();
 
-        // https://github.com/alorma/test_uris/commit/ff85079f374f0cf264f9efd11c501cbc8465a7c0
-
-        RepoInfo repoInfo = extractRepo(uri);
-        info.repoInfo = repoInfo;
+        info.repoInfo = extractRepo(uri);
 
         info.sha = uri.getLastPathSegment();
 
         return CommitDetailActivity.launchIntent(context, info);
     }
 
-    public Intent manageUsers(Uri uri) {
-        User user = new User();
-        user.login = uri.getLastPathSegment();
-        return ProfileActivity.createLauncherIntent(context, user);
+    private Intent manageIssue(Uri uri) {
+        IssueInfo info = new IssueInfo();
+
+        info.repoInfo = extractRepo(uri);
+
+        String lastPathSegment = uri.getLastPathSegment();
+
+
+        if (uri.getFragment() != null && uri.getFragment().contains("issuecomment-")) {
+            String commentNum = uri.getFragment().replace("issuecomment-", "");
+            info.commentNum = Integer.parseInt(commentNum);
+        }
+        info.num = Integer.parseInt(lastPathSegment);
+
+        return IssueDetailActivity.createLauncherIntent(context, info);
     }
 }

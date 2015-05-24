@@ -128,9 +128,9 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 			issueInfo.num = issue.number;
 			String fullName = item.repo.name;
 			String[] parts = fullName.split("/");
-			issueInfo.repo =  new RepoInfo();
-			issueInfo.repo.owner = parts[0];
-			issueInfo.repo.name = parts[1];
+			issueInfo.repoInfo =  new RepoInfo();
+			issueInfo.repoInfo.owner = parts[0];
+			issueInfo.repoInfo.name = parts[1];
 			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
 			startActivity(launcherIntent);
 		} else {

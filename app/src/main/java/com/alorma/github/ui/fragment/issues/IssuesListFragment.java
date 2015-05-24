@@ -284,7 +284,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
             Issue item = issuesAdapter.getItem(position);
             if (item != null) {
                 IssueInfo info = new IssueInfo();
-                info.repo = repoInfo;
+                info.repoInfo = repoInfo;
                 info.num = item.number;
 
                 Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);

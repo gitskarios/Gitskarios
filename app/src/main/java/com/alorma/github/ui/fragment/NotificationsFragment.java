@@ -201,9 +201,9 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             String number = segments.get(4);
             IssueInfo issueInfo = new IssueInfo();
             issueInfo.num = Integer.valueOf(number);
-            issueInfo.repo = new RepoInfo();
-            issueInfo.repo.owner = user;
-            issueInfo.repo.name = repo;
+            issueInfo.repoInfo = new RepoInfo();
+            issueInfo.repoInfo.owner = user;
+            issueInfo.repoInfo.name = repo;
             Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
             startActivity(launcherIntent);
         } else {
