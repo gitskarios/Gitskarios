@@ -9,9 +9,11 @@ import android.webkit.WebViewClient;
 
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
+import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.CommitDetailActivity;
+import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
@@ -33,7 +35,6 @@ public class UrlsManager {
     private static final int URI_REPO_BRANCH_FEATURE = 6;
     private static final int URI_REPO_BRANCH_RELEASE = 7;
     private static final int URI_REPO_BRANCH_HOTFIX = 8;
-    private static final int URI_FILE = 9;
 
 
     private final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -50,13 +51,12 @@ public class UrlsManager {
 
         uriMatcher.addURI("github.com", "*", URI_USER);
         uriMatcher.addURI("github.com", "*/*", URI_REPO);
+        uriMatcher.addURI("github.com", "*/*/commit/*", URI_COMMIT);
+        uriMatcher.addURI("github.com", "*/*/issues/#", URI_ISSUE);
         uriMatcher.addURI("github.com", "*/*/tree/feature/*", URI_REPO_BRANCH_FEATURE);
         uriMatcher.addURI("github.com", "*/*/tree/release/*", URI_REPO_BRANCH_RELEASE);
         uriMatcher.addURI("github.com", "*/*/tree/hotfix/*", URI_REPO_BRANCH_HOTFIX);
         uriMatcher.addURI("github.com", "*/*/tree/*", URI_REPO_BRANCH);
-        uriMatcher.addURI("github.com", "*/*/issues/#", URI_ISSUE);
-        uriMatcher.addURI("github.com", "*/*/commit/*", URI_COMMIT);
-        uriMatcher.addURI("github.com", "*/*/blob/*", URI_FILE);
     }
 
     public void manageUrls(final WebView webView) {
@@ -86,8 +86,8 @@ public class UrlsManager {
         uri = normalizeUri(uri);
 
         boolean matched = uriMatcher.match(uri) > -1 && uriMatcher.match(uri) < 1000;
+        Intent intent = null;
         if (matched) {
-            Intent intent = null;
             switch (uriMatcher.match(uri)) {
                 case URI_REPO:
                 case URI_REPO_BRANCH:
@@ -105,17 +105,16 @@ public class UrlsManager {
                 case URI_ISSUE:
                     intent = manageIssue(uri);
                     break;
-                case URI_FILE:
-                    intent = manageFile(uri);
-                    break;
             }
-            return intent;
+        } else if (uri.toString().contains("blob")) {
+            intent = manageFile(uri);
+        } else {
+            if (Fabric.isInitialized()) {
+                Crashlytics.log(uri.toString());
+            }
         }
 
-        if (Fabric.isInitialized()) {
-            Crashlytics.log(uri.toString());
-        }
-        return null;
+        return intent;
     }
 
     private Uri normalizeUri(Uri uri) {
@@ -130,7 +129,6 @@ public class UrlsManager {
         return manageRepos(Uri.parse(url));
     }
 
-    // https://api.github.com/repos/gitskarios/GithubAndroidSdk/git/trees/6d54a5beb8235f7bc935289d37085f3413f0c1c6
     public Intent manageRepos(Uri uri) {
 
         uri = normalizeUri(uri);
@@ -165,10 +163,6 @@ public class UrlsManager {
         return repoInfo;
     }
 
-    public Intent manageUsers(String url) {
-        return manageUsers(Uri.parse(url));
-    }
-
     public Intent manageUsers(Uri uri) {
         User user = new User();
         user.login = uri.getLastPathSegment();
@@ -191,7 +185,6 @@ public class UrlsManager {
 
         String lastPathSegment = uri.getLastPathSegment();
 
-
         if (uri.getFragment() != null && uri.getFragment().contains("issuecomment-")) {
             String commentNum = uri.getFragment().replace("issuecomment-", "");
             info.commentNum = Integer.parseInt(commentNum);
@@ -203,7 +196,15 @@ public class UrlsManager {
 
     private Intent manageFile(Uri uri) {
 
+        FileInfo info = new FileInfo();
 
-        return null;
+        info.repoInfo = extractRepo(uri);
+        info.path = uri.getPath();
+        if (info.path.contains(info.repoInfo.toString())) {
+            info.path = info.path.replace("/" + info.repoInfo.toString() + "/blob/", "");
+        }
+        info.name = uri.getLastPathSegment();
+
+        return FileActivity.createLauncherIntent(context, info, true);
     }
 }

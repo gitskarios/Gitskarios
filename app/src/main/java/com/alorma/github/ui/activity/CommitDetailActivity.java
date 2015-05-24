@@ -68,13 +68,13 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 		info.content = file.patch;
 		info.name = file.getFileName();
 		if (tablet) {
-			FileFragment fileFragment = FileFragment.getInstance(info);
+			FileFragment fileFragment = FileFragment.getInstance(info, false);
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			ft.replace(R.id.detail, fileFragment);
 			ft.commit();
 		} else {
-			Intent launcherIntent = FileActivity.createLauncherIntent(this, info);
+			Intent launcherIntent = FileActivity.createLauncherIntent(this, info, tablet);
 			startActivity(launcherIntent);
 		}
 	}

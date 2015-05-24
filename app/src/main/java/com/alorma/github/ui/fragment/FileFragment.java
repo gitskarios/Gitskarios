@@ -18,16 +18,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.inapp.Base64;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.ImageUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
@@ -43,19 +46,22 @@ import retrofit.client.Response;
 public class FileFragment extends BaseFragment implements BaseClient.OnResultCallback<Content> {
 
     public static final String FILE_INFO = "FILE_INFO";
+    public static final String FROM_URL = "FROM_URL";
 
     private WebView webView;
     private ImageView imageView;
     private Content fileContent;
 
     private FileInfo fileInfo;
+    private boolean fromUrl;
 
     private SpotsDialog progressDialog;
 
-    public static FileFragment getInstance(FileInfo info) {
+    public static FileFragment getInstance(FileInfo info, boolean fromUrl) {
         FileFragment fragment = new FileFragment();
         Bundle args = new Bundle();
         args.putParcelable(FILE_INFO, info);
+        args.putBoolean(FROM_URL, fromUrl);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,6 +82,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         if (getArguments() != null) {
 
             fileInfo = getArguments().getParcelable(FILE_INFO);
+            fromUrl = getArguments().getBoolean(FROM_URL);
 
             webView.clearCache(true);
             webView.clearFormData();
@@ -92,10 +99,24 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
             new UrlsManager(getActivity()).manageUrls(webView);
 
             if (fileInfo.content == null) {
-                getContent();
+                if (fromUrl) {
+                    getBranches();
+                } else {
+                    getContent();
+                }
             } else {
                 webView.loadUrl("file:///android_asset/diff.html");
             }
+        }
+    }
+
+    private void getBranches() {
+        if (fileInfo.repoInfo != null) {
+            showProgressDialog(R.style.SpotDialog_OpeningFile);
+
+            GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(getActivity(), fileInfo.repoInfo);
+            branchesClient.setOnResultCallback(new ParseBranchesCallback(fileInfo.path));
+            branchesClient.execute();
         }
     }
 
@@ -199,6 +220,11 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
             return fileContent.name;
         }
 
+        @JavascriptInterface
+        public int getLineHighlight() {
+            return 0;
+        }
+
     }
 
     @Override
@@ -228,6 +254,32 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
+        }
+    }
+
+    private class ParseBranchesCallback implements BaseClient.OnResultCallback<ListBranches> {
+        private String path;
+
+        public ParseBranchesCallback(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public void onResponseOk(ListBranches branches, Response r) {
+            for (Branch branch : branches) {
+                if (path != null && path.contains(branch.name)) {
+                    fileInfo.repoInfo.branch = branch.name;
+
+                    fileInfo.path = fileInfo.path.replace(branch.name + "/", "");
+                    getContent();
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+
         }
     }
 }

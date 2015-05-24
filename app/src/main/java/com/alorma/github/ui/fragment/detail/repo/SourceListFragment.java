@@ -281,7 +281,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 info.repoInfo = repoInfo;
                 info.name = item.name;
                 info.path = item.path;
-                Intent intent = FileActivity.createLauncherIntent(getActivity(), info);
+                Intent intent = FileActivity.createLauncherIntent(getActivity(), info, expandedFab);
                 startActivity(intent);
             }
         }
