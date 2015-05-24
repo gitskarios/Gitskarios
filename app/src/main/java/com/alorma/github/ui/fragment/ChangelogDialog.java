@@ -73,6 +73,8 @@ public class ChangelogDialog extends DialogFragment {
             webView.loadData("<h1>Unable to load</h1><p>" + e.getLocalizedMessage() + "</p>", "text/html", "UTF-8");
         }
         new UrlsManager(getActivity()).manageUrls(webView);
+        webView.getSettings().setUseWideViewPort(false);
+
         return dialog;
     }
 

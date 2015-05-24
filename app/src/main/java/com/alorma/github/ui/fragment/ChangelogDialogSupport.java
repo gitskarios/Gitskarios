@@ -73,6 +73,7 @@ public class ChangelogDialogSupport extends DialogFragment {
         }
 
         new UrlsManager(getActivity()).manageUrls(webView);
+        webView.getSettings().setUseWideViewPort(false);
 
         return dialog;
     }
