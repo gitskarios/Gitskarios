@@ -51,7 +51,7 @@ public class UiUtils {
                 if (link.length != 0) {
                     String url = link[0].getURL();
 
-                    Intent intent = new UrlsManager(widget.getContext()).checkUrl(url);
+                    Intent intent = new UrlsManager(widget.getContext()).checkUri(Uri.parse(url));
 
                     if (intent != null) {
                         widget.getContext().startActivity(intent);

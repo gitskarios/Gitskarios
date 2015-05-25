@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.preference;
 
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -53,7 +54,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		if (preference.getKey().equals(GITSKARIOS)) {
-			startActivity(new UrlsManager(getActivity()).manageRepos("https://github.com/gitskarios/Gitskarios"));
+			startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse("https://github.com/gitskarios/Gitskarios")));
 		}else if (preference.getKey().equals(CHANGELOG)) {
 			dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));
 			dialog.show(getFragmentManager(), "changelog");

@@ -224,7 +224,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             if (contentAdapter == null || contentAdapter.getCount() == 0) {
                 setEmpty();
             }
-            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
+            ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
         }
     }
 

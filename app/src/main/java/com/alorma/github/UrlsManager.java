@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
@@ -35,6 +36,12 @@ public class UrlsManager {
     private static final int URI_REPO_BRANCH_FEATURE = 6;
     private static final int URI_REPO_BRANCH_RELEASE = 7;
     private static final int URI_REPO_BRANCH_HOTFIX = 8;
+    private static final int URI_RELEASES_TAG = 9;
+    private static final int URI_RELEASES = 10;
+    private static final int URI_RELEASES_LATEST = 11;
+    private static final int URI_TAGS = 12;
+    private static final int URI_PULL_REQUEST = 13;
+    private static final int URI_ISSUE_COMMENT = 14;
 
 
     private final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -49,14 +56,26 @@ public class UrlsManager {
             uriMatcher.addURI("github.com", key, UriMatcher.NO_MATCH + i++);
         }
 
-        uriMatcher.addURI("github.com", "*", URI_USER);
-        uriMatcher.addURI("github.com", "*/*", URI_REPO);
+        uriMatcher.addURI("github.com", "*/*/releases/latest", URI_RELEASES_LATEST);
+        uriMatcher.addURI("github.com", "*/*/releases/tag/*", URI_RELEASES_TAG);
+        uriMatcher.addURI("github.com", "*/*/releases", URI_RELEASES);
+
+        uriMatcher.addURI("github.com", "*/*/tags", URI_TAGS);
+
         uriMatcher.addURI("github.com", "*/*/commit/*", URI_COMMIT);
+
+        uriMatcher.addURI("github.com", "*/*/issues/comments/#", URI_ISSUE_COMMENT);
         uriMatcher.addURI("github.com", "*/*/issues/#", URI_ISSUE);
+        uriMatcher.addURI("github.com", "*/*/issues/#", URI_PULL_REQUEST);
+
         uriMatcher.addURI("github.com", "*/*/tree/feature/*", URI_REPO_BRANCH_FEATURE);
         uriMatcher.addURI("github.com", "*/*/tree/release/*", URI_REPO_BRANCH_RELEASE);
         uriMatcher.addURI("github.com", "*/*/tree/hotfix/*", URI_REPO_BRANCH_HOTFIX);
         uriMatcher.addURI("github.com", "*/*/tree/*", URI_REPO_BRANCH);
+
+        uriMatcher.addURI("github.com", "*/*", URI_REPO);
+
+        uriMatcher.addURI("github.com", "*", URI_USER);
     }
 
     public void manageUrls(final WebView webView) {
@@ -64,7 +83,7 @@ public class UrlsManager {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Intent intent = checkUrl(url);
+                Intent intent = checkUri(Uri.parse(url));
                 if (intent != null) {
                     view.getContext().startActivity(intent);
                 } else {
@@ -74,11 +93,6 @@ public class UrlsManager {
                 return true;
             }
         });
-    }
-
-    public Intent checkUrl(String url) {
-
-        return checkUri(Uri.parse(url));
     }
 
     public Intent checkUri(Uri uri) {
@@ -103,7 +117,19 @@ public class UrlsManager {
                     intent = manageCommit(uri);
                     break;
                 case URI_ISSUE:
+                case URI_PULL_REQUEST:
                     intent = manageIssue(uri);
+                    break;
+                case URI_RELEASES_TAG:
+                case URI_TAGS:
+                case URI_RELEASES:
+                case URI_RELEASES_LATEST:
+                case URI_ISSUE_COMMENT:
+                    if (Fabric.isInitialized()) {
+                        Crashlytics.log(uri.toString());
+                    } else {
+                        ErrorHandler.onError(context, "Interceptor", new UriNotHandledException(uri));
+                    }
                     break;
             }
         } else if (uri.toString().contains("blob")) {
@@ -121,12 +147,12 @@ public class UrlsManager {
         if (uri.getAuthority().contains("api.")) {
             String authority = uri.getAuthority().replace("api.", "");
             uri = uri.buildUpon().authority(authority).build();
+            if (uri.getPath().contains("repos/")) {
+                String path = uri.getPath().replace("repos/", "");
+                uri = uri.buildUpon().path(path).build();
+            }
         }
         return uri;
-    }
-
-    public Intent manageRepos(String url) {
-        return manageRepos(Uri.parse(url));
     }
 
     public Intent manageRepos(Uri uri) {

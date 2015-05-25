@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -157,7 +158,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 
                 @Override
                 public void onFail(RetrofitError error) {
-                    ErrorHandler.onRetrofitError(getActivity(), "FileActivity", error);
+                    ErrorHandler.onError(getActivity(), "FileActivity", error);
                 }
             });
             markdownClient.execute();
@@ -177,9 +178,9 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
             }
         } else if (content.isSubmodule()) {
             if (getActivity() != null && isAdded()) {
-                Intent intent = new UrlsManager(getActivity()).manageRepos(content.git_url);
+                Intent intent = new UrlsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
                 if (intent != null) {
-                    startActivity(new UrlsManager(getActivity()).manageRepos(content.git_url));
+                    startActivity(intent);
                     getActivity().finish();
                 }
             }
@@ -229,7 +230,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 
     @Override
     public void onFail(RetrofitError error) {
-        ErrorHandler.onRetrofitError(getActivity(), "FileActivity", error);
+        ErrorHandler.onError(getActivity(), "FileActivity", error);
         try {
             getActivity().finish();
         } catch (Exception e) {

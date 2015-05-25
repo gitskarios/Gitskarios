@@ -220,7 +220,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     public void onFail(RetrofitError error) {
         hideProgressDialog();
         creatingIssue = false;
-        ErrorHandler.onRetrofitError(this, "Creating issue", error);
+        ErrorHandler.onError(this, "Creating issue", error);
         invalidateOptionsMenu();
         Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
     }

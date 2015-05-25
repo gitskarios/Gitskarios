@@ -97,6 +97,6 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
 	@Override
 	public void onFail(RetrofitError error) {
 		hideProgressDialog();
-		ErrorHandler.onRetrofitError(this, "NewCommentDialog", error);
+		ErrorHandler.onError(this, "NewCommentDialog", error);
 	}
 }

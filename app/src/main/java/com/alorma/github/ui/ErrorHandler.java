@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.alorma.github.BuildConfig;
 import com.crashlytics.android.Crashlytics;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit.RetrofitError;
 
 /**
@@ -14,15 +15,15 @@ import retrofit.RetrofitError;
  */
 public class ErrorHandler {
 
-	public static void onRetrofitError(Context context, String tag, RetrofitError error) {
+	public static void onError(Context context, String tag, Exception error) {
 		Log.e(tag, "Error", error);
 		if (BuildConfig.DEBUG) {
 			if (context != null) {
 				Toast.makeText(context, "Error: " + tag + "\n" + error, Toast.LENGTH_SHORT).show();
 			}
 		} else {
-			if (error != null && error.getMessage() != null) {
-				//Crashlytics.logException(error);
+			if (error != null && error.getMessage() != null && Fabric.isInitialized()) {
+				Crashlytics.logException(error);
 			}
 		}
 	}

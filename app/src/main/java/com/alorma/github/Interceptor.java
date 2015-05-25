@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 
@@ -16,10 +17,13 @@ import java.util.List;
  */
 public class Interceptor extends Activity {
 
+    private Intent failIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createFailIntent();
 
         if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
             Uri uri = getIntent().getData();
@@ -30,39 +34,73 @@ public class Interceptor extends Activity {
                     startActivity(intent);
                     finish();
                 } else {
-                    onFail();
+                    fail();
                 }
             } else {
-                onFail();
+                fail();
             }
+        } else {
+            fail();
         }
     }
 
-    private void onFail() {
-        Intent intent = new Intent(getIntent().getAction());
-        intent.setData(getIntent().getData());
-        intent.addCategory(Intent.CATEGORY_BROWSABLE);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
+    private void fail() {
+        if (failIntent != null) {
+            startActivity(failIntent);
+            finish();
+        } else {
+            startActivity(onFail());
+            finish();
+        }
+    }
 
-        List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+    private void createFailIntent() {
+        new AsyncTask<Void, Void, Intent>() {
 
-        if (!resolveInfos.isEmpty()) {
-            List<Intent> targetedShareIntents = new ArrayList<Intent>();
-
-            for (ResolveInfo resolveInfo : resolveInfos) {
-                String packageName = resolveInfo.activityInfo.packageName;
-                if (!packageName.equals(getPackageName())) {
-                    Intent targetedShareIntent = new Intent(getIntent().getAction());
-                    targetedShareIntent.setData(getIntent().getData());
-                    targetedShareIntent.setPackage(packageName);
-                    targetedShareIntents.add(targetedShareIntent);
-                }
+            @Override
+            protected Intent doInBackground(Void... params) {
+                return onFail();
             }
 
-            Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Open with...");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[targetedShareIntents.size()]));
+            @Override
+            protected void onPostExecute(Intent intent) {
+                super.onPostExecute(intent);
+                Interceptor.this.failIntent = intent;
+            }
+        }.execute();
+    }
 
-            startActivity(chooserIntent);
+    private Intent onFail() {
+        if (failIntent == null) {
+            Intent intent = new Intent(getIntent().getAction());
+            intent.setData(getIntent().getData());
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+            if (!resolveInfos.isEmpty()) {
+                List<Intent> targetedShareIntents = new ArrayList<Intent>();
+
+                for (ResolveInfo resolveInfo : resolveInfos) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    if (!packageName.equals(getPackageName())) {
+                        Intent targetedShareIntent = new Intent(getIntent().getAction());
+                        targetedShareIntent.setData(getIntent().getData());
+                        targetedShareIntent.setPackage(packageName);
+                        targetedShareIntents.add(targetedShareIntent);
+                    }
+                }
+
+                Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Open with...");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[targetedShareIntents.size()]));
+
+                return chooserIntent;
+            } else {
+                return getIntent();
+            }
+        } else {
+            return failIntent;
         }
     }
 }

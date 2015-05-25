@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.events;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -134,7 +135,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents>{
 			Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
 			startActivity(launcherIntent);
 		} else {
-			startActivity(new UrlsManager(getActivity()).manageRepos(item.repo.html_url));
+			startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.repo.html_url)));
 		}
 	}
 }

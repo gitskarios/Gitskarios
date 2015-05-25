@@ -21,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.3.10"
-        versionCode 2310
+        versionName "2.4.1 - ALPHA"
+        versionCode 2311
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -102,7 +102,7 @@ dependencies {
     compile ('com.mikepenz.materialdrawer:library:2.9.2@aar') {
         transitive = true
     }
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.4@aar') {
         transitive = true;
     }
     compile('com.mikepenz.aboutlibraries:library:4.7.2@aar') {

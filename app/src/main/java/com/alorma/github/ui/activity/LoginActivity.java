@@ -146,7 +146,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
                     @Override
                     public void onFail(RetrofitError error) {
-                        ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
+                        ErrorHandler.onError(LoginActivity.this, "WebViewCustomClient", error);
                     }
                 });
                 requestTokenClient.execute();

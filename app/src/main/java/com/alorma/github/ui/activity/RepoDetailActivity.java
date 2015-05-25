@@ -3,6 +3,7 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -221,7 +222,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         if (item.getItemId() == R.id.action_show_parent) {
             if (currentRepo != null && currentRepo.parent != null) {
-                startActivity(new UrlsManager(this).manageRepos(currentRepo.parent.html_url));
+                startActivity(new UrlsManager(this).manageRepos(Uri.parse(currentRepo.parent.html_url)));
             }
         } else if (item.getItemId() == R.id.share_repo) {
             if (currentRepo != null) {
@@ -308,7 +309,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     @Override
     public void onFail(RetrofitError error) {
-        ErrorHandler.onRetrofitError(this, "RepoDetailActivity", error);
+        ErrorHandler.onError(this, "RepoDetailActivity", error);
     }
 
     @Override

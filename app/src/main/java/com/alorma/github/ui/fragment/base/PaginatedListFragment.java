@@ -55,7 +55,7 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 	public void onFail(RetrofitError error) {
 		stopRefresh();
 		if (getActivity() != null) {
-			ErrorHandler.onRetrofitError(getActivity(), "Paginated list fragment", error);
+			ErrorHandler.onError(getActivity(), "Paginated list fragment", error);
 		}
 	}
 

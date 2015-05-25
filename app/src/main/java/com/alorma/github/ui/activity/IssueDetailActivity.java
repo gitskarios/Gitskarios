@@ -546,7 +546,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             @Override
             public void onFail(RetrofitError error) {
-                ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Issue detail", error);
+                ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
                 hideProgressDialog();
             }
         });
@@ -633,7 +633,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         @Override
         public void onFail(RetrofitError error) {
-            ErrorHandler.onRetrofitError(IssueDetailActivity.this, "Issue detail", error);
+            ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
         }
     }
 

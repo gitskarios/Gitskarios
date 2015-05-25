@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -107,7 +108,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.getContext().startActivity(new UrlsManager(view.getContext()).manageRepos(item.repository.html_url));
+                view.getContext().startActivity(new UrlsManager(view.getContext()).manageRepos(Uri.parse(item.repository.html_url)));
             }
         });
 

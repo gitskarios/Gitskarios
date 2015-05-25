@@ -193,23 +193,14 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     public void manageNotificationClick(Notification item) {
         String type = item.subject.type;
 
-        Uri uri = Uri.parse(item.subject.url);
+        Uri uri = null;
         if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
-            List<String> segments = uri.getPathSegments();
-            String user = segments.get(1);
-            String repo = segments.get(2);
-            String number = segments.get(4);
-            IssueInfo issueInfo = new IssueInfo();
-            issueInfo.num = Integer.valueOf(number);
-            issueInfo.repoInfo = new RepoInfo();
-            issueInfo.repoInfo.owner = user;
-            issueInfo.repoInfo.name = repo;
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
-            startActivity(launcherIntent);
+            uri = Uri.parse(item.subject.url);
         } else {
-            startActivity(new UrlsManager(getActivity()).manageRepos(item.repository.html_url));
+            uri = Uri.parse(item.repository.html_url);
         }
 
+        startActivity(new UrlsManager(getActivity()).checkUri(uri));
     }
 
     @Override

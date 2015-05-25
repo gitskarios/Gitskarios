@@ -132,7 +132,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     }
 
     private void onError(String tag, RetrofitError error) {
-        ErrorHandler.onRetrofitError(getActivity(), "MarkdownFragment: " + tag, error);
+        ErrorHandler.onError(getActivity(), "MarkdownFragment: " + tag, error);
     }
 
     @Override

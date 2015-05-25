@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.View;
 import android.widget.ListView;
 
@@ -28,7 +29,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ListRe
 		if (reposAdapter != null && reposAdapter.getCount() >= position) {
 			Repo item = reposAdapter.getItem(position);
 			if (item != null) {
-				startActivity(new UrlsManager(getActivity()).manageRepos(item.html_url));
+				startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.html_url)));
 			}
 		}
 	}
