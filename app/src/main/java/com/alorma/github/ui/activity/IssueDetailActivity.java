@@ -34,7 +34,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
-import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
@@ -45,6 +45,7 @@ import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
@@ -67,6 +68,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private IssueStory issueStory;
+    private int primary;
+    private int accent;
+    private int accentDark;
+    private int primaryDark;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -85,6 +90,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         if (getIntent().getExtras() != null) {
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+
+            primary = getResources().getColor(R.color.primary);
+            accent = getResources().getColor(R.color.accent);
+            accentDark = getResources().getColor(R.color.accent_dark);
+            primaryDark = getResources().getColor(R.color.primary_dark_alpha);
 
             findViews();
         }
@@ -150,11 +160,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             colorStateDark = getResources().getColor(R.color.issue_state_open_dark);
         }
 
-        int primary = getResources().getColor(R.color.primary_alpha);
-        int accent = getResources().getColor(R.color.accent);
-        int accentDark = getResources().getColor(R.color.accent_dark);
-        int primaryDark = getResources().getColor(R.color.primary_dark_alpha);
-
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
@@ -209,13 +214,38 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     getWindow().setStatusBarColor(color);
                 }
             }
-
         });
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(1000);
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
         animatorSet.playTogether(colorAnimation, colorAnimationStatus, colorAnimationFab, colorAnimationFabPressed);
+        final int finalColorState = colorState;
+        final int finalColorStateDark = colorStateDark;
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                primary = finalColorState;
+                accent = finalColorState;
+                primaryDark = finalColorStateDark;
+                accentDark = finalColorStateDark;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         animatorSet.start();
     }
 
@@ -277,15 +307,18 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
 
-            if (issueStory.issue.state == IssueState.closed) {
+            if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 if (menu.findItem(R.id.action_close_issue) != null) {
                     menu.removeItem(R.id.action_close_issue);
                 }
-            } else {
-                if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
-                    if (menu.findItem(R.id.action_close_issue) != null) {
-                        menu.removeItem(R.id.action_close_issue);
-                    }
+                if (menu.findItem(R.id.action_reopen_issue) != null) {
+                    menu.removeItem(R.id.action_reopen_issue);
+                }
+                if (issueStory.issue.state == IssueState.closed) {
+                    MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                } else {
+
                     MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
@@ -320,6 +353,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 break;
             case R.id.action_close_issue:
                 closeIssueDialog();
+                break;
+            case R.id.action_reopen_issue:
+                reopenIssue();
                 break;
             case R.id.issue_edit_milestone:
                 editMilestone();
@@ -583,7 +619,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 int i = 0;
                 for (Label label : labels) {
                     items.add(label.name);
-                    if (currentLabels.contains(label.name)){
+                    if (currentLabels.contains(label.name)) {
                         selectedLabels.add(label.name);
                         positionsSelectedLabels.add(i);
                     }
@@ -686,8 +722,16 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void closeIssue() {
-        CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repoInfo.owner, issueInfo.repoInfo.name, issueInfo.num);
-        closeIssueClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
+        changeIssueState(IssueState.closed);
+    }
+
+    private void reopenIssue() {
+        changeIssueState(IssueState.open);
+    }
+
+    private void changeIssueState(IssueState state) {
+        ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
+        changeIssueStateClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
                 if (issue != null) {
@@ -702,7 +746,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             }
         });
-        closeIssueClient.execute();
+        changeIssueStateClient.execute();
     }
 
     @Override
