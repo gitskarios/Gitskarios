@@ -126,15 +126,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        issuesAdapter = null;
-        if (autoStart()) {
-            executeRequest();
-        }
-    }
-
-    @Override
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = getArguments().getParcelable(REPO_INFO);
