@@ -150,6 +150,9 @@ public class UrlsManager {
             if (uri.getPath().contains("repos/")) {
                 String path = uri.getPath().replace("repos/", "");
                 uri = uri.buildUpon().path(path).build();
+            }if (uri.getPath().contains("commits/")) {
+                String path = uri.getPath().replace("commits/", "commit/");
+                uri = uri.buildUpon().path(path).build();
             }
         }
         return uri;

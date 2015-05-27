@@ -136,8 +136,8 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.markdown_fragment_title);
+    public int getTitle() {
+        return R.string.markdown_fragment_title;
     }
 
     public void reload() {

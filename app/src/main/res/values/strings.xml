@@ -260,4 +260,5 @@
     <string name="issue_edit_labels">Set labels</string>
     <string name="profile_starreds">Starred repositories</string>
     <string name="profile_watched">Watched repositories</string>
+    <string name="overview_fragment_title">Overview</string>
 </resources>

@@ -307,8 +307,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.issues_fragment_title);
+    public int getTitle() {
+        return R.string.issues_fragment_title;
     }
 
     public void setSearchClientRequest(SearchClientRequest searchClientRequest) {

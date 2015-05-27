@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.detail.repo;
 
 import android.os.Bundle;
 
@@ -8,6 +8,7 @@ import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
@@ -20,7 +21,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 11/04/2015.
  */
-public class RepoContributorsFragment extends BaseUsersListFragment {
+public class RepoContributorsFragment extends BaseUsersListFragment implements TitleProvider{
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String OWNER_USER = "OWNER_USER";
@@ -77,6 +78,11 @@ public class RepoContributorsFragment extends BaseUsersListFragment {
     @Override
     protected int getNoDataText() {
         return R.string.no_contributors;
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.contributors_fragment_title;
     }
 
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {

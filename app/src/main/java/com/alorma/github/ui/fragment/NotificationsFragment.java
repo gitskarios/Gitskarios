@@ -200,7 +200,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             uri = Uri.parse(item.repository.html_url);
         }
 
-        startActivity(new UrlsManager(getActivity()).checkUri(uri));
+        startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(item.subject.url)));
     }
 
     @Override

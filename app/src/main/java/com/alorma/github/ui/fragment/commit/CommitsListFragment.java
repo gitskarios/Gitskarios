@@ -239,8 +239,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.commits_fragment_title);
+    public int getTitle() {
+        return R.string.commits_fragment_title;
     }
 
     @Override
