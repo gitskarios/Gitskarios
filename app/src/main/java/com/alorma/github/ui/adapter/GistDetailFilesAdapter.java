@@ -15,12 +15,11 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
+import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,34 +77,11 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
 
     private void printContent(TextView textContent, String content) {
         try {
-            content = splitLines(content);
+            content = TextUtils.splitLines(content, 10);
         } catch (IOException exc) {
             exc.printStackTrace();
         }
         textContent.setText(content);
-    }
-
-    private String splitLines(String content) throws IOException {
-        List<String> result = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new StringReader(content));
-        String line = reader.readLine();
-        while (line != null) {
-            result.add(line);
-            line = reader.readLine();
-        }
-        if (result.size() > 10) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < 10; i++) {
-                if (result.get(i).isEmpty()) {
-                    builder.append("\n");
-                } else {
-                    builder.append(result.get(i));
-                    builder.append("\n");
-                }
-            }
-            content = builder.toString();
-        }
-        return content;
     }
 
     @Override

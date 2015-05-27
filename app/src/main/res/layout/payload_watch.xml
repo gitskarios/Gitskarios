@@ -22,20 +22,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Large Text"
-                android:id="@+id/actionType"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="@dimen/gapMedium"
-                android:layout_marginStart="@dimen/gapMedium"
-                android:paddingTop="0dp"
-                android:textSize="@dimen/textSizeXLarge"
-                android:fontFamily="sans-serif-light"
-                android:textColor="?attr/colorPrimaryDark"
-                android:layout_marginBottom="@dimen/gapMedium"/>
-
             <com.alorma.github.ui.view.CircularImageView
                 android:layout_width="@dimen/avatar_size_list"
                 android:layout_height="@dimen/avatar_size_list"
@@ -43,7 +29,6 @@
                 android:padding="@dimen/gapMedium"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:layout_below="@+id/actionType"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="@dimen/gapMedium"/>
@@ -58,34 +43,21 @@
                 android:layout_toEndOf="@id/authorAvatar"
                 android:layout_marginLeft="@dimen/gapMedium"
                 android:layout_marginStart="@dimen/gapMedium"
-                android:layout_below="@+id/actionType"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"/>
-
-            <ImageView
-                android:layout_width="@dimen/avatar_size_list"
-                android:layout_height="@dimen/avatar_size_list"
-                android:id="@+id/actionImage"
-                android:padding="@dimen/gapMedium"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:layout_below="@+id/authorAvatar"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/action"
-                android:layout_toRightOf="@id/authorAvatar"
-                android:layout_marginLeft="@dimen/gapMedium"
-                android:layout_toEndOf="@id/authorAvatar"
-                android:layout_marginStart="@dimen/gapMedium"
-                android:layout_alignTop="@+id/actionImage"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:id="@+id/textDate"
+                android:layout_below="@+id/authorName"
+                android:layout_alignLeft="@+id/authorName"
+                android:layout_alignStart="@+id/authorName"
+                android:layout_marginTop="@dimen/gapMedium"
+                android:textSize="@dimen/textSizeSmall"
+                android:layout_alignRight="@+id/authorName"
+                android:layout_alignEnd="@+id/authorName" />
 
         </RelativeLayout>
 

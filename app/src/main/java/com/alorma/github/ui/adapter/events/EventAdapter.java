@@ -14,9 +14,12 @@ import com.alorma.github.ui.adapter.events.views.IssueCommentEventView;
 import com.alorma.github.ui.adapter.events.views.PushEventView;
 import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
 import com.alorma.github.ui.adapter.events.views.WatchEventView;
+import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -65,6 +68,8 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 		for (GithubEvent githubEvent : collection) {
 			if (checkEventHandled(githubEvent)) {
 				add(githubEvent);
+			} else if (Fabric.isInitialized()){
+				Crashlytics.log(githubEvent.type + " not handled");
 			}
 		}
 	}
@@ -75,11 +80,17 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 		for (GithubEvent githubEvent : items) {
 			if (checkEventHandled(githubEvent)) {
 				add(githubEvent);
+			} else if (Fabric.isInitialized()){
+				Crashlytics.log(githubEvent.type + " not handled");
 			}
 		}
 	}
 
 	private boolean checkEventHandled(GithubEvent event) {
-		return (event.getType() == EventType.PushEvent) || (event.getType() == EventType.WatchEvent) || (event.getType() == EventType.CreateEvent) || (event.getType() == EventType.IssueCommentEvent) || (event.getType() == EventType.ForkEvent);
+		return (event.getType() == EventType.PushEvent)
+				|| (event.getType() == EventType.WatchEvent)
+				|| (event.getType() == EventType.CreateEvent)
+				|| (event.getType() == EventType.IssueCommentEvent)
+				|| (event.getType() == EventType.ForkEvent);
 	}
 }

@@ -66,6 +66,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private SlidingTabLayout slidingTabLayout;
     private RepoContributorsFragment repoCollaboratorsFragment;
     private RepoInfo requestRepoInfo;
+    private ReadmeFragment readmeFragment;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -281,16 +282,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     private void createFragments() {
 
-        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
-//        readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
+//        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
+        readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
         sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
         commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
         issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
         repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
 
         listFragments = new ArrayList<>();
-        listFragments.add(aboutFragment);
-//        listFragments.add(readmeFragment);
+//        listFragments.add(aboutFragment);
+        listFragments.add(readmeFragment);
         listFragments.add(sourceListFragment);
         listFragments.add(commitsListFragment);
         listFragments.add(issuesListFragment);

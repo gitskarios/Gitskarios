@@ -249,7 +249,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 }
             }
         });
-        drawer.withSelectedItem(1);
+        drawer.withSelectedItem(0);
         resultDrawer = drawer.build();
     }
 
@@ -323,7 +323,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (lastUsedFragment != null && !changingUser) {
             setFragment(lastUsedFragment);
         } else {
-            onReposSelected();
+            onUserEventsSelected();
         }
     }
 

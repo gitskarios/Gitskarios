@@ -134,6 +134,7 @@
     <string name="commit_authored_at_hours">%1$s authored %2$d hours ago</string>
     <string name="commit_authored_at_minutes">%1$s authored %2$d minutes ago</string>
     <string name="commit_authored_at_seconds">%1$s authored %2$d seconds ago</string>
+    <string name="commit_authored_at_now">%1$s authored %2$d just now</string>
     <string name="time_ago_at_years">%d years ago</string>
     <string name="time_ago_at_months">%d month ago</string>
     <string name="time_ago_at_days">%d days ago</string>
@@ -262,4 +263,7 @@
     <string name="profile_starreds">Starred repositories</string>
     <string name="profile_watched">Watched repositories</string>
     <string name="overview_fragment_title">Overview</string>
+    <string name="event_watched_by"><![CDATA[<b>%1$s</b> watched <b>%2$s</b>]]></string>
+    <string name="event_starred_by"><![CDATA[<b>%1$s</b> starred <b>%2$s</b>]]></string>
+    <string name="event_select_commit">Select commit</string>
 </resources>

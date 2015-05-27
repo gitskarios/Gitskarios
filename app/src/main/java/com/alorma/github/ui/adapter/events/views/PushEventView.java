@@ -11,67 +11,74 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.utils.TextUtils;
 import com.google.gson.Gson;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.IOException;
+
 /**
  * Created by Bernat on 04/10/2014.
  */
 public class PushEventView extends GithubEventView<PushEventPayload> {
-	public PushEventView(Context context) {
-		super(context);
-	}
+    public PushEventView(Context context) {
+        super(context);
+    }
 
-	public PushEventView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public PushEventView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public PushEventView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public PushEventView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void inflate() {
-		inflate(getContext(), R.layout.payload_push, this);
-	}
+    @Override
+    protected void inflate() {
+        inflate(getContext(), R.layout.payload_push, this);
+    }
 
-	@Override
-	protected void populateView(GithubEvent event) {
+    @Override
+    protected void populateView(GithubEvent event) {
 
-		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.pushed);
+        TextView actionType = (TextView) findViewById(R.id.actionType);
+        actionType.setText(R.string.pushed);
 
-		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+        ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
 
-		TextView authorName = (TextView) findViewById(R.id.authorName);
-		authorName.setText(event.actor.login);
+        TextView authorName = (TextView) findViewById(R.id.authorName);
+        authorName.setText(event.actor.login);
 
-		ViewGroup commits = (ViewGroup) findViewById(R.id.commits);
+        ViewGroup commits = (ViewGroup) findViewById(R.id.commits);
 
-		if (eventPayload != null) {
-			if (eventPayload.commits != null) {
-				for (Commit commit : eventPayload.commits) {
-					TextView textView = new TextView(getContext());
-					textView.setText(commit.message);
-					commits.addView(textView);
-				}
-			}
-		}
+        if (eventPayload != null) {
+            if (eventPayload.commits != null) {
+                for (Commit commit : eventPayload.commits) {
+                    try {
+                        TextView textView = new TextView(getContext());
+                        textView.setText(TextUtils.splitLines(commit.shortMessage(), 2));
+                        commits.addView(textView);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
-		IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo_push).color(AttributesUtils.getAccentColor(getContext()));
+        IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo_push).color(AttributesUtils.getAccentColor(getContext()));
 
-		TextView action = (TextView) findViewById(R.id.action);
-		action.setCompoundDrawables(left, null, null, null);
+        TextView action = (TextView) findViewById(R.id.action);
+        action.setCompoundDrawables(left, null, null, null);
 
-		action.setText(event.repo.name);
-	}
+        action.setText(event.repo.name);
+    }
 
-	@Override
-	protected PushEventPayload convert(Gson gson, String s) {
-		return gson.fromJson(s, PushEventPayload.class);
-	}
+    @Override
+    protected PushEventPayload convert(Gson gson, String s) {
+        return gson.fromJson(s, PushEventPayload.class);
+    }
 }

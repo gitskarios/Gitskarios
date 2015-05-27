@@ -200,13 +200,6 @@ public class HtmlUtils {
                     endSpan(TypefaceSpan.class, output);
             }
 
-            if (TAG_PRE.equalsIgnoreCase(tag) || TAG_CODE.equalsIgnoreCase(tag)) {
-                if (opening)
-                    startSpan(new BackgroundColorSpan(0xffdedede), output);
-                else
-                    endSpan(BackgroundColorSpan.class, output);
-            }
-
             if ((TAG_ROOT.equalsIgnoreCase(tag) || TAG_HTML.equalsIgnoreCase(tag)) && !opening) {
                 // Remove leading newlines
                 while (output.length() > 0 && output.charAt(0) == '\n')
