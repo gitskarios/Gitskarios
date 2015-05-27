@@ -99,7 +99,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        commitsAdapter = new CommitsAdapter(getActivity(), commitsMap);
+                        commitsAdapter = new CommitsAdapter(getActivity(), commitsMap, false);
                         listView.setAdapter(commitsAdapter);
                     }
                 });

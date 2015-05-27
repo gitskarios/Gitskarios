@@ -2,6 +2,7 @@ package com.alorma.github.ui.adapter.events.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -33,29 +35,25 @@ public class ForkEventView extends GithubEventView<ForkEventPayload> {
 
 	@Override
 	protected void inflate() {
-		inflate(getContext(), R.layout.payload_watch, this);
+		inflate(getContext(), R.layout.payload_forked, this);
 	}
 
 	@Override
 	protected void populateView(GithubEvent event) {
-		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.forked);
+		int textRes = R.string.event_forked_by;
 
 		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
 		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
 
 		TextView authorName = (TextView) findViewById(R.id.authorName);
-		authorName.setText(event.actor.login);
+		authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, event.repo.name)));
 
-		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
-		Drawable drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo_forked).color(AttributesUtils.getAccentColor(getContext()));
+		TextView textDate = (TextView) findViewById(R.id.textDate);
 
-		if (drawable != null) {
-			actionImage.setImageDrawable(drawable);
-			TextView action = (TextView) findViewById(R.id.action);
-			action.setText(event.repo.name);
-		}
+		String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+
+		textDate.setText(timeString);
 	}
 
 	@Override

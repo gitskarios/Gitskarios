@@ -265,5 +265,8 @@
     <string name="overview_fragment_title">Overview</string>
     <string name="event_watched_by"><![CDATA[<b>%1$s</b> watched <b>%2$s</b>]]></string>
     <string name="event_starred_by"><![CDATA[<b>%1$s</b> starred <b>%2$s</b>]]></string>
+    <string name="event_forked_by"><![CDATA[<b>%1$s</b> forked <b>%2$s</b>]]></string>
+    <string name="event_issue_opened_by"><![CDATA[<b>%1$s</b> opened <b>%2$s</b>]]></string>
+    <string name="event_issue_closed_by"><![CDATA[<b>%1$s</b> closed <b>%2$s</b>]]></string>
     <string name="event_select_commit">Select commit</string>
 </resources>
