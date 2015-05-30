@@ -66,7 +66,7 @@ public class UrlsManager {
 
         uriMatcher.addURI("github.com", "*/*/issues/comments/#", URI_ISSUE_COMMENT);
         uriMatcher.addURI("github.com", "*/*/issues/#", URI_ISSUE);
-        uriMatcher.addURI("github.com", "*/*/issues/#", URI_PULL_REQUEST);
+        uriMatcher.addURI("github.com", "*/*/pull/#", URI_PULL_REQUEST);
 
         uriMatcher.addURI("github.com", "*/*/tree/feature/*", URI_REPO_BRANCH_FEATURE);
         uriMatcher.addURI("github.com", "*/*/tree/release/*", URI_REPO_BRANCH_RELEASE);
@@ -150,8 +150,13 @@ public class UrlsManager {
             if (uri.getPath().contains("repos/")) {
                 String path = uri.getPath().replace("repos/", "");
                 uri = uri.buildUpon().path(path).build();
-            }if (uri.getPath().contains("commits/")) {
+            }
+            if (uri.getPath().contains("commits/")) {
                 String path = uri.getPath().replace("commits/", "commit/");
+                uri = uri.buildUpon().path(path).build();
+            }
+            if (uri.getPath().contains("pulls/")) {
+                String path = uri.getPath().replace("pulls/", "pull/");
                 uri = uri.buildUpon().path(path).build();
             }
         }
@@ -197,6 +202,7 @@ public class UrlsManager {
         user.login = uri.getLastPathSegment();
         return ProfileActivity.createLauncherIntent(context, user);
     }
+
     private Intent manageCommit(Uri uri) {
         CommitInfo info = new CommitInfo();
 

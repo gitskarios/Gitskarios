@@ -3,34 +3,40 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
-        android:title="@string/pref_gthub_link_interceptor"
-        android:key="pref_intercept"/>
+        android:key="pref_intercept"
+        android:title="@string/pref_gthub_link_interceptor" />
 
     <ListPreference
-        android:title="@string/pref_repos_sor_order"
-        android:key="repos_sort"
+        android:defaultValue="@string/sort_pushed_value"
         android:entries="@array/reposSort"
         android:entryValues="@array/reposSortValues"
-        android:defaultValue="@string/sort_pushed_value"/>
+        android:key="repos_sort"
+        android:title="@string/pref_repos_sor_order" />
 
     <ListPreference
-        android:title="@string/pref_repos_download_type"
-        android:key="repos_download_type"
+        android:defaultValue="@string/download_zip_value"
         android:entries="@array/reposDownloadFileType"
         android:entryValues="@array/reposDownloadFileTypeValues"
-        android:defaultValue="@string/download_zip_value"/>
+        android:key="repos_download_type"
+        android:title="@string/pref_repos_download_type" />
 
-   <Preference
-        android:title="@string/action_visit_gitskarios"
-        android:key="gitskarios"/>
+<!--    <com.afollestad.materialdialogs.prefs.MaterialListPreference
+        android:entries="@array/screenItemsValues"
+        android:entryValues="@array/screenItemsValues"
+        android:key="screen_default"
+        android:title="@string/pref_screen_item" />-->
 
-   <Preference
-        android:title="@string/changelog"
-        android:key="changelog"/>
-   <Preference
-        android:title="@string/app_git_hash_title"
-       android:summary="@string/app_git_hash"
+    <Preference
+        android:key="gitskarios"
+        android:title="@string/action_visit_gitskarios" />
+
+    <Preference
+        android:key="changelog"
+        android:title="@string/changelog" />
+    <Preference
         android:key="git_hash"
-       android:selectable="false"/>
+        android:selectable="false"
+        android:summary="@string/app_git_hash"
+        android:title="@string/app_git_hash_title" />
 
 </PreferenceScreen>

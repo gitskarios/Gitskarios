@@ -103,6 +103,7 @@
     <string name="watched">Watched</string>
     <string name="created">Created</string>
     <string name="issue_commented">Issue comment</string>
+    <string name="commit_commented">Commit comment</string>
     <string name="forked">Forked</string>
     <string name="add_gitignore">Add GitIgnore</string>
     <string name="add_license">Add license</string>
@@ -126,6 +127,7 @@
     <string name="source_download_notification">Source code from %1$s was queued</string>
     <string name="source_download_notification_finished">Source code from %1$s was downloaded</string>
     <string name="pref_repos_download_type">Download file extension</string>
+    <string name="pref_screen_item">Select default screen</string>
     <string name="title_activity_commits">Commits</string>
     <string name="title_activity_commit_detail"># %s</string>
     <string name="commit_authored_at_years">%1$s authored %2$d years ago</string>
@@ -268,5 +270,21 @@
     <string name="event_forked_by"><![CDATA[<b>%1$s</b> forked <b>%2$s</b>]]></string>
     <string name="event_issue_opened_by"><![CDATA[<b>%1$s</b> opened <b>%2$s</b>]]></string>
     <string name="event_issue_closed_by"><![CDATA[<b>%1$s</b> closed <b>%2$s</b>]]></string>
+    <string name="event_created_repository_by"><![CDATA[<b>%1$s</b> created repository <b>%2$s</b>]]></string>
+    <string name="event_created_branch_by"><![CDATA[<b>%1$s</b> created branch <b>%2$s</b> at <b>%3$s</b>]]></string>
+    <string name="event_created_tag_by"><![CDATA[<b>%1$s</b> created tag <b>%2$s</b> at <b>%3$s</b>]]></string>
+    <string name="event_delete_branch_by"><![CDATA[<b>%1$s</b> deleted branch <b>%2$s</b> at <b>%3$s</b>]]></string>
+    <string name="event_delete_tag_by"><![CDATA[<b>%1$s</b> deleted tag <b>%2$s</b> at <b>%3$s</b>]]></string>
+    <string name="event_prereleased_by"><![CDATA[<b>%1$s</b> prereleased <b>%2$s</b> at <b>%3$s</b>]]></string>
+    <string name="event_released_by"><![CDATA[<b>%1$s</b> released <b>%2$s</b> at <b>%3$s</b>]]></string>
     <string name="event_select_commit">Select commit</string>
+    <string name="event_commit_comment_by"><![CDATA[<b>%1$s</b> commented on commit <b>%2$s@%3$s</b>]]></string>
+    <string name="event_issue_comment_by"><![CDATA[<b>%1$s</b> commented on issue <b>%2$s#%3$d</b>]]></string>
+    <string name="event_pr_comment_by"><![CDATA[<b>%1$s</b> commented on pull request <b>%2$s#%3$d</b>]]></string>
+    <string name="event_pushed_comment_by"><![CDATA[<b>%1$s</b> pushed to <b>%2$s</b> at <b>%3$s</b>]]></string>
+    <string name="event_pull_request_by"><![CDATA[<b>%1$s</b> %2$s pull request <b>%3$s#%4$d</b>]]></string>
+    <string name="event_pull_request_commits_add_del"><![CDATA[<b>%1$d</b> commits with <b>%2$d</b> additions and <b>%3$d</b> deletions]]></string>
+    <string name="event_pull_request_commits_add"><![CDATA[<b>%1$d</b> commits with <b>%2$d</b> additions]]></string>
+    <string name="event_pull_request_commits_del"><![CDATA[<b>%1$d</b> commits with <b>%2$d</b> deletions]]></string>
+    <string name="event_pull_request_commits"><![CDATA[<b>%1$d</b> commits]]></string>
 </resources>

@@ -8,32 +8,36 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
+import com.alorma.github.sdk.bean.dto.response.ShaUrl;
+import com.alorma.github.sdk.bean.dto.response.events.payload.CommitCommentEventPayload;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.utils.TimeUtils;
+import com.gh4a.utils.UiUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 05/10/2014.
  */
-public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayload> {
+public class CommitCommentEventView extends GithubEventView<CommitCommentEventPayload> {
 
-	public IssueCommentEventView(Context context) {
+	public CommitCommentEventView(Context context) {
 		super(context);
 	}
 
-	public IssueCommentEventView(Context context, AttributeSet attrs) {
+	public CommitCommentEventView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public IssueCommentEventView(Context context, AttributeSet attrs, int defStyle) {
+	public CommitCommentEventView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
 	@Override
 	protected void inflate() {
-		inflate(getContext(), R.layout.payload_issue_comment, this);
+		inflate(getContext(), R.layout.payload_commit_comment, this);
 	}
 
 	@Override
@@ -45,10 +49,10 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 		TextView authorName = (TextView) findViewById(R.id.authorName);
 		authorName.setText(event.actor.login);
 
-		int textRes = eventPayload.issue.pullRequest == null ? R.string.event_issue_comment_by : R.string.event_pr_comment_by;
+		int textRes = R.string.event_commit_comment_by;
 
 		String text = getContext().getString(textRes,
-				event.actor.login, event.repo.name, eventPayload.issue.number);
+				event.actor.login, event.repo.name, ShaUrl.shortShaStatic(eventPayload.comment.commit_id));
 
 		authorName.setText(Html.fromHtml(text));
 
@@ -57,7 +61,6 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 		RepoInfo repoInfo = new RepoInfo();
 		repoInfo.owner = event.repo.name.split("/")[0];
 		repoInfo.name = event.repo.name.split("/")[1];
-
 
 		textTitle.setText(eventPayload.comment.shortMessage());
 
@@ -69,7 +72,7 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 	}
 
 	@Override
-	protected IssueCommentEventPayload convert(Gson gson, String s) {
-		return gson.fromJson(s, IssueCommentEventPayload.class);
+	protected CommitCommentEventPayload convert(Gson gson, String s) {
+		return gson.fromJson(s, CommitCommentEventPayload.class);
 	}
 }

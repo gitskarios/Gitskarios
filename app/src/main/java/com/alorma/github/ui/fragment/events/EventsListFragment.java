@@ -12,10 +12,10 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListEvents;
-import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
+import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -23,7 +23,6 @@ import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
-import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.UrlsManager;
 import com.google.gson.Gson;
@@ -182,7 +181,14 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
             if (issueEventPayload != null) {
                 startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
             }
+        }  else if (type == EventType.PullRequestEvent){
+            String payload = gson.toJson(item.payload);
+            PullRequestEventPayload pullRequestEventPayload = gson.fromJson(payload, PullRequestEventPayload.class);
+            if (pullRequestEventPayload != null) {
+                startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(pullRequestEventPayload.pull_request.html_url)));
+            }
         } else {
+            // TODO manage TAGs
             if (item.repo.url != null) {
                 startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.repo.url)));
             }

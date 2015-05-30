@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
@@ -24,7 +24,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 06/09/2014.
  */
-public class NewIssueCommentActivity extends BackActivity implements BaseClient.OnResultCallback<IssueComment> {
+public class NewIssueCommentActivity extends BackActivity implements BaseClient.OnResultCallback<GithubComment> {
 
 	private static final String ISSUE_INFO = "ISSUE_INFO";
 	private EditText edit;
@@ -88,7 +88,7 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
 	}
 
 	@Override
-	public void onResponseOk(IssueComment issueComment, Response r) {
+	public void onResponseOk(GithubComment githubComment, Response r) {
 		hideProgressDialog();
 		setResult(RESULT_OK);
 		finish();
