@@ -50,22 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textTitle"
-                android:layout_below="@+id/authorName"
-                android:layout_alignLeft="@+id/authorName"
-                android:layout_alignStart="@+id/authorName"
-                android:layout_marginTop="@dimen/gapMedium"
-                android:textSize="@dimen/textSizeMicro"
-                android:layout_alignRight="@+id/authorName"
-                android:layout_alignEnd="@+id/authorName" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/textDate"
-                android:layout_below="@+id/textTitle"
+                android:layout_below="@+id/authorName"
                 android:layout_alignLeft="@+id/authorName"
                 android:layout_alignStart="@+id/authorName"
                 android:layout_marginTop="@dimen/gapMedium"

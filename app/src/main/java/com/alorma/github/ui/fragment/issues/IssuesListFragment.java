@@ -126,15 +126,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        issuesAdapter = null;
-        if (autoStart()) {
-            executeRequest();
-        }
-    }
-
-    @Override
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = getArguments().getParcelable(REPO_INFO);
@@ -307,8 +298,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.issues_fragment_title);
+    public int getTitle() {
+        return R.string.issues_fragment_title;
     }
 
     public void setSearchClientRequest(SearchClientRequest searchClientRequest) {

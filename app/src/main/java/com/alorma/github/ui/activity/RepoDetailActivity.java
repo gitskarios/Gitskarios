@@ -2,13 +2,13 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +16,9 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.UrlsManager;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -29,13 +28,16 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.RepoContributorsFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private Boolean repoWatched = false;
 
     private Repo currentRepo;
-    private ReadmeFragment readmeFragment;
+//    private ReadmeFragment readmeFragment;
+    private RepoAboutFragment aboutFragment;
     private SourceListFragment sourceListFragment;
     private IssuesListFragment issuesListFragment;
     private CommitsListFragment commitsListFragment;
@@ -63,6 +66,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private SlidingTabLayout slidingTabLayout;
     private RepoContributorsFragment repoCollaboratorsFragment;
     private RepoInfo requestRepoInfo;
+    private ReadmeFragment readmeFragment;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -86,11 +90,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
             slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
-            slidingTabLayout.setDividerColors(Color.TRANSPARENT);
-
+            slidingTabLayout.setDividerColors(getResources().getColor(R.color.primary_dark_alpha));
             viewPager = (ViewPager) findViewById(R.id.pager);
 
             load(repoInfo);
+
         } else {
             finish();
         }
@@ -137,17 +141,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.markdown_fragment_title);
-                case 1:
-                    return getString(R.string.files_fragment_title);
-                case 2:
-                    return getString(R.string.commits_fragment_title);
-                case 3:
-                    return getString(R.string.issues_fragment_title);
-                case 4:
-                    return getString(R.string.contributors_fragment_title);
+            if (listFragments.get(position) != null && listFragments.get(position) instanceof TitleProvider) {
+                return getString(((TitleProvider) listFragments.get(position)).getTitle());
             }
             return "";
         }
@@ -275,7 +270,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             getStarWatchData();
 
-            setData();
+            createFragments();
 
             this.invalidateOptionsMenu();
 
@@ -285,8 +280,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         }
     }
 
-    private void setData() {
+    private void createFragments() {
 
+//        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
         readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
         sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
         commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
@@ -294,6 +290,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
 
         listFragments = new ArrayList<>();
+//        listFragments.add(aboutFragment);
         listFragments.add(readmeFragment);
         listFragments.add(sourceListFragment);
         listFragments.add(commitsListFragment);
@@ -447,12 +444,13 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 1) {
-            sourceListFragment.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+////        if (viewPager.getCurrentItem() == 1) {
+////            sourceListFragment.onBackPressed();
+////        } else {
+////            super.onBackPressed();
+////        }
+//        // TODO Source fragment
+//    }
 }

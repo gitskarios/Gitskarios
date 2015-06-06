@@ -46,6 +46,12 @@
         <item>@string/download_tar_value</item>
     </string-array>
 
+    <string-array name="screenItemsValues">
+        <item>@string/navigation_repos</item>
+        <item>@string/menu_events</item>
+    </string-array>
+
+
     <string name="sort_created">Created</string>
     <string name="sort_updated">Updated</string>
     <string name="sort_pushed">Pushed</string>
@@ -61,4 +67,6 @@
     
     <string name="download_zip_value">zipball</string>
     <string name="download_tar_value">tarball</string>
+
+
 </resources>

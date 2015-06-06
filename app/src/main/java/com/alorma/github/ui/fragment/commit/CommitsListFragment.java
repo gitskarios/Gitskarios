@@ -99,7 +99,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        commitsAdapter = new CommitsAdapter(getActivity(), commitsMap);
+                        commitsAdapter = new CommitsAdapter(getActivity(), commitsMap, false);
                         listView.setAdapter(commitsAdapter);
                     }
                 });
@@ -239,8 +239,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.commits_fragment_title);
+    public int getTitle() {
+        return R.string.commits_fragment_title;
     }
 
     @Override

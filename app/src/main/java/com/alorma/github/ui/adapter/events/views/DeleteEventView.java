@@ -1,7 +1,6 @@
 package com.alorma.github.ui.adapter.events.views;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -9,49 +8,53 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
-import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.sdk.bean.dto.response.events.payload.DeleteEventPayload;
 import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
- * Created by Bernat on 04/10/2014.
+ * Created by Bernat on 30/05/2015.
  */
-public class WatchEventView extends GithubEventView<WatchedEventPayload> {
-    public WatchEventView(Context context) {
+public class DeleteEventView extends GithubEventView<DeleteEventPayload> {
+    public DeleteEventView(Context context) {
         super(context);
     }
 
-    public WatchEventView(Context context, AttributeSet attrs) {
+    public DeleteEventView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WatchEventView(Context context, AttributeSet attrs, int defStyle) {
+    public DeleteEventView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
     protected void inflate() {
-        inflate(getContext(), R.layout.payload_watch, this);
+        inflate(getContext(), R.layout.payload_deleted, this);
     }
 
     @Override
     protected void populateView(GithubEvent event) {
-
-        int textRes = R.string.event_watched_by;
-        if (eventPayload.action.equalsIgnoreCase("started")) {
-            textRes = R.string.event_starred_by;
-        }
-
         ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
         ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
 
         TextView authorName = (TextView) findViewById(R.id.authorName);
-        authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, event.repo.name)));
+
+        int textRes = 0;
+        if (eventPayload.ref_type.equalsIgnoreCase("branch")) {
+            textRes = R.string.event_delete_branch_by;
+        } else if (eventPayload.ref_type.equalsIgnoreCase("tag")) {
+            textRes = R.string.event_delete_tag_by;
+        }
+
+        if (textRes != 0) {
+            String text = getContext().getResources().getString(textRes,
+                    event.actor.login, eventPayload.ref, event.repo.name);
+
+            authorName.setText(Html.fromHtml(text));
+        }
 
         TextView textDate = (TextView) findViewById(R.id.textDate);
 
@@ -61,7 +64,7 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
     }
 
     @Override
-    protected WatchedEventPayload convert(Gson gson, String s) {
-        return gson.fromJson(s, WatchedEventPayload.class);
+    protected DeleteEventPayload convert(Gson gson, String s) {
+        return gson.fromJson(s, DeleteEventPayload.class);
     }
 }

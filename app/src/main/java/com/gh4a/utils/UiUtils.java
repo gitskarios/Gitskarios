@@ -51,16 +51,18 @@ public class UiUtils {
                 if (link.length != 0) {
                     String url = link[0].getURL();
 
-                    Intent intent = new UrlsManager(widget.getContext()).checkUri(Uri.parse(url));
+                    if (url != null) {
+                        Intent intent = new UrlsManager(widget.getContext()).checkUri(Uri.parse(url));
 
-                    if (intent != null) {
-                        widget.getContext().startActivity(intent);
-                    } else {
-                        Intent intentGeneric = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        widget.getContext().startActivity(intentGeneric);
+                        if (intent != null) {
+                            widget.getContext().startActivity(intent);
+                        } else {
+                            Intent intentGeneric = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            widget.getContext().startActivity(intentGeneric);
+                        }
+
+                        return true;
                     }
-
-                    return true;
                 }
             }
 

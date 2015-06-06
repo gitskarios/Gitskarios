@@ -14,6 +14,7 @@
 
     <item name="action_add_comment" type="id">action_add_comment</item>
     <item name="action_close_issue" type="id">action_close_issue</item>
+    <item name="action_reopen_issue" type="id">action_reopen_issue</item>
     <item name="action_repo_watch" type="id">action_repo_watch</item>
     <item name="action_user_star" type="id">action_user_star</item>
     <item name="action_repo_star" type="id">action_repo_star</item>

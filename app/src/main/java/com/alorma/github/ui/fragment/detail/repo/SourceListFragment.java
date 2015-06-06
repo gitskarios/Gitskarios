@@ -322,8 +322,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.files_fragment_title);
+    public int getTitle() {
+        return R.string.files_fragment_title;
     }
 
     @Override

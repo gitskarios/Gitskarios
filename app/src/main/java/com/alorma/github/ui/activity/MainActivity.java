@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
@@ -249,7 +250,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 }
             }
         });
-        drawer.withSelectedItem(1);
+        drawer.withSelectedItem(0);
         resultDrawer = drawer.build();
     }
 
@@ -323,7 +324,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (lastUsedFragment != null && !changingUser) {
             setFragment(lastUsedFragment);
         } else {
-            onReposSelected();
+            onUserEventsSelected();
         }
     }
 

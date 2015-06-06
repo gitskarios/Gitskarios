@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.events.views;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,69 +10,92 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.ShaUrl;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.utils.TextUtils;
+import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.IOException;
+
 /**
  * Created by Bernat on 04/10/2014.
  */
 public class PushEventView extends GithubEventView<PushEventPayload> {
-	public PushEventView(Context context) {
-		super(context);
-	}
+    public PushEventView(Context context) {
+        super(context);
+    }
 
-	public PushEventView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public PushEventView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public PushEventView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public PushEventView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void inflate() {
-		inflate(getContext(), R.layout.payload_push, this);
-	}
+    @Override
+    protected void inflate() {
+        inflate(getContext(), R.layout.payload_push, this);
+    }
 
-	@Override
-	protected void populateView(GithubEvent event) {
+    @Override
+    protected void populateView(GithubEvent event) {
+        ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.pushed);
+        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
 
-		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+        TextView authorName = (TextView) findViewById(R.id.authorName);
+        authorName.setText(event.actor.login);
 
-		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        int textRes = R.string.event_pushed_comment_by;
 
-		TextView authorName = (TextView) findViewById(R.id.authorName);
-		authorName.setText(event.actor.login);
+        String ref = eventPayload.ref.replace("refs/heads/", "");
 
-		ViewGroup commits = (ViewGroup) findViewById(R.id.commits);
+        String text = getContext().getString(textRes,
+                event.actor.login, event.repo.name, ref);
 
-		if (eventPayload != null) {
-			if (eventPayload.commits != null) {
-				for (Commit commit : eventPayload.commits) {
-					TextView textView = new TextView(getContext());
-					textView.setText(commit.message);
-					commits.addView(textView);
-				}
-			}
-		}
+        authorName.setText(Html.fromHtml(text));
 
-		IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_repo_push).color(AttributesUtils.getAccentColor(getContext()));
+        TextView textTitle = (TextView) findViewById(R.id.textTitle);
+        if (eventPayload != null) {
+            if (eventPayload.commits != null) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < Math.min(eventPayload.commits.size(), 3); i++) {
+                    Commit commit = eventPayload.commits.get(i);
+                    try {
+                        builder.append("<b>");
+                        builder.append(commit.shortSha());
+                        builder.append("</b>");
+                        builder.append(" - ");
+                        builder.append(TextUtils.splitLines(commit.shortMessage(), 2));
+                        builder.append("<br />");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-		TextView action = (TextView) findViewById(R.id.action);
-		action.setCompoundDrawables(left, null, null, null);
+                if (eventPayload.size > 3) {
+                    builder.append(getContext().getString(R.string.n_more_commits, (eventPayload.size - 3)));
+                }
+                textTitle.setText(Html.fromHtml(builder.toString()));
+            }
+        }
 
-		action.setText(event.repo.name);
-	}
+        TextView textDate = (TextView) findViewById(R.id.textDate);
 
-	@Override
-	protected PushEventPayload convert(Gson gson, String s) {
-		return gson.fromJson(s, PushEventPayload.class);
-	}
+        String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+
+        textDate.setText(timeString);
+    }
+
+    @Override
+    protected PushEventPayload convert(Gson gson, String s) {
+        return gson.fromJson(s, PushEventPayload.class);
+    }
 }

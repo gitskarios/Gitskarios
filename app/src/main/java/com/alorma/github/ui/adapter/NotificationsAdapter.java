@@ -59,6 +59,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
             public void onClick(View v) {
                 if (bus != null && item != null) {
                     bus.post(item);
+                    bus.post(new ClearNotification(item, false));
                 }
             }
         });
