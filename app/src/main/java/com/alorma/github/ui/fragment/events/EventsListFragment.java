@@ -13,6 +13,7 @@ import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
+import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
@@ -21,6 +22,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -59,29 +61,6 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
 
     @Override
     protected void onResponse(ListEvents githubEvents, boolean refreshing) {
-/*
-        if (githubEvents != null && githubEvents.size() > 0) {
-
-            if (eventsAdapter == null || refreshing) {
-                eventsAdapter = new EventAdapter(getActivity(), githubEvents);
-                setListAdapter(eventsAdapter);
-            }
-
-            if (eventsAdapter.isLazyLoading()) {
-                if (eventsAdapter != null) {
-                    eventsAdapter.setLazyLoading(false);
-                    eventsAdapter.addAll(githubEvents);
-                }
-            }
-
-            if (eventsAdapter != null) {
-                setListAdapter(eventsAdapter);
-            }
-        } else if (eventsAdapter == null || eventsAdapter.getCount() == 0) {
-            setEmpty();
-        }
-*/
-
         if (githubEvents != null && githubEvents.size() > 0) {
             hideEmpty();
             if (getListAdapter() != null) {
@@ -175,17 +154,26 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
                     showCommitsDialog(pushEventPayload.commits);
                 }
             }
-        } else if (type == EventType.IssuesEvent){
+        } else if (type == EventType.IssuesEvent) {
             String payload = gson.toJson(item.payload);
             IssueEventPayload issueEventPayload = gson.fromJson(payload, IssueEventPayload.class);
             if (issueEventPayload != null) {
                 startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
             }
-        }  else if (type == EventType.PullRequestEvent){
+        } else if (type == EventType.PullRequestEvent) {
             String payload = gson.toJson(item.payload);
             PullRequestEventPayload pullRequestEventPayload = gson.fromJson(payload, PullRequestEventPayload.class);
             if (pullRequestEventPayload != null) {
                 startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(pullRequestEventPayload.pull_request.html_url)));
+            }
+        } else if (type == EventType.ForkEvent) {
+            String payload = gson.toJson(item.payload);
+            ForkEventPayload forkEventPayload = gson.fromJson(payload, ForkEventPayload.class);
+            if (forkEventPayload != null) {
+                String parentRepo = item.repo.name;
+                String forkeeRepo = forkEventPayload.forkee.full_name;
+
+                showReposDialogDialog(parentRepo, forkeeRepo);
             }
         } else {
             // TODO manage TAGs
@@ -207,6 +195,30 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
                 startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(item.url)));
             }
         });
+        builder.show();
+    }
+
+    private void showReposDialogDialog(final String... repos) {
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.title(R.string.event_select_repository);
+        builder.items(repos);
+        builder.alwaysCallSingleChoiceCallback();
+        builder.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+            @Override
+            public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                String repoSelected = repos[i];
+                String[] split = repoSelected.split("/");
+                RepoInfo repoInfo = new RepoInfo();
+                repoInfo.owner =split[0];
+                repoInfo.name = split[1];
+
+                Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+                startActivity(intent);
+                return true;
+            }
+        });
+
         builder.show();
     }
 }

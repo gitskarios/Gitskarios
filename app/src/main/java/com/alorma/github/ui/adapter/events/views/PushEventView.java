@@ -66,7 +66,8 @@ public class PushEventView extends GithubEventView<PushEventPayload> {
         if (eventPayload != null) {
             if (eventPayload.commits != null) {
                 StringBuilder builder = new StringBuilder();
-                for (Commit commit : eventPayload.commits) {
+                for (int i = 0; i < Math.min(eventPayload.commits.size(), 3); i++) {
+                    Commit commit = eventPayload.commits.get(i);
                     try {
                         builder.append("<b>");
                         builder.append(commit.shortSha());
@@ -77,6 +78,10 @@ public class PushEventView extends GithubEventView<PushEventPayload> {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+
+                if (eventPayload.size > 3) {
+                    builder.append(getContext().getString(R.string.n_more_commits, (eventPayload.size - 3)));
                 }
                 textTitle.setText(Html.fromHtml(builder.toString()));
             }

@@ -47,7 +47,9 @@ public class ForkEventView extends GithubEventView<ForkEventPayload> {
 		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
 
 		TextView authorName = (TextView) findViewById(R.id.authorName);
-		authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, event.repo.name)));
+		String original = event.repo.name;
+		String destination = eventPayload.forkee != null ? eventPayload.forkee.full_name : "";
+		authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, original, destination)));
 
 		TextView textDate = (TextView) findViewById(R.id.textDate);
 
