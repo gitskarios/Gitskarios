@@ -34,13 +34,6 @@ public class WatchedReposFragment extends BaseReposListFragment {
 	}
 
 	@Override
-	public void onResume() {
-		super.onResume();
-
-		getActivity().setTitle(R.string.navigation_watched_repos);
-	}
-
-	@Override
 	protected void executeRequest() {
 		super.executeRequest();
 		WatchedReposClient client;

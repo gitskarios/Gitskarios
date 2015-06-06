@@ -5,10 +5,6 @@ public interface OnMenuItemSelectedListener {
 
 		boolean onReposSelected();
 
-		boolean onStarredSelected();
-
-		boolean onWatchedSelected();
-
 		boolean onPeopleSelected();
 
 		boolean onUserEventsSelected();

@@ -21,7 +21,7 @@
     <string name="private_gists_num">%d Private gists</string>
     <string name="collaborators_num">%d Collaborators</string>
     <string name="one_collaborator_num">%d Collaborator</string>
-    <string name="navigation_repos">My Repositories</string>
+    <string name="navigation_repos">Yours</string>
     <string name="navigation_watched_repos">Watched</string>
     <string name="navigation_starred_repos">Starred</string>
     <string name="tab_people_parent">People &#038; Organizations</string>
@@ -159,6 +159,7 @@
     <string name="search_hint">Search</string>
     <string name="loading_token">Loading token</string>
     <string name="loading_user">Loading user</string>
+    <string name="navigation_general_repositories">Repositories</string>
     <string name="navigation_people">People &#038; Organizations</string>
     <string name="code_download">Source code is waiting for download</string>
     <string name="action_notifications">Notifications</string>

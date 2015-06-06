@@ -34,6 +34,7 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
+import com.alorma.github.ui.fragment.GeneralReposFragment;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
@@ -68,9 +69,7 @@ import javax.inject.Inject;
 public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener,
         NotificationsActionProvider.OnNotificationListener {
 
-    private ReposFragment reposFragment;
-    private StarredReposFragment starredFragment;
-    private WatchedReposFragment watchedFragment;
+    private GeneralReposFragment reposFragment;
     private EventsListFragment eventsFragment;
     private NotificationsActionProvider notificationProvider;
 
@@ -205,9 +204,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         drawer.withAccountHeader(headerResult);
         drawer.addDrawerItems(
                 new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_events),
-                new PrimaryDrawerItem().withName(R.string.navigation_repos).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_repositories),
-                new PrimaryDrawerItem().withName(R.string.navigation_starred_repos).withIcon(Octicons.Icon.oct_star).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_starred_repositories),
-                new PrimaryDrawerItem().withName(R.string.navigation_watched_repos).withIcon(Octicons.Icon.oct_eye).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_watched_repositories),
+                new PrimaryDrawerItem().withName(R.string.navigation_general_repositories).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_repositories),
                 new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people).withCheckable(false),
                 new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withCheckable(false),
                 new DividerDrawerItem(),
@@ -225,12 +222,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         break;
                     case R.id.nav_drawer_repositories:
                         onReposSelected();
-                        break;
-                    case R.id.nav_drawer_starred_repositories:
-                        onStarredSelected();
-                        break;
-                    case R.id.nav_drawer_watched_repositories:
-                        onWatchedSelected();
                         break;
                     case R.id.nav_drawer_people:
                         onPeopleSelected();
@@ -330,9 +321,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private void clearFragments() {
         reposFragment = null;
-        starredFragment = null;
-        watchedFragment = null;
         eventsFragment = null;
+
 
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
@@ -405,30 +395,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         clearFragments();
 
         if (reposFragment == null) {
-            reposFragment = ReposFragment.newInstance();
+            reposFragment = GeneralReposFragment.newInstance();
         }
 
         setFragment(reposFragment, false);
-        return true;
-    }
-
-    @Override
-    public boolean onStarredSelected() {
-        if (starredFragment == null) {
-            starredFragment = StarredReposFragment.newInstance();
-        }
-
-        setFragment(starredFragment);
-        return true;
-    }
-
-    @Override
-    public boolean onWatchedSelected() {
-        if (watchedFragment == null) {
-            watchedFragment = WatchedReposFragment.newInstance();
-        }
-
-        setFragment(watchedFragment);
         return true;
     }
 
@@ -531,11 +501,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (resultDrawer != null && resultDrawer.isDrawerOpen()) {
             resultDrawer.closeDrawer();
         } else {
-            if (lastUsedFragment instanceof ReposFragment) {
+            if (lastUsedFragment instanceof EventsListFragment) {
                 finish();
             } else {
                 clearFragments();
-                onReposSelected();
+                onUserEventsSelected();
             }
         }
     }

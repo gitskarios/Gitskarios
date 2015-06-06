@@ -27,13 +27,6 @@ public class ReposFragment extends BaseReposListFragment {
 	}
 
 	@Override
-	public void onResume() {
-		super.onResume();
-
-		getActivity().setTitle(R.string.navigation_repos);
-	}
-
-	@Override
 	protected void loadArguments() {
 		if (getArguments() != null) {
 			username = getArguments().getString(USERNAME);
