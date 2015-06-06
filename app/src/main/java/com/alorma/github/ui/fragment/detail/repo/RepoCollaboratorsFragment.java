@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.detail.repo;
 
 import android.os.Bundle;
 

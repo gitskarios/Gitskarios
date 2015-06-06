@@ -78,15 +78,6 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <WebView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:id="@+id/webBody"
-                android:layout_margin="@dimen/gapMedium"
-                android:background="@android:color/transparent"
-                tools:text="dnwjkedn eobfeibfo woeubfouew k wo wo owupij pw wouh fwohrwp" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

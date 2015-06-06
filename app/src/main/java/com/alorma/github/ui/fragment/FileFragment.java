@@ -3,11 +3,11 @@ package com.alorma.github.ui.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,18 +19,20 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.inapp.Base64;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.bean.dto.response.ListBranches;
+import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
-import com.alorma.github.utils.uris.RepoUri;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
@@ -44,209 +46,241 @@ import retrofit.client.Response;
  */
 public class FileFragment extends BaseFragment implements BaseClient.OnResultCallback<Content> {
 
-	private static final String REPO_INFO = "REPO_INFO";
-	public static final String NAME = "NAME";
-	private static final String PATH = "PATH";
-	public static final String PATCH = "PATCH";
+    public static final String FILE_INFO = "FILE_INFO";
+    public static final String FROM_URL = "FROM_URL";
 
-	private WebView webView;
-	private ImageView imageView;
-	private Content content;
+    private WebView webView;
+    private ImageView imageView;
+    private Content fileContent;
 
-	private String patch;
-	private String name;
-	private String path;
-	private RepoInfo repoInfo;
+    private FileInfo fileInfo;
+    private boolean fromUrl;
 
-	private FileFragmentListener fileFragmentListener;
-	private SpotsDialog progressDialog;
+    private SpotsDialog progressDialog;
 
-	@Nullable
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.activity_content, null, false);
-	}
+    public static FileFragment getInstance(FileInfo info, boolean fromUrl) {
+        FileFragment fragment = new FileFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(FILE_INFO, info);
+        args.putBoolean(FROM_URL, fromUrl);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_content, null, false);
+    }
 
-		Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		if (fileFragmentListener != null) {
-			if (fileFragmentListener.showUpIndicator()) {
-				toolbar.setNavigationIcon(R.drawable.ic_ab_back_mtrl_am_alpha);
-				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						getActivity().finish();
-					}
-				});
-			}
-		}
+        webView = (WebView) view.findViewById(R.id.webview);
+        imageView = (ImageView) view.findViewById(R.id.imageView);
 
-		webView = (WebView) view.findViewById(R.id.webview);
-		imageView = (ImageView) view.findViewById(R.id.imageView);
+        if (getArguments() != null) {
 
-		if (getArguments() != null) {
-			repoInfo = getArguments().getParcelable(REPO_INFO);
-			name = getArguments().getString(NAME);
-			path = getArguments().getString(PATH);
-			patch = getArguments().getString(PATCH);
+            fileInfo = getArguments().getParcelable(FILE_INFO);
+            fromUrl = getArguments().getBoolean(FROM_URL);
 
-			webView.clearCache(true);
-			webView.clearFormData();
-			webView.clearHistory();
-			webView.clearMatches();
-			webView.clearSslPreferences();
-			webView.getSettings().setUseWideViewPort(false);
-			webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-			webView.setVisibility(View.VISIBLE);
-			WebSettings settings = webView.getSettings();
-			settings.setBuiltInZoomControls(true);
-			settings.setJavaScriptEnabled(true);
-			webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
+            webView.clearCache(true);
+            webView.clearFormData();
+            webView.clearHistory();
+            webView.clearMatches();
+            webView.clearSslPreferences();
+            webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+            webView.setVisibility(View.VISIBLE);
+            WebSettings settings = webView.getSettings();
+            settings.setBuiltInZoomControls(true);
+            settings.setJavaScriptEnabled(true);
+            webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 
-			if (patch == null) {
-				getContent();
-			} else {
-				webView.loadUrl("file:///android_asset/diff.html");
-			}
-			toolbar.setTitle(name);
-		}
-	}
+            new UrlsManager(getActivity()).manageUrls(webView);
 
-	protected void getContent() {
-		if (repoInfo != null) {
-			showProgressDialog(R.style.SpotDialog_OpeningFile);
-			GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), repoInfo, path);
-			fileContentClient.setOnResultCallback(this);
-			fileContentClient.execute();
-		}
-	}
+            if (fileInfo.content == null) {
+                if (fromUrl) {
+                    getBranches();
+                } else {
+                    getContent();
+                }
+            } else {
+                webView.loadUrl("file:///android_asset/diff.html");
+            }
+        }
+    }
 
-	@Override
-	public void onResponseOk(Content content, Response r) {
-		this.content = content;
+    private void getBranches() {
+        if (fileInfo.repoInfo != null) {
+            showProgressDialog(R.style.SpotDialog_OpeningFile);
 
-		hideProgressDialog();
+            GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(getActivity(), fileInfo.repoInfo);
+            branchesClient.setOnResultCallback(new ParseBranchesCallback(fileInfo.path));
+            branchesClient.execute();
+        }
+    }
+
+    protected void getContent() {
+        if (fileInfo.repoInfo != null) {
+            showProgressDialog(R.style.SpotDialog_OpeningFile);
+            GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), fileInfo);
+            fileContentClient.setOnResultCallback(this);
+            fileContentClient.execute();
+        }
+    }
+
+    @Override
+    public void onResponseOk(Content content, Response r) {
+        this.fileContent = content;
+
+        hideProgressDialog();
 
 
-		if (MarkdownUtils.isMarkdown(content.name)) {
-			RequestMarkdownDTO request = new RequestMarkdownDTO();
-			request.text = decodeContent();
-			GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request, new Handler());
-			markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
-				@Override
-				public void onResponseOk(final String s, Response r) {
-					if (getActivity() != null && isAdded()) {
-						webView.clearCache(true);
-						webView.clearFormData();
-						webView.clearHistory();
-						webView.clearMatches();
-						webView.clearSslPreferences();
-						webView.getSettings().setUseWideViewPort(false);
-						webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-						webView.loadDataWithBaseURL("http://github.com", s, "text/html; charset=UTF-8", null, null);
-					}
-				}
+        if (MarkdownUtils.isMarkdown(content.name)) {
+            RequestMarkdownDTO request = new RequestMarkdownDTO();
+            request.text = decodeContent();
+            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request, new Handler());
+            markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
+                @Override
+                public void onResponseOk(final String s, Response r) {
+                    if (getActivity() != null && isAdded()) {
+                        webView.clearCache(true);
+                        webView.clearFormData();
+                        webView.clearHistory();
+                        webView.clearMatches();
+                        webView.clearSslPreferences();
+                        webView.getSettings().setUseWideViewPort(false);
+                        webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+                        webView.loadDataWithBaseURL("http://github.com", s, "text/html; charset=UTF-8", null, null);
+                    }
+                }
 
-				@Override
-				public void onFail(RetrofitError error) {
-					ErrorHandler.onRetrofitError(getActivity(), "FileActivity", error);
-				}
-			});
-			markdownClient.execute();
-		} else if (ImageUtils.isImage(content.name)) {
-			if (getActivity() != null && isAdded()) {
-				try {
-					byte[] imageAsBytes = Base64.decode(content.content);
-					Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-					webView.setVisibility(View.GONE);
-					imageView.setVisibility(View.VISIBLE);
-					imageView.setImageBitmap(bitmap);
-					// TODO STOP loading
-				} catch (Exception e) {
-					Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
-					e.printStackTrace();
-				}
-			}
-		} else if (content.isSubmodule()){
-			if (getActivity() != null && isAdded()) {
-				RepoUri uri = new RepoUri().create(content.git_url);
-				Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), uri.getOwner(), uri.getRepo());
-				startActivity(intent);
-				getActivity().finish();
-			}
-		} else {
-			if (getActivity() != null && isAdded()) {
-				webView.loadUrl("file:///android_asset/source.html");
-			}
-		}
-	}
+                @Override
+                public void onFail(RetrofitError error) {
+                    ErrorHandler.onError(getActivity(), "FileActivity", error);
+                }
+            });
+            markdownClient.execute();
+        } else if (ImageUtils.isImage(content.name)) {
+            if (getActivity() != null && isAdded()) {
+                try {
+                    byte[] imageAsBytes = Base64.decode(content.content);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+                    webView.setVisibility(View.GONE);
+                    imageView.setVisibility(View.VISIBLE);
+                    imageView.setImageBitmap(bitmap);
+                    // TODO STOP loading
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        } else if (content.isSubmodule()) {
+            if (getActivity() != null && isAdded()) {
+                Intent intent = new UrlsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
+                if (intent != null) {
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            }
+        } else {
+            if (getActivity() != null && isAdded()) {
+                webView.loadUrl("file:///android_asset/source.html");
+            }
+        }
+    }
 
-	private String decodeContent() {
-		if (patch == null) {
-			byte[] data = android.util.Base64.decode(content.content, android.util.Base64.DEFAULT);
-			try {
-				content.content = new String(data, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			return content.content;
-		} else {
-			return patch;
-		}
-	}
+    private String decodeContent() {
+        if (fileInfo.content == null) {
+            byte[] data = android.util.Base64.decode(fileContent.content, android.util.Base64.DEFAULT);
+            try {
+                fileContent.content = new String(data, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return fileContent.content;
+        } else {
+            return fileInfo.content;
+        }
+    }
 
-	public void setFileFragmentListener(FileFragmentListener fileFragmentListener) {
-		this.fileFragmentListener = fileFragmentListener;
-	}
+    protected class JavaScriptInterface {
+        @JavascriptInterface
+        public String getCode() {
+            return TextUtils.htmlEncode(decodeContent().replace("\t", "    "));
+        }
 
-	protected class JavaScriptInterface {
-		@JavascriptInterface
-		public String getCode() {
-			return TextUtils.htmlEncode(decodeContent().replace("\t", "    "));
-		}
+        @JavascriptInterface
+        public String getRawCode() {
+            return decodeContent();
+        }
 
-		@JavascriptInterface
-		public String getRawCode() {
-			return decodeContent();
-		}
+        @JavascriptInterface
+        public String getFilename() {
+            return fileContent.name;
+        }
 
-		@JavascriptInterface
-		public String getFilename() {
-			return content.name;
-		}
+        @JavascriptInterface
+        public int getLineHighlight() {
+            return 0;
+        }
 
-	}
+    }
 
-	@Override
-	public void onFail(RetrofitError error) {
-		ErrorHandler.onRetrofitError(getActivity(), "FileActivity", error);
-	}
+    @Override
+    public void onFail(RetrofitError error) {
+        ErrorHandler.onError(getActivity(), "FileActivity", error);
+        try {
+            getActivity().finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public interface FileFragmentListener {
-		boolean showUpIndicator();
-	}
+    protected void showProgressDialog(@StyleRes int style) {
+        if (progressDialog == null) {
+            try {
+                progressDialog = new SpotsDialog(getActivity(), style);
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	protected void showProgressDialog(@StyleRes int style) {
-		if (progressDialog == null) {
-			try {
-				progressDialog = new SpotsDialog(getActivity(), style);
-				progressDialog.setCancelable(false);
-				progressDialog.setCanceledOnTouchOutside(false);
-				progressDialog.show();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    protected void hideProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+    }
 
-	protected void hideProgressDialog() {
-		if (progressDialog != null) {
-			progressDialog.dismiss();
-			progressDialog = null;
-		}
-	}
+    private class ParseBranchesCallback implements BaseClient.OnResultCallback<ListBranches> {
+        private String path;
+
+        public ParseBranchesCallback(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public void onResponseOk(ListBranches branches, Response r) {
+            for (Branch branch : branches) {
+                if (path != null && path.contains(branch.name)) {
+                    fileInfo.repoInfo.branch = branch.name;
+
+                    fileInfo.path = fileInfo.path.replace(branch.name + "/", "");
+                    getContent();
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+
+        }
+    }
 }

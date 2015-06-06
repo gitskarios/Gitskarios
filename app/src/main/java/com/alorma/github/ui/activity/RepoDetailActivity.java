@@ -2,12 +2,13 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +16,9 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -27,13 +28,16 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.RepoContributorsFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,15 +50,14 @@ import retrofit.client.Response;
  */
 public class RepoDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
-    public static final String OWNER = "OWNER";
-    public static final String REPO = "REPO";
-    public static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
+    public static final String REPO_INFO = "REPO_INFO";
 
     private Boolean repoStarred = false;
     private Boolean repoWatched = false;
 
     private Repo currentRepo;
-    private ReadmeFragment readmeFragment;
+//    private ReadmeFragment readmeFragment;
+    private RepoAboutFragment aboutFragment;
     private SourceListFragment sourceListFragment;
     private IssuesListFragment issuesListFragment;
     private CommitsListFragment commitsListFragment;
@@ -62,23 +65,12 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private List<Fragment> listFragments;
     private SlidingTabLayout slidingTabLayout;
     private RepoContributorsFragment repoCollaboratorsFragment;
+    private RepoInfo requestRepoInfo;
+    private ReadmeFragment readmeFragment;
 
-    public static Intent createLauncherIntent(Context context, String owner, String repo) {
+    public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putString(OWNER, owner);
-        bundle.putString(REPO, repo);
-        bundle.putBoolean(FROM_INTENT_FILTER, false);
-
-        Intent intent = new Intent(context, RepoDetailActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent createIntentFilterLauncherIntent(Context context, String owner, String repo) {
-        Bundle bundle = new Bundle();
-        bundle.putString(OWNER, owner);
-        bundle.putString(REPO, repo);
-        bundle.putBoolean(FROM_INTENT_FILTER, true);
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
         Intent intent = new Intent(context, RepoDetailActivity.class);
         intent.putExtras(bundle);
@@ -91,26 +83,25 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         setContentView(R.layout.activity_repo_detail);
 
         if (getIntent().getExtras() != null) {
-            RepoInfo repoInfo = new RepoInfo();
-            repoInfo.owner = getIntent().getExtras().getString(OWNER);
-            repoInfo.name = getIntent().getExtras().getString(REPO);
+            RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
             setTitle(repoInfo.name);
 
             slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
             slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
-            slidingTabLayout.setDividerColors(Color.TRANSPARENT);
-
+            slidingTabLayout.setDividerColors(getResources().getColor(R.color.primary_dark_alpha));
             viewPager = (ViewPager) findViewById(R.id.pager);
 
             load(repoInfo);
+
         } else {
             finish();
         }
     }
 
     private void load(RepoInfo repoInfo) {
+        this.requestRepoInfo = repoInfo;
         GetRepoClient repoClient = new GetRepoClient(this, repoInfo);
         repoClient.setOnResultCallback(this);
         repoClient.execute();
@@ -120,7 +111,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         RepoInfo repoInfo = new RepoInfo();
         repoInfo.owner = currentRepo.owner.login;
         repoInfo.name = currentRepo.name;
-        repoInfo.branch = currentRepo.default_branch;
+        if (requestRepoInfo != null && requestRepoInfo.branch != null) {
+            repoInfo.branch = requestRepoInfo.branch;
+        } else {
+            repoInfo.branch = currentRepo.default_branch;
+        }
 
         return repoInfo;
     }
@@ -146,17 +141,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.markdown_fragment_title);
-                case 1:
-                    return getString(R.string.files_fragment_title);
-                case 2:
-                    return getString(R.string.commits_fragment_title);
-                case 3:
-                    return getString(R.string.issues_fragment_title);
-                case 4:
-                    return getString(R.string.contributors_fragment_title);
+            if (listFragments.get(position) != null && listFragments.get(position) instanceof TitleProvider) {
+                return getString(((TitleProvider) listFragments.get(position)).getTitle());
             }
             return "";
         }
@@ -231,13 +217,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         if (item.getItemId() == R.id.action_show_parent) {
             if (currentRepo != null && currentRepo.parent != null) {
-                String parentFullName = currentRepo.parent.full_name;
-                String[] split = parentFullName.split("/");
-                String owner = split[0];
-                String name = split[1];
-
-                Intent launcherActivity = RepoDetailActivity.createLauncherIntent(this, owner, name);
-                startActivity(launcherActivity);
+                startActivity(new UrlsManager(this).manageRepos(Uri.parse(currentRepo.parent.html_url)));
             }
         } else if (item.getItemId() == R.id.share_repo) {
             if (currentRepo != null) {
@@ -290,7 +270,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             getStarWatchData();
 
-            setData();
+            createFragments();
 
             this.invalidateOptionsMenu();
 
@@ -300,8 +280,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         }
     }
 
-    private void setData() {
+    private void createFragments() {
 
+//        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
         readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
         sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
         commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
@@ -309,6 +290,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
 
         listFragments = new ArrayList<>();
+//        listFragments.add(aboutFragment);
         listFragments.add(readmeFragment);
         listFragments.add(sourceListFragment);
         listFragments.add(commitsListFragment);
@@ -324,7 +306,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     @Override
     public void onFail(RetrofitError error) {
-        ErrorHandler.onRetrofitError(this, "RepoDetailFragment", error);
+        ErrorHandler.onError(this, "RepoDetailActivity", error);
     }
 
     @Override
@@ -462,12 +444,13 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 1) {
-            sourceListFragment.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+////        if (viewPager.getCurrentItem() == 1) {
+////            sourceListFragment.onBackPressed();
+////        } else {
+////            super.onBackPressed();
+////        }
+//        // TODO Source fragment
+//    }
 }

@@ -87,6 +87,10 @@
         <item name="DialogTitleText">@string/adding_milestone</item>
     </style>
 
+    <style name="SpotDialog.loading_adding_assignee">
+        <item name="DialogTitleText">@string/adding_assignee</item>
+    </style>
+
     <style name="SpotDialog.clear_milestones">
         <item name="DialogTitleText">@string/clear_milestone</item>
     </style>

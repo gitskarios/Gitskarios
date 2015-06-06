@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ListContents;
+import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
@@ -223,7 +224,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             if (contentAdapter == null || contentAdapter.getCount() == 0) {
                 setEmpty();
             }
-            ErrorHandler.onRetrofitError(getActivity(), "FilesTreeFragment", error);
+            ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
         }
     }
 
@@ -276,7 +277,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                     displayContent(treeContent.get(item));
                 }
             } else if (item.isFile()) {
-                Intent intent = FileActivity.createLauncherIntent(getActivity(), repoInfo, item.name, item.path);
+                FileInfo info = new FileInfo();
+                info.repoInfo = repoInfo;
+                info.name = item.name;
+                info.path = item.path;
+                Intent intent = FileActivity.createLauncherIntent(getActivity(), info, expandedFab);
                 startActivity(intent);
             }
         }
@@ -317,8 +322,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public CharSequence getTitle() {
-        return getString(R.string.files_fragment_title);
+    public int getTitle() {
+        return R.string.files_fragment_title;
     }
 
     @Override

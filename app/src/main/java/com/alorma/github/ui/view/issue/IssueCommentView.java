@@ -2,22 +2,21 @@ package com.alorma.github.ui.view.issue;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.bean.dto.response.GithubComment;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
-import com.alorma.github.ui.view.WebViewUtils;
 import com.alorma.github.utils.TimeUtils;
+import com.gh4a.utils.UiUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -25,10 +24,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class IssueCommentView extends LinearLayout {
 
-    private IssueComment issueComment;
-
     private TextView body;
-    private WebView bodyHtml;
     private ImageView profileIcon;
     private TextView profileName;
     private TextView profileEmail;
@@ -58,37 +54,28 @@ public class IssueCommentView extends LinearLayout {
         inflate(getContext(), R.layout.issue_detail_issue_comment_view, this);
         setOrientation(VERTICAL);
         body = (TextView) findViewById(R.id.textBody);
-        bodyHtml = (WebView) findViewById(R.id.webBody);
-        WebViewUtils.manageUrls(bodyHtml);
         View authorView = findViewById(R.id.author);
         profileIcon = (ImageView) authorView.findViewById(R.id.profileIcon);
         profileName = (TextView) authorView.findViewById(R.id.name);
         profileEmail = (TextView) authorView.findViewById(R.id.email);
     }
 
-    public void setComment(IssueStoryComment issueStoryDetail) {
-        this.issueComment = issueStoryDetail.comment;
+    public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
+        GithubComment githubComment = issueStoryDetail.comment;
 
-        if (issueComment.user != null) {
-            profileName.setText(issueComment.user.login);
-            profileEmail.setText(TimeUtils.getTimeString(getContext(), issueComment.created_at));
+        if (githubComment.user != null) {
+            profileName.setText(githubComment.user.login);
+            profileEmail.setText(TimeUtils.getTimeString(getContext(), githubComment.created_at));
             ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(issueComment.user.avatar_url, profileIcon);
+            instance.displayImage(githubComment.user.avatar_url, profileIcon);
         }
 
-        if (issueComment.body_html != null) {
-            bodyHtml.loadData(issueComment.body_html, "text/html; charset=UTF-8", null);
-            bodyHtml.setBackgroundColor(Color.TRANSPARENT);
-            bodyHtml.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-            bodyHtml.setVisibility(View.VISIBLE);
-            body.setVisibility(View.GONE);
-        } else if (issueComment.body != null) {
-            body.setText(issueComment.body);
-            body.setVisibility(View.VISIBLE);
-            bodyHtml.setVisibility(View.GONE);
-        } else {
-            body.setVisibility(View.GONE);
-            bodyHtml.setVisibility(View.GONE);
+        if (githubComment.body_html != null) {
+            String htmlCode = HtmlUtils.format(githubComment.body_html).toString();
+            HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+            imageGetter.repoInfo(repoInfo);
+            imageGetter.bind(body, htmlCode, githubComment.hashCode());
+            body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.alorma.github.ui.adapter.events.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.WatchedEventPayload;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -19,50 +21,47 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by Bernat on 04/10/2014.
  */
 public class WatchEventView extends GithubEventView<WatchedEventPayload> {
-	public WatchEventView(Context context) {
-		super(context);
-	}
+    public WatchEventView(Context context) {
+        super(context);
+    }
 
-	public WatchEventView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public WatchEventView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public WatchEventView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public WatchEventView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void inflate() {
-		inflate(getContext(), R.layout.payload_watch, this);
-	}
+    @Override
+    protected void inflate() {
+        inflate(getContext(), R.layout.payload_watch, this);
+    }
 
-	@Override
-	protected void populateView(GithubEvent event) {
-		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.watched);
+    @Override
+    protected void populateView(GithubEvent event) {
 
-		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+        int textRes = R.string.event_watched_by;
+        if (eventPayload.action.equalsIgnoreCase("started")) {
+            textRes = R.string.event_starred_by;
+        }
 
-		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-		TextView authorName = (TextView) findViewById(R.id.authorName);
-		authorName.setText(event.actor.login);
+        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
 
-		ImageView actionImage = (ImageView) findViewById(R.id.actionImage);
-		Drawable drawable = null;
-		if (eventPayload.action.equals("started")) {
-			drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_eye).color(AttributesUtils.getAccentColor(getContext()));
-		}
+        TextView authorName = (TextView) findViewById(R.id.authorName);
+        authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, event.repo.name)));
 
-		if (drawable != null) {
-			actionImage.setImageDrawable(drawable);
-			TextView action = (TextView) findViewById(R.id.action);
-			action.setText(event.repo.name);
-		}
-	}
+        TextView textDate = (TextView) findViewById(R.id.textDate);
 
-	@Override
-	protected WatchedEventPayload convert(Gson gson, String s) {
-		return gson.fromJson(s, WatchedEventPayload.class);
-	}
+        String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+
+        textDate.setText(timeString);
+    }
+
+    @Override
+    protected WatchedEventPayload convert(Gson gson, String s) {
+        return gson.fromJson(s, WatchedEventPayload.class);
+    }
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.issue.IssueLabel;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.timeline.TimelineType;
 import com.alorma.github.ui.view.timeline.TimelineView;
 import com.alorma.github.utils.TimeUtils;
@@ -97,9 +98,15 @@ public class IssueTimelineView extends LinearLayout {
             if (text != null) {
                 int startLabel = text.indexOf(labelName);
                 if (startLabel > -1) {
-                    BackgroundColorSpan fspan = new BackgroundColorSpan(Color.parseColor("#" + label.color));
+                    int bgColor = Color.parseColor("#" + label.color);
+
                     SpannableString spannableString = new SpannableString(text);
-                    spannableString.setSpan(fspan, text.indexOf(labelName), text.indexOf(labelName) + labelName.length(), 0);
+
+                    BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(bgColor);
+                    ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(PaletteUtils.colorTextFromBackgroundColor(bgColor));
+
+                    spannableString.setSpan(backgroundColorSpan, text.indexOf(labelName), text.indexOf(labelName) + labelName.length(), 0);
+                    spannableString.setSpan(foregroundColorSpan, text.indexOf(labelName), text.indexOf(labelName) + labelName.length(), 0);
 
                     textView.setText(spannableString);
                 }

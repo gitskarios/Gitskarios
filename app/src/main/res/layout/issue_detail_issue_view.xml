@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -14,6 +14,14 @@
         card_view:cardElevation="8dp"
         card_view:cardCornerRadius="3dp"
 
+        android:id="@+id/cardView"
+        android:layout_margin="@dimen/gapMedium">
+    -->
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/cardView"
         android:layout_margin="@dimen/gapMedium">
 
@@ -91,23 +99,29 @@
                     </LinearLayout>
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/textAssignee"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    style="@style/new_issue_push_access_row"
+                    android:layout_marginLeft="@dimen/gapLarge" />
+
+                <TextView
+                    android:id="@+id/textMilestone"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    style="@style/new_issue_push_access_row"
+                    android:layout_marginLeft="@dimen/gapLarge"/>
+
                 <com.wefika.flowlayout.FlowLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/labelsLayout"
                     android:gravity="start|top"
-                    android:layout_margin="@dimen/gapMedium" />
+                    android:layout_margin="@dimen/gapMedium"
+                    android:layout_marginLeft="@dimen/gapLarge" />
 
             </LinearLayout>
-
-            <WebView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:id="@+id/webBody"
-                android:layout_margin="@dimen/gapMedium"
-                android:background="@android:color/transparent"
-                tools:text="dnwjkedn eobfeibfo woeubfouew k wo wo owupij pw wouh fwohrwp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -117,5 +131,6 @@
                 android:layout_margin="@dimen/gapMedium"
                 tools:text="dnwjkedn eobfeibfo woeubfouew k wo wo owupij pw wouh fwohrwp" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    <!--</android.support.v7.widget.CardView>-->
+    </FrameLayout>
 </merge>

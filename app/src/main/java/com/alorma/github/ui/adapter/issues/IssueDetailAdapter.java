@@ -2,14 +2,12 @@ package com.alorma.github.ui.adapter.issues;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alorma.github.sdk.bean.dto.response.IssueComment;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
@@ -31,11 +29,13 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     private Context context;
     private LayoutInflater inflater;
     private IssueStory issueStory;
+    private RepoInfo repoInfo;
 
-    public IssueDetailAdapter(Context context, LayoutInflater inflater, IssueStory issueStory) {
+    public IssueDetailAdapter(Context context, LayoutInflater inflater, IssueStory issueStory, RepoInfo repoInfo) {
         this.context = context;
         this.inflater = inflater;
         this.issueStory = issueStory;
+        this.repoInfo = repoInfo;
     }
 
     @Override
@@ -55,10 +55,10 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         if (position == 0) {
-            ((IssueHolder) holder).issueDetailView.setIssue(issueStory.issue);
+            ((IssueHolder) holder).issueDetailView.setIssue(repoInfo, issueStory.issue);
         } else if (holder instanceof CommentHolder) {
             IssueStoryComment issueStoryDetail = (IssueStoryComment) issueStory.details.get(position - 1).second;
-            ((CommentHolder) holder).issueCommentView.setComment(issueStoryDetail);
+            ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);
         } else if (holder instanceof TimelineHolder) {
             if (issueStory.details.get(position - 1).second instanceof IssueStoryEvent) {
                 IssueStoryEvent issueStoryDetail = (IssueStoryEvent) issueStory.details.get(position - 1).second;

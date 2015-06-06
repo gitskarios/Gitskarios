@@ -77,15 +77,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		return intent;
 	}
 
-	public static Intent createIntentFilterLauncherActivity(Context context, User user) {
-		Intent intent = new Intent(context, ProfileActivity.class);
-		if (user != null) {
-			intent.putExtra(USER, user);
-			intent.putExtra(FROM_INTENT_FILTER, true);
-		}
-		return intent;
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -266,6 +257,18 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 	}
 
 	@Override
+	public void onStarredRequest(String username) {
+		Intent intent = StarredReposActivity.launchIntent(this, username);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onWatchedRequest(String username) {
+		Intent intent = WatchedReposActivity.launchIntent(this, username);
+		startActivity(intent);
+	}
+
+	@Override
 	public void onClick(View v) {
 		showProgressDialog(R.style.SpotDialog_LoadingUser);
 
@@ -312,7 +315,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 		if (following) {
 			fabDrawable.color(avatarColor);
 		} else {
-			fabDrawable.color(AttributesUtils.getIconsColor(this));
+			fabDrawable.color(PaletteUtils.colorTextFromBackgroundColor(avatarSecondaryColor));
 		}
 		fabDrawable.actionBarSize();
 		fabLayout.setFabIcon(fabDrawable);

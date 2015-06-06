@@ -21,8 +21,9 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.3.7"
-        versionCode 237
+        versionName "2.4.0"
+        versionCode 2400
+        resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
     lintOptions {
@@ -37,7 +38,7 @@ android {
                 keyAlias SIGN_KEYSTORE_ALIAS
                 keyPassword SIGN_KEYSTORE_ALIAS_PASS
             } catch (Exception e) {
-
+                e.printStackTrace()
             }
         }
     }
@@ -53,6 +54,14 @@ android {
     }
 }
 
+def getVersionCode() {
+    return 'git rev-list --count HEAD'.execute().text.toInteger()
+}
+
+def getCurrentGitHash() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
 dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:support-v4:22.1.1'
@@ -60,7 +69,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.android.support:cardview-v7:22.1.1'
 
-    compile 'com.google.android.gms:play-services-analytics:7.0.0'
+    compile 'com.google.android.gms:play-services-analytics:7.3.0'
 
 
 	debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
@@ -93,7 +102,7 @@ dependencies {
     compile ('com.mikepenz.materialdrawer:library:2.9.2@aar') {
         transitive = true
     }
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
         transitive = true;
     }
     compile('com.mikepenz.aboutlibraries:library:4.7.2@aar') {

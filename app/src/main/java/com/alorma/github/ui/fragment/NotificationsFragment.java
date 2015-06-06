@@ -16,13 +16,13 @@ import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.UrlsManager;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
 import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
 import com.alorma.github.ui.activity.IssueDetailActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.view.DirectionalScrollListener;
@@ -193,26 +193,17 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     public void manageNotificationClick(Notification item) {
         String type = item.subject.type;
 
-        Uri uri = Uri.parse(item.subject.url);
+        Uri uri = null;
         if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
-            List<String> segments = uri.getPathSegments();
-            String user = segments.get(1);
-            String repo = segments.get(2);
-            String number = segments.get(4);
-            IssueInfo issueInfo = new IssueInfo();
-            issueInfo.num = Integer.valueOf(number);
-            issueInfo.repo = new RepoInfo();
-            issueInfo.repo.owner = user;
-            issueInfo.repo.name = repo;
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
-            startActivity(launcherIntent);
+            uri = Uri.parse(item.subject.url);
         } else {
-            String fullName = item.repository.full_name;
-            String[] parts = fullName.split("/");
-            Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), parts[0], parts[1]);
-            startActivity(intent);
+            uri = Uri.parse(item.repository.html_url);
         }
 
+        Intent intent = new UrlsManager(getActivity()).checkUri(uri);
+        if (intent != null) {
+            startActivity(intent);
+        }
     }
 
     @Override

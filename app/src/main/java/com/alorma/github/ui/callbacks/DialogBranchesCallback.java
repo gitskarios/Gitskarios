@@ -2,14 +2,10 @@ package com.alorma.github.ui.callbacks;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.BranchesCallback;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 
 import retrofit.RetrofitError;
@@ -46,7 +42,7 @@ public abstract class DialogBranchesCallback extends BranchesCallback implements
 	
 	@Override
 	public void onFail(RetrofitError error) {
-		ErrorHandler.onRetrofitError(context, "Branches callback", error);
+		ErrorHandler.onError(context, "Branches callback", error);
 	}
 
 	public Context getContext() {

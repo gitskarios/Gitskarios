@@ -16,28 +16,42 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.Label;
+import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
-import com.alorma.github.sdk.services.issues.CloseIssueClient;
+import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
+import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
+import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
+import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -54,6 +68,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private IssueStory issueStory;
+    private int primary;
+    private int accent;
+    private int accentDark;
+    private int primaryDark;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -72,6 +90,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         if (getIntent().getExtras() != null) {
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+
+            primary = getResources().getColor(R.color.primary);
+            accent = getResources().getColor(R.color.accent);
+            accentDark = getResources().getColor(R.color.accent_dark);
+            primaryDark = getResources().getColor(R.color.primary_dark_alpha);
 
             findViews();
         }
@@ -110,7 +133,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         fab.setOnClickListener(issueStory.issue.locked ? null : this);
 
         if (getSupportActionBar() != null) {
-            String issueName = issueInfo.repo.name;
+            String issueName = issueInfo.repoInfo.name;
             if (issueStory.issue.pullRequest != null) {
                 getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
             } else {
@@ -123,7 +146,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             status = getString(R.string.issue_status_close);
         }
         setTitle("#" + issueStory.issue.number + " " + status);
-        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory);
+        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
@@ -136,11 +159,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             colorState = getResources().getColor(R.color.issue_state_open);
             colorStateDark = getResources().getColor(R.color.issue_state_open_dark);
         }
-
-        int primary = getResources().getColor(R.color.primary_alpha);
-        int accent = getResources().getColor(R.color.accent);
-        int accentDark = getResources().getColor(R.color.accent_dark);
-        int primaryDark = getResources().getColor(R.color.primary_dark_alpha);
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -196,13 +214,38 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     getWindow().setStatusBarColor(color);
                 }
             }
-
         });
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(1000);
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
         animatorSet.playTogether(colorAnimation, colorAnimationStatus, colorAnimationFab, colorAnimationFabPressed);
+        final int finalColorState = colorState;
+        final int finalColorStateDark = colorStateDark;
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                primary = finalColorState;
+                accent = finalColorState;
+                primaryDark = finalColorStateDark;
+                accentDark = finalColorStateDark;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         animatorSet.start();
     }
 
@@ -242,17 +285,20 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
-            if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
+            if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 getMenuInflater().inflate(R.menu.issue_detail, menu);
-
-                MenuItem item = menu.findItem(R.id.share_issue);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
-                } else {
-                    item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
-                }
+            } else {
+                getMenuInflater().inflate(R.menu.issue_detail_no_permissions, menu);
             }
+
+            MenuItem item = menu.findItem(R.id.share_issue);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+            } else {
+                item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+            }
+
         }
         return true;
     }
@@ -261,15 +307,18 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (this.issueStory != null) {
 
-            if (issueStory.issue.state == IssueState.closed) {
+            if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 if (menu.findItem(R.id.action_close_issue) != null) {
                     menu.removeItem(R.id.action_close_issue);
                 }
-            } else {
-                if (issueInfo.repo.permissions != null && issueInfo.repo.permissions.push) {
-                    if (menu.findItem(R.id.action_close_issue) != null) {
-                        menu.removeItem(R.id.action_close_issue);
-                    }
+                if (menu.findItem(R.id.action_reopen_issue) != null) {
+                    menu.removeItem(R.id.action_reopen_issue);
+                }
+                if (issueStory.issue.state == IssueState.closed) {
+                    MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                } else {
+
                     MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
@@ -305,8 +354,17 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             case R.id.action_close_issue:
                 closeIssueDialog();
                 break;
+            case R.id.action_reopen_issue:
+                reopenIssue();
+                break;
             case R.id.issue_edit_milestone:
                 editMilestone();
+                break;
+            case R.id.issue_edit_assignee:
+                openAssignee();
+                break;
+            case R.id.issue_edit_labels:
+                openLabels();
                 break;
             case R.id.share_issue:
                 if (issueStory != null && issueStory.issue != null) {
@@ -320,7 +378,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 
@@ -414,7 +472,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private void createMilestone(String milestoneName) {
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repo, createMilestoneRequestDTO);
+        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repoInfo, createMilestoneRequestDTO);
         createMilestoneClient.setOnResultCallback(new BaseClient.OnResultCallback<Milestone>() {
             @Override
             public void onResponseOk(Milestone milestone, Response r) {
@@ -433,26 +491,87 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         showProgressDialog(R.style.SpotDialog_loading_adding_milestones);
         EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
         editIssueRequestDTO.milestone = milestone.number;
-        EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
-        client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
-            @Override
-            public void onResponseOk(Issue issue, Response r) {
-                hideProgressDialog();
-                getContent();
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-                hideProgressDialog();
-            }
-        });
-        client.execute();
+        executeEditIssue(editIssueRequestDTO);
     }
 
     private void clearMilestone() {
         showProgressDialog(R.style.SpotDialog_clear_milestones);
         EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
         editIssueRequestDTO.milestone = null;
+        executeEditIssue(editIssueRequestDTO);
+    }
+
+
+    /**
+     * Assignee
+     */
+
+    private void openAssignee() {
+        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), issueInfo.repoInfo);
+        contributorsClient.setOnResultCallback(new ContributorsCallback());
+        contributorsClient.execute();
+    }
+
+    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
+        @Override
+        public void onResponseOk(ListContributors contributors, Response r) {
+            final List<User> users = new ArrayList<>();
+            String owner = issueInfo.repoInfo.owner;
+            boolean exist = false;
+            if (contributors != null) {
+                for (Contributor contributor : contributors) {
+                    exist = contributor.author.login.equals(owner);
+                    users.add(contributor.author);
+                }
+            }
+
+            if (!exist) {
+                User user = new User();
+                user.login = owner;
+                users.add(user);
+            }
+
+            Collections.reverse(users);
+            UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(IssueDetailActivity.this, users);
+
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
+            builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
+                @Override
+                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                    User user = users.get(i);
+                    setAssigneeUser(user);
+                    materialDialog.dismiss();
+                }
+            });
+            builder.negativeText(R.string.no_assignee);
+            builder.callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    super.onNegative(dialog);
+                    setAssigneeUser(null);
+                }
+            });
+            builder.show();
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+
+        }
+    }
+
+    private void setAssigneeUser(User user) {
+        showProgressDialog(R.style.SpotDialog_loading_adding_assignee);
+        EditIssueAssigneeRequestDTO editIssueRequestDTO = new EditIssueAssigneeRequestDTO();
+        if (user != null) {
+            editIssueRequestDTO.assignee = user.login;
+        } else {
+            editIssueRequestDTO.assignee = null;
+        }
+        executeEditIssue(editIssueRequestDTO);
+    }
+
+    private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
         EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
@@ -463,11 +582,123 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             @Override
             public void onFail(RetrofitError error) {
+                ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
                 hideProgressDialog();
             }
         });
         client.execute();
     }
+
+    /**
+     * Labels
+     */
+
+    private void openLabels() {
+        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo);
+        labelsClient.setOnResultCallback(new LabelsCallback());
+        labelsClient.execute();
+    }
+
+    private class LabelsCallback implements BaseClient.OnResultCallback<List<Label>> {
+
+        private CharSequence[] selectedLabels;
+        private Integer[] positionsSelectedLabels;
+
+        @Override
+        public void onResponseOk(List<Label> labels, Response r) {
+            if (labels != null) {
+                List<String> items = new ArrayList<>();
+                List<String> selectedLabels = new ArrayList<>();
+                List<Integer> positionsSelectedLabels = new ArrayList<>();
+
+                List<String> currentLabels = new ArrayList<>();
+                for (Label label : issueStory.issue.labels) {
+                    currentLabels.add(label.name);
+                }
+
+                int i = 0;
+                for (Label label : labels) {
+                    items.add(label.name);
+                    if (currentLabels.contains(label.name)) {
+                        selectedLabels.add(label.name);
+                        positionsSelectedLabels.add(i);
+                    }
+                    i++;
+                }
+
+                LabelsCallback.this.selectedLabels = selectedLabels.toArray(new String[selectedLabels.size()]);
+
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
+                builder.items(items.toArray(new String[items.size()]));
+                builder.alwaysCallMultiChoiceCallback();
+                builder.itemsCallbackMultiChoice(positionsSelectedLabels.toArray(new Integer[positionsSelectedLabels.size()]), new MaterialDialog.ListCallbackMultiChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
+                        LabelsCallback.this.selectedLabels = charSequences;
+                        LabelsCallback.this.positionsSelectedLabels = integers;
+                        return true;
+                    }
+                });
+                builder.forceStacking(true);
+                builder.positiveText(R.string.ok);
+//                builder.neutralText(R.string.add_new_label);
+                builder.negativeText(R.string.clear_labels);
+                builder.callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        setLabels(LabelsCallback.this.selectedLabels);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        LabelsCallback.this.selectedLabels = null;
+                        LabelsCallback.this.positionsSelectedLabels = null;
+                        setLabels(null);
+                    }
+
+//                    @Override
+//                    public void onNeutral(MaterialDialog dialog) {
+//                        super.onNeutral(dialog);
+//                    }
+                });
+                builder.show();
+            }
+        }
+
+        @Override
+        public void onFail(RetrofitError error) {
+            ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
+        }
+    }
+
+    private void setLabels(CharSequence[] selectedLabels) {
+        if (selectedLabels != null) {
+
+            if (selectedLabels.length > 0) {
+                String[] labels = new String[selectedLabels.length];
+                for (int i = 0; i < selectedLabels.length; i++) {
+                    labels[i] = selectedLabels[i].toString();
+                }
+                EditIssueLabelsRequestDTO labelsRequestDTO = new EditIssueLabelsRequestDTO();
+                labelsRequestDTO.labels = labels;
+                executeEditIssue(labelsRequestDTO);
+            } else {
+                EditIssueLabelsRequestDTO labelsRequestDTO = new EditIssueLabelsRequestDTO();
+                labelsRequestDTO.labels = new String[]{};
+                executeEditIssue(labelsRequestDTO);
+            }
+        } else {
+            EditIssueLabelsRequestDTO labelsRequestDTO = new EditIssueLabelsRequestDTO();
+            labelsRequestDTO.labels = new String[]{};
+            executeEditIssue(labelsRequestDTO);
+        }
+    }
+
+    /**
+     * Close issue
+     */
 
     private void closeIssueDialog() {
         String title = getString(R.string.closeIssue);
@@ -491,8 +722,16 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void closeIssue() {
-        CloseIssueClient closeIssueClient = new CloseIssueClient(this, issueInfo.repo.owner, issueInfo.repo.name, issueInfo.num);
-        closeIssueClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
+        changeIssueState(IssueState.closed);
+    }
+
+    private void reopenIssue() {
+        changeIssueState(IssueState.open);
+    }
+
+    private void changeIssueState(IssueState state) {
+        ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
+        changeIssueStateClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
                 if (issue != null) {
@@ -507,7 +746,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             }
         });
-        closeIssueClient.execute();
+        changeIssueStateClient.execute();
     }
 
     @Override

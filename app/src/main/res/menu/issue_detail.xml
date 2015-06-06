@@ -8,16 +8,16 @@
         android:id="@+id/issue_edit_milestone"
         app:showAsAction="never" />
     <item
+        android:title="@string/issue_edit_assignee"
+        android:id="@+id/issue_edit_assignee"
+        app:showAsAction="never" />
+    <item
+        android:title="@string/issue_edit_labels"
+        android:id="@+id/issue_edit_labels"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/share_issue"
         android:title="@string/action_share_issue"
         app:showAsAction="ifRoom"
         android:orderInCategory="1" />
-    <!--
-        <item android:title="@string/issue_edit_labels"
-            android:id="@+id/issue_edit_labels"
-            app:showAsAction="never"/>
-
-        <item android:title="@string/issue_edit_assigne"
-            android:id="@+id/issue_edit_assigne"
-            app:showAsAction="never"/>-->
 </menu>

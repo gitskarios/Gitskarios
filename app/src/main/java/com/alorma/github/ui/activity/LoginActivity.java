@@ -146,7 +146,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
                     @Override
                     public void onFail(RetrofitError error) {
-                        ErrorHandler.onRetrofitError(LoginActivity.this, "WebViewCustomClient", error);
+                        ErrorHandler.onError(LoginActivity.this, "WebViewCustomClient", error);
                     }
                 });
                 requestTokenClient.execute();
@@ -182,7 +182,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private void openExternalLogin(ApiClient client) {
         String url = OAUTH_URL + "?client_id=" + client.getApiClient();
 
-        url = url + "&scope=gist,user,notifications,repo";
+        url = url + "&scope=gist,user,notifications,repoInfo";
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));

@@ -4,12 +4,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Label;
+import com.alorma.github.ui.utils.PaletteUtils;
 
 /**
  * Created by Bernat on 09/04/2015.
@@ -41,11 +43,15 @@ public class LabelView extends TextView {
         setGravity(Gravity.CENTER);
         int padding = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
         setPadding(padding, padding, padding, padding);
+
+        ViewCompat.setElevation(this, 4);
     }
 
     public void setLabel(Label label) {
         if (label != null) {
-            setBackgroundColor(Color.parseColor("#" + label.color));
+            int color = Color.parseColor("#" + label.color);
+            setBackgroundColor(color);
+            setTextColor(PaletteUtils.colorTextFromBackgroundColor(color));
             setText(label.name);
         }
     }

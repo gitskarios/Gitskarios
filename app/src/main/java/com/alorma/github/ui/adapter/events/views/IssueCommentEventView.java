@@ -9,10 +9,9 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
-import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -39,9 +38,6 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 
 	@Override
 	protected void populateView(GithubEvent event) {
-		TextView actionType = (TextView) findViewById(R.id.actionType);
-		actionType.setText(R.string.issue_commented);
-
 		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
 		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
@@ -49,16 +45,27 @@ public class IssueCommentEventView extends GithubEventView<IssueCommentEventPayl
 		TextView authorName = (TextView) findViewById(R.id.authorName);
 		authorName.setText(event.actor.login);
 
-		TextView comment = (TextView) findViewById(R.id.comment);
+		int textRes = eventPayload.issue.pullRequest == null ? R.string.event_issue_comment_by : R.string.event_pr_comment_by;
 
-		comment.setText(Html.fromHtml(eventPayload.comment.body));
+		String text = getContext().getString(textRes,
+				event.actor.login, event.repo.name, eventPayload.issue.number);
 
-		IconicsDrawable left = new IconicsDrawable(getContext(), Octicons.Icon.oct_comment_discussion).color(AttributesUtils.getAccentColor(getContext()));
+		authorName.setText(Html.fromHtml(text));
 
-		TextView action = (TextView) findViewById(R.id.action);
-		action.setCompoundDrawables(left, null, null, null);
+		TextView textTitle = (TextView) findViewById(R.id.textTitle);
 
-		action.setText(eventPayload.issue.title);
+		RepoInfo repoInfo = new RepoInfo();
+		repoInfo.owner = event.repo.name.split("/")[0];
+		repoInfo.name = event.repo.name.split("/")[1];
+
+
+		textTitle.setText(eventPayload.comment.shortMessage());
+
+		TextView textDate = (TextView) findViewById(R.id.textDate);
+
+		String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+
+		textDate.setText(timeString);
 	}
 
 	@Override
