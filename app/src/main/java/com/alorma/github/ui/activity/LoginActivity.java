@@ -5,6 +5,7 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -127,6 +128,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         AccountsAdapter adapter = new AccountsAdapter(this, accounts);
         recyclerView.setAdapter(adapter);
 
+        if (accounts != null) {
+            for (Account account : accounts) {
+                checkAndEnableSyncAdapter(account);
+            }
+        }
+
         if (fromLogin) {
             findViewById(R.id.login).setEnabled(false);
             showProgressDialog(R.style.SpotDialog_Login);
@@ -182,7 +189,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private void openExternalLogin(ApiClient client) {
         String url = OAUTH_URL + "?client_id=" + client.getApiClient();
 
-        url = url + "&scope=gist,user,notifications,repoInfo";
+        url = url + "&scope=gist,user,notifications,repo";
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
@@ -303,7 +310,20 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         setAccountAuthenticatorResult(result);
 
+        checkAndEnableSyncAdapter(account);
+
         openMain();
+    }
+
+    private void checkAndEnableSyncAdapter(Account account) {
+        if (!ContentResolver.isSyncActive(account, getString(R.string.account_type))) {
+            ContentResolver.setIsSyncable(account, getString(R.string.account_type), ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
+            ContentResolver.addPeriodicSync(
+                    account,
+                    getString(R.string.account_type),
+                    Bundle.EMPTY,
+                    1800);
+        }
     }
 
     @Override

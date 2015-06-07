@@ -119,7 +119,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> implements 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bus.post(new ClearNotification(item, true));
+                //bus.post(new ClearNotification(item, true));
             }
         });
 

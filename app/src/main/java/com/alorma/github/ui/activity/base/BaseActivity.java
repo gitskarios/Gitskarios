@@ -43,6 +43,8 @@ import dmax.dialog.SpotsDialog;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    public static final String EXTRA_WITH_TOKEN = "ETXRA_WOTH_TOKEN";
+
     private AuthReceiver authReceiver;
     private UpdateReceiver updateReceiver;
 
