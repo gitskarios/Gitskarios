@@ -43,7 +43,7 @@ public class GeneralReposFragment extends BaseFragment {
         slidingTabLayout.setDividerColors(getResources().getColor(R.color.primary_dark_alpha));
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
 
-        ReposPagerAdapter reposAdapter = new ReposPagerAdapter(getFragmentManager());
+        ReposPagerAdapter reposAdapter = new ReposPagerAdapter(getChildFragmentManager());
         viewPager.setOffscreenPageLimit(reposAdapter.getCount());
         viewPager.setAdapter(reposAdapter);
 
