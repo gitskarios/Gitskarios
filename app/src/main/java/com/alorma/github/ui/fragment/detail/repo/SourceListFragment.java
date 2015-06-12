@@ -51,11 +51,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     private Map<Content, ListContents> treeContent;
     private Content rootContent = new Content();
     private Content currentSelectedContent = rootContent;
-    private FloatingActionButton fabUp;
-    private FloatingActionsMenu fabMenu;
-    private View snackView;
-    private SnackBar branchSnackBar;
-    private boolean expandedFab = false;
 
     public static SourceListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -67,15 +62,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.list_fragment_breadcumbs, null);
-    }
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+/*
 
         fabMenu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
 
@@ -83,15 +74,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         IconicsDrawable downloadIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_cloud_download);
         downloadIcon.colorRes(R.color.white);
         downloadIcon.sizeRes(R.dimen.fab_size_mini_icon);
-        fabDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-                repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback(getActivity(), repoInfo));
-                repoBranchesClient.execute();
-                fabMenu.collapse();
-            }
-        });
+        fabDownload.setOnClickListener();
         fabDownload.setIconDrawable(downloadIcon);
 
         FloatingActionButton fabBranches = (FloatingActionButton) view.findViewById(R.id.fab_branches);
@@ -143,8 +126,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         });
         fabRefresh.setIconDrawable(refreshIcon);
 
-
-        snackView = view.findViewById(R.id.snackBar);
+*/
 
         if (getArguments() != null) {
             getContent();
@@ -182,12 +164,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
         contentAdapter = null;
 
-        fabUp.setVisibility(View.INVISIBLE);
-        fabMenu.collapse();
-
-        if (branchSnackBar == null) {
-            branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
-        }
+        // TODO show branch
 
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
         repoContentsClient.setOnResultCallback(this);
@@ -231,33 +208,9 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     private void displayContent(ListContents contents) {
         if (getActivity() != null) {
             stopRefresh();
-
-            if (currentSelectedContent.parent != null) {
-                fabUp.setVisibility(View.VISIBLE);
-                if (!expandedFab) {
-                    expandedFab = true;
-                    fabMenu.expand();
-                }
-                delayClose();
-            } else {
-                fabUp.setVisibility(View.INVISIBLE);
-                fabMenu.collapse();
-            }
-
             contentAdapter = new RepoSourceAdapter(getActivity(), contents);
             setListAdapter(contentAdapter);
         }
-    }
-
-    private void delayClose() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (fabMenu.isExpanded()) {
-                    fabMenu.collapse();
-                }
-            }
-        }, 2500);
     }
 
     @Override
@@ -281,7 +234,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 info.repoInfo = repoInfo;
                 info.name = item.name;
                 info.path = item.path;
-                Intent intent = FileActivity.createLauncherIntent(getActivity(), info, expandedFab);
+                Intent intent = FileActivity.createLauncherIntent(getActivity(), info, false);
                 startActivity(intent);
             }
         }
@@ -290,27 +243,18 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     @Override
     public void setEmpty() {
         super.setEmpty();
-        if (fabMenu != null) {
-            fabMenu.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
     public void hideEmpty() {
         super.hideEmpty();
-        if (fabMenu != null) {
-            fabMenu.setVisibility(View.VISIBLE);
-        }
     }
 
     public void setCurrentBranch(String branch) {
         repoInfo.branch = branch;
 
-        if (branchSnackBar != null) {
-            branchSnackBar.clear();
-            branchSnackBar = null;
-        }
-        branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
+        // TODO show branch
+
         getContent();
     }
 
@@ -328,7 +272,20 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
     @Override
     protected boolean useFAB() {
-        return false;
+        return true;
+    }
+
+    @Override
+    protected Octicons.Icon getFABGithubIcon() {
+        return Octicons.Icon.oct_cloud_download;
+    }
+
+    @Override
+    protected void fabClick() {
+        super.fabClick();
+        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+        repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback(getActivity(), repoInfo));
+        repoBranchesClient.execute();
     }
 
     @Override
@@ -340,6 +297,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
         public DownloadBranchesCallback(Context context, RepoInfo repoInfo) {
             super(context, repoInfo);
+        }
+
+        @Override
+        protected void onNoBranches() {
+            Toast.makeText(getContext(), R.string.no_branches_download, Toast.LENGTH_SHORT).show();
         }
 
         @Override
