@@ -328,7 +328,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
     @Override
     public void onRefresh() {
-        getContent();
+        if (currentPath == null || currentPath .equals("/")) {
+            getContent();
+        } else {
+            getPathContent(currentPath);
+        }
     }
 
     @Override
