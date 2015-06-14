@@ -161,7 +161,7 @@
     <string name="loading_user">Loading user</string>
     <string name="navigation_general_repositories">Repositories</string>
     <string name="navigation_people">People &#038; Organizations</string>
-    <string name="code_download">Source code is waiting for download</string>
+    <string name="code_download">Source code is queued for download</string>
     <string name="action_notifications">Notifications</string>
     <string name="no_notifications">No notifications</string>
     <string name="notifications">Notifications</string>
@@ -290,4 +290,7 @@
     <string name="event_pull_request_commits_del"><![CDATA[<b>%1$d</b> commits with <b>%2$d</b> deletions]]></string>
     <string name="event_pull_request_commits"><![CDATA[<b>%1$d</b> commits]]></string>
     <string name="n_more_commits">+ %d more commits</string>
+    <string name="no_branches_download">No branch available to download</string>
+    <string name="no_branches_change">No branch to change</string>
+    <string name="action_repo_change_branch">Change branch</string>
 </resources>

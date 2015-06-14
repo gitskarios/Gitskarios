@@ -33,7 +33,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider {
+public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider
+        , PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private RepoInfo repoInfo;
@@ -123,7 +124,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     }
 
     @Override
-    public void setCurrentBranch(Branch branch) {
+    public void setCurrentBranch(String branch) {
         if (getActivity() != null) {
             GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
             repoMarkdownClient.setCallback(this);
@@ -156,6 +157,16 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     public void onStop() {
         super.onStop();
         getActivity().unregisterReceiver(updateReceiver);
+    }
+
+    @Override
+    public void setPermissions(boolean admin, boolean push, boolean pull) {
+
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     public class UpdateReceiver extends BroadcastReceiver {

@@ -37,9 +37,9 @@
         android:layout_marginRight="@dimen/gapMedium"
         android:layout_marginEnd="@dimen/gapMedium" />
 
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+    <com.alorma.github.ui.view.CircularImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:id="@id/avatarAuthor"
         android:layout_alignTop="@+id/textAuthor"
         android:layout_alignLeft="@+id/textTitle"

@@ -4,21 +4,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@id/action_repo_change_branch"
+        android:title="@string/action_repo_change_branch"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1" />
+
+    <item
         android:id="@+id/share_repo"
         android:title="@string/action_share_repo"
         app:showAsAction="ifRoom"
-        android:orderInCategory="1" />
+        android:orderInCategory="2" />
 
     <item
         android:id="@id/action_repo_star"
         android:title="@string/menu_star"
         app:showAsAction="never"
-        android:orderInCategory="4" />
+        android:orderInCategory="3" />
+
     <item
         android:id="@id/action_repo_watch"
         android:title="@string/menu_watch"
         app:showAsAction="never"
-        android:orderInCategory="5" />
+        android:orderInCategory="4" />
 
     <item
         android:title="@string/show_parent"
