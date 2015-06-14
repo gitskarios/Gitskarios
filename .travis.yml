@@ -1,1 +1,21 @@
 language: android
+android:
+  components:
+   - build-tools-22.0.1
+   - android-22
+   - extra-android-m2repository
+   - extra-google-google_play_services
+   - extra-google-m2repository
+  licenses:
+    - android-sdk-license-.+
+
+branches:
+  only:
+    - travis
+    - develop
+    - master
+
+notifications:
+  email: false
+
+script: ./gradlew clean build

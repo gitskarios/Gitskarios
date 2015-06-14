@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gitskarios/Gitskarios.svg?branch=develop)](https://travis-ci.org/gitskarios/Gitskarios)
+
 # README #
 
 ## FORK ##
