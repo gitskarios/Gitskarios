@@ -21,8 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.4.0.1"
-        versionCode 2401
+        versionName "2.4.1"
+        versionCode 2410
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -31,16 +31,7 @@ android {
     }
 
     signingConfigs {
-        playStore {
-            try {
-                storeFile file(SIGN_FILE)
-                storePassword SIGN_KEYSTORE_PASS
-                keyAlias SIGN_KEYSTORE_ALIAS
-                keyPassword SIGN_KEYSTORE_ALIAS_PASS
-            } catch (Exception e) {
-                e.printStackTrace()
-            }
-        }
+        playStore
     }
 
     buildTypes {
@@ -49,7 +40,9 @@ android {
         }
         release {
             minifyEnabled false
-            signingConfig signingConfigs.playStore
+            if (signingConfigs.playStore != null) {
+                signingConfig signingConfigs.playStore
+            }
         }
     }
 }
@@ -62,6 +55,32 @@ def getCurrentGitHash() {
     return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
+def Properties props = new Properties()
+def propFile = file('../signing.properties')
+if (propFile.canRead()) {
+    props.load(new FileInputStream(propFile))
+
+    if (props != null && props.containsKey('SIGN_FILE') && props.containsKey('SIGN_KEYSTORE_PASS') &&
+            props.containsKey('SIGN_KEYSTORE_ALIAS') && props.containsKey('SIGN_KEYSTORE_ALIAS_PASS')) {
+
+        println 'RELEASE BUILD SIGNING'
+
+        android.signingConfigs.playStore.storeFile = file(props['SIGN_FILE'])
+        android.signingConfigs.playStore.storePassword = props['SIGN_KEYSTORE_PASS']
+        android.signingConfigs.playStore.keyAlias = props['SIGN_KEYSTORE_ALIAS']
+        android.signingConfigs.playStore.keyPassword = props['SIGN_KEYSTORE_ALIAS_PASS']
+    } else {
+        println 'RELEASE BUILD NOT FOUND SIGNING PROPERTIES'
+
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    println 'RELEASE BUILD NOT FOUND SIGNING FILE'
+    android.buildTypes.release.signingConfig = null
+}
+
+
+
 dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:support-v4:22.1.1'
@@ -72,9 +91,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-analytics:7.3.0'
 
 
-	debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
-	releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
-
+    debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
+    releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
 
     // Submodules
     compile project(':libraries:android-floating-action-button')
@@ -99,7 +117,7 @@ dependencies {
 
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
 
-    compile ('com.mikepenz.materialdrawer:library:2.9.2@aar') {
+    compile('com.mikepenz.materialdrawer:library:2.9.2@aar') {
         transitive = true
     }
     compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {

@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -312,11 +313,17 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
 
-        if (lastUsedFragment != null && !changingUser) {
+        if (changingUser) {
+            lastUsedFragment = null;
+            clearFragments();
+        }
+
+        if (lastUsedFragment != null) {
             setFragment(lastUsedFragment);
         } else {
             onUserEventsSelected();
         }
+
     }
 
     private void clearFragments() {
