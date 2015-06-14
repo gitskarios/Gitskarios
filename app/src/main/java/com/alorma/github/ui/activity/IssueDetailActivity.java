@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -72,6 +73,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private int accent;
     private int accentDark;
     private int primaryDark;
+    private SwipeRefreshLayout refreshLayout;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -108,12 +110,20 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
         fab.setIconDrawable(drawable);
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getContent();
+            }
+        });
     }
 
     @Override
     protected void getContent() {
         super.getContent();
-        showProgressDialog(R.style.SpotDialog_loading_issue);
+        refreshLayout.setRefreshing(true);
         IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
         issueStoryLoader.setOnResultCallback(this);
         issueStoryLoader.execute();
@@ -121,9 +131,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public void onResponseOk(IssueStory issueStory, Response r) {
-        hideProgressDialog();
         this.issueStory = issueStory;
         applyIssue();
+
+        refreshLayout.setRefreshing(false);
     }
 
     private void applyIssue() {
