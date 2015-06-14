@@ -17,4 +17,4 @@ branches:
 notifications:
   email: false
 
-script: ./gradlew clean build
+script: ./gradlew assembleDebug crashlyticsUploadDistributionDebug

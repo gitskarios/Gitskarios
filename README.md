@@ -12,7 +12,7 @@ Since now, if you want to use your own version of Gitskarios, you should generat
 
     If you want distinc apps for debug and release, you should generate two applications.
 
-Then, you need to define a gradle.properties in your home folder (C:\User, /home/user....), with the following content:
+Then, you need to define a gradle.properties in your home folder (C:\User, /home/user....), or export variables to your System, with the following content:
 
 ``` groovy
 SIGN_FILE={keystore_path}
@@ -22,13 +22,13 @@ SIGN_KEYSTORE_ALIAS_PASS={keystore_alias_password}
 
 
 # API CLIENTS
-DEV_ID={dev_app_id}
-DEV_SECRET={dev_app_secret}
-DEV_CALLBACK={dev_app_callback}
+GH_DEV_ID={dev_app_id}
+GH_DEV_SECRET={dev_app_secret}
+GH_DEV_CALLBACK={dev_app_callback}
 
-PRO_ID={pro_app_id}
-PRO_SECRET={pro_app_secret}
-PRO_CALLBACK={pro_ap_callback}
+GH_PRO_ID={pro_app_id}
+GH_PRO_SECRET={pro_app_secret}
+GH_PRO_CALLBACK={pro_ap_callback}
 ```
 
 ## LICENSE ##
