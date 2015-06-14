@@ -17,6 +17,7 @@ import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.UrlsManager;
+import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
@@ -93,7 +94,12 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     protected void executeRequest() {
         super.executeRequest();
 
-        GetNotificationsClient client = new GetNotificationsClient(getActivity());
+        String token = null;
+        if (getArguments() != null && getArguments().containsKey(BaseActivity.EXTRA_WITH_TOKEN)) {
+            token = getArguments().getString(BaseActivity.EXTRA_WITH_TOKEN);
+        }
+
+        GetNotificationsClient client = new GetNotificationsClient(getActivity(), token);
         client.setOnResultCallback(this);
         client.execute();
     }

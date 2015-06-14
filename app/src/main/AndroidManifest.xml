@@ -11,14 +11,17 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
 
     <application
         android:name="com.alorma.github.GitskariosApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@style/AppTheme"
+        android:label="@string/app_name"
         android:launchMode="singleInstance"
-        android:label="@string/app_name">
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.alorma.github.ui.activity.LoginActivity"
             android:label="@string/app_name">
@@ -40,8 +43,7 @@
         <activity
             android:name="com.alorma.github.ui.activity.PeopleActivity"
             android:label="@string/navigation_people" />
-        <activity
-            android:name="com.alorma.github.ui.activity.ProfileActivity" />
+        <activity android:name="com.alorma.github.ui.activity.ProfileActivity" />
         <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity" />
         <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity" />
         <activity android:name="com.alorma.github.ui.activity.SearchActivity" />
@@ -82,23 +84,20 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <data
-                    android:scheme="http"
-                    android:host="gist.github.com" />
+                    android:host="gist.github.com"
+                    android:scheme="http" />
                 <data
-                    android:scheme="https"
-                    android:host="gist.github.com" />
+                    android:host="gist.github.com"
+                    android:scheme="https" />
                 <data android:pathPattern=".*" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.NotificationsActivity"/>
-        <activity
-            android:name=".ui.activity.gists.GistDetailActivity"/>
-        <activity
-            android:name=".ui.activity.gists.GistsFileActivity"/>
+        <activity android:name=".ui.activity.NotificationsActivity" />
+        <activity android:name=".ui.activity.gists.GistDetailActivity" />
+        <activity android:name=".ui.activity.gists.GistsFileActivity" />
         <activity
             android:name=".ui.activity.gists.CreateGistActivity"
             android:label="@string/create_gist">
@@ -136,7 +135,24 @@
                 android:resource="@xml/account_authenticator" />
         </service>
 
-        <meta-data android:name="com.google.android.gms.version"
+        <service
+            android:name="com.alorma.github.account.NotificationsSyncService"
+            android:exported="true"
+            android:process=":sync">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/notifications_syncadapter" />
+        </service>
+
+        <provider
+            android:authorities="@string/account_type"
+            android:name=".account.StubContentProvider" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
     </application>
 
