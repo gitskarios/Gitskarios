@@ -80,7 +80,9 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 		int color = AttributesUtils.getPrimaryColor(getActivity());
 
-		progressBar.setSmoothProgressDrawableColor(color);
+		if (progressBar != null) {
+			progressBar.setSmoothProgressDrawableColor(color);
+		}
 
 		emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
 		emptyText = (TextView) view.findViewById(R.id.emptyText);

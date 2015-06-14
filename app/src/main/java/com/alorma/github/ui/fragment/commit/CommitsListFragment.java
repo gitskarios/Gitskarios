@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
@@ -267,15 +268,22 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         }
 
         @Override
-        protected void onBranchSelected(String branch) {
-            repoInfo.branch = branch;
+        protected void onNoBranches() {
+            Toast.makeText(getContext(), R.string.no_branches_change, Toast.LENGTH_SHORT).show();
+        }
 
-            if (commitsAdapter != null) {
-                commitsAdapter.clear();
+        @Override
+        protected void onBranchSelected(String branch) {
+            if (repoInfo != null && !repoInfo.branch.equalsIgnoreCase(branch)) {
+                repoInfo.branch = branch;
+
+                if (commitsAdapter != null) {
+                    commitsAdapter.clear();
+                }
+                startRefresh();
+                refreshing = true;
+                executeRequest();
             }
-            startRefresh();
-            refreshing = true;
-            executeRequest();
         }
     }
 
