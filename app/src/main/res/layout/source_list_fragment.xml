@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?colorPrimary"
-            android:id="@+id/breadCrumbs"/>
+            android:id="@+id/breadCrumbs"
+            android:paddingLeft="@dimen/gapLarge"/>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe"
