@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearBreadcrumb;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.github.mrengineer13.snackbar.SnackBar;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,16 +43,19 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider {
+public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider, LinearBreadcrumb.SelectionCallback {
 
     private static final String REPO_INFO = "REPO_INFO";
 
     private RepoInfo repoInfo;
 
     private RepoSourceAdapter contentAdapter;
-    private Map<Content, ListContents> treeContent;
+/*    private Map<Content, ListContents> treeContent;
     private Content rootContent = new Content();
-    private Content currentSelectedContent = rootContent;
+    private Content currentSelectedContent = rootContent;*/
+
+    private LinearBreadcrumb breadCrumbs;
+    private String currentPath;
 
     public static SourceListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -62,10 +67,21 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.source_list_fragment, null, false);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
+
+
+        breadCrumbs = (LinearBreadcrumb) view.findViewById(R.id.breadCrumbs);
+
+        breadCrumbs.setCallback(this);
+
 /*
 
         fabMenu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
@@ -133,16 +149,16 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         }
     }
 
-    private void navigateUp() {
-        if (currentSelectedContent != null) {
-            currentSelectedContent = currentSelectedContent.parent;
-            if (currentSelectedContent != null) {
-                if (treeContent.get(currentSelectedContent) != null) {
-                    displayContent(treeContent.get(currentSelectedContent));
-                }
-            }
-        }
-    }
+//    private void navigateUp() {
+//        if (currentSelectedContent != null) {
+//            currentSelectedContent = currentSelectedContent.parent;
+//            if (currentSelectedContent != null) {
+//                if (treeContent.get(currentSelectedContent) != null) {
+//                    displayContent(treeContent.get(currentSelectedContent));
+//                }
+//            }
+//        }
+//    }
 
     @Override
     protected void loadArguments() {
@@ -152,11 +168,13 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     private void getContent() {
-        rootContent = new Content();
-        currentSelectedContent = rootContent;
+//        rootContent = new Content();
+//        currentSelectedContent = rootContent;
+//
+//        treeContent = new HashMap<>();
+//        treeContent.put(currentSelectedContent, null);
 
-        treeContent = new HashMap<>();
-        treeContent.put(currentSelectedContent, null);
+        currentPath = "/";
 
         if (contentAdapter != null) {
             contentAdapter.clear();
@@ -165,6 +183,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         contentAdapter = null;
 
         // TODO show branch
+
+        breadCrumbs.initRootCrumb();
 
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
         repoContentsClient.setOnResultCallback(this);
@@ -185,8 +205,9 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     public void onResponseOk(ListContents contents, Response r) {
         if (getActivity() != null) {
             if (contents != null && contents.size() > 0) {
+
                 Collections.sort(contents, Content.Comparators.TYPE);
-                treeContent.put(currentSelectedContent, contents);
+//                treeContent.put(currentSelectedContent, contents);
 
                 displayContent(contents);
             } else if (contentAdapter == null || contentAdapter.getCount() == 0) {
@@ -208,6 +229,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     private void displayContent(ListContents contents) {
         if (getActivity() != null) {
             stopRefresh();
+
+            if (currentPath != null) {
+                breadCrumbs.addPath(currentPath, "/");
+            }
+
             contentAdapter = new RepoSourceAdapter(getActivity(), contents);
             setListAdapter(contentAdapter);
         }
@@ -220,15 +246,18 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         if (contentAdapter != null && contentAdapter.getCount() >= position) {
             Content item = contentAdapter.getItem(position);
             if (item.isDir()) {
-                if (treeContent.get(item) == null) {
-                    item.parent = currentSelectedContent;
+//                if (treeContent.get(item) == null) {
+//                    item.parent = currentSelectedContent;
+//
+//                    currentSelectedContent = item;
+//                    getPathContent(item);
+//                } else {
+//                    currentSelectedContent = item;
+//                    displayContent(treeContent.get(item));
+//                }
 
-                    currentSelectedContent = item;
-                    getPathContent(item);
-                } else {
-                    currentSelectedContent = item;
-                    displayContent(treeContent.get(item));
-                }
+                getPathContent(item);
+
             } else if (item.isFile()) {
                 FileInfo info = new FileInfo();
                 info.repoInfo = repoInfo;
@@ -259,8 +288,17 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     private void getPathContent(Content item) {
+        currentPath = item.path;
         startRefresh();
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, item.path);
+        repoContentsClient.setOnResultCallback(this);
+        repoContentsClient.execute();
+    }
+
+    private void getPathContent(String path) {
+        currentPath = path;
+        startRefresh();
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, path);
         repoContentsClient.setOnResultCallback(this);
         repoContentsClient.execute();
     }
@@ -293,6 +331,16 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         getContent();
     }
 
+    @Override
+    public void onCrumbSelection(LinearBreadcrumb.Crumb crumb, String absolutePath, int count, int index) {
+        if (crumb.getPath() != null && crumb.getPath().equals("/")) {
+            getContent();
+        } else {
+            getPathContent(breadCrumbs.getAbsolutePath(crumb, "/"));
+        }
+        breadCrumbs.setActive(crumb);
+    }
+
     private class DownloadBranchesCallback extends DialogBranchesCallback {
 
         public DownloadBranchesCallback(Context context, RepoInfo repoInfo) {
@@ -318,6 +366,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     public void onBackPressed() {
-        navigateUp();
+        //navigateUp();
     }
 }
