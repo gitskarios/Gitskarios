@@ -23,6 +23,7 @@ import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -32,7 +33,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider {
+public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider, PermissionsManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -309,6 +310,18 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     public void clear() {
         if (issuesAdapter != null) {
             issuesAdapter.clear();
+        }
+    }
+
+    @Override
+    public void setPermissions(boolean admin, boolean push, boolean pull) {
+        if (this.repoInfo != null) {
+            Permissions permissions = new Permissions();
+            permissions.admin = admin;
+            permissions.push = push;
+            permissions.pull = pull;
+
+            setPermissions(permissions);
         }
     }
 

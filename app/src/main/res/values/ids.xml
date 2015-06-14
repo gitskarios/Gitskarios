@@ -32,5 +32,6 @@
     <item name="nav_drawer_settings" type="id">nav_drawer_settings</item>
     <item name="nav_drawer_about" type="id">nav_drawer_about</item>
     <item name="nav_drawer_sign_out" type="id">nav_drawer_sign_out</item>
+    <item name="action_repo_change_branch" type="id">action_repo_change_branch</item>
 
 </resources>

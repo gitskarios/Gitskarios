@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
@@ -17,14 +16,13 @@ import com.alorma.github.sdk.bean.dto.response.ListCommit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
-import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
-import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.detail.repo.BranchManager;
+import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.DirectionalScrollListener;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import org.joda.time.DateTime;
@@ -41,7 +39,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider {
+public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider, BranchManager, PermissionsManager {
 
     private static final String REPO_INFO = "REPO_INFO";
 
@@ -51,8 +49,6 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
     private RepoInfo repoInfo;
     private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
-    private View snackView;
-    private SnackBar branchSnackBar;
 
     public static CommitsListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -65,15 +61,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(R.layout.list_fragment_headers, null, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        snackView = view.findViewById(R.id.snackBar);
     }
 
     @Override
@@ -120,12 +108,6 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         } else if (commitsAdapter == null || commitsAdapter.getCount() == 0) {
             setEmpty();
         }
-
-        if (branchSnackBar != null) {
-            branchSnackBar.clear(false);
-        }
-        branchSnackBar = new SnackBar.Builder(getActivity(), snackView).withMessage(repoInfo.branch).withDuration(SnackBar.PERMANENT_SNACK).show();
-
     }
 
     @Override
@@ -171,6 +153,11 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     public void onPause() {
         getActivity().unregisterReceiver(timeTickBroadcastReceiver);
         super.onPause();
+    }
+
+    @Override
+    public void setPermissions(boolean admin, boolean push, boolean pull) {
+
     }
 
     private class TimeTickBroadcastReceiver extends BroadcastReceiver {
@@ -246,44 +233,20 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
 
     @Override
     protected boolean useFAB() {
-        return true;
+        return false;
     }
 
     @Override
-    protected Octicons.Icon getFABGithubIcon() {
-        return Octicons.Icon.oct_repo_forked;
-    }
+    public void setCurrentBranch(String branch) {
+        if (repoInfo != null && !repoInfo.branch.equalsIgnoreCase(branch)) {
+            repoInfo.branch = branch;
 
-    @Override
-    protected void fabClick() {
-        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-        repoBranchesClient.setOnResultCallback(new ChangeBranchCallback(getActivity(), repoInfo));
-        repoBranchesClient.execute();
-    }
-
-    private class ChangeBranchCallback extends DialogBranchesCallback {
-
-        public ChangeBranchCallback(Context context, RepoInfo repoInfo) {
-            super(context, repoInfo);
-        }
-
-        @Override
-        protected void onNoBranches() {
-            Toast.makeText(getContext(), R.string.no_branches_change, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected void onBranchSelected(String branch) {
-            if (repoInfo != null && !repoInfo.branch.equalsIgnoreCase(branch)) {
-                repoInfo.branch = branch;
-
-                if (commitsAdapter != null) {
-                    commitsAdapter.clear();
-                }
-                startRefresh();
-                refreshing = true;
-                executeRequest();
+            if (commitsAdapter != null) {
+                commitsAdapter.clear();
             }
+            startRefresh();
+            refreshing = true;
+            executeRequest();
         }
     }
 

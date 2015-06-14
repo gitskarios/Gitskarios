@@ -292,4 +292,5 @@
     <string name="n_more_commits">+ %d more commits</string>
     <string name="no_branches_download">No branch available to download</string>
     <string name="no_branches_change">No branch to change</string>
+    <string name="action_repo_change_branch">Change branch</string>
 </resources>

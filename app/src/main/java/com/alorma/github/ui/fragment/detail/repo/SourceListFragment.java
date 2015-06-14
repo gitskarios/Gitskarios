@@ -43,7 +43,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider, LinearBreadcrumb.SelectionCallback {
+public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider, BranchManager
+        , LinearBreadcrumb.SelectionCallback, PermissionsManager {
 
     private static final String REPO_INFO = "REPO_INFO";
 
@@ -279,11 +280,9 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         super.hideEmpty();
     }
 
+    @Override
     public void setCurrentBranch(String branch) {
         repoInfo.branch = branch;
-
-        // TODO show branch
-
         getContent();
     }
 
@@ -343,6 +342,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             getPathContent(breadCrumbs.getAbsolutePath(crumb, "/"));
         }
         breadCrumbs.setActive(crumb);
+    }
+
+    @Override
+    public void setPermissions(boolean admin, boolean push, boolean pull) {
+
     }
 
     private class DownloadBranchesCallback extends DialogBranchesCallback {

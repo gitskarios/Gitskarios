@@ -2,6 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.widget.AdapterView;
 
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
+import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -28,6 +31,9 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.callbacks.DialogBranchesCallback;
+import com.alorma.github.ui.fragment.detail.repo.BranchManager;
+import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
@@ -38,6 +44,8 @@ import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,17 +64,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private Boolean repoWatched = false;
 
     private Repo currentRepo;
-//    private ReadmeFragment readmeFragment;
-    private RepoAboutFragment aboutFragment;
-    private SourceListFragment sourceListFragment;
     private IssuesListFragment issuesListFragment;
-    private CommitsListFragment commitsListFragment;
     private ViewPager viewPager;
     private List<Fragment> listFragments;
     private SlidingTabLayout slidingTabLayout;
-    private RepoContributorsFragment repoCollaboratorsFragment;
     private RepoInfo requestRepoInfo;
-    private ReadmeFragment readmeFragment;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -109,12 +111,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     private RepoInfo getRepoInfo() {
         RepoInfo repoInfo = new RepoInfo();
-        repoInfo.owner = currentRepo.owner.login;
-        repoInfo.name = currentRepo.name;
-        if (requestRepoInfo != null && requestRepoInfo.branch != null) {
-            repoInfo.branch = requestRepoInfo.branch;
-        } else {
-            repoInfo.branch = currentRepo.default_branch;
+        if (currentRepo != null) {
+            if (currentRepo.owner != null) {
+                repoInfo.owner = currentRepo.owner.login;
+            }
+            repoInfo.name = currentRepo.name;
+            if (requestRepoInfo != null && requestRepoInfo.branch != null) {
+                repoInfo.branch = requestRepoInfo.branch;
+            } else {
+                repoInfo.branch = currentRepo.default_branch;
+            }
         }
 
         return repoInfo;
@@ -199,6 +205,14 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             }
         }
 
+        MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
+
+        Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
+
+        if (menuChangeBranch != null) {
+            menuChangeBranch.setIcon(changeBranch);
+        }
+
         return true;
     }
 
@@ -228,9 +242,37 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             changeWatchedStatus();
         } else if (item.getItemId() == R.id.action_repo_star) {
             changeStarStatus();
+        } else if (item.getItemId() == R.id.action_repo_change_branch) {
+            changeBranch();
         }
 
         return false;
+    }
+
+    private void changeBranch() {
+        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, getRepoInfo());
+        repoBranchesClient.setOnResultCallback(new DialogBranchesCallback(this, getRepoInfo()) {
+            @Override
+            protected void onBranchSelected(String branch) {
+                currentRepo.default_branch = branch;
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setSubtitle(branch);
+                }
+                if (listFragments != null) {
+                    for (Fragment fragment : listFragments) {
+                        if (fragment instanceof BranchManager) {
+                            ((BranchManager) fragment).setCurrentBranch(branch);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            protected void onNoBranches() {
+
+            }
+        });
+        repoBranchesClient.execute();
     }
 
     private void changeStarStatus() {
@@ -267,6 +309,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             this.currentRepo = repo;
 
             setTitle(currentRepo.name);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setSubtitle(getRepoInfo().branch);
+            }
 
             getStarWatchData();
 
@@ -274,34 +319,45 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             this.invalidateOptionsMenu();
 
-            if (issuesListFragment != null) {
-                issuesListFragment.setPermissions(repo.permissions);
+            if (listFragments != null) {
+                for (Fragment fragment : listFragments) {
+                    if (fragment instanceof PermissionsManager) {
+                        Permissions permissions = repo.permissions;
+                        ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
+                    }
+                }
             }
         }
     }
 
     private void createFragments() {
 
-//        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
-        readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
-        sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
-        commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
-        issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
-        repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
-
-        listFragments = new ArrayList<>();
-//        listFragments.add(aboutFragment);
-        listFragments.add(readmeFragment);
-        listFragments.add(sourceListFragment);
-        listFragments.add(commitsListFragment);
-        listFragments.add(issuesListFragment);
-        listFragments.add(repoCollaboratorsFragment);
+        createListFragments();
 
         viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
 
         viewPager.setOffscreenPageLimit(listFragments.size());
 
         slidingTabLayout.setViewPager(viewPager);
+    }
+
+    private void createListFragments() {
+        if (listFragments == null || listFragments.size() == 0 && currentRepo != null) {
+//        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
+            ReadmeFragment readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
+            SourceListFragment sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
+            CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
+            issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+            RepoContributorsFragment repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
+
+            listFragments = new ArrayList<>();
+//        listFragments.add(aboutFragment);
+            listFragments.add(readmeFragment);
+            listFragments.add(sourceListFragment);
+            listFragments.add(commitsListFragment);
+            listFragments.add(issuesListFragment);
+            listFragments.add(repoCollaboratorsFragment);
+        }
     }
 
     @Override

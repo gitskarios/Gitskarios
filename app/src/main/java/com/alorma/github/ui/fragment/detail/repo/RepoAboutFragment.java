@@ -9,7 +9,7 @@ import com.alorma.github.ui.listeners.TitleProvider;
 /**
  * Created by Bernat on 01/01/2015.
  */
-public class RepoAboutFragment extends Fragment implements TitleProvider{
+public class RepoAboutFragment extends Fragment implements TitleProvider,BranchManager {
 	
 	public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
 		return new RepoAboutFragment();
@@ -18,5 +18,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider{
 	@Override
 	public int getTitle() {
 		return R.string.overview_fragment_title;
+	}
+
+	@Override
+	public void setCurrentBranch(String branch) {
+
 	}
 }

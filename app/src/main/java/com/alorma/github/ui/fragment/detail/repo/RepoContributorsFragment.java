@@ -21,7 +21,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 11/04/2015.
  */
-public class RepoContributorsFragment extends BaseUsersListFragment implements TitleProvider{
+public class RepoContributorsFragment extends BaseUsersListFragment implements TitleProvider, PermissionsManager{
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String OWNER_USER = "OWNER_USER";
@@ -83,6 +83,11 @@ public class RepoContributorsFragment extends BaseUsersListFragment implements T
     @Override
     public int getTitle() {
         return R.string.contributors_fragment_title;
+    }
+
+    @Override
+    public void setPermissions(boolean admin, boolean push, boolean pull) {
+
     }
 
     private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
