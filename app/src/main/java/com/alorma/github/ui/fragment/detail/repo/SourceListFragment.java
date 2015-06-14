@@ -33,8 +33,11 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit.RetrofitError;
@@ -44,16 +47,13 @@ import retrofit.client.Response;
  * Created by Bernat on 20/07/2014.
  */
 public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider, BranchManager
-        , LinearBreadcrumb.SelectionCallback, PermissionsManager {
+        , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
 
     private RepoInfo repoInfo;
 
     private RepoSourceAdapter contentAdapter;
-/*    private Map<Content, ListContents> treeContent;
-    private Content rootContent = new Content();
-    private Content currentSelectedContent = rootContent;*/
 
     private LinearBreadcrumb breadCrumbs;
     private String currentPath;
@@ -83,83 +83,31 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
         breadCrumbs.setCallback(this);
 
-/*
-
-        fabMenu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
-
-        FloatingActionButton fabDownload = (FloatingActionButton) view.findViewById(R.id.fab_download);
-        IconicsDrawable downloadIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_cloud_download);
-        downloadIcon.colorRes(R.color.white);
-        downloadIcon.sizeRes(R.dimen.fab_size_mini_icon);
-        fabDownload.setOnClickListener();
-        fabDownload.setIconDrawable(downloadIcon);
-
-        FloatingActionButton fabBranches = (FloatingActionButton) view.findViewById(R.id.fab_branches);
-        IconicsDrawable branchesIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_repo_forked);
-        branchesIcon.colorRes(R.color.white);
-        branchesIcon.sizeRes(R.dimen.fab_size_mini_icon);
-        fabBranches.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-                repoBranchesClient.setOnResultCallback(new DialogBranchesCallback(getActivity(), repoInfo) {
-                    @Override
-                    protected void onBranchSelected(String branch) {
-                        setCurrentBranch(branch);
-                    }
-                });
-                repoBranchesClient.execute();
-                fabMenu.collapse();
-            }
-        });
-        fabBranches.setIconDrawable(branchesIcon);
-
-        fabUp = (FloatingActionButton) view.findViewById(R.id.fab_up);
-        IconicsDrawable upIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_arrow_up);
-        upIcon.colorRes(R.color.white);
-        upIcon.sizeRes(R.dimen.fab_size_mini_icon);
-        fabUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateUp();
-            }
-        });
-        fabUp.setIconDrawable(upIcon);
-        fabUp.setVisibility(View.INVISIBLE);
-
-
-        FloatingActionButton fabRefresh = (FloatingActionButton) view.findViewById(R.id.fab_sync);
-        IconicsDrawable refreshIcon = new IconicsDrawable(getActivity(), Octicons.Icon.oct_sync);
-        refreshIcon.colorRes(R.color.white);
-        refreshIcon.sizeRes(R.dimen.fab_size_mini_icon);
-        fabRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getPathContent(currentSelectedContent);
-
-                fabMenu.collapse();
-            }
-        });
-        fabRefresh.setIconDrawable(refreshIcon);
-
-*/
-
         if (getArguments() != null) {
             getContent();
         }
     }
 
-//    private void navigateUp() {
-//        if (currentSelectedContent != null) {
-//            currentSelectedContent = currentSelectedContent.parent;
-//            if (currentSelectedContent != null) {
-//                if (treeContent.get(currentSelectedContent) != null) {
-//                    displayContent(treeContent.get(currentSelectedContent));
-//                }
-//            }
-//        }
-//    }
+    private void navigateUp() {
+        if (currentPath != null) {
+            String[] paths = currentPath.split("/");
+
+            paths = Arrays.copyOf(paths, paths.length - 1);
+
+            StringBuilder builder = new StringBuilder();
+            if (paths.length > 0) {
+                for (String path : paths) {
+                    builder.append(path);
+                    builder.append("/");
+
+                }
+                String path = builder.toString();
+                getPathContent(path.substring(0, path.length() - 1));
+            } else {
+                getContent();
+            }
+        }
+    }
 
     @Override
     protected void loadArguments() {
@@ -169,12 +117,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     private void getContent() {
-//        rootContent = new Content();
-//        currentSelectedContent = rootContent;
-//
-//        treeContent = new HashMap<>();
-//        treeContent.put(currentSelectedContent, null);
-
         currentPath = "/";
 
         if (contentAdapter != null) {
@@ -182,8 +124,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         }
 
         contentAdapter = null;
-
-        // TODO show branch
 
         breadCrumbs.initRootCrumb();
 
@@ -208,7 +148,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             if (contents != null && contents.size() > 0) {
 
                 Collections.sort(contents, Content.Comparators.TYPE);
-//                treeContent.put(currentSelectedContent, contents);
 
                 displayContent(contents);
             } else if (contentAdapter == null || contentAdapter.getCount() == 0) {
@@ -247,18 +186,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         if (contentAdapter != null && contentAdapter.getCount() >= position) {
             Content item = contentAdapter.getItem(position);
             if (item.isDir()) {
-//                if (treeContent.get(item) == null) {
-//                    item.parent = currentSelectedContent;
-//
-//                    currentSelectedContent = item;
-//                    getPathContent(item);
-//                } else {
-//                    currentSelectedContent = item;
-//                    displayContent(treeContent.get(item));
-//                }
-
-                getPathContent(item);
-
+                getPathContent(item.path);
             } else if (item.isFile()) {
                 FileInfo info = new FileInfo();
                 info.repoInfo = repoInfo;
@@ -284,14 +212,6 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     public void setCurrentBranch(String branch) {
         repoInfo.branch = branch;
         getContent();
-    }
-
-    private void getPathContent(Content item) {
-        currentPath = item.path;
-        startRefresh();
-        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, item.path);
-        repoContentsClient.setOnResultCallback(this);
-        repoContentsClient.execute();
     }
 
     private void getPathContent(String path) {
@@ -327,7 +247,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
     @Override
     public void onRefresh() {
-        if (currentPath == null || currentPath .equals("/")) {
+        if (currentPath == null || currentPath.equals("/")) {
             getContent();
         } else {
             getPathContent(currentPath);
@@ -373,7 +293,13 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         }
     }
 
-    public void onBackPressed() {
-        //navigateUp();
+    @Override
+    public boolean onBackPressed() {
+        if (breadCrumbs.size() == 1) {
+            return true;
+        } else {
+            navigateUp();
+            return false;
+        }
     }
 }

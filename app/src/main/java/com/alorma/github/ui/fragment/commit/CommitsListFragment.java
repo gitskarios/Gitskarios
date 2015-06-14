@@ -19,6 +19,7 @@ import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -39,7 +40,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider, BranchManager, PermissionsManager {
+public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider, BranchManager, PermissionsManager
+        , BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
 
@@ -158,6 +160,11 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     @Override
     public void setPermissions(boolean admin, boolean push, boolean pull) {
 
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     private class TimeTickBroadcastReceiver extends BroadcastReceiver {

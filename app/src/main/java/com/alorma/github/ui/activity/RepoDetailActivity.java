@@ -32,6 +32,7 @@ import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
+import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
@@ -500,13 +501,19 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-//    @Override
-//    public void onBackPressed() {
-////        if (viewPager.getCurrentItem() == 1) {
-////            sourceListFragment.onBackPressed();
-////        } else {
-////            super.onBackPressed();
-////        }
-//        // TODO Source fragment
-//    }
+    @Override
+    public void onBackPressed() {
+        int currentItem = viewPager.getCurrentItem();
+
+        if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()){
+            Fragment fragment = listFragments.get(currentItem);
+            if (fragment != null && fragment instanceof BackManager) {
+                if (((BackManager) fragment).onBackPressed()) {
+                    super.onBackPressed();
+                }
+            }
+        }else{
+            super.onBackPressed();
+        }
+    }
 }

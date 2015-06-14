@@ -33,7 +33,8 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider, PermissionsManager {
+public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider
+        , PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private RepoInfo repoInfo;
@@ -161,6 +162,11 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     @Override
     public void setPermissions(boolean admin, boolean push, boolean pull) {
 
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     public class UpdateReceiver extends BroadcastReceiver {
