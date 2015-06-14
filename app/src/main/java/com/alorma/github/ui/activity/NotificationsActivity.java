@@ -18,6 +18,12 @@ public class NotificationsActivity extends BackActivity {
         return new Intent(context, NotificationsActivity.class);
     }
 
+    public static Intent launchIntent(Context context, String token) {
+        Intent intent = launchIntent(context);
+        intent.putExtra(EXTRA_WITH_TOKEN, token);
+        return intent;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +31,7 @@ public class NotificationsActivity extends BackActivity {
         setContentView(R.layout.generic_toolbar);
 
         NotificationsFragment notificationsFragment = NotificationsFragment.newInstance();
+        notificationsFragment.setArguments(getIntent().getExtras());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, notificationsFragment);
         ft.commit();
