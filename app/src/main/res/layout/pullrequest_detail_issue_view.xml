@@ -114,6 +114,15 @@
                     android:layout_height="?attr/actionBarSize"
                     style="@style/new_issue_push_access_row"
                     android:id="@+id/textCommits"
+                    android:background="?selectableItemBackground"
+                    android:layout_marginLeft="@dimen/gapLarge"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    style="@style/new_issue_push_access_row"
+                    android:id="@+id/textFiles"
+                    android:background="?selectableItemBackground"
                     android:layout_marginLeft="@dimen/gapLarge"/>
 
             </LinearLayout>

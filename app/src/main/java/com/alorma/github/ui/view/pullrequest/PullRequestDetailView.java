@@ -2,6 +2,7 @@ package com.alorma.github.ui.view.pullrequest;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -17,7 +18,9 @@ import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.PullRequestCommitsActivity;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
@@ -44,6 +47,7 @@ public class PullRequestDetailView extends LinearLayout {
     private TextView textMilestone;
     private TextView textAssignee;
     private TextView textCommits;
+    private TextView textFiles;
 
     public PullRequestDetailView(Context context) {
         super(context);
@@ -79,9 +83,10 @@ public class PullRequestDetailView extends LinearLayout {
         textMilestone = (TextView) findViewById(R.id.textMilestone);
         textAssignee = (TextView) findViewById(R.id.textAssignee);
         textCommits = (TextView) findViewById(R.id.textCommits);
+        textFiles = (TextView) findViewById(R.id.textFiles);
     }
 
-    public void setPullRequest(RepoInfo repoInfo, PullRequest pullRequest) {
+    public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest) {
         if (this.issue == null) {
             this.issue = pullRequest;
             title.setText(pullRequest.title);
@@ -150,8 +155,38 @@ public class PullRequestDetailView extends LinearLayout {
                     textCommits.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_git_commit).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
                     textCommits.setText(getResources().getString(R.string.num_of_commits, pullRequest.commits));
                     textCommits.setVisibility(View.VISIBLE);
+                    textCommits.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IssueInfo info = new IssueInfo();
+                            info.repoInfo = repoInfo;
+                            info.num = pullRequest.number;
+                            Intent intent = PullRequestCommitsActivity.launchIntent(getContext(), pullRequest, info);
+                            getContext().startActivity(intent);
+                        }
+                    });
                 } else {
                     textCommits.setVisibility(View.GONE);
+                }
+            }
+
+            if (textFiles != null) {
+                if (pullRequest.changed_files > 0) {
+                    textFiles.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_file_binary).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textFiles.setText(getResources().getString(R.string.num_of_files, pullRequest.changed_files));
+                    textFiles.setVisibility(View.VISIBLE);
+                    textFiles.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IssueInfo info = new IssueInfo();
+                            info.repoInfo = repoInfo;
+                            info.num = pullRequest.number;
+                            Intent intent = PullRequestCommitsActivity.launchIntent(getContext(), pullRequest, info);
+                            getContext().startActivity(intent);
+                        }
+                    });
+                } else {
+                    textFiles.setVisibility(View.GONE);
                 }
             }
         }

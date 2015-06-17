@@ -122,6 +122,8 @@
         <activity android:name="com.alorma.github.ui.activity.WatchedReposActivity" />
         <activity android:name="com.alorma.github.ui.activity.OrganizationsActivity" />
         <activity android:name="com.alorma.github.ui.activity.SearchIssuesActivity" />
+        <activity android:name="com.alorma.github.ui.activity.PullRequestCommitsActivity" />
+        <activity android:name="com.alorma.github.ui.activity.PullRequestFilesActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
