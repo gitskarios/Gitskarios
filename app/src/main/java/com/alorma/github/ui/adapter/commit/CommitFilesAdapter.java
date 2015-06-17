@@ -11,6 +11,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.GitCommitFiles;
 
+import java.util.List;
+
 /**
  * Created by Bernat on 22/12/2014.
  */
@@ -18,11 +20,11 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 
 	private final Context context;
 	private final LayoutInflater inflater;
-	private final GitCommitFiles files;
+	private final List<CommitFile> files;
 	private OnFileRequestListener onFileRequestListener;
 	private boolean firstTimeUsed = false;
 
-	public CommitFilesAdapter(Context context, GitCommitFiles files) {
+	public CommitFilesAdapter(Context context, List<CommitFile> files) {
 		this.context = context;
 		this.inflater = LayoutInflater.from(context);
 		this.files = files;

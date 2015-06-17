@@ -35,7 +35,7 @@ public class PullRequestCommitsActivity extends BackActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pullrequest_commits_activity);
+        setContentView(R.layout.generic_toolbar);
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             IssueInfo info = getIntent().getParcelableExtra(ISSUE_INFO);
