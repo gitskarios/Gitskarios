@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
@@ -30,17 +31,19 @@ import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.bean.issue.IssueStory;
+import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
+import com.alorma.github.sdk.services.issues.pull.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
+import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
@@ -59,7 +62,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener {
+public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<PullRequestStory>, View.OnClickListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
@@ -69,7 +72,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     private IssueInfo issueInfo;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
-    private IssueStory issueStory;
+    private PullRequestStory pullRequestStory;
     private int primary;
     private int accent;
     private int accentDark;
@@ -127,51 +130,50 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     protected void getContent() {
         super.getContent();
         refreshLayout.setRefreshing(true);
-        IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
-        issueStoryLoader.setOnResultCallback(this);
-        issueStoryLoader.execute();
+        PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(this, issueInfo);
+        pullRequestStoryLoader.setOnResultCallback(this);
+        pullRequestStoryLoader.execute();
     }
 
     @Override
-    public void onResponseOk(IssueStory issueStory, Response r) {
-        this.issueStory = issueStory;
+    public void onResponseOk(PullRequestStory pullRequestStory, Response r) {
+        this.pullRequestStory = pullRequestStory;
         applyIssue();
 
         refreshLayout.setRefreshing(false);
     }
 
     private void applyIssue() {
-        changeColor(issueStory.issue);
+        changeColor(pullRequestStory.pullRequest);
 
-        fab.setVisibility(issueStory.issue.locked ? View.GONE : View.VISIBLE);
-        fab.setOnClickListener(issueStory.issue.locked ? null : this);
+        fab.setVisibility(pullRequestStory.pullRequest.locked ? View.GONE : View.VISIBLE);
+        fab.setOnClickListener(pullRequestStory.pullRequest.locked ? null : this);
 
         if (getSupportActionBar() != null) {
             String issueName = issueInfo.repoInfo.name;
-            if (issueStory.issue.pullRequest != null) {
-                getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
-            } else {
-                getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
-            }
+            getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
         }
 
         String status = getString(R.string.issue_status_open);
-        if (IssueState.closed == issueStory.issue.state) {
+        if (IssueState.closed == pullRequestStory.pullRequest.state) {
             status = getString(R.string.issue_status_close);
         }
-        setTitle("#" + issueStory.issue.number + " " + status);
-        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo);
+        setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
+        PullRequestDetailAdapter adapter = new PullRequestDetailAdapter(this, getLayoutInflater(), pullRequestStory, issueInfo.repoInfo);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
     }
 
-    private void changeColor(Issue issue) {
-        int colorState = getResources().getColor(R.color.issue_state_close);
-        int colorStateDark = getResources().getColor(R.color.issue_state_close_dark);
-        if (IssueState.open == issue.state) {
-            colorState = getResources().getColor(R.color.issue_state_open);
-            colorStateDark = getResources().getColor(R.color.issue_state_open_dark);
+    private void changeColor(PullRequest pullRequest) {
+        int colorState = getResources().getColor(R.color.pullrequest_state_close);
+        int colorStateDark = getResources().getColor(R.color.pullrequest_state_close_dark);
+        if (IssueState.open == pullRequest.state) {
+            colorState = getResources().getColor(R.color.pullrequest_state_open);
+            colorStateDark = getResources().getColor(R.color.pullrequest_state_open_dark);
+        } else if (pullRequest.merged){
+            colorState = getResources().getColor(R.color.pullrequest_state_merged);
+            colorStateDark = getResources().getColor(R.color.pullrequest_state_merged);
         }
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
@@ -290,7 +292,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     @Override
     public void onClick(View view) {
         if (view.getId() == fab.getId()) {
-            if (!issueStory.issue.locked) {
+            if (!pullRequestStory.pullRequest.locked) {
                 onAddComment();
             }
         }
@@ -298,7 +300,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (this.issueStory != null) {
+        if (this.pullRequestStory != null) {
             if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 getMenuInflater().inflate(R.menu.issue_detail, menu);
             } else {
@@ -319,7 +321,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (this.issueStory != null) {
+        if (this.pullRequestStory != null) {
 
             if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 if (menu.findItem(R.id.action_close_issue) != null) {
@@ -328,7 +330,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
                 if (menu.findItem(R.id.action_reopen_issue) != null) {
                     menu.removeItem(R.id.action_reopen_issue);
                 }
-                if (issueStory.issue.state == IssueState.closed) {
+                if (pullRequestStory.pullRequest.state == IssueState.closed) {
                     MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 } else {
@@ -347,7 +349,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(Intent.EXTRA_SUBJECT, issueInfo.toString());
-        intent.putExtra(Intent.EXTRA_TEXT, issueStory.issue.html_url);
+        intent.putExtra(Intent.EXTRA_TEXT, pullRequestStory.pullRequest.html_url);
         return intent;
     }
 
@@ -381,7 +383,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
                 openLabels();
                 break;
             case R.id.share_issue:
-                if (issueStory != null && issueStory.issue != null) {
+                if (pullRequestStory != null && pullRequestStory.pullRequest != null) {
                     Intent intent = getShareIntent();
                     startActivity(intent);
                 }
@@ -414,8 +416,8 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
 
                 int selectedMilestone = -1;
                 for (int i = 0; i < milestones.size(); i++) {
-                    if (PullRequestDetailActivity.this.issueStory.issue.milestone != null) {
-                        String currentMilestone = PullRequestDetailActivity.this.issueStory.issue.milestone.title;
+                    if (PullRequestDetailActivity.this.pullRequestStory.pullRequest.milestone != null) {
+                        String currentMilestone = PullRequestDetailActivity.this.pullRequestStory.pullRequest.milestone.title;
                         if (currentMilestone != null && currentMilestone.equals(milestones.get(i).title)) {
                             selectedMilestone = i;
                             break;
@@ -626,7 +628,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
                 List<Integer> positionsSelectedLabels = new ArrayList<>();
 
                 List<String> currentLabels = new ArrayList<>();
-                for (Label label : issueStory.issue.labels) {
+                for (Label label : pullRequestStory.pullRequest.labels) {
                     currentLabels.add(label.name);
                 }
 
@@ -744,13 +746,13 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     }
 
     private void changeIssueState(IssueState state) {
-        ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
+        /*ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
         changeIssueStateClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
                 if (issue != null) {
                     getContent();
-                    PullRequestDetailActivity.this.issueStory.issue = issue;
+                    PullRequestDetailActivity.this.pullRequestStory.pullRequest = issue;
                     shouldRefreshOnBack = true;
                 }
             }
@@ -760,7 +762,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
 
             }
         });
-        changeIssueStateClient.execute();
+        changeIssueStateClient.execute();*/
     }
 
     @Override

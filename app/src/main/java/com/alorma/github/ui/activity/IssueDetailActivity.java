@@ -145,11 +145,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         if (getSupportActionBar() != null) {
             String issueName = issueInfo.repoInfo.name;
-            if (issueStory.issue.pullRequest != null) {
-                getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
-            } else {
-                getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
-            }
+            getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
         }
 
         String status = getString(R.string.issue_status_open);
