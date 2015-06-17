@@ -151,6 +151,8 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         String status = getString(R.string.issue_status_open);
         if (IssueState.closed == pullRequestStory.pullRequest.state) {
             status = getString(R.string.issue_status_close);
+        } else if (pullRequestStory.pullRequest.merged) {
+            status = getString(R.string.pullrequest_status_merged);
         }
         setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
         PullRequestDetailAdapter adapter = new PullRequestDetailAdapter(this, getLayoutInflater(), pullRequestStory, issueInfo.repoInfo);

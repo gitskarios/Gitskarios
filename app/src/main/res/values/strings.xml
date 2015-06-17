@@ -152,7 +152,7 @@
     <string name="collaborators_data">%d collaborators</string>
     <string name="repos_data_profile">Using %1$d of %2$d private repositories.</string>
     <string name="about_title">About</string>
-    <string name="pull_requests_subtitle">Pull requests on %s</string>
+    <string name="pull_requests_subtitle">PullRequest on %s</string>
     <string name="issue_subtitle">Issue on %s</string>
     <string name="no_prs_found">No pull requests found</string>
     <string name="action_search">Search</string>
@@ -294,4 +294,5 @@
     <string name="no_branches_download">No branch available to download</string>
     <string name="no_branches_change">No branch to change</string>
     <string name="action_repo_change_branch">Change branch</string>
+    <string name="pullrequest_status_merged">Merged</string>
 </resources>
