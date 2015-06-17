@@ -43,6 +43,7 @@ public class PullRequestDetailView extends LinearLayout {
     private TextView profileEmail;
     private TextView textMilestone;
     private TextView textAssignee;
+    private TextView textCommits;
 
     public PullRequestDetailView(Context context) {
         super(context);
@@ -77,6 +78,7 @@ public class PullRequestDetailView extends LinearLayout {
         profileEmail = (TextView) authorView.findViewById(R.id.email);
         textMilestone = (TextView) findViewById(R.id.textMilestone);
         textAssignee = (TextView) findViewById(R.id.textAssignee);
+        textCommits = (TextView) findViewById(R.id.textCommits);
     }
 
     public void setPullRequest(RepoInfo repoInfo, PullRequest pullRequest) {
@@ -140,6 +142,16 @@ public class PullRequestDetailView extends LinearLayout {
                     textMilestone.setVisibility(View.VISIBLE);
                 } else {
                     textAssignee.setVisibility(View.GONE);
+                }
+            }
+
+            if (textCommits != null) {
+                if (pullRequest.commits > 0) {
+                    textCommits.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_git_commit).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textCommits.setText(getResources().getString(R.string.num_of_commits, pullRequest.commits));
+                    textCommits.setVisibility(View.VISIBLE);
+                } else {
+                    textCommits.setVisibility(View.GONE);
                 }
             }
         }

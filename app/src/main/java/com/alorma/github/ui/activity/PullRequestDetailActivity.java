@@ -104,8 +104,6 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
 
             findViews();
         }
-
-        Toast.makeText(this, "Is a pull request!", Toast.LENGTH_SHORT).show();
     }
 
     private void findViews() {

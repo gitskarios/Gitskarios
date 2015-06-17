@@ -181,6 +181,7 @@
 
     <string name="no_gists">No gists</string>
     <string name="num_of_files">%d files</string>
+    <string name="num_of_commits">%d commits</string>
     <string name="create_gist">Create new gist</string>
     <string name="Share">Share</string>
     <string name="send_file_to">Send %s</string>
