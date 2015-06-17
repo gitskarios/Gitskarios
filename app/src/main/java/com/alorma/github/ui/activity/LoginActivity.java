@@ -10,7 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
@@ -63,7 +66,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private String accessToken;
     private String scope;
     private RequestTokenClient requestTokenClient;
-    private boolean fromAccounts;
 
     private IInAppBillingService mService;
 
@@ -82,19 +84,29 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private Account[] accounts;
     private String purchaseId;
 
+    /**
+     * There is three ways to get to this activity:
+     * 1. From Android launcher.
+     * 2. After user's login.
+     * 3. From application, it means, user wants to switch accounts.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        createBillingService();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final View loginButton = findViewById(R.id.login);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login();
+            }
+        });
 
         enableCreateGist(false);
 
@@ -102,22 +114,16 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
-        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login();
-            }
-        });
-
-        boolean fromLogin = getIntent().getData() != null && getIntent().getData().getScheme().equals(getString(R.string.oauth_scheme));
-        fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
+        final boolean fromLogin = getIntent().getData() != null &&
+                getIntent().getData().getScheme().equals(getString(R.string.oauth_scheme));
+        final boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
         final boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (fromApp) {
+                if (fromApp) {                      // TODO back button should have the same logic (issue #137)
                     openMain();
                 } else {
                     finish();
@@ -125,7 +131,10 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             }
         });
 
-        AccountsAdapter adapter = new AccountsAdapter(this, accounts);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        final AccountsAdapter adapter = new AccountsAdapter(this, accounts);
         recyclerView.setAdapter(adapter);
 
         if (accounts != null) {
@@ -135,10 +144,11 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
 
         if (fromLogin) {
-            findViewById(R.id.login).setEnabled(false);
+            loginButton.setEnabled(false);
             showProgressDialog(R.style.SpotDialog_Login);
             Uri uri = getIntent().getData();
             String code = uri.getQueryParameter("code");
+
             if (requestTokenClient == null) {
                 requestTokenClient = new RequestTokenClient(LoginActivity.this, code);
                 requestTokenClient.setOnResultCallback(new BaseClient.OnResultCallback<Token>() {
@@ -165,6 +175,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
     }
 
+    private void createBillingService() {
+        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+    }
+
     public void showProgressDialog(@StyleRes int style) {
         try {
             progressDialog = new SpotsDialog(this, style);
@@ -177,8 +193,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     }
 
     private void login() {
-
-        if (!BuildConfig.DEBUG && accounts != null && accounts.length > 0) {
+        if (multipleAccountFeatureRequired()) {
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
@@ -186,15 +201,40 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
     }
 
+    private boolean multipleAccountFeatureRequired() {
+        return !BuildConfig.DEBUG && accounts != null && accounts.length > 0;
+    }
+
     private void openExternalLogin(ApiClient client) {
-        String url = OAUTH_URL + "?client_id=" + client.getApiClient();
+        final String url = String.format("%s?client_id=%s&scope=gist,user,notifications,repo",
+                OAUTH_URL, client.getApiClient());
 
-        url = url + "&scope=gist,user,notifications,repo";
+        final List<ResolveInfo> browserList = getBrowserList();
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
-        finish();
+        final List<LabeledIntent> intentList = new ArrayList<>();
+
+        for (final ResolveInfo resolveInfo : browserList) {
+            final Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            newIntent.setComponent(new ComponentName(resolveInfo.activityInfo.packageName,
+                    resolveInfo.activityInfo.name));
+
+            intentList.add(new LabeledIntent(newIntent,
+                    resolveInfo.resolvePackageName,
+                    resolveInfo.labelRes,
+                    resolveInfo.icon));
+        }
+
+        final Intent chooser = Intent.createChooser(intentList.remove(0), "Choose your favorite browser");
+        LabeledIntent[] extraIntents = intentList.toArray( new LabeledIntent[ intentList.size() ]);
+        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+
+        startActivity(chooser);
+    }
+
+    private List<ResolveInfo> getBrowserList() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://sometesturl.com"));
+
+        return getPackageManager().queryIntentActivities(intent, 0);
     }
 
     private class SKUTask extends AsyncTask<String, Void, Bundle> {
@@ -240,9 +280,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             startIntentSenderForResult(pendingIntent.getIntentSender(),
                     1001, new Intent(), 0, 0, 0);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (IntentSender.SendIntentException e) {
+        } catch (RemoteException | IntentSender.SendIntentException e) {
             e.printStackTrace();
         }
     }
