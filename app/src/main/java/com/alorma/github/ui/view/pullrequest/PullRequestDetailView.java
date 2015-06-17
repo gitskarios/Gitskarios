@@ -21,6 +21,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.PullRequestCommitsActivity;
+import com.alorma.github.ui.activity.PullRequestFilesActivity;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
@@ -181,7 +182,7 @@ public class PullRequestDetailView extends LinearLayout {
                             IssueInfo info = new IssueInfo();
                             info.repoInfo = repoInfo;
                             info.num = pullRequest.number;
-                            Intent intent = PullRequestCommitsActivity.launchIntent(getContext(), pullRequest, info);
+                            Intent intent = PullRequestFilesActivity.launchIntent(getContext(), pullRequest, info);
                             getContext().startActivity(intent);
                         }
                     });
