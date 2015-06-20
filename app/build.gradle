@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.github.ben-manes.versions'
+//gradle dependencyUpdates -Drevision=release
 
 android {
     compileSdkVersion 22
