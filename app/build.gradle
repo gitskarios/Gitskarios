@@ -113,7 +113,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
         transitive = true;
     }
-    compile('com.mikepenz.aboutlibraries:library:4.7.2@aar') {
+    compile('com.mikepenz:aboutlibraries:5.0.5@aar') {
         transitive = true
     }
 

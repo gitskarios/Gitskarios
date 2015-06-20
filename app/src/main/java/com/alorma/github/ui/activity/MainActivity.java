@@ -44,7 +44,7 @@ import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.NotificationsActionProvider;
-import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -493,7 +493,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onAboutSelected() {
-        new Libs.Builder()
+        new LibsBuilder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
                 .withActivityTitle(getString(R.string.app_name))
