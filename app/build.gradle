@@ -107,7 +107,7 @@ dependencies {
 
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
 
-    compile('com.mikepenz.materialdrawer:library:2.9.2@aar') {
+    compile('com.mikepenz:materialdrawer:3.0.8@aar') {
         transitive = true
     }
     compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {

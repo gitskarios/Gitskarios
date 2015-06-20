@@ -48,7 +48,9 @@ import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
+import com.mikepenz.materialdrawer.accountswitcher.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -77,11 +79,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     @Inject
     Bus bus;
 
-    private AccountHeader.Result headerResult;
+    private AccountHeader headerResult;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
-    private Drawer.Result resultDrawer;
+    private Drawer resultDrawer;
     private ChangelogDialogSupport dialog;
 
     public static void startActivity(Activity context) {
@@ -199,7 +201,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
-        Drawer drawer = new Drawer();
+        DrawerBuilder drawer = new DrawerBuilder();
         drawer.withActivity(this);
         drawer.withToolbar(getToolbar());
         drawer.withAccountHeader(headerResult);
@@ -215,7 +217,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         );
         drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+            public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                 int identifier = drawerItem.getIdentifier();
                 switch (identifier) {
                     case R.id.nav_drawer_events:
@@ -240,6 +242,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         signOut();
                         break;
                 }
+
+                return false;
             }
         });
         drawer.withSelectedItem(0);
@@ -267,7 +271,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             }
         });
 
-        AccountHeader headerBuilder = new AccountHeader()
+        AccountHeaderBuilder headerBuilder = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.primary_dark);
 
