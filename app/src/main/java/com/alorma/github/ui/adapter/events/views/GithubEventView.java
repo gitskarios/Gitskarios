@@ -59,7 +59,7 @@ public abstract class GithubEventView<K extends GithubEventPayload> extends Fram
 	protected abstract K convert(Gson gson, String s);
     public void handleImage(ImageView imageView, GithubEvent event) {
         ImageLoader.getInstance().cancelDisplayTask(imageView);
-        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2).bitmapConfig(Bitmap.Config.RGB_565).build();
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2).bitmapConfig(Bitmap.Config.ALPHA_8).build();
         ImageLoader.getInstance().displayImage(event.actor.avatar_url, imageView, displayImageOptions);
     }
 }
