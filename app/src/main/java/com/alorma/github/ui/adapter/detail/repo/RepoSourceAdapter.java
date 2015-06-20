@@ -54,9 +54,10 @@ public class RepoSourceAdapter extends ArrayAdapter<Content> {
 			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_text);
 		}
 
-		if (iconDrawable != null) {
-			iconDrawable.sizeDp(20);
-			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext()));
+        if (iconDrawable != null) {
+            iconDrawable.sizeDp(36);
+            iconDrawable.paddingDp(8);
+            iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext()));
 
 			image.setImageDrawable(iconDrawable);
 		}

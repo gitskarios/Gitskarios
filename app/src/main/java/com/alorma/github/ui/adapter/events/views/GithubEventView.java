@@ -1,12 +1,17 @@
 package com.alorma.github.ui.adapter.events.views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.GithubEventPayload;
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 /**
  * Created by Bernat on 04/10/2014.
@@ -52,4 +57,9 @@ public abstract class GithubEventView<K extends GithubEventPayload> extends Fram
 	}
 
 	protected abstract K convert(Gson gson, String s);
+    public void handleImage(ImageView imageView, GithubEvent event) {
+        ImageLoader.getInstance().cancelDisplayTask(imageView);
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2).bitmapConfig(Bitmap.Config.ALPHA_8).build();
+        ImageLoader.getInstance().displayImage(event.actor.avatar_url, imageView, displayImageOptions);
+    }
 }
