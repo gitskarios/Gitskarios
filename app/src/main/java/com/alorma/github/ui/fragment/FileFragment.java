@@ -1,5 +1,8 @@
 package com.alorma.github.ui.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
+import com.alorma.github.ui.view.CopyWebView;
 import com.alorma.github.utils.ImageUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
@@ -49,7 +52,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
     public static final String FILE_INFO = "FILE_INFO";
     public static final String FROM_URL = "FROM_URL";
 
-    private WebView webView;
+    private CopyWebView webView;
     private ImageView imageView;
     private Content fileContent;
 
@@ -77,7 +80,16 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        webView = (WebView) view.findViewById(R.id.webview);
+        webView = (CopyWebView) view.findViewById(R.id.webview);
+        webView.setWebViewListener(new CopyWebView.WebViewListener() {
+            @Override
+            public void onTextCopy(String text) {
+                // put selected text into clipdata
+                ClipboardManager clipboard = (ClipboardManager) webView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("simple text", text);
+                clipboard.setPrimaryClip(clip);
+            }
+        });
         imageView = (ImageView) view.findViewById(R.id.imageView);
 
         if (getArguments() != null) {
