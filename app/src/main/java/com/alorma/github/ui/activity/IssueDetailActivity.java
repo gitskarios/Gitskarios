@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -222,11 +223,34 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 }
             }
         });
+        ValueAnimator toolbarHeight = null;
+        if (getToolbar() != null) {
+            toolbarHeight = ValueAnimator.ofInt(getToolbar().getMeasuredHeight(), getResources().getDimensionPixelSize(R.dimen.extra_action_bar_size), getToolbar().getMeasuredHeight());
+            toolbarHeight.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    ViewGroup.LayoutParams layoutParams = getToolbar().getLayoutParams();
+                    layoutParams.height = (int) animation.getAnimatedValue();
+                    getToolbar().setLayoutParams(layoutParams);
+                }
+            });
+        }
 
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setDuration(1000);
+        animatorSet.setDuration(750);
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        animatorSet.playTogether(colorAnimation, colorAnimationStatus, colorAnimationFab, colorAnimationFabPressed);
+        if (toolbarHeight != null) {
+            animatorSet.playTogether(colorAnimation,
+                    colorAnimationStatus,
+                    colorAnimationFab,
+                    colorAnimationFabPressed
+                    , toolbarHeight);
+        } else {
+            animatorSet.playTogether(colorAnimation,
+                    colorAnimationStatus,
+                    colorAnimationFab,
+                    colorAnimationFabPressed);
+        }
         final int finalColorState = colorState;
         final int finalColorStateDark = colorStateDark;
         animatorSet.addListener(new Animator.AnimatorListener() {
