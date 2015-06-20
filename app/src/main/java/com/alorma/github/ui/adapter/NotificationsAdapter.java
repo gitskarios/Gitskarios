@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;

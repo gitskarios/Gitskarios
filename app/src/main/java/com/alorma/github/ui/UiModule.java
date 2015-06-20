@@ -12,15 +12,15 @@ import dagger.Module;
  * Created by Bernat on 01/03/2015.
  */
 @Module(
-		includes = {
-				BusModule.class
-		},
-		injects = {
-				NotificationsAdapter.class,
-				NotificationsFragment.class,
-				NotificationsActionProvider.class,
-				MainActivity.class
-		}
+        includes = {
+                BusModule.class
+        },
+        injects = {
+                NotificationsAdapter.class,
+                NotificationsFragment.class,
+                NotificationsActionProvider.class,
+                MainActivity.class
+        }
 )
 public class UiModule {
 }

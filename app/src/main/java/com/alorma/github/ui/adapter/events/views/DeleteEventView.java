@@ -11,7 +11,6 @@ import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.DeleteEventPayload;
 import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 30/05/2015.

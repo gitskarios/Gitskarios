@@ -120,8 +120,6 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
         }
 
 
-
-
         return v;
     }
 

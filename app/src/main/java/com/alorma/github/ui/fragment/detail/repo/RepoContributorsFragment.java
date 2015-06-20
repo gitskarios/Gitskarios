@@ -8,11 +8,11 @@ import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import retrofit.RetrofitError;
@@ -21,7 +21,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 11/04/2015.
  */
-public class RepoContributorsFragment extends BaseUsersListFragment implements TitleProvider, PermissionsManager{
+public class RepoContributorsFragment extends BaseUsersListFragment implements TitleProvider, PermissionsManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String OWNER_USER = "OWNER_USER";

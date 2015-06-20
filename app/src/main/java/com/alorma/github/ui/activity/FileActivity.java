@@ -15,28 +15,28 @@ import com.alorma.github.ui.fragment.FileFragment;
  */
 public class FileActivity extends BackActivity {
 
-	public static Intent createLauncherIntent(Context context, FileInfo fileInfo, boolean fromUrl) {
-		Bundle bundle = new Bundle();
-		bundle.putParcelable(FileFragment.FILE_INFO, fileInfo);
-		bundle.putBoolean(FileFragment.FROM_URL, fromUrl);
+    public static Intent createLauncherIntent(Context context, FileInfo fileInfo, boolean fromUrl) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FileFragment.FILE_INFO, fileInfo);
+        bundle.putBoolean(FileFragment.FROM_URL, fromUrl);
 
-		Intent intent = new Intent(context, FileActivity.class);
-		intent.putExtras(bundle);
-		return intent;
-	}
+        Intent intent = new Intent(context, FileActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.generic_toolbar);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.generic_toolbar);
 
-		FileInfo info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
-		boolean fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
+        FileInfo info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
+        boolean fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
 
-		FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
-		fileFragment.setArguments(getIntent().getExtras());
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.content, fileFragment);
-		ft.commit();
-	}
+        FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
+        fileFragment.setArguments(getIntent().getExtras());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fileFragment);
+        ft.commit();
+    }
 }

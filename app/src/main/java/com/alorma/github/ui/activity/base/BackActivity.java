@@ -7,20 +7,20 @@ import android.view.MenuItem;
  */
 public class BackActivity extends BaseActivity {
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (getSupportActionBar() != null) {
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			finish();
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
+    }
 }

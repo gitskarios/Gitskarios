@@ -76,7 +76,7 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
             v = new DeleteEventView(getContext());
         } else if (event.getType() == EventType.ReleaseEvent) {
             v = new ReleaseEventView(getContext());
-        }  else if (event.getType() == EventType.PullRequestEvent) {
+        } else if (event.getType() == EventType.PullRequestEvent) {
             v = new PullRequestEventView(getContext());
         } else {
             v = new UnhandledEventView(getContext());

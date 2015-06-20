@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
-import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 
 public class StarredReposActivity extends BackActivity {

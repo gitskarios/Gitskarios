@@ -14,14 +14,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;

@@ -24,7 +24,6 @@ import android.text.Html.TagHandler;
 import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.QuoteSpan;
 import android.text.style.StrikethroughSpan;
@@ -56,8 +55,8 @@ public class HtmlUtils {
         }
 
         public void drawLeadingMargin(Canvas c, Paint p, int x, int dir,
-                int top, int baseline, int bottom, CharSequence text,
-                int start, int end, boolean first, Layout layout) {
+                                      int top, int baseline, int bottom, CharSequence text,
+                                      int start, int end, boolean first, Layout layout) {
             final Style style = p.getStyle();
             final int color = p.getColor();
 
@@ -159,7 +158,7 @@ public class HtmlUtils {
         private LinkedList<ListSeparator> listElements = new LinkedList<>();
 
         public void handleTag(final boolean opening, final String tag,
-                final Editable output, final XMLReader xmlReader) {
+                              final Editable output, final XMLReader xmlReader) {
             if (TAG_DEL.equalsIgnoreCase(tag)) {
                 if (opening)
                     startSpan(new StrikethroughSpan(), output);
@@ -254,7 +253,7 @@ public class HtmlUtils {
      * @return
      */
     public static String rewriteRelativeUrls(final String html, final String repoUser,
-            final String repoName, final String branch) {
+                                             final String repoName, final String branch) {
         final String baseUrl = "https://raw.github.com/" + repoUser + "/" + repoName + "/" + branch;
         final StringBuffer sb = new StringBuffer();
         final Pattern p = Pattern.compile("(href|src)=\"(\\S+)\"");
@@ -284,7 +283,7 @@ public class HtmlUtils {
      * @return html
      */
     public static CharSequence encode(final String html,
-            final ImageGetter imageGetter) {
+                                      final ImageGetter imageGetter) {
         if (TextUtils.isEmpty(html))
             return "";
 
@@ -393,32 +392,32 @@ public class HtmlUtils {
 
             for (int i = start; i < end; i++) {
                 switch (input.charAt(i)) {
-                case ' ':
-                    input.deleteCharAt(i);
-                    input.insert(i, SPACE);
-                    start += spaceAdvance;
-                    end += spaceAdvance;
-                    break;
-                case '\t':
-                    input.deleteCharAt(i);
-                    input.insert(i, SPACE);
-                    start += spaceAdvance;
-                    end += spaceAdvance;
-                    for (int j = 0; j < 3; j++) {
+                    case ' ':
+                        input.deleteCharAt(i);
                         input.insert(i, SPACE);
-                        start += spaceAdvance + 1;
-                        end += spaceAdvance + 1;
-                    }
-                    break;
-                case '\n':
-                    input.deleteCharAt(i);
-                    // Ignore if last character is a newline
-                    if (i + 1 < end) {
-                        input.insert(i, BREAK);
-                        start += breakAdvance;
-                        end += breakAdvance;
-                    }
-                    break;
+                        start += spaceAdvance;
+                        end += spaceAdvance;
+                        break;
+                    case '\t':
+                        input.deleteCharAt(i);
+                        input.insert(i, SPACE);
+                        start += spaceAdvance;
+                        end += spaceAdvance;
+                        for (int j = 0; j < 3; j++) {
+                            input.insert(i, SPACE);
+                            start += spaceAdvance + 1;
+                            end += spaceAdvance + 1;
+                        }
+                        break;
+                    case '\n':
+                        input.deleteCharAt(i);
+                        // Ignore if last character is a newline
+                        if (i + 1 < end) {
+                            input.insert(i, BREAK);
+                            start += breakAdvance;
+                            end += breakAdvance;
+                        }
+                        break;
                 }
             }
             start = input.indexOf(PRE_START, end + PRE_END.length());

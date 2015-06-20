@@ -151,7 +151,9 @@ public class GistEditorFragment extends DialogFragment {
 
     public interface GistEditorListener {
         void onGistEditorUpdate(String title, String text);
+
         void onGistEditorFinish(GistFile file);
+
         void onGistEditorUpdate(int position, GistFile file);
     }
 }

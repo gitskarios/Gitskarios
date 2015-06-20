@@ -35,7 +35,7 @@ public class RoundTimelineView extends TimelineView {
 
     @Override
     public void drawEnd(Canvas canvas, Paint lastPaint, float centerX, float centerY, float mLastSize) {
-        canvas.drawCircle(centerX, centerY, mLastSize+ getLineMargin(), lastPaint);
+        canvas.drawCircle(centerX, centerY, mLastSize + getLineMargin(), lastPaint);
     }
 
     private float getLineMargin() {

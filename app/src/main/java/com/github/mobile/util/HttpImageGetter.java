@@ -24,7 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.os.AsyncTaskCompat;
 import android.text.Html.ImageGetter;
 import android.text.TextUtils;

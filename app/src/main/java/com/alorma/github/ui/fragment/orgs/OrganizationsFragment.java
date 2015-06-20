@@ -18,82 +18,82 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  * Created by Bernat on 13/07/2014.
  */
 public class OrganizationsFragment extends PaginatedListFragment<ListOrganizations> {
-	private String username;
-	private OrganizationsAdapter adapter;
+    private String username;
+    private OrganizationsAdapter adapter;
 
-	public static OrganizationsFragment newInstance() {
-		return new OrganizationsFragment();
-	}
+    public static OrganizationsFragment newInstance() {
+        return new OrganizationsFragment();
+    }
 
-	public static OrganizationsFragment newInstance(String username) {
-		OrganizationsFragment followersFragment = new OrganizationsFragment();
-		if (username != null) {
-			Bundle bundle = new Bundle();
-			bundle.putString(USERNAME, username);
+    public static OrganizationsFragment newInstance(String username) {
+        OrganizationsFragment followersFragment = new OrganizationsFragment();
+        if (username != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(USERNAME, username);
 
-			followersFragment.setArguments(bundle);
-		}
-		return followersFragment;
-	}
+            followersFragment.setArguments(bundle);
+        }
+        return followersFragment;
+    }
 
-	@Override
-	protected void executeRequest() {
-		super.executeRequest();
-		GetOrgsClient client = new GetOrgsClient(getActivity(), username);
-		client.setOnResultCallback(this);
-		client.execute();
-	}
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
+        GetOrgsClient client = new GetOrgsClient(getActivity(), username);
+        client.setOnResultCallback(this);
+        client.execute();
+    }
 
-	@Override
-	protected void executePaginatedRequest(int page) {
-		super.executePaginatedRequest(page);
-		GetOrgsClient client = new GetOrgsClient(getActivity(), username, page);
-		client.setOnResultCallback(this);
-		client.execute();
-	}
+    @Override
+    protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
+        GetOrgsClient client = new GetOrgsClient(getActivity(), username, page);
+        client.setOnResultCallback(this);
+        client.execute();
+    }
 
-	@Override
-	protected void onResponse(ListOrganizations organizations, boolean refreshing) {
-		getListView().setDivider(null);
-		if (getListAdapter() != null) {
-			adapter.addAll(organizations, paging);
-		} else if (adapter == null) {
-			setUpList(organizations);
-		} else {
-			setListAdapter(adapter);
-		}
-	}
+    @Override
+    protected void onResponse(ListOrganizations organizations, boolean refreshing) {
+        getListView().setDivider(null);
+        if (getListAdapter() != null) {
+            adapter.addAll(organizations, paging);
+        } else if (adapter == null) {
+            setUpList(organizations);
+        } else {
+            setListAdapter(adapter);
+        }
+    }
 
-	private void setUpList(ListOrganizations organizations) {
-		adapter = new OrganizationsAdapter(getActivity(), organizations);
-		setListAdapter(adapter);
-	}
+    private void setUpList(ListOrganizations organizations) {
+        adapter = new OrganizationsAdapter(getActivity(), organizations);
+        setListAdapter(adapter);
+    }
 
-	@Override
-	protected void loadArguments() {
-		if (getArguments() != null) {
-			username = getArguments().getString(USERNAME);
-		}
-	}
+    @Override
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            username = getArguments().getString(USERNAME);
+        }
+    }
 
-	@Override
-	protected Octicons.Icon getNoDataIcon() {
-		return Octicons.Icon.oct_organization;
-	}
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_organization;
+    }
 
-	@Override
-	protected int getNoDataText() {
-		return R.string.no_organizations;
-	}
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_organizations;
+    }
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-		Organization item = adapter.getItem(position);
+        Organization item = adapter.getItem(position);
 
-		Intent intent = OrganizationActivity.launchIntent(getActivity(), item.login);
-		startActivity(intent);
-	}
+        Intent intent = OrganizationActivity.launchIntent(getActivity(), item.login);
+        startActivity(intent);
+    }
 }
 

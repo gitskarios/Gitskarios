@@ -17,11 +17,11 @@ import android.view.ViewGroup;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistsFileActivity;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class GistDetailFragment extends Fragment implements BaseClient.OnResultCallback<Gist>,GistDetailFilesAdapter.GistFilesAdapterListener {
+public class GistDetailFragment extends Fragment implements BaseClient.OnResultCallback<Gist>, GistDetailFilesAdapter.GistFilesAdapterListener {
 
     public static final String GIST_ID = "GIST_ID";
     private RecyclerView recyclerView;
