@@ -40,7 +40,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 		AbsListView.OnScrollListener,
 		DirectionalScrollListener.OnDetectScrollListener,
 		DirectionalScrollListener.OnCancelableDetectScrollListener,
-		View.OnClickListener, AdapterView.OnItemClickListener {
+		View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
 	private SwipeRefreshLayout swipe;
 	protected static final long FAB_ANIM_DURATION = 400;
@@ -152,6 +152,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
 		if (listView != null) {
 			listView.setOnItemClickListener(this);
+            listView.setOnItemLongClickListener(this);
 
 			listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
 
@@ -355,5 +356,9 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 	protected boolean autoStart() {
 		return true;
 	}
-
+    
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        return false;
+    }
 }
