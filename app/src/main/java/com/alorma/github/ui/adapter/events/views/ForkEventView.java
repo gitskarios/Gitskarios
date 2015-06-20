@@ -44,7 +44,8 @@ public class ForkEventView extends GithubEventView<ForkEventPayload> {
 
 		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-		ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        //load the profile image from url with optimal settings
+        handleImage(authorAvatar, event);
 
 		TextView authorName = (TextView) findViewById(R.id.authorName);
 		String original = event.repo.name;

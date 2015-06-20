@@ -48,7 +48,8 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 
         ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        //load the profile image from url with optimal settings
+        handleImage(authorAvatar, event);
 
         TextView authorName = (TextView) findViewById(R.id.authorName);
         authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, event.repo.name)));

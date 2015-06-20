@@ -48,7 +48,8 @@ public class PushEventView extends GithubEventView<PushEventPayload> {
     protected void populateView(GithubEvent event) {
         ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        //load the profile image from url with optimal settings
+        handleImage(authorAvatar, event);
 
         TextView authorName = (TextView) findViewById(R.id.authorName);
         authorName.setText(event.actor.login);
