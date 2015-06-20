@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
@@ -30,12 +31,16 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     private LayoutInflater inflater;
     private PullRequestStory pullRequestStory;
     private RepoInfo repoInfo;
+    private Permissions permissions;
+    private PullRequestDetailView.PullRequestActionsListener listener;
 
-    public PullRequestDetailAdapter(Context context, LayoutInflater inflater, PullRequestStory pullRequestStory, RepoInfo repoInfo) {
+    public PullRequestDetailAdapter(Context context, LayoutInflater inflater, PullRequestStory pullRequestStory, RepoInfo repoInfo, Permissions permissions, PullRequestDetailView.PullRequestActionsListener listener) {
         this.context = context;
         this.inflater = inflater;
         this.pullRequestStory = pullRequestStory;
         this.repoInfo = repoInfo;
+        this.permissions = permissions;
+        this.listener = listener;
     }
 
     @Override
@@ -55,7 +60,8 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         if (position == 0) {
-            ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo, pullRequestStory.pullRequest);
+            ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo, pullRequestStory.pullRequest, permissions);
+            ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(listener);
         } else if (holder instanceof CommentHolder) {
             IssueStoryComment issueStoryDetail = (IssueStoryComment) pullRequestStory.details.get(position - 1).second;
             ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);

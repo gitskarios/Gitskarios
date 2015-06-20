@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.alorma.github.ui.activity.IssueDetailActivity">
+
+    <item
+        android:title="@string/issue_edit_milestone"
+        android:id="@+id/issue_edit_milestone"
+        app:showAsAction="never" />
+    <item
+        android:title="@string/issue_edit_assignee"
+        android:id="@+id/issue_edit_assignee"
+        app:showAsAction="never" />
+    <item
+        android:title="@string/issue_edit_labels"
+        android:id="@+id/issue_edit_labels"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/share_issue"
+        android:title="@string/action_share_issue"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1" />
+</menu>

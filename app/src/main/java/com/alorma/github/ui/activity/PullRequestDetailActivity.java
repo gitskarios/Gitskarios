@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
@@ -43,6 +45,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
+import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -59,7 +62,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<PullRequestStory>, View.OnClickListener {
+public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<PullRequestStory>, View.OnClickListener, PullRequestDetailView.PullRequestActionsListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
@@ -156,7 +159,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
             status = getString(R.string.pullrequest_status_merged);
         }
         setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
-        PullRequestDetailAdapter adapter = new PullRequestDetailAdapter(this, getLayoutInflater(), pullRequestStory, issueInfo.repoInfo);
+        PullRequestDetailAdapter adapter = new PullRequestDetailAdapter(this, getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, issueInfo.repoInfo.permissions, this);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
@@ -324,17 +327,17 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.pullRequestStory != null) {
             if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
-                getMenuInflater().inflate(R.menu.issue_detail, menu);
+                getMenuInflater().inflate(R.menu.pullrequest_detail, menu);
             } else {
-                getMenuInflater().inflate(R.menu.issue_detail_no_permissions, menu);
+                getMenuInflater().inflate(R.menu.pullrequest_detail_no_permissions, menu);
             }
 
-            MenuItem item = menu.findItem(R.id.share_issue);
+            MenuItem itemShare = menu.findItem(R.id.share_issue);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
             } else {
-                item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
             }
 
         }
@@ -353,11 +356,10 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
                     menu.removeItem(R.id.action_reopen_issue);
                 }
                 if (pullRequestStory.pullRequest.state == IssueState.closed) {
-                    MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+                    MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenPullrequst));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 } else {
-
-                    MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+                    MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closePullRequest));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
             }
@@ -421,6 +423,11 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         milestonesClient.execute();
 
         showProgressDialog(R.style.SpotDialog_loading_milestones);
+    }
+
+    @Override
+    public void mergeRequest(Head head, Head base) {
+
     }
 
     private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {

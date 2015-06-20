@@ -12,11 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -37,7 +39,7 @@ import com.wefika.flowlayout.FlowLayout;
  */
 public class PullRequestDetailView extends LinearLayout {
 
-    private Issue issue;
+    private Issue pullRequest;
 
     private TextView title;
     private TextView body;
@@ -49,6 +51,9 @@ public class PullRequestDetailView extends LinearLayout {
     private TextView textAssignee;
     private TextView textCommits;
     private TextView textFiles;
+    private TextView mergeButton;
+
+    private PullRequestActionsListener pullRequestActionsListener;
 
     public PullRequestDetailView(Context context) {
         super(context);
@@ -85,11 +90,12 @@ public class PullRequestDetailView extends LinearLayout {
         textAssignee = (TextView) findViewById(R.id.textAssignee);
         textCommits = (TextView) findViewById(R.id.textCommits);
         textFiles = (TextView) findViewById(R.id.textFiles);
+        mergeButton = (TextView) findViewById(R.id.mergeButton);
     }
 
-    public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest) {
-        if (this.issue == null) {
-            this.issue = pullRequest;
+    public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest, Permissions permissions) {
+        if (this.pullRequest == null) {
+            this.pullRequest = pullRequest;
             title.setText(pullRequest.title);
 
             if (pullRequest.user != null) {
@@ -190,14 +196,44 @@ public class PullRequestDetailView extends LinearLayout {
                     textFiles.setVisibility(View.GONE);
                 }
             }
+
+            if (mergeButton != null) {
+                if (pullRequest.state == IssueState.closed || pullRequest.merged || permissions == null || !permissions.push || pullRequest.mergeable == null) {
+                    mergeButton.setVisibility(View.GONE);
+                } else if (pullRequest.mergeable) {
+                    mergeButton.setVisibility(View.VISIBLE);
+                    mergeButton.setText(R.string.pullrequest_merge_action_valid);
+                    mergeButton.setBackgroundResource(R.drawable.pull_request_merge_valid);
+                    mergeButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (pullRequestActionsListener != null) {
+                                pullRequestActionsListener.mergeRequest(pullRequest.head, pullRequest.base);
+                            }
+                        }
+                    });
+                } else {
+                    mergeButton.setVisibility(View.VISIBLE);
+                    mergeButton.setText(R.string.pullrequest_merge_action_invalid);
+                    mergeButton.setBackgroundResource(R.drawable.pull_request_merge_invalid);
+                }
+            }
         }
     }
 
     public int getColorIcons() {
-        if (issue.state == IssueState.open) {
+        if (pullRequest.state == IssueState.open) {
             return R.color.issue_state_open;
         } else {
             return R.color.issue_state_close;
         }
+    }
+
+    public void setPullRequestActionsListener(PullRequestActionsListener pullRequestActionsListener) {
+        this.pullRequestActionsListener = pullRequestActionsListener;
+    }
+
+    public interface PullRequestActionsListener {
+        void mergeRequest(Head head, Head base);
     }
 }

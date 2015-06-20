@@ -74,7 +74,9 @@
     <string name="no_comments">No comments</string>
     <string name="addComment">Add comment</string>
     <string name="closeIssue">Close issue</string>
+    <string name="closePullRequest">Close pull request</string>
     <string name="reopenIssue">Reopen issue</string>
+    <string name="reopenPullrequst">Reopen pull request</string>
     <string name="accept">Accept</string>
     <string name="row_private_repo">PRIVATE</string>
     <string name="tab_user_parent">User</string>
@@ -295,4 +297,8 @@
     <string name="no_branches_change">No branch to change</string>
     <string name="action_repo_change_branch">Change branch</string>
     <string name="pullrequest_status_merged">Merged</string>
+    <string name="action_merge_pullrequest">Merge</string>
+    <string name="pullrequest_merge_action_pending">Merge not computed</string>
+    <string name="pullrequest_merge_action_valid">Merge</string>
+    <string name="pullrequest_merge_action_invalid">Merge conflicts</string>
 </resources>
