@@ -90,6 +90,9 @@
     <style name="SpotDialog.loading_adding_assignee">
         <item name="DialogTitleText">@string/adding_assignee</item>
     </style>
+    <style name="SpotDialog.loading_merging">
+        <item name="DialogTitleText">@string/merging</item>
+    </style>
 
     <style name="SpotDialog.clear_milestones">
         <item name="DialogTitleText">@string/clear_milestone</item>
@@ -150,4 +153,5 @@
     </style>
 
     <string name="opening_file">Opening file</string>
+    <string name="merging">Merging</string>
 </resources>

@@ -449,6 +449,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     }
 
     private void merge(String message, String sha, IssueInfo issueInfo) {
+        showProgressDialog(R.style.SpotDialog_loading_merging);
         MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
         mergeButtonRequest.commit_message = message;
         mergeButtonRequest.sha = sha;
@@ -456,12 +457,14 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         mergePullRequestClient.setOnResultCallback(new BaseClient.OnResultCallback<MergeButtonResponse>() {
             @Override
             public void onResponseOk(MergeButtonResponse mergeButtonResponse, Response r) {
+                hideProgressDialog();
                 reload();
             }
 
             @Override
             public void onFail(RetrofitError error) {
-
+                hideProgressDialog();
+                Toast.makeText(PullRequestDetailActivity.this, "Merge cannot be performed", Toast.LENGTH_SHORT).show();
             }
         });
         mergePullRequestClient.execute();
