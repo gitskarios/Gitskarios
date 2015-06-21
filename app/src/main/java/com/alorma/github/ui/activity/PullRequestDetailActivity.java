@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -25,11 +27,13 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
+import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -38,6 +42,7 @@ import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
+import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
@@ -426,8 +431,40 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     }
 
     @Override
-    public void mergeRequest(Head head, Head base) {
+    public void mergeRequest(final Head head, Head base) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.title(R.string.merge_title);
+        builder.content(head.label);
+        builder.input(R.string.merge_message, 0, false, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+                Toast.makeText(PullRequestDetailActivity.this, charSequence, Toast.LENGTH_SHORT).show();
 
+
+                merge(charSequence.toString(), head.sha, issueInfo);
+            }
+        });
+        builder.inputType(InputType.TYPE_CLASS_TEXT);
+        builder.show();
+    }
+
+    private void merge(String message, String sha, IssueInfo issueInfo) {
+        MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
+        mergeButtonRequest.commit_message = message;
+        mergeButtonRequest.sha = sha;
+        MergePullRequestClient mergePullRequestClient = new MergePullRequestClient(this, issueInfo, mergeButtonRequest);
+        mergePullRequestClient.setOnResultCallback(new BaseClient.OnResultCallback<MergeButtonResponse>() {
+            @Override
+            public void onResponseOk(MergeButtonResponse mergeButtonResponse, Response r) {
+                reload();
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        mergePullRequestClient.execute();
     }
 
     private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {

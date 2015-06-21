@@ -303,4 +303,7 @@
     <string name="pullrequest_merge_action_pending">Merge not computed</string>
     <string name="pullrequest_merge_action_valid">Merge</string>
     <string name="pullrequest_merge_action_invalid">Merge conflicts</string>
+    <string name="merge_message">Merge message</string>
+    <string name="merge_title">Merge</string>
+    <string name="merge_content">Merging commit %s</string>
 </resources>
