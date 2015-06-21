@@ -9,17 +9,9 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
-import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
-import com.alorma.github.utils.TextUtils;
 import com.alorma.github.utils.TimeUtils;
-import com.gh4a.utils.UiUtils;
-import com.github.mobile.util.HtmlUtils;
-import com.github.mobile.util.HttpImageGetter;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.io.IOException;
 
 /**
  * Created by Bernat on 04/10/2014.
@@ -51,7 +43,8 @@ public class IssueEventView extends GithubEventView<IssueEventPayload> {
 
         ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        //load the profile image from url with optimal settings
+        handleImage(authorAvatar, event);
 
         TextView authorName = (TextView) findViewById(R.id.authorName);
         authorName.setText(Html.fromHtml(getContext().getResources().getString(textRes, event.actor.login, event.repo.name)));

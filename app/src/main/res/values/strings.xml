@@ -48,6 +48,8 @@
     <string name="menu_unstar">Unstar</string>
     <string name="menu_watch">Watch</string>
     <string name="menu_unwatch">Unwatch</string>
+    <string name="menu_copy">Copy</string>
+    <string name="menu_share">Share</string>
     <string name="search">Search</string>
     <string name="branches">Branches</string>
     <string name="fork_of">fork of %1$s</string>

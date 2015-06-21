@@ -122,7 +122,7 @@ public class IssueTimelineView extends LinearLayout {
             if (text != null) {
                 textView.setText(Html.fromHtml(text));
             }
-        }  else if (eventType.equals("milestoned") || eventType.equals("demilestoned")) {
+        } else if (eventType.equals("milestoned") || eventType.equals("demilestoned")) {
             String text = null;
             String milestone = "<b>" + issueEvent.event.milestone.title + "</b>";
             if (eventType.equals("milestoned")) {
@@ -133,7 +133,7 @@ public class IssueTimelineView extends LinearLayout {
             if (text != null) {
                 textView.setText(Html.fromHtml(text));
             }
-        }   else if (eventType.equals("merged") || eventType.equals("referenced")) {
+        } else if (eventType.equals("merged") || eventType.equals("referenced")) {
             String text = null;
             String commitId = issueEvent.event.commit_id;
             String milestone = "<b>" + commitId.substring(0, 8) + "</b>";

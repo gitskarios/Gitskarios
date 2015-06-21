@@ -1,7 +1,6 @@
 package com.alorma.github.ui.adapter.detail.repo;
 
 import android.content.Context;
-import android.support.annotation.StyleRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,43 +22,44 @@ import java.util.List;
  */
 public class RepoSourceAdapter extends ArrayAdapter<Content> {
 
-	private final LayoutInflater inflater;
-	private Context context;
-	private int style;
+    private final LayoutInflater inflater;
+    private Context context;
+    private int style;
 
-	public RepoSourceAdapter(Context context, List<Content> objects) {
-		super(context, 0, objects);
-		this.context = context;
-		inflater = LayoutInflater.from(context);
-	}
+    public RepoSourceAdapter(Context context, List<Content> objects) {
+        super(context, 0, objects);
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View v = inflater.inflate(R.layout.row_content, parent, false);
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View v = inflater.inflate(R.layout.row_content, parent, false);
 
-		TextView textName = (TextView) v.findViewById(R.id.name);
-		ImageView image = (ImageView) v.findViewById(R.id.icon);
+        TextView textName = (TextView) v.findViewById(R.id.name);
+        ImageView image = (ImageView) v.findViewById(R.id.icon);
 
-		Content item = getItem(position);
+        Content item = getItem(position);
 
-		textName.setText(item.name);
+        textName.setText(item.name);
 
-		IconicsDrawable iconDrawable = null;
-		if (ContentType.dir.equals(item.type)) {
-			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_directory);
-		} else if (ContentType.submodule.equals(item.type)) {
-			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_symlink_directory);
-		} else if (ContentType.file.equals(item.type)) {
-			iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_text);
-		}
+        IconicsDrawable iconDrawable = null;
+        if (ContentType.dir.equals(item.type)) {
+            iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_directory);
+        } else if (ContentType.submodule.equals(item.type)) {
+            iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_symlink_directory);
+        } else if (ContentType.file.equals(item.type)) {
+            iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_file_text);
+        }
 
-		if (iconDrawable != null) {
-			iconDrawable.sizeDp(20);
-			iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext()));
+        if (iconDrawable != null) {
+            iconDrawable.sizeDp(36);
+            iconDrawable.paddingDp(8);
+            iconDrawable.color(AttributesUtils.getPrimaryLightColor(getContext()));
 
-			image.setImageDrawable(iconDrawable);
-		}
+            image.setImageDrawable(iconDrawable);
+        }
 
-		return v;
-	}
+        return v;
+    }
 }

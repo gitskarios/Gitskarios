@@ -19,68 +19,68 @@ import com.alorma.github.ui.fragment.commit.SingleCommitFragment;
  */
 public class CommitDetailActivity extends BackActivity implements CommitFilesAdapter.OnFileRequestListener {
 
-	private boolean tablet;
+    private boolean tablet;
 
-	public static Intent launchIntent(Context context, CommitInfo commitInfo) {
-		Bundle b = new Bundle();
-		b.putParcelable(SingleCommitFragment.INFO, commitInfo);
+    public static Intent launchIntent(Context context, CommitInfo commitInfo) {
+        Bundle b = new Bundle();
+        b.putParcelable(SingleCommitFragment.INFO, commitInfo);
 
-		Intent intent = new Intent(context, CommitDetailActivity.class);
-		intent.putExtras(b);
+        Intent intent = new Intent(context, CommitDetailActivity.class);
+        intent.putExtras(b);
 
-		return intent;
-	}
+        return intent;
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.commit_activity);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.commit_activity);
 
-		if (getIntent().getExtras() != null) {
-			CommitInfo info = getIntent().getExtras().getParcelable(SingleCommitFragment.INFO);
+        if (getIntent().getExtras() != null) {
+            CommitInfo info = getIntent().getExtras().getParcelable(SingleCommitFragment.INFO);
 
-			setTitle(getString(R.string.title_activity_commit_detail, info.sha));
+            setTitle(getString(R.string.title_activity_commit_detail, info.sha));
 
-			if (getSupportActionBar() != null) {
-				getSupportActionBar().setSubtitle(String.valueOf(info.repoInfo));
-			}
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setSubtitle(String.valueOf(info.repoInfo));
+            }
 
-			tablet = findViewById(R.id.detail) != null;
+            tablet = findViewById(R.id.detail) != null;
 
-			SingleCommitFragment singleCommitFragment = SingleCommitFragment.newInstance(info);
-			singleCommitFragment.setOnFileRequestListener(this);
+            SingleCommitFragment singleCommitFragment = SingleCommitFragment.newInstance(info);
+            singleCommitFragment.setOnFileRequestListener(this);
 
-			FileFragment fileFragment = new FileFragment();
+            FileFragment fileFragment = new FileFragment();
 
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.content, singleCommitFragment);
-			if (tablet) {
-				ft.replace(R.id.detail, fileFragment);
-			}
-			ft.commit();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content, singleCommitFragment);
+            if (tablet) {
+                ft.replace(R.id.detail, fileFragment);
+            }
+            ft.commit();
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void onFileRequest(CommitFile file) {
-		FileInfo info = new FileInfo();
-		info.content = file.patch;
-		info.name = file.getFileName();
-		if (tablet) {
-			FileFragment fileFragment = FileFragment.getInstance(info, false);
+    @Override
+    public void onFileRequest(CommitFile file) {
+        FileInfo info = new FileInfo();
+        info.content = file.patch;
+        info.name = file.getFileName();
+        if (tablet) {
+            FileFragment fileFragment = FileFragment.getInstance(info, false);
 
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.detail, fileFragment);
-			ft.commit();
-		} else {
-			Intent launcherIntent = FileActivity.createLauncherIntent(this, info, tablet);
-			startActivity(launcherIntent);
-		}
-	}
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.detail, fileFragment);
+            ft.commit();
+        } else {
+            Intent launcherIntent = FileActivity.createLauncherIntent(this, info, tablet);
+            startActivity(launcherIntent);
+        }
+    }
 
-	@Override
-	public boolean openFirstFile() {
-		return tablet;
-	}
+    @Override
+    public boolean openFirstFile() {
+        return tablet;
+    }
 }

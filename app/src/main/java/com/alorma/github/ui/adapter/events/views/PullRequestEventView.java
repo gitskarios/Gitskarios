@@ -9,12 +9,10 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.utils.TimeUtils;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 05/10/2014.
@@ -42,7 +40,8 @@ public class PullRequestEventView extends GithubEventView<PullRequestEventPayloa
     protected void populateView(GithubEvent event) {
         ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
-        ImageLoader.getInstance().displayImage(event.actor.avatar_url, authorAvatar);
+        //load the profile image from url with optimal settings
+        handleImage(authorAvatar, event);
 
         TextView authorName = (TextView) findViewById(R.id.authorName);
         authorName.setText(event.actor.login);

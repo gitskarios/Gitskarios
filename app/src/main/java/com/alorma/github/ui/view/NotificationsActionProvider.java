@@ -12,8 +12,8 @@ import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.sdk.bean.dto.response.Notification;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Subscribe;
@@ -28,101 +28,101 @@ import retrofit.client.Response;
  */
 public class NotificationsActionProvider extends ActionProvider implements BaseClient.OnResultCallback<List<Notification>>, View.OnClickListener {
 
-	private int currentNotifications = 0;
-	private NotificationImageView bt;
-	private OnNotificationListener onNotificationListener;
+    private int currentNotifications = 0;
+    private NotificationImageView bt;
+    private OnNotificationListener onNotificationListener;
 
-	/**
-	 * Creates a new instance.
-	 *
-	 * @param context Context for accessing resources.
-	 */
-	public NotificationsActionProvider(Context context) {
-		super(context);
+    /**
+     * Creates a new instance.
+     *
+     * @param context Context for accessing resources.
+     */
+    public NotificationsActionProvider(Context context) {
+        super(context);
 
-		GitskariosApplication.get(context).inject(this);
-	}
+        GitskariosApplication.get(context).inject(this);
+    }
 
-	@Override
-	public View onCreateActionView() {
+    @Override
+    public View onCreateActionView() {
 
-		int actionBarSize = getContext().getResources().getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_action_button_min_height_material);
+        int actionBarSize = getContext().getResources().getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_action_button_min_height_material);
 
-		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(actionBarSize, actionBarSize);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(actionBarSize, actionBarSize);
 
-		LinearLayout layout = new LinearLayout(getContext());
-		layout.setLayoutParams(layoutParams);
-		layout.setGravity(Gravity.CENTER);
-		layout.setOnClickListener(this);
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setLayoutParams(layoutParams);
+        layout.setGravity(Gravity.CENTER);
+        layout.setOnClickListener(this);
 
-		bt = new NotificationImageView(getContext());
-		bt.setOnClickListener(this);
-		newNotificationsSize(new NotificationsCount(0));
+        bt = new NotificationImageView(getContext());
+        bt.setOnClickListener(this);
+        newNotificationsSize(new NotificationsCount(0));
 
-		layout.addView(bt);
+        layout.addView(bt);
 
-		refresh();
+        refresh();
 
-		return layout;
-	}
+        return layout;
+    }
 
-	@Override
-	public void onResponseOk(List<Notification> notifications, Response r) {
-		if (bt != null && notifications != null) {
-			newNotificationsSize(new NotificationsCount(notifications.size()));
-		}
-	}
+    @Override
+    public void onResponseOk(List<Notification> notifications, Response r) {
+        if (bt != null && notifications != null) {
+            newNotificationsSize(new NotificationsCount(notifications.size()));
+        }
+    }
 
-	@Override
-	public void onFail(RetrofitError error) {
+    @Override
+    public void onFail(RetrofitError error) {
 
-	}
+    }
 
-	@Override
-	public void onClick(View v) {
-		if (bt != null & onNotificationListener != null) {
-			onNotificationListener.onNotificationRequested();
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (bt != null & onNotificationListener != null) {
+            onNotificationListener.onNotificationRequested();
+        }
+    }
 
-	@Subscribe
-	public void newNotificationsSize(NotificationsCount count) {
-		bt.setNotificationVisible(count.getSize() > 0);
-		if (currentNotifications != count.getSize()) {
-			currentNotifications = count.getSize();
-		}
-	}
-	
-	public void setOnNotificationListener(OnNotificationListener onNotificationListener) {
-		this.onNotificationListener = onNotificationListener;
-	}
+    @Subscribe
+    public void newNotificationsSize(NotificationsCount count) {
+        bt.setNotificationVisible(count.getSize() > 0);
+        if (currentNotifications != count.getSize()) {
+            currentNotifications = count.getSize();
+        }
+    }
 
-	public void refresh() {
-		GetNotificationsClient client = new GetNotificationsClient(getContext());
-		client.setOnResultCallback(this);
-		client.execute();
-	}
+    public void setOnNotificationListener(OnNotificationListener onNotificationListener) {
+        this.onNotificationListener = onNotificationListener;
+    }
 
-	public interface OnNotificationListener {
-		void onNotificationRequested();
-	}
+    public void refresh() {
+        GetNotificationsClient client = new GetNotificationsClient(getContext());
+        client.setOnResultCallback(this);
+        client.execute();
+    }
 
-	private class NotificationImageView extends ImageView  {
+    public interface OnNotificationListener {
+        void onNotificationRequested();
+    }
 
-		public NotificationImageView(Context context) {
-			super(context);
-		}
+    private class NotificationImageView extends ImageView {
 
-		public void setNotificationVisible(boolean notificationVisible) {
+        public NotificationImageView(Context context) {
+            super(context);
+        }
 
-			IconicsDrawable drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_inbox);
-			drawable.actionBarSize();
-			if (notificationVisible) {
-				drawable.colorRes(R.color.accent);
-			} else {
-				drawable.colorRes(R.color.white);
-			}
-			setImageDrawable(drawable);
-		}
-	}
+        public void setNotificationVisible(boolean notificationVisible) {
+
+            IconicsDrawable drawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_inbox);
+            drawable.actionBarSize();
+            if (notificationVisible) {
+                drawable.colorRes(R.color.accent);
+            } else {
+                drawable.colorRes(R.color.white);
+            }
+            setImageDrawable(drawable);
+        }
+    }
 }

@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 
 public class WatchedReposActivity extends BackActivity {

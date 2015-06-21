@@ -40,9 +40,19 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
     public View getView(int position, View convertView, ViewGroup parent) {
         GithubEvent githubEvent = getItem(position);
 
-        View v = inflate(githubEvent);
+        //get the viewHolder
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            convertView = inflate(githubEvent);
+            viewHolder = new ViewHolder((GithubEventView) convertView);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
-        return v;
+        //here it will get populated :O
+        viewHolder.view.setEvent(githubEvent);
+        return convertView;
     }
 
     public View inflate(GithubEvent event) {
@@ -66,15 +76,23 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
             v = new DeleteEventView(getContext());
         } else if (event.getType() == EventType.ReleaseEvent) {
             v = new ReleaseEventView(getContext());
-        }  else if (event.getType() == EventType.PullRequestEvent) {
+        } else if (event.getType() == EventType.PullRequestEvent) {
             v = new PullRequestEventView(getContext());
         } else {
             v = new UnhandledEventView(getContext());
         }
 
-        v.setEvent(event);
-
         return v;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position).getType().ordinal();
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return EventType.values().length;
     }
 
     @Override
@@ -111,5 +129,13 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
                 || (event.getType() == EventType.ReleaseEvent)
                 || (event.getType() == EventType.PullRequestEvent)
                 || (event.getType() == EventType.DeleteEvent);
+    }
+
+    private static class ViewHolder {
+        private GithubEventView view;
+
+        private ViewHolder(GithubEventView view) {
+            this.view = view;
+        }
     }
 }

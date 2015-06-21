@@ -7,9 +7,6 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Team;
-import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.ui.view.CircularImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -19,26 +16,26 @@ import java.util.List;
 public class TeamsAdapter extends LazyAdapter<Team> {
 
 
-	public TeamsAdapter(Context context, List<Team> users) {
-		super(context, 0, users);
-	}
+    public TeamsAdapter(Context context, List<Team> users) {
+        super(context, 0, users);
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup viewGroup) {
-		View v = inflate(R.layout.row_team, viewGroup, false);
-		Team team = getItem(position);
+    @Override
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
+        View v = inflate(R.layout.row_team, viewGroup, false);
+        Team team = getItem(position);
 
-		TextView textView = (TextView) v.findViewById(R.id.textName);
+        TextView textView = (TextView) v.findViewById(R.id.textName);
 
-		textView.setText(team.name);
+        textView.setText(team.name);
 
-		View divider = v.findViewById(R.id.divider);
+        View divider = v.findViewById(R.id.divider);
 
-		if (position == getCount()) {
-			divider.setVisibility(View.GONE);
-		}
+        if (position == getCount()) {
+            divider.setVisibility(View.GONE);
+        }
 
-		return v;
-	}
+        return v;
+    }
 
 }

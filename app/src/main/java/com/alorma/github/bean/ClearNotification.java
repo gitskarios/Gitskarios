@@ -7,27 +7,27 @@ import com.alorma.github.sdk.bean.dto.response.Notification;
  */
 public class ClearNotification {
 
-	private Notification notification;
-	private boolean allRepository;
+    private Notification notification;
+    private boolean allRepository;
 
-	public ClearNotification(Notification notification, boolean allRepository) {
-		this.notification = notification;
-		this.allRepository = allRepository;
-	}
+    public ClearNotification(Notification notification, boolean allRepository) {
+        this.notification = notification;
+        this.allRepository = allRepository;
+    }
 
-	public Notification getNotification() {
-		return notification;
-	}
+    public Notification getNotification() {
+        return notification;
+    }
 
-	public void setNotification(Notification notification) {
-		this.notification = notification;
-	}
+    public void setNotification(Notification notification) {
+        this.notification = notification;
+    }
 
-	public boolean isAllRepository() {
-		return allRepository;
-	}
+    public boolean isAllRepository() {
+        return allRepository;
+    }
 
-	public void setAllRepository(boolean allRepository) {
-		this.allRepository = allRepository;
-	}
+    public void setAllRepository(boolean allRepository) {
+        this.allRepository = allRepository;
+    }
 }

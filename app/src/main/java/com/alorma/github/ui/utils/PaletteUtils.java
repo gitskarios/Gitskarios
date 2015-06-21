@@ -2,7 +2,6 @@ package com.alorma.github.ui.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 

@@ -1,22 +1,11 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
+apply plugin: 'com.github.ben-manes.versions'
+//gradle dependencyUpdates -Drevision=release
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '21.1.2'
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
         minSdkVersion 15
@@ -82,13 +71,12 @@ if (propFile.canRead()) {
 
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.android.support:support-v4:22.1.1'
-    compile 'com.android.support:palette-v7:22.1.1'
-    compile 'com.android.support:recyclerview-v7:22.1.1'
-    compile 'com.android.support:cardview-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:palette-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
 
-    compile 'com.google.android.gms:play-services-analytics:7.3.0'
+    compile 'com.google.android.gms:play-services-analytics:7.5.0'
 
 
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
@@ -101,9 +89,9 @@ dependencies {
 
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
 
-    compile 'com.afollestad:material-dialogs:0.7.3.3'
+    compile 'com.afollestad:material-dialogs:0.7.6.0'
 
-    compile 'se.emilsjolander:stickylistheaders:2.5.2'
+    compile 'se.emilsjolander:stickylistheaders:2.7.0'
 
     compile 'com.nineoldandroids:library:2.4.0'
 
@@ -113,23 +101,23 @@ dependencies {
 
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
 
-    compile 'com.squareup:otto:1.3.6'
+    compile 'com.squareup:otto:1.3.8'
 
     compile 'com.squareup.dagger:dagger:1.2.2'
 
-    provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
 
-    compile('com.mikepenz.materialdrawer:library:2.9.2@aar') {
+    compile('com.mikepenz:materialdrawer:3.0.8@aar') {
         transitive = true
     }
     compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
         transitive = true;
     }
-    compile('com.mikepenz.aboutlibraries:library:4.7.2@aar') {
+    compile('com.mikepenz:aboutlibraries:5.0.5@aar') {
         transitive = true
     }
 
-    compile 'com.github.mrengineer13:snackbar:1.1.0'
+    compile 'com.github.mrengineer13:snackbar:1.2.0'
 
     compile 'com.wefika:flowlayout:0.4.0'
 }

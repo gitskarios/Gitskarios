@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -27,7 +26,6 @@ import android.widget.ImageView;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
@@ -36,19 +34,18 @@ import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
 import com.alorma.github.ui.fragment.GeneralReposFragment;
-import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
-import com.alorma.github.ui.fragment.repos.ReposFragment;
-import com.alorma.github.ui.fragment.repos.StarredReposFragment;
-import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
+import com.mikepenz.materialdrawer.accountswitcher.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -63,7 +60,6 @@ import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -77,11 +73,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     @Inject
     Bus bus;
 
-    private AccountHeader.Result headerResult;
+    private AccountHeader headerResult;
     private HashMap<String, Account> accountMap;
     private Account selectedAccount;
     private Fragment lastUsedFragment;
-    private Drawer.Result resultDrawer;
+    private Drawer resultDrawer;
     private ChangelogDialogSupport dialog;
 
     public static void startActivity(Activity context) {
@@ -199,7 +195,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         buildHeader();
         //Now create your drawer and pass the AccountHeader.Result
-        Drawer drawer = new Drawer();
+        DrawerBuilder drawer = new DrawerBuilder();
         drawer.withActivity(this);
         drawer.withToolbar(getToolbar());
         drawer.withAccountHeader(headerResult);
@@ -215,7 +211,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         );
         drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+            public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                 int identifier = drawerItem.getIdentifier();
                 switch (identifier) {
                     case R.id.nav_drawer_events:
@@ -240,6 +236,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         signOut();
                         break;
                 }
+
+                return false;
             }
         });
         drawer.withSelectedItem(0);
@@ -267,7 +265,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             }
         });
 
-        AccountHeader headerBuilder = new AccountHeader()
+        AccountHeaderBuilder headerBuilder = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.primary_dark);
 
@@ -489,10 +487,12 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onAboutSelected() {
-        new Libs.Builder()
+        new LibsBuilder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
                 .withActivityTitle(getString(R.string.app_name))
+                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                .withActivityTheme(R.style.AppTheme)
                 .start(this);
         return false;
     }

@@ -36,7 +36,7 @@ public class RepoCollaboratorsFragment extends BaseUsersListFragment {
 
     @Override
     protected UsersAdapter setUpList(ListUsers users) {
-        UsersAdapter adapter =  super.setUpList(users);
+        UsersAdapter adapter = super.setUpList(users);
         adapter.setRepoOwner(repoInfo.owner);
         return adapter;
     }

@@ -21,51 +21,51 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class IssuesAdapter extends LazyAdapter<Issue> {
 
-	public IssuesAdapter(Context context, ListIssues issues) {
-		super(context, issues);
-	}
+    public IssuesAdapter(Context context, ListIssues issues) {
+        super(context, issues);
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View v = inflate(R.layout.row_issue, parent, false);
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View v = inflate(R.layout.row_issue, parent, false);
 
-		TextView title = (TextView) v.findViewById(R.id.textTitle);
-		TextView num = (TextView) v.findViewById(R.id.textTime);
-		TextView autor = (TextView) v.findViewById(R.id.textAuthor);
-		ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
-		ImageView pullRequest = (ImageView) v.findViewById(R.id.pullRequest);
-		View state = v.findViewById(R.id.state);
+        TextView title = (TextView) v.findViewById(R.id.textTitle);
+        TextView num = (TextView) v.findViewById(R.id.textTime);
+        TextView autor = (TextView) v.findViewById(R.id.textAuthor);
+        ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
+        ImageView pullRequest = (ImageView) v.findViewById(R.id.pullRequest);
+        View state = v.findViewById(R.id.state);
 
-		Issue item = getItem(position);
+        Issue item = getItem(position);
 
-		title.setText(item.title);
+        title.setText(item.title);
 
-		num.setText("#" + item.number);
+        num.setText("#" + item.number);
 
-		if (item.user != null) {
-			autor.setText(Html.fromHtml(getContext().getString(R.string.issue_created_by, item.user.login)));
-			ImageLoader instance = ImageLoader.getInstance();
-			instance.displayImage(item.user.avatar_url, avatar);
-		}
+        if (item.user != null) {
+            autor.setText(Html.fromHtml(getContext().getString(R.string.issue_created_by, item.user.login)));
+            ImageLoader instance = ImageLoader.getInstance();
+            instance.displayImage(item.user.avatar_url, avatar);
+        }
 
-		int colorState = getContext().getResources().getColor(R.color.issue_state_close);
-		if (IssueState.open == item.state) {
-			colorState = getContext().getResources().getColor(R.color.issue_state_open);
-		}
+        int colorState = getContext().getResources().getColor(R.color.issue_state_close);
+        if (IssueState.open == item.state) {
+            colorState = getContext().getResources().getColor(R.color.issue_state_open);
+        }
 
-		state.setBackgroundColor(colorState);
-		num.setTextColor(colorState);
-		IconicsDrawable iconDrawable;
-		if (item.pullRequest != null) {
-			iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_git_pull_request);
-		} else if (item.state == IssueState.closed) {
-			iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_issue_closed);
-		} else {
-			iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_issue_opened);
-		}
-		iconDrawable.colorRes(R.color.gray_github_medium);
-		pullRequest.setImageDrawable(iconDrawable);
+        state.setBackgroundColor(colorState);
+        num.setTextColor(colorState);
+        IconicsDrawable iconDrawable;
+        if (item.pullRequest != null) {
+            iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_git_pull_request);
+        } else if (item.state == IssueState.closed) {
+            iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_issue_closed);
+        } else {
+            iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_issue_opened);
+        }
+        iconDrawable.colorRes(R.color.gray_github_medium);
+        pullRequest.setImageDrawable(iconDrawable);
 
-		return v;
-	}
+        return v;
+    }
 }

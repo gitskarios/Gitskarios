@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,13 +31,12 @@ import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
+import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
-import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
-import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -505,14 +503,14 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     public void onBackPressed() {
         int currentItem = viewPager.getCurrentItem();
 
-        if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()){
+        if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()) {
             Fragment fragment = listFragments.get(currentItem);
             if (fragment != null && fragment instanceof BackManager) {
                 if (((BackManager) fragment).onBackPressed()) {
                     super.onBackPressed();
                 }
             }
-        }else{
+        } else {
             super.onBackPressed();
         }
     }

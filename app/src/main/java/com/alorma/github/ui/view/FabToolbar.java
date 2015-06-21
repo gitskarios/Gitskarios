@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.MenuRes;
 import android.support.annotation.StringRes;
@@ -191,7 +190,7 @@ public class FabToolbar extends FrameLayout implements View.OnClickListener {
         return toolbar.getMenu();
     }
 
-    public void setToolbarTitle(@StringRes int title)  {
+    public void setToolbarTitle(@StringRes int title) {
         toolbar.setTitle(title);
     }
 }

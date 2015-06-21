@@ -17,93 +17,93 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  */
 public class SearchReposFragment extends BaseReposListFragment {
 
-	private String query = null;
-	private OnSearchReposListener onSearchReposListener;
+    private String query = null;
+    private OnSearchReposListener onSearchReposListener;
 
-	public static SearchReposFragment newInstance(String query) {
-		Bundle args = new Bundle();
-		if (query != null) {
-			args.putString(SearchManager.QUERY, query);
-		}
-		SearchReposFragment f = new SearchReposFragment();
-		f.setArguments(args);
-		return f;
-	}
+    public static SearchReposFragment newInstance(String query) {
+        Bundle args = new Bundle();
+        if (query != null) {
+            args.putString(SearchManager.QUERY, query);
+        }
+        SearchReposFragment f = new SearchReposFragment();
+        f.setArguments(args);
+        return f;
+    }
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		view.setBackgroundColor(Color.WHITE);
+        view.setBackgroundColor(Color.WHITE);
 
-		String query = getArguments().getString(SearchManager.QUERY, null);
-		if (query != null) {
-			setQuery(query);
-		} else {
-			setEmpty();
-		}
-	}
+        String query = getArguments().getString(SearchManager.QUERY, null);
+        if (query != null) {
+            setQuery(query);
+        } else {
+            setEmpty();
+        }
+    }
 
-	@Override
-	protected Octicons.Icon getNoDataIcon() {
-		return Octicons.Icon.oct_repo;
-	}
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_repo;
+    }
 
-	@Override
-	protected int getNoDataText() {
-		return R.string.no_results;
-	}
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_results;
+    }
 
-	@Override
-	protected void loadArguments() {
+    @Override
+    protected void loadArguments() {
 
-	}
+    }
 
-	@Override
-	protected void executeRequest() {
-		if (getActivity() != null) {
-			if (query != null) {
-				super.executeRequest();
-				RepoSearchClient client = new RepoSearchClient(getActivity(), query);
-				client.setOnResultCallback(this);
-				client.execute();
-			}
-		}
-	}
+    @Override
+    protected void executeRequest() {
+        if (getActivity() != null) {
+            if (query != null) {
+                super.executeRequest();
+                RepoSearchClient client = new RepoSearchClient(getActivity(), query);
+                client.setOnResultCallback(this);
+                client.execute();
+            }
+        }
+    }
 
-	@Override
-	protected void executePaginatedRequest(int page) {
-		if (getActivity() != null) {
-			if (query != null) {
-				super.executePaginatedRequest(page);
-				RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
-				client.setOnResultCallback(this);
-				client.execute();
-			}
-		}
-	}
+    @Override
+    protected void executePaginatedRequest(int page) {
+        if (getActivity() != null) {
+            if (query != null) {
+                super.executePaginatedRequest(page);
+                RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
+                client.setOnResultCallback(this);
+                client.execute();
+            }
+        }
+    }
 
-	public void setQuery(String query) {
-		this.query = query;
-		executeRequest();
-	}
+    public void setQuery(String query) {
+        this.query = query;
+        executeRequest();
+    }
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		if (reposAdapter != null && reposAdapter.getCount() >= position) {
-			Repo item = reposAdapter.getItem(position);
-			if (onSearchReposListener != null) {
-				onSearchReposListener.onRepoItemSelected(item);
-			}
-		}
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        if (reposAdapter != null && reposAdapter.getCount() >= position) {
+            Repo item = reposAdapter.getItem(position);
+            if (onSearchReposListener != null) {
+                onSearchReposListener.onRepoItemSelected(item);
+            }
+        }
+    }
 
-	public void setOnSearchReposListener(OnSearchReposListener onSearchReposListener) {
-		this.onSearchReposListener = onSearchReposListener;
-	}
+    public void setOnSearchReposListener(OnSearchReposListener onSearchReposListener) {
+        this.onSearchReposListener = onSearchReposListener;
+    }
 
-	public interface OnSearchReposListener {
-		void onRepoItemSelected(Repo repo);
-	}
+    public interface OnSearchReposListener {
+        void onRepoItemSelected(Repo repo);
+    }
 }

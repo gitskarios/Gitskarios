@@ -15,74 +15,74 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  */
 public class SearchUsersFragment extends BaseUsersListFragment {
 
-	private String query;
+    private String query;
 
-	public static SearchUsersFragment newInstance(String query) {
-		Bundle args = new Bundle();
-		if (query != null) {
-			args.putString(SearchManager.QUERY, query);
-		}
-		SearchUsersFragment f = new SearchUsersFragment();
-		f.setArguments(args);
-		return f;
-	}
+    public static SearchUsersFragment newInstance(String query) {
+        Bundle args = new Bundle();
+        if (query != null) {
+            args.putString(SearchManager.QUERY, query);
+        }
+        SearchUsersFragment f = new SearchUsersFragment();
+        f.setArguments(args);
+        return f;
+    }
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		view.setBackgroundColor(Color.WHITE);
+        view.setBackgroundColor(Color.WHITE);
 
-		String query = getArguments().getString(SearchManager.QUERY, null);
-		if (query != null) {
-			setQuery(query);
-		} else {
-			setEmpty();
-		}
-	}
+        String query = getArguments().getString(SearchManager.QUERY, null);
+        if (query != null) {
+            setQuery(query);
+        } else {
+            setEmpty();
+        }
+    }
 
-	public void setQuery(String query) {
-		this.query = query;
-		executeRequest();
-	}
+    public void setQuery(String query) {
+        this.query = query;
+        executeRequest();
+    }
 
-	@Override
-	protected void loadArguments() {
+    @Override
+    protected void loadArguments() {
 
-	}
+    }
 
-	@Override
-	protected void executeRequest() {
-		if (getActivity() != null) {
-			if (query != null) {
-				super.executeRequest();
-				UsersSearchClient client = new UsersSearchClient(getActivity(), query);
-				client.setOnResultCallback(this);
-				client.execute();
-			}
-		}
-	}
+    @Override
+    protected void executeRequest() {
+        if (getActivity() != null) {
+            if (query != null) {
+                super.executeRequest();
+                UsersSearchClient client = new UsersSearchClient(getActivity(), query);
+                client.setOnResultCallback(this);
+                client.execute();
+            }
+        }
+    }
 
-	@Override
-	protected void executePaginatedRequest(int page) {
-		if (getActivity() != null) {
-			if (query != null) {
-				super.executePaginatedRequest(page);
-				UsersSearchClient client = new UsersSearchClient(getActivity(), query, page);
-				client.setOnResultCallback(this);
-				client.execute();
-			}
-		}
-	}
+    @Override
+    protected void executePaginatedRequest(int page) {
+        if (getActivity() != null) {
+            if (query != null) {
+                super.executePaginatedRequest(page);
+                UsersSearchClient client = new UsersSearchClient(getActivity(), query, page);
+                client.setOnResultCallback(this);
+                client.execute();
+            }
+        }
+    }
 
-	@Override
-	protected Octicons.Icon getNoDataIcon() {
-		return Octicons.Icon.oct_person;
-	}
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_person;
+    }
 
-	@Override
-	protected int getNoDataText() {
-		return R.string.no_results;
-	}
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_results;
+    }
 
 }

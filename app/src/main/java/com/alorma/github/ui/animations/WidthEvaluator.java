@@ -6,18 +6,18 @@ import android.view.ViewGroup;
 
 public class WidthEvaluator extends IntEvaluator {
 
-	private View v;
+    private View v;
 
-	public WidthEvaluator(View v) {
-		this.v = v;
-	}
+    public WidthEvaluator(View v) {
+        this.v = v;
+    }
 
-	@Override
-	public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-		int num = super.evaluate(fraction, startValue, endValue);
-		ViewGroup.LayoutParams params = v.getLayoutParams();
-		params.width = num;
-		v.setLayoutParams(params);
-		return num;
-	}
+    @Override
+    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+        int num = super.evaluate(fraction, startValue, endValue);
+        ViewGroup.LayoutParams params = v.getLayoutParams();
+        params.width = num;
+        v.setLayoutParams(params);
+        return num;
+    }
 }

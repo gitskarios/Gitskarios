@@ -12,14 +12,14 @@ import dagger.Provides;
  * Created by Bernat on 01/03/2015.
  */
 @Module(
-		library = true
+        library = true
 )
 public class BusModule {
 
-	@Provides
-	@Singleton
-	public Bus provideBus() {
-		return new Bus(ThreadEnforcer.ANY);
-	}
+    @Provides
+    @Singleton
+    public Bus provideBus() {
+        return new Bus(ThreadEnforcer.ANY);
+    }
 
 }

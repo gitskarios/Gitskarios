@@ -15,7 +15,6 @@ import android.view.MenuItem;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
