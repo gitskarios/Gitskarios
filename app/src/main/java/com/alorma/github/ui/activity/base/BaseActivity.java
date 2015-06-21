@@ -15,26 +15,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.widget.Toast;
 
-import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
-import com.alorma.github.sdk.BuildConfig;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.StoreCredentials;
 import com.alorma.github.sdk.security.UnAuthIntent;
-import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.ui.activity.LoginActivity;
-import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import dmax.dialog.SpotsDialog;
 

@@ -19,136 +19,136 @@ import java.util.Locale;
  */
 public class BioCard implements View.OnClickListener {
 
-	private BioCardListener bioCardListener;
+    private BioCardListener bioCardListener;
 
-	private User user;
-	private int avatarColor;
+    private User user;
+    private int avatarColor;
 
-	public BioCard(User user, View view, int avatarColor) {
-		this.user = user;
-		this.avatarColor = avatarColor;
-		setupInnerViewElements(view);
-	}
+    public BioCard(User user, View view, int avatarColor) {
+        this.user = user;
+        this.avatarColor = avatarColor;
+        setupInnerViewElements(view);
+    }
 
-	public void setupInnerViewElements(View view) {
-		setUpCompany(view);
-		setUpLocation(view);
-		setUpMail(view);
-		setUpDate(view);
-	}
+    public void setupInnerViewElements(View view) {
+        setUpCompany(view);
+        setUpLocation(view);
+        setUpMail(view);
+        setUpDate(view);
+    }
 
-	private void setUpCompany(View view) {
-		if (!TextUtils.isEmpty(user.company)) {
-			ImageView icon = (ImageView) view.findViewById(R.id.iconCompany);
+    private void setUpCompany(View view) {
+        if (!TextUtils.isEmpty(user.company)) {
+            ImageView icon = (ImageView) view.findViewById(R.id.iconCompany);
 
-			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
+            IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
 
-			icon.setImageDrawable(githubIconDrawable);
+            icon.setImageDrawable(githubIconDrawable);
 
-			TextView text = (TextView) view.findViewById(R.id.textCompany);
+            TextView text = (TextView) view.findViewById(R.id.textCompany);
 
-			text.setText(user.company);
+            text.setText(user.company);
 
-			view.findViewById(R.id.company).setOnClickListener(this);
-		} else {
-			view.findViewById(R.id.company).setVisibility(View.GONE);
-			view.findViewById(R.id.dividerCompany).setVisibility(View.GONE);
-		}
-	}
+            view.findViewById(R.id.company).setOnClickListener(this);
+        } else {
+            view.findViewById(R.id.company).setVisibility(View.GONE);
+            view.findViewById(R.id.dividerCompany).setVisibility(View.GONE);
+        }
+    }
 
-	private void setUpLocation(View view) {
-		if (!TextUtils.isEmpty(user.location)) {
-			ImageView icon = (ImageView) view.findViewById(R.id.iconLocation);
+    private void setUpLocation(View view) {
+        if (!TextUtils.isEmpty(user.location)) {
+            ImageView icon = (ImageView) view.findViewById(R.id.iconLocation);
 
-			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_location);
+            IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_location);
 
-			icon.setImageDrawable(githubIconDrawable);
+            icon.setImageDrawable(githubIconDrawable);
 
-			TextView text = (TextView) view.findViewById(R.id.textLocation);
+            TextView text = (TextView) view.findViewById(R.id.textLocation);
 
-			text.setText(user.location);
+            text.setText(user.location);
 
-			view.findViewById(R.id.location).setOnClickListener(this);
-		} else {
-			view.findViewById(R.id.location).setVisibility(View.GONE);
-			view.findViewById(R.id.dividerLocation).setVisibility(View.GONE);
-		}
-	}
+            view.findViewById(R.id.location).setOnClickListener(this);
+        } else {
+            view.findViewById(R.id.location).setVisibility(View.GONE);
+            view.findViewById(R.id.dividerLocation).setVisibility(View.GONE);
+        }
+    }
 
-	private void setUpMail(View view) {
-		if (!TextUtils.isEmpty(user.email)) {
-			ImageView icon = (ImageView) view.findViewById(R.id.iconMail);
+    private void setUpMail(View view) {
+        if (!TextUtils.isEmpty(user.email)) {
+            ImageView icon = (ImageView) view.findViewById(R.id.iconMail);
 
-			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_mail);
+            IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_mail);
 
-			icon.setImageDrawable(githubIconDrawable);
+            icon.setImageDrawable(githubIconDrawable);
 
-			TextView text = (TextView) view.findViewById(R.id.textMail);
+            TextView text = (TextView) view.findViewById(R.id.textMail);
 
-			text.setText(user.email);
+            text.setText(user.email);
 
-			view.findViewById(R.id.mail).setOnClickListener(this);
-		} else {
-			view.findViewById(R.id.mail).setVisibility(View.GONE);
-			view.findViewById(R.id.dividerMail).setVisibility(View.GONE);
-		}
-	}
+            view.findViewById(R.id.mail).setOnClickListener(this);
+        } else {
+            view.findViewById(R.id.mail).setVisibility(View.GONE);
+            view.findViewById(R.id.dividerMail).setVisibility(View.GONE);
+        }
+    }
 
-	private void setUpDate(View view) {
-		if (user.created_at != null) {
-			ImageView icon = (ImageView) view.findViewById(R.id.iconDate);
+    private void setUpDate(View view) {
+        if (user.created_at != null) {
+            ImageView icon = (ImageView) view.findViewById(R.id.iconDate);
 
-			IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_clock);
+            IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_clock);
 
-			icon.setImageDrawable(githubIconDrawable);
+            icon.setImageDrawable(githubIconDrawable);
 
-			TextView text = (TextView) view.findViewById(R.id.textDate);
+            TextView text = (TextView) view.findViewById(R.id.textDate);
 
-			SimpleDateFormat sdf = new SimpleDateFormat(view.getContext().getString(R.string.joined_at_date_format), Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat(view.getContext().getString(R.string.joined_at_date_format), Locale.getDefault());
 
-			String joined = view.getContext().getString(R.string.joined_at, sdf.format(user.created_at));
+            String joined = view.getContext().getString(R.string.joined_at, sdf.format(user.created_at));
 
-			text.setText(joined);
-		} else {
-			view.findViewById(R.id.date).setVisibility(View.GONE);
-		}
-	}
+            text.setText(joined);
+        } else {
+            view.findViewById(R.id.date).setVisibility(View.GONE);
+        }
+    }
 
-	private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
-		IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
+    private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
+        IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
 
-		githubIconDrawable.sizeDp(30);
-		githubIconDrawable.color(avatarColor);
+        githubIconDrawable.sizeDp(30);
+        githubIconDrawable.color(avatarColor);
 
-		return githubIconDrawable;
-	}
+        return githubIconDrawable;
+    }
 
-	@Override
-	public void onClick(View v) {
-		if (bioCardListener != null) {
-			switch (v.getId()) {
-				case R.id.company:
-					//bioCardListener.onCompanyRequest(user.company);
-					break;
-				case R.id.location:
-					bioCardListener.onLocationRequest(user.location);
-					break;
-				case R.id.mail:
-					bioCardListener.onMailRequest(user.email);
-					break;
-			}
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (bioCardListener != null) {
+            switch (v.getId()) {
+                case R.id.company:
+                    //bioCardListener.onCompanyRequest(user.company);
+                    break;
+                case R.id.location:
+                    bioCardListener.onLocationRequest(user.location);
+                    break;
+                case R.id.mail:
+                    bioCardListener.onMailRequest(user.email);
+                    break;
+            }
+        }
+    }
 
-	public void setBioCardListener(BioCardListener bioCardListener) {
-		this.bioCardListener = bioCardListener;
-	}
+    public void setBioCardListener(BioCardListener bioCardListener) {
+        this.bioCardListener = bioCardListener;
+    }
 
-	public interface BioCardListener {
-		void onCompanyRequest(String company);
+    public interface BioCardListener {
+        void onCompanyRequest(String company);
 
-		void onLocationRequest(String location);
+        void onLocationRequest(String location);
 
-		void onMailRequest(String mail);
-	}
+        void onMailRequest(String mail);
+    }
 }

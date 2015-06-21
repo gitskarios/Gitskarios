@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -26,7 +27,6 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.UrlsManager;
 import com.google.gson.Gson;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -210,7 +210,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
                 String repoSelected = repos[i];
                 String[] split = repoSelected.split("/");
                 RepoInfo repoInfo = new RepoInfo();
-                repoInfo.owner =split[0];
+                repoInfo.owner = split[0];
                 repoInfo.name = split[1];
 
                 Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);

@@ -2,16 +2,9 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,13 +14,6 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
-import com.alorma.github.ui.fragment.search.SearchReposFragment;
-import com.alorma.github.ui.fragment.search.SearchUsersFragment;
-import com.alorma.github.ui.view.SlidingTabLayout;
-import com.alorma.github.utils.AttributesUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Bernat on 31/01/2015.
@@ -42,7 +28,7 @@ public class SearchIssuesActivity extends BackActivity implements SearchView.OnQ
     private IssuesListFragment issuesListFragment;
 
     public static Intent launchIntent(Context context, RepoInfo repoInfo) {
-        Intent intent =  new Intent(context, SearchIssuesActivity.class);
+        Intent intent = new Intent(context, SearchIssuesActivity.class);
 
         intent.putExtra(REPO_INFO, repoInfo);
 

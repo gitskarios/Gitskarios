@@ -44,7 +44,7 @@ public class GistsFileActivity extends ActionBarActivity {
         String title = getIntent().getExtras().getString(GistFileFragment.FILE_NAME);
         setTitle(title);
 
-        if (getSupportActionBar()!= null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }

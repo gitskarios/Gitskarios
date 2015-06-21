@@ -15,109 +15,109 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  */
 public class GithubPlanCard implements View.OnClickListener {
 
-	private GithubDataCardListener githubDataCardListener;
+    private GithubDataCardListener githubDataCardListener;
 
-	private User user;
-	private int avatarColor;
+    private User user;
+    private int avatarColor;
 
-	public GithubPlanCard(User user, View view, int avatarColor) {
-		this.user = user;
-		this.avatarColor = avatarColor;
-		setupInnerViewElements(view);
-	}
+    public GithubPlanCard(User user, View view, int avatarColor) {
+        this.user = user;
+        this.avatarColor = avatarColor;
+        setupInnerViewElements(view);
+    }
 
-	public void setupInnerViewElements(View view) {
+    public void setupInnerViewElements(View view) {
 
-		if (user.plan != null) {
-			setUpName(view);
-			setUpQuota(view);
-			setUpCollaborators(view);
-			setUpRepos(view);
-		}
-	}
+        if (user.plan != null) {
+            setUpName(view);
+            setUpQuota(view);
+            setUpCollaborators(view);
+            setUpRepos(view);
+        }
+    }
 
-	private void setUpName(View view) {
-		if (user.plan.name != null) {
-			TextView text = (TextView) view.findViewById(R.id.textPlanName);
+    private void setUpName(View view) {
+        if (user.plan.name != null) {
+            TextView text = (TextView) view.findViewById(R.id.textPlanName);
 
-			text.setText(user.plan.name);
-		} else {
-			view.findViewById(R.id.planName).setVisibility(View.GONE);
-			view.findViewById(R.id.dividerPlanName).setVisibility(View.GONE);
-		}
-	}
+            text.setText(user.plan.name);
+        } else {
+            view.findViewById(R.id.planName).setVisibility(View.GONE);
+            view.findViewById(R.id.dividerPlanName).setVisibility(View.GONE);
+        }
+    }
 
-	private void setUpQuota(View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconPlanQuota);
+    private void setUpQuota(View view) {
+        ImageView icon = (ImageView) view.findViewById(R.id.iconPlanQuota);
 
-		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_database);
+        IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_database);
 
-		icon.setImageDrawable(githubIconDrawable);
+        icon.setImageDrawable(githubIconDrawable);
 
-		TextView text = (TextView) view.findViewById(R.id.textPlanQuota);
+        TextView text = (TextView) view.findViewById(R.id.textPlanQuota);
 
-		text.setText(view.getContext().getString(R.string.quota_data, humanReadableByteCount(user.plan.space, true)));
-	}
+        text.setText(view.getContext().getString(R.string.quota_data, humanReadableByteCount(user.plan.space, true)));
+    }
 
-	public static String humanReadableByteCount(long bytes, boolean si) {
-		int unit = si ? 1000 : 1024;
-		if (bytes < unit) return bytes + " B";
-		int exp = (int) (Math.log(bytes) / Math.log(unit));
-		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-	}
+    public static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
 
-	private void setUpCollaborators(View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconPlanCollaborators);
+    private void setUpCollaborators(View view) {
+        ImageView icon = (ImageView) view.findViewById(R.id.iconPlanCollaborators);
 
-		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
+        IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_organization);
 
-		icon.setImageDrawable(githubIconDrawable);
+        icon.setImageDrawable(githubIconDrawable);
 
-		TextView text = (TextView) view.findViewById(R.id.textPlanCollaborators);
+        TextView text = (TextView) view.findViewById(R.id.textPlanCollaborators);
 
-		text.setText(view.getContext().getString(R.string.collaborators_data, user.plan.collaborators));
+        text.setText(view.getContext().getString(R.string.collaborators_data, user.plan.collaborators));
 
-	}
+    }
 
-	private void setUpRepos(View view) {
-		ImageView icon = (ImageView) view.findViewById(R.id.iconPlanRepos);
+    private void setUpRepos(View view) {
+        ImageView icon = (ImageView) view.findViewById(R.id.iconPlanRepos);
 
-		IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_repo_forked);
+        IconicsDrawable githubIconDrawable = drawable(view.getContext(), Octicons.Icon.oct_repo_forked);
 
-		icon.setImageDrawable(githubIconDrawable);
+        icon.setImageDrawable(githubIconDrawable);
 
-		TextView text = (TextView) view.findViewById(R.id.textPlanRepos);
+        TextView text = (TextView) view.findViewById(R.id.textPlanRepos);
 
-		text.setText(view.getContext().getString(R.string.repos_data_profile, user.total_private_repos, user.plan.privateRepos));
+        text.setText(view.getContext().getString(R.string.repos_data_profile, user.total_private_repos, user.plan.privateRepos));
 
-	}
+    }
 
-	private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
-		IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
+    private IconicsDrawable drawable(Context context, Octicons.Icon icon) {
+        IconicsDrawable githubIconDrawable = new IconicsDrawable(context, icon);
 
-		githubIconDrawable.sizeDp(30);
-		githubIconDrawable.color(avatarColor);
+        githubIconDrawable.sizeDp(30);
+        githubIconDrawable.color(avatarColor);
 
-		return githubIconDrawable;
-	}
+        return githubIconDrawable;
+    }
 
-	@Override
-	public void onClick(View v) {
-		if (githubDataCardListener != null) {
-			switch (v.getId()) {
-				case R.id.repositories:
-					githubDataCardListener.onRepositoriesRequest(user.login);
-					break;
-			}
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (githubDataCardListener != null) {
+            switch (v.getId()) {
+                case R.id.repositories:
+                    githubDataCardListener.onRepositoriesRequest(user.login);
+                    break;
+            }
+        }
+    }
 
-	public void setGithubDataCardListener(GithubDataCardListener githubDataCardListener) {
-		this.githubDataCardListener = githubDataCardListener;
-	}
+    public void setGithubDataCardListener(GithubDataCardListener githubDataCardListener) {
+        this.githubDataCardListener = githubDataCardListener;
+    }
 
-	public interface GithubDataCardListener {
-		void onRepositoriesRequest(String username);
-	}
+    public interface GithubDataCardListener {
+        void onRepositoriesRequest(String username);
+    }
 }

@@ -35,7 +35,7 @@ import retrofit.client.Response;
  * Created by Bernat on 22/08/2014.
  */
 public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider, PermissionsManager,
-        BackManager{
+        BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String FROM_SEARCH = "FROM_SEARCH";

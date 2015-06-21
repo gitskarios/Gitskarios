@@ -11,11 +11,11 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.ListGists;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.GistsFragment;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;

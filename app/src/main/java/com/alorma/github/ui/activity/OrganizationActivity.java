@@ -13,7 +13,6 @@ import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
-import com.alorma.github.ui.fragment.orgs.OrgsTeamsFragment;
 import com.alorma.github.ui.view.SlidingTabLayout;
 import com.alorma.github.utils.AttributesUtils;
 
@@ -25,87 +24,87 @@ import java.util.List;
  */
 public class OrganizationActivity extends BackActivity {
 
-	private static final String ORG = "ORG";
-	private ViewPager viewPager;
+    private static final String ORG = "ORG";
+    private ViewPager viewPager;
 
-	public static Intent launchIntent(Context context, String orgName) {
-		Intent intent = new Intent(context, OrganizationActivity.class);
+    public static Intent launchIntent(Context context, String orgName) {
+        Intent intent = new Intent(context, OrganizationActivity.class);
 
-		Bundle extras = new Bundle();
-		extras.putString(ORG, orgName);
+        Bundle extras = new Bundle();
+        extras.putString(ORG, orgName);
 
-		intent.putExtras(extras);
+        intent.putExtras(extras);
 
-		return intent;
-	}
+        return intent;
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.organization_activity);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.organization_activity);
 
-		setTitle(R.string.navigation_people);
+        setTitle(R.string.navigation_people);
 
-		SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
+        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
 
-		slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
-		slidingTabLayout.setDividerColors(Color.TRANSPARENT);
+        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
+        slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
-		viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
 
-		String orgName = null;
-		if (getIntent().getExtras() != null) {
-			orgName = getIntent().getExtras().getString(ORG);
-		}
+        String orgName = null;
+        if (getIntent().getExtras() != null) {
+            orgName = getIntent().getExtras().getString(ORG);
+        }
 
-		setTitle(orgName);
+        setTitle(orgName);
 
-		OrgsReposFragment orgReposFragment = OrgsReposFragment.newInstance(orgName);
-		//OrgsTeamsFragment orgsTeamsFragment = OrgsTeamsFragment.newInstance(orgName);
-		OrgsMembersFragment orgMembersFragment = OrgsMembersFragment.newInstance(orgName);
+        OrgsReposFragment orgReposFragment = OrgsReposFragment.newInstance(orgName);
+        //OrgsTeamsFragment orgsTeamsFragment = OrgsTeamsFragment.newInstance(orgName);
+        OrgsMembersFragment orgMembersFragment = OrgsMembersFragment.newInstance(orgName);
 
-		ArrayList<Fragment> listFragments = new ArrayList<>();
-		listFragments.add(orgReposFragment);
-		//listFragments.add(orgsTeamsFragment);
-		listFragments.add(orgMembersFragment);
+        ArrayList<Fragment> listFragments = new ArrayList<>();
+        listFragments.add(orgReposFragment);
+        //listFragments.add(orgsTeamsFragment);
+        listFragments.add(orgMembersFragment);
 
-		viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-		slidingTabLayout.setViewPager(viewPager);
-	}
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+        slidingTabLayout.setViewPager(viewPager);
+    }
 
 
-	private class NavigationPagerAdapter extends FragmentPagerAdapter {
+    private class NavigationPagerAdapter extends FragmentPagerAdapter {
 
-		private List<Fragment> listFragments;
+        private List<Fragment> listFragments;
 
-		public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-			super(fm);
-			this.listFragments = listFragments;
-		}
+        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
+            super(fm);
+            this.listFragments = listFragments;
+        }
 
-		@Override
-		public Fragment getItem(int position) {
-			return listFragments.get(position);
-		}
+        @Override
+        public Fragment getItem(int position) {
+            return listFragments.get(position);
+        }
 
-		@Override
-		public int getCount() {
-			return listFragments.size();
-		}
+        @Override
+        public int getCount() {
+            return listFragments.size();
+        }
 
-		@Override
-		public CharSequence getPageTitle(int position) {
-			switch (position) {
-				case 0:
-					return getString(R.string.navigation_orgs_repos);/*
-				case 1:
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.navigation_orgs_repos);/*
+                case 1:
 					return getString(R.string.navigation_orgs_teams);
 				case 2:
 					return getString(R.string.navigation_orgs_members);*/
-				case 1:
-					return getString(R.string.navigation_orgs_members);
-			}
-			return "";
-		}
-	}
+                case 1:
+                    return getString(R.string.navigation_orgs_members);
+            }
+            return "";
+        }
+    }
 }

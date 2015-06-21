@@ -12,68 +12,64 @@ import com.alorma.github.sdk.bean.dto.response.ShaUrl;
 import com.alorma.github.sdk.bean.dto.response.events.payload.CommitCommentEventPayload;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.utils.TimeUtils;
-import com.gh4a.utils.UiUtils;
-import com.github.mobile.util.HtmlUtils;
-import com.github.mobile.util.HttpImageGetter;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 05/10/2014.
  */
 public class CommitCommentEventView extends GithubEventView<CommitCommentEventPayload> {
 
-	public CommitCommentEventView(Context context) {
-		super(context);
-	}
+    public CommitCommentEventView(Context context) {
+        super(context);
+    }
 
-	public CommitCommentEventView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public CommitCommentEventView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public CommitCommentEventView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public CommitCommentEventView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void inflate() {
-		inflate(getContext(), R.layout.payload_commit_comment, this);
-	}
+    @Override
+    protected void inflate() {
+        inflate(getContext(), R.layout.payload_commit_comment, this);
+    }
 
-	@Override
-	protected void populateView(GithubEvent event) {
-		ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+    @Override
+    protected void populateView(GithubEvent event) {
+        ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
 
         //load the profile image from url with optimal settings
         handleImage(authorAvatar, event);
 
-		TextView authorName = (TextView) findViewById(R.id.authorName);
-		authorName.setText(event.actor.login);
+        TextView authorName = (TextView) findViewById(R.id.authorName);
+        authorName.setText(event.actor.login);
 
-		int textRes = R.string.event_commit_comment_by;
+        int textRes = R.string.event_commit_comment_by;
 
-		String text = getContext().getString(textRes,
-				event.actor.login, event.repo.name, ShaUrl.shortShaStatic(eventPayload.comment.commit_id));
+        String text = getContext().getString(textRes,
+                event.actor.login, event.repo.name, ShaUrl.shortShaStatic(eventPayload.comment.commit_id));
 
-		authorName.setText(Html.fromHtml(text));
+        authorName.setText(Html.fromHtml(text));
 
-		TextView textTitle = (TextView) findViewById(R.id.textTitle);
+        TextView textTitle = (TextView) findViewById(R.id.textTitle);
 
-		RepoInfo repoInfo = new RepoInfo();
-		repoInfo.owner = event.repo.name.split("/")[0];
-		repoInfo.name = event.repo.name.split("/")[1];
+        RepoInfo repoInfo = new RepoInfo();
+        repoInfo.owner = event.repo.name.split("/")[0];
+        repoInfo.name = event.repo.name.split("/")[1];
 
-		textTitle.setText(eventPayload.comment.shortMessage());
+        textTitle.setText(eventPayload.comment.shortMessage());
 
-		TextView textDate = (TextView) findViewById(R.id.textDate);
+        TextView textDate = (TextView) findViewById(R.id.textDate);
 
-		String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+        String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
 
-		textDate.setText(timeString);
-	}
+        textDate.setText(timeString);
+    }
 
-	@Override
-	protected CommitCommentEventPayload convert(Gson gson, String s) {
-		return gson.fromJson(s, CommitCommentEventPayload.class);
-	}
+    @Override
+    protected CommitCommentEventPayload convert(Gson gson, String s) {
+        return gson.fromJson(s, CommitCommentEventPayload.class);
+    }
 }

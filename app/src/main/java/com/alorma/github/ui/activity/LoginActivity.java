@@ -32,12 +32,12 @@ import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.security.GitHub;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.AccountsAdapter;
 import com.alorma.gitskarios.basesdk.ApiClient;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.android.vending.billing.IInAppBillingService;
 
 import org.json.JSONException;
@@ -225,7 +225,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
 
         final Intent chooser = Intent.createChooser(intentList.remove(0), "Choose your favorite browser");
-        LabeledIntent[] extraIntents = intentList.toArray( new LabeledIntent[ intentList.size() ]);
+        LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
 
         startActivity(chooser);
