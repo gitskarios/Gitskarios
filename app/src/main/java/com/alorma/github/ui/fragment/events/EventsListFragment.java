@@ -134,15 +134,9 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
             String s = gson.toJson(item.payload);
             IssueCommentEventPayload payload = gson.fromJson(s, IssueCommentEventPayload.class);
             Issue issue = payload.issue;
-            IssueInfo issueInfo = new IssueInfo();
-            issueInfo.num = issue.number;
-            String fullName = item.repo.name;
-            String[] parts = fullName.split("/");
-            issueInfo.repoInfo = new RepoInfo();
-            issueInfo.repoInfo.owner = parts[0];
-            issueInfo.repoInfo.name = parts[1];
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(getActivity(), issueInfo);
-            startActivity(launcherIntent);
+            if (issue != null) {
+                startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(issue.html_url)));
+            }
         } else if (type == EventType.PushEvent) {
             String payload = gson.toJson(item.payload);
             PushEventPayload pushEventPayload = gson.fromJson(payload, PushEventPayload.class);

@@ -11,22 +11,24 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.GitCommitFiles;
 
+import java.util.List;
+
 /**
  * Created by Bernat on 22/12/2014.
  */
 public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.FileVH> {
 
-    private final Context context;
-    private final LayoutInflater inflater;
-    private final GitCommitFiles files;
-    private OnFileRequestListener onFileRequestListener;
-    private boolean firstTimeUsed = false;
+	private final Context context;
+	private final LayoutInflater inflater;
+	private final List<CommitFile> files;
+	private OnFileRequestListener onFileRequestListener;
+	private boolean firstTimeUsed = false;
 
-    public CommitFilesAdapter(Context context, GitCommitFiles files) {
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
-        this.files = files;
-    }
+	public CommitFilesAdapter(Context context, List<CommitFile> files) {
+		this.context = context;
+		this.inflater = LayoutInflater.from(context);
+		this.files = files;
+	}
 
     @Override
     public FileVH onCreateViewHolder(ViewGroup parent, int viewType) {

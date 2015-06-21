@@ -76,7 +76,9 @@
     <string name="no_comments">No comments</string>
     <string name="addComment">Add comment</string>
     <string name="closeIssue">Close issue</string>
+    <string name="closePullRequest">Close pull request</string>
     <string name="reopenIssue">Reopen issue</string>
+    <string name="reopenPullrequst">Reopen pull request</string>
     <string name="accept">Accept</string>
     <string name="row_private_repo">PRIVATE</string>
     <string name="tab_user_parent">User</string>
@@ -154,7 +156,7 @@
     <string name="collaborators_data">%d collaborators</string>
     <string name="repos_data_profile">Using %1$d of %2$d private repositories.</string>
     <string name="about_title">About</string>
-    <string name="pull_requests_subtitle">Pull requests on %s</string>
+    <string name="pull_requests_subtitle">PullRequest on %s</string>
     <string name="issue_subtitle">Issue on %s</string>
     <string name="no_prs_found">No pull requests found</string>
     <string name="action_search">Search</string>
@@ -183,6 +185,7 @@
 
     <string name="no_gists">No gists</string>
     <string name="num_of_files">%d files</string>
+    <string name="num_of_commits">%d commits</string>
     <string name="create_gist">Create new gist</string>
     <string name="Share">Share</string>
     <string name="send_file_to">Send %s</string>
@@ -295,4 +298,12 @@
     <string name="no_branches_download">No branch available to download</string>
     <string name="no_branches_change">No branch to change</string>
     <string name="action_repo_change_branch">Change branch</string>
+    <string name="pullrequest_status_merged">Merged</string>
+    <string name="action_merge_pullrequest">Merge</string>
+    <string name="pullrequest_merge_action_pending">Merge not computed</string>
+    <string name="pullrequest_merge_action_valid">Merge</string>
+    <string name="pullrequest_merge_action_invalid">Merge conflicts</string>
+    <string name="merge_message">Merge message</string>
+    <string name="merge_title">Merge</string>
+    <string name="merge_content">Merging commit %s</string>
 </resources>

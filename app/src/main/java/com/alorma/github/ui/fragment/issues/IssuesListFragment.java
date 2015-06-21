@@ -20,6 +20,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -281,8 +282,13 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
                 info.repoInfo = repoInfo;
                 info.num = item.number;
 
-                Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-                startActivity(intent);
+                if (item.pullRequest == null) {
+                    Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
+                    startActivity(intent);
+                } else {
+                    Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
+                    startActivity(intent);
+                }
             }
         }
     }

@@ -4,45 +4,53 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.sdk.Head;
+import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.ListContributors;
+import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.bean.issue.IssueStory;
-import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
+import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
-import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
+import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
+import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
+import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
+import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -59,7 +67,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener {
+public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<PullRequestStory>, View.OnClickListener, PullRequestDetailView.PullRequestActionsListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
@@ -69,7 +77,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private IssueInfo issueInfo;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
-    private IssueStory issueStory;
+    private PullRequestStory pullRequestStory;
     private int primary;
     private int accent;
     private int accentDark;
@@ -81,7 +89,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         bundle.putParcelable(ISSUE_INFO, issueInfo);
 
-        Intent intent = new Intent(context, IssueDetailActivity.class);
+        Intent intent = new Intent(context, PullRequestDetailActivity.class);
         intent.putExtras(bundle);
         return intent;
     }
@@ -89,7 +97,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_issue_detail);
+        setContentView(R.layout.activity_pullrequest_detail);
 
         if (getIntent().getExtras() != null) {
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
@@ -125,47 +133,52 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     protected void getContent() {
         super.getContent();
         refreshLayout.setRefreshing(true);
-        IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
-        issueStoryLoader.setOnResultCallback(this);
-        issueStoryLoader.execute();
+        PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(this, issueInfo);
+        pullRequestStoryLoader.setOnResultCallback(this);
+        pullRequestStoryLoader.execute();
     }
 
     @Override
-    public void onResponseOk(IssueStory issueStory, Response r) {
-        this.issueStory = issueStory;
+    public void onResponseOk(PullRequestStory pullRequestStory, Response r) {
+        this.pullRequestStory = pullRequestStory;
         applyIssue();
 
         refreshLayout.setRefreshing(false);
     }
 
     private void applyIssue() {
-        changeColor(issueStory.issue);
+        changeColor(pullRequestStory.pullRequest);
 
-        fab.setVisibility(issueStory.issue.locked ? View.GONE : View.VISIBLE);
-        fab.setOnClickListener(issueStory.issue.locked ? null : this);
+        fab.setVisibility(pullRequestStory.pullRequest.locked ? View.GONE : View.VISIBLE);
+        fab.setOnClickListener(pullRequestStory.pullRequest.locked ? null : this);
 
         if (getSupportActionBar() != null) {
             String issueName = issueInfo.repoInfo.name;
-            getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
+            getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
         }
 
         String status = getString(R.string.issue_status_open);
-        if (IssueState.closed == issueStory.issue.state) {
+        if (IssueState.closed == pullRequestStory.pullRequest.state) {
             status = getString(R.string.issue_status_close);
+        } else if (pullRequestStory.pullRequest.merged) {
+            status = getString(R.string.pullrequest_status_merged);
         }
-        setTitle("#" + issueStory.issue.number + " " + status);
-        IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo);
+        setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
+        PullRequestDetailAdapter adapter = new PullRequestDetailAdapter(this, getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, issueInfo.repoInfo.permissions, this);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
     }
 
-    private void changeColor(Issue issue) {
-        int colorState = getResources().getColor(R.color.issue_state_close);
-        int colorStateDark = getResources().getColor(R.color.issue_state_close_dark);
-        if (IssueState.open == issue.state) {
-            colorState = getResources().getColor(R.color.issue_state_open);
-            colorStateDark = getResources().getColor(R.color.issue_state_open_dark);
+    private void changeColor(PullRequest pullRequest) {
+        int colorState = getResources().getColor(R.color.pullrequest_state_close);
+        int colorStateDark = getResources().getColor(R.color.pullrequest_state_close_dark);
+        if (IssueState.open == pullRequest.state) {
+            colorState = getResources().getColor(R.color.pullrequest_state_open);
+            colorStateDark = getResources().getColor(R.color.pullrequest_state_open_dark);
+        } else if (pullRequest.merged) {
+            colorState = getResources().getColor(R.color.pullrequest_state_merged);
+            colorStateDark = getResources().getColor(R.color.pullrequest_state_merged);
         }
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
@@ -223,6 +236,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 }
             }
         });
+
         ValueAnimator toolbarHeight = null;
         if (getToolbar() != null) {
             toolbarHeight = ValueAnimator.ofInt(getToolbar().getMeasuredHeight(), getResources().getDimensionPixelSize(R.dimen.extra_action_bar_size), getToolbar().getMeasuredHeight());
@@ -251,6 +265,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     colorAnimationFab,
                     colorAnimationFabPressed);
         }
+
         final int finalColorState = colorState;
         final int finalColorStateDark = colorStateDark;
         animatorSet.addListener(new Animator.AnimatorListener() {
@@ -307,7 +322,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public void onClick(View view) {
         if (view.getId() == fab.getId()) {
-            if (!issueStory.issue.locked) {
+            if (!pullRequestStory.pullRequest.locked) {
                 onAddComment();
             }
         }
@@ -315,19 +330,19 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (this.issueStory != null) {
+        if (this.pullRequestStory != null) {
             if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
-                getMenuInflater().inflate(R.menu.issue_detail, menu);
+                getMenuInflater().inflate(R.menu.pullrequest_detail, menu);
             } else {
-                getMenuInflater().inflate(R.menu.issue_detail_no_permissions, menu);
+                getMenuInflater().inflate(R.menu.pullrequest_detail_no_permissions, menu);
             }
 
-            MenuItem item = menu.findItem(R.id.share_issue);
+            MenuItem itemShare = menu.findItem(R.id.share_issue);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
             } else {
-                item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
             }
 
         }
@@ -336,7 +351,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (this.issueStory != null) {
+        if (this.pullRequestStory != null) {
 
             if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
                 if (menu.findItem(R.id.action_close_issue) != null) {
@@ -345,12 +360,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 if (menu.findItem(R.id.action_reopen_issue) != null) {
                     menu.removeItem(R.id.action_reopen_issue);
                 }
-                if (issueStory.issue.state == IssueState.closed) {
-                    MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+                if (pullRequestStory.pullRequest.state == IssueState.closed) {
+                    MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenPullrequst));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 } else {
-
-                    MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+                    MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closePullRequest));
                     menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
             }
@@ -364,12 +378,12 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(Intent.EXTRA_SUBJECT, issueInfo.toString());
-        intent.putExtra(Intent.EXTRA_TEXT, issueStory.issue.html_url);
+        intent.putExtra(Intent.EXTRA_TEXT, pullRequestStory.pullRequest.html_url);
         return intent;
     }
 
     public void onAddComment() {
-        Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
+        Intent intent = NewIssueCommentActivity.launchIntent(PullRequestDetailActivity.this, issueInfo);
         startActivityForResult(intent, NEW_COMMENT_REQUEST);
     }
 
@@ -398,7 +412,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 openLabels();
                 break;
             case R.id.share_issue:
-                if (issueStory != null && issueStory.issue != null) {
+                if (pullRequestStory != null && pullRequestStory.pullRequest != null) {
                     Intent intent = getShareIntent();
                     startActivity(intent);
                 }
@@ -416,6 +430,46 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         showProgressDialog(R.style.SpotDialog_loading_milestones);
     }
 
+    @Override
+    public void mergeRequest(final Head head, Head base) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.title(R.string.merge_title);
+        builder.content(head.label);
+        builder.input(R.string.merge_message, 0, false, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+                Toast.makeText(PullRequestDetailActivity.this, charSequence, Toast.LENGTH_SHORT).show();
+
+
+                merge(charSequence.toString(), head.sha, issueInfo);
+            }
+        });
+        builder.inputType(InputType.TYPE_CLASS_TEXT);
+        builder.show();
+    }
+
+    private void merge(String message, String sha, IssueInfo issueInfo) {
+        showProgressDialog(R.style.SpotDialog_loading_merging);
+        MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
+        mergeButtonRequest.commit_message = message;
+        mergeButtonRequest.sha = sha;
+        MergePullRequestClient mergePullRequestClient = new MergePullRequestClient(this, issueInfo, mergeButtonRequest);
+        mergePullRequestClient.setOnResultCallback(new BaseClient.OnResultCallback<MergeButtonResponse>() {
+            @Override
+            public void onResponseOk(MergeButtonResponse mergeButtonResponse, Response r) {
+                hideProgressDialog();
+                reload();
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+                hideProgressDialog();
+                Toast.makeText(PullRequestDetailActivity.this, "Merge cannot be performed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mergePullRequestClient.execute();
+    }
+
     private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
         @Override
         public void onResponseOk(final List<Milestone> milestones, Response r) {
@@ -431,8 +485,8 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
                 int selectedMilestone = -1;
                 for (int i = 0; i < milestones.size(); i++) {
-                    if (IssueDetailActivity.this.issueStory.issue.milestone != null) {
-                        String currentMilestone = IssueDetailActivity.this.issueStory.issue.milestone.title;
+                    if (PullRequestDetailActivity.this.pullRequestStory.pullRequest.milestone != null) {
+                        String currentMilestone = PullRequestDetailActivity.this.pullRequestStory.pullRequest.milestone.title;
                         if (currentMilestone != null && currentMilestone.equals(milestones.get(i).title)) {
                             selectedMilestone = i;
                             break;
@@ -440,7 +494,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     }
                 }
 
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this)
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(PullRequestDetailActivity.this)
                         .title(R.string.select_milestone)
                         .items(itemsMilestones)
                         .itemsCallbackSingleChoice(selectedMilestone, new MaterialDialog.ListCallbackSingleChoice() {
@@ -563,9 +617,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             }
 
             Collections.reverse(users);
-            UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(IssueDetailActivity.this, users);
+            UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(PullRequestDetailActivity.this, users);
 
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(PullRequestDetailActivity.this);
             builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
                 @Override
                 public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
@@ -603,7 +657,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
-        EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
+        EditIssueClient client = new EditIssueClient(PullRequestDetailActivity.this, issueInfo, editIssueRequestDTO);
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
@@ -613,7 +667,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             @Override
             public void onFail(RetrofitError error) {
-                ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
+                ErrorHandler.onError(PullRequestDetailActivity.this, "Issue detail", error);
                 hideProgressDialog();
             }
         });
@@ -643,7 +697,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 List<Integer> positionsSelectedLabels = new ArrayList<>();
 
                 List<String> currentLabels = new ArrayList<>();
-                for (Label label : issueStory.issue.labels) {
+                for (Label label : pullRequestStory.pullRequest.labels) {
                     currentLabels.add(label.name);
                 }
 
@@ -659,7 +713,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
                 LabelsCallback.this.selectedLabels = selectedLabels.toArray(new String[selectedLabels.size()]);
 
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(PullRequestDetailActivity.this);
                 builder.items(items.toArray(new String[items.size()]));
                 builder.alwaysCallMultiChoiceCallback();
                 builder.itemsCallbackMultiChoice(positionsSelectedLabels.toArray(new Integer[positionsSelectedLabels.size()]), new MaterialDialog.ListCallbackMultiChoice() {
@@ -700,7 +754,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         @Override
         public void onFail(RetrofitError error) {
-            ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
+            ErrorHandler.onError(PullRequestDetailActivity.this, "Issue detail", error);
         }
     }
 
@@ -761,13 +815,13 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void changeIssueState(IssueState state) {
-        ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
+        /*ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
         changeIssueStateClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
                 if (issue != null) {
                     getContent();
-                    IssueDetailActivity.this.issueStory.issue = issue;
+                    PullRequestDetailActivity.this.pullRequestStory.pullRequest = issue;
                     shouldRefreshOnBack = true;
                 }
             }
@@ -777,7 +831,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             }
         });
-        changeIssueStateClient.execute();
+        changeIssueStateClient.execute();*/
     }
 
     @Override

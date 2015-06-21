@@ -17,6 +17,7 @@ import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
 
@@ -117,8 +118,10 @@ public class UrlsManager {
                     intent = manageCommit(uri);
                     break;
                 case URI_ISSUE:
-                case URI_PULL_REQUEST:
                     intent = manageIssue(uri);
+                    break;
+                case URI_PULL_REQUEST:
+                    intent = manageIssuePullRequest(uri);
                     break;
                 case URI_RELEASES_TAG:
                 case URI_TAGS:
@@ -227,6 +230,18 @@ public class UrlsManager {
         info.num = Integer.parseInt(lastPathSegment);
 
         return IssueDetailActivity.createLauncherIntent(context, info);
+    }
+
+    private Intent manageIssuePullRequest(Uri uri) {
+        IssueInfo info = new IssueInfo();
+
+        info.repoInfo = extractRepo(uri);
+
+        String lastPathSegment = uri.getLastPathSegment();
+
+        info.num = Integer.parseInt(lastPathSegment);
+
+        return PullRequestDetailActivity.createLauncherIntent(context, info);
     }
 
     private Intent manageFile(Uri uri) {
