@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.alorma.diff.lib.DiffTextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
-import com.alorma.github.ui.view.GitChangeStatusView;
 import com.alorma.github.utils.TextUtils;
 
 import java.io.IOException;

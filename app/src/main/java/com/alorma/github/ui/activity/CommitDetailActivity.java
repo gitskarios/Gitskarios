@@ -15,7 +15,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
 import com.alorma.github.ui.view.GitChangeStatusColorsView;
-import com.alorma.github.ui.view.GitChangeStatusView;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import retrofit.RetrofitError;
