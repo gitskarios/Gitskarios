@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class GeneralReposFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.tabStrip);
+        ViewCompat.setElevation(slidingTabLayout, 4);
 
         slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(getActivity()));
         slidingTabLayout.setDividerColors(getResources().getColor(R.color.primary_dark_alpha));

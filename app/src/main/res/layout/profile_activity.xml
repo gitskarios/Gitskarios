@@ -11,7 +11,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="?attr/colorPrimary"
+        android:background="?colorPrimary"
         android:id="@id/top">
 
         <ImageView
@@ -24,7 +24,7 @@
             android:id="@id/toolbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
+            android:minHeight="?actionBarSize"
             android:background="@android:color/transparent"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         android:paddingTop="184dp"
         android:clipToPadding="false"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="?actionBarSize"
         android:id="@id/cardsContainerScroll">
 
         <LinearLayout

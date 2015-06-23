@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/textFileName"
                 style="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?attr/colorControlNormal"
+                android:textColor="?colorControlNormal"
                 tools:text="MyFile.java" />
 
             <ImageView

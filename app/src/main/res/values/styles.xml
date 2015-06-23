@@ -13,6 +13,10 @@
         <item name="android:textColorPrimary">@color/black_semi_transparent</item>
         <item name="android:textColorSecondary">@color/accent</item>
     </style>
+    <style name="CommitContentRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/black_semi_transparent</item>
+        <item name="android:textColorSecondary">@color/accent</item>
+    </style>
 
     <style name="fab">
         <item name="android:layout_width">56dp</item>

@@ -12,7 +12,7 @@
         tools:context="com.alorma.github.ui.activity.LoginActivity"
         android:orientation="vertical"
         android:id="@+id/loginLayout"
-        android:background="?attr/colorPrimary">
+        android:background="?colorPrimary">
 
         <include layout="@layout/toolbar" />
 

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -47,6 +48,7 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
         setTitle("");
 
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
+        ViewCompat.setElevation(slidingTabLayout, 4);
 
         slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
         slidingTabLayout.setDividerColors(Color.TRANSPARENT);

@@ -42,7 +42,7 @@
             android:layout_alignParentTop="true"
             android:paddingTop="0dp"
             style="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?attr/colorPrimaryDark"
+            android:textColor="?colorPrimaryDark"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/infos"

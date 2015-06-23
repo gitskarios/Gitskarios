@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/textFileName"
             style="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?colorPrimary"
             tools:text="MyFile.java"
             android:layout_toLeftOf="@+id/gistPrivate"
             android:layout_toStartOf="@+id/gistPrivate"

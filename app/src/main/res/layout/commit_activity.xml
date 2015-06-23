@@ -6,42 +6,16 @@
 
     <include layout="@layout/toolbar" />
 
-    <com.alorma.github.ui.view.GitChangeStatusColorsView
+    <com.alorma.github.ui.view.SlidingTabLayout
+        android:id="@+id/tabStrip"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:id="@+id/commitNumbers"
-        android:paddingLeft="@dimen/gapMedium"
-        android:paddingRight="@dimen/gapMedium"/>
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary"/>
 
-    <FrameLayout
-        android:id="@+id/content"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:orientation="horizontal">
-
-                <com.alorma.github.ui.view.SlidingTabLayout
-                    android:id="@+id/tabStrip"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-            </android.support.v4.view.ViewPager>
-        </LinearLayout>
-    </FrameLayout>
+    </android.support.v4.view.ViewPager>
 </LinearLayout>

@@ -2,8 +2,14 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
@@ -13,9 +19,15 @@ import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
+import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
 import com.alorma.github.ui.view.GitChangeStatusColorsView;
+import com.alorma.github.ui.view.SlidingTabLayout;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -25,9 +37,10 @@ import retrofit.client.Response;
  */
 public class CommitDetailActivity extends BackActivity implements CommitFilesAdapter.OnFileRequestListener, BaseClient.OnResultCallback<Commit> {
 
-    private CommitFilesFragment commitFilesFragment;
     private CommitInfo info;
-    private GitChangeStatusColorsView numbersView;
+
+    private List<Fragment> listFragments;
+    private CommitFilesFragment commitFilesFragment;
 
     public static Intent launchIntent(Context context, CommitInfo commitInfo) {
         Bundle b = new Bundle();
@@ -51,13 +64,26 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
             getContent();
 
-            numbersView = (GitChangeStatusColorsView) findViewById(R.id.commitNumbers);
+            SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
+            ViewCompat.setElevation(slidingTabLayout, 4);
+
+            slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
+            slidingTabLayout.setDividerColors(Color.TRANSPARENT);
+
+            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+
+            listFragments = new ArrayList<>();
 
             commitFilesFragment = CommitFilesFragment.newInstance(info);
             commitFilesFragment.setOnFileRequestListener(this);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content, commitFilesFragment);
-            ft.commit();
+            listFragments.add(commitFilesFragment);
+
+            CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
+            listFragments.add(commitCommentsFragment);
+
+            viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+            slidingTabLayout.setViewPager(viewPager);
+
         }
     }
 
@@ -73,10 +99,6 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
     public void onResponseOk(Commit commit, Response r) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setSubtitle(commit.shortSha());
-        }
-
-        if (numbersView != null) {
-            numbersView.setNumbers(commit.stats);
         }
 
         if (commitFilesFragment != null) {
@@ -97,4 +119,36 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
         Intent launcherIntent = FileActivity.createLauncherIntent(this, info, false);
         startActivity(launcherIntent);
     }
+
+    private class NavigationPagerAdapter extends FragmentPagerAdapter {
+
+        private List<Fragment> listFragments;
+
+        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
+            super(fm);
+            this.listFragments = listFragments;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return listFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return listFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.commits_detail_files);
+                case 1:
+                    return getString(R.string.commits_detail_comments);
+            }
+            return "";
+        }
+    }
+
 }

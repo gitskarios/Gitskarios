@@ -90,14 +90,14 @@
                 <TextView
                     android:id="@+id/textAssignee"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?actionBarSize"
                     style="@style/new_issue_push_access_row"
                     android:layout_marginLeft="@dimen/gapLarge" />
 
                 <TextView
                     android:id="@+id/textMilestone"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?actionBarSize"
                     style="@style/new_issue_push_access_row"
                     android:layout_marginLeft="@dimen/gapLarge"/>
 
@@ -111,7 +111,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?actionBarSize"
                     style="@style/new_issue_push_access_row"
                     android:id="@+id/textCommits"
                     android:background="?selectableItemBackground"
@@ -119,7 +119,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?actionBarSize"
                     style="@style/new_issue_push_access_row"
                     android:id="@+id/textFiles"
                     android:background="?selectableItemBackground"

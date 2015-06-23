@@ -309,4 +309,8 @@
     <string name="commit_file_add_del"><![CDATA[<b>%1$d</b> additions and <b>%2$d</b> deletions]]></string>
     <string name="commit_file_add"><![CDATA[<b>%1$d</b> additions]]></string>
     <string name="commit_file_del"><![CDATA[<b>%1$d</b> deletions]]></string>
+    <string name="commits_detail_files">Files</string>
+    <string name="no_commit_comments">No comments</string>
+    <string name="commits_detail_comments">Comments</string>
+    <string name="reply">Reply</string>
 </resources>

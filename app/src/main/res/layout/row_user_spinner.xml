@@ -28,7 +28,7 @@
             android:paddingTop="0dp"
             android:textSize="@dimen/textSizeXLarge"
             android:fontFamily="sans-serif-light"
-            android:textColor="?attr/colorPrimaryDark"
+            android:textColor="?colorPrimaryDark"
             android:layout_toEndOf="@+id/authorAvatar"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/authorAvatar" />

@@ -4,19 +4,19 @@
 
     <item android:state_selected="true">
         <shape android:shape="oval">
-            <solid android:color="?attr/colorAccent" />
+            <solid android:color="?colorAccent" />
         </shape>
     </item>
 
     <item android:state_pressed="true">
         <shape android:shape="oval">
-            <solid android:color="?attr/colorAccent" />
+            <solid android:color="?colorAccent" />
         </shape>
     </item>
 
     <item>
         <shape android:shape="oval">
-            <solid android:color="?attr/colorPrimary" />
+            <solid android:color="?colorPrimary" />
         </shape>
     </item>
 

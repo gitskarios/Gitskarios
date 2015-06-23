@@ -19,6 +19,6 @@
         android:layout_width="4dp"
         android:layout_height="match_parent"
         android:layout_gravity="top|bottom|right"
-        android:background="?attr/colorAccent"/>
+        android:background="?colorAccent"/>
 
 </FrameLayout>

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ public class PeopleActivity extends BackActivity {
         setTitle(R.string.navigation_people);
 
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
+        ViewCompat.setElevation(slidingTabLayout, 4);
 
         slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
         slidingTabLayout.setDividerColors(Color.TRANSPARENT);

@@ -52,7 +52,7 @@
                 android:id="@id/toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:minHeight="?attr/actionBarSize"
+                android:minHeight="?actionBarSize"
                 android:background="@color/gray_github_light_selected"
                 app:theme="@style/GistFileRowToolbar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
