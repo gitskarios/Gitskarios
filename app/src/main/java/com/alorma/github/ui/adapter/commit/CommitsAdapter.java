@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.commit;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -56,6 +57,8 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
         TextView title = (TextView) v.findViewById(R.id.title);
         TextView user = (TextView) v.findViewById(R.id.user);
         TextView sha = (TextView) v.findViewById(R.id.sha);
+        TextView textNums = (TextView) v.findViewById(R.id.textNums);
+        TextView numFiles = (TextView) v.findViewById(R.id.numFiles);
         ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
 
         Commit commit = getItem(position);
@@ -98,28 +101,39 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
         }
 
         if (commit.sha != null) {
-            sha.setText(commit.sha.substring(0, 8));
+            sha.setText(commit.shortSha());
         }
 
-        if (commit.commit != null) {
+        textNums.setText("");
 
-			/*if (commit.commit.author != null && commit.commit.author.date != null) {
+        if (commit.stats != null) {
+            String textCommitsStr = null;
+            if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
+                textCommitsStr = textNums.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
+                textNums.setVisibility(View.VISIBLE);
+            } else if (commit.stats.additions > 0) {
+                textCommitsStr = textNums.getContext().getString(R.string.commit_file_add, commit.stats.additions);
+                textNums.setVisibility(View.VISIBLE);
+            } else if (commit.stats.deletions > 0) {
+                textCommitsStr = textNums.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
+                textNums.setVisibility(View.VISIBLE);
+            } else {
+                textNums.setVisibility(View.GONE);
+            }
 
-				String name = "";
-				if (commit.author != null && commit.author.login != null) {
-					name = commit.author.login;
-				} else if (commit.commit.author != null && commit.commit.author.name != null) {
-					name = commit.commit.author.name;
-				}
-
-				user.setText(getTimeString(name, commit.commit.author.date));
-
-			} else if (commit.author != null) {
-				user.setText(commit.author.login);
-			}*/
+            if (textCommitsStr != null) {
+                textNums.setText(Html.fromHtml(textCommitsStr));
+            }
+        } else {
+            textNums.setVisibility(View.GONE);
         }
 
-
+        if (commit.files != null && commit.files.size() > 0) {
+            numFiles.setVisibility(View.VISIBLE);
+            numFiles.setText(numFiles.getContext().getString(R.string.num_of_files, commit.files.size()));
+        } else {
+            numFiles.setVisibility(View.GONE);
+        }
         return v;
     }
 

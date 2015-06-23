@@ -60,23 +60,6 @@ public class PullRequestEventView extends GithubEventView<PullRequestEventPayloa
 
             authorName.setText(Html.fromHtml(text));
 
-            int commits = eventPayload.pull_request.commits;
-            int additions = eventPayload.pull_request.additions;
-            int deletions = eventPayload.pull_request.deletions;
-
-            String textCommitsStr;
-            if (additions > 0 && deletions > 0) {
-                textCommitsStr = getContext().getString(R.string.event_pull_request_commits_add_del, commits, additions, deletions);
-            } else if (additions > 0) {
-                textCommitsStr = getContext().getString(R.string.event_pull_request_commits_add, commits, additions);
-            } else if (deletions > 0) {
-                textCommitsStr = getContext().getString(R.string.event_pull_request_commits_del, commits, deletions);
-            } else {
-                textCommitsStr = getContext().getString(R.string.event_pull_request_commits, commits);
-            }
-
-            textCommits.setText(Html.fromHtml(textCommitsStr));
-            textCommits.setVisibility(View.VISIBLE);
         } else {
             String text = getContext().getString(textRes,
                     event.actor.login, eventPayload.action, event.repo.name, eventPayload.pull_request.number);
@@ -94,6 +77,23 @@ public class PullRequestEventView extends GithubEventView<PullRequestEventPayloa
 
         textTitle.setText(eventPayload.pull_request.title);
 
+        int commits = eventPayload.pull_request.commits;
+        int additions = eventPayload.pull_request.additions;
+        int deletions = eventPayload.pull_request.deletions;
+
+        String textCommitsStr;
+        if (additions > 0 && deletions > 0) {
+            textCommitsStr = getContext().getString(R.string.event_pull_request_commits_add_del, commits, additions, deletions);
+        } else if (additions > 0) {
+            textCommitsStr = getContext().getString(R.string.event_pull_request_commits_add, commits, additions);
+        } else if (deletions > 0) {
+            textCommitsStr = getContext().getString(R.string.event_pull_request_commits_del, commits, deletions);
+        } else {
+            textCommitsStr = getContext().getString(R.string.event_pull_request_commits, commits);
+        }
+
+        textCommits.setText(Html.fromHtml(textCommitsStr));
+        textCommits.setVisibility(View.VISIBLE);
 
         TextView textDate = (TextView) findViewById(R.id.textDate);
 
