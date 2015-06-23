@@ -35,6 +35,7 @@ public class ReposFragment extends BaseReposListFragment {
     @Override
     protected void executeRequest() {
         super.executeRequest();
+
         GithubReposClient client = new UserReposClient(getActivity(), username);
         client.setOnResultCallback(this);
         client.execute();

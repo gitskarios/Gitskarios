@@ -30,8 +30,6 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-
 /**
  * Created by Bernat on 05/08/2014.
  */
@@ -50,7 +48,6 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
     private ValueAnimator animator;
     private boolean fabVisible;
     private ListView listView;
-    private SmoothProgressBar progressBar;
     private UpdateReceiver updateReceiver;
     private ArrayAdapter<T> listAdapter;
 
@@ -69,8 +66,6 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 
         setupListView(view);
 
-        progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
-
         emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
         emptyText = (TextView) view.findViewById(R.id.emptyText);
         emptyLy = view.findViewById(R.id.emptyLayout);
@@ -82,6 +77,9 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 
         swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
+        if (swipe != null) {
+            swipe.setColorSchemeColors(getResources().getColor(R.color.accent));
+        }
         swipe.setOnRefreshListener(this);
         executeRequest();
     }
@@ -96,23 +94,23 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment implement
 
     protected void startRefresh() {
         if (swipe != null) {
-            swipe.setRefreshing(true);
-        }
-
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.progressiveStart();
+            swipe.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipe.setRefreshing(true);
+                }
+            });
         }
     }
 
     protected void stopRefresh() {
         if (swipe != null) {
-            swipe.setRefreshing(false);
-        }
-
-        if (progressBar != null) {
-            progressBar.progressiveStop();
-            progressBar.setVisibility(View.INVISIBLE);
+            swipe.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipe.setRefreshing(false);
+                }
+            });
         }
     }
 

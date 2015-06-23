@@ -25,7 +25,6 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -41,7 +40,6 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     private TextView htmlContentView;
 
     private UpdateReceiver updateReceiver;
-    private SmoothProgressBar progressBar;
 
     public static ReadmeFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -66,12 +64,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
         if (getArguments() != null) {
             loadArguments();
 
-            progressBar = (SmoothProgressBar) view.findViewById(R.id.progress);
             htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
-
-            int color = AttributesUtils.getPrimaryColor(getActivity());
-
-            progressBar.setSmoothProgressDrawableColor(color);
 
             getContent();
         }
@@ -84,12 +77,6 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     }
 
     private void getContent() {
-
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.progressiveStart();
-        }
-
         GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
         repoMarkdownClient.setCallback(this);
         repoMarkdownClient.execute();
@@ -97,12 +84,6 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
     @Override
     public void onResponseOk(final String htmlContent, Response r) {
-
-        if (progressBar != null) {
-            progressBar.progressiveStop();
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-
         if (htmlContent != null) {
             String htmlCode = HtmlUtils.format(htmlContent).toString();
             HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
@@ -116,10 +97,7 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
 
     @Override
     public void onFail(RetrofitError error) {
-        if (progressBar != null) {
-            progressBar.progressiveStop();
-            progressBar.setVisibility(View.INVISIBLE);
-        }
+// TODO HTML readme cannot be shown
     }
 
     @Override
