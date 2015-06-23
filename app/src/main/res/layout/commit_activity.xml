@@ -6,7 +6,7 @@
 
     <include layout="@layout/toolbar" />
 
-    <com.alorma.github.ui.view.GitChangeStatusView
+    <com.alorma.github.ui.view.GitChangeStatusColorsView
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:id="@+id/commitNumbers"

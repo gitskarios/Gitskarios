@@ -14,6 +14,7 @@ import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
+import com.alorma.github.ui.view.GitChangeStatusColorsView;
 import com.alorma.github.ui.view.GitChangeStatusView;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
@@ -27,7 +28,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
     private CommitFilesFragment commitFilesFragment;
     private CommitInfo info;
-    private GitChangeStatusView numbersView;
+    private GitChangeStatusColorsView numbersView;
 
     public static Intent launchIntent(Context context, CommitInfo commitInfo) {
         Bundle b = new Bundle();
@@ -51,7 +52,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
             getContent();
 
-            numbersView = (GitChangeStatusView) findViewById(R.id.commitNumbers);
+            numbersView = (GitChangeStatusColorsView) findViewById(R.id.commitNumbers);
 
             commitFilesFragment = CommitFilesFragment.newInstance(info);
             commitFilesFragment.setOnFileRequestListener(this);

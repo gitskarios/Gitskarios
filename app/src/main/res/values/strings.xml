@@ -306,4 +306,7 @@
     <string name="merge_message">Merge message</string>
     <string name="merge_title">Merge</string>
     <string name="merge_content">Merging commit %s</string>
+    <string name="commit_file_add_del"><![CDATA[<b>%1$d</b> additions and <b>%2$d</b> deletions]]></string>
+    <string name="commit_file_add"><![CDATA[<b>%1$d</b> additions]]></string>
+    <string name="commit_file_del"><![CDATA[<b>%1$d</b> deletions]]></string>
 </resources>

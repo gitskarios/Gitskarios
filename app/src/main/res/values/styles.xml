@@ -6,8 +6,11 @@
         <item name="color">@color/white</item>
     </style>
 
-
     <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorSecondary">@color/accent</item>
+    </style>
+    <style name="FileRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/black_semi_transparent</item>
         <item name="android:textColorSecondary">@color/accent</item>
     </style>
 
