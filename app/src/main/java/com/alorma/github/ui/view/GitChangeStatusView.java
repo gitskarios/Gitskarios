@@ -56,9 +56,15 @@ public class GitChangeStatusView extends LinearLayout {
 
     public void setNumbers(GitChangeStatus numbers) {
         this.numbers = numbers;
-        textAdditions.setText(getResources().getString(R.string.commit_additions, numbers.additions));
-        textDeletions.setText(getResources().getString(R.string.commit_deletions, numbers.deletions));
-        colorsView.setNumbers(numbers);
+        if (numbers != null) {
+            if (numbers.additions > 0) {
+                textAdditions.setText(getResources().getString(R.string.commit_additions, numbers.additions));
+            }
+            if (numbers.deletions > 0) {
+                textDeletions.setText(getResources().getString(R.string.commit_deletions, numbers.deletions));
+            }
+            colorsView.setNumbers(numbers);
+        }
     }
 
     public GitChangeStatus getNumbers() {

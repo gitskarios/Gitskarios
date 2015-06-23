@@ -45,8 +45,6 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
         }
 
         holder.gitChangeStatusView.setNumbers(commitFile);
-
-        holder.fileStatus.setText(commitFile.status);
     }
 
     @Override
@@ -61,15 +59,12 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
     public class FileVH extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView fileName;
-
-        public TextView fileStatus;
         private GitChangeStatusView gitChangeStatusView;
 
         public FileVH(View itemView) {
             super(itemView);
             fileName = (TextView) itemView.findViewById(R.id.fileName);
             gitChangeStatusView = (GitChangeStatusView) itemView.findViewById(R.id.commitNumbers);
-            fileStatus = (TextView) itemView.findViewById(R.id.fileStatus);
             itemView.setOnClickListener(this);
         }
 

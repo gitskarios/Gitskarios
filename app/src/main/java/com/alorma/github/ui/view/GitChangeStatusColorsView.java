@@ -89,7 +89,7 @@ public class GitChangeStatusColorsView extends View {
             if (status.additions > 0 && status.deletions > 0 && total > 0) {
                 canvas.getClipBounds(rectView);
 
-                int additionsPixels = ((rectView.right - rectView.left - leftRightPadding) / total) * status.additions;
+                int additionsPixels = (int) (((float)(rectView.right - rectView.left - leftRightPadding) / (float) total) * status.additions);
 
                 canvas.drawRect(rectView.left + getLeftPaddingOffset(), rectView.top + getTopPaddingOffset(), additionsPixels, rectView.bottom - getBottomPaddingOffset(), paintAdditions);
                 canvas.drawRect(additionsPixels, rectView.top + getTopPaddingOffset(), rectView.right - getRightPaddingOffset(), rectView.bottom - getBottomPaddingOffset(), paintDeletions);
