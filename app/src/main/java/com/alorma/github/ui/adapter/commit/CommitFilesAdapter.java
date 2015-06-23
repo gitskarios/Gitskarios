@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
+import com.alorma.github.sdk.bean.dto.response.GitChangeStatus;
 import com.alorma.github.sdk.bean.dto.response.GitCommitFiles;
+import com.alorma.github.ui.view.GitChangeStatusView;
 
 import java.util.List;
 
@@ -22,7 +24,6 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 	private final LayoutInflater inflater;
 	private final List<CommitFile> files;
 	private OnFileRequestListener onFileRequestListener;
-	private boolean firstTimeUsed = false;
 
 	public CommitFilesAdapter(Context context, List<CommitFile> files) {
 		this.context = context;
@@ -43,18 +44,9 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
             holder.fileName.setText(fileName);
         }
 
-        String additions = this.context.getResources().getString(R.string.commit_additions, commitFile.additions);
-        String deletions = this.context.getResources().getString(R.string.commit_deletions, commitFile.deletions);
-
-        holder.txtAdditions.setText(additions);
-        holder.txtDeletions.setText(deletions);
+        holder.gitChangeStatusView.setNumbers(commitFile);
 
         holder.fileStatus.setText(commitFile.status);
-
-        if (onFileRequestListener != null && onFileRequestListener.openFirstFile() && position == 0 && !firstTimeUsed) {
-            firstTimeUsed = true;
-            onFileRequestListener.onFileRequest(commitFile);
-        }
     }
 
     @Override
@@ -69,15 +61,14 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
     public class FileVH extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView fileName;
-        public TextView txtAdditions;
-        public TextView txtDeletions;
+
         public TextView fileStatus;
+        private GitChangeStatusView gitChangeStatusView;
 
         public FileVH(View itemView) {
             super(itemView);
             fileName = (TextView) itemView.findViewById(R.id.fileName);
-            txtAdditions = (TextView) itemView.findViewById(R.id.additions);
-            txtDeletions = (TextView) itemView.findViewById(R.id.deletions);
+            gitChangeStatusView = (GitChangeStatusView) itemView.findViewById(R.id.commitNumbers);
             fileStatus = (TextView) itemView.findViewById(R.id.fileStatus);
             itemView.setOnClickListener(this);
         }
@@ -92,7 +83,5 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 
     public interface OnFileRequestListener {
         void onFileRequest(CommitFile file);
-
-        boolean openFirstFile();
     }
 }

@@ -6,24 +6,32 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
+import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
-import com.alorma.github.ui.fragment.FileFragment;
-import com.alorma.github.ui.fragment.commit.SingleCommitFragment;
+import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
+import com.alorma.github.ui.view.GitChangeStatusView;
+import com.alorma.gitskarios.basesdk.client.BaseClient;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/12/2014.
  */
-public class CommitDetailActivity extends BackActivity implements CommitFilesAdapter.OnFileRequestListener {
+public class CommitDetailActivity extends BackActivity implements CommitFilesAdapter.OnFileRequestListener, BaseClient.OnResultCallback<Commit> {
 
-    private boolean tablet;
+    private CommitFilesFragment commitFilesFragment;
+    private CommitInfo info;
+    private GitChangeStatusView numbersView;
 
     public static Intent launchIntent(Context context, CommitInfo commitInfo) {
         Bundle b = new Bundle();
-        b.putParcelable(SingleCommitFragment.INFO, commitInfo);
+        b.putParcelable(CommitFilesFragment.INFO, commitInfo);
 
         Intent intent = new Intent(context, CommitDetailActivity.class);
         intent.putExtras(b);
@@ -37,29 +45,48 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
         setContentView(R.layout.commit_activity);
 
         if (getIntent().getExtras() != null) {
-            CommitInfo info = getIntent().getExtras().getParcelable(SingleCommitFragment.INFO);
+            info = getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
 
-            setTitle(getString(R.string.title_activity_commit_detail, info.sha));
+            setTitle(String.valueOf(info.repoInfo));
 
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setSubtitle(String.valueOf(info.repoInfo));
-            }
+            getContent();
 
-            tablet = findViewById(R.id.detail) != null;
+            numbersView = (GitChangeStatusView) findViewById(R.id.commitNumbers);
 
-            SingleCommitFragment singleCommitFragment = SingleCommitFragment.newInstance(info);
-            singleCommitFragment.setOnFileRequestListener(this);
-
-            FileFragment fileFragment = new FileFragment();
-
+            commitFilesFragment = CommitFilesFragment.newInstance(info);
+            commitFilesFragment.setOnFileRequestListener(this);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content, singleCommitFragment);
-            if (tablet) {
-                ft.replace(R.id.detail, fileFragment);
-            }
+            ft.replace(R.id.content, commitFilesFragment);
             ft.commit();
-
         }
+    }
+
+    @Override
+    protected void getContent() {
+        super.getContent();
+        GetSingleCommitClient client = new GetSingleCommitClient(this, info);
+        client.setOnResultCallback(this);
+        client.execute();
+    }
+
+    @Override
+    public void onResponseOk(Commit commit, Response r) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(commit.shortSha());
+        }
+
+        if (numbersView != null) {
+            numbersView.setNumbers(commit.stats);
+        }
+
+        if (commitFilesFragment != null) {
+            commitFilesFragment.setFiles(commit.files);
+        }
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+
     }
 
     @Override
@@ -67,20 +94,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
         FileInfo info = new FileInfo();
         info.content = file.patch;
         info.name = file.getFileName();
-        if (tablet) {
-            FileFragment fileFragment = FileFragment.getInstance(info, false);
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.detail, fileFragment);
-            ft.commit();
-        } else {
-            Intent launcherIntent = FileActivity.createLauncherIntent(this, info, tablet);
-            startActivity(launcherIntent);
-        }
-    }
-
-    @Override
-    public boolean openFirstFile() {
-        return tablet;
+        Intent launcherIntent = FileActivity.createLauncherIntent(this, info, false);
+        startActivity(launcherIntent);
     }
 }

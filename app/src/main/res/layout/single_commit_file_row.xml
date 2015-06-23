@@ -1,53 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:padding="8dp"
-              android:divider="@drawable/divider_inside_car"
-              android:showDividers="end"
-              android:foreground="?android:selectableItemBackground">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divider_inside_car"
+    android:foreground="?android:selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:showDividers="end">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/fileName"
-        android:textSize="@dimen/textSizeLarge"/>
-
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/textSizeLarge" />
+
+    <TextView
         android:id="@+id/fileStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
         android:gravity="right"
         android:textColor="@color/primary"
-        android:textSize="@dimen/textSizeMedium"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:layout_marginBottom="@dimen/gapMedium"/>
+        android:textSize="@dimen/textSizeMedium" />
 
-    <LinearLayout
+    <com.alorma.github.ui.view.GitChangeStatusView
+        android:id="@+id/commitNumbers"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:drawableLeft="@drawable/commit_stats_green"
-            android:drawablePadding="8dp"
-            android:id="@+id/additions"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:drawableLeft="@drawable/commit_stats_red"
-            android:drawablePadding="8dp"
-            android:id="@+id/deletions"/>
-
-    </LinearLayout>
+        android:layout_height="36dp"
+        android:layout_marginLeft="@dimen/gapLarge"
+        android:layout_marginRight="@dimen/gapLarge"
+        android:paddingLeft="@dimen/gapMedium"
+        android:paddingRight="@dimen/gapMedium" />
 
 </LinearLayout>

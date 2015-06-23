@@ -3,7 +3,6 @@ package com.alorma.github.ui.fragment.pullrequest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestFiles;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
-import com.alorma.github.ui.fragment.FileFragment;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
@@ -46,7 +44,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements BaseCl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.pullrequest_files_fragment, null);
+        return inflater.inflate(R.layout.files_fragment, null);
     }
 
     @Override
@@ -90,10 +88,5 @@ public class PullRequestFilesListFragment extends BaseFragment implements BaseCl
         Intent launcherIntent = FileActivity.createLauncherIntent(getActivity(), info, false);
         startActivity(launcherIntent);
 
-    }
-
-    @Override
-    public boolean openFirstFile() {
-        return false;
     }
 }

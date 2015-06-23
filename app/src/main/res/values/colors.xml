@@ -41,4 +41,6 @@
     <color name="privateGist">#a1882b</color>
     <color name="privateGistBackground">#f8eeca</color>
     <color name="black_semi_transparent">#B2000000</color>
+    <color name="commit_additions">#ff009d00</color>
+    <color name="commit_deletions">#9aff0000</color>
 </resources>
