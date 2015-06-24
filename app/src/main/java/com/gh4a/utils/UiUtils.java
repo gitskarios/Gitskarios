@@ -2,6 +2,8 @@ package com.gh4a.utils;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.Layout;
@@ -12,6 +14,8 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.alorma.github.UrlsManager;
+
+import java.util.List;
 
 public class UiUtils {
     public static final LinkMovementMethod CHECKING_LINK_METHOD2 = new LinkMovementMethod() {
@@ -55,8 +59,12 @@ public class UiUtils {
                         if (intent != null) {
                             widget.getContext().startActivity(intent);
                         } else {
+                            PackageManager packageManager = widget.getContext().getPackageManager();
                             Intent intentGeneric = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                            widget.getContext().startActivity(intentGeneric);
+                            List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intentGeneric, PackageManager.GET_RESOLVED_FILTER);
+                            if (resolveInfos.size() > 0) {
+                                widget.getContext().startActivity(intentGeneric);
+                            }
                         }
 
                         return true;

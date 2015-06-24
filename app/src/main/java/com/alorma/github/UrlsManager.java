@@ -147,7 +147,7 @@ public class UrlsManager {
     }
 
     private Uri normalizeUri(Uri uri) {
-        if (uri.getAuthority().contains("api.")) {
+        if (uri != null && uri.getAuthority() != null && uri.getAuthority().contains("api.")) {
             String authority = uri.getAuthority().replace("api.", "");
             uri = uri.buildUpon().authority(authority).build();
             if (uri.getPath().contains("repos/")) {

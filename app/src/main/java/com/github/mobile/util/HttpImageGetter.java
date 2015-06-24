@@ -249,6 +249,11 @@ public class HttpImageGetter implements ImageGetter {
             builder.appendPath(repoInfo.name);
             builder.appendPath("raw");
             builder.appendPath(repoInfo.branch);
+
+            if (urlString.startsWith("./")) {
+                urlString = urlString.replace("./", "");
+            }
+
             builder.appendPath(urlString);
             urlString = builder.build().toString();
         }
