@@ -118,6 +118,15 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
         }
     }
 
+    @Override
+    public void addAll(Collection<? extends  GithubEvent> collection, boolean paging) {
+        if (!paging) {
+            clear();
+        }
+
+        addAll(collection);
+    }
+
     private boolean checkEventHandled(GithubEvent event) {
         return event.getType() != null && (event.getType() == EventType.PushEvent)
                 || (event.getType() == EventType.WatchEvent)
