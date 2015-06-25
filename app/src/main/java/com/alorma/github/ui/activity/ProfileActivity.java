@@ -10,8 +10,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -26,6 +29,7 @@ import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
+import com.alorma.github.ui.adapter.FakeAdapter;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.cards.profile.GithubPlanCard;
@@ -50,10 +54,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         OnCheckFollowingUser, GithubPlanCard.GithubDataCardListener, View.OnClickListener {
 
     private static final String USER = "USER";
-    private static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
 
     private ImageView image;
-    private FABCenterLayout fabLayout;
 
     private int avatarColor;
     private int avatarSecondaryColor;
@@ -62,6 +64,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     private boolean followingUser = false;
     private boolean isAuthUser;
     private IconicsDrawable fabDrawable;
+    private FloatingActionButton fabButton;
 
     public static Intent createLauncherIntent(Context context) {
         return new Intent(context, ProfileActivity.class);
@@ -83,12 +86,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         avatarColor = AttributesUtils.getAccentColor(this);
         avatarSecondaryColor = AttributesUtils.getPrimaryColor(this);
 
-        fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
-        fabLayout.setFabViewVisibility(View.INVISIBLE, false);
-        fabLayout.setVisibility(View.INVISIBLE);
+        fabButton = (FloatingActionButton) findViewById(R.id.btnFab);
 
-        fabLayout.setFabScrollContentListener(this);
-        image = (ImageView) findViewById(R.id.image);
+        image = (ImageView) findViewById(R.id.imgToolbar);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new FakeAdapter(this));
     }
 
     @Override
@@ -130,7 +134,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         hideProgressDialog();
 
         if (isAuthUser) {
-            fabLayout.removeFab();
+            fabButton.setVisibility(View.INVISIBLE);
 
         } else {
             CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
@@ -141,8 +145,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         if (getSupportActionBar() != null) {
             new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
         }
-
-        fabLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -170,11 +172,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             }
         }
 
-        fillCardBio(user);
+/*        fillCardBio(user);
 
         fillCardGithubData(user);
 
-        fillCardPlan(user);
+        fillCardPlan(user);*/
     }
 
     private void fillCardBio(User user) {
@@ -270,7 +272,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     public void onClick(View v) {
         showProgressDialog(R.style.SpotDialog_LoadingUser);
 
-        fabLayout.setFabClickListener(null, getTagFab());
+        fabButton.setOnClickListener(null);
 
         if (followingUser) {
             UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
@@ -281,7 +283,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             followUserClient.setOnCheckFollowingUser(this);
             followUserClient.execute();
         }
-        fabLayout.setFabClickListener(null, null);
     }
 
     @Override
@@ -315,15 +316,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         } else {
             fabDrawable.color(PaletteUtils.colorTextFromBackgroundColor(avatarSecondaryColor));
         }
-        fabDrawable.actionBarSize();
-        fabLayout.setFabIcon(fabDrawable);
-
-        fabLayout.setFabColor(avatarSecondaryColor);
-
-        fabLayout.setFabColorPressed(avatarColor);
-
-        fabLayout.setFabClickListener(this, getTagFab());
-        fabLayout.setFabViewVisibility(View.VISIBLE, false);
+        fabDrawable.actionBar();
+        fabButton.setImageDrawable(fabDrawable);
     }
 
     public String getTagFab() {
