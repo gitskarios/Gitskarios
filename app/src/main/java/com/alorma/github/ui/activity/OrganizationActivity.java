@@ -2,20 +2,17 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
-import com.alorma.github.ui.view.SlidingTabLayout;
-import com.alorma.github.utils.AttributesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +43,7 @@ public class OrganizationActivity extends BackActivity {
 
         setTitle(R.string.navigation_people);
 
-        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
-        ViewCompat.setElevation(slidingTabLayout, 4);
-
-        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
-        slidingTabLayout.setDividerColors(Color.TRANSPARENT);
+        TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
 
@@ -71,7 +64,7 @@ public class OrganizationActivity extends BackActivity {
         listFragments.add(orgMembersFragment);
 
         viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        slidingTabLayout.setViewPager(viewPager);
+        slidingTabLayout.setupWithViewPager(viewPager);
     }
 
 

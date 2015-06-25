@@ -2,13 +2,11 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 
 import com.alorma.github.R;
@@ -21,9 +19,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
-import com.alorma.github.ui.view.GitChangeStatusColorsView;
-import com.alorma.github.ui.view.SlidingTabLayout;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.util.ArrayList;
@@ -64,11 +59,8 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
             getContent();
 
-            SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
-            ViewCompat.setElevation(slidingTabLayout, 4);
+            TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
-            slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
-            slidingTabLayout.setDividerColors(Color.TRANSPARENT);
 
             ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
@@ -82,7 +74,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
             listFragments.add(commitCommentsFragment);
 
             viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-            slidingTabLayout.setViewPager(viewPager);
+            slidingTabLayout.setupWithViewPager(viewPager);
 
         }
     }

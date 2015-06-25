@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,8 +17,6 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
-import com.alorma.github.ui.view.SlidingTabLayout;
-import com.alorma.github.utils.AttributesUtils;
 
 /**
  * Created by Bernat on 06/06/2015.
@@ -38,18 +37,16 @@ public class GeneralReposFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.tabStrip);
+        TabLayout slidingTabLayout = (TabLayout) view.findViewById(R.id.tabStrip);
         ViewCompat.setElevation(slidingTabLayout, 4);
 
-        slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(getActivity()));
-        slidingTabLayout.setDividerColors(getResources().getColor(R.color.primary_dark_alpha));
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
 
         ReposPagerAdapter reposAdapter = new ReposPagerAdapter(getChildFragmentManager());
         viewPager.setOffscreenPageLimit(reposAdapter.getCount());
         viewPager.setAdapter(reposAdapter);
 
-        slidingTabLayout.setViewPager(viewPager);
+        slidingTabLayout.setupWithViewPager(viewPager);
 
     }
 
