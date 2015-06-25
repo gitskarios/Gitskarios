@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -67,7 +68,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private IssuesListFragment issuesListFragment;
     private ViewPager viewPager;
     private List<Fragment> listFragments;
-    private SlidingTabLayout slidingTabLayout;
+    private TabLayout slidingTabLayout;
     private RepoInfo requestRepoInfo;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
@@ -89,11 +90,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             setTitle(repoInfo.name);
 
-            slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabStrip);
-            ViewCompat.setElevation(slidingTabLayout, 4);
+            slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
-            slidingTabLayout.setSelectedIndicatorColors(AttributesUtils.getAccentColor(this));
-            slidingTabLayout.setDividerColors(getResources().getColor(R.color.primary_dark_alpha));
             viewPager = (ViewPager) findViewById(R.id.pager);
 
             load(repoInfo);
@@ -339,7 +337,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
         viewPager.setOffscreenPageLimit(listFragments.size());
 
-        slidingTabLayout.setViewPager(viewPager);
+        slidingTabLayout.setupWithViewPager(viewPager);
     }
 
     private void createListFragments() {

@@ -102,4 +102,5 @@ dependencies {
     compile 'com.github.mrengineer13:snackbar:1.2.0'
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
+    compile 'com.android.support:design:22.2.0'
 }

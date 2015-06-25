@@ -72,7 +72,8 @@ public class CommitCommentAdapter extends LazyAdapter<CommitComment> {
             textContent.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
         }
 
-        toolbar.inflateMenu(R.menu.menu_commit_content);
+        toolbar.setVisibility(View.INVISIBLE);
+        /*toolbar.inflateMenu(R.menu.menu_commit_content);
 
         if (toolbar.getMenu() != null) {
             MenuItem replyItem = toolbar.getMenu().findItem(R.id.action_reply);
@@ -80,7 +81,7 @@ public class CommitCommentAdapter extends LazyAdapter<CommitComment> {
             replyDrawable.colorRes(R.color.accent);
             replyDrawable.actionBar();
             replyItem.setIcon(replyDrawable);
-        }
+        }*/
 
         return v;
     }
