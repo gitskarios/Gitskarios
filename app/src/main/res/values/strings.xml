@@ -313,4 +313,6 @@
     <string name="no_commit_comments">No comments</string>
     <string name="commits_detail_comments">Comments</string>
     <string name="reply">Reply</string>
+    <string name="action_menu_unfollow_user">Unfollow</string>
+    <string name="action_menu_follow_user">Follow</string>
 </resources>
