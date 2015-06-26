@@ -105,7 +105,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         if (currentVersion > version) {
             settings.saveVersion(currentVersion);
-            dialog = ChangelogDialogSupport.create(false, getResources().getColor(R.color.accent));
+            dialog = ChangelogDialogSupport.create();
             dialog.show(getSupportFragmentManager(), "changelog");
         }
 

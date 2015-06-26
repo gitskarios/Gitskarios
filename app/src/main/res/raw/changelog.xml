@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog bulletedList="false">
+    <changelogversion versionName="2.4.5" changeDate="Jul 25,2015">
+        <changelogtext>Some bug fix</changelogtext>
+    </changelogversion>
+
+    <changelogversion versionName="2.4.4">
+        <changelogtext>[b]NEW:[/b] Pull request support</changelogtext>
+        <changelogtext>[b]IMPROVEMENT:[/b] Long click on source list share file.</changelogtext>
+        <changelogtext>[b]FIX:[/b] Some small bug fixes.</changelogtext>
+    </changelogversion>
+
+</changelog>

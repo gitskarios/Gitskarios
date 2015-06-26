@@ -57,7 +57,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment implements 
         if (preference.getKey().equals(GITSKARIOS)) {
             startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse("https://github.com/gitskarios/Gitskarios")));
         } else if (preference.getKey().equals(CHANGELOG)) {
-            dialog = ChangelogDialog.create(false, getResources().getColor(R.color.accent));
+            dialog = ChangelogDialog.create();
             dialog.show(getFragmentManager(), "changelog");
         }
         return true;

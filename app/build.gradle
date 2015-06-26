@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.4.4"
-        versionCode 2440
+        versionName "2.4.5"
+        versionCode 2450
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -103,4 +103,5 @@ dependencies {
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.android.support:design:22.2.0'
+    compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
 }

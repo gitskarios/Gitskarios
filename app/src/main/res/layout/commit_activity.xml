@@ -23,7 +23,6 @@
             android:scrollbars="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:tabMode="scrollable"
             app:tabGravity="fill" />
     </android.support.design.widget.AppBarLayout>
