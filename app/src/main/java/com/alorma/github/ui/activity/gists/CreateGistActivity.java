@@ -6,11 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,11 +23,9 @@ import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.FakeAdapter;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.ui.fragment.GistEditorFragment;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -49,6 +46,7 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
     private AlertDialog spotsDialog;
     private EditText gistDescription;
     private Switch gistPrivate;
+    private RecyclerView recyclerView;
 
     public static Intent createLauncherIntent(Context context) {
         return new Intent(context, CreateGistActivity.class);
@@ -59,7 +57,7 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
 
         adapter = new GistDetailFilesAdapter(this);
@@ -87,12 +85,6 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
             }
         });
 
-        findViewById(R.id.createGist).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                publishGist();
-            }
-        });
     }
 
     private void launchEmptyEditor() {
@@ -127,43 +119,66 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_create_gist, menu);
+        MenuItem publishItem = menu.findItem(R.id.action_publish_gist);
+        IconicsDrawable publishIcon = new IconicsDrawable(this, Octicons.Icon.oct_package);
+        publishIcon.actionBar();
+        publishIcon.color(Color.WHITE);
+        publishItem.setIcon(publishIcon);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.action_publish_gist) {
+            publishGist();
+        }
+
+        return true;
+    }
 
     private void publishGist() {
-        Gist gist = new Gist();
-        gist.isPublic = !gistPrivate.isChecked();
-        gist.description = gistDescription.getText().toString();
-        Map<String, GistFile> files = new HashMap<>();
-        for (GistFile gistFile : adapter.getGistFileList()) {
-            files.put(gistFile.filename, gistFile);
+        if (adapter != null && adapter.getItemCount() > 0) {
+            Gist gist = new Gist();
+            gist.isPublic = !gistPrivate.isChecked();
+            gist.description = gistDescription.getText().toString();
+            Map<String, GistFile> files = new HashMap<>();
+            for (GistFile gistFile : adapter.getGistFileList()) {
+                if (!TextUtils.isEmpty(gistFile.filename) && !TextUtils.isEmpty(gistFile.content))  {
+                    files.put(gistFile.filename, gistFile);
+                }
+            }
+            gist.files = files;
+
+            spotsDialog = new SpotsDialog.Builder(this)
+                    .setMessage(R.string.publishing_gist)
+                    .setCancelable(false)
+                    .show();
+
+            PublishGistClient publishGistClient = new PublishGistClient(this, gist);
+            publishGistClient.setOnResultCallback(new BaseClient.OnResultCallback<Gist>() {
+                @Override
+                public void onResponseOk(Gist gist, Response r) {
+                    if (spotsDialog != null) {
+                        spotsDialog.dismiss();
+                    }
+                    finish();
+                }
+
+                @Override
+                public void onFail(RetrofitError error) {
+                    if (spotsDialog != null) {
+                        spotsDialog.dismiss();
+                    }
+                    Snackbar.make(recyclerView, R.string.publish_gist_fail, Snackbar.LENGTH_SHORT).show();
+                }
+            });
+            publishGistClient.execute();
         }
-        gist.files = files;
-
-        spotsDialog = new SpotsDialog.Builder(this)
-                .setMessage(R.string.publishing_gist)
-                .setCancelable(false)
-                .show();
-
-        PublishGistClient publishGistClient = new PublishGistClient(this, gist);
-        publishGistClient.setOnResultCallback(new BaseClient.OnResultCallback<Gist>() {
-            @Override
-            public void onResponseOk(Gist gist, Response r) {
-                if (spotsDialog != null) {
-                    spotsDialog.dismiss();
-                }
-                finish();
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-                if (spotsDialog != null) {
-                    spotsDialog.dismiss();
-                }
-                new SnackBar.Builder(CreateGistActivity.this)
-                        .withMessageId(R.string.publish_gist_fail)
-                        .show();
-            }
-        });
-        publishGistClient.execute();
     }
 
     private void createEmptyFileAndAdd() {
@@ -200,9 +215,7 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
                     finish();
                 } else {
                     adapter.clearCurrent();
-                    new SnackBar.Builder(this)
-                            .withMessageId(R.string.editor_discard)
-                            .show();
+                    Snackbar.make(recyclerView, R.string.editor_discard, Snackbar.LENGTH_SHORT).show();
                 }
             } else {
                 if (TextUtils.isEmpty(file.filename)) {
