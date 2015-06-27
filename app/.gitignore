@@ -30,3 +30,6 @@ crashlytics.properties
 ehthumbs.db
 Thumbs.db
 *keystore/*
+
+*src/debug/res/values/keys.xml
+*src/release/res/values/keys.xml
