@@ -197,7 +197,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
-            openExternalLogin(new GitHub());
+            openExternalLogin(new GitHub(this));
         }
     }
 
@@ -265,7 +265,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     if (ownedSkus.size() == 0) {
                         showDialogBuyMultiAccount();
                     } else {
-                        openExternalLogin(new GitHub());
+                        openExternalLogin(new GitHub(LoginActivity.this));
                     }
                 }
             }
@@ -296,7 +296,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     String sku = jo.getString("productId");
                     String developerPayload = jo.getString("developerPayload");
                     if (developerPayload.equals(purchaseId) && SKU_MULTI_ACCOUNT.equals(sku)) {
-                        openExternalLogin(new GitHub());
+                        openExternalLogin(new GitHub(this));
                     }
                 } catch (JSONException e) {
 
