@@ -10,26 +10,25 @@ Since now, if you want to use your own version of Gitskarios, you should generat
 
 [Github OAuth](https://developer.github.com/v3/oauth/).
 
-    If you want distinc apps for debug and release, you should generate two applications.
+    If you want distinct apps for debug and release, you should generate two applications.
 
-Then, you need to define a gradle.properties in your home folder (C:\User, /home/user....), or export variables to your System, with the following content:
+In order to use this sdk, you must enable three metadata keys in your `AndroidManifest.xml`
 
 ``` groovy
-SIGN_FILE={keystore_path}
-SIGN_KEYSTORE_PASS={keystore_password}
-SIGN_KEYSTORE_ALIAS={keystore_alias}
-SIGN_KEYSTORE_ALIAS_PASS={keystore_alias_password}
+<meta-data
+    android:name="com.alorma.github.sdk.client"
+    android:value="@string/gh_client_id"/>
 
+<meta-data
+    android:name="com.alorma.github.sdk.secret"
+    android:value="@string/gh_client_secret"/>
 
-# API CLIENTS
-GH_DEV_ID={dev_app_id}
-GH_DEV_SECRET={dev_app_secret}
-GH_DEV_CALLBACK={dev_app_callback}
-
-GH_PRO_ID={pro_app_id}
-GH_PRO_SECRET={pro_app_secret}
-GH_PRO_CALLBACK={pro_ap_callback}
+<meta-data
+    android:name="com.alorma.github.sdk.oauth"
+    android:value="@string/gh_client_callback"/>
 ```
+
+In Gitskarios, this keys are hidden from repository, so you should create your own string files, or place it directly in `value`
 
 ## LICENSE ##
 
