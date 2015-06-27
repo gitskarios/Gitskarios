@@ -1,4 +1,18 @@
+[ ![Download](https://api.bintray.com/packages/alorma/maven/github-sdk/images/download.svg) ](https://bintray.com/alorma/maven/github-sdk/_latestVersion)
+
 # README #
+
+## DOWNLOAD
+
+``` groovy
+repositories {
+    maven {
+        url  "http://dl.bintray.com/alorma/maven"
+    }
+}
+
+
+```
 
 ## FORK ##
 

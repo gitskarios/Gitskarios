@@ -31,7 +31,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;

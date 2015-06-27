@@ -12,7 +12,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 
 import java.util.List;
 

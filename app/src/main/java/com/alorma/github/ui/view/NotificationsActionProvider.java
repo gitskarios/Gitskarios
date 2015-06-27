@@ -13,7 +13,7 @@ import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Subscribe;

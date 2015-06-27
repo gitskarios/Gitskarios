@@ -18,10 +18,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.bean.ProfileItem;
 import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -37,17 +38,10 @@ import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.adapter.ProfileItemsAdapter;
-import com.alorma.github.ui.cards.profile.BioCard;
-import com.alorma.github.ui.cards.profile.GithubDataCard;
-import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
-import com.alorma.gitskarios.basesdk.client.StoreCredentials;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit.RetrofitError;

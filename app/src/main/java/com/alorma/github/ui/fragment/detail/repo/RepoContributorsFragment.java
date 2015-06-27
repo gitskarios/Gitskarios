@@ -12,7 +12,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import retrofit.RetrofitError;

@@ -36,7 +36,7 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.ui.view.CopyWebView;
 import com.alorma.github.utils.ImageUtils;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
 

@@ -23,7 +23,7 @@ import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;

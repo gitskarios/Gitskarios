@@ -25,7 +25,7 @@ import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.ui.fragment.GistEditorFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 

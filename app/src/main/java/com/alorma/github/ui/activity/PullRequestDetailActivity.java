@@ -50,7 +50,7 @@ import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;

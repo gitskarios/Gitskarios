@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
+import com.alorma.github.basesdk.ApiClient;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
@@ -36,8 +38,6 @@ import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.AccountsAdapter;
-import com.alorma.gitskarios.basesdk.ApiClient;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.android.vending.billing.IInAppBillingService;
 
 import org.json.JSONException;

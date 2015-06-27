@@ -5,7 +5,7 @@ import android.widget.AbsListView;
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 
 import java.util.HashMap;
 import java.util.List;

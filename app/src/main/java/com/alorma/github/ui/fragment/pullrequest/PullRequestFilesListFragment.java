@@ -17,7 +17,7 @@ import com.alorma.github.sdk.services.pullrequest.GetPullRequestFiles;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.BaseClient;
 
 import java.util.List;
 

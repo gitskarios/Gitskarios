@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.CommitInfo;
@@ -19,7 +20,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 
 import java.util.ArrayList;
 import java.util.List;
