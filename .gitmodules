@@ -1,9 +1,6 @@
 [submodule "sdk"]
 	path = sdk
 url=https://github.com/gitskarios/GithubAndroidSdk.git
-[submodule "libraries/android-floating-action-button"]
-	path = libraries/android-floating-action-button
-	url = https://github.com/gitskarios/android-floating-action-button.git
 [submodule "sdks/GithubAndroidSdk"]
 	path = sdks/GithubAndroidSdk
 	url = https://github.com/gitskarios/GithubAndroidSdk
