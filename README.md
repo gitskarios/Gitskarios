@@ -1,46 +1,5 @@
-[ ![Download](https://api.bintray.com/packages/alorma/maven/github-sdk/images/download.svg) ](https://bintray.com/alorma/maven/github-sdk/_latestVersion)
 
 # README #
-
-## DOWNLOAD
-
-``` groovy
-repositories {
-    maven {
-        url  "http://dl.bintray.com/alorma/maven"
-    }
-}
-
-
-```
-
-## FORK ##
-
-Thanks dev for forking Gitskarios!
-
-Since now, if you want to use your own version of Gitskarios, you should generate specific App on Github
-
-[Github OAuth](https://developer.github.com/v3/oauth/).
-
-    If you want distinct apps for debug and release, you should generate two applications.
-
-In order to use this sdk, you must enable three metadata keys in your `AndroidManifest.xml`
-
-``` groovy
-<meta-data
-    android:name="com.alorma.github.sdk.client"
-    android:value="@string/gh_client_id"/>
-
-<meta-data
-    android:name="com.alorma.github.sdk.secret"
-    android:value="@string/gh_client_secret"/>
-
-<meta-data
-    android:name="com.alorma.github.sdk.oauth"
-    android:value="@string/gh_client_callback"/>
-```
-
-In Gitskarios, this keys are hidden from repository, so you should create your own string files, or place it directly in `value`
 
 ## LICENSE ##
 
