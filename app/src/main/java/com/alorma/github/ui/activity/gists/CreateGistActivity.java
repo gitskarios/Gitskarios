@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +24,7 @@ import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.adapter.FakeAdapter;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
 import com.alorma.github.ui.fragment.GistEditorFragment;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
@@ -39,7 +43,6 @@ import retrofit.client.Response;
  * Created by Bernat on 02/04/2015.
  */
 public class CreateGistActivity extends BackActivity implements GistEditorFragment.GistEditorListener, GistDetailFilesAdapter.GistFilesAdapterListener {
-    private RecyclerView recyclerView;
     private GistDetailFilesAdapter adapter;
     private GistEditorFragment editorFragment;
     private boolean sharingMode;
@@ -56,8 +59,14 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
+
+        adapter = new GistDetailFilesAdapter(this);
+        adapter.setInEditMode(true);
+        adapter.setGistFilesAdapterListener(this);
+        recyclerView.setAdapter(adapter);
+
         sharingMode = Intent.ACTION_SEND.equals(getIntent().getAction());
 
         if (getSupportActionBar() != null) {
@@ -67,35 +76,23 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         gistDescription = (EditText) findViewById(R.id.gistDescription);
         gistPrivate = (Switch) findViewById(R.id.gistPrivate);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
-        adapter = new GistDetailFilesAdapter(this);
-        adapter.setInEditMode(true);
-        adapter.setGistFilesAdapterListener(this);
-        recyclerView.setAdapter(adapter);
+        fab.setImageDrawable(new IconicsDrawable(this, Octicons.Icon.oct_gist_new).color(Color.WHITE).actionBar());
 
-        launchEmptyEditor();
-
-        findViewById(R.id.fabButton).setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 launchEmptyEditor();
             }
         });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (adapter != null && adapter.getItemCount() > 0) {
-            getMenuInflater().inflate(R.menu.menu_create_gist, menu);
-            MenuItem publishItem = menu.findItem(R.id.action_publish_gist);
-            IconicsDrawable publishIcon = new IconicsDrawable(this, Octicons.Icon.oct_package);
-            publishIcon.actionBarSize();
-            publishIcon.colorRes(R.color.icons);
-            publishItem.setIcon(publishIcon);
-        }
-        return true;
+        findViewById(R.id.createGist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publishGist();
+            }
+        });
     }
 
     private void launchEmptyEditor() {
@@ -130,16 +127,6 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        } else if (item.getItemId() == R.id.action_publish_gist) {
-            publishGist();
-        }
-
-        return true;
-    }
 
     private void publishGist() {
         Gist gist = new Gist();

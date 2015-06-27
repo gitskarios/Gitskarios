@@ -237,18 +237,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    protected PropertyValuesHolder showAnimator(View fab) {
-        return PropertyValuesHolder.ofFloat(View.Y, fabNewY, fabOldY);
-    }
-
-    @Override
-    protected PropertyValuesHolder hideAnimator(View fab) {
-        fabOldY = fab.getY();
-        fabNewY = fab.getY() + fab.getHeight() + (getResources().getDimension(R.dimen.gapLarge) * 2);
-        return PropertyValuesHolder.ofFloat(View.Y, fab.getY(), fabNewY);
-    }
-
-    @Override
     protected void fabClick() {
         super.fabClick();
         if (repoInfo.permissions != null) {

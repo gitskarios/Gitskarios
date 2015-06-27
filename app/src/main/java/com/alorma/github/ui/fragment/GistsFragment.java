@@ -106,6 +106,11 @@ public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gis
     }
 
     @Override
+    protected Octicons.Icon getFABGithubIcon() {
+        return Octicons.Icon.oct_plus;
+    }
+
+    @Override
     protected boolean useFAB() {
         return username == null;
     }

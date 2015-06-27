@@ -12,11 +12,11 @@
         android:orientation="vertical">
 
         <LinearBreadcrumb
+            android:id="@+id/breadCrumbs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?colorPrimary"
-            android:id="@+id/breadCrumbs"
-            android:paddingLeft="@dimen/gapLarge"/>
+            android:paddingLeft="@dimen/gapLarge" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe"
@@ -27,19 +27,9 @@
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"
-                android:paddingBottom="@dimen/gapXLarge"
-                android:clipToPadding="true"/>
+                android:drawSelectorOnTop="false"/>
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
-
-    <include
-        layout="@layout/fab"
-        android:layout_width="@dimen/fab"
-        android:layout_height="@dimen/fab"
-        android:layout_gravity="bottom|right|end"
-        android:layout_margin="@dimen/gapLarge"
-        android:scaleType="centerInside" />
 
     <RelativeLayout
         android:id="@+id/emptyLayout"
@@ -63,5 +53,14 @@
             android:layout_marginTop="@dimen/gapMedium"
             android:textSize="@dimen/textSizeLarge" />
     </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/fabButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        app:borderWidth="0dp" />
 
 </FrameLayout>

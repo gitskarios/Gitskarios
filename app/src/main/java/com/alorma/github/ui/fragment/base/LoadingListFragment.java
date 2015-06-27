@@ -1,8 +1,5 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +8,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -24,9 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.github.utils.AttributesUtils;
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -34,19 +30,16 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  * Created by Bernat on 05/08/2014.
  */
 public abstract class LoadingListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        AbsListView.OnScrollListener,
-        DirectionalScrollListener.OnDetectScrollListener,
-        DirectionalScrollListener.OnCancelableDetectScrollListener,
-        View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+        AbsListView.OnScrollListener
+        , View.OnClickListener
+        , AdapterView.OnItemClickListener
+        , AdapterView.OnItemLongClickListener {
 
     private SwipeRefreshLayout swipe;
-    protected static final long FAB_ANIM_DURATION = 400;
     protected TextView emptyText;
     protected ImageView emptyIcon;
     protected View emptyLy;
     protected FloatingActionButton fab;
-    private ValueAnimator animator;
-    private boolean fabVisible;
     private ListView listView;
     private UpdateReceiver updateReceiver;
 
@@ -141,7 +134,7 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
             listView.setOnItemClickListener(this);
             listView.setOnItemLongClickListener(this);
 
-            listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+            listView.setOnScrollListener(this);
 
             listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
         }
@@ -151,14 +144,12 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
         if (getActivity() != null && fab != null) {
             if (useFAB()) {
                 fab.setVisibility(View.VISIBLE);
-                fabVisible = true;
                 fab.setOnClickListener(this);
-                fab.setSize(FloatingActionButton.SIZE_NORMAL);
                 IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), getFABGithubIcon());
                 iconicsDrawable.color(Color.WHITE);
                 iconicsDrawable.sizeDp(24);
 
-                fab.setIconDrawable(iconicsDrawable);
+                fab.setImageDrawable(iconicsDrawable);
             } else {
                 fab.setVisibility(View.GONE);
             }
@@ -199,51 +190,6 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
     protected abstract int getNoDataText();
 
-    private void showFab() {
-        if (useFAB() && !fabVisible) {
-            fabVisible = true;
-            PropertyValuesHolder pvh = showAnimator(fab);
-            startAnimator(pvh);
-        }
-    }
-
-    private void hideFab() {
-        if (useFAB() && fabVisible & (animator == null || !animator.isRunning())) {
-            fabVisible = false;
-            PropertyValuesHolder pvh = hideAnimator(fab);
-            startAnimator(pvh);
-        }
-    }
-
-    private void startAnimator(PropertyValuesHolder pvh) {
-        if (useFAB() && pvh != null) {
-            animator = ObjectAnimator.ofPropertyValuesHolder(fab, pvh);
-            animator.setDuration(FAB_ANIM_DURATION);
-            animator.setRepeatCount(0);
-            animator.start();
-        }
-    }
-
-    protected PropertyValuesHolder showAnimator(View fab) {
-        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f);
-        return pvh;
-    }
-
-    protected PropertyValuesHolder hideAnimator(View fab) {
-        PropertyValuesHolder pvh = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
-        return pvh;
-    }
-
-    @Override
-    public void onUpScrolling() {
-        hideFab();
-    }
-
-    @Override
-    public void onDownScrolling() {
-        hideFab();
-    }
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -252,11 +198,6 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-    }
-
-    @Override
-    public void onScrollStop() {
-        showFab();
     }
 
     @Override

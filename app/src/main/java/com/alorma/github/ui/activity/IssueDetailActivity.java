@@ -2,10 +2,15 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,7 +49,6 @@ import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
@@ -71,10 +75,8 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private FloatingActionButton fab;
     private IssueStory issueStory;
     private int primary;
-    private int accent;
-    private int accentDark;
     private int primaryDark;
-    private SwipeRefreshLayout refreshLayout;
+    private AppBarLayout appbarLayout;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -95,8 +97,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 
             primary = getResources().getColor(R.color.primary);
-            accent = getResources().getColor(R.color.accent);
-            accentDark = getResources().getColor(R.color.accent_dark);
             primaryDark = getResources().getColor(R.color.primary_dark_alpha);
 
             findViews();
@@ -104,27 +104,20 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void findViews() {
+        appbarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
-        fab.setIconDrawable(drawable);
-
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getContent();
-            }
-        });
+        fab.setImageDrawable(drawable);
     }
 
     @Override
     protected void getContent() {
         super.getContent();
-        refreshLayout.setRefreshing(true);
         IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
         issueStoryLoader.setOnResultCallback(this);
         issueStoryLoader.execute();
@@ -134,8 +127,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public void onResponseOk(IssueStory issueStory, Response r) {
         this.issueStory = issueStory;
         applyIssue();
-
-        refreshLayout.setRefreshing(false);
     }
 
     private void applyIssue() {
@@ -174,39 +165,12 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 int color = (Integer) animator.getAnimatedValue();
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
+                if (appbarLayout != null) {
+                    appbarLayout.setBackgroundColor(color);
                 }
-            }
-
-        });
-
-        ValueAnimator colorAnimationFab = ValueAnimator.ofObject(new ArgbEvaluator(), accent, colorState);
-        colorAnimationFab.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                int color = (Integer) animator.getAnimatedValue();
-
-                if (fab != null) {
-                    fab.setColorNormal(color);
+                if (getToolbar() != null) {
+                    getToolbar().setBackgroundColor(color);
                 }
-
-            }
-
-        });
-
-        ValueAnimator colorAnimationFabPressed = ValueAnimator.ofObject(new ArgbEvaluator(), accentDark, colorStateDark);
-        colorAnimationFabPressed.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                int color = (Integer) animator.getAnimatedValue();
-
-                if (fab != null) {
-                    fab.setColorPressed(color);
-                }
-
             }
 
         });
@@ -223,34 +187,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 }
             }
         });
-        ValueAnimator toolbarHeight = null;
-        if (getToolbar() != null) {
-            toolbarHeight = ValueAnimator.ofInt(getToolbar().getMeasuredHeight(), getResources().getDimensionPixelSize(R.dimen.extra_action_bar_size), getToolbar().getMeasuredHeight());
-            toolbarHeight.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    ViewGroup.LayoutParams layoutParams = getToolbar().getLayoutParams();
-                    layoutParams.height = (int) animation.getAnimatedValue();
-                    getToolbar().setLayoutParams(layoutParams);
-                }
-            });
-        }
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(750);
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        if (toolbarHeight != null) {
-            animatorSet.playTogether(colorAnimation,
-                    colorAnimationStatus,
-                    colorAnimationFab,
-                    colorAnimationFabPressed
-                    , toolbarHeight);
-        } else {
-            animatorSet.playTogether(colorAnimation,
-                    colorAnimationStatus,
-                    colorAnimationFab,
-                    colorAnimationFabPressed);
-        }
+        animatorSet.playTogether(colorAnimation, colorAnimationStatus);
         final int finalColorState = colorState;
         final int finalColorStateDark = colorStateDark;
         animatorSet.addListener(new Animator.AnimatorListener() {
@@ -262,9 +203,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             @Override
             public void onAnimationEnd(Animator animation) {
                 primary = finalColorState;
-                accent = finalColorState;
                 primaryDark = finalColorStateDark;
-                accentDark = finalColorStateDark;
             }
 
             @Override
@@ -522,14 +461,14 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         showProgressDialog(R.style.SpotDialog_loading_adding_milestones);
         EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
         editIssueRequestDTO.milestone = milestone.number;
-        executeEditIssue(editIssueRequestDTO);
+        executeEditIssue(editIssueRequestDTO, R.string.issue_change_add_milestone);
     }
 
     private void clearMilestone() {
         showProgressDialog(R.style.SpotDialog_clear_milestones);
         EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
         editIssueRequestDTO.milestone = null;
-        executeEditIssue(editIssueRequestDTO);
+        executeEditIssue(editIssueRequestDTO, R.string.issue_change_clear_milestone);
     }
 
 
@@ -599,16 +538,18 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         } else {
             editIssueRequestDTO.assignee = null;
         }
-        executeEditIssue(editIssueRequestDTO);
+        executeEditIssue(editIssueRequestDTO, R.string.issue_change_assignee);
     }
 
-    private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
+    private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
         EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
                 hideProgressDialog();
                 getContent();
+
+                Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
@@ -714,16 +655,16 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 }
                 EditIssueLabelsRequestDTO labelsRequestDTO = new EditIssueLabelsRequestDTO();
                 labelsRequestDTO.labels = labels;
-                executeEditIssue(labelsRequestDTO);
+                executeEditIssue(labelsRequestDTO, R.string.issue_change_labels);
             } else {
                 EditIssueLabelsRequestDTO labelsRequestDTO = new EditIssueLabelsRequestDTO();
                 labelsRequestDTO.labels = new String[]{};
-                executeEditIssue(labelsRequestDTO);
+                executeEditIssue(labelsRequestDTO, R.string.issue_change_labels_clear);
             }
         } else {
             EditIssueLabelsRequestDTO labelsRequestDTO = new EditIssueLabelsRequestDTO();
             labelsRequestDTO.labels = new String[]{};
-            executeEditIssue(labelsRequestDTO);
+            executeEditIssue(labelsRequestDTO, R.string.issue_change_labels_clear);
         }
     }
 
@@ -769,6 +710,8 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     getContent();
                     IssueDetailActivity.this.issueStory.issue = issue;
                     shouldRefreshOnBack = true;
+
+                    Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
                 }
             }
 

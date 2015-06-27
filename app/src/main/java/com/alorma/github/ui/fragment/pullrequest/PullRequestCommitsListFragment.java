@@ -12,19 +12,14 @@ import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.ListCommit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
-import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import org.joda.time.DateTime;
@@ -72,7 +67,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
         if (listView != null) {
             listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-            listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+            listView.setOnScrollListener(this);
             listView.setOnItemClickListener(this);
             listView.setAreHeadersSticky(false);
         }

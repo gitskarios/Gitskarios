@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.getbase.floatingactionbutton.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/fabButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    fab:fab_colorNormal="?colorControlNormal"
-    fab:fab_colorPressed="?colorControlHighlight"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
-    android:id="@id/fabButton" />
+    android:layout_margin="16dp"
+    android:layout_gravity="end|bottom"
+    app:borderWidth="0dp" />

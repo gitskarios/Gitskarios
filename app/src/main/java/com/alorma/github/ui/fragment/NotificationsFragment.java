@@ -23,7 +23,6 @@ import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
@@ -75,7 +74,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         if (listView != null) {
             listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-            listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+            listView.setOnScrollListener(this);
             listView.setAreHeadersSticky(false);
             listView.setOnItemClickListener(this);
         }

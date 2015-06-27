@@ -316,4 +316,13 @@
     <string name="reply">Reply</string>
     <string name="action_menu_unfollow_user">Unfollow</string>
     <string name="action_menu_follow_user">Follow</string>
+    <string name="issue_change">State changed</string>
+    <string name="issue_change_assignee">Assignee change</string>
+    <string name="issue_change_clear_milestone">Milestone removed</string>
+    <string name="issue_change_add_milestone">Milestone added</string>
+    <string name="issue_change_labels">Labels changed</string>
+    <string name="issue_change_labels_clear">Labels cleared</string>
+    <string name="pull_requests_merged">Merged</string>
+    <string name="pull_requests_merged_failed">Merge failed</string>
+    <string name="add_gist_file">Add file</string>
 </resources>

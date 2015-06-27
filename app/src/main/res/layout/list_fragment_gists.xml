@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/listContentFL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@id/listContentFL"
     android:background="@color/gray_github_light">
 
     <FrameLayout
@@ -11,9 +12,9 @@
         android:layout_height="match_parent">
 
         <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/swipe">
+            android:layout_height="match_parent">
 
             <ListView
                 android:id="@android:id/list"
@@ -22,36 +23,32 @@
                 android:drawSelectorOnTop="false" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.getbase.floatingactionbutton.AddFloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@id/fabButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="?colorControlNormal"
-            fab:fab_colorPressed="?colorControlHighlight"
-            android:id="@id/fabButton"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_gravity="right|bottom"
             android:layout_margin="16dp"
-            android:layout_gravity="right|bottom" />
+            app:borderWidth="0dp"/>
     </FrameLayout>
 
     <RelativeLayout
+        android:id="@+id/emptyLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/emptyLayout"
         android:layout_gravity="center"
         android:visibility="gone">
 
         <ImageView
+            android:id="@+id/emptyIcon"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:id="@+id/emptyIcon"
             android:layout_centerHorizontal="true" />
 
         <TextView
+            android:id="@+id/emptyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/emptyText"
             android:layout_below="@id/emptyIcon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/gapMedium"

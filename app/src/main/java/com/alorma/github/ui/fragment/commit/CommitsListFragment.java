@@ -23,7 +23,6 @@ import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.ui.view.DirectionalScrollListener;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import org.joda.time.DateTime;
@@ -71,9 +70,9 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
         if (listView != null) {
             listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-            listView.setOnScrollListener(new DirectionalScrollListener(this, this, FAB_ANIM_DURATION));
+            listView.setOnScrollListener(this);
             listView.setOnItemClickListener(this);
-            listView.setAreHeadersSticky(false);
+            listView.setAreHeadersSticky(true);
         }
     }
 

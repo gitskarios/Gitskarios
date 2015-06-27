@@ -18,9 +18,7 @@
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"
-                android:paddingBottom="@dimen/gapXLarge"
-                android:clipToPadding="false" />
+                android:drawSelectorOnTop="false"/>
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
