@@ -79,5 +79,6 @@
     <dimen name="second_keyline">56dp</dimen>
     <dimen name="toolbar_h_padding">4dp</dimen>
     <dimen name="extra_action_bar_size">88dp</dimen>
+    <dimen name="profile_header">224dp</dimen>
 
 </resources>

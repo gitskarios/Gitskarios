@@ -18,6 +18,7 @@
     <string name="repos_num">%d Repositories</string>
     <string name="gists_num">%d Gists</string>
     <string name="orgs_num">%d Organizations</string>
+    <string name="orgs_num_empty">Organizations</string>
     <string name="private_gists_num">%d Private gists</string>
     <string name="collaborators_num">%d Collaborators</string>
     <string name="one_collaborator_num">%d Collaborator</string>
@@ -313,4 +314,6 @@
     <string name="no_commit_comments">No comments</string>
     <string name="commits_detail_comments">Comments</string>
     <string name="reply">Reply</string>
+    <string name="action_menu_unfollow_user">Unfollow</string>
+    <string name="action_menu_follow_user">Follow</string>
 </resources>

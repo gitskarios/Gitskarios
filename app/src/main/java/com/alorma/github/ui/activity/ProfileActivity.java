@@ -4,19 +4,29 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
+import com.alorma.github.bean.ProfileItem;
+import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.dto.response.UserType;
+import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.GithubUsersClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
@@ -26,16 +36,19 @@ import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
+import com.alorma.github.ui.adapter.ProfileItemsAdapter;
 import com.alorma.github.ui.cards.profile.BioCard;
 import com.alorma.github.ui.cards.profile.GithubDataCard;
 import com.alorma.github.ui.cards.profile.GithubPlanCard;
 import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.github.ui.view.FABCenterLayout;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.alorma.gitskarios.basesdk.client.StoreCredentials;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -44,34 +57,36 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-        PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener,
-        GithubDataCard.GithubDataCardListener,
-        FABCenterLayout.FABScrollContentListener,
-        OnCheckFollowingUser, GithubPlanCard.GithubDataCardListener, View.OnClickListener {
+        PaletteUtils.PaletteUtilsListener,
+        OnCheckFollowingUser {
 
     private static final String USER = "USER";
-    private static final String FROM_INTENT_FILTER = "FROM_INTENT_FILTER";
+    private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
 
     private ImageView image;
-    private FABCenterLayout fabLayout;
-
-    private int avatarColor;
-    private int avatarSecondaryColor;
 
     private User user;
     private boolean followingUser = false;
-    private boolean isAuthUser;
-    private IconicsDrawable fabDrawable;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private ProfileItemsAdapter profileItemsAdapter;
 
     public static Intent createLauncherIntent(Context context) {
-        return new Intent(context, ProfileActivity.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
+        Bundle extras = new Bundle();
+        extras.putBoolean(AUTHENTICATED_USER, true);
+        return intent;
     }
 
     public static Intent createLauncherIntent(Context context, User user) {
-        Intent intent = new Intent(context, ProfileActivity.class);
+        Bundle extras = new Bundle();
         if (user != null) {
-            intent.putExtra(USER, user);
+            extras.putParcelable(USER, user);
+
+            StoreCredentials settings = new StoreCredentials(context);
+            extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
         }
+        Intent intent = new Intent(context, ProfileActivity.class);
+        intent.putExtras(extras);
         return intent;
     }
 
@@ -80,59 +95,106 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
 
-        avatarColor = AttributesUtils.getAccentColor(this);
-        avatarSecondaryColor = AttributesUtils.getPrimaryColor(this);
+        image = (ImageView) findViewById(R.id.imgToolbar);
 
-        fabLayout = (FABCenterLayout) findViewById(R.id.fabLayout);
-        fabLayout.setFabViewVisibility(View.INVISIBLE, false);
-        fabLayout.setVisibility(View.INVISIBLE);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
 
-        fabLayout.setFabScrollContentListener(this);
-        image = (ImageView) findViewById(R.id.image);
+        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        recycler.setItemAnimator(new DefaultItemAnimator());
+        profileItemsAdapter = new ProfileItemsAdapter(this);
+        recycler.setAdapter(profileItemsAdapter);
     }
 
     @Override
     protected void getContent() {
-        GithubUsersClient<User> requestClient;
-        user = null;
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().containsKey(USER)) {
-                user = getIntent().getParcelableExtra(USER);
+        if (profileItemsAdapter == null || profileItemsAdapter.getItemCount() == 0) {
+            GithubUsersClient<User> requestClient;
+            user = null;
+            if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey(USER)) {
+                    user = getIntent().getParcelableExtra(USER);
+                }
             }
+
+            StoreCredentials settings = new StoreCredentials(this);
+
+            if (user != null) {
+                if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                    requestClient = new GetAuthUserClient(this);
+                    collapsingToolbarLayout.setTitle(settings.getUserName());
+                } else {
+                    requestClient = new RequestUserClient(this, user.login);
+                    collapsingToolbarLayout.setTitle(user.login);
+                }
+            } else {
+                requestClient = new GetAuthUserClient(this);
+            }
+
+            invalidateOptionsMenu();
+
+            showProgressDialog(R.style.SpotDialog_LoadingUser);
+
+            requestClient.setOnResultCallback(this);
+            requestClient.execute();
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.clear();
 
         StoreCredentials settings = new StoreCredentials(this);
 
-        if (user != null) {
-            if (user.login.equalsIgnoreCase(settings.getUserName())) {
-                isAuthUser = true;
-                requestClient = new GetAuthUserClient(this);
+        if (user != null && !settings.getUserName().equals(user.login)) {
+            if (followingUser) {
+                menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
             } else {
-                requestClient = new RequestUserClient(this, user.login);
-                getToolbar().setTitle(user.login);
+                menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
             }
-        } else {
-            isAuthUser = true;
-            requestClient = new GetAuthUserClient(this);
+
+            menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
-        showProgressDialog(R.style.SpotDialog_LoadingUser);
+        return true;
+    }
 
-        requestClient.setOnResultCallback(this);
-        requestClient.execute();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_menu_follow_user) {
+            showProgressDialog(R.style.SpotDialog_LoadingUser);
+
+            FollowUserClient followUserClient = new FollowUserClient(this, user.login);
+            followUserClient.setOnCheckFollowingUser(this);
+            followUserClient.execute();
+        } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
+            showProgressDialog(R.style.SpotDialog_LoadingUser);
+
+            UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
+            unfollowUserClient.setOnCheckFollowingUser(this);
+            unfollowUserClient.execute();
+        }
+
+        item.setEnabled(false);
+
+        return true;
     }
 
     @Override
     public void onResponseOk(User user, Response r) {
         this.user = user;
-        getToolbar().setTitle(user.login);
+        collapsingToolbarLayout.setTitle(user.login);
 
         hideProgressDialog();
 
-        if (isAuthUser) {
-            fabLayout.removeFab();
+        StoreCredentials settings = new StoreCredentials(this);
 
-        } else {
+        invalidateOptionsMenu();
+
+        if (!user.login.equalsIgnoreCase(settings.getUserName())) {
             CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
             checkFollowingUser.setOnCheckFollowingUser(this);
             checkFollowingUser.execute();
@@ -141,33 +203,20 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         if (getSupportActionBar() != null) {
             new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
         }
-
-        fabLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onImageLoaded(Bitmap loadedImage, Palette palette) {
 
-        Palette.Swatch profileSwatchDark = PaletteUtils.getProfileSwatchDark(palette);
-        Palette.Swatch profileSwatch = PaletteUtils.getProfileSwatch(palette);
-
         Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
 
         image.setImageDrawable(drawable);
-        if (profileSwatchDark != null && profileSwatch != null) {
-            avatarColor = profileSwatchDark.getRgb();
-            avatarSecondaryColor = profileSwatch.getRgb();
 
-            try {
-                if (avatarColor != 0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getWindow().setStatusBarColor(avatarColor);
-                        getWindow().setNavigationBarColor(avatarColor);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (palette.getSwatches().size() > 0) {
+            Palette.Swatch swatch = palette.getSwatches().get(0);
+            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
+        } else {
+            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
         }
 
         fillCardBio(user);
@@ -175,30 +224,110 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         fillCardGithubData(user);
 
         fillCardPlan(user);
+
+    }
+
+    private void applyColors(int rgb, int textColor) {
+        collapsingToolbarLayout.setContentScrimColor(rgb);
+        collapsingToolbarLayout.setExpandedTitleColor(textColor);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(textColor);
+        collapsingToolbarLayout.setStatusBarScrimColor(rgb);
+        profileItemsAdapter.setAvatarColor(rgb);
+
+        try {
+            if (rgb != 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(rgb);
+                    getWindow().setNavigationBarColor(rgb);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillCardBio(User user) {
-        CardView view = (CardView) findViewById(R.id.bioCardLayout);
-        view.setCardElevation(4);
-        BioCard card = new BioCard(user, view, avatarColor);
-        card.setBioCardListener(this);
+        if (!TextUtils.isEmpty(user.company)) {
+            Intent intent = new Intent(Intent.ACTION_SEARCH);
+            intent.putExtra(SearchManager.QUERY, user.company);
+            ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
+            profileItemsAdapter.add(profileUserOrganization);
+        }
+        if (!TextUtils.isEmpty(user.location)) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri geo = Uri.parse("geo:0,0?q=" + user.location);
+            intent.setData(geo);
+            ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
+            profileItemsAdapter.add(profileUserLocation);
+        }
+        if (!TextUtils.isEmpty(user.email)) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{user.email});
+            ProfileItem profileUserEmail = new ProfileItem(Octicons.Icon.oct_mail, user.email, intent);
+            profileItemsAdapter.add(profileUserEmail);
+        }
+        if (user.created_at != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.joined_at_date_format), Locale.getDefault());
+
+            String joined = getString(R.string.joined_at, sdf.format(user.created_at));
+
+            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, joined, null);
+            profileItemsAdapter.add(profileUserCreated);
+        }
     }
 
     private void fillCardGithubData(User user) {
-        CardView view = (CardView) findViewById(R.id.dataCardLayout);
-        view.setCardElevation(4);
-        GithubDataCard dataCard = new GithubDataCard(user, view, avatarColor);
-        dataCard.setGithubDataCardListener(this);
+        if (user.public_repos > 0) {
+            String text = getString(R.string.repos_num, user.public_repos);
+            Intent intent = ReposActivity.launchIntent(this, user.login, user.type);
+            ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, intent);
+            profileItemsAdapter.add(profileItemRepos);
+        }
+        if (user.public_gists > 0) {
+            String text = getString(R.string.gists_num, user.public_gists);
+            Intent intent = GistsMainActivity.createLauncherIntent(this, user.login);
+            ProfileItem profileItemGists = new ProfileItem(Octicons.Icon.oct_gist, text, intent);
+            profileItemsAdapter.add(profileItemGists);
+        }
+
+        Intent intent = OrganizationsActivity.launchIntent(this, user.login);
+        final ProfileItem profileItemOrgs = new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
+        profileItemsAdapter.add(profileItemOrgs);
+
+        GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
+        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+            @Override
+            public void onResponseOk(ListOrganizations organizations, Response r) {
+                if (organizations != null && organizations.size() > 0) {
+                    profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
+                    profileItemsAdapter.notifyDataSetChanged();
+                } else {
+                    profileItemsAdapter.remove(profileItemOrgs);
+                }
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        orgsClient.execute();
+
+        if (user.type == UserType.User) {
+            Intent intentStarred = StarredReposActivity.launchIntent(this, user.login);
+            ProfileItem profileItemStar = new ProfileItem(Octicons.Icon.oct_star, getString(R.string.profile_starreds), intentStarred);
+            profileItemsAdapter.add(profileItemStar);
+
+            Intent intentWatched = WatchedReposActivity.launchIntent(this, user.login);
+            ProfileItem profileItemWatched = new ProfileItem(Octicons.Icon.oct_eye, getString(R.string.profile_watched), intentWatched);
+            profileItemsAdapter.add(profileItemWatched);
+        }
     }
 
     private void fillCardPlan(User user) {
-        CardView view = (CardView) findViewById(R.id.planCardLayout);
-        view.setCardElevation(4);
         if (user.plan != null) {
-            GithubPlanCard dataCard = new GithubPlanCard(user, view, avatarColor);
-            dataCard.setGithubDataCardListener(this);
-        } else {
-            view.setVisibility(View.GONE);
+
         }
     }
 
@@ -208,126 +337,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     }
 
     @Override
-    public void onCompanyRequest(String company) {
-        Intent intent = new Intent(Intent.ACTION_SEARCH);
-        intent.putExtra(SearchManager.QUERY, company);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onLocationRequest(String location) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri geo = Uri.parse("geo:0,0?q=" + location);
-        intent.setData(geo);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onMailRequest(String mail) {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onRepositoriesRequest(String username) {
-        Intent intent = ReposActivity.launchIntent(this, username, user.type);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onOrganizationsRequest(String username) {
-        Intent intent = OrganizationsActivity.launchIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onGistsRequest(String username) {
-        Intent intent = GistsMainActivity.createLauncherIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onStarredRequest(String username) {
-        Intent intent = StarredReposActivity.launchIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onWatchedRequest(String username) {
-        Intent intent = WatchedReposActivity.launchIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View v) {
-        showProgressDialog(R.style.SpotDialog_LoadingUser);
-
-        fabLayout.setFabClickListener(null, getTagFab());
-
-        if (followingUser) {
-            UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
-            unfollowUserClient.setOnCheckFollowingUser(this);
-            unfollowUserClient.execute();
-        } else {
-            FollowUserClient followUserClient = new FollowUserClient(this, user.login);
-            followUserClient.setOnCheckFollowingUser(this);
-            followUserClient.execute();
-        }
-        fabLayout.setFabClickListener(null, null);
-    }
-
-    @Override
-    public void onScrollFactor(int alpha, float factor) {
-        if (getSupportActionBar() != null) {
-            ColorDrawable cd = new ColorDrawable(avatarColor);
-
-            if (alpha < 0) {
-                alpha = -alpha;
-            }
-
-            if (alpha > 255) {
-                alpha = 255;
-            }
-
-            cd.setAlpha(alpha);
-
-            getSupportActionBar().setBackgroundDrawable(cd);
-        }
-    }
-
-    @Override
     public void onCheckFollowUser(String username, boolean following) {
         followingUser = following;
-
         hideProgressDialog();
-
-        fabDrawable = new IconicsDrawable(this, Octicons.Icon.oct_heart);
-        if (following) {
-            fabDrawable.color(avatarColor);
-        } else {
-            fabDrawable.color(PaletteUtils.colorTextFromBackgroundColor(avatarSecondaryColor));
-        }
-        fabDrawable.actionBarSize();
-        fabLayout.setFabIcon(fabDrawable);
-
-        fabLayout.setFabColor(avatarSecondaryColor);
-
-        fabLayout.setFabColorPressed(avatarColor);
-
-        fabLayout.setFabClickListener(this, getTagFab());
-        fabLayout.setFabViewVisibility(View.VISIBLE, false);
-    }
-
-    public String getTagFab() {
-        int string = followingUser ? R.string.unfollow : R.string.follow;
-        return getString(string);
+        invalidateOptionsMenu();
     }
 }

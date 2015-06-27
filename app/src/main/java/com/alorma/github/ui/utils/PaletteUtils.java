@@ -65,7 +65,7 @@ public class PaletteUtils {
             @Override
             public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
-                new Palette.Builder(loadedImage).maximumColorCount(3).generate(new Palette.PaletteAsyncListener() {
+                new Palette.Builder(loadedImage).generate(new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
                         if (listener != null) {
