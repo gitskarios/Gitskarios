@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/listContentFL"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@id/listContentFL">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <android.support.v4.widget.SwipeRefreshLayout
+            <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+                android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/swipe">
-
-                <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-                    android:id="@android:id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawSelectorOnTop="false" />
-            </android.support.v4.widget.SwipeRefreshLayout>
-        </RelativeLayout>
+                android:drawSelectorOnTop="false"
+                android:paddingBottom="@dimen/gapXLarge"
+                android:clipToPadding="false" />
+        </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
     <RelativeLayout
+        android:id="@+id/emptyLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/emptyLayout"
         android:layout_gravity="center"
         android:visibility="gone">
 
         <ImageView
+            android:id="@+id/emptyIcon"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:id="@+id/emptyIcon"
-            android:scaleType="centerInside"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerInside" />
 
         <TextView
+            android:id="@+id/emptyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/emptyText"
             android:layout_below="@id/emptyIcon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/gapMedium"

@@ -3,7 +3,7 @@
     android:id="@id/listContentFL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_github_light">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/listContainer"
@@ -27,7 +27,9 @@
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false" />
+                android:drawSelectorOnTop="false"
+                android:paddingBottom="@dimen/gapXLarge"
+                android:clipToPadding="true"/>
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
