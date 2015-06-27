@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion versionName="2.4.6" changeDate="Jul 27,2015">
+        <changelogtext>Improved gist creation screen</changelogtext>
+        <changelogtext>Improved layouts, with new Android Design support library</changelogtext>
+        <changelogtext>Fixed follow heart problems, profile screen has been redesigned</changelogtext>
+        <changelogtext>Some bug fix</changelogtext>
+    </changelogversion>
     <changelogversion versionName="2.4.5" changeDate="Jul 25,2015">
         <changelogtext>Some bug fix</changelogtext>
     </changelogversion>

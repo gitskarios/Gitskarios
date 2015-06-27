@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionName "2.4.5"
-        versionCode 2450
+        versionName "2.4.6"
+        versionCode 2460
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -99,7 +99,6 @@ dependencies {
     compile('com.mikepenz:aboutlibraries:5.0.5@aar') {
         transitive = true
     }
-    compile 'com.github.mrengineer13:snackbar:1.2.0'
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.android.support:design:22.2.0'
