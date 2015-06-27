@@ -51,7 +51,7 @@ public class WatchEventView extends GithubEventView<WatchedEventPayload> {
 
         TextView textDate = (TextView) findViewById(R.id.textDate);
 
-        String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+        String timeString = TimeUtils.getTimeAgoString(textDate.getContext(), event.created_at);
 
         textDate.setText(timeString);
     }

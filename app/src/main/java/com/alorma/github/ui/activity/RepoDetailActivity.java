@@ -37,6 +37,7 @@ import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
+import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
@@ -62,7 +63,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private Boolean repoWatched = false;
 
     private Repo currentRepo;
-    private IssuesListFragment issuesListFragment;
     private ViewPager viewPager;
     private List<Fragment> listFragments;
     private TabLayout slidingTabLayout;
@@ -151,16 +151,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     }
 
-    protected void getStarWatchData() {
-        CheckRepoStarredClient repoStarredClient = new CheckRepoStarredClient(this, currentRepo.owner.login, currentRepo.name);
-        repoStarredClient.setOnResultCallback(new StarredResult());
-        repoStarredClient.execute();
-
-        CheckRepoWatchedClient repoWatchedClient = new CheckRepoWatchedClient(this, currentRepo.owner.login, currentRepo.name);
-        repoWatchedClient.setOnResultCallback(new WatchedResult());
-        repoWatchedClient.execute();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -178,27 +168,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
         } else {
             item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
-        }
-
-        if (currentRepo == null || currentRepo.parent == null) {
-            MenuItem parentItem = menu.findItem(R.id.action_show_parent);
-            if (parentItem != null) {
-                menu.removeItem(parentItem.getItemId());
-            }
-        }
-
-        if (repoStarred != null) {
-            MenuItem starredItem = menu.findItem(R.id.action_repo_star);
-            if (starredItem != null) {
-                starredItem.setTitle(repoStarred ? R.string.menu_unstar : R.string.menu_star);
-            }
-        }
-
-        if (repoWatched != null) {
-            MenuItem watchedItem = menu.findItem(R.id.action_repo_watch);
-            if (watchedItem != null) {
-                watchedItem.setTitle(repoWatched ? R.string.menu_unwatch : R.string.menu_watch);
-            }
         }
 
         MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
@@ -225,19 +194,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if (item.getItemId() == R.id.action_show_parent) {
-            if (currentRepo != null && currentRepo.parent != null) {
-                startActivity(new UrlsManager(this).manageRepos(Uri.parse(currentRepo.parent.html_url)));
-            }
-        } else if (item.getItemId() == R.id.share_repo) {
+        if (item.getItemId() == R.id.share_repo) {
             if (currentRepo != null) {
                 Intent intent = getShareIntent();
                 startActivity(intent);
             }
-        } else if (item.getItemId() == R.id.action_repo_watch) {
-            changeWatchedStatus();
-        } else if (item.getItemId() == R.id.action_repo_star) {
-            changeStarStatus();
         } else if (item.getItemId() == R.id.action_repo_change_branch) {
             changeBranch();
         }
@@ -271,33 +232,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         repoBranchesClient.execute();
     }
 
-    private void changeStarStatus() {
-        if (repoStarred) {
-            showProgressDialog(R.style.SpotDialog_UnstarringRepo);
-            UnstarRepoClient unstarRepoClient = new UnstarRepoClient(this, currentRepo.owner.login, currentRepo.name);
-            unstarRepoClient.setOnResultCallback(new UnstarActionResult());
-            unstarRepoClient.execute();
-        } else {
-            showProgressDialog(R.style.SpotDialog_StarringRepo);
-            StarRepoClient starRepoClient = new StarRepoClient(this, currentRepo.owner.login, currentRepo.name);
-            starRepoClient.setOnResultCallback(new StarActionResult());
-            starRepoClient.execute();
-        }
-    }
-
-    private void changeWatchedStatus() {
-        if (repoWatched) {
-            showProgressDialog(R.style.SpotDialog_UnwatchRepo);
-            UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(this, currentRepo.owner.login, currentRepo.name);
-            unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
-            unwatchRepoClient.execute();
-        } else {
-            showProgressDialog(R.style.SpotDialog_WatchRepo);
-            WatchRepoClient watchRepoClient = new WatchRepoClient(this, currentRepo.owner.login, currentRepo.name);
-            watchRepoClient.setOnResultCallback(new WatchActionResult());
-            watchRepoClient.execute();
-        }
-    }
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
@@ -308,8 +242,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setSubtitle(getRepoInfo().branch);
             }
-
-            getStarWatchData();
 
             createFragments();
 
@@ -339,16 +271,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     private void createListFragments() {
         if (listFragments == null || listFragments.size() == 0 && currentRepo != null) {
-//        aboutFragment = RepoAboutFragment.newInstance(getRepoInfo());
+            RepoAboutFragment aboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
             ReadmeFragment readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
             SourceListFragment sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
             CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
-            issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+            IssuesListFragment issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
             RepoContributorsFragment repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
 
             listFragments = new ArrayList<>();
-//        listFragments.add(aboutFragment);
-            listFragments.add(readmeFragment);
+            listFragments.add(aboutFragment);
+//            listFragments.add(readmeFragment);
             listFragments.add(sourceListFragment);
             listFragments.add(commitsListFragment);
             listFragments.add(issuesListFragment);
@@ -369,126 +301,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    /**
-     * Results for STAR
-     */
-    private class StarredResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            hideProgressDialog();
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = true;
-                invalidateOptionsMenu();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            hideProgressDialog();
-            if (error != null) {
-                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-                    repoStarred = false;
-                    invalidateOptionsMenu();
-                }
-            }
-        }
-    }
-
-    private class UnstarActionResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            hideProgressDialog();
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = false;
-                invalidateOptionsMenu();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            hideProgressDialog();
-        }
-    }
-
-    private class StarActionResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            hideProgressDialog();
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = true;
-                invalidateOptionsMenu();
-            }
-
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            hideProgressDialog();
-        }
-    }
-
-    /**
-     * RESULTS FOR WATCH
-     */
-
-    private class WatchedResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = true;
-                invalidateOptionsMenu();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            if (error != null) {
-                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-                    repoWatched = false;
-                    invalidateOptionsMenu();
-                }
-            }
-        }
-    }
-
-    private class UnwatchActionResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            hideProgressDialog();
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = false;
-                invalidateOptionsMenu();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            hideProgressDialog();
-        }
-    }
-
-    private class WatchActionResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            hideProgressDialog();
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = true;
-                invalidateOptionsMenu();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            hideProgressDialog();
-        }
     }
 
     @Override

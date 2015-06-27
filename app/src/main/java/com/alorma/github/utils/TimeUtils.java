@@ -15,12 +15,22 @@ import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by Bernat on 10/04/2015.
  */
 public class TimeUtils {
 
-    public static String getTimeString(Context context, String date) {
+    public static String getDateToText(Context context, Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.at_date_format), Locale.getDefault());
+
+        return context.getString(R.string.joined_at, sdf.format(date));
+    }
+
+    public static String getTimeAgoString(Context context, String date) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
         DateTime dt = formatter.parseDateTime(date);

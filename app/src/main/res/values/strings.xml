@@ -115,7 +115,7 @@
     <string name="no_gitignore_template">No gitignore</string>
     <string name="follow">Follow</string>
     <string name="joined_at">Joined at %s</string>
-    <string name="joined_at_date_format">dd MMM yyyy</string>
+    <string name="at_date_format">dd MMM yyyy</string>
     <string name="public_data">Public data</string>
     <string name="plan_data">Plan</string>
     <string name="title_activity_repos">%s repositories</string>
@@ -325,4 +325,5 @@
     <string name="pull_requests_merged">Merged</string>
     <string name="pull_requests_merged_failed">Merge failed</string>
     <string name="add_gist_file">Add file</string>
+    <string name="open_issues">Open issues</string>
 </resources>

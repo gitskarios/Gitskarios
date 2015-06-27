@@ -85,7 +85,7 @@ public class IssueDetailView extends LinearLayout {
 
             if (issue.user != null) {
                 profileName.setText(issue.user.login);
-                profileEmail.setText(TimeUtils.getTimeString(getContext(), issue.created_at));
+                profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), issue.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(issue.user.avatar_url, profileIcon);
             }

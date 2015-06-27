@@ -104,7 +104,7 @@ public class BioCard implements View.OnClickListener {
 
             TextView text = (TextView) view.findViewById(R.id.textDate);
 
-            SimpleDateFormat sdf = new SimpleDateFormat(view.getContext().getString(R.string.joined_at_date_format), Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat(view.getContext().getString(R.string.at_date_format), Locale.getDefault());
 
             String joined = view.getContext().getString(R.string.joined_at, sdf.format(user.created_at));
 

@@ -172,4 +172,14 @@
         <item name="android:textColor">@color/primary_dark</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
     </style>
+
+    <style name="repo_overview_item">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingEnd">@dimen/material_drawer_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/material_drawer_vertical_padding</item>
+        <item name="android:paddingRight">@dimen/material_drawer_vertical_padding</item>
+        <item name="android:paddingStart">@dimen/material_drawer_vertical_padding</item>
+    </style>
 </resources>

@@ -100,7 +100,7 @@ public class PullRequestDetailView extends LinearLayout {
 
             if (pullRequest.user != null) {
                 profileName.setText(pullRequest.user.login);
-                profileEmail.setText(TimeUtils.getTimeString(getContext(), pullRequest.created_at));
+                profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), pullRequest.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(pullRequest.user.avatar_url, profileIcon);
             }

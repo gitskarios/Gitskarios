@@ -39,6 +39,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.adapter.ProfileItemsAdapter;
 import com.alorma.github.ui.utils.PaletteUtils;
+import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.text.SimpleDateFormat;
@@ -262,11 +263,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             profileItemsAdapter.add(profileUserEmail);
         }
         if (user.created_at != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.joined_at_date_format), Locale.getDefault());
-
-            String joined = getString(R.string.joined_at, sdf.format(user.created_at));
-
-            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, joined, null);
+            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at), null);
             profileItemsAdapter.add(profileUserCreated);
         }
     }

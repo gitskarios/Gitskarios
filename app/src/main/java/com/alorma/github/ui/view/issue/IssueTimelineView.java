@@ -69,7 +69,7 @@ public class IssueTimelineView extends LinearLayout {
 
         timeline.setColorRes(R.color.gray_github_medium);
 
-        String time = TimeUtils.getTimeString(getContext(), issueEvent.event.created_at);
+        String time = TimeUtils.getTimeAgoString(getContext(), issueEvent.event.created_at);
 
         textView.setText("");
 

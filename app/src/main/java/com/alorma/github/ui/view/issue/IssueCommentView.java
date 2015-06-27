@@ -65,7 +65,7 @@ public class IssueCommentView extends LinearLayout {
 
         if (githubComment.user != null) {
             profileName.setText(githubComment.user.login);
-            profileEmail.setText(TimeUtils.getTimeString(getContext(), githubComment.created_at));
+            profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), githubComment.created_at));
             ImageLoader instance = ImageLoader.getInstance();
             instance.displayImage(githubComment.user.avatar_url, profileIcon);
         }
