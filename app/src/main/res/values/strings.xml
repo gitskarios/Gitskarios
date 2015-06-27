@@ -18,6 +18,7 @@
     <string name="repos_num">%d Repositories</string>
     <string name="gists_num">%d Gists</string>
     <string name="orgs_num">%d Organizations</string>
+    <string name="orgs_num_empty">Organizations</string>
     <string name="private_gists_num">%d Private gists</string>
     <string name="collaborators_num">%d Collaborators</string>
     <string name="one_collaborator_num">%d Collaborator</string>

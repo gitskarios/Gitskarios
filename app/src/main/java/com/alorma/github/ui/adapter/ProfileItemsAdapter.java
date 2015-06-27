@@ -61,6 +61,16 @@ public class ProfileItemsAdapter extends RecyclerView.Adapter<ProfileItemsAdapte
         return items != null ? items.size() : 0;
     }
 
+    public void remove(ProfileItem profileItem) {
+        items.remove(profileItem);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
     public class Holder extends RecyclerView.ViewHolder {
         private final ImageView icon;
         private final TextView text;

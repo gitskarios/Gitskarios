@@ -18,11 +18,15 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
 import com.alorma.github.bean.ProfileItem;
+import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.dto.response.UserType;
+import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.GithubUsersClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
@@ -53,9 +57,8 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-        PaletteUtils.PaletteUtilsListener, BioCard.BioCardListener,
-        GithubDataCard.GithubDataCardListener,
-        OnCheckFollowingUser, GithubPlanCard.GithubDataCardListener {
+        PaletteUtils.PaletteUtilsListener,
+        OnCheckFollowingUser {
 
     private static final String USER = "USER";
     private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
@@ -105,34 +108,36 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
     @Override
     protected void getContent() {
-        GithubUsersClient<User> requestClient;
-        user = null;
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().containsKey(USER)) {
-                user = getIntent().getParcelableExtra(USER);
+        if (profileItemsAdapter == null || profileItemsAdapter.getItemCount() == 0) {
+            GithubUsersClient<User> requestClient;
+            user = null;
+            if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey(USER)) {
+                    user = getIntent().getParcelableExtra(USER);
+                }
             }
-        }
 
-        StoreCredentials settings = new StoreCredentials(this);
+            StoreCredentials settings = new StoreCredentials(this);
 
-        if (user != null) {
-            if (user.login.equalsIgnoreCase(settings.getUserName())) {
-                requestClient = new GetAuthUserClient(this);
-                collapsingToolbarLayout.setTitle(settings.getUserName());
+            if (user != null) {
+                if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                    requestClient = new GetAuthUserClient(this);
+                    collapsingToolbarLayout.setTitle(settings.getUserName());
+                } else {
+                    requestClient = new RequestUserClient(this, user.login);
+                    collapsingToolbarLayout.setTitle(user.login);
+                }
             } else {
-                requestClient = new RequestUserClient(this, user.login);
-                collapsingToolbarLayout.setTitle(user.login);
+                requestClient = new GetAuthUserClient(this);
             }
-        } else {
-            requestClient = new GetAuthUserClient(this);
+
+            invalidateOptionsMenu();
+
+            showProgressDialog(R.style.SpotDialog_LoadingUser);
+
+            requestClient.setOnResultCallback(this);
+            requestClient.execute();
         }
-
-        invalidateOptionsMenu();
-
-        showProgressDialog(R.style.SpotDialog_LoadingUser);
-
-        requestClient.setOnResultCallback(this);
-        requestClient.execute();
     }
 
     @Override
@@ -213,6 +218,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         } else {
             applyColors(getResources().getColor(R.color.primary), Color.WHITE);
         }
+
         fillCardBio(user);
 
         fillCardGithubData(user);
@@ -241,18 +247,25 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     }
 
     private void fillCardBio(User user) {
-        List<ProfileItem> profileItems = new ArrayList<>();
         if (!TextUtils.isEmpty(user.company)) {
-            ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, null);
-            profileItems.add(profileUserOrganization);
+            Intent intent = new Intent(Intent.ACTION_SEARCH);
+            intent.putExtra(SearchManager.QUERY, user.company);
+            ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
+            profileItemsAdapter.add(profileUserOrganization);
         }
         if (!TextUtils.isEmpty(user.location)) {
-            ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, null);
-            profileItems.add(profileUserLocation);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri geo = Uri.parse("geo:0,0?q=" + user.location);
+            intent.setData(geo);
+            ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
+            profileItemsAdapter.add(profileUserLocation);
         }
         if (!TextUtils.isEmpty(user.email)) {
-            ProfileItem profileUserEmail = new ProfileItem(Octicons.Icon.oct_mail, user.email, null);
-            profileItems.add(profileUserEmail);
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{user.email});
+            ProfileItem profileUserEmail = new ProfileItem(Octicons.Icon.oct_mail, user.email, intent);
+            profileItemsAdapter.add(profileUserEmail);
         }
         if (user.created_at != null) {
             SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.joined_at_date_format), Locale.getDefault());
@@ -260,105 +273,67 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             String joined = getString(R.string.joined_at, sdf.format(user.created_at));
 
             ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, joined, null);
-            profileItems.add(profileUserCreated);
+            profileItemsAdapter.add(profileUserCreated);
         }
-
-        List<ProfileItem> profileItems2 = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            for (int i1 = 0; i1 < profileItems.size(); i1++) {
-                profileItems2.add(profileItems.get(i1));
-            }
-        }
-
-        profileItemsAdapter.addAll(profileItems2);
-
-
-        /*CardView view = (CardView) findViewById(R.id.bioCardLayout);
-        view.setCardElevation(4);
-        BioCard card = new BioCard(user, view, avatarColor);
-        card.setBioCardListener(this);*/
     }
 
     private void fillCardGithubData(User user) {
-        /*CardView view = (CardView) findViewById(R.id.dataCardLayout);
-        view.setCardElevation(4);
-        GithubDataCard dataCard = new GithubDataCard(user, view, avatarColor);
-        dataCard.setGithubDataCardListener(this);*/
+        if (user.public_repos > 0) {
+            String text = getString(R.string.repos_num, user.public_repos);
+            Intent intent = ReposActivity.launchIntent(this, user.login, user.type);
+            ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, intent);
+            profileItemsAdapter.add(profileItemRepos);
+        }
+        if (user.public_gists > 0) {
+            String text = getString(R.string.gists_num, user.public_gists);
+            Intent intent = GistsMainActivity.createLauncherIntent(this, user.login);
+            ProfileItem profileItemGists = new ProfileItem(Octicons.Icon.oct_gist, text, intent);
+            profileItemsAdapter.add(profileItemGists);
+        }
+
+        Intent intent = OrganizationsActivity.launchIntent(this, user.login);
+        final ProfileItem profileItemOrgs = new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
+        profileItemsAdapter.add(profileItemOrgs);
+
+        GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
+        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+            @Override
+            public void onResponseOk(ListOrganizations organizations, Response r) {
+                if (organizations != null && organizations.size() > 0) {
+                    profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
+                    profileItemsAdapter.notifyDataSetChanged();
+                } else {
+                    profileItemsAdapter.remove(profileItemOrgs);
+                }
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        orgsClient.execute();
+
+        if (user.type == UserType.User) {
+            Intent intentStarred = StarredReposActivity.launchIntent(this, user.login);
+            ProfileItem profileItemStar = new ProfileItem(Octicons.Icon.oct_star, getString(R.string.profile_starreds), intentStarred);
+            profileItemsAdapter.add(profileItemStar);
+
+            Intent intentWatched = WatchedReposActivity.launchIntent(this, user.login);
+            ProfileItem profileItemWatched = new ProfileItem(Octicons.Icon.oct_eye, getString(R.string.profile_watched), intentWatched);
+            profileItemsAdapter.add(profileItemWatched);
+        }
     }
 
     private void fillCardPlan(User user) {
-        /*CardView view = (CardView) findViewById(R.id.planCardLayout);
-        view.setCardElevation(4);
         if (user.plan != null) {
-            GithubPlanCard dataCard = new GithubPlanCard(user, view, avatarColor);
-            dataCard.setGithubDataCardListener(this);
-        } else {
-            view.setVisibility(View.GONE);
-        }*/
+
+        }
     }
 
     @Override
     public void onFail(RetrofitError error) {
         hideProgressDialog();
-    }
-
-    @Override
-    public void onCompanyRequest(String company) {
-        Intent intent = new Intent(Intent.ACTION_SEARCH);
-        intent.putExtra(SearchManager.QUERY, company);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onLocationRequest(String location) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri geo = Uri.parse("geo:0,0?q=" + location);
-        intent.setData(geo);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onMailRequest(String mail) {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onRepositoriesRequest(String username) {
-        Intent intent = ReposActivity.launchIntent(this, username, user.type);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onOrganizationsRequest(String username) {
-        Intent intent = OrganizationsActivity.launchIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onGistsRequest(String username) {
-        Intent intent = GistsMainActivity.createLauncherIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onStarredRequest(String username) {
-        Intent intent = StarredReposActivity.launchIntent(this, username);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onWatchedRequest(String username) {
-        Intent intent = WatchedReposActivity.launchIntent(this, username);
-        startActivity(intent);
     }
 
     @Override
