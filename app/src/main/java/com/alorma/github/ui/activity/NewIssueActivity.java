@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -121,6 +122,10 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             userTextView.setOnClickListener(pushAccessListener);
             milestoneTextView.setOnClickListener(pushAccessListener);
             labelsTextView.setOnClickListener(pushAccessListener);
+
+            if (getToolbar() != null) {
+                ViewCompat.setElevation(getToolbar(), 8);
+            }
         }
     }
 
