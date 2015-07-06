@@ -20,9 +20,7 @@
             android:background="?colorPrimary"
             android:minHeight="?actionBarSize"
             app:contentInsetStart="@dimen/second_keyline"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-            app:popupTheme="@style/Toolbar.Popup.AppCompat"
-            app:theme="@style/Toolbar.AppCompat.Responsive" />
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
