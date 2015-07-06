@@ -29,6 +29,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -65,9 +67,35 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
         User author = commit.author;
 
+        if (author == null) {
+            author = commit.commit.author;
+        }
+
+        if (author == null) {
+            author = commit.commit.committer;
+        }
+
         if (author != null) {
             if (author.avatar_url != null) {
                 ImageLoader.getInstance().displayImage(author.avatar_url, avatar);
+            } else if (author.email != null) {
+                try {
+                    MessageDigest digest = MessageDigest.getInstance("MD5");
+                    digest.update(author.email.getBytes());
+                    byte messageDigest[] = digest.digest();
+                    StringBuffer hexString = new StringBuffer();
+                    for (int i=0; i<messageDigest.length; i++)
+                        hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+                    String hash = hexString.toString();
+                    ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, avatar);
+                } catch (NoSuchAlgorithmException e) {
+                    IconicsDrawable iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_octoface);
+                    iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));
+                    iconDrawable.sizeDp(36);
+                    iconDrawable.setAlpha(128);
+                    avatar.setImageDrawable(iconDrawable);
+                }
+
             } else {
                 IconicsDrawable iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_octoface);
                 iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));

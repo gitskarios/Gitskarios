@@ -18,6 +18,11 @@
         <item name="gitskarios_icons">@color/icons</item>
     </style>
 
+    <style name="AppTheme.Wololo" >
+        <item name="colorPrimary">@color/primary_wololo</item>
+        <item name="colorPrimaryDark">@color/primary_dark_wololo</item>
+    </style>
+
     <!-- Default application theme. -->
     <style name="AppTheme.AppCompat.Default" parent="Theme.AppCompat.Light.NoActionBar">
 

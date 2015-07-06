@@ -6,6 +6,12 @@
     <color name="primary_alpha">#FF9C27B0</color>
     <color name="primary_dark_alpha">#FF7B1FA2</color>
 
+    <color name="primary_wololo">#ffb0b010</color>
+    <color name="primary_dark_wololo">#ffa29f4e</color>
+    <color name="primary_alpha_wololo">#aab0ac4c</color>
+    <color name="primary_dark_alpha_wololo">#aaa29a6f</color>
+    <color name="accent_wololo">#ffff4bd3</color>
+
     <color name="primary_light">#E1BEE7</color>
     <color name="accent">#FF5722</color>
     <color name="accent_dark">#ffba3f19</color>
