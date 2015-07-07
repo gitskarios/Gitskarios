@@ -3,6 +3,8 @@ package com.alorma.github;
 import android.app.Application;
 import android.content.Context;
 
+import com.alorma.github.basesdk.client.credentials.GithubDeveloperCredentials;
+import com.alorma.github.basesdk.client.credentials.MetaDataProvider;
 import com.alorma.github.ui.UiModule;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
@@ -38,6 +40,8 @@ public class GitskariosApplication extends Application {
             Tracker tracker = analytics.newTracker(R.xml.global_tracker);
             tracker.enableAdvertisingIdCollection(true);
         }
+
+        GithubDeveloperCredentials.init(new MetaDataProvider(this));
 
         JodaTimeAndroid.init(this);
 

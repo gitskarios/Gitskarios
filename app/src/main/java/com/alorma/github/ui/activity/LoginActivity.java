@@ -30,6 +30,7 @@ import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.basesdk.ApiClient;
 import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.credentials.GithubDeveloperCredentials;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
@@ -197,7 +198,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
-            openExternalLogin(new GitHub(this));
+            openExternalLogin(new GitHub());
         }
     }
 
@@ -207,7 +208,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void openExternalLogin(ApiClient client) {
         final String url = String.format("%s?client_id=%s&scope=gist,user,notifications,repo",
-                OAUTH_URL, client.getApiClient());
+                OAUTH_URL, GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
 
         final List<ResolveInfo> browserList = getBrowserList();
 
@@ -265,7 +266,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     if (ownedSkus.size() == 0) {
                         showDialogBuyMultiAccount();
                     } else {
-                        openExternalLogin(new GitHub(LoginActivity.this));
+                        openExternalLogin(new GitHub());
                     }
                 }
             }
@@ -296,7 +297,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     String sku = jo.getString("productId");
                     String developerPayload = jo.getString("developerPayload");
                     if (developerPayload.equals(purchaseId) && SKU_MULTI_ACCOUNT.equals(sku)) {
-                        openExternalLogin(new GitHub(this));
+                        openExternalLogin(new GitHub());
                     }
                 } catch (JSONException e) {
 
