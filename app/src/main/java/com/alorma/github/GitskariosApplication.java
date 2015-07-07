@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.alorma.github.basesdk.client.credentials.GithubDeveloperCredentials;
-import com.alorma.github.basesdk.client.credentials.MetaDataProvider;
+import com.alorma.github.basesdk.client.credentials.SimpleDeveloperCredentialsProvider;
 import com.alorma.github.ui.UiModule;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
@@ -41,7 +41,7 @@ public class GitskariosApplication extends Application {
             tracker.enableAdvertisingIdCollection(true);
         }
 
-        GithubDeveloperCredentials.init(new BuildConfigCredentialsProvider());
+        GithubDeveloperCredentials.init(new SimpleDeveloperCredentialsProvider(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_CALLBACK));
 
         JodaTimeAndroid.init(this);
 
