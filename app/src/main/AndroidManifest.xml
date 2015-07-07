@@ -159,15 +159,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.alorma.github.sdk.client"
-            android:value="@string/gh_client_id" />
-        <meta-data
-            android:name="com.alorma.github.sdk.secret"
-            android:value="@string/gh_client_secret" />
-        <meta-data
-            android:name="com.alorma.github.sdk.oauth"
-            android:value="@string/gh_client_callback" />
+
     </application>
 
 </manifest>

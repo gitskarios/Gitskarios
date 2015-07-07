@@ -26,12 +26,18 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
         }
         release {
             minifyEnabled false
             if (signingConfigs.playStore != null) {
                 signingConfig signingConfigs.playStore
             }
+            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
         }
     }
 }
@@ -68,6 +74,29 @@ if (propFile.canRead()) {
     android.buildTypes.release.signingConfig = null
 }
 
+def getGHId(pro) {
+    if (pro) {
+        return hasProperty('GH_PRO_ID') ? GH_PRO_ID : System.getenv('GH_PRO_ID')
+    } else {
+        return hasProperty('GH_DEV_ID') ? GH_DEV_ID : System.getenv('GH_DEV_ID')
+    }
+}
+
+def getGHSecret(pro) {
+    if (pro) {
+        return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
+    } else {
+        return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
+    }
+}
+
+def getGHCallback(pro) {
+    if (pro) {
+        return hasProperty('GH_PRO_CALLBACK') ? GH_PRO_CALLBACK : System.getenv('GH_PRO_CALLBACK')
+    } else {
+        return hasProperty('GH_DEV_CALLBACK') ? GH_DEV_CALLBACK : System.getenv('GH_DEV_CALLBACK')
+    }
+}
 
 
 dependencies {

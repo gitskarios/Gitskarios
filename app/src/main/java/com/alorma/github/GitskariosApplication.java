@@ -41,7 +41,7 @@ public class GitskariosApplication extends Application {
             tracker.enableAdvertisingIdCollection(true);
         }
 
-        GithubDeveloperCredentials.init(new MetaDataProvider(this));
+        GithubDeveloperCredentials.init(new BuildConfigCredentialsProvider());
 
         JodaTimeAndroid.init(this);
 
