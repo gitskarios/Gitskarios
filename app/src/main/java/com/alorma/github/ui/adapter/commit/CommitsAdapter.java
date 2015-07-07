@@ -84,7 +84,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
                     digest.update(author.email.getBytes());
                     byte messageDigest[] = digest.digest();
                     StringBuffer hexString = new StringBuffer();
-                    for (int i=0; i<messageDigest.length; i++)
+                    for (int i = 0; i < messageDigest.length; i++)
                         hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
                     String hash = hexString.toString();
                     ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, avatar);

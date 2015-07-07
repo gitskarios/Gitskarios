@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.alorma.github">
+    package="com.alorma.github" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,15 +16,15 @@
     <uses-permission android:name="android.permission.READ_SYNC_STATS" />
 
     <application
-        android:name="com.alorma.github.GitskariosApplication"
+        android:name=".GitskariosApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:launchMode="singleInstance"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.alorma.github.ui.activity.LoginActivity"
-            android:label="@string/app_name">
+            android:name=".ui.activity.LoginActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,20 +39,20 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name="com.alorma.github.ui.activity.MainActivity" />
+        <activity android:name=".ui.activity.MainActivity" />
         <activity
-            android:name="com.alorma.github.ui.activity.PeopleActivity"
+            android:name=".ui.activity.PeopleActivity"
             android:label="@string/navigation_people" />
-        <activity android:name="com.alorma.github.ui.activity.ProfileActivity" />
-        <activity android:name="com.alorma.github.ui.activity.CommitDetailActivity" />
-        <activity android:name="com.alorma.github.ui.activity.RepoDetailActivity" />
-        <activity android:name="com.alorma.github.ui.activity.SearchActivity" />
+        <activity android:name=".ui.activity.ProfileActivity" />
+        <activity android:name=".ui.activity.CommitDetailActivity" />
+        <activity android:name=".ui.activity.RepoDetailActivity" />
+        <activity android:name=".ui.activity.SearchActivity" />
         <activity android:name=".ui.dialog.NewIssueCommentActivity" />
-        <activity android:name="com.alorma.github.ui.activity.FileActivity" />
-        <activity android:name="com.alorma.github.ui.activity.OrganizationActivity" />
+        <activity android:name=".ui.activity.FileActivity" />
+        <activity android:name=".ui.activity.OrganizationActivity" />
         <activity
-            android:name="com.alorma.github.Interceptor"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:name=".Interceptor"
+            android:theme="@android:style/Theme.NoDisplay" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -68,19 +68,19 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".ui.activity.gists.GistsMainActivity"
-            android:label="@string/title_gists">
-            <intent-filter android:label="@string/open_gist">
+            android:label="@string/title_gists" >
+            <intent-filter android:label="@string/open_gist" >
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data
                     android:host="gist.github.com"
                     android:mimeType="text/*" />
             </intent-filter>
-            <intent-filter android:label="@string/open_gist">
+            <intent-filter android:label="@string/open_gist" >
                 <action android:name="android.intent.action.VIEW" />
 
                 <data
@@ -100,75 +100,74 @@
         <activity android:name=".ui.activity.gists.GistsFileActivity" />
         <activity
             android:name=".ui.activity.gists.CreateGistActivity"
-            android:label="@string/create_gist">
+            android:label="@string/create_gist" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/*" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.alorma.github.ui.activity.NewIssueActivity"
+            android:name=".ui.activity.NewIssueActivity"
             android:label="@string/title_activity_new_issue"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name="com.alorma.github.ui.activity.IssueDetailActivity" />
-        <activity android:name="com.alorma.github.ui.activity.PullRequestDetailActivity" />
+        <activity android:name=".ui.activity.IssueDetailActivity" />
+        <activity android:name=".ui.activity.PullRequestDetailActivity" />
         <activity
-            android:name="com.alorma.github.ui.activity.SettingsActivity"
+            android:name=".ui.activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name="com.alorma.github.ui.activity.ReposActivity" />
-        <activity android:name="com.alorma.github.ui.activity.StarredReposActivity" />
-        <activity android:name="com.alorma.github.ui.activity.WatchedReposActivity" />
-        <activity android:name="com.alorma.github.ui.activity.OrganizationsActivity" />
-        <activity android:name="com.alorma.github.ui.activity.SearchIssuesActivity" />
-        <activity android:name="com.alorma.github.ui.activity.PullRequestCommitsActivity" />
-        <activity android:name="com.alorma.github.ui.activity.PullRequestFilesActivity" />
+        <activity android:name=".ui.activity.ReposActivity" />
+        <activity android:name=".ui.activity.StarredReposActivity" />
+        <activity android:name=".ui.activity.WatchedReposActivity" />
+        <activity android:name=".ui.activity.OrganizationsActivity" />
+        <activity android:name=".ui.activity.SearchIssuesActivity" />
+        <activity android:name=".ui.activity.PullRequestCommitsActivity" />
+        <activity android:name=".ui.activity.PullRequestFilesActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080" />
 
-        <service android:name=".account.AccountService">
+        <service android:name=".account.AccountService" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator" />
         </service>
-
         <service
-            android:name="com.alorma.github.account.NotificationsSyncService"
+            android:name=".account.NotificationsSyncService"
             android:exported="true"
-            android:process=":sync">
+            android:process=":sync" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/notifications_syncadapter" />
         </service>
 
         <provider
-            android:authorities="@string/account_type"
-            android:name=".account.StubContentProvider" />
+            android:name=".account.StubContentProvider"
+            android:authorities="@string/account_type" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.alorma.github.sdk.client"
-            android:value="@string/gh_client_id"/>
-
+            android:value="@string/gh_client_id" />
         <meta-data
             android:name="com.alorma.github.sdk.secret"
-            android:value="@string/gh_client_secret"/>
-
+            android:value="@string/gh_client_secret" />
         <meta-data
             android:name="com.alorma.github.sdk.oauth"
-            android:value="@string/gh_client_callback"/>
+            android:value="@string/gh_client_callback" />
     </application>
 
 </manifest>
