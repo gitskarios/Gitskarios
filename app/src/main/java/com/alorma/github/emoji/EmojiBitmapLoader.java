@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.EditText;
@@ -31,6 +32,7 @@ public class EmojiBitmapLoader {
     private int sizeIcon;
     private String textFromTextView;
     private TextView textView;
+    private TextWatcher textWatcher;
 
     public EmojiBitmapLoader() {
         this.map = new HashMap<>();
@@ -38,12 +40,17 @@ public class EmojiBitmapLoader {
         handler = new Handler();
     }
 
-    public void parseTextView(final TextView textView) {
+    public void parseTextView(final TextView textView, TextWatcher textWatcher) {
         this.textView = textView;
+        this.textWatcher = textWatcher;
         spannableString = new SpannableString(textView.getEditableText());
 
         sizeIcon = (int) (-textView.getPaint().ascent());
         textFromTextView = textView.getText().toString();
+
+        if (textWatcher != null) {
+            textView.removeTextChangedListener(textWatcher);
+        }
 
         if (emojisMap.size() == 0) {
             EmojisProvider provider = new EmojisProvider();
@@ -69,29 +76,35 @@ public class EmojiBitmapLoader {
     }
 
     private void loadFromTextView() {
+        final String regex = ":((\\+|\\-)?\\w+|\\d):";
+        Pattern pattern = Pattern.compile(regex);
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                String regex = ":((\\+|\\-)?\\w+|\\d):";
-
-                Pattern pattern = Pattern.compile(regex);
-
-                Matcher matcher = pattern.matcher(textFromTextView);
-
-                while (matcher.find()) {
-                    map.put(matcher.group(), null);
-                }
-
-                for (String s : map.keySet()) {
-                    downloadBitmap(s, emojisMap.get(s), sizeIcon);
-                }
+        Matcher matcher = pattern.matcher(textFromTextView);
+        if (!matcher.find()) {
+            if (textWatcher != null) {
+                textView.addTextChangedListener(textWatcher);
             }
-        };
+        } else {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Pattern pattern = Pattern.compile(regex);
 
-        Thread thread = new Thread(runnable);
-        thread.start();
+                    Matcher matcher = pattern.matcher(textFromTextView);
+
+                    while (matcher.find()) {
+                        map.put(matcher.group(), null);
+                    }
+
+                    for (String s : map.keySet()) {
+                        downloadBitmap(s, emojisMap.get(s), sizeIcon);
+                    }
+                }
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+        }
 
     }
 
@@ -156,6 +169,10 @@ public class EmojiBitmapLoader {
 
                 if (textView instanceof EditText) {
                     ((EditText) textView).setSelection(textView.getText().toString().length());
+                }
+
+                if (textWatcher != null) {
+                    textView.addTextChangedListener(textWatcher);
                 }
             }
         });

@@ -69,6 +69,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private CharSequence[] selectedLabels;
     private boolean editBodyHasFocus;
     private EmojiBitmapLoader emojiBitmapLoader;
+    private TextWatcher bodyTextWatcher;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -147,7 +148,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             }
         });
 
-        editBody.addTextChangedListener(new TextWatcher() {
+        bodyTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -155,14 +156,18 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //emojiBitmapLoader.parseTextView(editBody);
+                if (s.toString().contains(":")) {
+                    emojiBitmapLoader.parseTextView(editBody, bodyTextWatcher);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        };
+
+        editBody.addTextChangedListener(bodyTextWatcher);
     }
 
     public Drawable pushAccessInfoIcon(IIcon icon) {
@@ -259,8 +264,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         if (requestCode == EMOJI_CODE && resultCode == RESULT_OK && data != null) {
             Emoji emoji = data.getParcelableExtra(EmojisActivity.EMOJI);
             if (emoji != null) {
+                editBody.removeTextChangedListener(bodyTextWatcher);
                 editBody.setText(editBody.getText() + " :" + emoji.getKey() + ": ");
-                emojiBitmapLoader.parseTextView(editBody);
+                emojiBitmapLoader.parseTextView(editBody, bodyTextWatcher);
                 editBody.setSelection(editBody.getText().length());
             }
         }
