@@ -29,6 +29,7 @@ import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.emoji.EmojiVO;
+import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.emoji.EmojisClient;
 import com.alorma.github.emoji.EmojisProvider;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -105,19 +106,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         checkChangeLog();
 
-        EmojisProvider emojisProvider = new EmojisProvider();
-        emojisProvider.getEmojis(this, new EmojisProvider.EmojisCallback() {
-            @Override
-            public void onEmojisLoaded(List<EmojiVO> emojis) {
-
-            }
-
-            @Override
-            public void onEmojisLoadFail() {
-
-            }
-        });
-
+        Intent intent = new Intent(this, EmojisActivity.class);
+        startActivity(intent);
     }
 
     private boolean checkChangeLog() {

@@ -35,7 +35,7 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
 
         if (result.size() > 0) {
             if (emojisCallback != null) {
-                emojisCallback.onEmojisLoaded(result);
+                emojisCallback.onEmojisLoaded(transform(result));
             }
         } else {
             EmojisClient emojisClient = new EmojisClient(context);
@@ -60,7 +60,7 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
             List<EmojiVO> copyEmojiList = new ArrayList<>(emojiVOs);
 
             if (emojisCallback != null) {
-                emojisCallback.onEmojisLoaded(copyEmojiList);
+                emojisCallback.onEmojisLoaded(transform(copyEmojiList));
             }
 
             instance.commitTransaction();
@@ -74,13 +74,22 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
 
     }
 
+    public List<Emoji> transform(List<EmojiVO> vos) {
+        List<Emoji> emojis = new ArrayList<>();
+        if (vos != null) {
+            for (EmojiVO vo : vos) {
+                emojis.add(new Emoji(vo.getKey(), vo.getValue()));
+            }
+        }
+        return emojis;
+    }
+
     public void setEmojisCallback(EmojisCallback emojisCallback) {
         this.emojisCallback = emojisCallback;
     }
 
-
     public interface EmojisCallback {
-        void onEmojisLoaded(List<EmojiVO> emojis);
+        void onEmojisLoaded(List<Emoji> emojis);
 
         void onEmojisLoadFail();
     }

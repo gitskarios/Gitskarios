@@ -126,6 +126,8 @@
         <activity android:name=".ui.activity.PullRequestCommitsActivity" />
         <activity android:name=".ui.activity.PullRequestFilesActivity" />
 
+        <activity android:name="com.alorma.github.emoji.EmojisActivity" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080" />
