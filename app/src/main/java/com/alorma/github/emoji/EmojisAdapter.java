@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -19,6 +20,7 @@ import java.util.List;
 public class EmojisAdapter extends RecyclerView.Adapter<EmojisAdapter.EmojiViewHolder> {
 
     private final List<Emoji> emojis;
+    private OnEmojiSelectedListener onEmojiSelectedListener;
 
     public EmojisAdapter() {
         emojis = new ArrayList<>();
@@ -31,7 +33,9 @@ public class EmojisAdapter extends RecyclerView.Adapter<EmojisAdapter.EmojiViewH
 
     @Override
     public void onBindViewHolder(EmojiViewHolder holder, int position) {
-        ImageLoader.getInstance().displayImage(emojis.get(position).getValue(), holder.icon);
+        Emoji emoji = emojis.get(position);
+        ImageLoader.getInstance().displayImage(emoji.getValue(), holder.icon);
+        holder.text.setText(":" + emoji.getKey() + ":");
     }
 
     @Override
@@ -44,12 +48,36 @@ public class EmojisAdapter extends RecyclerView.Adapter<EmojisAdapter.EmojiViewH
         notifyDataSetChanged();
     }
 
-    public class EmojiViewHolder extends RecyclerView.ViewHolder{
+    public void clear() {
+        emojis.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setOnEmojiSelectedListener(OnEmojiSelectedListener onEmojiSelectedListener) {
+        this.onEmojiSelectedListener = onEmojiSelectedListener;
+    }
+
+    public class EmojiViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView icon;
+        private final TextView text;
 
         public EmojiViewHolder(View itemView) {
             super(itemView);
             icon = (ImageView) itemView.findViewById(R.id.icon);
+            text = (TextView) itemView.findViewById(R.id.text);
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (onEmojiSelectedListener != null) {
+                onEmojiSelectedListener.onEmojiSelected(emojis.get(getAdapterPosition()));
+            }
+        }
+    }
+
+    public interface OnEmojiSelectedListener {
+        void onEmojiSelected(Emoji emoji);
     }
 }

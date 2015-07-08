@@ -105,9 +105,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         createDrawer();
 
         checkChangeLog();
-
-        Intent intent = new Intent(this, EmojisActivity.class);
-        startActivity(intent);
     }
 
     private boolean checkChangeLog() {

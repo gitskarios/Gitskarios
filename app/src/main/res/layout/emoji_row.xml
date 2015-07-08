@@ -2,12 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="?attr/selectableItemBackgroundBorderless">
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="@dimen/gapMedium" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:padding="@dimen/gapMedium" />
 
 </LinearLayout>

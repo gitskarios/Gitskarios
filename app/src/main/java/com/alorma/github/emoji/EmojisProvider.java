@@ -46,6 +46,30 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
         instance = null;
     }
 
+    public void getEmojis(Context context, EmojisCallback callback, String filter) {
+        if (filter != null) {
+            this.context = context;
+            this.emojisCallback = callback;
+            instance = Realm.getInstance(context);
+
+            RealmQuery<EmojiVO> query = instance.where(EmojiVO.class);
+
+            RealmResults<EmojiVO> result = query.contains("key", filter.toLowerCase().replace(" ", "_")).findAll();
+
+            if (result.size() > 0) {
+                if (emojisCallback != null) {
+                    emojisCallback.onEmojisLoaded(transform(result));
+                }
+            } else {
+                if (emojisCallback != null) {
+                    emojisCallback.onEmojisLoadFail();
+                }
+            }
+            instance.close();
+            instance = null;
+        }
+    }
+
     @Override
     public void onResponseOk(HashMap<String, String> emojis, Response r) {
         instance = Realm.getInstance(context);
@@ -71,7 +95,9 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
 
     @Override
     public void onFail(RetrofitError error) {
-
+        if (emojisCallback != null) {
+            emojisCallback.onEmojisLoadFail();
+        }
     }
 
     public List<Emoji> transform(List<EmojiVO> vos) {

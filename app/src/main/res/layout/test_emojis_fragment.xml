@@ -4,9 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <EditText
+        android:id="@+id/filter"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recycler"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gapMedium"
+        android:hint="@string/hint_emojis_filter"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

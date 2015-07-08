@@ -2,9 +2,12 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.emoji.Emoji;
+import com.alorma.github.emoji.EmojiBitmapLoader;
+import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
@@ -47,6 +53,7 @@ import retrofit.client.Response;
 public class NewIssueActivity extends BackActivity implements BaseClient.OnResultCallback<Issue> {
 
     public static final String REPO_INFO = "REPO_INFO";
+    private static final int EMOJI_CODE = 1554;
 
     private boolean creatingIssue = false;
     private RepoInfo repoInfo;
@@ -60,6 +67,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private Integer[] positionsSelectedLabels;
     private CharSequence[] selectedLabels;
+    private boolean editBodyHasFocus;
+    private EmojiBitmapLoader emojiBitmapLoader;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -78,6 +87,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_issue);
+
+        emojiBitmapLoader = new EmojiBitmapLoader();
 
         if (getIntent().getExtras() != null) {
             repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
@@ -127,6 +138,31 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
                 ViewCompat.setElevation(getToolbar(), 8);
             }
         }
+
+        editBody.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editBodyHasFocus = hasFocus;
+                invalidateOptionsMenu();
+            }
+        });
+
+        editBody.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //emojiBitmapLoader.parseTextView(editBody);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public Drawable pushAccessInfoIcon(IIcon icon) {
@@ -188,6 +224,16 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         if (item != null) {
             item.setEnabled(!creatingIssue);
         }
+
+        if (editBodyHasFocus) {
+            menu.add(0, R.id.action_add_emoji, 100, R.string.add_emoji);
+
+            MenuItem emojiMenu = menu.findItem(R.id.action_add_emoji);
+            emojiMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            Drawable emojiIcon = new IconicsDrawable(this, Octicons.Icon.oct_octoface).actionBar().color(Color.WHITE);
+            emojiMenu.setIcon(emojiIcon);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -198,8 +244,26 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             case R.id.action_send:
                 checkDataAndCreateIssue();
                 break;
+            case R.id.action_add_emoji:
+                Intent intent = new Intent(this, EmojisActivity.class);
+                startActivityForResult(intent, EMOJI_CODE);
+                break;
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EMOJI_CODE && resultCode == RESULT_OK && data != null) {
+            Emoji emoji = data.getParcelableExtra(EmojisActivity.EMOJI);
+            if (emoji != null) {
+                editBody.setText(editBody.getText() + " :" + emoji.getKey() + ": ");
+                emojiBitmapLoader.parseTextView(editBody);
+                editBody.setSelection(editBody.getText().length());
+            }
+        }
     }
 
     private void createIssue(IssueRequest issue) {

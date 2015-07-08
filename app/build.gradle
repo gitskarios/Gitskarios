@@ -133,4 +133,5 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
     compile 'io.realm:realm-android:0.81.1'
+    compile 'com.binaryfork:spanny:1.0.2'
 }

@@ -35,5 +35,6 @@
     <item name="action_repo_change_branch" type="id">action_repo_change_branch</item>
     <item name="action_menu_follow_user" type="id">action_menu_follow_user</item>
     <item name="action_menu_unfollow_user" type="id">action_menu_unfollow_user</item>
+    <item name="action_add_emoji" type="id">action_add_emoji</item>
 
 </resources>
