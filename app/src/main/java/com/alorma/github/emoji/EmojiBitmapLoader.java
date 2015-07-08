@@ -48,9 +48,6 @@ public class EmojiBitmapLoader {
         sizeIcon = (int) (-textView.getPaint().ascent());
         textFromTextView = textView.getText().toString();
 
-        if (textWatcher != null) {
-            textView.removeTextChangedListener(textWatcher);
-        }
 
         if (emojisMap.size() == 0) {
             EmojisProvider provider = new EmojisProvider();
@@ -80,11 +77,12 @@ public class EmojiBitmapLoader {
         Pattern pattern = Pattern.compile(regex);
 
         Matcher matcher = pattern.matcher(textFromTextView);
-        if (!matcher.find()) {
+        if (matcher.find()) {
+
             if (textWatcher != null) {
-                textView.addTextChangedListener(textWatcher);
+                textView.removeTextChangedListener(textWatcher);
             }
-        } else {
+
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -93,7 +91,9 @@ public class EmojiBitmapLoader {
                     Matcher matcher = pattern.matcher(textFromTextView);
 
                     while (matcher.find()) {
-                        map.put(matcher.group(), null);
+                        if (emojisMap.get(matcher.group()) != null) {
+                            map.put(matcher.group(), null);
+                        }
                     }
 
                     for (String s : map.keySet()) {
@@ -122,10 +122,11 @@ public class EmojiBitmapLoader {
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Bitmap icon = Bitmap.createScaledBitmap(loadedImage, size, size, true);
 
-                map.put(key, icon);
-
+                if (loadedImage != null) {
+                    Bitmap icon = Bitmap.createScaledBitmap(loadedImage, size, size, true);
+                    map.put(key, icon);
+                }
                 Map<String, Bitmap> clearMap = new HashMap<>(map);
 
                 for (String s : map.keySet()) {
