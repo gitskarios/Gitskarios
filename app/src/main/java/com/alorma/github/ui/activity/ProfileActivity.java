@@ -230,7 +230,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                             .colorsListener(new Atelier.OnPaletteColorListener() {
                                 @Override
                                 public void onColor(int color) {
-                                    applyColors(color, Color.BLACK, Color.BLACK);
+                                    applyColors(color);
                                     profileItemsAdapter.setAvatarColor(color);
                                 }
                             })
@@ -268,14 +268,12 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 //
 //    }
 
-    private void applyColors(int rgb, int textColor, int title) {
+    private void applyColors(int rgb) {
         collapsingToolbarLayout.setContentScrimColor(rgb);
-        collapsingToolbarLayout.setExpandedTitleColor(title);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(title);
+        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         collapsingToolbarLayout.setStatusBarScrimColor(rgb);
         profileItemsAdapter.setAvatarColor(rgb);
-
-        getToolbar().setTitleTextColor(title);
 
         try {
             if (rgb != 0) {
