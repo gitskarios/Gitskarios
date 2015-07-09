@@ -287,6 +287,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             issueInfo.num = issue.number;
             Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo);
             startActivity(launcherIntent);
+            setResult(RESULT_OK);
             finish();
         }
     }

@@ -272,7 +272,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 
                 if (item.pullRequest == null) {
                     Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-                    startActivity(intent);
+                    startActivityForResult(intent, ISSUE_REQUEST);
                 } else {
                     Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
                     startActivity(intent);
