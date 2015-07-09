@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
@@ -41,6 +42,13 @@ import com.alorma.github.ui.adapter.ProfileItemsAdapter;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.musenkishi.atelier.Atelier;
+import com.musenkishi.atelier.ColorType;
+import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
+import com.musenkishi.atelier.swatch.VibrantSwatch;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -52,7 +60,7 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-        PaletteUtils.PaletteUtilsListener,
+//        PaletteUtils.PaletteUtilsListener,
         OnCheckFollowingUser {
 
     private static final String USER = "USER";
@@ -179,7 +187,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     }
 
     @Override
-    public void onResponseOk(User user, Response r) {
+    public void onResponseOk(final User user, Response r) {
         this.user = user;
         collapsingToolbarLayout.setTitle(user.login);
 
@@ -195,37 +203,75 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             checkFollowingUser.execute();
         }
 
-        if (getSupportActionBar() != null) {
-            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
-        }
-    }
-
-    @Override
-    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
-
-        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
-
-        image.setImageDrawable(drawable);
-
-        if (palette.getSwatches().size() > 0) {
-            Palette.Swatch swatch = palette.getSwatches().get(0);
-            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
-        } else {
-            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
-        }
-
         fillCardBio(user);
 
         fillCardGithubData(user);
 
         fillCardPlan(user);
 
+        if (getSupportActionBar() != null) {
+
+            ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    Atelier.with(ProfileActivity.this, user.avatar_url)
+                            .load(loadedImage)
+                            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+                            .colorsListener(new Atelier.OnPaletteColorListener() {
+                                @Override
+                                public void onColor(int color) {
+                                    applyColors(color);
+                                    profileItemsAdapter.setAvatarColor(color);
+                                }
+                            })
+                            .into(image);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+//            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
+        }
     }
 
-    private void applyColors(int rgb, int textColor) {
+//    @Override
+//    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
+//
+//        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
+//
+//        image.setImageDrawable(drawable);
+//
+//        if (palette.getSwatches().size() > 0) {
+//            Palette.Swatch swatch = palette.getSwatches().get(0);
+//            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
+//        } else {
+//            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
+//        }
+//
+//        fillCardBio(user);
+//
+//        fillCardGithubData(user);
+//
+//        fillCardPlan(user);
+//
+//    }
+
+    private void applyColors(int rgb) {
         collapsingToolbarLayout.setContentScrimColor(rgb);
-        collapsingToolbarLayout.setExpandedTitleColor(textColor);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(textColor);
+        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         collapsingToolbarLayout.setStatusBarScrimColor(rgb);
         profileItemsAdapter.setAvatarColor(rgb);
 
