@@ -519,6 +519,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         } else {
             if (lastUsedFragment instanceof EventsListFragment) {
                 finish();
+            } else if (lastUsedFragment instanceof GeneralReposFragment && resultDrawer != null){
+                resultDrawer.setSelection(0);
             } else {
                 clearFragments();
                 onUserEventsSelected();
