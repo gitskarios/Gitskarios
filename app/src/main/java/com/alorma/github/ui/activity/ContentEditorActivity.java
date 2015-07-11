@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.emoji.Emoji;
 import com.alorma.github.emoji.EmojisActivity;
@@ -171,8 +172,38 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
                 Intent intentEmojis = new Intent(this, EmojisActivity.class);
                 startActivityForResult(intentEmojis, EMOJI_REQUEST);
                 break;
+            case R.id.add_content_editor_source:
+                editText.append(" ```");
+                editText.append("\n");
+                editText.append("\n");
+                editText.append(" ```");
+
+                editText.setSelection(editText.length() - 4);
+                break;
+            case R.id.add_content_editor_picture:
+                showAddPicture();
+                break;
         }
         return true;
+    }
+
+    private void showAddPicture() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.addPicture)
+                .content(R.string.addPictureContent)
+                .input(R.string.addPictureHint, 0, false, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+                        editText.append("\n");
+                        editText.append("\n");
+                        editText.append("![]");
+                        editText.append("(" + charSequence.toString() + ")");
+                        editText.append("\n");
+                        editText.append("\n");
+                    }
+                })
+                .neutralText(R.string.cancel)
+                .show();
     }
 
     @Override

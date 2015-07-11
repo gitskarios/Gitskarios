@@ -8,8 +8,13 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/add_content_editor_link"
-        android:title="@string/content_editor_link"
+        android:id="@+id/add_content_editor_picture"
+        android:title="@string/content_editor_picture"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/add_content_editor_source"
+        android:title="@string/content_editor_source"
         app:showAsAction="always" />
 
     <item
