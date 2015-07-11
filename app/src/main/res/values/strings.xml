@@ -339,8 +339,8 @@
     <string name="issue_change_body">Issue description changed</string>
     <string name="no_description_provided">No description provided.</string>
     <string name="dialog_edit_issue">New feature!</string>
-    <string name="dialog_edit_issue_edit_title_and_body_by_owner">As contributor / owner of this repository, you can click on the title or the description and you will be to modify them.</string>
-    <string name="dialog_edit_issue_edit_title_and_body_by_author">As author of the issue, you can click on the title or the description and you will be to modify them.</string>
+    <string name="dialog_edit_issue_edit_title_and_body_by_owner">As contributor / owner of this repository, you can click on the title or the description and you will be able to modify them.</string>
+    <string name="dialog_edit_issue_edit_title_and_body_by_author">As author of the issue, you can click on the title or the description and you will be able to modify them.</string>
     <string name="content_editor_emojis">Emoji</string>
     <string name="content_editor_picture">Picture</string>
     <string name="content_editor_source">Source</string>
