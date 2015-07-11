@@ -49,6 +49,7 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -64,7 +65,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener, IssueDetailView.IssueDetailRequestListener {
+public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener, IssueDetailRequestListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
@@ -341,7 +342,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public void onAddComment() {
         String hint = getString(R.string.add_comment);
         Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
-//         = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
         startActivityForResult(intent, NEW_COMMENT_REQUEST);
     }
 
@@ -818,12 +818,10 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 client.execute();
 
             } else if (requestCode == ISSUE_BODY_EDIT) {
-                if (data != null) {
-                    EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
-                    bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
+                EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
+                bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
 
-                    executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
-                }
+                executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
             }
         }
     }

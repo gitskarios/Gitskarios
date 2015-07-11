@@ -80,7 +80,7 @@
 
         </LinearLayout>
 
-        <EditText
+        <TextView
             android:layout_marginTop="@dimen/gapLarge"
             android:hint="@string/leave_a_comment"
             android:layout_width="match_parent"

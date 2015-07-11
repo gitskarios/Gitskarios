@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -24,6 +25,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.PullRequestCommitsActivity;
 import com.alorma.github.ui.activity.PullRequestFilesActivity;
+import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
@@ -53,6 +55,7 @@ public class PullRequestDetailView extends LinearLayout {
     private TextView textFiles;
     private TextView mergeButton;
 
+    private IssueDetailRequestListener issueDetailRequestListener;
     private PullRequestActionsListener pullRequestActionsListener;
 
     public PullRequestDetailView(Context context) {
@@ -218,6 +221,25 @@ public class PullRequestDetailView extends LinearLayout {
                     mergeButton.setBackgroundResource(R.drawable.pull_request_merge_invalid);
                 }
             }
+
+            StoreCredentials credentials = new StoreCredentials(getContext());
+            if (repoInfo.permissions != null && repoInfo.permissions.push || pullRequest.user.login.equals(credentials.getUserName())) {
+                OnClickListener editClickListener = new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (issueDetailRequestListener != null) {
+                            if (v.getId() == R.id.textTitle) {
+                                issueDetailRequestListener.onTitleEditRequest();
+                            } else if (v.getId() == R.id.textBody) {
+                                issueDetailRequestListener.onContentEditRequest();
+                            }
+                        }
+                    }
+                };
+
+                title.setOnClickListener(editClickListener);
+                body.setOnClickListener(editClickListener);
+            }
         }
     }
 
@@ -235,5 +257,9 @@ public class PullRequestDetailView extends LinearLayout {
 
     public interface PullRequestActionsListener {
         void mergeRequest(Head head, Head base);
+    }
+
+    public void setIssueDetailRequestListener(IssueDetailRequestListener issueDetailRequestListener) {
+        this.issueDetailRequestListener = issueDetailRequestListener;
     }
 }

@@ -54,11 +54,12 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     public static final String REPO_INFO = "REPO_INFO";
     private static final int EMOJI_CODE = 1554;
+    private static final int NEW_ISSUE_REQUEST = 575;
 
     private boolean creatingIssue = false;
     private RepoInfo repoInfo;
     private EditText editTitle;
-    private EditText editBody;
+    private TextView editBody;
     private User issueAssignee;
     private TextView userTextView;
     private TextView milestoneTextView;
@@ -68,8 +69,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     private Integer[] positionsSelectedLabels;
     private CharSequence[] selectedLabels;
     private boolean editBodyHasFocus;
-    private EmojiBitmapLoader emojiBitmapLoader;
-    private TextWatcher bodyTextWatcher;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -89,8 +88,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_issue);
 
-        emojiBitmapLoader = new EmojiBitmapLoader();
-
         if (getIntent().getExtras() != null) {
             repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
             findViews();
@@ -101,7 +98,16 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void findViews() {
         editTitle = (EditText) findViewById(R.id.editTitle);
-        editBody = (EditText) findViewById(R.id.editBody);
+        editBody = (TextView) findViewById(R.id.editBody);
+
+        editBody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String hint = getString(R.string.add_issue_body);
+                Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, null, false, false);
+                startActivityForResult(intent, NEW_ISSUE_REQUEST);
+            }
+        });
 
         if (repoInfo.permissions != null && !repoInfo.permissions.push) {
             findViewById(R.id.pushAccessLayout).setVisibility(View.GONE);
@@ -147,27 +153,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
                 invalidateOptionsMenu();
             }
         });
-
-        bodyTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().contains(":")) {
-                    emojiBitmapLoader.parseTextView(editBody, bodyTextWatcher);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-
-        editBody.addTextChangedListener(bodyTextWatcher);
     }
 
     public Drawable pushAccessInfoIcon(IIcon icon) {
@@ -261,14 +246,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EMOJI_CODE && resultCode == RESULT_OK && data != null) {
-            Emoji emoji = data.getParcelableExtra(EmojisActivity.EMOJI);
-            if (emoji != null) {
-                editBody.removeTextChangedListener(bodyTextWatcher);
-                editBody.setText(editBody.getText() + " :" + emoji.getKey() + ": ");
-                emojiBitmapLoader.parseTextView(editBody, bodyTextWatcher);
-                editBody.setSelection(editBody.getText().length());
-            }
+        if (resultCode == RESULT_OK && data != null) {
+            String content = data.getStringExtra(ContentEditorActivity.CONTENT);
+            editBody.setText(content);
         }
     }
 

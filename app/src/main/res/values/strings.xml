@@ -335,6 +335,7 @@
     <string name="issue_change_title">Title changed</string>
     <string name="edit_hint">Write something…</string>
     <string name="edit_issue_body_hint">Add issue body…</string>
+    <string name="edit_pullrequest_body_hint">Add pull request body…</string>
     <string name="issue_change_body">Issue description changed</string>
     <string name="no_description_provided">No description provided.</string>
     <string name="dialog_edit_issue">New feature!</string>
@@ -353,4 +354,6 @@
     <string name="add_comment_issue_fail">Post comment failed</string>
     <string name="add_content_extra">Add:</string>
     <string name="add_comment_issue_ok">Comment added</string>
+    <string name="pullrequest_change">Pull request changed</string>
+    <string name="add_issue_body">Add description</string>
 </resources>

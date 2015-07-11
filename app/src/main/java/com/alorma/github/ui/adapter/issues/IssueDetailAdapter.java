@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
@@ -30,7 +31,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     private LayoutInflater inflater;
     private IssueStory issueStory;
     private RepoInfo repoInfo;
-    private IssueDetailView.IssueDetailRequestListener issueDetailRequestListener;
+    private IssueDetailRequestListener issueDetailRequestListener;
 
     public IssueDetailAdapter(Context context, LayoutInflater inflater, IssueStory issueStory, RepoInfo repoInfo) {
         this.context = context;
@@ -39,7 +40,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         this.repoInfo = repoInfo;
     }
 
-    public void setIssueDetailRequestListener(IssueDetailView.IssueDetailRequestListener issueDetailRequestListener) {
+    public void setIssueDetailRequestListener(IssueDetailRequestListener issueDetailRequestListener) {
         this.issueDetailRequestListener = issueDetailRequestListener;
     }
 

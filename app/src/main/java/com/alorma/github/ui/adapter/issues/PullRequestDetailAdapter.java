@@ -13,6 +13,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
+import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
@@ -33,6 +34,7 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     private RepoInfo repoInfo;
     private Permissions permissions;
     private PullRequestDetailView.PullRequestActionsListener listener;
+    private IssueDetailRequestListener issueDetailRequestListener;
 
     public PullRequestDetailAdapter(Context context, LayoutInflater inflater, PullRequestStory pullRequestStory, RepoInfo repoInfo, Permissions permissions, PullRequestDetailView.PullRequestActionsListener listener) {
         this.context = context;
@@ -43,11 +45,17 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
         this.listener = listener;
     }
 
+    public void setIssueDetailRequestListener(IssueDetailRequestListener issueDetailRequestListener) {
+        this.issueDetailRequestListener = issueDetailRequestListener;
+    }
+
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_PULLREQUEST:
-                return new PullRequestHolder(new PullRequestDetailView(context));
+                PullRequestDetailView view = new PullRequestDetailView(context);
+                view.setIssueDetailRequestListener(issueDetailRequestListener);
+                return new PullRequestHolder(view);
             case VIEW_COMMENT:
                 return new CommentHolder(new IssueCommentView(context));
             case VIEW_EVENT:

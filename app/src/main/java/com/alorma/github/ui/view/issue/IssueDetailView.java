@@ -20,6 +20,7 @@ import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
@@ -180,10 +181,5 @@ public class IssueDetailView extends LinearLayout {
 
     public void setIssueDetailRequestListener(IssueDetailRequestListener issueDetailRequestListener) {
         this.issueDetailRequestListener = issueDetailRequestListener;
-    }
-
-    public interface IssueDetailRequestListener {
-        void onTitleEditRequest();
-        void onContentEditRequest();
     }
 }

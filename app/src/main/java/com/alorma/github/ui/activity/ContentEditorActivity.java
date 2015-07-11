@@ -70,6 +70,8 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_editor);
 
+        setTitle("");
+
         if (getIntent().getExtras() != null) {
 
             findViews();
@@ -78,7 +80,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
             toolbarExtra.setOnMenuItemClickListener(this);
             toolbarExtra.setTitle(R.string.add_content_extra);
 
-            String hint = getIntent().getExtras().getString(HINT);
+            final String hint = getIntent().getExtras().getString(HINT);
 
             if (!TextUtils.isEmpty(hint)) {
                 editText.setHint(hint);
@@ -121,6 +123,27 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
                     }
                 });
             }
+
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (hint != null) {
+                        if (editText.length() > 0) {
+                            setTitle(hint);
+                        }
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
 
             backIsOk = getIntent().getExtras().getBoolean(BACK_IS_OK, false);
 
