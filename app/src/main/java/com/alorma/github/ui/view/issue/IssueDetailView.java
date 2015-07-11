@@ -3,6 +3,8 @@ package com.alorma.github.ui.view.issue;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.text.Html;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
@@ -91,7 +94,7 @@ public class IssueDetailView extends LinearLayout {
                 instance.displayImage(issue.user.avatar_url, profileIcon);
             }
 
-            if (issue.body_html != null) {
+            if (!TextUtils.isEmpty(issue.body_html)) {
                 String htmlCode = HtmlUtils.format(issue.body_html).toString();
                 HttpImageGetter imageGetter = new HttpImageGetter(getContext());
 
@@ -99,6 +102,9 @@ public class IssueDetailView extends LinearLayout {
                 imageGetter.bind(body, htmlCode, issue.number);
 
                 body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+            } else {
+                body.setText(Html.fromHtml("<i>" + getResources().getString(R.string.no_description_provided) + "</i>"));
+                body.setTextColor(getResources().getColor(R.color.gray_github_medium));
             }
 
             if (issue.labels != null && issue.labels.size() > 0) {
@@ -144,7 +150,8 @@ public class IssueDetailView extends LinearLayout {
             }
         }
 
-        if (repoInfo.permissions != null && repoInfo.permissions.push) {
+        StoreCredentials credentials = new StoreCredentials(getContext());
+        if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user.login.equals(credentials.getUserName())) {
             OnClickListener editClickListener = new OnClickListener() {
                 @Override
                 public void onClick(View v) {

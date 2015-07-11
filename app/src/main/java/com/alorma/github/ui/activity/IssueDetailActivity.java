@@ -16,10 +16,13 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
@@ -40,6 +43,7 @@ import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
@@ -65,6 +69,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
     private static final int NEW_COMMENT_REQUEST = 1243;
+    private static final int ISSUE_BODY_EDIT = 4252;
 
     private boolean shouldRefreshOnBack;
     private IssueInfo issueInfo;
@@ -91,6 +96,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         setContentView(R.layout.activity_issue_detail);
 
         if (getIntent().getExtras() != null) {
+
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 
             primary = getResources().getColor(R.color.primary);
@@ -98,6 +104,30 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             findViews();
         }
+    }
+
+    private void checkEditTitle() {
+        if (issueInfo != null && issueStory != null && issueStory.issue != null) {
+
+            StoreCredentials credentials = new StoreCredentials(this);
+
+            GitskariosSettings settings = new GitskariosSettings(this);
+            if (settings.shouldShowDialogEditIssue()) {
+                if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
+                    showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
+                } else if (issueStory.issue.user.login.equals(credentials.getUserName())) {
+                    showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
+                }
+            }
+        }
+    }
+
+    private void showEditDialog(int content) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.dialog_edit_issue)
+                .content(content)
+                .positiveText(R.string.ok)
+                .show();
     }
 
     private void findViews() {
@@ -123,6 +153,8 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     public void onResponseOk(IssueStory issueStory, Response r) {
         this.issueStory = issueStory;
+
+        checkEditTitle();
         applyIssue();
     }
 
@@ -373,7 +405,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public void onContentEditRequest() {
-
+        String body = issueStory.issue.body != null ? issueStory.issue.body.replace("\n", "<br />") : "";
+        Intent launcherIntent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, getString(R.string.edit_issue_body_hint), body, true, false);
+        startActivityForResult(launcherIntent, ISSUE_BODY_EDIT);
     }
 
     private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
@@ -756,6 +790,13 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         if (resultCode == RESULT_OK) {
             if (requestCode == NEW_COMMENT_REQUEST) {
                 getContent();
+            } else if (requestCode == ISSUE_BODY_EDIT) {
+                if (data != null) {
+                    EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
+                    bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
+
+                    executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
+                }
             }
         }
     }

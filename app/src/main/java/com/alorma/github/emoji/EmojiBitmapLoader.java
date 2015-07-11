@@ -169,7 +169,7 @@ public class EmojiBitmapLoader {
                 textView.setText(spannableString);
 
                 if (textView instanceof EditText) {
-                    ((EditText) textView).setSelection(textView.getText().toString().length());
+                    ((EditText) textView).setSelection(textView.getSelectionEnd());
                 }
 
                 if (textWatcher != null) {

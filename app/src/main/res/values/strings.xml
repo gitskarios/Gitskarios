@@ -333,4 +333,11 @@
     <string name="edit_issue_button_ok">Change</string>
     <string name="edit_issue_button_neutral">Cancel</string>
     <string name="issue_change_title">Title changed</string>
+    <string name="edit_hint">Write something…</string>
+    <string name="edit_issue_body_hint">Add issue body…</string>
+    <string name="issue_change_body">Issue description changed</string>
+    <string name="no_description_provided">No description provided.</string>
+    <string name="dialog_edit_issue">New feature!</string>
+    <string name="dialog_edit_issue_edit_title_and_body_by_owner">As contributor / owner of this repository, you can click on the title or the description and you will be to modify them.</string>
+    <string name="dialog_edit_issue_edit_title_and_body_by_author">As author of the issue, you can click on the title or the description and you will be to modify them.</string>
 </resources>
