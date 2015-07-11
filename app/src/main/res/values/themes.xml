@@ -79,6 +79,18 @@
     </style>
 
 
+
+    <style name="Toolbar.AppCompat.Light.Responsive" parent="AppTheme.AppCompat.Responsive">
+
+        <item name="android:background">@color/gray_github_light</item>
+        <item name="android:textColorPrimary">@color/gray_github_dark</item>
+        <item name="android:textColorSecondary">@color/gray_github_dark</item>
+        <item name="colorControlHighlight">@color/gray_github_medium</item>
+
+
+    </style>
+
+
     <style name="Toolbar.Popup.AppCompat" parent="Theme.AppCompat.Light">
 
 

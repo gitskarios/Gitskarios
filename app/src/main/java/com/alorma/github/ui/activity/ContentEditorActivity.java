@@ -14,7 +14,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.alorma.github.R;
-import com.alorma.github.emoji.EmojiBitmapLoader;
+import com.alorma.github.emoji.Emoji;
+import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.gh4a.utils.UiUtils;
@@ -26,7 +27,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 /**
  * Created by Bernat on 11/07/2015.
  */
-public class ContentEditorActivity extends BackActivity {
+public class ContentEditorActivity extends BackActivity implements Toolbar.OnMenuItemClickListener {
 
     private static final String HINT = "HINT";
     private static final String PREFILL = "PREFILL";
@@ -36,6 +37,7 @@ public class ContentEditorActivity extends BackActivity {
     private static final String BACK_IS_OK = "BACK_IS_OK";
 
     public static final String CONTENT = "CONTENT";
+    private static final int EMOJI_REQUEST = 1515;
 
     private EditText editText;
     private Toolbar toolbarExtra;
@@ -63,9 +65,10 @@ public class ContentEditorActivity extends BackActivity {
 
         if (getIntent().getExtras() != null) {
 
-            final Handler handler = new Handler();
-
             findViews();
+
+            toolbarExtra.inflateMenu(R.menu.content_editor_extra);
+            toolbarExtra.setOnMenuItemClickListener(this);
 
             String hint = getIntent().getExtras().getString(HINT);
 
@@ -156,13 +159,34 @@ public class ContentEditorActivity extends BackActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        Intent intent = new Intent();
-        intent.putExtra(CONTENT, editText.getText().toString());
+        switch (item.getItemId()) {
+            case R.id.action_ok:
+                Intent intent = new Intent();
+                intent.putExtra(CONTENT, editText.getText().toString());
 
-        setResult(RESULT_OK, intent);
-        finish();
-
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+            case R.id.add_content_editor_emojis:
+                Intent intentEmojis = new Intent(this, EmojisActivity.class);
+                startActivityForResult(intentEmojis, EMOJI_REQUEST);
+                break;
+        }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null) {
+            switch (requestCode) {
+                case EMOJI_REQUEST:
+                    Emoji emoji = data.getParcelableExtra(EmojisActivity.EMOJI);
+                    editText.append(" :" + emoji.getKey() + ": ");
+                    break;
+            }
+        }
     }
 
     @Override
@@ -185,5 +209,11 @@ public class ContentEditorActivity extends BackActivity {
             setResult(result, intent);
             finish();
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        onOptionsItemSelected(item);
+        return true;
     }
 }
