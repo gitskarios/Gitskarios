@@ -49,9 +49,15 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum, String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
         Intent intent = new Intent(context, ContentEditorActivity.class);
 
-        intent.putExtra(HINT, hint);
-        intent.putExtra(PREFILL, prefill);
-        intent.putExtra(REPO_INFO, repoInfo);
+        if (hint != null) {
+            intent.putExtra(HINT, hint);
+        }
+        if (prefill != null) {
+            intent.putExtra(PREFILL, prefill);
+        }
+        if (repoInfo != null) {
+            intent.putExtra(REPO_INFO, repoInfo);
+        }
         intent.putExtra(ISSUE_NUM, issueNum);
         intent.putExtra(ALLOW_EMPTY, allowEmpty);
         intent.putExtra(BACK_IS_OK, backIsOk);
@@ -70,6 +76,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
 
             toolbarExtra.inflateMenu(R.menu.content_editor_extra);
             toolbarExtra.setOnMenuItemClickListener(this);
+            toolbarExtra.setTitle(R.string.add_content_extra);
 
             String hint = getIntent().getExtras().getString(HINT);
 
@@ -105,9 +112,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (TextUtils.isEmpty(editText.getText())) {
-                            invalidateOptionsMenu();
-                        }
+                        invalidateOptionsMenu();
                     }
 
                     @Override
@@ -178,7 +183,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
                 editText.append("\n");
                 editText.append(" ```");
 
-                editText.setSelection(editText.length() - 4);
+                editText.setSelection(editText.length() - 5);
                 break;
             case R.id.add_content_editor_picture:
                 showAddPicture();

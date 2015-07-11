@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.basesdk.client.StoreCredentials;
@@ -28,6 +27,7 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
+import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
@@ -41,6 +41,7 @@ import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
+import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
@@ -48,7 +49,6 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -152,6 +152,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
     @Override
     public void onResponseOk(IssueStory issueStory, Response r) {
+        hideProgressDialog();
         this.issueStory = issueStory;
 
         checkEditTitle();
@@ -338,7 +339,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     public void onAddComment() {
-        Intent intent = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
+        String hint = getString(R.string.add_comment);
+        Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
+//         = NewIssueCommentActivity.launchIntent(IssueDetailActivity.this, issueInfo);
         startActivityForResult(intent, NEW_COMMENT_REQUEST);
     }
 
@@ -601,6 +604,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
+                shouldRefreshOnBack = true;
                 hideProgressDialog();
                 getContent();
 
@@ -787,9 +791,32 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data != null) {
             if (requestCode == NEW_COMMENT_REQUEST) {
-                getContent();
+                showProgressDialog(R.style.SpotDialog_loading_adding_comment);
+                String body = data.getStringExtra(ContentEditorActivity.CONTENT);
+                final NewIssueCommentClient client = new NewIssueCommentClient(this, issueInfo, body);
+                client.setOnResultCallback(new BaseClient.OnResultCallback<GithubComment>() {
+                    @Override
+                    public void onResponseOk(GithubComment githubComment, Response r) {
+                        getContent();
+                        Snackbar.make(fab, R.string.add_comment_issue_ok, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFail(RetrofitError error) {
+                        // TODO on comment fail
+
+                        Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT).setAction(R.string.retry, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                client.execute();
+                            }
+                        }).show();
+                    }
+                });
+                client.execute();
+
             } else if (requestCode == ISSUE_BODY_EDIT) {
                 if (data != null) {
                     EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();

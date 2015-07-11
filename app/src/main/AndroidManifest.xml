@@ -125,7 +125,8 @@
         <activity android:name=".ui.activity.SearchIssuesActivity" />
         <activity android:name=".ui.activity.PullRequestCommitsActivity" />
         <activity android:name=".ui.activity.PullRequestFilesActivity" />
-        <activity android:name=".ui.activity.ContentEditorActivity" />
+        <activity android:name=".ui.activity.ContentEditorActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity android:name="com.alorma.github.emoji.EmojisActivity"
             android:label="@string/emoji_activity"/>
