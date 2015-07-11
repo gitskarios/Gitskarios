@@ -329,4 +329,8 @@
     <string name="emoji_activity">Emojis</string>
     <string name="hint_emojis_filter">Filter emojis</string>
     <string name="add_emoji">Add emoji</string>
+    <string name="edit_issue_title">Edit issue</string>
+    <string name="edit_issue_button_ok">Change</string>
+    <string name="edit_issue_button_neutral">Cancel</string>
+    <string name="issue_change_title">Title changed</string>
 </resources>

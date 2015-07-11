@@ -227,11 +227,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                     Atelier.with(ProfileActivity.this, user.avatar_url)
                             .load(loadedImage)
                             .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                            .colorsListener(new Atelier.OnPaletteColorListener() {
+                            .listener(new Atelier.OnPaletteRenderedListener() {
                                 @Override
-                                public void onColor(int color) {
-                                    applyColors(color);
-                                    profileItemsAdapter.setAvatarColor(color);
+                                public void onRendered(Palette palette, int generatedColor) {
+                                    applyColors(generatedColor);
+                                    profileItemsAdapter.setAvatarColor(generatedColor);
                                 }
                             })
                             .into(image);

@@ -30,6 +30,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     private LayoutInflater inflater;
     private IssueStory issueStory;
     private RepoInfo repoInfo;
+    private IssueDetailView.IssueDetailRequestListener issueDetailRequestListener;
 
     public IssueDetailAdapter(Context context, LayoutInflater inflater, IssueStory issueStory, RepoInfo repoInfo) {
         this.context = context;
@@ -38,11 +39,17 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         this.repoInfo = repoInfo;
     }
 
+    public void setIssueDetailRequestListener(IssueDetailView.IssueDetailRequestListener issueDetailRequestListener) {
+        this.issueDetailRequestListener = issueDetailRequestListener;
+    }
+
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_ISSUE:
-                return new IssueHolder(new IssueDetailView(context));
+                IssueDetailView issueDetailView = new IssueDetailView(context);
+                issueDetailView.setIssueDetailRequestListener(issueDetailRequestListener);
+                return new IssueHolder(issueDetailView);
             case VIEW_COMMENT:
                 return new CommentHolder(new IssueCommentView(context));
             case VIEW_EVENT:
@@ -56,6 +63,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     public void onBindViewHolder(Holder holder, int position) {
         if (position == 0) {
             ((IssueHolder) holder).issueDetailView.setIssue(repoInfo, issueStory.issue);
+            ((IssueHolder) holder).issueDetailView.setIssueDetailRequestListener(issueDetailRequestListener);
         } else if (holder instanceof CommentHolder) {
             IssueStoryComment issueStoryDetail = (IssueStoryComment) issueStory.details.get(position - 1).second;
             ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);

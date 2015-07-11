@@ -42,6 +42,7 @@ public class IssueDetailView extends LinearLayout {
     private TextView profileEmail;
     private TextView textMilestone;
     private TextView textAssignee;
+    private IssueDetailRequestListener issueDetailRequestListener;
 
     public IssueDetailView(Context context) {
         super(context);
@@ -142,6 +143,24 @@ public class IssueDetailView extends LinearLayout {
                 }
             }
         }
+
+        if (repoInfo.permissions != null && repoInfo.permissions.push) {
+            OnClickListener editClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (issueDetailRequestListener != null) {
+                        if (v.getId() == R.id.textTitle) {
+                            issueDetailRequestListener.onTitleEditRequest();
+                        } else if (v.getId() == R.id.textBody){
+                            issueDetailRequestListener.onContentEditRequest();
+                        }
+                    }
+                }
+            };
+
+            title.setOnClickListener(editClickListener);
+            body.setOnClickListener(editClickListener);
+        }
     }
 
     public int getColorIcons() {
@@ -150,5 +169,14 @@ public class IssueDetailView extends LinearLayout {
         } else {
             return R.color.issue_state_close;
         }
+    }
+
+    public void setIssueDetailRequestListener(IssueDetailRequestListener issueDetailRequestListener) {
+        this.issueDetailRequestListener = issueDetailRequestListener;
+    }
+
+    public interface IssueDetailRequestListener {
+        void onTitleEditRequest();
+        void onContentEditRequest();
     }
 }

@@ -23,6 +23,7 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -44,6 +45,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.dialog.NewIssueCommentActivity;
+import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
@@ -58,7 +60,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener {
+public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener, IssueDetailView.IssueDetailRequestListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
@@ -141,6 +143,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         }
         setTitle("#" + issueStory.issue.number + " " + status);
         IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo);
+        adapter.setIssueDetailRequestListener(this);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
@@ -350,6 +353,29 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         showProgressDialog(R.style.SpotDialog_loading_milestones);
     }
 
+    @Override
+    public void onTitleEditRequest() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.edit_issue_title)
+                .input(null, issueStory.issue.title, false, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+
+                        EditIssueTitleRequestDTO editIssueTitleRequestDTO = new EditIssueTitleRequestDTO();
+                        editIssueTitleRequestDTO.title = charSequence.toString();
+                        executeEditIssue(editIssueTitleRequestDTO, R.string.issue_change_title);
+                    }
+                })
+                .positiveText(R.string.edit_issue_button_ok)
+                .neutralText(R.string.edit_issue_button_neutral)
+                .show();
+    }
+
+    @Override
+    public void onContentEditRequest() {
+
+    }
+
     private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
         @Override
         public void onResponseOk(final List<Milestone> milestones, Response r) {
@@ -536,7 +562,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         executeEditIssue(editIssueRequestDTO, R.string.issue_change_assignee);
     }
 
-    private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
+    private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
         EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
