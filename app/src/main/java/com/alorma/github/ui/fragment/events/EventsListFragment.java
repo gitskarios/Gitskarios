@@ -12,7 +12,6 @@ import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
@@ -35,12 +34,11 @@ import retrofit.RetrofitError;
 /**
  * Created by Bernat on 03/10/2014.
  */
-public class EventsListFragment extends PaginatedListFragment<ListEvents> {
+public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter> {
 
-    private EventAdapter eventsAdapter;
     private String username;
 
-    public static EventsListFragment newInstance(String usernºame) {
+    public static EventsListFragment newInstance(String username) {
         Bundle bundle = new Bundle();
         bundle.putString(USERNAME, username);
 
@@ -58,33 +56,29 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
     }
 
     @Override
-    protected void onResponse(ListEvents githubEvents, boolean refreshing) {
+    protected void onResponse(List<GithubEvent> githubEvents, boolean refreshing) {
         if (githubEvents != null && githubEvents.size() > 0) {
             hideEmpty();
-            if (getListAdapter() != null) {
-                eventsAdapter.addAll(githubEvents, paging);
-            } else if (eventsAdapter == null) {
-                setUpList(githubEvents);
+            if (getAdapter() != null) {
+                getAdapter().addAll(githubEvents, paging);
             } else {
-                setAdapter(eventsAdapter);
+                EventAdapter eventAdapter = new EventAdapter();
+                eventAdapter.addAll(githubEvents);
+                setAdapter(eventAdapter);
             }
-        } else if (eventsAdapter == null || eventsAdapter.getCount() == 0) {
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
 
     }
 
-    protected EventAdapter setUpList(ListEvents githubEvents) {
-        eventsAdapter = new EventAdapter(getActivity(), githubEvents);
-        setAdapter(eventsAdapter);
-        return eventsAdapter;
-    }
-
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
-        if (eventsAdapter == null || eventsAdapter.getCount() == 0) {
-            setEmpty();
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            if (error != null && error.getResponse() != null) {
+                setEmpty(error.getResponse().getStatus());
+            }
         }
     }
 
@@ -105,8 +99,6 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
-        eventsAdapter.setLazyLoading(true);
-
         GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
         eventsClient.setOnResultCallback(this);
         eventsClient.execute();
@@ -121,7 +113,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
     protected int getNoDataText() {
         return R.string.noevents;
     }
-
+/*
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         super.onItemClick(parent, view, position, id);
@@ -173,7 +165,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
                 startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.repo.url)));
             }
         }
-    }
+    }*/
 
     private void showCommitsDialog(List<Commit> commits) {
         final CommitsAdapter adapter = new CommitsAdapter(getActivity(), commits, true);

@@ -1,12 +1,14 @@
 package com.alorma.github.ui.adapter.events;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.adapter.events.views.CommitCommentEventView;
 import com.alorma.github.ui.adapter.events.views.CreatedEventView;
 import com.alorma.github.ui.adapter.events.views.DeleteEventView;
@@ -29,9 +31,21 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Created by Bernat on 03/10/2014.
  */
-public class EventAdapter extends LazyAdapter<GithubEvent> {
+public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
-    public EventAdapter(Context context, Collection<GithubEvent> collection) {
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+    }
+
+
+  /*  public EventAdapter(Context context, Collection<GithubEvent> collection) {
         super(context, new ArrayList<GithubEvent>());
         addAll(collection);
     }
@@ -126,7 +140,7 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
 
         addAll(collection);
     }
-
+*/
     private boolean checkEventHandled(GithubEvent event) {
         return event.getType() != null && (event.getType() == EventType.PushEvent)
                 || (event.getType() == EventType.WatchEvent)
@@ -140,11 +154,13 @@ public class EventAdapter extends LazyAdapter<GithubEvent> {
                 || (event.getType() == EventType.DeleteEvent);
     }
 
-    private static class ViewHolder {
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
         private GithubEventView view;
 
-        private ViewHolder(GithubEventView view) {
-            this.view = view;
+        private ViewHolder(GithubEventView itemView) {
+            super(itemView);
+            this.view = itemView;
         }
     }
 }
