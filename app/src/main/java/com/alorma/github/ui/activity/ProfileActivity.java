@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,19 +37,14 @@ import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.adapter.ProfileItemsAdapter;
-import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
 import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
-import com.musenkishi.atelier.swatch.VibrantSwatch;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;

@@ -33,6 +33,9 @@ import io.fabric.sdk.android.Fabric;
  */
 public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
+    public EventAdapter() {
+        super();
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

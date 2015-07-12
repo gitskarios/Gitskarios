@@ -3,23 +3,20 @@ package com.alorma.github.ui.fragment.issues;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
-import com.alorma.github.sdk.bean.dto.response.ListIssues;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
-import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
-import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -28,13 +25,15 @@ import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.util.List;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesListFragment extends PaginatedListFragment<ListIssues> implements View.OnClickListener, TitleProvider, PermissionsManager,
+public class IssuesListFragment extends PaginatedListFragment<List<Issue>, IssuesAdapter> implements View.OnClickListener, TitleProvider, PermissionsManager,
         BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
@@ -44,9 +43,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 
     private RepoInfo repoInfo;
 
-    private float fabNewY;
-    private float fabOldY;
-    private IssuesAdapter issuesAdapter;
     private IssueState currentState = IssueState.open;
     private boolean fromSearch = false;
     private SearchClientRequest searchClientRequest;
@@ -107,15 +103,15 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
             switch (item.getItemId()) {
                 case R.id.issue_list_filter_open:
                     currentState = IssueState.open;
-                    if (issuesAdapter != null) {
-                        issuesAdapter.clear();
+                    if (getAdapter() != null) {
+                        getAdapter().clear();
                     }
                     onRefresh();
                     break;
                 case R.id.issue_list_filter_closed:
                     currentState = IssueState.closed;
-                    if (issuesAdapter != null) {
-                        issuesAdapter.clear();
+                    if (getAdapter() != null) {
+                        getAdapter().clear();
                     }
                     onRefresh();
                     break;
@@ -157,10 +153,6 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
-        if (issuesAdapter != null) {
-            issuesAdapter.setLazyLoading(true);
-        }
-
         if (repoInfo != null) {
             if (fromSearch) {
                 if (searchClientRequest != null) {
@@ -177,37 +169,29 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     @Override
-    public void onResponseOk(ListIssues issues, Response r) {
+    public void onResponseOk(List<Issue> issues, Response r) {
         super.onResponseOk(issues, r);
 
         if (refreshing) {
-            if (issuesAdapter != null) {
-                issuesAdapter.clear();
+            if (getAdapter() != null) {
+                getAdapter().clear();
             }
         }
-        if (issues == null || issues.size() == 0 && (issuesAdapter == null || issuesAdapter.getCount() == 0)) {
+        if (issues == null || issues.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
             setEmpty();
         }
     }
 
     @Override
-    protected void onResponse(ListIssues issues, boolean refreshing) {
+    protected void onResponse(List<Issue> issues, boolean refreshing) {
         if (issues != null && issues.size() > 0) {
 
-            if (issuesAdapter == null || refreshing) {
-                issuesAdapter = new IssuesAdapter(getActivity(), issues);
+            if (getAdapter() == null || refreshing) {
+                IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
+                issuesAdapter.addAll(issues);
                 setAdapter(issuesAdapter);
             }
-
-            if (issuesAdapter.isLazyLoading()) {
-                if (issuesAdapter != null) {
-                    issuesAdapter.setLazyLoading(false);
-                    issuesAdapter.addAll(issues);
-                }
-            } else {
-                setAdapter(issuesAdapter);
-            }
-        } else if (issuesAdapter == null || issuesAdapter.getCount() == 0) {
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
     }
@@ -215,8 +199,10 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
-        if (issuesAdapter == null || issuesAdapter.getCount() == 0) {
-            setEmpty();
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            if (error != null && error.getResponse() != null) {
+                setEmpty(error.getResponse().getStatus());
+            }
         }
     }
 
@@ -258,7 +244,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
         onRefresh();
     }
 
-    @Override
+    // TODO
+    /*@Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
@@ -278,7 +265,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
                 }
             }
         }
-    }
+    }*/
 
     public void setPermissions(Permissions permissions) {
         if (this.repoInfo != null) {
@@ -303,8 +290,8 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
     }
 
     public void clear() {
-        if (issuesAdapter != null) {
-            issuesAdapter.clear();
+        if (getAdapter() != null) {
+            getAdapter().clear();
         }
     }
 

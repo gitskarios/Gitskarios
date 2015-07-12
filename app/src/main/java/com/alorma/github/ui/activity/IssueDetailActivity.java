@@ -50,7 +50,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
-import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;

@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.base;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +14,10 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
 
     public List<ItemType> items;
     private boolean paging;
+    private LayoutInflater inflater;
 
-    public RecyclerArrayAdapter() {
+    public RecyclerArrayAdapter(LayoutInflater inflater) {
+        this.inflater = inflater;
         items = new ArrayList<>();
     }
 
@@ -46,5 +49,13 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
     public void clear() {
         items.clear();
         notifyDataSetChanged();
+    }
+
+    public LayoutInflater getInflater() {
+        return inflater;
+    }
+
+    public void setInflater(LayoutInflater inflater) {
+        this.inflater = inflater;
     }
 }

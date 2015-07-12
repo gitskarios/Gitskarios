@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +15,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.emoji.Emoji;
-import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
