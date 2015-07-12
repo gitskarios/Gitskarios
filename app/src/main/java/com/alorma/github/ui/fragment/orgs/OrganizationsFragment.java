@@ -1,14 +1,13 @@
 package com.alorma.github.ui.fragment.orgs;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
-import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -18,9 +17,8 @@ import java.util.List;
 /**
  * Created by Bernat on 13/07/2014.
  */
-public class OrganizationsFragment extends PaginatedListFragment<List<Organization>> {
+public class OrganizationsFragment extends PaginatedListFragment<List<Organization>, OrganizationsAdapter> {
     private String username;
-    private OrganizationsAdapter adapter;
 
     public static OrganizationsFragment newInstance() {
         return new OrganizationsFragment();
@@ -55,19 +53,27 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
 
     @Override
     protected void onResponse(List<Organization> organizations, boolean refreshing) {
-        getListView().setDivider(null);
-        if (getListAdapter() != null) {
-            adapter.addAll(organizations, paging);
-        } else if (adapter == null) {
-            setUpList(organizations);
+        if (getAdapter() != null) {
+            if (refreshing) {
+                getAdapter().clear();
+            }
+            getAdapter().addAll(organizations, paging);
         } else {
+            OrganizationsAdapter adapter = new OrganizationsAdapter(LayoutInflater.from(getActivity()));
+            adapter.addAll(organizations);
             setAdapter(adapter);
         }
     }
 
-    private void setUpList(List<Organization> organizations) {
-        adapter = new OrganizationsAdapter(getActivity(), organizations);
-        setAdapter(adapter);
+
+    @Override
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new GridLayoutManager(getActivity(), 2);
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
     }
 
     @Override
@@ -87,14 +93,14 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
         return R.string.no_organizations;
     }
 
-    @Override
+/*    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Organization item = adapter.getItem(position);
+        Organization item = getAdapter().getItem(position);
 
         Intent intent = OrganizationActivity.launchIntent(getActivity(), item.login);
         startActivity(intent);
-    }
+    }*/
 }
 

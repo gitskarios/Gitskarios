@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.commit;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
@@ -15,9 +16,8 @@ import java.util.List;
 /**
  * Created by Bernat on 23/06/2015.
  */
-public class CommitCommentsFragment extends PaginatedListFragment<List<CommitComment>> {
+public class CommitCommentsFragment extends PaginatedListFragment<List<CommitComment>, CommitCommentAdapter> {
 
-    private CommitCommentAdapter commentsAdapter;
     private static final String INFO = "INFO";
     private CommitInfo info;
 
@@ -53,25 +53,15 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
     protected void onResponse(List<CommitComment> commitComments, boolean refreshing) {
         if (commitComments != null && commitComments.size() > 0) {
             hideEmpty();
-            if (getListAdapter() != null) {
-                commentsAdapter.addAll(commitComments, paging);
-            } else if (commentsAdapter == null) {
-                setUpList(commitComments);
+            if (getAdapter() != null) {
+                getAdapter().addAll(commitComments, paging);
             } else {
+                CommitCommentAdapter commentsAdapter = new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
                 setAdapter(commentsAdapter);
             }
-        } else if (commentsAdapter == null || commentsAdapter.getCount() == 0) {
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
-    }
-
-    protected CommitCommentAdapter setUpList(List<CommitComment> commitComments) {
-        commentsAdapter = new CommitCommentAdapter(getActivity(), commitComments, info.repoInfo);
-        setAdapter(commentsAdapter);
-        if (getListView() != null) {
-            getListView().setDivider(null);
-        }
-        return commentsAdapter;
     }
 
     @Override

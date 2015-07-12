@@ -1,7 +1,9 @@
 package com.alorma.github.ui.adapter.commit;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,6 +13,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.LazyAdapter;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -38,31 +41,22 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHeadersAdapter {
+public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.ViewHolder> /*implements StickyListHeadersAdapter*/ {
 
     private boolean shortMessage;
 
-    public CommitsAdapter(Context context, List<Commit> objects, boolean shortMessage) {
-        super(context, 0, objects);
+    public CommitsAdapter(LayoutInflater inflater, boolean shortMessage) {
+        super(inflater);
         this.shortMessage = shortMessage;
     }
 
     @Override
-    public int getCount() {
-        return super.getCount();
+    public CommitsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(getInflater().inflate(R.layout.commit_row, parent, false));
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = inflate(R.layout.commit_row, parent, false);
-
-        TextView title = (TextView) v.findViewById(R.id.title);
-        TextView user = (TextView) v.findViewById(R.id.user);
-        TextView sha = (TextView) v.findViewById(R.id.sha);
-        TextView textNums = (TextView) v.findViewById(R.id.textNums);
-        TextView numFiles = (TextView) v.findViewById(R.id.numFiles);
-        ImageView avatar = (ImageView) v.findViewById(R.id.avatarAuthor);
-
+    public void onBindViewHolder(CommitsAdapter.ViewHolder holder, int position) {
         Commit commit = getItem(position);
 
         User author = commit.author;
@@ -77,7 +71,7 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
         if (author != null) {
             if (author.avatar_url != null) {
-                ImageLoader.getInstance().displayImage(author.avatar_url, avatar);
+                ImageLoader.getInstance().displayImage(author.avatar_url, holder.avatar);
             } else if (author.email != null) {
                 try {
                     MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -87,29 +81,29 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
                     for (int i = 0; i < messageDigest.length; i++)
                         hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
                     String hash = hexString.toString();
-                    ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, avatar);
+                    ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, holder.avatar);
                 } catch (NoSuchAlgorithmException e) {
-                    IconicsDrawable iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_octoface);
-                    iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));
+                    IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
+                    iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
                     iconDrawable.sizeDp(36);
                     iconDrawable.setAlpha(128);
-                    avatar.setImageDrawable(iconDrawable);
+                    holder.avatar.setImageDrawable(iconDrawable);
                 }
 
             } else {
-                IconicsDrawable iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_octoface);
-                iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));
+                IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
+                iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
                 iconDrawable.sizeDp(36);
                 iconDrawable.setAlpha(128);
-                avatar.setImageDrawable(iconDrawable);
+                holder.avatar.setImageDrawable(iconDrawable);
             }
 
             if (author.login != null) {
-                user.setText(author.login);
+                holder.user.setText(author.login);
             } else if (author.name != null) {
-                user.setText(author.name);
+                holder.user.setText(author.name);
             } else if (author.email != null) {
-                user.setText(author.email);
+                holder.user.setText(author.email);
             }
         }
 
@@ -120,52 +114,51 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
 
         if (shortMessage) {
             try {
-                title.setText(TextUtils.splitLines(message, 2));
+                holder.title.setText(TextUtils.splitLines(message, 2));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            title.setText(message);
+            holder.title.setText(message);
         }
 
         if (commit.sha != null) {
-            sha.setText(commit.shortSha());
+            holder.sha.setText(commit.shortSha());
         }
 
-        textNums.setText("");
+        holder.textNums.setText("");
 
         if (commit.stats != null) {
             String textCommitsStr = null;
             if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-                textCommitsStr = textNums.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
-                textNums.setVisibility(View.VISIBLE);
+                textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
+                holder.textNums.setVisibility(View.VISIBLE);
             } else if (commit.stats.additions > 0) {
-                textCommitsStr = textNums.getContext().getString(R.string.commit_file_add, commit.stats.additions);
-                textNums.setVisibility(View.VISIBLE);
+                textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
+                holder.textNums.setVisibility(View.VISIBLE);
             } else if (commit.stats.deletions > 0) {
-                textCommitsStr = textNums.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
-                textNums.setVisibility(View.VISIBLE);
+                textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
+                holder.textNums.setVisibility(View.VISIBLE);
             } else {
-                textNums.setVisibility(View.GONE);
+                holder.textNums.setVisibility(View.GONE);
             }
 
             if (textCommitsStr != null) {
-                textNums.setText(Html.fromHtml(textCommitsStr));
+                holder.textNums.setText(Html.fromHtml(textCommitsStr));
             }
         } else {
-            textNums.setVisibility(View.GONE);
+            holder.textNums.setVisibility(View.GONE);
         }
 
         if (commit.files != null && commit.files.size() > 0) {
-            numFiles.setVisibility(View.VISIBLE);
-            numFiles.setText(numFiles.getContext().getString(R.string.num_of_files, commit.files.size()));
+            holder.numFiles.setVisibility(View.VISIBLE);
+            holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
         } else {
-            numFiles.setVisibility(View.GONE);
+            holder.numFiles.setVisibility(View.GONE);
         }
-        return v;
     }
 
-    private String getTimeString(String name, String date) {
+    private String getTimeString(Context context, String name, String date) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
         DateTime dt = formatter.parseDateTime(date);
@@ -210,9 +203,10 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
             }
         }
 
-        return getContext().getResources().getString(text, name, time);
+        return context.getResources().getString(text, name, time);
     }
 
+/*
     @Override
     public View getHeaderView(int i, View view, ViewGroup viewGroup) {
         View v = inflate(R.layout.commit_row_header, viewGroup, false);
@@ -235,5 +229,27 @@ public class CommitsAdapter extends LazyAdapter<Commit> implements StickyListHea
     public long getHeaderId(int i) {
         return getItem(i).days;
     }
+*/
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView title;
+        private final TextView user;
+        private final TextView sha;
+        private final TextView textNums;
+        private final TextView numFiles;
+        private final ImageView avatar;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            title = (TextView) itemView.findViewById(R.id.title);
+            user = (TextView) itemView.findViewById(R.id.user);
+            sha = (TextView) itemView.findViewById(R.id.sha);
+            textNums = (TextView) itemView.findViewById(R.id.textNums);
+            numFiles = (TextView) itemView.findViewById(R.id.numFiles);
+            avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
+
+        }
+    }
 }

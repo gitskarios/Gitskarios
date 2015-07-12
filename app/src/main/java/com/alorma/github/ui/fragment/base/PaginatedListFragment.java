@@ -16,14 +16,14 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<K> {
 
     protected static final String USERNAME = "USERNAME";
     protected boolean paging;
     private PaginationLink bottomPaginationLink;
 
     protected boolean refreshing;
-
+/*
     @Override
     public void onScroll(AbsListView absListView, int first, int last, int total) {
         super.onScroll(absListView, first, last, total);
@@ -34,7 +34,7 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
                 bottomPaginationLink = null;
             }
         }
-    }
+    }*/
 
     @Override
     public void onResponseOk(K k, Response r) {

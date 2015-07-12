@@ -1,5 +1,7 @@
 package com.alorma.github.ui.fragment.users;
 
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -21,6 +23,9 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<List<U
         if (users.size() > 0) {
         hideEmpty();
             if (getAdapter() != null) {
+                if (refreshing) {
+                    getAdapter().clear();
+                }
                 getAdapter().addAll(users, paging);
             } else {
                 UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
@@ -38,6 +43,16 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<List<U
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
         setEmpty();
         }
+    }
+
+    @Override
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new GridLayoutManager(getActivity(), 2);
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
     }
 
     @Override

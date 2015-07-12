@@ -23,6 +23,14 @@
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
+    <include
+        layout="@layout/fab"
+        android:layout_width="@dimen/fab"
+        android:layout_height="@dimen/fab"
+        android:layout_margin="@dimen/gapLarge"
+        android:scaleType="centerInside"
+        android:layout_gravity="bottom|right|end"/>
+
     <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
         android:id="@+id/error_view"
         android:layout_width="wrap_content"
@@ -30,5 +38,5 @@
         errorview:ev_showTitle="true"
         errorview:ev_showSubtitle="true"
         errorview:ev_showRetryButton="true"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 </FrameLayout>

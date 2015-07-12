@@ -1,5 +1,6 @@
 package com.alorma.github.ui.adapter.repos;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -14,15 +16,13 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
 
-    private LayoutInflater inflater;
-
     public ReposAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
+        super(inflater);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(inflater.inflate(R.layout.row_repo, parent, false));
+        return new ViewHolder(getInflater().inflate(R.layout.row_repo, parent, false));
     }
 
     @Override
@@ -59,7 +59,6 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
         public TextView textDescription;
         public TextView textForks;
         public TextView textStarts;
-        public TextView textForkOf;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -68,6 +67,16 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
             textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
             textStarts = (TextView) itemView.findViewById(R.id.textStarts);
             textForks = (TextView) itemView.findViewById(R.id.textForks);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Repo item = getItem(getAdapterPosition());
+                    if (item != null) {
+                        v.getContext().startActivity(new UrlsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
+                    }
+                }
+            });
         }
     }
 

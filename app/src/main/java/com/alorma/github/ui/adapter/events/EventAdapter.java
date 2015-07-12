@@ -1,13 +1,12 @@
 package com.alorma.github.ui.adapter.events;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
-import com.alorma.github.ui.adapter.LazyAdapter;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.adapter.events.views.CommitCommentEventView;
 import com.alorma.github.ui.adapter.events.views.CreatedEventView;
@@ -23,7 +22,6 @@ import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
 import com.alorma.github.ui.adapter.events.views.WatchEventView;
 import com.crashlytics.android.Crashlytics;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import io.fabric.sdk.android.Fabric;
@@ -33,22 +31,65 @@ import io.fabric.sdk.android.Fabric;
  */
 public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
-    public EventAdapter() {
-        super();
+    public EventAdapter(LayoutInflater inflater) {
+        super(inflater);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+
+        GithubEventView v;
+
+        if (viewType == EventType.PushEvent.ordinal()) {
+            v = new PushEventView(parent.getContext());
+        } else if (viewType == EventType.WatchEvent.ordinal()) {
+            v = new WatchEventView(parent.getContext());
+        } else if (viewType == EventType.CreateEvent.ordinal()) {
+            v = new CreatedEventView(parent.getContext());
+        } else if (viewType == EventType.IssueCommentEvent.ordinal()) {
+            v = new IssueCommentEventView(parent.getContext());
+        } else if (viewType == EventType.CommitCommentEvent.ordinal()) {
+            v = new CommitCommentEventView(parent.getContext());
+        } else if (viewType == EventType.IssuesEvent.ordinal()) {
+            v = new IssueEventView(parent.getContext());
+        } else if (viewType == EventType.ForkEvent.ordinal()) {
+            v = new ForkEventView(parent.getContext());
+        } else if (viewType == EventType.DeleteEvent.ordinal()) {
+            v = new DeleteEventView(parent.getContext());
+        } else if (viewType == EventType.ReleaseEvent.ordinal()) {
+            v = new ReleaseEventView(parent.getContext());
+        } else if (viewType == EventType.PullRequestEvent.ordinal()) {
+            v = new PullRequestEventView(parent.getContext());
+        } else {
+            v = new UnhandledEventView(parent.getContext());
+        }
+
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        GithubEvent event = getItem(position);
+        holder.view.setEvent(event);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position).type.ordinal();
+    }
 
-  /*  public EventAdapter(Context context, Collection<GithubEvent> collection) {
+    @Override
+    public void addAll(Collection<GithubEvent> items) {
+        for (GithubEvent githubEvent : items) {
+            if (checkEventHandled(githubEvent)) {
+                add(githubEvent);
+            } else if (Fabric.isInitialized()) {
+                Crashlytics.log(githubEvent.type + " not handled");
+            }
+        }
+    }
+
+    /*  public EventAdapter(Context context, Collection<GithubEvent> collection) {
         super(context, new ArrayList<GithubEvent>());
         addAll(collection);
     }
@@ -72,45 +113,6 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         return convertView;
     }
 
-    public View inflate(GithubEvent event) {
-        GithubEventView v;
-
-        if (event.getType() == EventType.PushEvent) {
-            v = new PushEventView(getContext());
-        } else if (event.getType() == EventType.WatchEvent) {
-            v = new WatchEventView(getContext());
-        } else if (event.getType() == EventType.CreateEvent) {
-            v = new CreatedEventView(getContext());
-        } else if (event.getType() == EventType.IssueCommentEvent) {
-            v = new IssueCommentEventView(getContext());
-        } else if (event.getType() == EventType.CommitCommentEvent) {
-            v = new CommitCommentEventView(getContext());
-        } else if (event.getType() == EventType.IssuesEvent) {
-            v = new IssueEventView(getContext());
-        } else if (event.getType() == EventType.ForkEvent) {
-            v = new ForkEventView(getContext());
-        } else if (event.getType() == EventType.DeleteEvent) {
-            v = new DeleteEventView(getContext());
-        } else if (event.getType() == EventType.ReleaseEvent) {
-            v = new ReleaseEventView(getContext());
-        } else if (event.getType() == EventType.PullRequestEvent) {
-            v = new PullRequestEventView(getContext());
-        } else {
-            v = new UnhandledEventView(getContext());
-        }
-
-        return v;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return getItem(position).getType().ordinal();
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return EventType.values().length;
-    }
 
     @Override
     public void addAll(Collection<? extends GithubEvent> collection) {
@@ -144,6 +146,8 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         addAll(collection);
     }
 */
+
+
     private boolean checkEventHandled(GithubEvent event) {
         return event.getType() != null && (event.getType() == EventType.PushEvent)
                 || (event.getType() == EventType.WatchEvent)
@@ -156,7 +160,6 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                 || (event.getType() == EventType.PullRequestEvent)
                 || (event.getType() == EventType.DeleteEvent);
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private GithubEventView view;

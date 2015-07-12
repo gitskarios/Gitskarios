@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.bean.ClearNotification;
 import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
@@ -23,7 +21,6 @@ import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -37,15 +34,11 @@ import javax.inject.Inject;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
  * Created by Bernat on 19/02/2015.
  */
-public class NotificationsFragment extends PaginatedListFragment<List<Notification>> {
-
-    private StickyListHeadersListView listView;
-    public NotificationsAdapter notificationsAdapter;
+public class NotificationsFragment extends PaginatedListFragment<List<Notification>, NotificationsAdapter> {
 
     @Inject
     Bus bus;
@@ -59,25 +52,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         super.onCreate(savedInstanceState);
 
         GitskariosApplication.get(getActivity()).inject(this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.list_fragment_headers
-                , null);
-    }
-
-    @Override
-    protected void setupListView(View view) {
-        listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
-        if (listView != null) {
-            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-            listView.setOnScrollListener(this);
-            listView.setAreHeadersSticky(false);
-            listView.setOnItemClickListener(this);
-        }
     }
 
     @Override
@@ -114,7 +88,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         }
         super.onResponseOk(notifications, r);
         if (notifications != null) {
-            if (notifications.size() == 0 && (notificationsAdapter == null || notificationsAdapter.getCount() == 0)) {
+            if (notifications.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
                 setEmpty();
             }
         } else {
@@ -125,12 +99,12 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     @Override
     protected void onResponse(final List<Notification> notifications, boolean refreshing) {
         if (refreshing) {
-            notificationsAdapter.clear();
+            getAdapter().clear();
         }
         if (notifications != null && notifications.size() > 0) {
             bus.post(new NotificationsCount(notifications.size()));
             if (notifications.size() > 0) {
-                if (notificationsAdapter != null && notificationsAdapter.getCount() > 0) {
+                if (getAdapter() != null && getAdapter().getItemCount() > 0) {
                     hideEmpty();
                 }
 
@@ -151,17 +125,18 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                     @Override
                     public void run() {
 
-                        notificationsAdapter = new NotificationsAdapter(getActivity(), notifications);
+                        NotificationsAdapter notificationsAdapter = new NotificationsAdapter(LayoutInflater.from(getActivity()));
+                        notificationsAdapter.addAll(notifications);
 
                         GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
                         bus.register(notificationsAdapter);
 
-                        listView.setAdapter(notificationsAdapter);
+                        setAdapter(notificationsAdapter);
                     }
                 });
 
             } else {
-                if (notificationsAdapter == null || notificationsAdapter.getCount() == 0) {
+                if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                     setEmpty();
                 }
 
@@ -172,7 +147,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
-        if (notificationsAdapter == null || notificationsAdapter.getCount() == 0) {
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
     }
@@ -212,8 +187,8 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     @Override
     public void onRefresh() {
         super.onRefresh();
-        if (notificationsAdapter != null) {
-            notificationsAdapter.clear();
+        if (getAdapter() != null) {
+            getAdapter().clear();
         }
     }
 
@@ -226,8 +201,8 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
     @Override
     public void onPause() {
-        if (notificationsAdapter != null) {
-            bus.unregister(notificationsAdapter);
+        if (getAdapter() != null) {
+            bus.unregister(getAdapter());
         }
         bus.unregister(this);
         super.onPause();
@@ -258,8 +233,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                 @Override
                 public void onResponseOk(Response response, Response r) {
                     if (response != null && response.getStatus() == 205) {
-                        notificationsAdapter.remove(clearNotification.getNotification());
-                        notificationsAdapter.notifyDataSetChanged();
+                        getAdapter().remove(clearNotification.getNotification());
                     }
                 }
 
@@ -279,8 +253,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
             @Override
             public void onResponseOk(Response response, Response r) {
                 if (response != null && response.getStatus() == 204) {
-                    notificationsAdapter.remove(unsubscribeThreadNotification.getNotification());
-                    notificationsAdapter.notifyDataSetChanged();
+                    getAdapter().remove(unsubscribeThreadNotification.getNotification());
                 }
             }
 

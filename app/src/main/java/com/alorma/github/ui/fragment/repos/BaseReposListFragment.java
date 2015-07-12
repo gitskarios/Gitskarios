@@ -26,16 +26,14 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
     protected ReposAdapter reposAdapter;
     private GitskariosSettings settings;
 
-    @Override
+   /* @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         if (reposAdapter != null && reposAdapter.getItemCount() >= position) {
             Repo item = reposAdapter.getItem(position);
-            if (item != null) {
-                startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.html_url)));
-            }
+
         }
-    }
+    }*/
 
     @Override
     protected void onResponse(List<Repo> repos, boolean refreshing) {

@@ -11,12 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.DividerItemDecoration;
+import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -25,9 +24,8 @@ import tr.xip.errorview.ErrorView;
 /**
  * Created by Bernat on 05/08/2014.
  */
-public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        AbsListView.OnScrollListener
-        , View.OnClickListener{
+public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment implements SwipeRefreshLayout.OnRefreshListener
+        , View.OnClickListener {
 
     private SwipeRefreshLayout swipe;
     protected FloatingActionButton fab;
@@ -47,16 +45,21 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View v = inflater.inflate(R.layout.list_fragment, null, false);
-
-        return v;
+        return inflater.inflate(useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
 
-        setupListView(view);
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(getLayoutManager());
+            recyclerView.setItemAnimator(getItemAnimator());
+            if (getItemDecoration() != null) {
+                recyclerView.addItemDecoration(getItemDecoration());
+            }
+        }
 
         error_view = (ErrorView) view.findViewById(R.id.error_view);
 
@@ -67,12 +70,26 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
         if (swipe != null) {
+            int accent = AttributesUtils.getAccentColor(getActivity());
+            swipe.setColorSchemeColors(accent);
             swipe.setOnRefreshListener(this);
         }
 
         if (autoStart()) {
             executeRequest();
         }
+    }
+
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getActivity());
+    }
+
+    protected RecyclerView.ItemAnimator getItemAnimator() {
+        return new DefaultItemAnimator();
+    }
+
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getActivity(), DividerItemDecoration.LIST_VERTICAL);
     }
 
     protected void executeRequest() {
@@ -110,16 +127,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     public void onResume() {
         super.onResume();
         stopRefresh();
-    }
-
-    protected void setupListView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-
-        if (recyclerView != null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.LIST_VERTICAL));
-        }
     }
 
     protected void checkFAB() {
@@ -167,7 +174,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     public void hideEmpty() {
         if (getActivity() != null) {
             if (error_view != null) {
-                error_view.setVisibility(View.INVISIBLE);
+                error_view.setVisibility(View.GONE);
             }
         }
     }
@@ -175,16 +182,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     protected abstract Octicons.Icon getNoDataIcon();
 
     protected abstract int getNoDataText();
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -212,15 +209,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         }
     }
 
-    public void onListItemClick(ListView l, View v, int position, long id) {
-
-    }
-
-    public void reload() {
-        if (adapter == null || adapter.getItemCount() == 0) {
-            executeRequest();
-        }
-    }
     protected boolean autoStart() {
         return true;
     }

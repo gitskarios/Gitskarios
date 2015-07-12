@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -24,7 +25,6 @@ import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
@@ -37,14 +37,12 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<List<Content>>, TitleProvider, BranchManager
+public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> implements BaseClient.OnResultCallback<List<Content>>, TitleProvider, BranchManager
         , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
 
     private RepoInfo repoInfo;
-
-    private RepoSourceAdapter contentAdapter;
 
     private LinearBreadcrumb breadCrumbs;
     private String currentPath;
@@ -110,11 +108,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     private void getContent() {
         currentPath = "/";
 
-        if (contentAdapter != null) {
-            contentAdapter.clear();
+        if (getAdapter() != null) {
+            getAdapter().clear();
         }
 
-        contentAdapter = null;
+        setAdapter(null);
 
         breadCrumbs.initRootCrumb();
 
@@ -141,7 +139,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 Collections.sort(contents, Content.Comparators.TYPE);
 
                 displayContent(contents);
-            } else if (contentAdapter == null || contentAdapter.getCount() == 0) {
+            } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                 setEmpty();
             }
         }
@@ -150,8 +148,10 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     @Override
     public void onFail(RetrofitError error) {
         if (getActivity() != null) {
-            if (contentAdapter == null || contentAdapter.getCount() == 0) {
-                setEmpty();
+            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                if (error != null && error.getResponse() != null) {
+                    setEmpty(error.getResponse().getStatus());
+                }
             }
             ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
         }
@@ -165,17 +165,19 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 breadCrumbs.addPath(currentPath, "/");
             }
 
-            contentAdapter = new RepoSourceAdapter(getActivity(), contents);
+            RepoSourceAdapter contentAdapter = new RepoSourceAdapter(LayoutInflater.from(getActivity()));
+            contentAdapter.addAll(contents);
             setAdapter(contentAdapter);
         }
     }
 
-    @Override
+    // TODO
+    /*@Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        if (contentAdapter != null && contentAdapter.getCount() >= position) {
-            Content item = contentAdapter.getItem(position);
+        if (getAdapter() != null && getAdapter().getItemCount() >= position) {
+            Content item = getAdapter().getItem(position);
             if (item.isDir()) {
                 getPathContent(item.path);
             } else if (item.isFile()) {
@@ -205,6 +207,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
         return super.onItemLongClick(parent, view, position, id);
     }
+    */
 
     @Override
     public void setEmpty(int statusCode) {

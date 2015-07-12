@@ -3,7 +3,7 @@
     android:id="@id/listContentFL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/gray_github_light">
 
     <LinearLayout
         android:id="@+id/listContainer"
@@ -23,36 +23,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ListView
-                android:id="@android:id/list"
+            <android.support.v7.widget.RecyclerView
+                android:id="@id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"/>
+                android:drawSelectorOnTop="false" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/emptyLayout"
+    <include
+        layout="@layout/fab"
+        android:layout_width="@dimen/fab"
+        android:layout_height="@dimen/fab"
+        android:layout_gravity="bottom|right|end"
+        android:layout_margin="@dimen/gapLarge"
+        android:scaleType="centerInside" />
+
+    <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/error_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/emptyIcon"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:id="@+id/emptyText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/emptyIcon"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:textSize="@dimen/textSizeLarge" />
-    </RelativeLayout>
+        errorview:ev_showRetryButton="true"
+        errorview:ev_showSubtitle="true"
+        errorview:ev_showTitle="true" />
 
     <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

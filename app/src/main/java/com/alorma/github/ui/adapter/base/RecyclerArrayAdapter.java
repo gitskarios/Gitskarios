@@ -3,6 +3,8 @@ package com.alorma.github.ui.adapter.base;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+import com.alorma.github.sdk.bean.dto.response.Notification;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,5 +59,10 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
 
     public void setInflater(LayoutInflater inflater) {
         this.inflater = inflater;
+    }
+
+    public void remove(ItemType itemType) {
+        items.remove(itemType);
+        notifyDataSetChanged();
     }
 }
