@@ -29,7 +29,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
             } else if (usersAdapter == null) {
                 setUpList(users);
             } else {
-                setListAdapter(usersAdapter);
+                setAdapter(usersAdapter);
             }
         } else if (usersAdapter == null || usersAdapter.getCount() == 0) {
             setEmpty();
@@ -46,13 +46,13 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<ListUs
 
     protected UsersAdapter setUpList(ListUsers users) {
         usersAdapter = new UsersAdapter(getActivity(), users);
-        setListAdapter(usersAdapter);
+        setAdapter(usersAdapter);
         return usersAdapter;
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
+    public void setEmpty(int statusCode) {
+        super.setEmpty(statusCode);
         if (usersAdapter != null) {
             usersAdapter.clear();
         }

@@ -60,13 +60,13 @@ public class OrganizationsFragment extends PaginatedListFragment<ListOrganizatio
         } else if (adapter == null) {
             setUpList(organizations);
         } else {
-            setListAdapter(adapter);
+            setAdapter(adapter);
         }
     }
 
     private void setUpList(ListOrganizations organizations) {
         adapter = new OrganizationsAdapter(getActivity(), organizations);
-        setListAdapter(adapter);
+        setAdapter(adapter);
     }
 
     @Override

@@ -120,8 +120,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
+    public void setEmpty(int statusCode) {
+        super.setEmpty(statusCode);
         if (fab != null) {
             fab.setVisibility(View.INVISIBLE);
         }

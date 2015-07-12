@@ -19,10 +19,8 @@ import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventP
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
-import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
-import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
@@ -42,7 +40,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
     private EventAdapter eventsAdapter;
     private String username;
 
-    public static EventsListFragment newInstance(String username) {
+    public static EventsListFragment newInstance(String usernºame) {
         Bundle bundle = new Bundle();
         bundle.putString(USERNAME, username);
 
@@ -68,7 +66,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
             } else if (eventsAdapter == null) {
                 setUpList(githubEvents);
             } else {
-                setListAdapter(eventsAdapter);
+                setAdapter(eventsAdapter);
             }
         } else if (eventsAdapter == null || eventsAdapter.getCount() == 0) {
             setEmpty();
@@ -78,7 +76,7 @@ public class EventsListFragment extends PaginatedListFragment<ListEvents> {
 
     protected EventAdapter setUpList(ListEvents githubEvents) {
         eventsAdapter = new EventAdapter(getActivity(), githubEvents);
-        setListAdapter(eventsAdapter);
+        setAdapter(eventsAdapter);
         return eventsAdapter;
     }
 

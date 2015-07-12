@@ -15,8 +15,8 @@
             android:layout_height="match_parent"
             android:id="@+id/swipe">
 
-            <ListView
-                android:id="@android:id/list"
+            <android.support.v7.widget.RecyclerView
+                android:id="@id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:drawSelectorOnTop="false"/>
@@ -31,7 +31,15 @@
         android:scaleType="centerInside"
         android:layout_gravity="bottom|right|end"/>
 
-    <RelativeLayout
+    <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/error_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        errorview:ev_showTitle="true"
+        errorview:ev_showSubtitle="true"
+        errorview:ev_showRetryButton="true" />
+
+<!--    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/emptyLayout"
@@ -52,6 +60,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/gapMedium"
             android:textSize="@dimen/textSizeLarge"/>
-    </RelativeLayout>
+    </RelativeLayout>-->
 
 </FrameLayout>

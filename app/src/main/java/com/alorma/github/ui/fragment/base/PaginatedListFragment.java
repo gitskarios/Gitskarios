@@ -6,6 +6,7 @@ import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K> extends LoadingListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
 
     protected static final String USERNAME = "USERNAME";
     protected boolean paging;

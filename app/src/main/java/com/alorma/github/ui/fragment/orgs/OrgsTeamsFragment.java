@@ -72,7 +72,7 @@ public class OrgsTeamsFragment extends PaginatedListFragment<ListTeams> {
             } else if (teamsAdapter == null) {
                 setUpList(teams);
             } else {
-                setListAdapter(teamsAdapter);
+                setAdapter(teamsAdapter);
             }
         } else if (teamsAdapter == null || teamsAdapter.getCount() == 0) {
             setEmpty();
@@ -81,7 +81,7 @@ public class OrgsTeamsFragment extends PaginatedListFragment<ListTeams> {
 
     protected TeamsAdapter setUpList(ListTeams teams) {
         teamsAdapter = new TeamsAdapter(getActivity(), teams);
-        setListAdapter(teamsAdapter);
+        setAdapter(teamsAdapter);
         return teamsAdapter;
     }
 }

@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.issues;
 
-import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -197,7 +196,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
 
             if (issuesAdapter == null || refreshing) {
                 issuesAdapter = new IssuesAdapter(getActivity(), issues);
-                setListAdapter(issuesAdapter);
+                setAdapter(issuesAdapter);
             }
 
             if (issuesAdapter.isLazyLoading()) {
@@ -206,7 +205,7 @@ public class IssuesListFragment extends PaginatedListFragment<ListIssues> implem
                     issuesAdapter.addAll(issues);
                 }
             } else {
-                setListAdapter(issuesAdapter);
+                setAdapter(issuesAdapter);
             }
         } else if (issuesAdapter == null || issuesAdapter.getCount() == 0) {
             setEmpty();

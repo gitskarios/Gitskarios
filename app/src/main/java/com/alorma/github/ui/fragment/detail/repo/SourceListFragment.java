@@ -166,7 +166,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
             }
 
             contentAdapter = new RepoSourceAdapter(getActivity(), contents);
-            setListAdapter(contentAdapter);
+            setAdapter(contentAdapter);
         }
     }
 
@@ -207,8 +207,8 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
+    public void setEmpty(int statusCode) {
+        super.setEmpty(statusCode);
     }
 
     @Override

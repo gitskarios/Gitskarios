@@ -1,15 +1,12 @@
 package com.alorma.github.ui.fragment.commit;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
-import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.services.commit.GetCommitCommentsClient;
 import com.alorma.github.ui.adapter.commit.CommitCommentAdapter;
-import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -61,7 +58,7 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
             } else if (commentsAdapter == null) {
                 setUpList(commitComments);
             } else {
-                setListAdapter(commentsAdapter);
+                setAdapter(commentsAdapter);
             }
         } else if (commentsAdapter == null || commentsAdapter.getCount() == 0) {
             setEmpty();
@@ -70,7 +67,7 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
 
     protected CommitCommentAdapter setUpList(List<CommitComment> commitComments) {
         commentsAdapter = new CommitCommentAdapter(getActivity(), commitComments, info.repoInfo);
-        setListAdapter(commentsAdapter);
+        setAdapter(commentsAdapter);
         if (getListView() != null) {
             getListView().setDivider(null);
         }
