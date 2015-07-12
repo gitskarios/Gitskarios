@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.ui.activity.OrganizationActivity;
@@ -14,10 +13,12 @@ import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.util.List;
+
 /**
  * Created by Bernat on 13/07/2014.
  */
-public class OrganizationsFragment extends PaginatedListFragment<ListOrganizations> {
+public class OrganizationsFragment extends PaginatedListFragment<List<Organization>> {
     private String username;
     private OrganizationsAdapter adapter;
 
@@ -53,7 +54,7 @@ public class OrganizationsFragment extends PaginatedListFragment<ListOrganizatio
     }
 
     @Override
-    protected void onResponse(ListOrganizations organizations, boolean refreshing) {
+    protected void onResponse(List<Organization> organizations, boolean refreshing) {
         getListView().setDivider(null);
         if (getListAdapter() != null) {
             adapter.addAll(organizations, paging);
@@ -64,7 +65,7 @@ public class OrganizationsFragment extends PaginatedListFragment<ListOrganizatio
         }
     }
 
-    private void setUpList(ListOrganizations organizations) {
+    private void setUpList(List<Organization> organizations) {
         adapter = new OrganizationsAdapter(getActivity(), organizations);
         setAdapter(adapter);
     }

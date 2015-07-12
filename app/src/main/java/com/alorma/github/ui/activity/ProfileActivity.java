@@ -23,7 +23,7 @@ import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.bean.ProfileItem;
-import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
+import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
@@ -45,6 +45,8 @@ import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -326,9 +328,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         profileItemsAdapter.add(profileItemOrgs);
 
         GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
-        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<List<Organization>>() {
             @Override
-            public void onResponseOk(ListOrganizations organizations, Response r) {
+            public void onResponseOk(List<Organization> organizations, Response r) {
                 if (organizations != null && organizations.size() > 0) {
                     profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
                     profileItemsAdapter.notifyDataSetChanged();

@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
-import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
@@ -19,6 +17,9 @@ import com.alorma.github.ui.adapter.users.UsersAdapterSquare;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.basesdk.client.BaseClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -93,12 +94,12 @@ public class RepoContributorsFragment extends BaseFragment implements TitleProvi
         }
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
+    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
         @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
+        public void onResponseOk(List<Contributor> contributors, Response r) {
 
             if (contributors != null) {
-                ListUsers users = new ListUsers();
+                List<User> users = new ArrayList<>();
 
                 users.add(owner);
                 for (Contributor contributor : contributors) {

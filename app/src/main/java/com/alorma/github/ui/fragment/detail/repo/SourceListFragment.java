@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
@@ -30,6 +29,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -37,7 +37,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider, BranchManager
+public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<List<Content>>, TitleProvider, BranchManager
         , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
@@ -134,7 +134,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public void onResponseOk(ListContents contents, Response r) {
+    public void onResponseOk(List<Content> contents, Response r) {
         if (getActivity() != null) {
             if (contents != null && contents.size() > 0) {
 
@@ -157,7 +157,7 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
         }
     }
 
-    private void displayContent(ListContents contents) {
+    private void displayContent(List<Content> contents) {
         if (getActivity() != null) {
             stopRefresh();
 

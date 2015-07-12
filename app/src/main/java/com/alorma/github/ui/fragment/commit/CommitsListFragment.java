@@ -12,7 +12,6 @@ import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.ListCommit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
@@ -39,7 +38,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsListFragment extends PaginatedListFragment<ListCommit> implements TitleProvider, BranchManager, PermissionsManager
+public class CommitsListFragment extends PaginatedListFragment<List<Commit>> implements TitleProvider, BranchManager, PermissionsManager
         , BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
@@ -65,7 +64,8 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         return inflater.inflate(R.layout.list_fragment_headers, null, false);
     }
 
-    @Override
+    // TODO
+    /*@Override
     protected void setupListView(View view) {
         listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
         if (listView != null) {
@@ -74,10 +74,10 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
             listView.setOnItemClickListener(this);
             listView.setAreHeadersSticky(true);
         }
-    }
+    }*/
 
     @Override
-    protected void onResponse(final ListCommit commits, boolean refreshing) {
+    protected void onResponse(final List<Commit> commits, boolean refreshing) {
         if (commitsMap == null || refreshing) {
             commitsMap = new ArrayList<>();
         }
@@ -182,7 +182,7 @@ public class CommitsListFragment extends PaginatedListFragment<ListCommit> imple
         }
     }
 
-    private void orderCommits(ListCommit commits) {
+    private void orderCommits(List<Commit> commits) {
 
         for (Commit commit : commits) {
             if (commit.commit.author.date != null) {

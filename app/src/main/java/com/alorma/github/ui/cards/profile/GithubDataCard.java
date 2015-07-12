@@ -7,12 +7,15 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
+import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -82,9 +85,9 @@ public class GithubDataCard implements View.OnClickListener {
         view.findViewById(R.id.orgs).setOnClickListener(this);
 
         GetOrgsClient orgsClient = new GetOrgsClient(view.getContext(), user.login);
-        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<List<Organization>>() {
             @Override
-            public void onResponseOk(ListOrganizations organizations, Response r) {
+            public void onResponseOk(List<Organization> organizations, Response r) {
                 if (organizations != null && organizations.size() > 0) {
                     textOrgs.setText(view.getContext().getString(R.string.orgs_num, organizations.size()));
                 } else {
