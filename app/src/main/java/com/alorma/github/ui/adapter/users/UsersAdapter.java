@@ -46,9 +46,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final UsersAdapter.ViewHolder holder, int position) {
-        User user = getItem(position);
-
+    protected void onBindViewHolder(final ViewHolder holder, User user) {
         ImageLoader.getInstance().displayImage(user.avatar_url, holder.avatar, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {

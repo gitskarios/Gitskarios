@@ -125,7 +125,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                     @Override
                     public void run() {
 
-                        NotificationsAdapter notificationsAdapter = new NotificationsAdapter(LayoutInflater.from(getActivity()));
+                        NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
                         notificationsAdapter.addAll(notifications);
 
                         GitskariosApplication.get(getActivity()).inject(notificationsAdapter);

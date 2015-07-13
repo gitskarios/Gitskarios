@@ -37,7 +37,6 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         GithubEventView v;
 
         if (viewType == EventType.PushEvent.ordinal()) {
@@ -68,9 +67,8 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        GithubEvent event = getItem(position);
-        holder.view.setEvent(event);
+    protected void onBindViewHolder(ViewHolder holder, GithubEvent githubEvent) {
+        holder.view.setEvent(githubEvent);
     }
 
     @Override

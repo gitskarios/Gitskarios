@@ -1,6 +1,5 @@
 package com.alorma.github.ui.adapter.commit;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -16,7 +15,6 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.CommitDetailActivity;
-import com.alorma.github.ui.adapter.LazyAdapter;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TextUtils;
@@ -26,22 +24,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
-import org.joda.time.Months;
-import org.joda.time.Seconds;
-import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
  * Created by Bernat on 07/09/2014.
@@ -66,8 +54,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(CommitsAdapter.ViewHolder holder, int position) {
-        Commit commit = getItem(position);
+    public void onBindViewHolder(CommitsAdapter.ViewHolder holder, Commit commit) {
 
         User author = commit.author;
 

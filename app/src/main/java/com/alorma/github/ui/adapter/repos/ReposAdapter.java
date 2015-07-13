@@ -26,9 +26,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Repo repo = getItem(position);
-
+    protected void onBindViewHolder(ViewHolder holder, Repo repo) {
         holder.textTitle.setText(repo.name);
 
         String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);

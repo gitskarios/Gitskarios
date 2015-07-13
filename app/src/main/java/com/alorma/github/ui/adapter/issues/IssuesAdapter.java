@@ -21,7 +21,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
 
-
     public IssuesAdapter(LayoutInflater inflater) {
         super(inflater);
     }
@@ -32,30 +31,28 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Issue item = getItem(position);
+    protected void onBindViewHolder(ViewHolder holder, Issue issue) {
+        holder.title.setText(issue.title);
 
-        holder.title.setText(item.title);
+        holder.num.setText("#" + issue.number);
 
-        holder.num.setText("#" + item.number);
-
-        if (item.user != null) {
-            holder.autor.setText(Html.fromHtml(holder.itemView.getResources().getString(R.string.issue_created_by, item.user.login)));
+        if (issue.user != null) {
+            holder.autor.setText(Html.fromHtml(holder.itemView.getResources().getString(R.string.issue_created_by, issue.user.login)));
             ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(item.user.avatar_url, holder.avatar);
+            instance.displayImage(issue.user.avatar_url, holder.avatar);
         }
 
         int colorState = holder.itemView.getResources().getColor(R.color.issue_state_close);
-        if (IssueState.open == item.state) {
+        if (IssueState.open == issue.state) {
             colorState = holder.itemView.getResources().getColor(R.color.issue_state_open);
         }
 
         holder.state.setBackgroundColor(colorState);
         holder.num.setTextColor(colorState);
         IconicsDrawable iconDrawable;
-        if (item.pullRequest != null) {
+        if (issue.pullRequest != null) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_git_pull_request);
-        } else if (item.state == IssueState.closed) {
+        } else if (issue.state == IssueState.closed) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_issue_closed);
         } else {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_issue_opened);

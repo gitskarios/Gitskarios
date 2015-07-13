@@ -26,7 +26,7 @@ import tr.xip.errorview.ErrorView;
  * Created by Bernat on 05/08/2014.
  */
 public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment implements SwipeRefreshLayout.OnRefreshListener
-        , View.OnClickListener {
+        , View.OnClickListener, RecyclerArrayAdapter.RecyclerAdapterContentListener {
 
     private SwipeRefreshLayout swipe;
     protected FloatingActionButton fab;
@@ -212,6 +212,13 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
     public void setAdapter(Adapter adapter) {
         this.adapter = adapter;
+        if (this.adapter != null) {
+            try {
+                adapter.setRecyclerAdapterContentListener(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (recyclerView != null) {
             recyclerView.setAdapter(adapter);
         }

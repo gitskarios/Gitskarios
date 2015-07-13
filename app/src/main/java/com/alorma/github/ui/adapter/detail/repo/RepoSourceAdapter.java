@@ -1,6 +1,5 @@
 package com.alorma.github.ui.adapter.detail.repo;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,17 +30,15 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Content item = getItem(position);
-
-        holder.textName.setText(item.name);
+    protected void onBindViewHolder(ViewHolder holder, Content content) {
+        holder.textName.setText(content.name);
 
         IconicsDrawable iconDrawable = null;
-        if (ContentType.dir.equals(item.type)) {
+        if (ContentType.dir.equals(content.type)) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_directory);
-        } else if (ContentType.submodule.equals(item.type)) {
+        } else if (ContentType.submodule.equals(content.type)) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_symlink_directory);
-        } else if (ContentType.file.equals(item.type)) {
+        } else if (ContentType.file.equals(content.type)) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_text);
         }
 

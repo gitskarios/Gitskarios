@@ -1,11 +1,9 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.widget.AbsListView;
-
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 
 import java.util.HashMap;
@@ -23,18 +21,6 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
     private PaginationLink bottomPaginationLink;
 
     protected boolean refreshing;
-/*
-    @Override
-    public void onScroll(AbsListView absListView, int first, int last, int total) {
-        super.onScroll(absListView, first, last, total);
-        if (total > 0 && first + last == total) {
-            if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
-                paging = true;
-                executePaginatedRequest(bottomPaginationLink.page);
-                bottomPaginationLink = null;
-            }
-        }
-    }*/
 
     @Override
     public void onResponseOk(K k, Response r) {
@@ -93,5 +79,14 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
 
     public boolean isRefreshing() {
         return refreshing;
+    }
+
+    @Override
+    public void loadMoreItems() {
+        if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
+            paging = true;
+            executePaginatedRequest(bottomPaginationLink.page);
+            bottomPaginationLink = null;
+        }
     }
 }

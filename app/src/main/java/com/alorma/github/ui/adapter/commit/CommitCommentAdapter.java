@@ -38,9 +38,7 @@ public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, Co
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        CommitComment commitComment = getItem(position);
-
+    protected void onBindViewHolder(ViewHolder holder, CommitComment commitComment) {
         if (commitComment.user != null) {
 
             holder.textAuthor.setText(commitComment.user.login);

@@ -280,6 +280,11 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
     }
 
+    @Override
+    public void loadMoreItems() {
+
+    }
+
     private class DownloadBranchesCallback extends DialogBranchesCallback {
 
         public DownloadBranchesCallback(Context context, RepoInfo repoInfo) {

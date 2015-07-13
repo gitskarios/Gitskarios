@@ -43,9 +43,7 @@ public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, Org
     }
 
     @Override
-    public void onBindViewHolder(final OrganizationsAdapter.ViewHolder holder, int position) {
-        Organization organization = getItem(position);
-
+    protected void onBindViewHolder(final ViewHolder holder, Organization organization) {
         ImageLoader.getInstance().displayImage(organization.avatar_url, holder.avatar, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {

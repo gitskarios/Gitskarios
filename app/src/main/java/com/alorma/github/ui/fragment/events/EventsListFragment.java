@@ -43,7 +43,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
         if (githubEvents != null && githubEvents.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {
-                getAdapter().addAll(githubEvents, paging);
+                getAdapter().addAll(githubEvents);
             } else {
                 EventAdapter eventAdapter = new EventAdapter(LayoutInflater.from(getActivity()));
                 eventAdapter.addAll(githubEvents);
