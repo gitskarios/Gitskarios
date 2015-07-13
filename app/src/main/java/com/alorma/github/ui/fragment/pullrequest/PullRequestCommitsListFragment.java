@@ -51,31 +51,15 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
             this.commits = new ArrayList<>();
         }
         if (commits != null && commits.size() > 0) {
-
             orderCommits(commits);
 
-            if (getAdapter() == null || refreshing) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
-                        commitsAdapter.addAll(PullRequestCommitsListFragment.this.commits);
-                        setAdapter(commitsAdapter);
-                    }
-                });
+            if (getAdapter() == null ) {
+                CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
+                commitsAdapter.addAll(PullRequestCommitsListFragment.this.commits);
+                setAdapter(commitsAdapter);
+            } else {
+                getAdapter().addAll(commits);
             }
-
-            /*if (commitsAdapter.isLazyLoading()) {
-                if (commitsAdapter != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            commitsAdapter.setLazyLoading(false);
-                            commitsAdapter.addAll(commits);
-                        }
-                    });
-                }
-            }*/
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }

@@ -98,9 +98,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
     @Override
     protected void onResponse(final List<Notification> notifications, boolean refreshing) {
-        if (refreshing) {
-            getAdapter().clear();
-        }
         if (notifications != null && notifications.size() > 0) {
             bus.post(new NotificationsCount(notifications.size()));
             if (notifications.size() > 0) {

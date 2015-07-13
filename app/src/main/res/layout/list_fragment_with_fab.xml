@@ -28,8 +28,8 @@
         android:layout_width="@dimen/fab"
         android:layout_height="@dimen/fab"
         android:layout_margin="@dimen/gapLarge"
-        android:scaleType="centerInside"
-        android:layout_gravity="bottom|right|end"/>
+        android:layout_gravity="bottom|right|end"
+        android:visibility="gone"/>
 
     <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
         android:id="@+id/error_view"
@@ -38,5 +38,6 @@
         errorview:ev_showTitle="true"
         errorview:ev_showSubtitle="true"
         errorview:ev_showRetryButton="true"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 </FrameLayout>

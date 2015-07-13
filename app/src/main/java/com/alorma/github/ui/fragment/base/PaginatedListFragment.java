@@ -30,9 +30,16 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
             if (k != null && k instanceof List) {
                 if (((List) k).size() > 0) {
                     getLinkData(r);
+
+                    if (getAdapter() != null && refreshing) {
+                        getAdapter().clear();
+                    }
+
                     onResponse(k, refreshing);
                     paging = false;
                     refreshing = false;
+                } else {
+                    setEmpty();
                 }
             }
         }
@@ -43,6 +50,9 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
         stopRefresh();
         if (getActivity() != null) {
             ErrorHandler.onError(getActivity(), "Paginated list fragment", error);
+        }
+        if (error != null && error.getResponse() != null) {
+            setEmpty(error.getResponse().getStatus());
         }
     }
 

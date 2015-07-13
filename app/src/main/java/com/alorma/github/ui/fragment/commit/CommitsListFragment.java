@@ -59,37 +59,36 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
 
             orderCommits(commits);
 
-            if (getAdapter() == null || refreshing) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
-                        commitsAdapter.addAll(CommitsListFragment.this.commits);
-                        commitsAdapter.setRepoInfo(repoInfo);
-                        setAdapter(commitsAdapter);
+            if (getAdapter() == null) {
+                CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
+                commitsAdapter.addAll(CommitsListFragment.this.commits);
+                commitsAdapter.setRepoInfo(repoInfo);
+                setAdapter(commitsAdapter);
+            } else {
 
-                        if (headersDecoration == null) {
-                            headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
-                            addItemDecoration(headersDecoration);
-                        }
-                    }
-                });
+                getAdapter().addAll(commits);
             }
 
-            // TODO lazy
-            /*if (commitsAdapter.isLazyLoading()) {
-                if (commitsAdapter != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            commitsAdapter.setLazyLoading(false);
-                            commitsAdapter.addAll(commits);
-                        }
-                    });
-                }
-            }*/
-        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            if (headersDecoration == null) {
+                headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
+                addItemDecoration(headersDecoration);
+            }
+        }
+    }
+
+    private void orderCommits(List<Commit> commits) {
+
+        for (Commit commit : commits) {
+            if (commit.commit.author.date != null) {
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
+
+                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+
+                commit.days = days.getDays();
+
+                this.commits.add(commit);
+            }
         }
     }
 
@@ -125,22 +124,6 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     public boolean onBackPressed() {
         return true;
-    }
-
-    private void orderCommits(List<Commit> commits) {
-
-        for (Commit commit : commits) {
-            if (commit.commit.author.date != null) {
-                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
-
-                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
-
-                commit.days = days.getDays();
-
-                this.commits.add(commit);
-            }
-        }
     }
 
     @Override

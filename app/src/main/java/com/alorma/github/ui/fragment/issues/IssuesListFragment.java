@@ -172,10 +172,8 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     public void onResponseOk(List<Issue> issues, Response r) {
         super.onResponseOk(issues, r);
 
-        if (refreshing) {
-            if (getAdapter() != null) {
-                getAdapter().clear();
-            }
+        if (getAdapter() != null && refreshing) {
+            getAdapter().clear();
         }
         if (issues == null || issues.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
             setEmpty();
@@ -186,10 +184,12 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     protected void onResponse(List<Issue> issues, boolean refreshing) {
         if (issues != null && issues.size() > 0) {
 
-            if (getAdapter() == null || refreshing) {
+            if (getAdapter() == null) {
                 IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
                 issuesAdapter.addAll(issues);
                 setAdapter(issuesAdapter);
+            } else {
+                getAdapter().addAll(issues);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();

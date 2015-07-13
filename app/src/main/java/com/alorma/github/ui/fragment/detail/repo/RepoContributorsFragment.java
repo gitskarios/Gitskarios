@@ -45,7 +45,13 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
 
     protected void executeRequest() {
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
+        contributorsClient.setOnResultCallback(this);
+        contributorsClient.execute();
+    }
+
+    protected void executePaginatedRequest(int page) {
+        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo, page);
+        contributorsClient.setOnResultCallback(this);
         contributorsClient.execute();
     }
 
@@ -93,45 +99,26 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
 
     @Override
     protected void onResponse(List<Contributor> contributors, boolean refreshing) {
+        if (contributors != null) {
+            List<User> users = new ArrayList<>();
 
-    }
-
-    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
-        @Override
-        public void onResponseOk(List<Contributor> contributors, Response r) {
-            hideEmpty();
-            if (contributors != null) {
-                List<User> users = new ArrayList<>();
-
-                users.add(owner);
-                for (Contributor contributor : contributors) {
-                    if (contributor != null
-                            && contributor.author != null
-                            && contributor.author.login != null
-                            && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-                        users.add(users.size(), contributor.author);
-                    }
-                }
-                if (getAdapter() == null) {
-                    UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
-                    adapter.addAll(users);
-                    setAdapter(adapter);
-                } else {
-                    getAdapter().addAll(users);
+            users.add(owner);
+            for (Contributor contributor : contributors) {
+                if (contributor != null
+                        && contributor.author != null
+                        && contributor.author.login != null
+                        && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                    users.add(users.size(), contributor.author);
                 }
             }
 
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-
-        }
-
-        protected void executePaginatedRequest(int page) {
-            GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo, page);
-            contributorsClient.setOnResultCallback(new ContributorsCallback());
-            contributorsClient.execute();
+            if (getAdapter() == null) {
+                UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+                adapter.addAll(users);
+                setAdapter(adapter);
+            } else {
+                getAdapter().addAll(users);
+            }
         }
     }
 }

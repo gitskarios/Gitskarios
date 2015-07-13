@@ -30,5 +30,6 @@
         errorview:ev_showTitle="true"
         errorview:ev_showSubtitle="true"
         errorview:ev_showRetryButton="true"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 </FrameLayout>
