@@ -16,6 +16,7 @@ import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -38,6 +39,7 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     private List<Commit> commits;
 
     private RepoInfo repoInfo;
+    private StickyRecyclerHeadersDecoration headersDecoration;
 
     public static CommitsListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -47,18 +49,6 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    // TODO
-    /*@Override
-    protected void setupRecyclerView(View view) {
-        listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
-        if (listView != null) {
-            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-            listView.setOnScrollListener(this);
-            listView.setOnItemClickListener(this);
-            listView.setAreHeadersSticky(true);
-        }
-    }*/
 
     @Override
     protected void onResponse(final List<Commit> commits, boolean refreshing) {
@@ -75,7 +65,13 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
                     public void run() {
                         CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
                         commitsAdapter.addAll(CommitsListFragment.this.commits);
+                        commitsAdapter.setRepoInfo(repoInfo);
                         setAdapter(commitsAdapter);
+
+                        if (headersDecoration == null) {
+                            headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
+                            addItemDecoration(headersDecoration);
+                        }
                     }
                 });
             }
@@ -203,16 +199,4 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
             executeRequest();
         }
     }
-
-    /*@Override
-    public void onListItemClick(final ListView l, final View v, final int position, final long id) {
-        Commit item = getAdapter().getItem(position);
-
-        CommitInfo info = new CommitInfo();
-        info.repoInfo = repoInfo;
-        info.sha = item.sha;
-
-        Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
-        startActivity(intent);
-    }*/
 }

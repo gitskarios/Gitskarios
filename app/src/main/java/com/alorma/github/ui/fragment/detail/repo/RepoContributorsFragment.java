@@ -99,7 +99,7 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
     private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
         @Override
         public void onResponseOk(List<Contributor> contributors, Response r) {
-
+            hideEmpty();
             if (contributors != null) {
                 List<User> users = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter.commit;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -12,6 +13,9 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.CommitInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.LazyAdapter;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
@@ -19,6 +23,7 @@ import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -41,13 +46,18 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.ViewHolder> /*implements StickyListHeadersAdapter*/ {
+public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.ViewHolder> implements StickyRecyclerHeadersAdapter<CommitsAdapter.HeaderViewHolder> {
 
     private boolean shortMessage;
+    private RepoInfo repoInfo;
 
     public CommitsAdapter(LayoutInflater inflater, boolean shortMessage) {
         super(inflater);
         this.shortMessage = shortMessage;
+    }
+
+    public void setRepoInfo(RepoInfo repoInfo) {
+        this.repoInfo = repoInfo;
     }
 
     @Override
@@ -158,60 +168,18 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         }
     }
 
-    private String getTimeString(Context context, String name, String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-        DateTime dt = formatter.parseDateTime(date);
-        DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
-
-        Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-        int text = R.string.commit_authored_at_years;
-        int time = years.getYears();
-
-        if (time == 0) {
-            Months months = Months.monthsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-            text = R.string.commit_authored_at_months;
-            time = months.getMonths();
-
-            if (time == 0) {
-
-                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-                text = R.string.commit_authored_at_days;
-                time = days.getDays();
-
-                if (time == 0) {
-                    Hours hours = Hours.hoursBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                    time = hours.getHours();
-                    text = R.string.commit_authored_at_hours;
-
-                    if (time == 0) {
-                        Minutes minutes = Minutes.minutesBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                        time = minutes.getMinutes();
-                        text = R.string.commit_authored_at_minutes;
-
-                        if (time == 0) {
-                            Seconds seconds = Seconds.secondsBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                            time = seconds.getSeconds();
-                            if (time > 5) {
-                                text = R.string.commit_authored_at_seconds;
-                            } else {
-                                text = R.string.commit_authored_at_now;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return context.getResources().getString(text, name, time);
+    @Override
+    public long getHeaderId(int i) {
+        return getItem(i).days;
     }
 
-/*
     @Override
-    public View getHeaderView(int i, View view, ViewGroup viewGroup) {
-        View v = inflate(R.layout.commit_row_header, viewGroup, false);
-        TextView tv = (TextView) v.findViewById(android.R.id.text1);
+    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+        return new HeaderViewHolder(getInflater().inflate(R.layout.commit_row_header, viewGroup, false));
+    }
 
+    @Override
+    public void onBindHeaderViewHolder(HeaderViewHolder headerViewHolder, int i) {
         Commit commit = getItem(i);
 
         if (commit.commit != null && commit.commit.author != null && commit.commit.author.date != null) {
@@ -220,16 +188,9 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
             String text = dt.toString("dd MMM yyyy");
 
-            tv.setText(text);
+            headerViewHolder.tv.setText(text);
         }
-        return tv;
     }
-
-    @Override
-    public long getHeaderId(int i) {
-        return getItem(i).days;
-    }
-*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -250,6 +211,28 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
             numFiles = (TextView) itemView.findViewById(R.id.numFiles);
             avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Commit commit = getItem(getAdapterPosition());
+                    CommitInfo info = new CommitInfo();
+                    info.repoInfo = repoInfo;
+                    info.sha = commit.sha;
+
+                    Intent intent = CommitDetailActivity.launchIntent(v.getContext(), info);
+                    v.getContext().startActivity(intent);
+                }
+            });
+        }
+    }
+
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView tv;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            tv = (TextView) itemView.findViewById(android.R.id.text1);
         }
     }
 }

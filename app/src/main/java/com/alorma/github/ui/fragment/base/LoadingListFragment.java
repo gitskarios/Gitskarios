@@ -18,6 +18,7 @@ import com.alorma.github.ui.utils.DividerItemDecoration;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import tr.xip.errorview.ErrorView;
 
@@ -86,6 +87,13 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
     protected RecyclerView.ItemAnimator getItemAnimator() {
         return new DefaultItemAnimator();
+    }
+
+    protected void addItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
+        if (recyclerView != null) {
+            recyclerView.removeItemDecoration(itemDecoration);
+            recyclerView.addItemDecoration(itemDecoration);
+        }
     }
 
     protected RecyclerView.ItemDecoration getItemDecoration() {
