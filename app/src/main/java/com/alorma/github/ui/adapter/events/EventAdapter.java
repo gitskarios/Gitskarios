@@ -31,6 +31,8 @@ import io.fabric.sdk.android.Fabric;
  */
 public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
+    private EventAdapterListener eventAdapterListener;
+
     public EventAdapter(LayoutInflater inflater) {
         super(inflater);
     }
@@ -159,12 +161,29 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                 || (event.getType() == EventType.DeleteEvent);
     }
 
+    public void setEventAdapterListener(EventAdapterListener eventAdapterListener) {
+        this.eventAdapterListener = eventAdapterListener;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         private GithubEventView view;
 
         private ViewHolder(GithubEventView itemView) {
             super(itemView);
             this.view = itemView;
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (eventAdapterListener != null) {
+                        eventAdapterListener.onItem(getItem(getAdapterPosition()));
+                    }
+                }
+            });
         }
+    }
+
+    public interface EventAdapterListener {
+        void onItem(GithubEvent event);
     }
 }

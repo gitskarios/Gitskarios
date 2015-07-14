@@ -38,7 +38,7 @@ import retrofit.client.Response;
  * Created by Bernat on 20/07/2014.
  */
 public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> implements BaseClient.OnResultCallback<List<Content>>, TitleProvider, BranchManager
-        , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager {
+        , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
 
@@ -166,48 +166,35 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
             }
 
             RepoSourceAdapter contentAdapter = new RepoSourceAdapter(LayoutInflater.from(getActivity()));
+            contentAdapter.setSourceAdapterListener(this);
             contentAdapter.addAll(contents);
             setAdapter(contentAdapter);
         }
     }
 
-    // TODO
-    /*@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        if (getAdapter() != null && getAdapter().getItemCount() >= position) {
-            Content item = getAdapter().getItem(position);
-            if (item.isDir()) {
-                getPathContent(item.path);
-            } else if (item.isFile()) {
-                FileInfo info = new FileInfo();
-                info.repoInfo = repoInfo;
-                info.name = item.name;
-                info.path = item.path;
-                Intent intent = FileActivity.createLauncherIntent(getActivity(), info, false);
-                startActivity(intent);
-            }
+    @Override
+    public void onContentClick(Content item) {
+        if (item.isDir()) {
+            getPathContent(item.path);
+        } else if (item.isFile()) {
+            FileInfo info = new FileInfo();
+            info.repoInfo = repoInfo;
+            info.name = item.name;
+            info.path = item.path;
+            Intent intent = FileActivity.createLauncherIntent(getActivity(), info, false);
+            startActivity(intent);
         }
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (contentAdapter != null && contentAdapter.getCount() >= position) {
-            Content item = contentAdapter.getItem(position);
-
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.name);
-            intent.putExtra(Intent.EXTRA_TEXT, item._links.html);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onItemLongClick(parent, view, position, id);
+    public void onContentLongClick(Content content) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.name);
+        intent.putExtra(Intent.EXTRA_TEXT, content._links.html);
+        startActivity(intent);
     }
-    */
 
     @Override
     public void setEmpty(int statusCode) {

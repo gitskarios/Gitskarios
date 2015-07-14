@@ -40,7 +40,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
         if (repos.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {
-                reposAdapter.addAll(repos, paging);
+                reposAdapter.addAll(repos);
             } else if (reposAdapter == null) {
                 setUpList(repos);
             } else {

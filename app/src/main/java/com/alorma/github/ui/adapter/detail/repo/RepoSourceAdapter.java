@@ -20,6 +20,8 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  */
 public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceAdapter.ViewHolder> {
 
+    private SourceAdapterListener sourceAdapterListener;
+
     public RepoSourceAdapter(LayoutInflater inflater) {
         super(inflater);
     }
@@ -59,6 +61,34 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
             super(itemView);
             textName = (TextView) itemView.findViewById(R.id.name);
             image = (ImageView) itemView.findViewById(R.id.icon);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (sourceAdapterListener != null) {
+                        sourceAdapterListener.onContentClick(getItem(getAdapterPosition()));
+                    }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (sourceAdapterListener != null) {
+                        sourceAdapterListener.onContentLongClick(getItem(getAdapterPosition()));
+                    }
+                    return true;
+                }
+            });
         }
+    }
+
+    public void setSourceAdapterListener(SourceAdapterListener sourceAdapterListener) {
+        this.sourceAdapterListener = sourceAdapterListener;
+    }
+
+    public interface SourceAdapterListener {
+        void onContentClick(Content content);
+        void onContentLongClick(Content content);
     }
 }

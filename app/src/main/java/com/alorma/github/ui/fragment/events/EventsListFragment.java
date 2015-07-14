@@ -1,13 +1,30 @@
 package com.alorma.github.ui.fragment.events;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
+import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.events.EventType;
+import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
+import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
+import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
+import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
+import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
+import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.google.gson.Gson;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.List;
@@ -17,7 +34,7 @@ import retrofit.RetrofitError;
 /**
  * Created by Bernat on 03/10/2014.
  */
-public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter> {
+public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter> implements EventAdapter.EventAdapterListener {
 
     private String username;
 
@@ -46,6 +63,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                 getAdapter().addAll(githubEvents);
             } else {
                 EventAdapter eventAdapter = new EventAdapter(LayoutInflater.from(getActivity()));
+                eventAdapter.setEventAdapterListener(this);
                 eventAdapter.addAll(githubEvents);
                 setAdapter(eventAdapter);
             }
@@ -94,11 +112,9 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     protected int getNoDataText() {
         return R.string.noevents;
     }
-/*
+
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        super.onItemClick(parent, view, position, id);
-        GithubEvent item = eventsAdapter.getItem(position);
+    public void onItem(GithubEvent item) {
         EventType type = item.getType();
         Gson gson = new Gson();
         if (type == EventType.IssueCommentEvent) {
@@ -149,7 +165,8 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     }
 
     private void showCommitsDialog(List<Commit> commits) {
-        final CommitsAdapter adapter = new CommitsAdapter(getActivity(), commits, true);
+        // TODO
+        /*final CommitsAdapter adapter = new CommitsAdapter(getActivity(), commits, true);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(R.string.event_select_commit);
         builder.adapter(adapter, new MaterialDialog.ListCallback() {
@@ -160,7 +177,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                 startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(item.url)));
             }
         });
-        builder.show();
+        builder.show();*/
     }
 
     private void showReposDialogDialog(final String... repos) {
@@ -186,5 +203,5 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
 
         builder.show();
     }
-    */
+
 }

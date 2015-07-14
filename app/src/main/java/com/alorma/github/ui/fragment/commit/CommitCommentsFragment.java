@@ -54,7 +54,7 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
         if (commitComments != null && commitComments.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {
-                getAdapter().addAll(commitComments, paging);
+                getAdapter().addAll(commitComments);
             } else {
                 CommitCommentAdapter commentsAdapter = new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
                 setAdapter(commentsAdapter);

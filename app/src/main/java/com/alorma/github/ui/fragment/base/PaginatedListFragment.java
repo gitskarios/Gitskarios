@@ -17,7 +17,6 @@ import retrofit.client.Response;
 public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<K> {
 
     protected static final String USERNAME = "USERNAME";
-    protected boolean paging;
     private PaginationLink bottomPaginationLink;
 
     protected boolean refreshing;
@@ -36,7 +35,6 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
                     }
 
                     onResponse(k, refreshing);
-                    paging = false;
                     refreshing = false;
                 } else {
                     setEmpty();
@@ -94,7 +92,6 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
     @Override
     public void loadMoreItems() {
         if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
-            paging = true;
             executePaginatedRequest(bottomPaginationLink.page);
             bottomPaginationLink = null;
         }

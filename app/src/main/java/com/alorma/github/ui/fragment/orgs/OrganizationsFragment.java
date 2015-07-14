@@ -54,7 +54,7 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
     @Override
     protected void onResponse(List<Organization> organizations, boolean refreshing) {
         if (getAdapter() != null) {
-            getAdapter().addAll(organizations, paging);
+            getAdapter().addAll(organizations);
         } else {
             OrganizationsAdapter adapter = new OrganizationsAdapter(LayoutInflater.from(getActivity()));
             adapter.addAll(organizations);

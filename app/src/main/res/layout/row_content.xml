@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="@drawable/list_selector"
+    android:background="?selectableItemBackground"
     android:gravity="center_vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp">

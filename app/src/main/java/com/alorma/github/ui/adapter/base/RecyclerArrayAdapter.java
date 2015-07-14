@@ -2,6 +2,7 @@ package com.alorma.github.ui.adapter.base;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import com.alorma.github.sdk.bean.dto.response.Notification;
@@ -17,9 +18,8 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
 
     private ItemType type;
     public List<ItemType> items;
-    private boolean paging;
     private LayoutInflater inflater;
-    private RecyclerAdapterContentListener<ItemType> recyclerAdapterContentListener;
+    private RecyclerAdapterContentListener recyclerAdapterContentListener;
 
     public RecyclerArrayAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
@@ -45,19 +45,13 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
         notifyDataSetChanged();
     }
 
-    public void addAll(Collection<ItemType> items, boolean paging) {
-        this.paging = paging;
-        this.items.addAll(items);
-        notifyDataSetChanged();
-    }
-
     public void clear() {
         items.clear();
         notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         onBindViewHolder(holder, getItem(position));
         if (recyclerAdapterContentListener != null && position + lazyLoadCount() >= getItemCount()) {
             recyclerAdapterContentListener.loadMoreItems();
@@ -83,13 +77,12 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
         notifyDataSetChanged();
     }
 
-    public void setRecyclerAdapterContentListener(RecyclerAdapterContentListener<ItemType> recyclerAdapterContentListener) {
+    public void setRecyclerAdapterContentListener(RecyclerAdapterContentListener recyclerAdapterContentListener) {
         this.recyclerAdapterContentListener = recyclerAdapterContentListener;
     }
 
 
-    public interface RecyclerAdapterContentListener<ItemType> {
+    public interface RecyclerAdapterContentListener {
         void loadMoreItems();
-        //void onItemSelected(ItemType type);
     }
 }
