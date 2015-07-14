@@ -24,6 +24,7 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
     @Inject
     Bus bus;
+    private StickyRecyclerHeadersDecoration headersDecoration;
 
     public static NotificationsFragment newInstance() {
         return new NotificationsFragment();
@@ -116,21 +118,19 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                 }
 
                 Collections.sort(notifications, Notification.Comparators.REPO_ID);
+                NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
+                notificationsAdapter.addAll(notifications);
 
-                getActivity().runOnUiThread(new Runnable() {
+                GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
+                bus.register(notificationsAdapter);
 
-                    @Override
-                    public void run() {
+                setAdapter(notificationsAdapter);
 
-                        NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
-                        notificationsAdapter.addAll(notifications);
 
-                        GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
-                        bus.register(notificationsAdapter);
-
-                        setAdapter(notificationsAdapter);
-                    }
-                });
+                if (headersDecoration == null) {
+                    headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
+                    addItemDecoration(headersDecoration);
+                }
 
             } else {
                 if (getAdapter() == null || getAdapter().getItemCount() == 0) {
