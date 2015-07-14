@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,15 +15,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.emoji.Emoji;
-import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -291,9 +286,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         contributorsClient.execute();
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
+    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
         @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
+        public void onResponseOk(List<Contributor> contributors, Response r) {
             final List<User> users = new ArrayList<>();
             String owner = repoInfo.owner;
             boolean exist = false;

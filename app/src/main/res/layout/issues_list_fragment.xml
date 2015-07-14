@@ -9,14 +9,17 @@
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:divider="@drawable/divider_inside_car"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
-        <LinearBreadcrumb
-            android:id="@+id/breadCrumbs"
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimary"
-            android:paddingLeft="@dimen/gapLarge" />
+            android:layout_height="48dp"
+            android:layout_marginLeft="@dimen/gapMedium"
+            android:layout_marginRight="@dimen/gapMedium"
+            android:spinnerMode="dropdown" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe"
@@ -27,9 +30,9 @@
                 android:id="@id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:drawSelectorOnTop="false"
-                android:paddingBottom="80dp"
-                android:clipToPadding="false"/>
+                android:paddingBottom="80dp" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 

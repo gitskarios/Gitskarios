@@ -26,7 +26,6 @@ import com.alorma.github.inapp.Base64;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
@@ -39,6 +38,7 @@ import com.alorma.github.utils.ImageUtils;
 import com.alorma.github.basesdk.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
@@ -270,7 +270,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         }
     }
 
-    private class ParseBranchesCallback implements BaseClient.OnResultCallback<ListBranches> {
+    private class ParseBranchesCallback implements BaseClient.OnResultCallback<List<Branch>> {
         private String path;
 
         public ParseBranchesCallback(String path) {
@@ -278,7 +278,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         }
 
         @Override
-        public void onResponseOk(ListBranches branches, Response r) {
+        public void onResponseOk(List<Branch> branches, Response r) {
             for (Branch branch : branches) {
                 if (path != null && path.contains(branch.name)) {
                     fileInfo.repoInfo.branch = branch.name;

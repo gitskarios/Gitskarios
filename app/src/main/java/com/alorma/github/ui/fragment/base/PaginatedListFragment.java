@@ -1,11 +1,10 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.widget.AbsListView;
-
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,25 +14,12 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K> extends LoadingListFragment implements BaseClient.OnResultCallback<K>, AbsListView.OnScrollListener {
+public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<K> {
 
     protected static final String USERNAME = "USERNAME";
-    protected boolean paging;
     private PaginationLink bottomPaginationLink;
 
     protected boolean refreshing;
-
-    @Override
-    public void onScroll(AbsListView absListView, int first, int last, int total) {
-        super.onScroll(absListView, first, last, total);
-        if (total > 0 && first + last == total) {
-            if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
-                paging = true;
-                executePaginatedRequest(bottomPaginationLink.page);
-                bottomPaginationLink = null;
-            }
-        }
-    }
 
     @Override
     public void onResponseOk(K k, Response r) {
@@ -43,12 +29,24 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
             if (k != null && k instanceof List) {
                 if (((List) k).size() > 0) {
                     getLinkData(r);
+
+                    if (getAdapter() != null && refreshing) {
+                        getAdapter().clear();
+                    }
+
                     onResponse(k, refreshing);
-                    paging = false;
                     refreshing = false;
+                } else if (getAdapter() == null || getAdapter().getItemCount() == 0){
+                    setEmpty();
                 }
             }
         }
+    }
+
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
+        bottomPaginationLink = null;
     }
 
     @Override
@@ -56,6 +54,9 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
         stopRefresh();
         if (getActivity() != null) {
             ErrorHandler.onError(getActivity(), "Paginated list fragment", error);
+        }
+        if (error != null && error.getResponse() != null) {
+            setEmpty(error.getResponse().getStatus());
         }
     }
 
@@ -92,5 +93,13 @@ public abstract class PaginatedListFragment<K> extends LoadingListFragment imple
 
     public boolean isRefreshing() {
         return refreshing;
+    }
+
+    @Override
+    public void loadMoreItems() {
+        if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
+            executePaginatedRequest(bottomPaginationLink.page);
+            bottomPaginationLink = null;
+        }
     }
 }

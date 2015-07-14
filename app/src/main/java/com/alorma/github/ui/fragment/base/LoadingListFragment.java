@@ -1,47 +1,39 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.DividerItemDecoration;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
+
+import tr.xip.errorview.ErrorView;
 
 /**
  * Created by Bernat on 05/08/2014.
  */
-public abstract class LoadingListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        AbsListView.OnScrollListener
-        , View.OnClickListener
-        , AdapterView.OnItemClickListener
-        , AdapterView.OnItemLongClickListener {
+public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment implements SwipeRefreshLayout.OnRefreshListener
+        , View.OnClickListener, RecyclerArrayAdapter.RecyclerAdapterContentListener, ErrorView.RetryListener {
 
     private SwipeRefreshLayout swipe;
-    protected TextView emptyText;
-    protected ImageView emptyIcon;
-    protected View emptyLy;
     protected FloatingActionButton fab;
-    private ListView listView;
-    private UpdateReceiver updateReceiver;
+    private RecyclerView recyclerView;
+    private ErrorView error_view;
+
+    private Adapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,22 +46,23 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View v = inflater.inflate(R.layout.list_fragment, null, false);
-
-        return v;
+        return inflater.inflate(useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
 
-        setupListView(view);
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(getLayoutManager());
+            recyclerView.setItemAnimator(getItemAnimator());
+            if (getItemDecoration() != null) {
+                recyclerView.addItemDecoration(getItemDecoration());
+            }
+        }
 
-        int color = AttributesUtils.getPrimaryColor(getActivity());
-
-        emptyIcon = (ImageView) view.findViewById(R.id.emptyIcon);
-        emptyText = (TextView) view.findViewById(R.id.emptyText);
-        emptyLy = view.findViewById(R.id.emptyLayout);
+        error_view = (ErrorView) view.findViewById(R.id.error_view);
 
         fab = (FloatingActionButton) view.findViewById(R.id.fabButton);
 
@@ -77,17 +70,34 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
         swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
-        int accent = AttributesUtils.getAttributeId(getActivity(), R.attr.colorAccent);
-        int primaryDark = AttributesUtils.getAttributeId(getActivity(), R.attr.colorPrimaryDark);
-
         if (swipe != null) {
-            swipe.setColorSchemeResources(accent);
+            int accent = AttributesUtils.getAccentColor(getActivity());
+            swipe.setColorSchemeColors(accent);
             swipe.setOnRefreshListener(this);
         }
 
         if (autoStart()) {
             executeRequest();
         }
+    }
+
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getActivity());
+    }
+
+    protected RecyclerView.ItemAnimator getItemAnimator() {
+        return new DefaultItemAnimator();
+    }
+
+    protected void addItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
+        if (recyclerView != null) {
+            recyclerView.removeItemDecoration(itemDecoration);
+            recyclerView.addItemDecoration(itemDecoration);
+        }
+    }
+
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new DividerItemDecoration(getActivity(), DividerItemDecoration.LIST_VERTICAL);
     }
 
     protected void executeRequest() {
@@ -127,19 +137,6 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
         stopRefresh();
     }
 
-    protected void setupListView(View view) {
-        listView = (ListView) view.findViewById(android.R.id.list);
-
-        if (listView != null) {
-            listView.setOnItemClickListener(this);
-            listView.setOnItemLongClickListener(this);
-
-            listView.setOnScrollListener(this);
-
-            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-        }
-    }
-
     protected void checkFAB() {
         if (getActivity() != null && fab != null) {
             if (useFAB()) {
@@ -164,24 +161,27 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
 
     public void setEmpty() {
         if (getActivity() != null) {
-            if (emptyText != null && emptyIcon != null) {
-                if (getNoDataIcon() != null && getNoDataText() > 0) {
-                    IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), getNoDataIcon());
-                    iconicsDrawable.colorRes(R.color.gray_github_medium);
-                    emptyIcon.setImageDrawable(iconicsDrawable);
+            if (error_view != null) {
+                error_view.setVisibility(View.VISIBLE);
+                error_view.setTitle(getNoDataText());
+                error_view.setOnRetryListener(this);
+            }
+        }
+    }
 
-                    emptyText.setText(getNoDataText());
-
-                    emptyLy.setVisibility(View.VISIBLE);
-                }
+    public void setEmpty(int statusCode) {
+        if (getActivity() != null) {
+            if (error_view != null) {
+                error_view.setVisibility(View.VISIBLE);
+                error_view.setError(statusCode);
             }
         }
     }
 
     public void hideEmpty() {
         if (getActivity() != null) {
-            if (emptyLy != null) {
-                emptyLy.setVisibility(View.INVISIBLE);
+            if (error_view != null) {
+                error_view.setVisibility(View.GONE);
             }
         }
     }
@@ -189,16 +189,6 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
     protected abstract Octicons.Icon getNoDataIcon();
 
     protected abstract int getNoDataText();
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -215,69 +205,21 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
         return Octicons.Icon.oct_squirrel;
     }
 
-    public ListView getListView() {
-        return listView;
-
+    public Adapter getAdapter() {
+        return adapter;
     }
 
-    public void setListAdapter(ListAdapter adapter) {
-        if (listView != null) {
-            listView.setAdapter(adapter);
-        }
-    }
-
-    public ListAdapter getListAdapter() {
-        if (listView != null) {
-            return listView.getAdapter();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        onListItemClick(listView, view, position, id);
-    }
-
-    public void onListItemClick(ListView l, View v, int position, long id) {
-
-    }
-
-    public void reload() {
-        if (getListAdapter() == null || getListAdapter().getCount() == 0) {
-            executeRequest();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateReceiver = new UpdateReceiver();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        getActivity().registerReceiver(updateReceiver, intentFilter);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().unregisterReceiver(updateReceiver);
-    }
-
-    public class UpdateReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (listView != null && listView.getAdapter() != null && listView.getAdapter().getCount() == 0 && isOnline(context)) {
-                reload();
+    public void setAdapter(Adapter adapter) {
+        this.adapter = adapter;
+        if (this.adapter != null) {
+            try {
+                adapter.setRecyclerAdapterContentListener(this);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-
-        public boolean isOnline(Context context) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+        if (recyclerView != null) {
+            recyclerView.setAdapter(adapter);
         }
     }
 
@@ -286,7 +228,8 @@ public abstract class LoadingListFragment extends Fragment implements SwipeRefre
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        return false;
+    public void onRetry() {
+        hideEmpty();
+        executeRequest();
     }
 }

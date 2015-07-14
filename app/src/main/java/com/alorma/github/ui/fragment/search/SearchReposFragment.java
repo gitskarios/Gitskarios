@@ -88,16 +88,16 @@ public class SearchReposFragment extends BaseReposListFragment {
         executeRequest();
     }
 
-    @Override
+/*    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        if (reposAdapter != null && reposAdapter.getCount() >= position) {
+        if (reposAdapter != null && reposAdapter.getItemCount() >= position) {
             Repo item = reposAdapter.getItem(position);
             if (onSearchReposListener != null) {
                 onSearchReposListener.onRepoItemSelected(item);
             }
         }
-    }
+    }*/
 
     public void setOnSearchReposListener(OnSearchReposListener onSearchReposListener) {
         this.onSearchReposListener = onSearchReposListener;

@@ -1,29 +1,24 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
-import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
-import com.alorma.github.ui.adapter.users.UsersAdapterSquare;
-import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.github.ui.fragment.base.SecondaryPaginatedListFragment;
-import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
+import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -31,13 +26,12 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 11/04/2015.
  */
-public class RepoContributorsFragment extends BaseFragment implements TitleProvider, PermissionsManager, BackManager {
+public class RepoContributorsFragment extends PaginatedListFragment<List<Contributor>, UsersAdapter> implements TitleProvider, PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String OWNER_USER = "OWNER_USER";
     private RepoInfo repoInfo;
     private User owner;
-    private UsersAdapterSquare adapterSquare;
 
     public static RepoContributorsFragment newInstance(RepoInfo repoInfo, User owner) {
         Bundle bundle = new Bundle();
@@ -49,30 +43,15 @@ public class RepoContributorsFragment extends BaseFragment implements TitleProvi
         return fragment;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        adapterSquare = new UsersAdapterSquare(inflater);
-        return inflater.inflate(R.layout.contributors_fragment, null, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapterSquare);
-
-        loadArguments();
-        executeRequest();
-    }
-
     protected void executeRequest() {
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
+        contributorsClient.setOnResultCallback(this);
+        contributorsClient.execute();
+    }
+
+    protected void executePaginatedRequest(int page) {
+        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo, page);
+        contributorsClient.setOnResultCallback(this);
         contributorsClient.execute();
     }
 
@@ -87,6 +66,16 @@ public class RepoContributorsFragment extends BaseFragment implements TitleProvi
     }
 
     @Override
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new GridLayoutManager(getActivity(), 2);
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
+    }
+
+    @Override
     public boolean onBackPressed() {
         return true;
     }
@@ -98,36 +87,38 @@ public class RepoContributorsFragment extends BaseFragment implements TitleProvi
         }
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
-        @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_person;
+    }
 
-            if (contributors != null) {
-                ListUsers users = new ListUsers();
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_contributors;
+    }
 
-                users.add(owner);
-                for (Contributor contributor : contributors) {
-                    if (contributor != null
-                            && contributor.author != null
-                            && contributor.author.login != null
-                            && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-                        users.add(users.size(), contributor.author);
-                    }
+    @Override
+    protected void onResponse(List<Contributor> contributors, boolean refreshing) {
+        if (contributors != null) {
+            List<User> users = new ArrayList<>();
+
+            users.add(owner);
+            for (Contributor contributor : contributors) {
+                if (contributor != null
+                        && contributor.author != null
+                        && contributor.author.login != null
+                        && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                    users.add(users.size(), contributor.author);
                 }
-                adapterSquare.addAll(users);
             }
 
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-
-        }
-
-        protected void executePaginatedRequest(int page) {
-            GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo, page);
-            contributorsClient.setOnResultCallback(new ContributorsCallback());
-            contributorsClient.execute();
+            if (getAdapter() == null) {
+                UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+                adapter.addAll(users);
+                setAdapter(adapter);
+            } else {
+                getAdapter().addAll(users);
+            }
         }
     }
 }

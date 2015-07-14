@@ -6,16 +6,17 @@ import android.os.Bundle;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
-import com.alorma.github.sdk.bean.dto.response.ListGists;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
 import com.alorma.github.ui.fragment.base.SecondaryPaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.util.List;
+
 import retrofit.RetrofitError;
 
-public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gist> {
+public class GistsFragment extends SecondaryPaginatedListFragment<List<Gist>, Gist> {
 
     private GistsAdapter gistsAdapter;
     public GistsFragmentListener gistsFragmentListener;
@@ -56,7 +57,7 @@ public class GistsFragment extends SecondaryPaginatedListFragment<ListGists, Gis
     }
 
     @Override
-    protected void onResponse(ListGists gists, boolean refreshing) {
+    protected void onResponse(List<Gist> gists, boolean refreshing) {
         if (gists != null && gists.size() > 0) {
 
             if (gistsAdapter == null || refreshing) {

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
     android:orientation="horizontal">
 
     <com.alorma.github.ui.view.CircularImageView
@@ -19,11 +20,11 @@
 
         <TextView
             android:id="@+id/title"
+            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@dimen/textSizeMedium" />
+            android:textSize="16sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toLeftOf="@+id/sha"
                 android:layout_toStartOf="@+id/sha"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                style="@style/TextAppearance.AppCompat.Caption" />
 
             <TextView
                 android:id="@+id/sha"
@@ -50,7 +51,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                style="@style/TextAppearance.AppCompat.Caption"
                 tools:text="Small Text" />
         </RelativeLayout>
 
@@ -64,17 +65,12 @@
             android:id="@+id/textNums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/authorName"
-            android:layout_alignLeft="@+id/authorName"
-            android:layout_alignRight="@+id/authorName"
-            android:layout_alignStart="@+id/authorName"
-            android:layout_below="@+id/textTitle"
             android:layout_marginRight="@dimen/gapLarge"
             android:layout_marginTop="@dimen/gapMedium"
             android:background="@drawable/bg_event_commits"
             android:padding="@dimen/gapSmall"
             android:paddingLeft="@dimen/gapMedium"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Caption"
             android:textSize="@dimen/textSizeMicro" />
     </LinearLayout>
 </LinearLayout>

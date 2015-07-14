@@ -3,7 +3,6 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -36,7 +35,6 @@ import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -56,10 +54,8 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.github.ui.dialog.NewIssueCommentActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
@@ -593,9 +589,9 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         contributorsClient.execute();
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
+    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
         @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
+        public void onResponseOk(List<Contributor> contributors, Response r) {
             final List<User> users = new ArrayList<>();
             String owner = issueInfo.repoInfo.owner;
             boolean exist = false;

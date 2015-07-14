@@ -1,21 +1,13 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
-import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -31,22 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class PullRequestCommitsListFragment extends PaginatedListFragment<List<Commit>> implements PermissionsManager
+public class PullRequestCommitsListFragment extends PaginatedListFragment<List<Commit>, CommitsAdapter> implements PermissionsManager
         , BackManager {
 
     private static final String ISSUE_INFO = "ISSUE_INFO";
 
-    private CommitsAdapter commitsAdapter;
-    private List<Commit> commitsMap;
-    private StickyListHeadersListView listView;
+    private List<Commit> commits;
 
     private IssueInfo issueInfo;
-    private TimeTickBroadcastReceiver timeTickBroadcastReceiver;
 
     public static PullRequestCommitsListFragment newInstance(IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -58,52 +46,21 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.list_fragment_headers, null, false);
-    }
-
-    @Override
-    protected void setupListView(View view) {
-        listView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
-        if (listView != null) {
-            listView.setDivider(getResources().getDrawable(R.drawable.divider_main));
-            listView.setOnScrollListener(this);
-            listView.setOnItemClickListener(this);
-            listView.setAreHeadersSticky(false);
-        }
-    }
-
-    @Override
     protected void onResponse(final List<Commit> commits, boolean refreshing) {
-        if (commitsMap == null || refreshing) {
-            commitsMap = new ArrayList<>();
+        if (this.commits == null || refreshing) {
+            this.commits = new ArrayList<>();
         }
         if (commits != null && commits.size() > 0) {
-
             orderCommits(commits);
 
-            if (commitsAdapter == null || refreshing) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        commitsAdapter = new CommitsAdapter(getActivity(), commitsMap, false);
-                        listView.setAdapter(commitsAdapter);
-                    }
-                });
+            if (getAdapter() == null ) {
+                CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
+                commitsAdapter.addAll(PullRequestCommitsListFragment.this.commits);
+                setAdapter(commitsAdapter);
+            } else {
+                getAdapter().addAll(commits);
             }
-
-            if (commitsAdapter.isLazyLoading()) {
-                if (commitsAdapter != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            commitsAdapter.setLazyLoading(false);
-                            commitsAdapter.addAll(commits);
-                        }
-                    });
-                }
-            }
-        } else if (commitsAdapter == null || commitsAdapter.getCount() == 0) {
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
     }
@@ -111,14 +68,16 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
-        if (commitsAdapter == null || commitsAdapter.getCount() == 0) {
-            setEmpty();
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            if (error != null && error.getResponse() != null) {
+                setEmpty(error.getResponse().getStatus());
+            }
         }
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
+    public void setEmpty(int statusCode) {
+        super.setEmpty(statusCode);
         if (fab != null) {
             fab.setVisibility(View.INVISIBLE);
         }
@@ -133,27 +92,6 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        IntentFilter filter = new IntentFilter();
-
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        filter.addAction(Intent.ACTION_TIME_CHANGED);
-        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-
-        timeTickBroadcastReceiver = new TimeTickBroadcastReceiver();
-
-        getActivity().registerReceiver(timeTickBroadcastReceiver, filter);
-    }
-
-    @Override
-    public void onPause() {
-        getActivity().unregisterReceiver(timeTickBroadcastReceiver);
-        super.onPause();
-    }
-
-    @Override
     public void setPermissions(boolean admin, boolean push, boolean pull) {
 
     }
@@ -161,22 +99,6 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     @Override
     public boolean onBackPressed() {
         return true;
-    }
-
-    private class TimeTickBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (commitsAdapter != null) {
-                        commitsAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
     }
 
     private void orderCommits(List<Commit> commits) {
@@ -190,7 +112,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
 
                 commit.days = days.getDays();
 
-                commitsMap.add(commit);
+                this.commits.add(commit);
             }
         }
     }
@@ -206,7 +128,6 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        commitsAdapter.setLazyLoading(true);
         GetPullRequestCommits getPullRequestCommits = new GetPullRequestCommits(getActivity(), issueInfo);
         getPullRequestCommits.setOnResultCallback(this);
         getPullRequestCommits.execute();
@@ -234,7 +155,9 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         return false;
     }
 
-    @Override
+    // TODO
+
+    /*@Override
     public void onListItemClick(final ListView l, final View v, final int position, final long id) {
         Commit item = commitsAdapter.getItem(position);
 
@@ -244,5 +167,5 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
 
         Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
         startActivity(intent);
-    }
+    }*/
 }

@@ -49,6 +49,7 @@
         <activity android:name=".ui.activity.SearchActivity" />
         <activity android:name=".ui.dialog.NewIssueCommentActivity" />
         <activity android:name=".ui.activity.FileActivity" />
+        <activity android:name=".ui.activity.ContentCommitsActivity" />
         <activity android:name=".ui.activity.OrganizationActivity" />
         <activity
             android:name=".Interceptor"
