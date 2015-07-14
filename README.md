@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/gitskarios/Gitskarios.svg?branch=develop)](https://travis-ci.org/gitskarios/Gitskarios)
 
+[![Issue Stats](http://issuestats.com/github/gitskarios/gitskarios/badge/pr?style=flat)](http://issuestats.com/github/gitskarios/gitskarios)
+
+[![Issue Stats](http://issuestats.com/github/gitskarios/gitskarios/badge/issue?style=flat)](http://issuestats.com/github/gitskarios/gitskarios)
+
 # README #
 
 ## LICENSE ##
