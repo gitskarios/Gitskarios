@@ -360,4 +360,5 @@
     <string name="open_in_intent">Open in …</string>
     <string name="copy_content_url">Copy url</string>
     <string name="url_of_copied">%s url copied</string>
+    <string name="content_history">%s history</string>
 </resources>

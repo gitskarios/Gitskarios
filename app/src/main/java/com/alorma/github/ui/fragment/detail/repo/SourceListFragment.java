@@ -22,6 +22,7 @@ import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
@@ -208,6 +209,10 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
             case R.id.action_copy_content_url:
                 copy(content._links.html);
                 Toast.makeText(getActivity(), getString(R.string.url_of_copied, content.name), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_content_history:
+                Intent intent = ContentCommitsActivity.createLauncherIntent(getActivity(), repoInfo, content.path, content.name);
+                startActivity(intent);
                 break;
         }
     }

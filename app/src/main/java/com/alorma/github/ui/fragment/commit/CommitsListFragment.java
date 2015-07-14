@@ -35,11 +35,13 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
         , BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
+    private static final String PATH = "PATH";
 
     private List<Commit> commits;
 
     private RepoInfo repoInfo;
     private StickyRecyclerHeadersDecoration headersDecoration;
+    private String path;
 
     public static CommitsListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -48,6 +50,40 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
         CommitsListFragment fragment = new CommitsListFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static CommitsListFragment newInstance(RepoInfo repoInfo, String path) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(REPO_INFO, repoInfo);
+        bundle.putString(PATH, path);
+
+        CommitsListFragment fragment = new CommitsListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            repoInfo = getArguments().getParcelable(REPO_INFO);
+            path = getArguments().getString(PATH);
+        }
+    }
+
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
+        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, path, 0);
+        client.setOnResultCallback(this);
+        client.execute();
+    }
+
+    @Override
+    protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
+        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, path, page);
+        client.setOnResultCallback(this);
+        client.execute();
     }
 
     @Override
@@ -124,29 +160,6 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     public boolean onBackPressed() {
         return true;
-    }
-
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
-        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, 0);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
-
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
-        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, page);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
-
-    @Override
-    protected void loadArguments() {
-        if (getArguments() != null) {
-            repoInfo = getArguments().getParcelable(REPO_INFO);
-        }
     }
 
     @Override
