@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
+import android.widget.LinearBreadcrumb;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
+
+import java.io.File;
 
 /**
  * Created by Bernat on 14/07/2015.
@@ -19,7 +23,7 @@ public class ContentCommitsActivity extends BackActivity {
     private static final String PATH = "PATH";
     private static final String NAME = "NAME";
 
-    public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String name, String path) {
+    public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String path, String name) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(REPO_INFO, repoInfo);
         bundle.putString(PATH, path);
@@ -34,7 +38,7 @@ public class ContentCommitsActivity extends BackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.generic_toolbar);
+        setContentView(R.layout.content_commits_activity);
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
@@ -43,13 +47,15 @@ public class ContentCommitsActivity extends BackActivity {
 
             setTitle(getString(R.string.content_history, name));
 
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setSubtitle(path);
-            }
-
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content, CommitsListFragment.newInstance(repoInfo, path));
             ft.commit();
+
+            ViewCompat.setElevation(getToolbar(), 8);
+
+
+            LinearBreadcrumb breadCrumbs = (LinearBreadcrumb) findViewById(R.id.breadCrumbs);
+            breadCrumbs.addPath(path, File.separator);
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.alorma.github.ui.adapter.commit;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -8,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
@@ -188,7 +192,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         private final TextView numFiles;
         private final ImageView avatar;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.title);
@@ -210,6 +214,22 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
                     v.getContext().startActivity(intent);
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Commit item = getItem(getAdapterPosition());
+                    copy(item.shortSha());
+                    Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.sha_copied, item.shortSha()), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+        }
+
+        public void copy(String text) {
+            ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Gitskarios", text);
+            clipboard.setPrimaryClip(clip);
         }
     }
 

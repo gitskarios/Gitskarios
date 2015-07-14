@@ -8,6 +8,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -16,15 +21,20 @@ import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
+import com.alorma.github.sdk.services.search.IssuesSearchClient;
+import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -34,7 +44,7 @@ import retrofit.client.Response;
  * Created by Bernat on 22/08/2014.
  */
 public class IssuesListFragment extends PaginatedListFragment<List<Issue>, IssuesAdapter> implements View.OnClickListener, TitleProvider, PermissionsManager,
-        BackManager {
+        BackManager, IssuesAdapter.IssuesAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -43,9 +53,10 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
 
     private RepoInfo repoInfo;
 
-    private IssueState currentState = IssueState.open;
     private boolean fromSearch = false;
     private SearchClientRequest searchClientRequest;
+
+    private int currentFilter = 0;
 
     public static IssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
         Bundle bundle = new Bundle();
@@ -63,63 +74,51 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
         setHasOptionsMenu(!fromSearch);
     }
 
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (!fromSearch) {
-            inflater.inflate(R.menu.issue_list_filter, menu);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.issues_list_fragment, null, false);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        if (!fromSearch) {
-            if (getActivity() != null) {
+        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+        String[] items = getResources().getStringArray(R.array.issues_filter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
+        spinner.setAdapter(adapter);
 
-                MenuItem itemFilter = menu.findItem(R.id.issue_list_filter);
-                if (itemFilter != null) {
-                    if (itemFilter.getSubMenu() != null) {
-                        MenuItem openIssues = itemFilter.getSubMenu().findItem(R.id.issue_list_filter_open);
-                        MenuItem closedIssues = itemFilter.getSubMenu().findItem(R.id.issue_list_filter_closed);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (currentFilter != position) {
+                    currentFilter = position;
 
-                        if (currentState == IssueState.open && openIssues != null) {
-                            openIssues.setVisible(false);
-                            closedIssues.setVisible(true);
-                        } else if (currentState == IssueState.closed && closedIssues != null) {
-                            openIssues.setVisible(true);
-                            closedIssues.setVisible(false);
-                        }
-                    }
+                    onRefresh();
                 }
             }
-        }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.issue_list_filter, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (!fromSearch) {
-            switch (item.getItemId()) {
-                case R.id.issue_list_filter_open:
-                    currentState = IssueState.open;
-                    if (getAdapter() != null) {
-                        getAdapter().clear();
-                    }
-                    onRefresh();
-                    break;
-                case R.id.issue_list_filter_closed:
-                    currentState = IssueState.closed;
-                    if (getAdapter() != null) {
-                        getAdapter().clear();
-                    }
-                    onRefresh();
-                    break;
-                case R.id.issue_list_filter_search:
-                    Intent intent = SearchIssuesActivity.launchIntent(getActivity(), repoInfo);
-                    startActivity(intent);
-                    break;
-            }
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = SearchIssuesActivity.launchIntent(getActivity(), repoInfo);
+                startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -135,16 +134,31 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     protected void executeRequest() {
         super.executeRequest();
         if (repoInfo != null) {
-            if (fromSearch) {
-                if (searchClientRequest != null) {
-                    searchClientRequest.request();
+            if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
+                if (currentFilter == 0 || currentFilter == 1) {
+                    IssueInfo issueInfo = new IssueInfo(repoInfo);
+                    if (currentFilter == 0) {
+                        issueInfo.state = IssueState.open;
+                    } else if (currentFilter == 1) {
+                        issueInfo.state = IssueState.closed;
+                    }
+
+                    IssuesSearchClient searchClient = new IssuesSearchClient(getActivity(), searchClientRequest.request());
+                    searchClient.setOnResultCallback(this);
+                    searchClient.execute();
                 }
             } else {
-                IssueInfo issueInfo = new IssueInfo(repoInfo);
-                issueInfo.state = currentState;
-                GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
-                issuesClient.setOnResultCallback(this);
-                issuesClient.execute();
+                if (currentFilter == 0 || currentFilter == 1) {
+                    IssueInfo issueInfo = new IssueInfo(repoInfo);
+                    if (currentFilter == 0) {
+                        issueInfo.state = IssueState.open;
+                    } else if (currentFilter == 1) {
+                        issueInfo.state = IssueState.closed;
+                    }
+                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
+                    issuesClient.setOnResultCallback(this);
+                    issuesClient.execute();
+                }
             }
         }
     }
@@ -154,16 +168,31 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
         super.executePaginatedRequest(page);
 
         if (repoInfo != null) {
-            if (fromSearch) {
-                if (searchClientRequest != null) {
-                    searchClientRequest.requestPaginated(page);
+            if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
+                if (currentFilter == 0 || currentFilter == 1) {
+                    IssueInfo issueInfo = new IssueInfo(repoInfo);
+                    if (currentFilter == 0) {
+                        issueInfo.state = IssueState.open;
+                    } else if (currentFilter == 1) {
+                        issueInfo.state = IssueState.closed;
+                    }
+
+                    IssuesSearchClient searchClient = new IssuesSearchClient(getActivity(), searchClientRequest.request(), page);
+                    searchClient.setOnResultCallback(this);
+                    searchClient.execute();
                 }
             } else {
-                IssueInfo issueInfo = new IssueInfo(repoInfo);
-                issueInfo.state = currentState;
-                GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
-                issuesClient.setOnResultCallback(this);
-                issuesClient.execute();
+                if (currentFilter == 0 || currentFilter == 1) {
+                    IssueInfo issueInfo = new IssueInfo(repoInfo);
+                    if (currentFilter == 0) {
+                        issueInfo.state = IssueState.open;
+                    } else if (currentFilter == 1) {
+                        issueInfo.state = IssueState.closed;
+                    }
+                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
+                    issuesClient.setOnResultCallback(this);
+                    issuesClient.execute();
+                }
             }
         }
     }
@@ -186,6 +215,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
 
             if (getAdapter() == null) {
                 IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
+                issuesAdapter.setIssuesAdapterListener(this);
                 issuesAdapter.addAll(issues);
                 setAdapter(issuesAdapter);
             } else {
@@ -244,28 +274,22 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
         onRefresh();
     }
 
-    // TODO
-    /*@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    @Override
+    public void onIssueRequest(Issue item) {
+        if (item != null) {
+            IssueInfo info = new IssueInfo();
+            info.repoInfo = repoInfo;
+            info.num = item.number;
 
-        if (issuesAdapter != null) {
-            Issue item = issuesAdapter.getItem(position);
-            if (item != null) {
-                IssueInfo info = new IssueInfo();
-                info.repoInfo = repoInfo;
-                info.num = item.number;
-
-                if (item.pullRequest == null) {
-                    Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-                    startActivityForResult(intent, ISSUE_REQUEST);
-                } else {
-                    Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
-                    startActivity(intent);
-                }
+            if (item.pullRequest == null) {
+                Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
+                startActivityForResult(intent, ISSUE_REQUEST);
+            } else {
+                Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
+                startActivity(intent);
             }
         }
-    }*/
+    }
 
     public void setPermissions(Permissions permissions) {
         if (this.repoInfo != null) {
@@ -312,10 +336,13 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
         return true;
     }
 
-    public interface SearchClientRequest {
-        void request();
+    public void executeSearch() {
+        onRefresh();
+    }
 
-        void requestPaginated(int page);
+    public interface SearchClientRequest {
+        String request();
+
     }
 
     @Override

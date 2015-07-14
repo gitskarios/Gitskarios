@@ -164,9 +164,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
             if (error_view != null) {
                 error_view.setVisibility(View.VISIBLE);
                 error_view.setTitle(getNoDataText());
-/*                IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), getNoDataIcon());
-                iconicsDrawable.colorRes(R.color.gray_github_medium);
-                error_view.setImage(iconicsDrawable);*/
                 error_view.setOnRetryListener(this);
             }
         }

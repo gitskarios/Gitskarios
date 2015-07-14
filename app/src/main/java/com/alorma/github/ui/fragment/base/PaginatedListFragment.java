@@ -36,11 +36,17 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
 
                     onResponse(k, refreshing);
                     refreshing = false;
-                } else {
+                } else if (getAdapter() == null || getAdapter().getItemCount() == 0){
                     setEmpty();
                 }
             }
         }
+    }
+
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
+        bottomPaginationLink = null;
     }
 
     @Override

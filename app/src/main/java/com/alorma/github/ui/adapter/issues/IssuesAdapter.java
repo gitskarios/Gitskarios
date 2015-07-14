@@ -1,5 +1,6 @@
 package com.alorma.github.ui.adapter.issues;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -20,6 +22,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by Bernat on 22/08/2014.
  */
 public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
+
+    private IssuesAdapterListener issuesAdapterListener;
 
     public IssuesAdapter(LayoutInflater inflater) {
         super(inflater);
@@ -47,7 +51,6 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
             colorState = holder.itemView.getResources().getColor(R.color.issue_state_open);
         }
 
-        holder.state.setBackgroundColor(colorState);
         holder.num.setTextColor(colorState);
         IconicsDrawable iconDrawable;
         if (issue.pullRequest != null) {
@@ -61,23 +64,40 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
         holder.pullRequest.setImageDrawable(iconDrawable);
     }
 
+    public void setIssuesAdapterListener(IssuesAdapterListener issuesAdapterListener) {
+        this.issuesAdapterListener = issuesAdapterListener;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
         private final TextView num;
         private final TextView autor;
         private final ImageView avatar;
         private final ImageView pullRequest;
-        private final View state;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.textTitle);
-            num = (TextView) itemView.findViewById(R.id.textTime);
+            num = (TextView) itemView.findViewById(R.id.textIssueNumber);
             autor = (TextView) itemView.findViewById(R.id.textAuthor);
             avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
             pullRequest = (ImageView) itemView.findViewById(R.id.pullRequest);
-            state = itemView.findViewById(R.id.state);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Issue item = getItem(getAdapterPosition());
+
+                    if (issuesAdapterListener != null) {
+                        issuesAdapterListener.onIssueRequest(item);
+                    }
+                }
+            });
         }
+    }
+
+    public interface IssuesAdapterListener {
+        void onIssueRequest(Issue issue);
     }
 }

@@ -51,6 +51,14 @@
         <item>@string/menu_events</item>
     </string-array>
 
+    <string-array name="issues_filter">
+        <item>Open issues</item>
+        <item>Closed issues</item>
+        <!--<item>Open pull requests</item>-->
+        <!--<item>Merged pull requests</item>-->
+        <!--<item>Closed pull requests</item>-->
+    </string-array>
+
 
     <string name="sort_created">Created</string>
     <string name="sort_updated">Updated</string>

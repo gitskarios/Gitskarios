@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="?android:attr/listPreferredItemHeight"
@@ -23,7 +22,8 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/icon"
         android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="16sp"
         android:layout_toLeftOf="@+id/overflow"
         android:layout_toStartOf="@+id/overflow"
         android:layout_marginLeft="@dimen/gapMedium"
