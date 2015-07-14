@@ -56,19 +56,13 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
     public void onBindHeaderViewHolder(HeaderViewHolder headerViewHolder, int i) {
         final Notification item = getItem(i);
         headerViewHolder.tv.setText(item.repository.full_name);
-        headerViewHolder.tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.getContext().startActivity(new UrlsManager(view.getContext()).manageRepos(Uri.parse(item.repository.html_url)));
-            }
-        });
 
         headerViewHolder.iv.setImageDrawable(iconDrawable);
 
         headerViewHolder.iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //bus.post(new ClearNotification(item, true));
+                bus.post(new ClearNotification(item, true));
             }
         });
     }
@@ -141,6 +135,13 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
             super(itemView);
             tv = (TextView) itemView.findViewById(R.id.text);
             iv = (ImageView) itemView.findViewById(R.id.clearNotifications);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.getContext().startActivity(new UrlsManager(view.getContext()).manageRepos(Uri.parse(getItem(getAdapterPosition()).repository.html_url)));
+                }
+            });
         }
     }
 }
