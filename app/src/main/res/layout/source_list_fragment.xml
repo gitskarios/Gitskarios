@@ -27,7 +27,9 @@
                 android:id="@id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawSelectorOnTop="false" />
+                android:drawSelectorOnTop="false"
+                android:paddingBottom="72dp"
+                android:clipToPadding="false"/>
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 

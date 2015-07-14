@@ -7,7 +7,10 @@
     <item android:title="@string/open_in_intent"
         android:id="@+id/action_content_open"/>
 
-    <item android:title="@string/history"
-        android:id="@+id/action_content_history"/>
+<!--    <item android:title="@string/history"
+        android:id="@+id/action_content_history"/>-->
+
+    <item android:title="@string/copy_content_url"
+        android:id="@+id/action_copy_content_url"/>
 
 </menu>

@@ -89,7 +89,9 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            Toast.makeText(itemView.getContext(), "Name: " + getItem(getAdapterPosition()).name, Toast.LENGTH_SHORT).show();
+            if (sourceAdapterListener != null) {
+                sourceAdapterListener.onContentMenuAction(getItem(getAdapterPosition()), item);
+            }
             return false;
         }
     }
@@ -100,6 +102,6 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
     public interface SourceAdapterListener {
         void onContentClick(Content content);
-        void onContentLongClick(Content content);
+        void onContentMenuAction(Content content, MenuItem menuItem);
     }
 }

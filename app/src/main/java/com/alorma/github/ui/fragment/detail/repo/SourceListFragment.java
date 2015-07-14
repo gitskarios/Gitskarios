@@ -1,9 +1,13 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearBreadcrumb;
@@ -185,14 +189,35 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
     }
 
     @Override
-    public void onContentLongClick(Content content) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.name);
-        intent.putExtra(Intent.EXTRA_TEXT, content._links.html);
-        startActivity(intent);
+    public void onContentMenuAction(Content content, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_content_share:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.name);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, content._links.html);
+                startActivity(shareIntent);
+                break;
+            case R.id.action_content_open:
+                Intent viewIntent = new Intent(Intent.ACTION_VIEW);
+                viewIntent.setData(Uri.parse(content._links.html));
+                viewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(viewIntent);
+                break;
+            case R.id.action_copy_content_url:
+                copy(content._links.html);
+                Toast.makeText(getActivity(), getString(R.string.url_of_copied, content.name), Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
+
+    public void copy(String text) {
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Gitskarios", text);
+        clipboard.setPrimaryClip(clip);
+    }
+
 
     @Override
     public void setEmpty(int statusCode) {
