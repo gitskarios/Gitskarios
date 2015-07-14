@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearBreadcrumb;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
@@ -165,7 +163,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
                 breadCrumbs.addPath(currentPath, "/");
             }
 
-            RepoSourceAdapter contentAdapter = new RepoSourceAdapter(LayoutInflater.from(getActivity()));
+            RepoSourceAdapter contentAdapter = new RepoSourceAdapter(getActivity(), LayoutInflater.from(getActivity()));
             contentAdapter.setSourceAdapterListener(this);
             contentAdapter.addAll(contents);
             setAdapter(contentAdapter);

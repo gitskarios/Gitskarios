@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:background="?selectableItemBackground"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:orientation="horizontal">
 
     <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
         android:id="@+id/icon"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:layout_marginBottom="@dimen/gapMedium"
-        android:layout_marginRight="@dimen/gapLarge"
-        android:layout_marginEnd="@dimen/gapLarge"
-        android:layout_centerVertical="true"/>
+        android:layout_width="?android:attr/listPreferredItemHeight"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_centerVertical="true"
+        android:padding="20dp"
+        android:layout_marginLeft="@dimen/gapMedium" />
 
     <TextView
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/name"
-        android:layout_toRightOf="@+id/icon"
-        android:layout_toEndOf="@+id/icon"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:gravity="center_vertical" />
+        android:layout_toRightOf="@+id/icon"
+        android:gravity="center_vertical"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_toLeftOf="@+id/overflow"
+        android:layout_toStartOf="@+id/overflow"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginRight="@dimen/gapMedium"/>
+
+    <ImageView
+        android:id="@+id/overflow"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_action_overflow"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/gapLarge" />
 </RelativeLayout>

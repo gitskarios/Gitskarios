@@ -1,11 +1,16 @@
 package com.alorma.github.ui.adapter.detail.repo;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
@@ -22,7 +27,7 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
     private SourceAdapterListener sourceAdapterListener;
 
-    public RepoSourceAdapter(LayoutInflater inflater) {
+    public RepoSourceAdapter(Context context, LayoutInflater inflater) {
         super(inflater);
     }
 
@@ -45,22 +50,22 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
         }
 
         if (iconDrawable != null) {
-            iconDrawable.sizeDp(36);
-            iconDrawable.paddingDp(8);
             iconDrawable.color(AttributesUtils.getPrimaryLightColor(holder.itemView.getContext()));
 
             holder.image.setImageDrawable(iconDrawable);
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener {
         private final TextView textName;
         private final ImageView image;
+        private final ImageView overflow;
 
         public ViewHolder(View itemView) {
             super(itemView);
             textName = (TextView) itemView.findViewById(R.id.name);
             image = (ImageView) itemView.findViewById(R.id.icon);
+            overflow = (ImageView) itemView.findViewById(R.id.overflow);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -71,15 +76,21 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
                 }
             });
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            overflow.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    if (sourceAdapterListener != null) {
-                        sourceAdapterListener.onContentLongClick(getItem(getAdapterPosition()));
-                    }
-                    return true;
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+                    popupMenu.inflate(R.menu.repo_content_item);
+                    popupMenu.setOnMenuItemClickListener(ViewHolder.this);
+                    popupMenu.show();
                 }
             });
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            Toast.makeText(itemView.getContext(), "Name: " + getItem(getAdapterPosition()).name, Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 

@@ -356,4 +356,6 @@
     <string name="add_comment_issue_ok">Comment added</string>
     <string name="pullrequest_change">Pull request changed</string>
     <string name="add_issue_body">Add description</string>
+    <string name="history">History</string>
+    <string name="open_in_intent">Open in …</string>
 </resources>
