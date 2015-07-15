@@ -84,6 +84,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     };
     private Account[] accounts;
     private String purchaseId;
+    private boolean fromApp;
 
     /**
      * There is three ways to get to this activity:
@@ -118,17 +119,13 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         final boolean fromLogin = getIntent().getData() != null &&
                 getIntent().getData().getScheme().equals(getString(R.string.oauth_scheme));
         final boolean fromAccounts = getIntent().getBooleanExtra(ADDING_FROM_ACCOUNTS, false);
-        final boolean fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
+        fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
 
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (fromApp) {                      // TODO back button should have the same logic (issue #137)
-                    openMain();
-                } else {
-                    finish();
-                }
+                closeLoginActivity(fromApp);
             }
         });
 
@@ -173,6 +170,14 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             login();
         } else if (!fromApp && accounts != null && accounts.length > 0) {
             openMain();
+        }
+    }
+
+    private void closeLoginActivity(boolean fromApp) {
+        if (fromApp) {
+            openMain();
+        } else {
+            finish();
         }
     }
 
@@ -373,7 +378,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
-        finish();
+        closeLoginActivity(fromApp);
     }
 
     @Override
