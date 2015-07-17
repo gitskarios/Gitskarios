@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.issue.IssueLabel;
+import com.alorma.github.sdk.bean.issue.IssueStoryCommit;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.github.ui.view.timeline.TimelineType;
@@ -148,6 +149,16 @@ public class IssueTimelineView extends LinearLayout {
         } else {
             String text = issueEvent.event.actor.login + " " + eventType + " " + time;
             textView.setText(text);
+        }
+    }
+
+    public void setIssueStoryCommit(IssueStoryCommit issueStoryCommit) {
+        try {
+            String commitId = issueStoryCommit.commit.shortSha();
+            String text = issueStoryCommit.commit.commit.message + " : " + commitId;
+            textView.setText(Html.fromHtml(text));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 }

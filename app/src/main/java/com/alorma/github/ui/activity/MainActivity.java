@@ -33,6 +33,8 @@ import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.emoji.EmojisClient;
 import com.alorma.github.emoji.EmojisProvider;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
@@ -97,6 +99,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        IssueInfo issueInfo = new IssueInfo();
+        issueInfo.repoInfo = new RepoInfo();
+        issueInfo.repoInfo.owner = "Jasig";
+        issueInfo.repoInfo.name = "cas";
+        issueInfo.num = 993;
+
+        startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));
+
 
         GitskariosApplication.get(this).inject(this);
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
+import com.alorma.github.sdk.bean.issue.IssueStoryCommit;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
@@ -27,6 +28,7 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     private static final int VIEW_PULLREQUEST = 0;
     private static final int VIEW_EVENT = 1;
     private static final int VIEW_COMMENT = 2;
+    private static final int VIEW_COMMIT = 3;
 
     private Context context;
     private LayoutInflater inflater;
@@ -60,6 +62,8 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 return new CommentHolder(new IssueCommentView(context));
             case VIEW_EVENT:
                 return new TimelineHolder(new IssueTimelineView(context));
+            case VIEW_COMMIT:
+                return new TimelineHolder(new IssueTimelineView(context));
             default:
                 return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
         }
@@ -70,19 +74,24 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
         if (position == 0) {
             ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo, pullRequestStory.pullRequest, permissions);
             ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(listener);
-        } else if (holder instanceof CommentHolder) {
-            IssueStoryComment issueStoryDetail = (IssueStoryComment) pullRequestStory.details.get(position - 1).second;
-            ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);
-        } else if (holder instanceof TimelineHolder) {
-            if (pullRequestStory.details.get(position - 1).second instanceof IssueStoryEvent) {
-                IssueStoryEvent issueStoryDetail = (IssueStoryEvent) pullRequestStory.details.get(position - 1).second;
-                ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
-                ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
-            }
         } else {
-            IssueStoryDetail issueStoryDetail = pullRequestStory.details.get(position - 1).second;
-            if (issueStoryDetail instanceof IssueStoryEvent) {
-                holder.text.setText(((IssueStoryEvent) issueStoryDetail).event.event);
+            IssueStoryDetail event = pullRequestStory.details.get(position - 1).second;
+            if (holder instanceof CommentHolder) {
+                IssueStoryComment issueStoryDetail = (IssueStoryComment) event;
+                ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);
+            } else if (holder instanceof TimelineHolder) {
+                if (event instanceof IssueStoryEvent) {
+                    IssueStoryEvent issueStoryDetail = (IssueStoryEvent) event;
+                    ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
+                    ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
+                } else if (event instanceof IssueStoryCommit) {
+                    ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
+                    ((TimelineHolder) holder).issueTimelineView.setIssueStoryCommit((IssueStoryCommit) event);
+                }
+            } else {
+                if (event instanceof IssueStoryEvent) {
+                    holder.text.setText(((IssueStoryEvent) event).event.event);
+                }
             }
         }
     }
@@ -102,6 +111,8 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 return VIEW_COMMENT;
             } else if (issueStoryDetail instanceof IssueStoryEvent) {
                 return VIEW_EVENT;
+            }  else if (issueStoryDetail instanceof IssueStoryCommit) {
+                return VIEW_COMMIT;
             } else {
                 return VIEW_DEFAULT;
             }
