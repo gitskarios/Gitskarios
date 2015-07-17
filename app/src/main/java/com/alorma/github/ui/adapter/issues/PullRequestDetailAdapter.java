@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alorma.github.sdk.bean.dto.response.Permissions;
+import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryCommit;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
@@ -29,6 +31,7 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     private static final int VIEW_EVENT = 1;
     private static final int VIEW_COMMENT = 2;
     private static final int VIEW_COMMIT = 3;
+    private static final int VIEW_REVIEW_COMMENT = 4;
 
     private Context context;
     private LayoutInflater inflater;
@@ -64,6 +67,8 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 return new TimelineHolder(new IssueTimelineView(context));
             case VIEW_COMMIT:
                 return new TimelineHolder(new IssueTimelineView(context));
+            case VIEW_REVIEW_COMMENT:
+                return new ReviewCommentHolder(new TextView(context));
             default:
                 return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
         }
@@ -87,6 +92,11 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 } else if (event instanceof IssueStoryCommit) {
                     ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
                     ((TimelineHolder) holder).issueTimelineView.setIssueStoryCommit((IssueStoryCommit) event);
+                }
+            } else if (holder instanceof ReviewCommentHolder) {
+                if (event instanceof IssueStoryReviewComment) {
+                    ReviewComment reviewComment = ((IssueStoryReviewComment) event).event;
+                    ((ReviewCommentHolder) holder).textView.setText(reviewComment.body);
                 }
             } else {
                 if (event instanceof IssueStoryEvent) {
@@ -113,6 +123,8 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 return VIEW_EVENT;
             }  else if (issueStoryDetail instanceof IssueStoryCommit) {
                 return VIEW_COMMIT;
+            }  else if (issueStoryDetail instanceof IssueStoryReviewComment) {
+                return VIEW_REVIEW_COMMENT;
             } else {
                 return VIEW_DEFAULT;
             }
@@ -143,6 +155,15 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
         public TimelineHolder(IssueTimelineView itemView) {
             super(itemView);
             issueTimelineView = itemView;
+        }
+    }
+
+    private class ReviewCommentHolder extends Holder {
+        private final TextView textView;
+
+        public ReviewCommentHolder(TextView itemView) {
+            super(itemView);
+            textView = itemView;
         }
     }
 
