@@ -66,7 +66,7 @@ public class TimeUtils {
                             if (time > 5) {
                                 text = R.plurals.seconds_ago;
                             } else {
-                                text = R.string.time_ago_just_now;
+                                text = R.plurals.time_just_now;
                             }
                         }
                     }
