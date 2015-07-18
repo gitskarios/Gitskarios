@@ -43,6 +43,7 @@
     <string name="no_repositories">No repositories found</string>
     <string name="no_watched_repositories">No watched repositories found</string>
     <string name="no_starred_repositories">No starred repositories found</string>
+    <string name="no_member_repositories">No membership repositories found</string>
     <string name="action_share_repo">Share</string>
     <string name="show_parent">Show parent</string>
     <string name="menu_star">Star</string>
@@ -362,4 +363,5 @@
     <string name="url_of_copied">%s url copied</string>
     <string name="content_history">%s history</string>
     <string name="sha_copied">%s copied</string>
+    <string name="navigation_member_repos">Contributed</string>
 </resources>

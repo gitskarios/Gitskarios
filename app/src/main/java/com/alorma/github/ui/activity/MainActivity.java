@@ -26,19 +26,14 @@ import android.widget.ImageView;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.basesdk.client.StoreCredentials;
-import com.alorma.github.emoji.EmojiVO;
-import com.alorma.github.emoji.EmojisActivity;
-import com.alorma.github.emoji.EmojisClient;
-import com.alorma.github.emoji.EmojisProvider;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
-import com.alorma.github.ui.fragment.GeneralReposFragment;
+import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
@@ -65,12 +60,8 @@ import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener,
         NotificationsActionProvider.OnNotificationListener {
