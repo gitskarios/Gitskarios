@@ -41,7 +41,7 @@
         </activity>
         <activity android:name=".ui.activity.MainActivity" />
         <activity
-            android:name=".ui.activity.PeopleActivity"
+            android:name=".ui.activity.GeneralPeopleFragment"
             android:label="@string/navigation_people" />
         <activity android:name=".ui.activity.ProfileActivity" />
         <activity android:name=".ui.activity.CommitDetailActivity" />

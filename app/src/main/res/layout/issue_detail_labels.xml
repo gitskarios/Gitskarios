@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textSize="@dimen/textSizeSmall"
-            android:layout_marginTop="@dimen/gapMedium"  />
+            android:layout_marginTop="@dimen/gapSmall"  />
 
         <com.alorma.github.ui.view.issue.IssueStoryLabelsView
             android:id="@+id/labelsView"

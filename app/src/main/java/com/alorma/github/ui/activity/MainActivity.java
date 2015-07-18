@@ -429,8 +429,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onPeopleSelected() {
-        Intent intent = PeopleActivity.launchIntent(this);
-        startActivity(intent);
+        setFragment(GeneralPeopleFragment.newInstance(), false);
         return false;
     }
 
