@@ -101,12 +101,21 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         super.onCreate(savedInstanceState);
 
         IssueInfo issueInfo = new IssueInfo();
+
         issueInfo.repoInfo = new RepoInfo();
+
+/*
         issueInfo.repoInfo.owner = "alorma";
         issueInfo.repoInfo.name = "eva_icns_test";
         issueInfo.num = 8;
+*/
+/*
+        issueInfo.repoInfo.owner = "Jasig";
+        issueInfo.repoInfo.name = "cas";
+        issueInfo.num = 993;
+*/
 
-        startActivity(IssueDetailActivity.createLauncherIntent(this, issueInfo));
+//        startActivity(IssueDetailActivity.createLauncherIntent(this, issueInfo));
 
 
         GitskariosApplication.get(this).inject(this);

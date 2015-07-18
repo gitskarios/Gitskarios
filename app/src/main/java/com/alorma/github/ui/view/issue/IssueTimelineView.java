@@ -2,25 +2,25 @@ package com.alorma.github.ui.view.issue;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.issue.IssueLabel;
+import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryCommit;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
-import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.github.ui.view.timeline.TimelineType;
-import com.alorma.github.ui.view.timeline.TimelineView;
 import com.alorma.github.utils.TimeUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Created by Bernat on 10/04/2015.
@@ -29,7 +29,9 @@ public class IssueTimelineView extends LinearLayout {
     private IssueStoryEvent issueEvent;
 
     private TextView textView;
-    private TimelineView timeline;
+    private TextView userText;
+    private ImageView profileIcon;
+    private TextView createdAt;
 
     public IssueTimelineView(Context context) {
         super(context);
@@ -54,72 +56,32 @@ public class IssueTimelineView extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.issue_detail_issue_timeline_view, this);
-        timeline = (TimelineView) findViewById(R.id.timeline);
         textView = (TextView) findViewById(R.id.text);
-    }
 
-    public void setLastItem(boolean lastItem) {
-        if (lastItem) {
-            timeline.setTimelineType(TimelineType.END);
-        } else {
-            timeline.setTimelineType(TimelineType.MIDDLE);
-        }
+        userText = (TextView) findViewById(R.id.userLogin);
+        profileIcon = (ImageView) findViewById(R.id.profileIcon);
+        createdAt = (TextView) findViewById(R.id.createdAt);
     }
 
     public void setIssueEvent(IssueStoryEvent issueEvent) {
         this.issueEvent = issueEvent;
 
-        timeline.setColorRes(R.color.gray_github_medium);
-
-        String time = TimeUtils.getTimeAgoString(getContext(), issueEvent.event.created_at);
+        applyGenericIssueStory(issueEvent);
 
         textView.setText("");
 
         String eventType = issueEvent.event.event;
         if (eventType.equals("closed") || eventType.equals("reopened")) {
-            if (eventType.equals("closed")) {
-                timeline.setColorRes(R.color.issue_state_close);
-            } else if (eventType.equals("reopened")) {
-                timeline.setColorRes(R.color.issue_state_open);
-            }
-
-            String text = issueEvent.event.actor.login + " " + eventType + " " + time;
+            String text = issueEvent.event.actor.login + " " + eventType;
             textView.setText(text);
 
-        } else if (eventType.equals("labeled") || eventType.equals("labeled")) {
-            String text = null;
-
-            IssueLabel label = issueEvent.event.label;
-            String labelName = " " + label.name + " ";
-            if (eventType.equals("labeled")) {
-                text = getResources().getString(R.string.issue_labeled, labelName, time);
-            } else if (eventType.equals("reopened")) {
-                text = getResources().getString(R.string.issue_unlabeled, labelName, time);
-            }
-
-            if (text != null) {
-                int startLabel = text.indexOf(labelName);
-                if (startLabel > -1) {
-                    int bgColor = Color.parseColor("#" + label.color);
-
-                    SpannableString spannableString = new SpannableString(text);
-
-                    BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(bgColor);
-                    ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(PaletteUtils.colorTextFromBackgroundColor(bgColor));
-
-                    spannableString.setSpan(backgroundColorSpan, text.indexOf(labelName), text.indexOf(labelName) + labelName.length(), 0);
-                    spannableString.setSpan(foregroundColorSpan, text.indexOf(labelName), text.indexOf(labelName) + labelName.length(), 0);
-
-                    textView.setText(spannableString);
-                }
-            }
         } else if (eventType.equals("assigned") || eventType.equals("unassigned")) {
             String text = null;
             String user = "<b>" + issueEvent.event.assignee.login + "</b>";
             if (eventType.equals("assigned")) {
-                text = getResources().getString(R.string.issue_assigned, user, time);
+                text = getResources().getString(R.string.issue_assigned, user);
             } else if (eventType.equals("unassigned")) {
-                text = getResources().getString(R.string.issue_unassigned, user, time);
+                text = getResources().getString(R.string.issue_unassigned, user);
             }
             if (text != null) {
                 textView.setText(Html.fromHtml(text));
@@ -128,9 +90,9 @@ public class IssueTimelineView extends LinearLayout {
             String text = null;
             String milestone = "<b>" + issueEvent.event.milestone.title + "</b>";
             if (eventType.equals("milestoned")) {
-                text = getResources().getString(R.string.issue_milestoned, milestone, time);
+                text = getResources().getString(R.string.issue_milestoned, milestone);
             } else if (eventType.equals("demilestoned")) {
-                text = getResources().getString(R.string.issue_demilestoned, milestone, time);
+                text = getResources().getString(R.string.issue_demilestoned, milestone);
             }
             if (text != null) {
                 textView.setText(Html.fromHtml(text));
@@ -140,32 +102,28 @@ public class IssueTimelineView extends LinearLayout {
             String commitId = issueEvent.event.commit_id;
             String milestone = "<b>" + commitId.substring(0, 8) + "</b>";
             if (eventType.equals("merged")) {
-                text = getResources().getString(R.string.issue_merged, milestone, time);
+                text = getResources().getString(R.string.issue_merged, milestone);
             } else if (eventType.equals("referenced")) {
-                text = getResources().getString(R.string.issue_referenced, milestone, time);
+                text = getResources().getString(R.string.issue_referenced, milestone);
             }
             if (text != null) {
                 textView.setText(Html.fromHtml(text));
             }
         } else {
-            String text = issueEvent.event.actor.login + " " + eventType + " " + time;
+            String text = issueEvent.event.actor.login + " " + eventType;
             textView.setText(text);
         }
     }
 
-    public void setIssueStoryDetail(IssueStoryDetail issueStoryDetail) {
-        if (textView != null) {
-            textView.setText(issueStoryDetail.getType());
-        }
+    private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
+        userText.setText(storyEvent.user().login);
+        ImageLoader.getInstance().displayImage(storyEvent.user().avatar_url, profileIcon);
+        setTime(storyEvent.createdAt());
     }
 
-    public void setIssueStoryCommit(IssueStoryCommit issueStoryCommit) {
-        try {
-            String commitId = issueStoryCommit.commit.shortSha();
-            String text = issueStoryCommit.commit.commit.message + " : " + commitId;
-            textView.setText(Html.fromHtml(text));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+    private void setTime(long time) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(time));
+        createdAt.setText(date);
     }
 }

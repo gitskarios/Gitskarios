@@ -5,11 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.bean.issue.IssueLabel;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
@@ -19,19 +17,18 @@ import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueDetailView;
+import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
-
-import java.util.List;
 
 /**
  * Created by Bernat on 08/04/2015.
  */
 public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.Holder> {
 
-    private static final int VIEW_DEFAULT = -1;
     private static final int VIEW_ISSUE = 0;
-    private static final int VIEW_SIMPLE = 1;
-    private static final int VIEW_MULTIPLE = 2;
+    private static final int VIEW_COMMENT = 1;
+    private static final int VIEW_EVENT = 2;
+    private static final int VIEW_LABELED_LIST = 3;
 
     private Context context;
     private LayoutInflater inflater;
@@ -55,10 +52,12 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         switch (viewType) {
             case VIEW_ISSUE:
                 return new IssueHolder(new IssueDetailView(context));
-            case VIEW_SIMPLE:
+            case VIEW_COMMENT:
+                return new CommentHolder(new IssueCommentView(context));
+            case VIEW_EVENT:
                 return new TimelineHolder(new IssueTimelineView(context));
-            case VIEW_MULTIPLE:
-                return new LinearLayoutHolder(new LinearLayout(context));
+            case VIEW_LABELED_LIST:
+                return new LabelsHolder(new IssueStoryLabelDetailView(context));
             default:
                 return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
         }
@@ -72,51 +71,20 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         } else {
             IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1);
 
-            if (holder instanceof LinearLayoutHolder) {
-                TextView textView = new TextView(context);
-                ((LinearLayoutHolder) holder).itemView.removeAllViews();
-                ((LinearLayoutHolder) holder).itemView.addView(textView);
-                if (issueStoryDetail.isList()) {
-                    StringBuilder builder = new StringBuilder(issueStoryDetail.getType());
-                    builder.append(" ");
+            int viewType = getItemViewType(position);
 
-                    if (issueStoryDetail instanceof IssueStoryLabelList) {
-                        for (IssueLabel issueLabel : ((IssueStoryLabelList) issueStoryDetail)) {
-                            builder.append(issueLabel.name);
-                            builder.append(", ");
-                        }
-                    } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
-                        for (IssueLabel issueLabel : ((IssueStoryUnlabelList) issueStoryDetail)) {
-                            builder.append(issueLabel.name);
-                            builder.append(",");
-                        }
-                    }
-
-                    textView.setText(builder.toString());
+            if (viewType == VIEW_LABELED_LIST) {
+                if (issueStoryDetail instanceof IssueStoryLabelList) {
+                    ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryLabelList) issueStoryDetail);
+                } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
+                    ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryUnlabelList) issueStoryDetail);
                 }
-            } else if (holder instanceof TimelineHolder && issueStoryDetail instanceof IssueStoryEvent) {
-                ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
+            } else if (viewType == VIEW_COMMENT) {
+                ((CommentHolder) holder).issueCommentView.setComment(repoInfo, (IssueStoryComment) issueStoryDetail);
+            }  else if (viewType == VIEW_EVENT) {
                 ((TimelineHolder) holder).issueTimelineView.setIssueEvent(((IssueStoryEvent) issueStoryDetail));
             }
         }
-
-
-
-        /*else if (holder instanceof CommentHolder) {
-            IssueStoryComment issueStoryDetail = (IssueStoryComment) issueStory.details.get(position - 1).second;
-            ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);
-        } else if (holder instanceof TimelineHolder) {
-            if (issueStory.details.get(position - 1).second instanceof IssueStoryEvent) {
-                IssueStoryEvent issueStoryDetail = (IssueStoryEvent) issueStory.details.get(position - 1).second;
-                ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
-                ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
-            }
-        } else {
-            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second;
-            if (issueStoryDetail instanceof IssueStoryEvent) {
-                holder.text.setText(((IssueStoryEvent) issueStoryDetail).event.event);
-            }
-        }*/
     }
 
     @Override
@@ -131,7 +99,12 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         } else {
             IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1);
 
-            return issueStoryDetail.isList() ? VIEW_MULTIPLE : VIEW_SIMPLE;
+            if (issueStoryDetail.getType().equals("commented")) {
+                return VIEW_COMMENT;
+            } else if (issueStoryDetail.isList() && (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType().equals("unlabeled"))) {
+                return VIEW_LABELED_LIST;
+            }
+            return VIEW_EVENT;
         }
     }
 
@@ -162,10 +135,10 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         }
     }
 
-    private class LinearLayoutHolder extends Holder {
-        private final LinearLayout itemView;
+    private class LabelsHolder extends Holder {
+        private final IssueStoryLabelDetailView itemView;
 
-        public LinearLayoutHolder(LinearLayout itemView) {
+        public LabelsHolder(IssueStoryLabelDetailView itemView) {
             super(itemView);
             this.itemView = itemView;
         }

@@ -14,22 +14,22 @@
             android:layout_width="?android:listPreferredItemHeight"
             android:layout_height="match_parent"
             app:tl_lineColor="@color/gray_github_medium"
-            app:tl_lineWidth="1dp" />
+            app:tl_lineWidth="1dp"/>
 
         <com.mikepenz.materialdrawer.view.BezelImageView
             android:id="@+id/profileIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal|top"
-            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
             android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
             android:clickable="false"
             android:elevation="1dp"
-            app:biv_maskDrawable="@drawable/circle_mask" />
+            app:biv_maskDrawable="@drawable/circle_mask"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
     <LinearLayout
@@ -43,9 +43,9 @@
             style="@style/Base.TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapMedium"
             android:gravity="center_vertical"
             android:textSize="@dimen/textSizeMedium"
+            android:layout_marginTop="@dimen/gapMedium"
             android:textStyle="bold" />
 
         <TextView
@@ -53,17 +53,16 @@
             style="@style/Base.TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapMedium"
             android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall" />
+            android:textSize="@dimen/textSizeSmall"
+            android:layout_marginTop="@dimen/gapMedium"  />
 
-        <TextView
-            android:id="@+id/text"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
+        <com.alorma.github.ui.view.issue.IssueStoryLabelsView
+            android:id="@+id/labelsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall" />
+            android:layout_marginBottom="@dimen/gapMedium"
+            android:layout_marginTop="@dimen/gapMedium" />
 
     </LinearLayout>
 

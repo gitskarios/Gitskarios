@@ -87,11 +87,9 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
             } else if (holder instanceof TimelineHolder) {
                 if (event instanceof IssueStoryEvent) {
                     IssueStoryEvent issueStoryDetail = (IssueStoryEvent) event;
-                    ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
                     ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
                 } else if (event instanceof IssueStoryCommit) {
-                    ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
-                    ((TimelineHolder) holder).issueTimelineView.setIssueStoryCommit((IssueStoryCommit) event);
+                    //((TimelineHolder) holder).issueTimelineView.setIssueStoryCommit((IssueStoryCommit) event);
                 }
             } else if (holder instanceof ReviewCommentHolder) {
                 if (event instanceof IssueStoryReviewComment) {
