@@ -9,11 +9,11 @@
         android:id="@+id/avatarAuthorImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"/>
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:id="@+id/textRootView"
         android:background="@color/gray_github_medium">
@@ -22,8 +22,8 @@
             android:id="@+id/textAuthorLogin"
             style="@style/user_row_item"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:paddingLeft="@dimen/gapMedium" />
+            android:padding="@dimen/gapMedium" />
     </LinearLayout>
 </FrameLayout>

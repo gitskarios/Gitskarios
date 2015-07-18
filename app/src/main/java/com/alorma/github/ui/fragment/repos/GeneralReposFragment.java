@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,9 +14,6 @@ import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.github.ui.fragment.repos.ReposFragment;
-import com.alorma.github.ui.fragment.repos.StarredReposFragment;
-import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 
 /**
  * Created by Bernat on 06/06/2015.
@@ -72,12 +69,14 @@ public class GeneralReposFragment extends BaseFragment {
                     return StarredReposFragment.newInstance();
                 case 2:
                     return WatchedReposFragment.newInstance();
+                case 3:
+                    return MembershipReposFragment.newInstance();
             }
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -90,6 +89,8 @@ public class GeneralReposFragment extends BaseFragment {
                     return getString(R.string.navigation_starred_repos);
                 case 2:
                     return getString(R.string.navigation_watched_repos);
+                case 3:
+                    return getString(R.string.navigation_member_repos);
             }
         }
     }
