@@ -6,7 +6,7 @@
 
 [![Join the chat at https://gitter.im/gitskarios/Gitskarios](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gitskarios/Gitskarios?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.alorma.github?utm_source=github&utm_medium=github&utm_campaign=github)
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.alorma.github&utm_source=github&utm_medium=github&utm_campaign=github)
 
 # README #
 
