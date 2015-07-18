@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -44,7 +45,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<List<U
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getActivity(), 2);
+        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_rows));
     }
 
     @Override
