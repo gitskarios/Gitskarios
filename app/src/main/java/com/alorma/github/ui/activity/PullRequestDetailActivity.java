@@ -70,7 +70,9 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<PullRequestStory>, View.OnClickListener, PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener {
+public class PullRequestDetailActivity extends BackActivity
+        implements BaseClient.OnResultCallback<PullRequestStory>,
+        View.OnClickListener, PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
 
