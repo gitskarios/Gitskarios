@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
@@ -55,27 +56,31 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
         if (getIntent().getExtras() != null) {
             info = getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
 
-            setTitle(String.valueOf(info.repoInfo));
+            if (info != null && info.repoInfo != null) {
 
-            getContent();
+                setTitle(String.valueOf(info.repoInfo));
 
-            TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                getContent();
+
+                TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
 
-            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+                ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-            listFragments = new ArrayList<>();
+                listFragments = new ArrayList<>();
 
-            commitFilesFragment = CommitFilesFragment.newInstance(info);
-            commitFilesFragment.setOnFileRequestListener(this);
-            listFragments.add(commitFilesFragment);
+                commitFilesFragment = CommitFilesFragment.newInstance(info);
+                commitFilesFragment.setOnFileRequestListener(this);
+                listFragments.add(commitFilesFragment);
 
-            CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
-            listFragments.add(commitCommentsFragment);
+                CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
+                listFragments.add(commitCommentsFragment);
 
-            viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-            slidingTabLayout.setupWithViewPager(viewPager);
-
+                viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+                slidingTabLayout.setupWithViewPager(viewPager);
+            } else {
+                Toast.makeText(this, "Info invalid", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

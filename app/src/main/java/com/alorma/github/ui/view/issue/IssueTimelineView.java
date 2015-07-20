@@ -5,18 +5,18 @@ import android.content.Context;
 import android.os.Build;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.issue.IssueStoryComment;
-import com.alorma.github.sdk.bean.issue.IssueStoryCommit;
+import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
+import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
 import com.alorma.github.utils.TimeUtils;
-import com.github.mobile.util.HtmlUtils;
-import com.github.mobile.util.HttpImageGetter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.joda.time.format.DateTimeFormat;
@@ -26,7 +26,6 @@ import org.joda.time.format.DateTimeFormatter;
  * Created by Bernat on 10/04/2015.
  */
 public class IssueTimelineView extends LinearLayout {
-    private IssueStoryEvent issueEvent;
 
     private TextView textView;
     private TextView userText;
@@ -64,8 +63,6 @@ public class IssueTimelineView extends LinearLayout {
     }
 
     public void setIssueEvent(IssueStoryEvent issueEvent) {
-        this.issueEvent = issueEvent;
-
         applyGenericIssueStory(issueEvent);
 
         textView.setText("");
@@ -113,6 +110,7 @@ public class IssueTimelineView extends LinearLayout {
             String text = issueEvent.event.actor.login + " " + eventType;
             textView.setText(text);
         }
+        textView.setVisibility(View.VISIBLE);
     }
 
     private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
@@ -125,5 +123,10 @@ public class IssueTimelineView extends LinearLayout {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(time));
         createdAt.setText(date);
+    }
+
+    public void setPullRequestCommitData(PullRequestStoryCommitsList issueStoryDetail) {
+        applyGenericIssueStory(issueStoryDetail);
+        textView.setVisibility(View.GONE);
     }
 }

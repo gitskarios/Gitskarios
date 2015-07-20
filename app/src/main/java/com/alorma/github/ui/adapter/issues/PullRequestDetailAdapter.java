@@ -15,12 +15,14 @@ import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
 import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
+import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
+import com.alorma.github.ui.view.issue.IssueTimelineSecondaryView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 import com.alorma.github.ui.view.pullrequest.PullRequestCommitsView;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
@@ -35,6 +37,7 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     private static final int VIEW_EVENT = 2;
     private static final int VIEW_LABELED_LIST = 3;
     private static final int VIEW_COMMITS_LIST = 4;
+    private static final int VIEW_SINGLE_COMMIT = 5;
 
     private Context context;
     private LayoutInflater inflater;
@@ -65,12 +68,13 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 return new PullRequestHolder(new PullRequestDetailView(context));
             case VIEW_COMMENT:
                 return new CommentHolder(new IssueCommentView(context));
+            case VIEW_SINGLE_COMMIT:
+                return new TimelineSecondaryHolder(new IssueTimelineSecondaryView(context));
             case VIEW_EVENT:
+            case VIEW_COMMITS_LIST:
                 return new TimelineHolder(new IssueTimelineView(context));
             case VIEW_LABELED_LIST:
                 return new LabelsHolder(new IssueStoryLabelDetailView(context));
-            case VIEW_COMMITS_LIST:
-                return new CommitsHolder(new PullRequestCommitsView(context));
             default:
                 return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
         }
@@ -93,12 +97,14 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
                     ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryUnlabelList) issueStoryDetail);
                 }
-            } else if (viewType == VIEW_COMMITS_LIST) {
-                ((CommitsHolder) holder).itemView.setPullRequestStoryCommitsList((PullRequestStoryCommitsList) issueStoryDetail);
             } else if (viewType == VIEW_COMMENT) {
                 ((CommentHolder) holder).issueCommentView.setComment(repoInfo, (IssueStoryComment) issueStoryDetail);
             } else if (viewType == VIEW_EVENT) {
                 ((TimelineHolder) holder).issueTimelineView.setIssueEvent(((IssueStoryEvent) issueStoryDetail));
+            } else if (viewType == VIEW_SINGLE_COMMIT) {
+                ((TimelineSecondaryHolder) holder).issueTimelineView.setCommit(((PullRequestStoryCommit) issueStoryDetail));
+            } else if (viewType == VIEW_COMMITS_LIST) {
+                ((TimelineHolder) holder).issueTimelineView.setPullRequestCommitData(((PullRequestStoryCommitsList) issueStoryDetail));
             }
         }
     }
@@ -117,10 +123,12 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
 
             if (issueStoryDetail.getType().equals("commented")) {
                 return VIEW_COMMENT;
+            } else if (issueStoryDetail.getType().equals("committed") && !issueStoryDetail.isList()) {
+                return VIEW_SINGLE_COMMIT;
             } else if (issueStoryDetail.isList()) {
                 if (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType().equals("unlabeled")) {
                     return VIEW_LABELED_LIST;
-                } else if (issueStoryDetail.getType().equals("committed")) {
+                } else if (issueStoryDetail.getType().equals("pushed")) {
                     return VIEW_COMMITS_LIST;
                 }
             }
@@ -155,19 +163,19 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
         }
     }
 
+    private class TimelineSecondaryHolder extends Holder {
+        private final IssueTimelineSecondaryView issueTimelineView;
+
+        public TimelineSecondaryHolder(IssueTimelineSecondaryView itemView) {
+            super(itemView);
+            issueTimelineView = itemView;
+        }
+    }
+
     private class LabelsHolder extends Holder {
         private final IssueStoryLabelDetailView itemView;
 
         public LabelsHolder(IssueStoryLabelDetailView itemView) {
-            super(itemView);
-            this.itemView = itemView;
-        }
-    }
-
-    private class CommitsHolder extends Holder {
-        private final PullRequestCommitsView itemView;
-
-        public CommitsHolder(PullRequestCommitsView itemView) {
             super(itemView);
             this.itemView = itemView;
         }

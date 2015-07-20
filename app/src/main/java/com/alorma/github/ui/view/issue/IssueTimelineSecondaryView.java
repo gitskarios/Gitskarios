@@ -1,18 +1,17 @@
-package com.alorma.github.ui.view.pullrequest;
+package com.alorma.github.ui.view.issue;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
-import android.text.Html;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
+import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;
@@ -29,53 +28,48 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Bernat on 20/07/2015.
  */
-public class PullRequestCommitsView extends LinearLayout {
+public class IssueTimelineSecondaryView extends LinearLayout {
 
     private TextView userText;
     private ImageView profileIcon;
-    private TextView createdAt;
-    private ViewGroup commitsView;
+    private TextView shaContent;
 
-    public PullRequestCommitsView(Context context) {
+    public IssueTimelineSecondaryView(Context context) {
         super(context);
         init();
     }
 
-    public PullRequestCommitsView(Context context, AttributeSet attrs) {
+    public IssueTimelineSecondaryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public PullRequestCommitsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IssueTimelineSecondaryView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public PullRequestCommitsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IssueTimelineSecondaryView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
     private void init() {
-        inflate(getContext(), R.layout.pull_request_commits, this);
-
+        inflate(getContext(), R.layout.issue_detail_issue_timeline_secondary_view, this);
         userText = (TextView) findViewById(R.id.userLogin);
         profileIcon = (ImageView) findViewById(R.id.profileIcon);
-        createdAt = (TextView) findViewById(R.id.createdAt);
-        commitsView = (ViewGroup) findViewById(R.id.commitsView);
-
-        ViewCompat.setElevation(profileIcon, 2);
+        shaContent = (TextView) findViewById(R.id.shaContent);
     }
 
-    public void setPullRequestStoryCommitsList(PullRequestStoryCommitsList pullRequestStoryCommitsList) {
-        userText.setText(pullRequestStoryCommitsList.user().login);
-        if (pullRequestStoryCommitsList.user().avatar_url != null) {
-            ImageLoader.getInstance().displayImage(pullRequestStoryCommitsList.user().avatar_url, profileIcon);
-        } else if (pullRequestStoryCommitsList.user().email != null) {
+    public void setCommit(PullRequestStoryCommit issueStoryDetail) {
+        userText.setText(issueStoryDetail.commit.commit.shortMessage());
+        if (issueStoryDetail.user().avatar_url != null) {
+            ImageLoader.getInstance().displayImage(issueStoryDetail.user().avatar_url, profileIcon);
+        } else if (issueStoryDetail.user().email != null) {
             try {
                 MessageDigest digest = MessageDigest.getInstance("MD5");
-                digest.update(pullRequestStoryCommitsList.user().email.getBytes());
+                digest.update(issueStoryDetail.user().email.getBytes());
                 byte messageDigest[] = digest.digest();
                 StringBuffer hexString = new StringBuffer();
                 for (int i = 0; i < messageDigest.length; i++)
@@ -96,20 +90,7 @@ public class PullRequestCommitsView extends LinearLayout {
             iconDrawable.setAlpha(128);
             profileIcon.setImageDrawable(iconDrawable);
         }
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(pullRequestStoryCommitsList.createdAt()));
-        String pushedDate = getContext().getResources().getString(R.string.pushed) + " " + date;
 
-        createdAt.setText(pushedDate);
-
-        commitsView.removeAllViews();
-
-        for (Commit commit : pullRequestStoryCommitsList) {
-            TextView textView = new TextView(getContext());
-
-            textView.setText(Html.fromHtml("* " + "<b>" + commit.shortSha() + "</b> " + commit.commit.message));
-
-            commitsView.addView(textView);
-        }
+        shaContent.setText(issueStoryDetail.commit.shortSha());
     }
 }
