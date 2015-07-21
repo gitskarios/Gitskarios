@@ -103,13 +103,13 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
          startActivity(IssueDetailActivity.createLauncherIntent(this, issueInfo));
 */
 
+/*
         issueInfo.repoInfo.owner = "Jasig";
         issueInfo.repoInfo.name = "cas";
         issueInfo.num = 993;
 
         startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));
-
-
+ */
 
         GitskariosApplication.get(this).inject(this);
 
