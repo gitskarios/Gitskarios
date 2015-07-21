@@ -16,19 +16,35 @@
         android:id="@+id/profileIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginLeft="-18dp"
+        android:layout_marginLeft="-8dp"
         android:layout_marginTop="@dimen/gapMedium"
         android:clickable="false"
         app:biv_maskDrawable="@drawable/circle_mask" />
 
-    <TextView
-        android:id="@+id/shaContent"
-        style="@style/Base.TextAppearance.AppCompat.Caption"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/textSizeSmall"
-        android:layout_margin="@dimen/gapMedium" />
+        android:orientation="vertical"
+        android:padding="@dimen/gapMedium">
 
+        <TextView
+            android:id="@+id/userLogin"
+            style="@style/Base.TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/textSizeSmall"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/createdAt"
+            style="@style/Base.TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gapSmall"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/textSizeSmall" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -3,24 +3,19 @@ package com.alorma.github.ui.view.issue;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.text.Html;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
-import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,7 +25,6 @@ import java.security.NoSuchAlgorithmException;
  */
 public class IssueTimelineSecondaryView extends LinearLayout {
 
-    private TextView userText;
     private ImageView profileIcon;
     private TextView shaContent;
 
@@ -57,13 +51,13 @@ public class IssueTimelineSecondaryView extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.issue_detail_issue_timeline_secondary_view, this);
-        userText = (TextView) findViewById(R.id.userLogin);
         profileIcon = (ImageView) findViewById(R.id.profileIcon);
         shaContent = (TextView) findViewById(R.id.shaContent);
     }
 
     public void setCommit(PullRequestStoryCommit issueStoryDetail) {
-        userText.setText(issueStoryDetail.commit.commit.shortMessage());
+        shaContent.setText(Html.fromHtml("<b>" + issueStoryDetail.commit.shortSha() + "</b> " + issueStoryDetail.commit.commit.shortMessage()));
+
         if (issueStoryDetail.user().avatar_url != null) {
             ImageLoader.getInstance().displayImage(issueStoryDetail.user().avatar_url, profileIcon);
         } else if (issueStoryDetail.user().email != null) {
@@ -91,6 +85,5 @@ public class IssueTimelineSecondaryView extends LinearLayout {
             profileIcon.setImageDrawable(iconDrawable);
         }
 
-        shaContent.setText(issueStoryDetail.commit.shortSha());
     }
 }

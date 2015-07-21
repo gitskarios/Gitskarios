@@ -127,6 +127,9 @@ public class IssueTimelineView extends LinearLayout {
 
     public void setPullRequestCommitData(PullRequestStoryCommitsList issueStoryDetail) {
         applyGenericIssueStory(issueStoryDetail);
+        String date = createdAt.getText().toString();
+        date = getContext().getResources().getString(R.string.pushed) + " " + date;
+        createdAt.setText(date);
         textView.setVisibility(View.GONE);
     }
 }

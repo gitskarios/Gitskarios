@@ -364,4 +364,5 @@
     <string name="aissue_detail_add_labels">Added labels %s</string>
     <string name="aissue_detail_removed_labels">Removed labels %s</string>
     <string name="navigation_member_repos">Contributed</string>
+    <string name="comment_on_diff">Commented on diff %s</string>
 </resources>
