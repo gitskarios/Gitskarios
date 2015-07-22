@@ -65,7 +65,7 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getActivity(), 2);
+        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
     }
 
     @Override
