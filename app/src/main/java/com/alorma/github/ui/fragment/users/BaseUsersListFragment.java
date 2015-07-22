@@ -45,7 +45,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<List<U
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_rows));
+        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
     }
 
     @Override

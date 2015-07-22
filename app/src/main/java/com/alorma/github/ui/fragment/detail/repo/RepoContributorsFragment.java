@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -19,9 +17,6 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Bernat on 11/04/2015.
@@ -67,7 +62,7 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_rows));
+        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
     }
 
     @Override
