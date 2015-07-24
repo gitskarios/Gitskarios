@@ -67,6 +67,10 @@ public class SearchReposFragment extends BaseReposListFragment {
                 RepoSearchClient client = new RepoSearchClient(getActivity(), query);
                 client.setOnResultCallback(this);
                 client.execute();
+                query = null;
+                if (getAdapter() != null) {
+                    getAdapter().clear();
+                }
             }
         }
     }
@@ -79,6 +83,10 @@ public class SearchReposFragment extends BaseReposListFragment {
                 RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
                 client.setOnResultCallback(this);
                 client.execute();
+                query = null;
+                if (getAdapter() != null) {
+                    getAdapter().clear();
+                }
             }
         }
     }

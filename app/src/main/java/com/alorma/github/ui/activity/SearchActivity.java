@@ -31,6 +31,7 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
     private SearchUsersFragment searchUsersFragment;
     private ViewPager viewPager;
     private List<Fragment> listFragments;
+    private String lastQuery;
 
     public static Intent launchIntent(Context context) {
         return new Intent(context, SearchActivity.class);
@@ -145,8 +146,11 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        search(s);
-        return false;
+        if (!s.equals(lastQuery)) {
+            lastQuery = s;
+            search(s);
+        }
+        return true;
     }
 
     @Override
