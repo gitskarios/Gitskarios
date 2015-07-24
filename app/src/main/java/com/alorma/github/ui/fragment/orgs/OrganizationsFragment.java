@@ -96,7 +96,7 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
 
         Organization item = getAdapter().getItem(position);
 
-        Intent intent = OrganizationActivity.launchIntent(getActivity(), item.login);
+        Intent intent = OrganizationActivity.newInstance(getActivity(), item.login);
         startActivity(intent);
     }*/
 }

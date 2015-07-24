@@ -11,7 +11,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionName "2.5.0"
-        versionCode 2500
+        versionCode 2501
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -38,12 +38,9 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
+            ext.betaDistributionGroupAliases="gitskarios-alpha-testers"
         }
     }
-}
-
-def getVersionCode() {
-    return 'git rev-list --count HEAD'.execute().text.toInteger()
 }
 
 def getCurrentGitHash() {
@@ -98,6 +95,10 @@ def getGHCallback(pro) {
     }
 }
 
+assembleRelease.dependsOn clean
+assembleRelease.doLast {
+    tasks.crashlyticsUploadDistributionRelease.execute()
+}
 
 dependencies {
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')

@@ -165,7 +165,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         info.repoInfo = issueInfo.repoInfo;
         info.sha = item.sha;
 
-        Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
+        Intent intent = CommitDetailActivity.newInstance(getActivity(), info);
         startActivity(intent);
     }*/
 }

@@ -57,13 +57,13 @@
             android:gravity="center_vertical"
             android:textSize="@dimen/textSizeSmall" />
 
-        <TextView
-            android:id="@+id/text"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
+        <LinearLayout
+            android:id="@+id/commitsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall" />
+            android:layout_marginBottom="@dimen/gapMedium"
+            android:layout_marginTop="@dimen/gapMedium"
+            android:orientation="vertical" />
 
     </LinearLayout>
 

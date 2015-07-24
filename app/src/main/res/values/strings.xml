@@ -212,14 +212,12 @@
     <string name="navigate_up">Up</string>
     <string name="no_content">No files</string>
 
-    <string name="issue_labeled">Added the %1$s label %2$s</string>
-    <string name="issue_unlabeled">Removed the %1$s label %2$s</string>
-    <string name="issue_assigned">Assigned to %1$s %2$s</string>
-    <string name="issue_unassigned">Removed %1$s assignment %2$s</string>
-    <string name="issue_milestoned">Added to %1$s milestone %2$s</string>
-    <string name="issue_demilestoned">Removed %1$s milestone %2$s</string>
-    <string name="issue_merged">Merged into %1$s %2$s</string>
-    <string name="issue_referenced">Referenced in %1$s %2$s</string>
+    <string name="issue_assigned">Assigned to %1$s</string>
+    <string name="issue_unassigned">Removed %s assignment</string>
+    <string name="issue_milestoned">Added to %s milestone</string>
+    <string name="issue_demilestoned">Removed %s milestone</string>
+    <string name="issue_merged">Merged into %s</string>
+    <string name="issue_referenced">Referenced in %s</string>
     <string name="no_collaborators">No collaborators</string>
     <string name="collaborators_fragment_title">Collaborators</string>
     <string name="owner">Owner</string>
@@ -363,5 +361,8 @@
     <string name="url_of_copied">%s url copied</string>
     <string name="content_history">%s history</string>
     <string name="sha_copied">%s copied</string>
+    <string name="aissue_detail_add_labels">Added labels %s</string>
+    <string name="aissue_detail_removed_labels">Removed labels %s</string>
     <string name="navigation_member_repos">Contributed</string>
+    <string name="comment_on_diff">Commented on diff %s</string>
 </resources>

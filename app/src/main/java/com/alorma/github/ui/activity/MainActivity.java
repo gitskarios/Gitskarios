@@ -28,6 +28,8 @@ import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
@@ -88,6 +90,26 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        IssueInfo issueInfo = new IssueInfo();
+
+        issueInfo.repoInfo = new RepoInfo();
+
+/*
+        issueInfo.repoInfo.owner = "alorma";
+        issueInfo.repoInfo.name = "eva_icns_test";
+        issueInfo.num = 8;
+
+         startActivity(IssueDetailActivity.createLauncherIntent(this, issueInfo));
+*/
+
+/*
+        issueInfo.repoInfo.owner = "Jasig";
+        issueInfo.repoInfo.name = "cas";
+        issueInfo.num = 993;
+
+        startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));
+ */
 
         GitskariosApplication.get(this).inject(this);
 
@@ -409,8 +431,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onPeopleSelected() {
-        Intent intent = PeopleActivity.launchIntent(this);
-        startActivity(intent);
+        setFragment(GeneralPeopleFragment.newInstance(), false);
         return false;
     }
 

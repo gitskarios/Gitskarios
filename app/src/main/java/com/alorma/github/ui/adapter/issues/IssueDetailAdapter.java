@@ -12,9 +12,12 @@ import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
+import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueDetailView;
+import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 
 /**
@@ -22,10 +25,10 @@ import com.alorma.github.ui.view.issue.IssueTimelineView;
  */
 public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.Holder> {
 
-    private static final int VIEW_DEFAULT = -1;
     private static final int VIEW_ISSUE = 0;
-    private static final int VIEW_EVENT = 1;
-    private static final int VIEW_COMMENT = 2;
+    private static final int VIEW_COMMENT = 1;
+    private static final int VIEW_EVENT = 2;
+    private static final int VIEW_LABELED_LIST = 3;
 
     private Context context;
     private LayoutInflater inflater;
@@ -48,13 +51,13 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_ISSUE:
-                IssueDetailView issueDetailView = new IssueDetailView(context);
-                issueDetailView.setIssueDetailRequestListener(issueDetailRequestListener);
-                return new IssueHolder(issueDetailView);
+                return new IssueHolder(new IssueDetailView(context));
             case VIEW_COMMENT:
                 return new CommentHolder(new IssueCommentView(context));
             case VIEW_EVENT:
                 return new TimelineHolder(new IssueTimelineView(context));
+            case VIEW_LABELED_LIST:
+                return new LabelsHolder(new IssueStoryLabelDetailView(context));
             default:
                 return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
         }
@@ -65,19 +68,21 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         if (position == 0) {
             ((IssueHolder) holder).issueDetailView.setIssue(repoInfo, issueStory.issue);
             ((IssueHolder) holder).issueDetailView.setIssueDetailRequestListener(issueDetailRequestListener);
-        } else if (holder instanceof CommentHolder) {
-            IssueStoryComment issueStoryDetail = (IssueStoryComment) issueStory.details.get(position - 1).second;
-            ((CommentHolder) holder).issueCommentView.setComment(repoInfo, issueStoryDetail);
-        } else if (holder instanceof TimelineHolder) {
-            if (issueStory.details.get(position - 1).second instanceof IssueStoryEvent) {
-                IssueStoryEvent issueStoryDetail = (IssueStoryEvent) issueStory.details.get(position - 1).second;
-                ((TimelineHolder) holder).issueTimelineView.setLastItem((position + 1) == getItemCount());
-                ((TimelineHolder) holder).issueTimelineView.setIssueEvent(issueStoryDetail);
-            }
         } else {
-            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second;
-            if (issueStoryDetail instanceof IssueStoryEvent) {
-                holder.text.setText(((IssueStoryEvent) issueStoryDetail).event.event);
+            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1);
+
+            int viewType = getItemViewType(position);
+
+            if (viewType == VIEW_LABELED_LIST) {
+                if (issueStoryDetail instanceof IssueStoryLabelList) {
+                    ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryLabelList) issueStoryDetail);
+                } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
+                    ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryUnlabelList) issueStoryDetail);
+                }
+            } else if (viewType == VIEW_COMMENT) {
+                ((CommentHolder) holder).issueCommentView.setComment(repoInfo, (IssueStoryComment) issueStoryDetail);
+            }  else if (viewType == VIEW_EVENT) {
+                ((TimelineHolder) holder).issueTimelineView.setIssueEvent(((IssueStoryEvent) issueStoryDetail));
             }
         }
     }
@@ -92,14 +97,14 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         if (position == 0) {
             return VIEW_ISSUE;
         } else {
-            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1).second;
-            if (issueStoryDetail instanceof IssueStoryComment) {
+            IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1);
+
+            if (issueStoryDetail.getType().equals("commented")) {
                 return VIEW_COMMENT;
-            } else if (issueStoryDetail instanceof IssueStoryEvent) {
-                return VIEW_EVENT;
-            } else {
-                return VIEW_DEFAULT;
+            } else if (issueStoryDetail.isList() && (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType().equals("unlabeled"))) {
+                return VIEW_LABELED_LIST;
             }
+            return VIEW_EVENT;
         }
     }
 
@@ -127,6 +132,15 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         public TimelineHolder(IssueTimelineView itemView) {
             super(itemView);
             issueTimelineView = itemView;
+        }
+    }
+
+    private class LabelsHolder extends Holder {
+        private final IssueStoryLabelDetailView itemView;
+
+        public LabelsHolder(IssueStoryLabelDetailView itemView) {
+            super(itemView);
+            this.itemView = itemView;
         }
     }
 

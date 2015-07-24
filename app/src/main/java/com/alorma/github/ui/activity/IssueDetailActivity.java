@@ -254,7 +254,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         hideProgressDialog();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
         builder.title(R.string.ups);
-        builder.content(getString(R.string.issue_detail_error, issueInfo.toString(), error.getResponse().getReason()));
+        if (error != null && error.getResponse() != null && error.getResponse().getReason() != null) {
+            builder.content(getString(R.string.issue_detail_error, issueInfo.toString(), error.getResponse().getReason()));
+        }
         builder.positiveText(R.string.retry);
         builder.negativeText(R.string.accept);
         builder.callback(new MaterialDialog.ButtonCallback() {
