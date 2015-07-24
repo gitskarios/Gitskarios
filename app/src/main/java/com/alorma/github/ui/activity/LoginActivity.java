@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
@@ -212,6 +213,14 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     }
 
     private void openExternalLogin(ApiClient client) {
+        if (GithubDeveloperCredentials.getInstance().getProvider().getApiClient() == null) {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+            builder.title("API keys fail");
+            builder.content("Credentials are not provided via GithubDeveloperCredentials.init().");
+            builder.positiveText("OK");
+            builder.show();
+            return;
+        }
         final String url = String.format("%s?client_id=%s&scope=gist,user,notifications,repo",
                 OAUTH_URL, GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
 
