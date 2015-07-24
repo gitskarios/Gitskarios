@@ -4,14 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="@string/action_notifications"
         android:id="@+id/action_notifications"
-        app:showAsAction="always"
-        app:actionProviderClass="com.alorma.github.ui.view.NotificationsActionProvider" />
+        android:title="@string/action_notifications"
+        app:actionProviderClass="com.alorma.github.ui.view.NotificationsActionProvider"
+        app:showAsAction="always" />
     <item
-        android:title="@string/action_search"
         android:id="@+id/action_search"
-        app:showAsAction="always"
-        android:icon="@drawable/abc_ic_search_api_mtrl_alpha" />
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:title="@string/action_search"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_donate"
+        android:title="@string/action_donate"
+        app:showAsAction="never" />
 
 </menu>
