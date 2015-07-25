@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion versionName="2.4.8" changeDate="Jul 08,2015">
-        <changelogtext>Added support for Emojis when you create new issue, or add a comment.</changelogtext>
-        <changelogtext>Added rich text editor (comments and creating issue).</changelogtext>
-        <changelogtext>Added option to edit the title and the description of Issues or PullRequest.</changelogtext>
+    <changelogversion versionName="2.5.0.1" changeDate="Jul 08,2015">
+        <changelogtext>Improved pull request information. Select commits to get a list of commits and it's review comments</changelogtext>
+        <changelogtext>Improved users lists thanks to <a href="https://github.com/EsteveAguilera">@EsteveAguilera</a></changelogtext>
+        <changelogtext>Add support development option (Thanks in advance)</changelogtext>
+        <changelogtext>Fix bugs</changelogtext>
     </changelogversion>
-    <changelogversion versionName="2.4.7" changeDate="Jun 27,2015">
-        <changelogtext>Repository detail screen has been redesigned</changelogtext>
-    </changelogversion>
-
 </changelog>
