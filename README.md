@@ -10,6 +10,12 @@
 
 # README #
 
+Gitskarios is an Android Aplication that allows you to access GitHub, see your profile, search people, star repositories, and more!
+
+## CONTRIBUTING ##
+
+Follow the instructions that describe how to fork this project : [Fork this project](FORK.md)
+
 ## LICENSE ##
 
 The MIT License (MIT)
