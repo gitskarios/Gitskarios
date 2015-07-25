@@ -5,10 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
+import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
+import com.alorma.github.sdk.services.pullrequest.PullRequestReviewComments;
+import com.alorma.github.sdk.services.pullrequest.PullRequestsService;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
+import com.alorma.github.ui.adapter.commit.PullRequestCommitsReviewCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
@@ -23,11 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class PullRequestCommitsListFragment extends PaginatedListFragment<List<Commit>, CommitsAdapter> implements PermissionsManager
+public class PullRequestCommitsListFragment extends PaginatedListFragment<List<Commit>, PullRequestCommitsReviewCommentsAdapter> implements PermissionsManager
         , BackManager {
 
     private static final String ISSUE_INFO = "ISSUE_INFO";
@@ -53,16 +61,42 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         if (commits != null && commits.size() > 0) {
             orderCommits(commits);
 
+            getReviewComments();
+
+            List<IssueStoryDetail> issueStoryDetails = new ArrayList<>();
+
+            for (Commit commit : this.commits) {
+                issueStoryDetails.add(new PullRequestStoryCommit(commit));
+            }
+
             if (getAdapter() == null ) {
-                CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
-                commitsAdapter.addAll(PullRequestCommitsListFragment.this.commits);
+                PullRequestCommitsReviewCommentsAdapter commitsAdapter = new PullRequestCommitsReviewCommentsAdapter(LayoutInflater.from(getActivity()), false, issueInfo.repoInfo);
+
+
+                commitsAdapter.addAll(issueStoryDetails);
                 setAdapter(commitsAdapter);
             } else {
-                getAdapter().addAll(commits);
+                getAdapter().addAll(issueStoryDetails);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
+    }
+
+    private void getReviewComments() {
+        PullRequestReviewComments pullRequestReviewComments = new PullRequestReviewComments(getActivity(), issueInfo);
+        pullRequestReviewComments.setOnResultCallback(new BaseClient.OnResultCallback<List<ReviewComment>>() {
+            @Override
+            public void onResponseOk(List<ReviewComment> reviewComments, Response r) {
+
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        pullRequestReviewComments.execute();
     }
 
     @Override

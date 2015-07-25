@@ -166,6 +166,7 @@ public class PullRequestDetailActivity extends BackActivity
     }
 
     private void applyIssue() {
+        checkEditTitle();
         changeColor(pullRequestStory.pullRequest);
 
         fab.setVisibility(pullRequestStory.pullRequest.locked ? View.GONE : View.VISIBLE);

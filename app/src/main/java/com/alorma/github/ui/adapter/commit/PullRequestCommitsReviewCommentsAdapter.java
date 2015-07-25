@@ -18,18 +18,19 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
+import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
+import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
+import com.alorma.github.sdk.services.pullrequest.PullRequestReviewComments;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.view.issue.ReviewCommentView;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -38,25 +39,43 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.ViewHolder> implements StickyRecyclerHeadersAdapter<CommitsAdapter.HeaderViewHolder> {
+public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapter<IssueStoryDetail, PullRequestCommitsReviewCommentsAdapter.Holder> {
+
+    private static final int VIEW_INVALID = -1;
+    private static final int VIEW_COMMIT = 0;
+    private static final int VIEW_REVIEW = 1;
 
     private boolean shortMessage;
     private RepoInfo repoInfo;
 
-    public CommitsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
+    public PullRequestCommitsReviewCommentsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
         super(inflater);
         this.shortMessage = shortMessage;
         this.repoInfo = repoInfo;
     }
 
     @Override
-    public CommitsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(getInflater().inflate(R.layout.commit_row, parent, false));
+    public PullRequestCommitsReviewCommentsAdapter.Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == VIEW_COMMIT) {
+            return new CommitViewHolder(getInflater().inflate(R.layout.commit_row, parent, false));
+        } else if (viewType == VIEW_REVIEW) {
+            return new ReviewCommentHolder(getInflater().inflate(R.layout.timeline_review_comment, parent, false));
+        } else {
+            return new Holder(getInflater().inflate(android.R.layout.simple_list_item_1, parent, false));
+        }
     }
 
     @Override
-    public void onBindViewHolder(CommitsAdapter.ViewHolder holder, Commit commit) {
+    public void onBindViewHolder(PullRequestCommitsReviewCommentsAdapter.Holder holder, IssueStoryDetail detail) {
 
+        if (detail instanceof PullRequestStoryCommit) {
+            Commit commit = ((PullRequestStoryCommit) detail).commit;
+
+            handleCommit((CommitViewHolder) holder, commit);
+        }
+    }
+
+    private void handleCommit(CommitViewHolder holder, Commit commit) {
         User author = commit.author;
 
         if (author == null) {
@@ -157,30 +176,19 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     }
 
     @Override
-    public long getHeaderId(int i) {
-        return getItem(i).days;
-    }
+    public int getItemViewType(int position) {
+        super.getItemViewType(position);
 
-    @Override
-    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        return new HeaderViewHolder(getInflater().inflate(R.layout.commit_row_header, viewGroup, false));
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(HeaderViewHolder headerViewHolder, int i) {
-        Commit commit = getItem(i);
-
-        if (commit.commit != null && commit.commit.author != null && commit.commit.author.date != null) {
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            DateTime dt = formatter.parseDateTime(commit.commit.author.date);
-
-            String text = dt.toString("dd MMM yyyy");
-
-            headerViewHolder.tv.setText(text);
+        if (getItem(position) instanceof PullRequestStoryCommit) {
+            return VIEW_COMMIT;
+        } else if (getItem(position) instanceof IssueStoryReviewComment) {
+            return VIEW_REVIEW;
         }
+
+        return VIEW_INVALID;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class CommitViewHolder extends Holder {
 
         private final TextView title;
         private final TextView user;
@@ -189,7 +197,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         private final TextView numFiles;
         private final ImageView avatar;
 
-        public ViewHolder(final View itemView) {
+        public CommitViewHolder(final View itemView) {
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.title);
@@ -202,22 +210,27 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Commit commit = getItem(getAdapterPosition());
-                    CommitInfo info = new CommitInfo();
-                    info.repoInfo = repoInfo;
-                    info.sha = commit.sha;
+                    if (getItem(getAdapterPosition()) instanceof PullRequestStoryCommit) {
+                        Commit commit = ((PullRequestStoryCommit) getItem(getAdapterPosition())).commit;
+                        CommitInfo info = new CommitInfo();
+                        info.repoInfo = repoInfo;
+                        info.sha = commit.sha;
 
-                    Intent intent = CommitDetailActivity.launchIntent(v.getContext(), info);
-                    v.getContext().startActivity(intent);
+                        Intent intent = CommitDetailActivity.launchIntent(v.getContext(), info);
+                        v.getContext().startActivity(intent);
+                    }
                 }
             });
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
                 @Override
                 public boolean onLongClick(View v) {
-                    Commit item = getItem(getAdapterPosition());
-                    copy(item.shortSha());
-                    Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.sha_copied, item.shortSha()), Toast.LENGTH_SHORT).show();
+                    if (getItem(getAdapterPosition()) instanceof PullRequestStoryCommit) {
+                        Commit item = ((PullRequestStoryCommit) getItem(getAdapterPosition())).commit;
+                        copy(item.shortSha());
+                        Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.sha_copied, item.shortSha()), Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 }
             });
@@ -230,13 +243,20 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         }
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView tv;
+    private class ReviewCommentHolder extends Holder {
+        private ReviewCommentView reviewCommentView;
 
-        public HeaderViewHolder(View itemView) {
+        public ReviewCommentHolder(View itemView) {
             super(itemView);
-            tv = (TextView) itemView.findViewById(android.R.id.text1);
+            reviewCommentView = (ReviewCommentView) itemView.findViewById(R.id.review);
+        }
+    }
+
+    public class Holder extends RecyclerView.ViewHolder {
+
+        public Holder(View itemView) {
+            super(itemView);
         }
     }
 }

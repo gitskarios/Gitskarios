@@ -41,9 +41,6 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
     private static final int VIEW_COMMENT = 1;
     private static final int VIEW_EVENT = 2;
     private static final int VIEW_LABELED_LIST = 3;
-    private static final int VIEW_COMMITS_LIST = 4;
-    private static final int VIEW_SINGLE_COMMIT = 5;
-    private static final int VIEW_REVIEW_COMMENT = 6;
 
     private final LayoutInflater mInflater;
 
@@ -76,13 +73,8 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
             case VIEW_COMMENT:
                 IssueCommentView itemViewComment = new IssueCommentView(context);
                 return new CommentHolder(itemViewComment);
-            case VIEW_SINGLE_COMMIT:
-                return new TimelineSecondaryHolder(mInflater.inflate(R.layout.timeline_secondary, parent, false));
             case VIEW_EVENT:
-            case VIEW_COMMITS_LIST:
                 return new TimelineHolder(mInflater.inflate(R.layout.timeline_simple_view, parent, false));
-            case VIEW_REVIEW_COMMENT:
-                return new ReviewCommentHolder(mInflater.inflate(R.layout.timeline_review_comment, parent, false));
             case VIEW_LABELED_LIST:
                 return new LabelsHolder(new IssueStoryLabelDetailView(context));
             default:
@@ -100,11 +92,7 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
             ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(pullRequestActionsListener);
         } else {
             IssueStoryDetail issueStoryDetail = pullRequestStory.details.get(position - 1);
-            if (viewType == VIEW_SINGLE_COMMIT) {
-                ((TimelineSecondaryHolder) holder).issueTimelineView.setCommit(((PullRequestStoryCommit) issueStoryDetail));
-            } else if (viewType == VIEW_COMMITS_LIST) {
-                ((TimelineHolder) holder).issueTimelineView.setPullRequestCommitData((PullRequestStoryCommitsList) issueStoryDetail);
-            } else if (viewType == VIEW_LABELED_LIST) {
+            if (viewType == VIEW_LABELED_LIST) {
                 if (issueStoryDetail instanceof IssueStoryLabelList) {
                     ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryLabelList) issueStoryDetail);
                 } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
@@ -114,8 +102,6 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
                 ((CommentHolder) holder).issueCommentView.setComment(repoInfo, (IssueStoryComment) issueStoryDetail);
             } else if (viewType == VIEW_EVENT) {
                 ((TimelineHolder) holder).issueTimelineView.setIssueEvent(((IssueStoryEvent) issueStoryDetail));
-            } else if (viewType == VIEW_REVIEW_COMMENT) {
-                ((ReviewCommentHolder) holder).reviewCommentView.setReviewCommit((IssueStoryReviewComment) issueStoryDetail);
             }
         }
     }
@@ -134,15 +120,9 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
 
             if (issueStoryDetail.getType().equals("commented")) {
                 return VIEW_COMMENT;
-            } else if (issueStoryDetail.getType().equals("committed") && !issueStoryDetail.isList()) {
-                return VIEW_SINGLE_COMMIT;
-            }  else if (issueStoryDetail.getType().equals("review_comment")) {
-                return VIEW_REVIEW_COMMENT;
             } else if (issueStoryDetail.isList()) {
                 if (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType().equals("unlabeled")) {
                     return VIEW_LABELED_LIST;
-                } else if (issueStoryDetail.getType().equals("pushed")) {
-                    return VIEW_COMMITS_LIST;
                 }
             }
 
@@ -177,30 +157,12 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
         }
     }
 
-    private class TimelineSecondaryHolder extends Holder {
-        private final IssueTimelineSecondaryView issueTimelineView;
-
-        public TimelineSecondaryHolder(View itemView) {
-            super(itemView);
-            issueTimelineView = (IssueTimelineSecondaryView) itemView.findViewById(R.id.timelineSecondary);
-        }
-    }
-
     private class LabelsHolder extends Holder {
         private final IssueStoryLabelDetailView itemView;
 
         public LabelsHolder(IssueStoryLabelDetailView itemView) {
             super(itemView);
             this.itemView = itemView;
-        }
-    }
-
-    private class ReviewCommentHolder extends Holder {
-        private ReviewCommentView reviewCommentView;
-
-        public ReviewCommentHolder(View itemView) {
-            super(itemView);
-            reviewCommentView = (ReviewCommentView) itemView.findViewById(R.id.review);
         }
     }
 

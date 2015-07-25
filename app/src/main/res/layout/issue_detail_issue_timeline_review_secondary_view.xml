@@ -5,21 +5,21 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <com.alorma.github.ui.view.timeline.LineView
-        android:id="@+id/timeline"
-        android:layout_width="?android:listPreferredItemHeight"
-        android:layout_height="match_parent"
-        app:tl_lineColor="@color/gray_github_medium"
-        app:tl_lineWidth="1dp" />
-
     <com.mikepenz.materialdrawer.view.BezelImageView
         android:id="@+id/profileIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="-8dp"
-        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
         android:clickable="false"
-        app:biv_maskDrawable="@drawable/circle_mask" />
+        android:elevation="1dp"
+        app:biv_maskDrawable="@drawable/circle_mask"
+        android:layout_marginLeft="@dimen/material_drawer_item_profile_icon_padding" />
 
     <LinearLayout
         android:layout_width="match_parent"

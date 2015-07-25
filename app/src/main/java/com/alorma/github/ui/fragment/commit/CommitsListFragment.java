@@ -96,9 +96,8 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
             orderCommits(commits);
 
             if (getAdapter() == null) {
-                CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
+                CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false, repoInfo);
                 commitsAdapter.addAll(CommitsListFragment.this.commits);
-                commitsAdapter.setRepoInfo(repoInfo);
                 setAdapter(commitsAdapter);
             } else {
 

@@ -36,7 +36,7 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
 
                     onResponse(k, refreshing);
                     refreshing = false;
-                } else if (getAdapter() == null || getAdapter().getItemCount() == 0){
+                } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                     setEmpty();
                 }
             }
@@ -63,20 +63,22 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
     protected abstract void onResponse(K k, boolean refreshing);
 
     private void getLinkData(Response r) {
-        List<Header> headers = r.getHeaders();
-        Map<String, String> headersMap = new HashMap<String, String>(headers.size());
-        for (Header header : headers) {
-            headersMap.put(header.getName(), header.getValue());
-        }
+        if (r != null) {
+            List<Header> headers = r.getHeaders();
+            Map<String, String> headersMap = new HashMap<String, String>(headers.size());
+            for (Header header : headers) {
+                headersMap.put(header.getName(), header.getValue());
+            }
 
-        String link = headersMap.get("Link");
+            String link = headersMap.get("Link");
 
-        if (link != null) {
-            String[] parts = link.split(",");
-            try {
-                bottomPaginationLink = new PaginationLink(parts[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (link != null) {
+                String[] parts = link.split(",");
+                try {
+                    bottomPaginationLink = new PaginationLink(parts[0]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
