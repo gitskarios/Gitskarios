@@ -15,14 +15,12 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
-import com.alorma.github.sdk.services.pullrequest.PullRequestReviewComments;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.issue.ReviewCommentView;
@@ -31,7 +29,6 @@ import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -178,7 +175,7 @@ public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapte
     }
 
     private void handleReviewComment(ReviewCommentHolder holder, IssueStoryReviewComment comment) {
-        holder.reviewCommentView.setReviewCommit(comment);
+        holder.reviewCommentView.setReviewCommit(comment, repoInfo);
     }
 
     @Override

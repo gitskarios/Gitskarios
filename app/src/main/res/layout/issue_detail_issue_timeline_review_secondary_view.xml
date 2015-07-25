@@ -14,12 +14,12 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
         android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginLeft="@dimen/material_drawer_item_profile_icon_padding"
         android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
         android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
         android:clickable="false"
         android:elevation="1dp"
-        app:biv_maskDrawable="@drawable/circle_mask"
-        android:layout_marginLeft="@dimen/material_drawer_item_profile_icon_padding" />
+        app:biv_maskDrawable="@drawable/circle_mask" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,6 +44,22 @@
             android:layout_marginTop="@dimen/gapSmall"
             android:gravity="center_vertical"
             android:textSize="@dimen/textSizeSmall" />
+
+        <com.alorma.diff.lib.DiffTextView
+            android:id="@+id/textDiff"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/gapMedium"
+            android:textColor="@color/secondary_text"
+            android:textSize="@dimen/textSizeSmall" />
+
+        <TextView
+            android:id="@+id/bodyText"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gapMedium" />
 
     </LinearLayout>
 

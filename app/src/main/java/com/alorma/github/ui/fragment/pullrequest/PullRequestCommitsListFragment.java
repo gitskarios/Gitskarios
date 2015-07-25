@@ -13,7 +13,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
-import com.alorma.github.sdk.services.pullrequest.PullRequestReviewComments;
+import com.alorma.github.sdk.services.pullrequest.PullRequestReviewCommentsClient;
 import com.alorma.github.ui.adapter.commit.PullRequestCommitsReviewCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -84,7 +84,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     }
 
     private void getReviewComments() {
-        PullRequestReviewComments pullRequestReviewComments = new PullRequestReviewComments(getActivity(), issueInfo);
+        PullRequestReviewCommentsClient pullRequestReviewComments = new PullRequestReviewCommentsClient(getActivity(), issueInfo);
         pullRequestReviewComments.setOnResultCallback(new BaseClient.OnResultCallback<List<ReviewComment>>() {
             @Override
             public void onResponseOk(List<ReviewComment> reviewComments, Response r) {
@@ -111,7 +111,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
                         items = new ArrayList<>();
                         for (PullRequestStoryCommit commit : commits) {
                             items.add(commit);
-                            if (mapComments.get(commit.commit.sha) != null) {
+                             if (mapComments.get(commit.commit.sha) != null) {
                                 for (ReviewComment reviewComment : mapComments.get(commit.commit.sha)) {
 
                                     IssueStoryReviewComment issueStoryReviewComment = new IssueStoryReviewComment(reviewComment);

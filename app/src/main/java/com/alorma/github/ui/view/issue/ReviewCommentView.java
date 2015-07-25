@@ -8,10 +8,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alorma.diff.lib.DiffTextView;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.utils.TimeUtils;
+import com.gh4a.utils.UiUtils;
+import com.github.mobile.util.HtmlUtils;
+import com.github.mobile.util.HttpImageGetter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.joda.time.format.DateTimeFormat;
@@ -25,6 +30,8 @@ public class ReviewCommentView extends LinearLayout {
     private ImageView profileIcon;
     private TextView userLogin;
     private TextView createdAt;
+    private TextView bodyText;
+    private DiffTextView textDiff;
 
     public ReviewCommentView(Context context) {
         super(context);
@@ -52,10 +59,20 @@ public class ReviewCommentView extends LinearLayout {
         profileIcon = (ImageView) findViewById(R.id.profileIcon);
         userLogin = (TextView) findViewById(R.id.userLogin);
         createdAt = (TextView) findViewById(R.id.createdAt);
+        bodyText = (TextView) findViewById(R.id.bodyText);
+        textDiff = (DiffTextView) findViewById(R.id.textDiff);
     }
 
-    public void setReviewCommit(IssueStoryReviewComment reviewCommit) {
+    public void setReviewCommit(IssueStoryReviewComment reviewCommit, RepoInfo repoInfo) {
         applyGenericIssueStory(reviewCommit);
+
+        String htmlCode = HtmlUtils.format(reviewCommit.event.body).toString();
+        HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+        imageGetter.repoInfo(repoInfo);
+        imageGetter.bind(bodyText, htmlCode, reviewCommit.hashCode());
+        bodyText.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+
+        textDiff.setText(reviewCommit.event.diff_hunk);
     }
 
     private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
