@@ -3,7 +3,7 @@
 
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-    <string name="action_donate">Donate</string>
+    <string name="action_donate">Support development</string>
     <string name="no_gist_description">No description</string>
     <string name="navigation_gists">Gists</string>
     <string name="title_profile">Profile</string>
@@ -365,5 +365,6 @@
     <string name="aissue_detail_removed_labels">Removed labels %s</string>
     <string name="navigation_member_repos">Contributed</string>
     <string name="comment_on_diff">Commented on diff %s</string>
-    <string name="thanks_for_donate">Thanks for donate</string>
+    <string name="thanks_for_donate">Thank you so much!</string>
+    <string name="support_development">Support development</string>
 </resources>

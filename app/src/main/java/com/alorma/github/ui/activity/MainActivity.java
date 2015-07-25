@@ -5,20 +5,13 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -29,27 +22,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.sdk.security.GitHub;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
+import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.NotificationsActionProvider;
-import com.android.vending.billing.IInAppBillingService;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -70,20 +59,14 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Bus;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener,
         NotificationsActionProvider.OnNotificationListener {
 
-    private static final String SKU_DONATE = "com.alorma.github.donate";
     private GeneralReposFragment reposFragment;
     private EventsListFragment eventsFragment;
     private NotificationsActionProvider notificationProvider;
@@ -97,27 +80,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private Fragment lastUsedFragment;
     private Drawer resultDrawer;
     private ChangelogDialogSupport dialog;
-    private String purchaseId;
 
 
-    private IInAppBillingService mService;
-
-    ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name,
-                                       IBinder service) {
-            mService = IInAppBillingService.Stub.asInterface(service);
-
-            SKUTask task = new SKUTask();
-            task.execute(SKU_DONATE);
-        }
-    };
-    private boolean donateIsBuy = false;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -128,8 +92,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DonateFragment donateFragment = new DonateFragment();
 
-        createBillingService();
+        getSupportFragmentManager().beginTransaction().add(donateFragment, "donate").commit();
+
 
 /*
         IssueInfo issueInfo = new IssueInfo();
@@ -160,12 +126,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         createDrawer();
 
         checkChangeLog();
-    }
-
-    private void createBillingService() {
-        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
 
     private boolean checkChangeLog() {
@@ -422,14 +382,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             bus.register(notificationProvider);
         }
 
-        MenuItem donateItem = menu.findItem(R.id.action_donate);
-
-        if (donateItem != null) {
-            if (donateIsBuy) {
-                menu.removeItem(R.id.action_donate);
-            }
-        }
-
         return true;
     }
 
@@ -447,52 +399,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (item.getItemId() == R.id.action_search) {
             Intent intent = SearchActivity.launchIntent(this);
             startActivity(intent);
-        } else if (item.getItemId() == R.id.action_donate) {
-            launchDonate();
         }
 
-        return true;
-    }
-
-    private void launchDonate() {
-        try {
-            purchaseId = UUID.randomUUID().toString();
-            Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(),
-                    SKU_DONATE, "inapp", purchaseId);
-            PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-            startIntentSenderForResult(pendingIntent.getIntentSender(),
-                    1001, new Intent(), 0, 0, 0);
-        } catch (RemoteException | IntentSender.SendIntentException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1001) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            if (resultCode == RESULT_OK) {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String sku = jo.getString("productId");
-                    String developerPayload = jo.getString("developerPayload");
-                    if (developerPayload.equals(purchaseId) && SKU_DONATE.equals(sku)) {
-                        donateIsBuy = true;
-                        giveThanksForBuyDonate();
-                        invalidateOptionsMenu();
-                    }
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void giveThanksForBuyDonate() {
-        Toast.makeText(this, getString(R.string.thanks_for_donate), Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     private void setFragment(Fragment fragment) {
@@ -649,45 +558,4 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         super.onStop();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mService != null) {
-            unbindService(mServiceConn);
-        }
-    }
-
-    private class SKUTask extends AsyncTask<String, Void, Bundle> {
-
-        @Override
-        protected Bundle doInBackground(String... strings) {
-            ArrayList<String> skuList = new ArrayList<>();
-            Collections.addAll(skuList, strings);
-            Bundle querySkus = new Bundle();
-            querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-
-            try {
-                return mService.getPurchases(3, getPackageName(), "inapp", null);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bundle ownedItems) {
-            super.onPostExecute(ownedItems);
-            if (ownedItems != null) {
-                int response = ownedItems.getInt("RESPONSE_CODE");
-                if (response == 0) {
-                    ArrayList<String> ownedSkus = ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-
-                    if (ownedSkus.size() == 0) {
-                        donateIsBuy = true;
-                        invalidateOptionsMenu();
-                    }
-                }
-            }
-        }
-    }
 }
