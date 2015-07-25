@@ -77,6 +77,10 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
         notifyDataSetChanged();
     }
 
+    public List<ItemType> getItems() {
+        return items;
+    }
+
     public void setRecyclerAdapterContentListener(RecyclerAdapterContentListener recyclerAdapterContentListener) {
         this.recyclerAdapterContentListener = recyclerAdapterContentListener;
     }

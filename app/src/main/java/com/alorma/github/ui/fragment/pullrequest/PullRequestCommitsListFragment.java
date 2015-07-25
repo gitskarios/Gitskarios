@@ -10,11 +10,10 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
+import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
 import com.alorma.github.sdk.services.pullrequest.PullRequestReviewComments;
-import com.alorma.github.sdk.services.pullrequest.PullRequestsService;
-import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.commit.PullRequestCommitsReviewCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -27,7 +26,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -69,7 +70,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
                 issueStoryDetails.add(new PullRequestStoryCommit(commit));
             }
 
-            if (getAdapter() == null ) {
+            if (getAdapter() == null) {
                 PullRequestCommitsReviewCommentsAdapter commitsAdapter = new PullRequestCommitsReviewCommentsAdapter(LayoutInflater.from(getActivity()), false, issueInfo.repoInfo);
 
 
@@ -88,7 +89,40 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         pullRequestReviewComments.setOnResultCallback(new BaseClient.OnResultCallback<List<ReviewComment>>() {
             @Override
             public void onResponseOk(List<ReviewComment> reviewComments, Response r) {
+                if (reviewComments != null) {
+                    List<IssueStoryDetail> items = getAdapter().getItems();
 
+                    if (items != null) {
+                        List<PullRequestStoryCommit> commits = new ArrayList<PullRequestStoryCommit>();
+                        for (IssueStoryDetail item : items) {
+                            if (item instanceof PullRequestStoryCommit) {
+                                commits.add((PullRequestStoryCommit) item);
+                            }
+                        }
+
+                        Map<String, List<ReviewComment>> mapComments = new HashMap<>();
+
+                        for (ReviewComment reviewComment : reviewComments) {
+                            if (mapComments.get(reviewComment.original_commit_id) == null) {
+                                mapComments.put(reviewComment.original_commit_id, new ArrayList<ReviewComment>());
+                            }
+                            mapComments.get(reviewComment.original_commit_id).add(reviewComment);
+                        }
+
+                        items = new ArrayList<>();
+                        for (PullRequestStoryCommit commit : commits) {
+                            items.add(commit);
+                            if (mapComments.get(commit.commit.sha) != null) {
+                                for (ReviewComment reviewComment : mapComments.get(commit.commit.sha)) {
+                                    items.add(new IssueStoryReviewComment(reviewComment));
+                                }
+                            }
+                        }
+
+                        getAdapter().clear();
+                        getAdapter().addAll(items);
+                    }
+                }
             }
 
             @Override

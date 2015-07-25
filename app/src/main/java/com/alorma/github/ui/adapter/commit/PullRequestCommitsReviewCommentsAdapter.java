@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -70,8 +71,9 @@ public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapte
 
         if (detail instanceof PullRequestStoryCommit) {
             Commit commit = ((PullRequestStoryCommit) detail).commit;
-
             handleCommit((CommitViewHolder) holder, commit);
+        } else if (detail instanceof IssueStoryReviewComment) {
+            handleReviewComment((ReviewCommentHolder) holder, (IssueStoryReviewComment) detail);
         }
     }
 
@@ -173,6 +175,10 @@ public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapte
         } else {
             holder.numFiles.setVisibility(View.GONE);
         }
+    }
+
+    private void handleReviewComment(ReviewCommentHolder holder, IssueStoryReviewComment comment) {
+        holder.reviewCommentView.setReviewCommit(comment);
     }
 
     @Override
