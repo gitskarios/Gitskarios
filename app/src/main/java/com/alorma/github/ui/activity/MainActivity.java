@@ -100,14 +100,14 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
 
 
-        IssueInfo issueInfo = new IssueInfo();
+       /* IssueInfo issueInfo = new IssueInfo();
 
         issueInfo.repoInfo = new RepoInfo();
         issueInfo.repoInfo.owner = "Jasig";
         issueInfo.repoInfo.name = "cas";
         issueInfo.num = 993;
 
-        startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));
+        startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));*/
 
         GitskariosApplication.get(this).inject(this);
 
