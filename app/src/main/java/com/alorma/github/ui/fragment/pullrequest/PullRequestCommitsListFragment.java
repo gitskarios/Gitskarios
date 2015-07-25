@@ -73,7 +73,6 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
             if (getAdapter() == null) {
                 PullRequestCommitsReviewCommentsAdapter commitsAdapter = new PullRequestCommitsReviewCommentsAdapter(LayoutInflater.from(getActivity()), false, issueInfo.repoInfo);
 
-
                 commitsAdapter.addAll(issueStoryDetails);
                 setAdapter(commitsAdapter);
             } else {
@@ -114,7 +113,10 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
                             items.add(commit);
                             if (mapComments.get(commit.commit.sha) != null) {
                                 for (ReviewComment reviewComment : mapComments.get(commit.commit.sha)) {
-                                    items.add(new IssueStoryReviewComment(reviewComment));
+
+                                    IssueStoryReviewComment issueStoryReviewComment = new IssueStoryReviewComment(reviewComment);
+                                    issueStoryReviewComment.created_at = getMilisFromDateClearHour(reviewComment.created_at);
+                                    items.add(issueStoryReviewComment);
                                 }
                             }
                         }
@@ -123,6 +125,14 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
                         getAdapter().addAll(items);
                     }
                 }
+            }
+
+            private long getMilisFromDateClearHour(String createdAt) {
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+                DateTime dt = formatter.parseDateTime(createdAt);
+
+                return dt.hourOfDay().roundFloorCopy().getMillis();
             }
 
             @Override
