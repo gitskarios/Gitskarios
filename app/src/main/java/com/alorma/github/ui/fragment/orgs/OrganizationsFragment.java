@@ -53,12 +53,16 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
 
     @Override
     protected void onResponse(List<Organization> organizations, boolean refreshing) {
-        if (getAdapter() != null) {
-            getAdapter().addAll(organizations);
-        } else {
-            OrganizationsAdapter adapter = new OrganizationsAdapter(LayoutInflater.from(getActivity()));
-            adapter.addAll(organizations);
-            setAdapter(adapter);
+        if (organizations.size() > 0) {
+            if (getAdapter() != null) {
+                getAdapter().addAll(organizations);
+            } else {
+                OrganizationsAdapter adapter = new OrganizationsAdapter(LayoutInflater.from(getActivity()));
+                adapter.addAll(organizations);
+                setAdapter(adapter);
+            }
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            setEmpty();
         }
     }
 

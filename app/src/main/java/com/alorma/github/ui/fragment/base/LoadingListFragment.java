@@ -34,6 +34,8 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     private ErrorView error_view;
 
     private Adapter adapter;
+    private View loadingView;
+    private boolean fromRetry = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+
+        loadingView = view.findViewById(R.id.loading_view);
 
         if (recyclerView != null) {
             recyclerView.setLayoutManager(getLayoutManager());
@@ -110,7 +114,8 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
     protected void startRefresh() {
         hideEmpty();
-        if (swipe != null) {
+        if (swipe != null && fromRetry) {
+            fromRetry = false;
             swipe.post(new Runnable() {
                 @Override
                 public void run() {
@@ -118,10 +123,16 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
                 }
             });
         }
+
+        if (loadingView != null && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
+            loadingView.setVisibility(View.VISIBLE);
+        }
     }
+
 
     protected void stopRefresh() {
         if (swipe != null) {
+            fromRetry = false;
             swipe.post(new Runnable() {
                 @Override
                 public void run() {
@@ -129,12 +140,10 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
                 }
             });
         }
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        stopRefresh();
+        if (loadingView != null) {
+            loadingView.setVisibility(View.GONE);
+        }
     }
 
     protected void checkFAB() {
@@ -160,6 +169,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     }
 
     public void setEmpty() {
+        stopRefresh();
         if (getActivity() != null) {
             if (error_view != null) {
                 error_view.setVisibility(View.VISIBLE);
@@ -230,6 +240,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     @Override
     public void onRetry() {
         hideEmpty();
+        fromRetry = true;
         executeRequest();
     }
 }

@@ -23,7 +23,6 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
 
     @Override
     public void onResponseOk(K k, Response r) {
-        stopRefresh();
         hideEmpty();
         if (getActivity() != null && isAdded()) {
             if (k != null && k instanceof List) {
@@ -41,6 +40,7 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
                 }
             }
         }
+        stopRefresh();
     }
 
     @Override

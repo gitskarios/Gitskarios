@@ -70,7 +70,6 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
-
     }
 
     @Override
