@@ -36,6 +36,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     private Adapter adapter;
     private View loadingView;
     private boolean fromRetry = false;
+    private boolean fromPaginated;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,12 +110,13 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     }
 
     protected void executePaginatedRequest(int page) {
+        fromPaginated = true;
         startRefresh();
     }
 
     protected void startRefresh() {
         hideEmpty();
-        if (swipe != null && fromRetry) {
+        if (swipe != null && (fromRetry || fromPaginated)) {
             fromRetry = false;
             swipe.post(new Runnable() {
                 @Override
@@ -124,7 +126,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
             });
         }
 
-        if (loadingView != null && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
+        if (!fromPaginated && loadingView != null && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
             loadingView.setVisibility(View.VISIBLE);
         }
     }
