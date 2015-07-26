@@ -3,6 +3,7 @@
     <changelogversion versionName="2.5.0.1" changeDate="Jul 08,2015">
         <changelogtext>Improved pull request information. Select commits to get a list of commits and it's review comments</changelogtext>
         <changelogtext>Improved users lists thanks to @EsteveAguilera</changelogtext>
+        <changelogtext>Fix loading indicators problems</changelogtext>
         <changelogtext>Fix bugs</changelogtext>
     </changelogversion>
 </changelog>
