@@ -97,9 +97,7 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
         createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
         createdIcon = (ImageView) view.findViewById(R.id.createdIcon);
-/*
-        issuesIcon = (TextView) view.findViewById(R.id.issuesIcon);
-*/
+
         isStarredIcon = (ImageView) view.findViewById(R.id.isStarredIcon);
         isWatchedIcon = (ImageView) view.findViewById(R.id.isWatchedIcon);
 
@@ -207,10 +205,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             }
 
             createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
-            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), currentRepo.created_at));
+            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), currentRepo.created_at, R.string.created_at));
 
-//            String num = String.valueOf(currentRepo.open_issues_count);
-//            issuesIcon.setText(num);
         }
     }
 

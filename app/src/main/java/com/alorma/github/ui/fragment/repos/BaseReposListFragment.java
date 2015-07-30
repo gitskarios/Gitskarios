@@ -23,30 +23,18 @@ import retrofit.RetrofitError;
  */
 public abstract class BaseReposListFragment extends PaginatedListFragment<List<Repo>, ReposAdapter> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    protected ReposAdapter reposAdapter;
     private GitskariosSettings settings;
-
-   /* @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (reposAdapter != null && reposAdapter.getItemCount() >= position) {
-            Repo item = reposAdapter.getItem(position);
-
-        }
-    }*/
 
     @Override
     protected void onResponse(List<Repo> repos, boolean refreshing) {
         if (repos.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {
-                reposAdapter.addAll(repos);
-            } else if (reposAdapter == null) {
-                setUpList(repos);
+                getAdapter().addAll(repos);
             } else {
-                setAdapter(reposAdapter);
+                setUpList(repos);
             }
-        } else if (reposAdapter == null || reposAdapter.getItemCount() == 0) {
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
         }
     }
@@ -54,7 +42,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
-        if (reposAdapter == null || reposAdapter.getItemCount() == 0) {
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
                 setEmpty(error.getResponse().getStatus());
             }
@@ -65,7 +53,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
         settings = new GitskariosSettings(getActivity());
         settings.registerListener(this);
 
-        reposAdapter = new ReposAdapter(LayoutInflater.from(getActivity()));
+        ReposAdapter reposAdapter = new ReposAdapter(LayoutInflater.from(getActivity()));
         reposAdapter.addAll(repos);
 
         setAdapter(reposAdapter);
@@ -74,8 +62,8 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
     @Override
     public void setEmpty(int statusCode) {
         super.setEmpty(statusCode);
-        if (reposAdapter != null) {
-            reposAdapter.clear();
+        if (getAdapter() != null) {
+            getAdapter().clear();
         }
     }
 

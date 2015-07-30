@@ -32,6 +32,11 @@
         <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
         <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
     </plurals>
+    <plurals name="repo_release_num_files">
+        <item quantity="zero">No assets</item>
+        <item quantity="one">%d asset</item>
+        <item quantity="other">%d assets</item>
+    </plurals>
     <plurals name="years_ago">
         <item quantity="one">%d year ago</item>
         <item quantity="other">%d years ago</item>

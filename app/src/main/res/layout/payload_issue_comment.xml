@@ -6,20 +6,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/gapMedium"
-        android:layout_marginRight="@dimen/gapMedium"
-        android:layout_marginStart="@dimen/gapMedium"
-        android:layout_marginEnd="@dimen/gapMedium"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:layout_marginBottom="@dimen/gapSmall">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/gapMedium"
+            android:layout_marginRight="@dimen/gapMedium"
+            android:layout_marginStart="@dimen/gapMedium"
+            android:layout_marginEnd="@dimen/gapMedium"
+            android:layout_marginTop="@dimen/gapMedium"
+            android:layout_marginBottom="@dimen/gapSmall"
             android:padding="8dp">
 
             <com.alorma.github.ui.view.CircularImageView
@@ -75,5 +71,4 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
 </LinearLayout>

@@ -24,10 +24,10 @@ import java.util.Locale;
  */
 public class TimeUtils {
 
-    public static String getDateToText(Context context, Date date) {
+    public static String getDateToText(Context context, Date date, int resId) {
         SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.at_date_format), Locale.getDefault());
 
-        return context.getString(R.string.joined_at, sdf.format(date));
+        return context.getString(resId, sdf.format(date));
     }
 
     public static String getTimeAgoString(Context context, String date) {

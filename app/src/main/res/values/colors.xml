@@ -45,4 +45,6 @@
     <color name="black_semi_transparent">#B2000000</color>
     <color name="commit_additions">#ff009d00</color>
     <color name="commit_deletions">#9aff0000</color>
+    <color name="release_prerelease">#9aff0000</color>
+    <color name="release_version">#ff009d00</color>
 </resources>

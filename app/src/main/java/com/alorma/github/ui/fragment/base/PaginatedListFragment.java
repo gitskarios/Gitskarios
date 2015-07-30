@@ -14,7 +14,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<K> {
+public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<ItemType> {
 
     protected static final String USERNAME = "USERNAME";
     private PaginationLink bottomPaginationLink;
@@ -22,18 +22,18 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
     protected boolean refreshing;
 
     @Override
-    public void onResponseOk(K k, Response r) {
+    public void onResponseOk(ItemType itemType, Response r) {
         hideEmpty();
         if (getActivity() != null && isAdded()) {
-            if (k != null && k instanceof List) {
-                if (((List) k).size() > 0) {
+            if (itemType != null && itemType instanceof List) {
+                if (((List) itemType).size() > 0) {
                     getLinkData(r);
 
                     if (getAdapter() != null && refreshing) {
                         getAdapter().clear();
                     }
 
-                    onResponse(k, refreshing);
+                    onResponse(itemType, refreshing);
                     refreshing = false;
                 } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                     setEmpty();
@@ -60,7 +60,7 @@ public abstract class PaginatedListFragment<K, Adapter extends RecyclerArrayAdap
         }
     }
 
-    protected abstract void onResponse(K k, boolean refreshing);
+    protected abstract void onResponse(ItemType itemType, boolean refreshing);
 
     private void getLinkData(Response r) {
         if (r != null) {

@@ -116,6 +116,7 @@
     <string name="no_gitignore_template">No gitignore</string>
     <string name="follow">Follow</string>
     <string name="joined_at">Joined at %s</string>
+    <string name="created_at">Created at %s</string>
     <string name="at_date_format">dd MMM yyyy</string>
     <string name="public_data">Public data</string>
     <string name="plan_data">Plan</string>
@@ -367,4 +368,11 @@
     <string name="comment_on_diff">Commented on diff %s</string>
     <string name="thanks_for_donate">Thank you so much!</string>
     <string name="support_development">Support development</string>
+    <string name="no_releases">No releases on this repository</string>
+    <string name="releases">Releases</string>
+    <string name="repo_release_fragment_detail_title">Info</string>
+    <string name="repo_release_fragment_assets_title">Assets</string>
+    <string name="release_asset_zip">Source code (zip)</string>
+    <string name="release_asset_tar">Source code (tar.gz)</string>
+
 </resources>

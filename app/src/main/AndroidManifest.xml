@@ -40,9 +40,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.MainActivity" />
-        <activity
-            android:name=".ui.activity.GeneralPeopleFragment"
-            android:label="@string/navigation_people" />
         <activity android:name=".ui.activity.ProfileActivity" />
         <activity android:name=".ui.activity.CommitDetailActivity" />
         <activity android:name=".ui.activity.RepoDetailActivity" />
@@ -51,6 +48,7 @@
         <activity android:name=".ui.activity.FileActivity" />
         <activity android:name=".ui.activity.ContentCommitsActivity" />
         <activity android:name=".ui.activity.OrganizationActivity" />
+        <activity android:name=".ui.activity.ReleaseDetailActivity" />
         <activity
             android:name=".Interceptor"
             android:theme="@android:style/Theme.NoDisplay" >

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginRight="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_marginEnd="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_marginBottom="@dimen/gapSmall"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="@dimen/avatar_size_list"
+            android:layout_height="@dimen/avatar_size_list"
+            android:id="@+id/releaseState"
+            android:padding="@dimen/gapMedium"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="@dimen/gapMedium"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:fontFamily="sans-serif-condensed"
+            android:id="@+id/releaseName"
+            android:layout_toRightOf="@id/releaseState"
+            android:layout_toEndOf="@id/releaseState"
+            android:layout_marginLeft="@dimen/gapMedium"
+            android:layout_marginStart="@dimen/gapMedium"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/filesRelease"
+            android:layout_below="@+id/releaseName"
+            android:layout_alignLeft="@+id/releaseName"
+            android:layout_alignStart="@+id/releaseName"
+            android:layout_marginTop="@dimen/gapMedium"
+            android:textSize="@dimen/textSizeSmall"
+            android:layout_alignRight="@+id/releaseName"
+            android:layout_alignEnd="@+id/releaseName" />
+
+    </RelativeLayout>
+
+</LinearLayout>

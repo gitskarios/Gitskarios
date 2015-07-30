@@ -72,7 +72,7 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (s.toString().contains(":")) {
-                            emojiBitmapLoader.parseTextView(edit, bodyTextWatcher);
+                            emojiBitmapLoader.parseTextView(edit);
                         }
                     }
 
@@ -138,7 +138,7 @@ public class NewIssueCommentActivity extends BackActivity implements BaseClient.
             if (emoji != null) {
                 edit.removeTextChangedListener(bodyTextWatcher);
                 edit.setText(edit.getText() + " :" + emoji.getKey() + ": ");
-                emojiBitmapLoader.parseTextView(edit, bodyTextWatcher);
+                emojiBitmapLoader.parseTextView(edit);
                 edit.setSelection(edit.getText().length());
             }
         }

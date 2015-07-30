@@ -41,6 +41,7 @@ import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
+import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.basesdk.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -276,6 +277,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             SourceListFragment sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
             CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
             IssuesListFragment issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+            RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(getRepoInfo(), currentRepo.permissions);
             RepoContributorsFragment repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
 
             listFragments = new ArrayList<>();
@@ -284,6 +286,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             listFragments.add(sourceListFragment);
             listFragments.add(commitsListFragment);
             listFragments.add(issuesListFragment);
+            listFragments.add(repoReleasesFragment);
             listFragments.add(repoCollaboratorsFragment);
         }
     }
@@ -318,6 +321,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 if (((BackManager) fragment).onBackPressed()) {
                     super.onBackPressed();
                 }
+            } else {
+                super.onBackPressed();
             }
         } else {
             super.onBackPressed();

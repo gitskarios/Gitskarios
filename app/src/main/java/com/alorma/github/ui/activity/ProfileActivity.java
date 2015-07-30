@@ -304,7 +304,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             profileItemsAdapter.add(profileUserEmail);
         }
         if (user.created_at != null) {
-            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at), null);
+            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at, R.string.joined_at), null);
             profileItemsAdapter.add(profileUserCreated);
         }
     }

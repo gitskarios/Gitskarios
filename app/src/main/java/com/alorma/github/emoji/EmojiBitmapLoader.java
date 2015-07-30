@@ -32,7 +32,6 @@ public class EmojiBitmapLoader {
     private int sizeIcon;
     private String textFromTextView;
     private TextView textView;
-    private TextWatcher textWatcher;
 
     public EmojiBitmapLoader() {
         this.map = new HashMap<>();
@@ -40,10 +39,14 @@ public class EmojiBitmapLoader {
         handler = new Handler();
     }
 
-    public void parseTextView(final TextView textView, TextWatcher textWatcher) {
+    public void parseTextView(final TextView textView) {
         this.textView = textView;
-        this.textWatcher = textWatcher;
-        spannableString = new SpannableString(textView.getEditableText());
+
+        if (textView.getEditableText() != null) {
+            spannableString = new SpannableString(textView.getEditableText());
+        } else {
+            spannableString = new SpannableString(textView.getText());
+        }
 
         sizeIcon = (int) (-textView.getPaint().ascent());
         textFromTextView = textView.getText().toString();
@@ -78,11 +81,6 @@ public class EmojiBitmapLoader {
 
         Matcher matcher = pattern.matcher(textFromTextView);
         if (matcher.find()) {
-
-            if (textWatcher != null) {
-                textView.removeTextChangedListener(textWatcher);
-            }
-
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -170,10 +168,6 @@ public class EmojiBitmapLoader {
 
                 if (textView instanceof EditText) {
                     ((EditText) textView).setSelection(textView.getSelectionEnd());
-                }
-
-                if (textWatcher != null) {
-                    textView.addTextChangedListener(textWatcher);
                 }
             }
         });
