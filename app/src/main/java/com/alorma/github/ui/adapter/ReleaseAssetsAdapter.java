@@ -55,24 +55,11 @@ public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<ReleaseAsset, Rel
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    downloadFile(v.getContext(), getItem(getAdapterPosition()));
+
                 }
             });
         }
     }
 
-    private void downloadFile(Context context, ReleaseAsset asset) {
-        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(
-                Uri.parse(asset.browser_download_url));
 
-        String fileName = asset.name;
-        request.setTitle(fileName);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "gitskarios/" + fileName);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.allowScanningByMediaScanner();
-        dm.enqueue(request);
-
-        Toast.makeText(context, "Download started in gitskarios/" + fileName, Toast.LENGTH_SHORT).show();
-    }
 }
