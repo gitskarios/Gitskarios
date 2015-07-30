@@ -24,21 +24,18 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
-import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
 import com.alorma.github.ui.fragment.donate.DonateFragment;
-import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
+import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
@@ -59,12 +56,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener,
         NotificationsActionProvider.OnNotificationListener {
@@ -72,9 +66,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private GeneralReposFragment reposFragment;
     private EventsListFragment eventsFragment;
     private NotificationsActionProvider notificationProvider;
-
-    @Inject
-    Bus bus;
 
     private AccountHeader headerResult;
     private HashMap<String, Account> accountMap;
@@ -109,8 +100,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));*/
 
-        GitskariosApplication.get(this).inject(this);
-
         setContentView(R.layout.generic_toolbar);
 
         createDrawer();
@@ -135,7 +124,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     @Override
     public void onStart() {
         super.onStart();
-        bus.register(this);
 
         AccountManager accountManager = AccountManager.get(this);
         Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
@@ -194,19 +182,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             return userName;
         }
         return accountName;
-    }
-
-    @Override
-    protected void onPause() {
-        if (notificationProvider != null) {
-            try {
-                bus.unregister(notificationProvider);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        }
-        bus.unregister(this);
-        super.onPause();
     }
 
     private void createDrawer() {
@@ -369,7 +344,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         if (notificationProvider != null) {
             notificationProvider.setOnNotificationListener(this);
-            bus.register(notificationProvider);
         }
 
         return true;
