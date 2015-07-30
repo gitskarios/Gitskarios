@@ -2,15 +2,12 @@ package com.alorma.github.ui.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 
-import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.bean.ClearNotification;
-import com.alorma.github.bean.NotificationsCount;
 import com.alorma.github.bean.UnsubscribeThreadNotification;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -22,8 +19,6 @@ import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.Collections;
@@ -31,30 +26,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Created by Bernat on 19/02/2015.
  */
-public class NotificationsFragment extends PaginatedListFragment<List<Notification>, NotificationsAdapter> {
+public class NotificationsFragment extends PaginatedListFragment<List<Notification>, NotificationsAdapter> implements NotificationsAdapter.NotificationsAdapterListener {
 
-    @Inject
-    Bus bus;
     private StickyRecyclerHeadersDecoration headersDecoration;
 
     public static NotificationsFragment newInstance() {
         return new NotificationsFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        GitskariosApplication.get(getActivity()).inject(this);
-    }
 
     @Override
     public void onResume() {
@@ -85,9 +70,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     @Override
     public void onResponseOk(final List<Notification> notifications, Response r) {
         stopRefresh();
-        if (notifications != null) {
-            bus.post(new NotificationsCount(notifications.size()));
-        }
         super.onResponseOk(notifications, r);
         if (notifications != null) {
             if (notifications.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
@@ -101,7 +83,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     @Override
     protected void onResponse(final List<Notification> notifications, boolean refreshing) {
         if (notifications != null && notifications.size() > 0) {
-            bus.post(new NotificationsCount(notifications.size()));
             if (notifications.size() > 0) {
                 if (getAdapter() != null && getAdapter().getItemCount() > 0) {
                     hideEmpty();
@@ -120,9 +101,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                 Collections.sort(notifications, Notification.Comparators.REPO_ID);
                 NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
                 notificationsAdapter.addAll(notifications);
-
-                GitskariosApplication.get(getActivity()).inject(notificationsAdapter);
-                bus.register(notificationsAdapter);
+                notificationsAdapter.setNotificationsAdapterListener(this);
 
                 setAdapter(notificationsAdapter);
 
@@ -164,8 +143,8 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         return R.string.no_notifications;
     }
 
-    @Subscribe
-    public void manageNotificationClick(Notification item) {
+    @Override
+    public void onNotificationClick(Notification item) {
         String type = item.subject.type;
 
         Uri uri = null;
@@ -190,22 +169,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        bus.register(this);
-    }
-
-    @Override
-    public void onPause() {
-        if (getAdapter() != null) {
-            bus.unregister(getAdapter());
-        }
-        bus.unregister(this);
-        super.onPause();
-    }
-
-    @Subscribe
     public void clearRepoNotifications(final ClearNotification clearNotification) {
         if (clearNotification.isAllRepository()) {
             RepoInfo repoInfo = new RepoInfo();
@@ -243,8 +206,8 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         }
     }
 
-    @Subscribe
-    public void unsubscribeThreadNotification(final UnsubscribeThreadNotification unsubscribeThreadNotification) {
+    @Override
+        public void unsubscribeThreadNotification(final UnsubscribeThreadNotification unsubscribeThreadNotification) {
         final UnsubscribeThread unsubscribeThread = new UnsubscribeThread(getActivity(), unsubscribeThreadNotification.getNotification());
         unsubscribeThread.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
             @Override

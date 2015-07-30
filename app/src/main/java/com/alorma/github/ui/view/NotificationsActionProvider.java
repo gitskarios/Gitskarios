@@ -39,8 +39,6 @@ public class NotificationsActionProvider extends ActionProvider implements BaseC
      */
     public NotificationsActionProvider(Context context) {
         super(context);
-
-        GitskariosApplication.get(context).inject(this);
     }
 
     @Override

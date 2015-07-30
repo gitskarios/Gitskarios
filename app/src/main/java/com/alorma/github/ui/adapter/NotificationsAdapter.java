@@ -20,10 +20,7 @@ import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.squareup.otto.Bus;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
-
-import javax.inject.Inject;
 
 /**
  * Created by Bernat on 19/02/2015.
@@ -31,8 +28,7 @@ import javax.inject.Inject;
 public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, NotificationsAdapter.ViewHolder> implements StickyRecyclerHeadersAdapter<NotificationsAdapter.HeaderViewHolder> {
 
     private final IconicsDrawable iconDrawable;
-    @Inject
-    Bus bus;
+    private NotificationsAdapterListener notificationsAdapterListener;
 
     public NotificationsAdapter(Context context, LayoutInflater inflater) {
         super(inflater);
@@ -62,7 +58,9 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
         headerViewHolder.iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bus.post(new ClearNotification(item, true));
+                if (notificationsAdapterListener != null) {
+                    notificationsAdapterListener.clearRepoNotifications(new ClearNotification(item, true));
+                }
             }
         });
     }
@@ -75,6 +73,10 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
     @Override
     protected void onBindViewHolder(ViewHolder holder, Notification notification) {
         holder.text.setText(notification.subject.title);
+    }
+
+    public void setNotificationsAdapterListener(NotificationsAdapterListener notificationsAdapterListener) {
+        this.notificationsAdapterListener = notificationsAdapterListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,9 +92,8 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (bus != null && getItem(getAdapterPosition()) != null) {
-                        bus.post(getItem(getAdapterPosition()));
-                        bus.post(new ClearNotification(getItem(getAdapterPosition()), false));
+                    if (notificationsAdapterListener != null) {
+                        notificationsAdapterListener.onNotificationClick(getItem(getAdapterPosition()));
                     }
                 }
             });
@@ -109,10 +110,14 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
                             switch (menuItem.getItemId()) {
 
                                 case R.id.action_notification_unsubscribe:
-                                    bus.post(new UnsubscribeThreadNotification(getItem(getAdapterPosition())));
+                                    if (notificationsAdapterListener != null) {
+                                        notificationsAdapterListener.unsubscribeThreadNotification(new UnsubscribeThreadNotification(getItem(getAdapterPosition())));
+                                    }
                                     break;
                                 case R.id.action_notification_mark_read:
-                                    bus.post(new ClearNotification(getItem(getAdapterPosition()), false));
+                                    if (notificationsAdapterListener != null) {
+                                        notificationsAdapterListener.clearRepoNotifications(new ClearNotification(getItem(getAdapterPosition()), false));
+                                    }
                                     break;
 
                             }
@@ -143,5 +148,13 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<Notification, Not
                 }
             });
         }
+    }
+
+    public interface NotificationsAdapterListener {
+        void onNotificationClick(Notification notification);
+
+        void clearRepoNotifications(ClearNotification clearNotification);
+
+        void unsubscribeThreadNotification(UnsubscribeThreadNotification unsubscribeThreadNotification);
     }
 }
