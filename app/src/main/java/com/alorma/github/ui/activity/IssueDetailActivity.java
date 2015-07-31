@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -81,6 +82,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private int primary;
     private int primaryDark;
     private AppBarLayout appbarLayout;
+    private ProgressBar loadingView;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -106,10 +108,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
             findViews();
         }
-    }
-
-    private void loadRepoPermissions(RepoInfo repoInfo) {
-
     }
 
     private void checkEditTitle() {
@@ -142,6 +140,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
+        loadingView = (ProgressBar) findViewById(R.id.loading_view);
 
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
@@ -151,6 +150,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     @Override
     protected void getContent() {
         super.getContent();
+        loadingView.setVisibility(View.VISIBLE);
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
             repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
@@ -189,6 +189,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void applyIssue() {
+        loadingView.setVisibility(View.GONE);
         changeColor(issueStory.issue);
 
         fab.setVisibility(issueStory.issue.locked ? View.GONE : View.VISIBLE);

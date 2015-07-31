@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -89,6 +90,7 @@ public class PullRequestDetailActivity extends BackActivity
     private int primary;
     private int primaryDark;
     private AppBarLayout appbarLayout;
+    private ProgressBar loadingView;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -147,6 +149,8 @@ public class PullRequestDetailActivity extends BackActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
+        loadingView = (ProgressBar) findViewById(R.id.loading_view);
+
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
         fab.setImageDrawable(drawable);
@@ -155,6 +159,7 @@ public class PullRequestDetailActivity extends BackActivity
     @Override
     protected void getContent() {
         super.getContent();
+        loadingView.setVisibility(View.VISIBLE);
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
             repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
@@ -191,6 +196,7 @@ public class PullRequestDetailActivity extends BackActivity
     }
 
     private void applyIssue() {
+        loadingView.setVisibility(View.GONE);
         checkEditTitle();
         changeColor(pullRequestStory.pullRequest);
 
