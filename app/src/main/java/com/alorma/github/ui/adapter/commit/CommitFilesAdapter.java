@@ -1,6 +1,5 @@
 package com.alorma.github.ui.adapter.commit;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -12,35 +11,29 @@ import android.widget.TextView;
 import com.alorma.diff.lib.DiffTextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.TextUtils;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by Bernat on 22/12/2014.
  */
-public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.FileVH> {
+public class CommitFilesAdapter extends RecyclerArrayAdapter<CommitFile, CommitFilesAdapter.FileVH> {
 
-    private final Context context;
-    private final LayoutInflater inflater;
-    private final List<CommitFile> files;
     private OnFileRequestListener onFileRequestListener;
 
-    public CommitFilesAdapter(Context context, List<CommitFile> files) {
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
-        this.files = files;
+    public CommitFilesAdapter(LayoutInflater inflater) {
+        super(inflater);
     }
 
     @Override
     public FileVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FileVH(inflater.inflate(R.layout.commit_file_row, parent, false));
+        return new FileVH(getInflater().inflate(R.layout.commit_file_row, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(FileVH holder, int position) {
-        CommitFile commitFile = files.get(position);
+    protected void onBindViewHolder(FileVH holder, CommitFile commitFile) {
         String fileName = commitFile.getFileName();
 
         if (fileName != null) {
@@ -58,13 +51,13 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
 
         String textCommitsStr = null;
         if (additions > 0 && deletions > 0) {
-            textCommitsStr = context.getString(R.string.commit_file_add_del, additions, deletions);
+            textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add_del, additions, deletions);
             holder.toolbar.setVisibility(View.VISIBLE);
         } else if (additions > 0) {
-            textCommitsStr = context.getString(R.string.commit_file_add, additions);
+            textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, additions);
             holder.toolbar.setVisibility(View.VISIBLE);
         } else if (deletions > 0) {
-            textCommitsStr = context.getString(R.string.commit_file_del, deletions);
+            textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, deletions);
             holder.toolbar.setVisibility(View.VISIBLE);
         } else {
             holder.toolbar.setVisibility(View.GONE);
@@ -84,10 +77,6 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
         textContent.setText(content);
     }
 
-    @Override
-    public int getItemCount() {
-        return files != null ? files.size() : 0;
-    }
 
     public void setOnFileRequestListener(OnFileRequestListener onFileRequestListener) {
         this.onFileRequestListener = onFileRequestListener;
@@ -110,7 +99,7 @@ public class CommitFilesAdapter extends RecyclerView.Adapter<CommitFilesAdapter.
         @Override
         public void onClick(View v) {
             if (onFileRequestListener != null) {
-                onFileRequestListener.onFileRequest(files.get(getPosition()));
+                onFileRequestListener.onFileRequest(getItem(getAdapterPosition()));
             }
         }
     }

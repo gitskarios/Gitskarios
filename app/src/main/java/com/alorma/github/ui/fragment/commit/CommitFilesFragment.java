@@ -72,7 +72,8 @@ public class CommitFilesFragment extends BaseFragment {
 
     public void setFiles(List<CommitFile> files) {
         if (getActivity() != null) {
-            CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), files);
+            CommitFilesAdapter adapter = new CommitFilesAdapter(LayoutInflater.from(getActivity()));
+            adapter.addAll(files);
             adapter.setOnFileRequestListener(onFileRequestListener);
             recyclerView.setAdapter(adapter);
         }
