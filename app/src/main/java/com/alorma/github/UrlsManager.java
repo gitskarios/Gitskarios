@@ -197,6 +197,8 @@ public class UrlsManager {
             repoInfo.branch = uri.getPathSegments().get(3) + "/" + uri.getPathSegments().get(4);
         }
 
+        repoInfo.permissions = null;
+
         return repoInfo;
     }
 

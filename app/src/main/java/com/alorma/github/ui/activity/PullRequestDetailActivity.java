@@ -37,6 +37,7 @@ import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
@@ -48,6 +49,7 @@ import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
+import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
@@ -153,9 +155,32 @@ public class PullRequestDetailActivity extends BackActivity
     @Override
     protected void getContent() {
         super.getContent();
-        PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(this, issueInfo);
-        pullRequestStoryLoader.setOnResultCallback(this);
-        pullRequestStoryLoader.execute();
+        if (checkPermissions(issueInfo)) {
+            GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
+            repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+                @Override
+                public void onResponseOk(Repo repo, Response r) {
+                    issueInfo.repoInfo.permissions = repo.permissions;
+                    getContent();
+                }
+
+                @Override
+                public void onFail(RetrofitError error) {
+
+                }
+            });
+            repoClient.execute();
+        } else {
+            PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(this, issueInfo);
+            pullRequestStoryLoader.setOnResultCallback(this);
+            pullRequestStoryLoader.execute();
+        }
+    }
+
+    private boolean checkPermissions(IssueInfo issueInfo) {
+        return issueInfo != null
+                && issueInfo.repoInfo != null
+                && issueInfo.repoInfo.permissions == null;
     }
 
     @Override
