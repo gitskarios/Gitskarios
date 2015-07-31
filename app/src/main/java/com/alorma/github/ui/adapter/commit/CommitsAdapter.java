@@ -42,6 +42,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
     private boolean shortMessage;
     private RepoInfo repoInfo;
+    private CommitsAdapterListener commitsAdapterListener;
 
     public CommitsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
         super(inflater);
@@ -180,6 +181,10 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         }
     }
 
+    public void setCommitsAdapterListener(CommitsAdapterListener commitsAdapterListener) {
+        this.commitsAdapterListener = commitsAdapterListener;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
@@ -202,22 +207,20 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Commit commit = getItem(getAdapterPosition());
-                    CommitInfo info = new CommitInfo();
-                    info.repoInfo = repoInfo;
-                    info.sha = commit.sha;
-
-                    Intent intent = CommitDetailActivity.launchIntent(v.getContext(), info);
-                    v.getContext().startActivity(intent);
+                    if (commitsAdapterListener != null) {
+                        Commit commit = getItem(getAdapterPosition());
+                        commitsAdapterListener.onCommitClick(commit);
+                    }
                 }
             });
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Commit item = getItem(getAdapterPosition());
-                    copy(item.shortSha());
-                    Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.sha_copied, item.shortSha()), Toast.LENGTH_SHORT).show();
+                    if (commitsAdapterListener != null) {
+                        Commit commit = getItem(getAdapterPosition());
+                        return commitsAdapterListener.onCommitLongClick(commit);
+                    }
                     return true;
                 }
             });
@@ -238,5 +241,11 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
             super(itemView);
             tv = (TextView) itemView.findViewById(android.R.id.text1);
         }
+    }
+
+    public interface CommitsAdapterListener {
+        void onCommitClick(Commit commit);
+
+        boolean onCommitLongClick(Commit commit);
     }
 }

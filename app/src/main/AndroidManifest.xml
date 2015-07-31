@@ -51,6 +51,7 @@
         <activity android:name=".ui.activity.ContentCommitsActivity" />
         <activity android:name=".ui.activity.OrganizationActivity" />
         <activity android:name=".ui.activity.ReleaseDetailActivity" />
+        <activity android:name=".ui.activity.CompareRepositoryCommitsActivity" />
         <activity
             android:name=".Interceptor"
             android:theme="@android:style/Theme.NoDisplay" >

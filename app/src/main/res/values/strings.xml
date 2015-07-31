@@ -374,5 +374,6 @@
     <string name="repo_release_fragment_assets_title">Assets</string>
     <string name="release_asset_zip">Source code (zip)</string>
     <string name="release_asset_tar">Source code (tar.gz)</string>
+    <string name="compare_commits">Compare commits</string>
 
 </resources>

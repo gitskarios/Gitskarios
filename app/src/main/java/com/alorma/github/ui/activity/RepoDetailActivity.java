@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.afollestad.materialcab.MaterialCab;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
