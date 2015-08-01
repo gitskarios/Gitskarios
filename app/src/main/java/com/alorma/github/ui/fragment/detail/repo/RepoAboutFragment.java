@@ -56,7 +56,7 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     private View fork;
     private TextView forkOfTextView;
     private TextView createdAtTextView;
-//    private TextView issuesIcon;
+    //    private TextView issuesIcon;
     private Boolean repoStarred = null;
     private Boolean repoWatched = null;
     private ImageView forkIcon;
@@ -323,13 +323,15 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     }
 
     private void changeStarView() {
-        IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(36).paddingDp(10);
-        if (repoStarred != null && repoStarred) {
-            drawable.colorRes(R.color.primary);
-        } else {
-            drawable.colorRes(R.color.icons);
+        if (getActivity() != null) {
+            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(36).paddingDp(10);
+            if (repoStarred != null && repoStarred) {
+                drawable.colorRes(R.color.primary);
+            } else {
+                drawable.colorRes(R.color.icons);
+            }
+            isStarredIcon.setImageDrawable(drawable);
         }
-        isStarredIcon.setImageDrawable(drawable);
     }
 
     /**
@@ -390,13 +392,15 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     }
 
     private void changeWatchView() {
-        IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(36).paddingDp(10);
-        if (repoWatched != null && repoWatched) {
-            drawable.colorRes(R.color.primary);
-        } else {
-            drawable.colorRes(R.color.icons);
+        if (getActivity() != null) {
+            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(36).paddingDp(10);
+            if (repoWatched != null && repoWatched) {
+                drawable.colorRes(R.color.primary);
+            } else {
+                drawable.colorRes(R.color.icons);
+            }
+            isWatchedIcon.setImageDrawable(drawable);
         }
-        isWatchedIcon.setImageDrawable(drawable);
     }
 
 }

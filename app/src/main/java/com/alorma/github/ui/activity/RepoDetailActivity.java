@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -11,17 +12,26 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.sdk.services.repo.DeleteRepoClient;
+import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
@@ -52,6 +62,7 @@ import retrofit.client.Response;
 public class RepoDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
     public static final String REPO_INFO = "REPO_INFO";
+    private static final int EDIT_REPO = 464;
 
     private Boolean repoStarred = false;
     private Boolean repoWatched = false;
@@ -149,13 +160,22 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
-
         return true;
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+
+        if (menu.findItem(R.id.action_manage_repo) == null) {
+            if (currentRepo != null && currentRepo.permissions != null) {
+                if (currentRepo.permissions.admin) {
+                    getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+                }
+            }
+        }
+
         MenuItem item = menu.findItem(R.id.share_repo);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -195,9 +215,26 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             }
         } else if (item.getItemId() == R.id.action_repo_change_branch) {
             changeBranch();
+        } else if (item.getItemId() == R.id.action_manage_repo) {
+            Intent intent = ManageRepositoryActivity.createIntent(this, getRepoInfo(), createRepoRequest());
+            startActivityForResult(intent, EDIT_REPO);
         }
 
         return false;
+    }
+
+    private RepoRequestDTO createRepoRequest() {
+        RepoRequestDTO dto = new RepoRequestDTO();
+
+        dto.name = currentRepo.name;
+        dto.description = currentRepo.description;
+        dto.default_branch = currentRepo.default_branch;
+        dto.has_downloads = currentRepo.has_downloads;
+        dto.has_wiki = currentRepo.has_wiki;
+        dto.has_issues = currentRepo.has_issues;
+        dto.homepage = currentRepo.homepage;
+
+        return dto;
     }
 
     private void changeBranch() {
@@ -229,8 +266,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     @Override
     public void onResponseOk(Repo repo, Response r) {
+        hideProgressDialog();
         if (repo != null) {
             this.currentRepo = repo;
+            invalidateOptionsMenu();
 
             setTitle(currentRepo.name);
             if (getSupportActionBar() != null) {
@@ -274,9 +313,11 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     }
 
     private void createListFragments() {
+        if (listFragments != null) {
+            listFragments.clear();
+        }
         if (listFragments == null || listFragments.size() == 0 && currentRepo != null) {
             RepoAboutFragment aboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
-            ReadmeFragment readmeFragment = ReadmeFragment.newInstance(getRepoInfo());
             SourceListFragment sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
             CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
             IssuesListFragment issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
@@ -285,7 +326,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             listFragments = new ArrayList<>();
             listFragments.add(aboutFragment);
-//            listFragments.add(readmeFragment);
             listFragments.add(sourceListFragment);
             listFragments.add(commitsListFragment);
             listFragments.add(issuesListFragment);
@@ -312,6 +352,14 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == EDIT_REPO && data != null) {
+            RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+            showProgressDialog(R.style.SpotDialog_edit_repo);
+            EditRepoClient editRepositoryClient = new EditRepoClient(this, getRepoInfo(), repoRequestDTO);
+            editRepositoryClient.setOnResultCallback(this);
+            editRepositoryClient.execute();
+        }
     }
 
     @Override

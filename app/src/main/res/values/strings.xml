@@ -346,7 +346,7 @@
     <string name="content_editor_source">Source</string>
     <string name="content_editor_mentions">Mentions</string>
     <string name="content_editor_user">Mention user</string>
-    <string name="content_editor_repo">Add repository link</string>
+    <string name="content_editor_link">Add repository link</string>
     <string name="content_editor_issue">Add issue link</string>
     <string name="addPicture">Add picture</string>
     <string name="addPictureContent">Paste the url of the picture</string>
@@ -375,5 +375,25 @@
     <string name="release_asset_zip">Source code (zip)</string>
     <string name="release_asset_tar">Source code (tar.gz)</string>
     <string name="compare_commits">Compare commits</string>
+    <string name="action_detele_repo">Delete repository</string>
+    <string name="delete_repository">Delete repository</string>
+    <string name="delete_repository_content">This action <b>CANNOT</b> be undone. This will permanently delete the <b>%1$s/%2$s</b> repository, wiki, issues, and comments, and remove all collaborator associations.</string>
+    <string name="delete">DELETE</string>
+    <string name="delete_repository_scope_request">Scope request</string>
+    <string name="delete_repository_scope_request_content">In order to delete repositories, you will be redirect to login page, where you will be requested to authorize a new delete_repo scope.\\nAfter you authorize that, you will be redirect to this page again.</string>
+    <string name="pref_repo_manage_title">Title</string>
+    <string name="pref_repo_manage_description">Description</string>
+    <string name="pref_repo_default_branch">Default branch</string>
+    <string name="pref_repo_has_issues">Enable issues</string>
+    <string name="pref_repo_has_wiki">Enable wiki</string>
+    <string name="pref_repo_has_downloads">Enable downloads</string>
+    <string name="pref_repo_manage_homepage">Homepage URL</string>
+    <string name="action_manage_repo">Manage repository</string>
+    <string name="pref_repo_manage_title_summary">Tap to change title</string>
+    <string name="pref_repo_manage_description_summary">Tap to change description</string>
+    <string name="pref_repo_manage_homepage_summary">Tap to change homepage</string>
+    <string name="pref_repo_default_branch_summary">Tap to change default branch</string>
+    <string name="repository_settings">Edit repository</string>
+    <string name="edit_repo_title_cannot_empty">Title cannot be empty</string>
 
 </resources>

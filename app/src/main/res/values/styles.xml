@@ -108,6 +108,10 @@
         <item name="DialogTitleText">@string/clear_milestone</item>
     </style>
 
+    <style name="SpotDialog.edit_repo">
+        <item name="DialogTitleText">@string/edit_repo_loading</item>
+    </style>
+
     <style name="SpotDialog.loading_issue">
         <item name="DialogTitleText">@string/loading_issue</item>
     </style>
@@ -165,6 +169,7 @@
     <string name="opening_file">Opening file</string>
     <string name="merging">Merging</string>
     <string name="adding_comment">Adding comment</string>
+    <string name="edit_repo_loading">Updating repository</string>
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/accent</item>

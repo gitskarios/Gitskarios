@@ -61,6 +61,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static final String ADDING_FROM_ACCOUNTS = "ADDING_FROM_ACCOUNTS";
     public static final String ADDING_FROM_APP = "ADDING_FROM_APP";
     private static final String SKU_MULTI_ACCOUNT = "com.alorma.github.multiaccount";
+    private static final String SCOPES = "gist,user,notifications,repo,delete_repo";
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -221,7 +222,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             builder.show();
             return;
         }
-        final String url = String.format("%s?client_id=%s&scope=gist,user,notifications,repo",
+        final String url = String.format("%s?client_id=%s&scope=" + SCOPES,
                 OAUTH_URL, GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
 
         final List<ResolveInfo> browserList = getBrowserList();

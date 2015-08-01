@@ -20,11 +20,11 @@
         android:key="repos_download_type"
         android:title="@string/pref_repos_download_type" />
 
-<!--    <com.afollestad.materialdialogs.prefs.MaterialListPreference
-        android:entries="@array/screenItemsValues"
-        android:entryValues="@array/screenItemsValues"
-        android:key="screen_default"
-        android:title="@string/pref_screen_item" />-->
+    <!--    <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:entries="@array/screenItemsValues"
+            android:entryValues="@array/screenItemsValues"
+            android:key="screen_default"
+            android:title="@string/pref_screen_item" />-->
 
     <Preference
         android:key="gitskarios"
