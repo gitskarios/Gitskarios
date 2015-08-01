@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,9 +41,9 @@ public class GeneralPeopleFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TabLayout slidingTabLayout = (TabLayout) view.findViewById(R.id.tabStrip);
+        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabStrip);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
 
         FollowingFragment followingFragment = FollowingFragment.newInstance(null);
         FollowersFragment followersFragment = FollowersFragment.newInstance(null);
@@ -56,7 +57,18 @@ public class GeneralPeopleFragment extends BaseFragment {
         NavigationPagerAdapter navigationPagerAdapter = new NavigationPagerAdapter(getChildFragmentManager(), listFragments);
         viewPager.setAdapter(navigationPagerAdapter);
         viewPager.setOffscreenPageLimit(navigationPagerAdapter.getCount());
-        slidingTabLayout.setupWithViewPager(viewPager);
+        if (ViewCompat.isLaidOut(tabLayout)) {
+            tabLayout.setupWithViewPager(viewPager);
+        } else {
+            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    tabLayout.setupWithViewPager(viewPager);
+
+                    tabLayout.removeOnLayoutChangeListener(this);
+                }
+            });
+        }
     }
 
     @Override

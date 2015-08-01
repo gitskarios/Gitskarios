@@ -3,33 +3,25 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.afollestad.materialcab.MaterialCab;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
-import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
-import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
-import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
-import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
-import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
@@ -67,7 +59,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private Repo currentRepo;
     private ViewPager viewPager;
     private List<Fragment> listFragments;
-    private TabLayout slidingTabLayout;
+    private TabLayout tabLayout;
     private RepoInfo requestRepoInfo;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
@@ -89,7 +81,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             setTitle(repoInfo.name);
 
-            slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
+            tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
             viewPager = (ViewPager) findViewById(R.id.pager);
 
@@ -267,8 +259,18 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
 
         viewPager.setOffscreenPageLimit(listFragments.size());
+        if (ViewCompat.isLaidOut(tabLayout)) {
+            tabLayout.setupWithViewPager(viewPager);
+        } else {
+            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    tabLayout.setupWithViewPager(viewPager);
 
-        slidingTabLayout.setupWithViewPager(viewPager);
+                    tabLayout.removeOnLayoutChangeListener(this);
+                }
+            });
+        }
     }
 
     private void createListFragments() {

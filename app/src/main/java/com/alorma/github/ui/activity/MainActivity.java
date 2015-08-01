@@ -89,17 +89,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         getSupportFragmentManager().beginTransaction().add(donateFragment, "donate").commit();
 
-
-
-       /* IssueInfo issueInfo = new IssueInfo();
-
-        issueInfo.repoInfo = new RepoInfo();
-        issueInfo.repoInfo.owner = "Jasig";
-        issueInfo.repoInfo.name = "cas";
-        issueInfo.num = 993;
-
-        startActivity(PullRequestDetailActivity.createLauncherIntent(this, issueInfo));*/
-
         setContentView(R.layout.generic_toolbar);
 
         createDrawer();

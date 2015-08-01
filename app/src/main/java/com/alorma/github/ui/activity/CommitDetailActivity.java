@@ -7,7 +7,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.Toast;
 
 import com.alorma.github.R;
@@ -62,10 +64,8 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
                 getContent();
 
-                TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
-
-
-                ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+                final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
                 listFragments = new ArrayList<>();
 
@@ -77,7 +77,18 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
                 listFragments.add(commitCommentsFragment);
 
                 viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-                slidingTabLayout.setupWithViewPager(viewPager);
+                if (ViewCompat.isLaidOut(tabLayout)) {
+                    tabLayout.setupWithViewPager(viewPager);
+                } else {
+                    tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                        @Override
+                        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                            tabLayout.setupWithViewPager(viewPager);
+
+                            tabLayout.removeOnLayoutChangeListener(this);
+                        }
+                    });
+                }
             } else {
                 Toast.makeText(this, "Info invalid", Toast.LENGTH_SHORT).show();
             }

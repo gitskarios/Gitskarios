@@ -7,7 +7,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
@@ -65,9 +67,9 @@ public class CompareRepositoryCommitsActivity extends BackActivity implements Ba
             compareCommitsClient.setOnResultCallback(this);
             compareCommitsClient.execute();
 
-            TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
+            final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
-            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+            final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
             listFragments = new ArrayList<>();
             commitsFragment = CompareCommitsListFragment.newInstance(repoInfo);
@@ -77,8 +79,18 @@ public class CompareRepositoryCommitsActivity extends BackActivity implements Ba
             NavigationPagerAdapter adapter = new NavigationPagerAdapter(getSupportFragmentManager(), listFragments);
 
             viewPager.setAdapter(adapter);
-            slidingTabLayout.setupWithViewPager(viewPager);
+            if (ViewCompat.isLaidOut(tabLayout)) {
+                tabLayout.setupWithViewPager(viewPager);
+            } else {
+                tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        tabLayout.setupWithViewPager(viewPager);
 
+                        tabLayout.removeOnLayoutChangeListener(this);
+                    }
+                });
+            }
         } else {
             finish();
         }

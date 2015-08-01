@@ -7,8 +7,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Release;
@@ -58,9 +60,9 @@ public class ReleaseDetailActivity extends BackActivity {
             }
             setTitle(name);
 
-            TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
+            final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
-            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+            final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
             List<Fragment> listFragments = new ArrayList<>();
             listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
@@ -83,7 +85,18 @@ public class ReleaseDetailActivity extends BackActivity {
 
             viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
 
-            slidingTabLayout.setupWithViewPager(viewPager);
+            if (ViewCompat.isLaidOut(tabLayout)) {
+                tabLayout.setupWithViewPager(viewPager);
+            } else {
+                tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        tabLayout.setupWithViewPager(viewPager);
+
+                        tabLayout.removeOnLayoutChangeListener(this);
+                    }
+                });
+            }
         }
     }
 

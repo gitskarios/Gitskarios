@@ -34,16 +34,27 @@ public class GeneralReposFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TabLayout slidingTabLayout = (TabLayout) view.findViewById(R.id.tabStrip);
-        ViewCompat.setElevation(slidingTabLayout, 4);
+        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabStrip);
+        ViewCompat.setElevation(tabLayout, 4);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
 
         ReposPagerAdapter reposAdapter = new ReposPagerAdapter(getChildFragmentManager());
         viewPager.setOffscreenPageLimit(reposAdapter.getCount());
         viewPager.setAdapter(reposAdapter);
 
-        slidingTabLayout.setupWithViewPager(viewPager);
+        if (ViewCompat.isLaidOut(tabLayout)) {
+            tabLayout.setupWithViewPager(viewPager);
+        } else {
+            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    tabLayout.setupWithViewPager(viewPager);
+
+                    tabLayout.removeOnLayoutChangeListener(this);
+                }
+            });
+        }
 
     }
 
