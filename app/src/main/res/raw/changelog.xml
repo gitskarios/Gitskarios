@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion versionName="2.5.2" changeDate="Jul 30,2015">
+    <changelogversion versionName="2.5.2" changeDate="Aug 02,2015">
         <changelogtext>Manage repository: change properties such as name, description, etc...</changelogtext>
+        <changelogtext>Added pull request tab</changelogtext>
         <changelogtext>Delete repository from Manage repository</changelogtext>
         <changelogtext>Fix DeviceID request permission</changelogtext>
+        <changelogtext>Fix support development action appears twice</changelogtext>
         <changelogtext>Fix bugs</changelogtext>
     </changelogversion>
     <changelogversion versionName="2.5.1" changeDate="Jul 30,2015">
