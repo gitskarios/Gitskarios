@@ -82,7 +82,9 @@ public class DonateFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.donate_menu, menu);
+        if (menu.findItem(R.id.action_donate) == null) {
+            inflater.inflate(R.menu.donate_menu, menu);
+        }
     }
 
     @Override
