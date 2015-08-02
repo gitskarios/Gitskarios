@@ -158,7 +158,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
         if (userScopes.contains("delete_repo")) {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
             builder.title(R.string.delete_repository);
-            builder.content(Html.fromHtml(getString(R.string.delete_repository_content, repoInfo.owner, repoInfo.owner)));
+            builder.content(Html.fromHtml(getString(R.string.delete_repository_content, repoInfo.owner, repoInfo.name)));
             builder.positiveText(R.string.delete);
             builder.neutralText(R.string.cancel);
             builder.callback(new MaterialDialog.ButtonCallback() {
