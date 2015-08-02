@@ -353,12 +353,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == EDIT_REPO && data != null) {
-            RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
-            showProgressDialog(R.style.SpotDialog_edit_repo);
-            EditRepoClient editRepositoryClient = new EditRepoClient(this, getRepoInfo(), repoRequestDTO);
-            editRepositoryClient.setOnResultCallback(this);
-            editRepositoryClient.execute();
+        if (requestCode == EDIT_REPO) {
+            if (resultCode == RESULT_OK && data != null) {
+                RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+                showProgressDialog(R.style.SpotDialog_edit_repo);
+                EditRepoClient editRepositoryClient = new EditRepoClient(this, getRepoInfo(), repoRequestDTO);
+                editRepositoryClient.setOnResultCallback(this);
+                editRepositoryClient.execute();
+            } else if (resultCode == RESULT_CANCELED) {
+                finish();
+            }
         }
     }
 

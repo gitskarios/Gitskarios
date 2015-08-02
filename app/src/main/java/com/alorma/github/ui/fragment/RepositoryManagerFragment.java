@@ -41,6 +41,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     private RepoInfo repoInfo;
     private RepoRequestDTO repoRequestDTO;
     private ListPreference pref_repo_default_branch;
+    private MaterialDialog deleteRepoDialog;
 
     public static RepositoryManagerFragment newInstance(RepoInfo repoInfo, RepoRequestDTO repoRequestDTO) {
         RepositoryManagerFragment fragment = new RepositoryManagerFragment();
@@ -174,11 +175,21 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     }
 
     private void deleteRepository() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.progress(true, 0);
+        builder.content(R.string.deleting_repository);
+        deleteRepoDialog = builder.show();
         DeleteRepoClient deleteRepoClient = new DeleteRepoClient(getActivity(), repoInfo);
         deleteRepoClient.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
             @Override
             public void onResponseOk(Response response, Response r) {
-                // TODO What to do on repo deleted
+                if (getActivity() != null) {
+                    if (deleteRepoDialog != null) {
+                        deleteRepoDialog.dismiss();
+                    }
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
             }
 
             @Override

@@ -397,5 +397,6 @@
     <string name="edit_repo_title_cannot_empty">Title cannot be empty</string>
     <string name="pref_repo_delete">Delete repository</string>
     <string name="pref_repo_delete_repository">Once you delete a repository, there is no going back.</string>
+    <string name="deleting_repository">Deleting repository</string>
 
 </resources>
