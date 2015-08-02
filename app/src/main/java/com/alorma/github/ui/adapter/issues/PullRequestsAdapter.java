@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
@@ -19,11 +20,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.ViewHolder> {
+public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullRequestsAdapter.ViewHolder> {
 
     private IssuesAdapterListener issuesAdapterListener;
 
-    public IssuesAdapter(LayoutInflater inflater) {
+    public PullRequestsAdapter(LayoutInflater inflater) {
         super(inflater);
     }
 
@@ -33,7 +34,7 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.Vi
     }
 
     @Override
-    protected void onBindViewHolder(ViewHolder holder, Issue issue) {
+    protected void onBindViewHolder(ViewHolder holder, PullRequest issue) {
         holder.title.setText(issue.title);
 
         holder.num.setText("#" + issue.number);
@@ -44,9 +45,11 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.Vi
             instance.displayImage(issue.user.avatar_url, holder.avatar);
         }
 
-        int colorState = holder.itemView.getResources().getColor(R.color.issue_state_close);
+        int colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_close);
         if (IssueState.open == issue.state) {
-            colorState = holder.itemView.getResources().getColor(R.color.issue_state_open);
+            colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_open);
+        } else if (issue.merged) {
+            colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_merged);
         }
 
         holder.num.setTextColor(colorState);
@@ -83,10 +86,10 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Issue item = getItem(getAdapterPosition());
+                    PullRequest item = getItem(getAdapterPosition());
 
                     if (issuesAdapterListener != null) {
-                        issuesAdapterListener.onIssueOpenRequest(item);
+                        issuesAdapterListener.onPullRequestOpenRequest(item);
                     }
                 }
             });
@@ -94,6 +97,6 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.Vi
     }
 
     public interface IssuesAdapterListener {
-        void onIssueOpenRequest(Issue issue);
+        void onPullRequestOpenRequest(PullRequest issue);
     }
 }

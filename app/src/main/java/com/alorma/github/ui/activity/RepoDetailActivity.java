@@ -1,6 +1,5 @@
 package com.alorma.github.ui.activity;
 
-import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -12,26 +11,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
@@ -39,11 +31,11 @@ import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.fragment.detail.repo.ReadmeFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
+import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.basesdk.client.BaseClient;
@@ -321,6 +313,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             SourceListFragment sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
             CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
             IssuesListFragment issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+            PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(getRepoInfo());
             RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(getRepoInfo(), currentRepo.permissions);
             RepoContributorsFragment repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
 
@@ -329,6 +322,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             listFragments.add(sourceListFragment);
             listFragments.add(commitsListFragment);
             listFragments.add(issuesListFragment);
+            listFragments.add(pullRequestsListFragment);
             listFragments.add(repoReleasesFragment);
             listFragments.add(repoCollaboratorsFragment);
         }
