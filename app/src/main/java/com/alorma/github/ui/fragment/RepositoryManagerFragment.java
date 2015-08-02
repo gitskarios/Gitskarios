@@ -10,6 +10,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.text.Html;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -22,6 +23,7 @@ import com.alorma.github.sdk.services.repo.BranchesCallback;
 import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
+import com.alorma.github.ui.activity.LoginActivity;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -34,6 +36,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     private static final String REPO_INFO = "REPO_INFO";
     private static final String REQUEST_DTO = "REQUEST_DTO";
     private static final int DESCRIPTION_EDIT = 544;
+    private static final int REQUEST_DELETE = 556;
 
     private RepoInfo repoInfo;
     private RepoRequestDTO repoRequestDTO;
@@ -134,6 +137,15 @@ public class RepositoryManagerFragment extends PreferenceFragment {
         });
 
         getBranches();
+
+        Preference pref_repo_delete = findPreference("pref_repo_delete");
+        pref_repo_delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                alertDeleteRepository();
+                return false;
+            }
+        });
     }
 
     private void alertDeleteRepository() {
@@ -166,12 +178,12 @@ public class RepositoryManagerFragment extends PreferenceFragment {
         deleteRepoClient.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
             @Override
             public void onResponseOk(Response response, Response r) {
-
+                // TODO What to do on repo deleted
             }
 
             @Override
             public void onFail(RetrofitError error) {
-
+                Toast.makeText(getActivity(), "Repository delete failed", Toast.LENGTH_SHORT).show();
             }
         });
         deleteRepoClient.execute();
@@ -186,7 +198,9 @@ public class RepositoryManagerFragment extends PreferenceFragment {
             @Override
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
-
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.putExtra(LoginActivity.FROM_DELETE, true);
+                startActivityForResult(intent, REQUEST_DELETE);
             }
         });
         builder.show();
@@ -216,8 +230,12 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == DESCRIPTION_EDIT && data != null) {
-            repoRequestDTO.description = data.getStringExtra(ContentEditorActivity.CONTENT);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == DESCRIPTION_EDIT && data != null) {
+                repoRequestDTO.description = data.getStringExtra(ContentEditorActivity.CONTENT);
+            } else if (requestCode == REQUEST_DELETE) {
+                alertDeleteRepository();
+            }
         }
     }
 

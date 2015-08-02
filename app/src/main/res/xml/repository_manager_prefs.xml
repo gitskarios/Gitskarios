@@ -34,4 +34,9 @@
         android:title="@string/pref_repo_default_branch"
         android:summary="@string/pref_repo_default_branch_summary" />
 
+    <Preference
+        android:key="pref_repo_delete"
+        android:title="@string/pref_repo_delete"
+        android:summary="@string/pref_repo_delete_repository" />
+
 </PreferenceScreen>

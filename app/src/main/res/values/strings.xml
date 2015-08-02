@@ -380,7 +380,7 @@
     <string name="delete_repository_content">This action <b>CANNOT</b> be undone. This will permanently delete the <b>%1$s/%2$s</b> repository, wiki, issues, and comments, and remove all collaborator associations.</string>
     <string name="delete">DELETE</string>
     <string name="delete_repository_scope_request">Scope request</string>
-    <string name="delete_repository_scope_request_content">In order to delete repositories, you will be redirect to login page, where you will be requested to authorize a new delete_repo scope.\\nAfter you authorize that, you will be redirect to this page again.</string>
+    <string name="delete_repository_scope_request_content">In order to delete repositories, you will be redirect to reauthorizing github page.</string>
     <string name="pref_repo_manage_title">Title</string>
     <string name="pref_repo_manage_description">Description</string>
     <string name="pref_repo_default_branch">Default branch</string>
@@ -395,5 +395,7 @@
     <string name="pref_repo_default_branch_summary">Tap to change default branch</string>
     <string name="repository_settings">Edit repository</string>
     <string name="edit_repo_title_cannot_empty">Title cannot be empty</string>
+    <string name="pref_repo_delete">Delete repository</string>
+    <string name="pref_repo_delete_repository">Once you delete a repository, there is no going back.</string>
 
 </resources>
