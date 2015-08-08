@@ -95,6 +95,13 @@
                     android:layout_marginLeft="@dimen/gapLarge" />
 
                 <TextView
+                    android:id="@+id/textRepository"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    style="@style/new_issue_push_access_row"
+                    android:layout_marginLeft="@dimen/gapLarge" />
+
+                <TextView
                     android:id="@+id/textMilestone"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"

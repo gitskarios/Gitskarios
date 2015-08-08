@@ -20,11 +20,14 @@ import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestCommitsActivity;
 import com.alorma.github.ui.activity.PullRequestFilesActivity;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
@@ -57,6 +60,7 @@ public class PullRequestDetailView extends LinearLayout {
 
     private IssueDetailRequestListener issueDetailRequestListener;
     private PullRequestActionsListener pullRequestActionsListener;
+    private TextView textRepository;
 
     public PullRequestDetailView(Context context) {
         super(context);
@@ -93,6 +97,7 @@ public class PullRequestDetailView extends LinearLayout {
         textAssignee = (TextView) findViewById(R.id.textAssignee);
         textCommits = (TextView) findViewById(R.id.textCommits);
         textFiles = (TextView) findViewById(R.id.textFiles);
+        textRepository = (TextView) findViewById(R.id.textRepository);
         mergeButton = (TextView) findViewById(R.id.mergeButton);
     }
 
@@ -106,6 +111,16 @@ public class PullRequestDetailView extends LinearLayout {
                 profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), pullRequest.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(pullRequest.user.avatar_url, profileIcon);
+                OnClickListener issueUserClick = new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent launcherIntent = ProfileActivity.createLauncherIntent(v.getContext(), pullRequest.user);
+                        v.getContext().startActivity(launcherIntent);
+                    }
+                };
+                profileName.setOnClickListener(issueUserClick);
+                profileEmail.setOnClickListener(issueUserClick);
+                profileIcon.setOnClickListener(issueUserClick);
             }
 
             if (pullRequest.body_html != null) {
@@ -150,13 +165,41 @@ public class PullRequestDetailView extends LinearLayout {
             }
 
             if (textAssignee != null) {
-                User assignee = pullRequest.assignee;
+                final User assignee = pullRequest.assignee;
                 if (assignee != null) {
                     textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
                     textAssignee.setText(assignee.login);
-                    textMilestone.setVisibility(View.VISIBLE);
+                    textAssignee.setVisibility(View.VISIBLE);
+                    textAssignee.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent launcherIntent = ProfileActivity.createLauncherIntent(v.getContext(), assignee);
+                            v.getContext().startActivity(launcherIntent);
+                        }
+                    });
                 } else {
                     textAssignee.setVisibility(View.GONE);
+                }
+            }
+
+            if (textRepository != null) {
+                final Repo repo = pullRequest.repository;
+                if (repo != null) {
+                    textRepository.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textRepository.setText(repo.full_name);
+                    textRepository.setVisibility(View.VISIBLE);
+                    textRepository.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RepoInfo repoInfo = new RepoInfo();
+                            repoInfo.owner = repo.owner.login;
+                            repoInfo.name = repo.name;
+                            Intent launcherIntent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
+                            v.getContext().startActivity(launcherIntent);
+                        }
+                    });
+                } else {
+                    textRepository.setVisibility(View.GONE);
                 }
             }
 

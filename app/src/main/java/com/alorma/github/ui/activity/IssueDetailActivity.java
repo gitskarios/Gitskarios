@@ -83,6 +83,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private int primaryDark;
     private AppBarLayout appbarLayout;
     private ProgressBar loadingView;
+    public Repo repository;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -154,9 +155,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
             repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+
                 @Override
                 public void onResponseOk(Repo repo, Response r) {
                     issueInfo.repoInfo.permissions = repo.permissions;
+                    repository = repo;
                     getContent();
                 }
 
@@ -183,6 +186,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     public void onResponseOk(IssueStory issueStory, Response r) {
         hideProgressDialog();
         this.issueStory = issueStory;
+        this.issueStory.issue.repository = repository;
 
         checkEditTitle();
         applyIssue();
@@ -194,11 +198,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         fab.setVisibility(issueStory.issue.locked ? View.GONE : View.VISIBLE);
         fab.setOnClickListener(issueStory.issue.locked ? null : this);
-
-        if (getSupportActionBar() != null) {
-            String issueName = issueInfo.repoInfo.name;
-            getSupportActionBar().setSubtitle(getString(R.string.issue_subtitle, issueName));
-        }
 
         String status = getString(R.string.issue_status_open);
         if (IssueState.closed == issueStory.issue.state) {

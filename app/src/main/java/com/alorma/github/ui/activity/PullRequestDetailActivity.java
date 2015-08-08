@@ -91,6 +91,7 @@ public class PullRequestDetailActivity extends BackActivity
     private int primaryDark;
     private AppBarLayout appbarLayout;
     private ProgressBar loadingView;
+    private Repo repository;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
@@ -160,13 +161,15 @@ public class PullRequestDetailActivity extends BackActivity
     protected void getContent() {
         super.getContent();
         loadingView.setVisibility(View.VISIBLE);
-        if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
             repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
                 @Override
                 public void onResponseOk(Repo repo, Response r) {
+                    repository = repo;
                     issueInfo.repoInfo.permissions = repo.permissions;
-                    getContent();
+                    PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
+                    pullRequestStoryLoader.setOnResultCallback(PullRequestDetailActivity.this);
+                    pullRequestStoryLoader.execute();
                 }
 
                 @Override
@@ -175,11 +178,6 @@ public class PullRequestDetailActivity extends BackActivity
                 }
             });
             repoClient.execute();
-        } else {
-            PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(this, issueInfo);
-            pullRequestStoryLoader.setOnResultCallback(this);
-            pullRequestStoryLoader.execute();
-        }
     }
 
     private boolean checkPermissions(IssueInfo issueInfo) {
@@ -192,6 +190,7 @@ public class PullRequestDetailActivity extends BackActivity
     public void onResponseOk(PullRequestStory pullRequestStory, Response r) {
             hideProgressDialog();
         this.pullRequestStory = pullRequestStory;
+        this.pullRequestStory.pullRequest.repository = repository;
         applyIssue();
     }
 
@@ -202,11 +201,6 @@ public class PullRequestDetailActivity extends BackActivity
 
         fab.setVisibility(pullRequestStory.pullRequest.locked ? View.GONE : View.VISIBLE);
         fab.setOnClickListener(pullRequestStory.pullRequest.locked ? null : this);
-
-        if (getSupportActionBar() != null) {
-            String issueName = issueInfo.repoInfo.name;
-            getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
-        }
 
         String status = getString(R.string.issue_status_open);
         if (IssueState.closed == pullRequestStory.pullRequest.state) {

@@ -2,6 +2,7 @@ package com.alorma.github.ui.view.issue;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
@@ -18,8 +19,12 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.ReposActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
@@ -46,6 +51,7 @@ public class IssueDetailView extends LinearLayout {
     private TextView profileEmail;
     private TextView textMilestone;
     private TextView textAssignee;
+    private TextView textRepository;
     private IssueDetailRequestListener issueDetailRequestListener;
 
     public IssueDetailView(Context context) {
@@ -81,9 +87,10 @@ public class IssueDetailView extends LinearLayout {
         profileEmail = (TextView) authorView.findViewById(R.id.email);
         textMilestone = (TextView) findViewById(R.id.textMilestone);
         textAssignee = (TextView) findViewById(R.id.textAssignee);
+        textRepository = (TextView) findViewById(R.id.textRepository);
     }
 
-    public void setIssue(RepoInfo repoInfo, Issue issue) {
+    public void setIssue(RepoInfo repoInfo, final Issue issue) {
         if (this.issue == null) {
             this.issue = issue;
             title.setText(issue.title);
@@ -93,6 +100,16 @@ public class IssueDetailView extends LinearLayout {
                 profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), issue.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(issue.user.avatar_url, profileIcon);
+                OnClickListener issueUserClick = new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent launcherIntent = ProfileActivity.createLauncherIntent(v.getContext(), issue.user);
+                        v.getContext().startActivity(launcherIntent);
+                    }
+                };
+                profileName.setOnClickListener(issueUserClick);
+                profileEmail.setOnClickListener(issueUserClick);
+                profileIcon.setOnClickListener(issueUserClick);
             }
 
             if (!TextUtils.isEmpty(issue.body_html)) {
@@ -140,13 +157,41 @@ public class IssueDetailView extends LinearLayout {
             }
 
             if (textAssignee != null) {
-                User assignee = issue.assignee;
+                final User assignee = issue.assignee;
                 if (assignee != null) {
                     textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
                     textAssignee.setText(assignee.login);
                     textMilestone.setVisibility(View.VISIBLE);
+                    textAssignee.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent launcherIntent = ProfileActivity.createLauncherIntent(v.getContext(), assignee);
+                            v.getContext().startActivity(launcherIntent);
+                        }
+                    });
                 } else {
                     textAssignee.setVisibility(View.GONE);
+                }
+            }
+
+            if (textRepository != null) {
+                final Repo repo = issue.repository;
+                if (repo != null) {
+                    textRepository.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textRepository.setText(repo.full_name);
+                    textRepository.setVisibility(View.VISIBLE);
+                    textRepository.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RepoInfo repoInfo = new RepoInfo();
+                            repoInfo.owner = repo.owner.login;
+                            repoInfo.name = repo.name;
+                            Intent launcherIntent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
+                            v.getContext().startActivity(launcherIntent);
+                        }
+                    });
+                } else {
+                    textRepository.setVisibility(View.GONE);
                 }
             }
         }
