@@ -61,7 +61,6 @@ public class DonateFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 
         skuList = new ArrayList<>();
         skuList.add(new DonateItem(SKU_BASE_DONATE + ".smallest", 1));
@@ -79,23 +78,7 @@ public class DonateFragment extends BaseFragment {
         getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (menu.findItem(R.id.action_donate) == null) {
-            inflater.inflate(R.menu.donate_menu, menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_donate) {
-            launchDonate();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void launchDonate() {
+    public void launchDonate() {
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.support_development)
                 .adapter(new DonateItemsAdapter(getActivity(), skuList), new MaterialDialog.ListCallback() {
@@ -122,8 +105,10 @@ public class DonateFragment extends BaseFragment {
                     sku, "inapp", purchaseId);
             if (buyIntentBundle != null) {
                 PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
-                        1001, new Intent(), 0, 0, 0);
+                if (pendingIntent != null) {
+                    getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
+                            1001, new Intent(), 0, 0, 0);
+                }
             }
         } catch (RemoteException | IntentSender.SendIntentException e) {
             e.printStackTrace();

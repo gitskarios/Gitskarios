@@ -3,7 +3,6 @@ package com.alorma.github.ui.adapter.commit;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -11,14 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TextUtils;
@@ -155,6 +151,18 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         } else {
             holder.numFiles.setVisibility(View.GONE);
         }
+
+        holder.comments_count.setText(String.valueOf(commit.comment_count));
+        applyIcon(holder.comments_count, Octicons.Icon.oct_comment_discussion);
+    }
+
+    private void applyIcon(TextView textView, Octicons.Icon value) {
+        IconicsDrawable drawableForks = new IconicsDrawable(textView.getContext(), value);
+        drawableForks.sizeRes(R.dimen.textSizeSmall);
+        drawableForks.colorRes(R.color.icons);
+        textView.setCompoundDrawables(null, null, drawableForks, null);
+        int offset = textView.getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);
+        textView.setCompoundDrawablePadding(offset);
     }
 
     @Override
@@ -192,6 +200,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         private final TextView sha;
         private final TextView textNums;
         private final TextView numFiles;
+        private final TextView comments_count;
         private final ImageView avatar;
 
         public ViewHolder(final View itemView) {
@@ -202,6 +211,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
             sha = (TextView) itemView.findViewById(R.id.sha);
             textNums = (TextView) itemView.findViewById(R.id.textNums);
             numFiles = (TextView) itemView.findViewById(R.id.numFiles);
+            comments_count = (TextView) itemView.findViewById(R.id.comments_count);
             avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
 
             itemView.setOnClickListener(new View.OnClickListener() {

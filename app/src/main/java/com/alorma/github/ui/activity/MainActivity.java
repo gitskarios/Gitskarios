@@ -7,6 +7,7 @@ import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -15,7 +16,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,9 +25,12 @@ import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
@@ -37,9 +40,10 @@ import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
-import com.alorma.github.ui.view.NotificationsActionProvider;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.actionitembadge.library.ActionItemBadge;
+import com.mikepenz.actionitembadge.library.utils.BadgeStyle;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
@@ -59,13 +63,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener,
-        NotificationsActionProvider.OnNotificationListener {
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener {
 
     private GeneralReposFragment reposFragment;
     private EventsListFragment eventsFragment;
-    private NotificationsActionProvider notificationProvider;
 
     private AccountHeader headerResult;
     private HashMap<String, Account> accountMap;
@@ -73,7 +79,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private Fragment lastUsedFragment;
     private Drawer resultDrawer;
     private ChangelogDialogSupport dialog;
-
+    private int notificationsSizeCount = 0;
+    private DonateFragment donateFragment;
 
 
     public static void startActivity(Activity context) {
@@ -85,7 +92,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DonateFragment donateFragment = new DonateFragment();
+        donateFragment = new DonateFragment();
 
         getSupportFragmentManager().beginTransaction().add(donateFragment, "donate").commit();
 
@@ -141,7 +148,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     .withName(getString(R.string.add_account))
                     .withDescription(getString(R.string.add_account_description))
                     .withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add)
-                            .actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
+                            .actionBar().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
                     .withIdentifier(-1);
 
             headerResult.addProfiles(itemAdd);
@@ -190,6 +197,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withCheckable(false),
                 new DividerDrawerItem(),
                 new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withCheckable(false),
+                new SecondaryDrawerItem().withName(R.string.support_development).withIcon(Octicons.Icon.oct_heart).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_support_development).withCheckable(false),
                 new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withCheckable(false),
                 new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withCheckable(false)
         );
@@ -218,6 +226,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         break;
                     case R.id.nav_drawer_sign_out:
                         signOut();
+                        break;
+                    case R.id.nav_drawer_support_development:
+                        if (donateFragment != null) {
+                            donateFragment.launchDonate();
+                        }
                         break;
                 }
 
@@ -322,28 +335,50 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (!hasInflated) {
-            getMenuInflater().inflate(R.menu.main_menu, menu);
-            hasInflated = true;
-        }
-
-        MenuItem notificationsItem = menu.findItem(R.id.action_notifications);
-
-        notificationProvider = (NotificationsActionProvider) MenuItemCompat.getActionProvider(notificationsItem);
-
-        if (notificationProvider != null) {
-            notificationProvider.setOnNotificationListener(this);
-        }
+        getMenuInflater().inflate(R.menu.main_menu, menu);
 
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (notificationsSizeCount > 0) {
+            BadgeStyle badgeStyle = new BadgeStyle(BadgeStyle.Style.DEFAULT,
+                    R.layout.menu_badge,
+                    getResources().getColor(R.color.accent),
+                    R.color.accent_dark,
+                    Color.WHITE, getResources().getDimensionPixelOffset(R.dimen.gapMicro));
+
+            ActionItemBadge.update(this, menu.findItem(R.id.action_notifications), Octicons.Icon.oct_inbox, badgeStyle, notificationsSizeCount);
+        } else {
+            ActionItemBadge.hide(menu.findItem(R.id.action_notifications));
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (notificationProvider != null) {
-            notificationProvider.refresh();
-        }
+        checkNotifications();
+    }
+
+    private void checkNotifications() {
+        GetNotificationsClient client = new GetNotificationsClient(this);
+        client.setOnResultCallback(new BaseClient.OnResultCallback<List<Notification>>() {
+            @Override
+            public void onResponseOk(List<Notification> notifications, Response r) {
+                if (notifications != null) {
+                    notificationsSizeCount = notifications.size();
+                    invalidateOptionsMenu();
+                }
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        client.execute();
     }
 
     @Override
@@ -351,6 +386,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         if (item.getItemId() == R.id.action_search) {
             Intent intent = SearchActivity.launchIntent(this);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_notifications) {
+            Intent intent = NotificationsActivity.launchIntent(this);
             startActivity(intent);
         }
 
@@ -477,12 +515,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 .withActivityTheme(R.style.AppTheme)
                 .start(this);
         return false;
-    }
-
-    @Override
-    public void onNotificationRequested() {
-        Intent intent = NotificationsActivity.launchIntent(this);
-        startActivity(intent);
     }
 
     @Override

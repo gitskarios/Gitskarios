@@ -172,7 +172,20 @@ public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapte
         } else {
             holder.numFiles.setVisibility(View.GONE);
         }
+
+        holder.comments_count.setText(String.valueOf(commit.comment_count));
+        applyIcon(holder.comments_count, Octicons.Icon.oct_comment_discussion);
     }
+
+    private void applyIcon(TextView textView, Octicons.Icon value) {
+        IconicsDrawable drawableForks = new IconicsDrawable(textView.getContext(), value);
+        drawableForks.sizeRes(R.dimen.textSizeSmall);
+        drawableForks.colorRes(R.color.icons);
+        textView.setCompoundDrawables(null, null, drawableForks, null);
+        int offset = textView.getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);
+        textView.setCompoundDrawablePadding(offset);
+    }
+
 
     private void handleReviewComment(ReviewCommentHolder holder, IssueStoryReviewComment comment) {
         holder.reviewCommentView.setReviewCommit(comment, repoInfo);
@@ -199,6 +212,7 @@ public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapte
         private final TextView textNums;
         private final TextView numFiles;
         private final ImageView avatar;
+        private final TextView comments_count;
 
         public CommitViewHolder(final View itemView) {
             super(itemView);
@@ -208,6 +222,7 @@ public class PullRequestCommitsReviewCommentsAdapter extends RecyclerArrayAdapte
             sha = (TextView) itemView.findViewById(R.id.sha);
             textNums = (TextView) itemView.findViewById(R.id.textNums);
             numFiles = (TextView) itemView.findViewById(R.id.numFiles);
+            comments_count = (TextView) itemView.findViewById(R.id.comments_count);
             avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
 
             itemView.setOnClickListener(new View.OnClickListener() {

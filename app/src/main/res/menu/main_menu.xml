@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_notifications"
         android:title="@string/action_notifications"
-        app:actionProviderClass="com.alorma.github.ui.view.NotificationsActionProvider"
+        app:actionLayout="@layout/menu_badge"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_search"

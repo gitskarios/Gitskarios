@@ -119,9 +119,6 @@ dependencies {
     compile project(':libraries:breadcrumbs')
     compile project(':libraries:atelier')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.mikepenz:materialdrawer:3.1.1@aar') {
-        transitive = true
-    }
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
@@ -139,7 +136,13 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.nineoldandroids:library:2.4.0'
+
+    compile('com.mikepenz:materialdrawer:3.1.2@aar') {
+        transitive = true
+    }
+    compile('com.mikepenz:actionitembadge:3.0.4@aar')
     compile 'com.mikepenz.iconics:octicons-typeface:2.2.0@aar'
+
     compile 'com.github.d-max:spots-dialog:0.3'
     compile 'com.squareup:otto:1.3.8'
     compile 'com.squareup.dagger:dagger:1.2.2'

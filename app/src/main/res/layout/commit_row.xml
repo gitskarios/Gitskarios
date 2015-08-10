@@ -32,7 +32,27 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/comments_count"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/textSizeSmall"
+                tools:text="Small Text" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/gapMedium">
+
+            <TextView
                 android:id="@+id/user"
+                style="@style/TextAppearance.AppCompat.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -41,17 +61,16 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="0dp"
                 android:layout_toLeftOf="@+id/sha"
-                android:layout_toStartOf="@+id/sha"
-                style="@style/TextAppearance.AppCompat.Caption" />
+                android:layout_toStartOf="@+id/sha" />
 
             <TextView
                 android:id="@+id/sha"
+                style="@style/TextAppearance.AppCompat.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                style="@style/TextAppearance.AppCompat.Caption"
                 tools:text="Small Text" />
         </RelativeLayout>
 
@@ -63,6 +82,7 @@
 
         <TextView
             android:id="@+id/textNums"
+            style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/gapLarge"
@@ -70,7 +90,6 @@
             android:background="@drawable/bg_event_commits"
             android:padding="@dimen/gapSmall"
             android:paddingLeft="@dimen/gapMedium"
-            style="@style/TextAppearance.AppCompat.Caption"
             android:textSize="@dimen/textSizeMicro" />
     </LinearLayout>
 </LinearLayout>
