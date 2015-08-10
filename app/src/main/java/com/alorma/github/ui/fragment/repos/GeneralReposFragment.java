@@ -82,12 +82,14 @@ public class GeneralReposFragment extends BaseFragment {
                     return WatchedReposFragment.newInstance();
                 case 3:
                     return MembershipReposFragment.newInstance();
+                case 4:
+                    return ReposFragmentFromOrgs.newInstance();
             }
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -102,6 +104,8 @@ public class GeneralReposFragment extends BaseFragment {
                     return getString(R.string.navigation_watched_repos);
                 case 3:
                     return getString(R.string.navigation_member_repos);
+                case 4:
+                    return getString(R.string.navigation_from_orgs);
             }
         }
     }

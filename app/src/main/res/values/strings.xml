@@ -400,5 +400,6 @@
     <string name="deleting_repository">Deleting repository</string>
     <string name="pulls_fragment_title">Pull requests</string>
     <string name="no_pullrequest_ound">No pull requests found</string>
+    <string name="navigation_from_orgs">Organizations repositories</string>
 
 </resources>
