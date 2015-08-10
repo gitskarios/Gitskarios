@@ -398,7 +398,7 @@
     <string name="pref_repo_delete">Delete repository</string>
     <string name="pref_repo_delete_repository">Once you delete a repository, there is no going back.</string>
     <string name="deleting_repository">Deleting repository</string>
-    <string name="pulls_fragment_title">Pull request</string>
-    <string name="no_pullrequest_ound">No pull request found</string>
+    <string name="pulls_fragment_title">Pull requests</string>
+    <string name="no_pullrequest_ound">No pull requests found</string>
 
 </resources>
