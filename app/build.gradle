@@ -4,12 +4,12 @@ apply plugin: 'com.github.ben-manes.versions'
 //gradle dependencyUpdates -Drevision=release
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionName "2.5.3"
         versionCode 2530
         resValue "string", "app_git_hash", getCurrentGitHash()
@@ -126,12 +126,12 @@ dependencies {
         transitive = true
     }
     compile 'com.github.xiprox.errorview:library:2.2.0'
-    compile 'com.android.support:design:22.2.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:palette-v7:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.google.android.gms:play-services-analytics:7.5.0'
+    compile 'com.android.support:design:23.0.0'
+    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:palette-v7:23.0.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:cardview-v7:23.0.0'
+    compile 'com.google.android.gms:play-services-analytics:7.8.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
