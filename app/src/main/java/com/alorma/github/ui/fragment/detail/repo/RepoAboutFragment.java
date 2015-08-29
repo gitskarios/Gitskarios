@@ -268,10 +268,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     /**
      * Results for STAR
      */
-    private class StarredResult implements BaseClient.OnResultCallback<Object> {
+    private class StarredResult implements BaseClient.OnResultCallback<Response> {
 
         @Override
-        public void onResponseOk(Object o, Response r) {
+        public void onResponseOk(Response o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
                 changeStarView();
@@ -289,10 +289,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         }
     }
 
-    private class UnstarActionResult implements BaseClient.OnResultCallback<Object> {
+    private class UnstarActionResult implements BaseClient.OnResultCallback<Response> {
 
         @Override
-        public void onResponseOk(Object o, Response r) {
+        public void onResponseOk(Response o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoStarred = false;
                 changeStarView();
@@ -305,10 +305,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         }
     }
 
-    private class StarActionResult implements BaseClient.OnResultCallback<Object> {
+    private class StarActionResult implements BaseClient.OnResultCallback<Response> {
 
         @Override
-        public void onResponseOk(Object o, Response r) {
+        public void onResponseOk(Response o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoStarred = true;
                 changeStarView();
@@ -338,10 +338,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
      * RESULTS FOR WATCH
      */
 
-    private class WatchedResult implements BaseClient.OnResultCallback<Object> {
+    private class WatchedResult implements BaseClient.OnResultCallback<Response> {
 
         @Override
-        public void onResponseOk(Object o, Response r) {
+        public void onResponseOk(Response o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoWatched = true;
                 changeWatchView();
@@ -359,10 +359,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         }
     }
 
-    private class UnwatchActionResult implements BaseClient.OnResultCallback<Object> {
+    private class UnwatchActionResult implements BaseClient.OnResultCallback<Response> {
 
         @Override
-        public void onResponseOk(Object o, Response r) {
+        public void onResponseOk(Response o, Response r) {
             if (r != null && r.getStatus() == 204) {
                 repoWatched = false;
                 changeWatchView();

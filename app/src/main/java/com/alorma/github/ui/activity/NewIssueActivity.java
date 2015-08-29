@@ -22,6 +22,7 @@ import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -350,7 +351,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
      */
 
     private void openMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
     }

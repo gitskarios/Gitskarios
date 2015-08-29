@@ -152,7 +152,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         if (MarkdownUtils.isMarkdown(content.name)) {
             RequestMarkdownDTO request = new RequestMarkdownDTO();
             request.text = decodeContent();
-            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request, new Handler());
+            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request);
             markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
                 @Override
                 public void onResponseOk(final String s, Response r) {

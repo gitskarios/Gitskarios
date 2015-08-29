@@ -93,7 +93,9 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, path, 0);
+        CommitInfo commitInfo = new CommitInfo();
+        commitInfo.repoInfo = repoInfo;
+        ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, path, 0);
         client.setOnResultCallback(this);
         client.execute();
     }
@@ -101,7 +103,9 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, page);
+        CommitInfo commitInfo = new CommitInfo();
+        commitInfo.repoInfo = repoInfo;
+        ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, page);
         client.setOnResultCallback(this);
         client.execute();
     }

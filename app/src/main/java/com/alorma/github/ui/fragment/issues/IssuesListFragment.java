@@ -35,6 +35,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -155,7 +156,9 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                     } else if (currentFilter == 1) {
                         issueInfo.state = IssueState.closed;
                     }
-                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("state", issueInfo.state.name());
+                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, map);
                     issuesClient.setOnResultCallback(this);
                     issuesClient.execute();
                 }
@@ -189,7 +192,9 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                     } else if (currentFilter == 1) {
                         issueInfo.state = IssueState.closed;
                     }
-                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, page);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("state", issueInfo.state.name());
+                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, map, page);
                     issuesClient.setOnResultCallback(this);
                     issuesClient.execute();
                 }

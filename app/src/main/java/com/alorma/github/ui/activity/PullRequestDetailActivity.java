@@ -38,6 +38,7 @@ import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -161,23 +162,23 @@ public class PullRequestDetailActivity extends BackActivity
     protected void getContent() {
         super.getContent();
         loadingView.setVisibility(View.VISIBLE);
-            GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
-            repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
-                @Override
-                public void onResponseOk(Repo repo, Response r) {
-                    repository = repo;
-                    issueInfo.repoInfo.permissions = repo.permissions;
-                    PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
-                    pullRequestStoryLoader.setOnResultCallback(PullRequestDetailActivity.this);
-                    pullRequestStoryLoader.execute();
-                }
+        GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
+        repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+            @Override
+            public void onResponseOk(Repo repo, Response r) {
+                repository = repo;
+                issueInfo.repoInfo.permissions = repo.permissions;
+                PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
+                pullRequestStoryLoader.setOnResultCallback(PullRequestDetailActivity.this);
+                pullRequestStoryLoader.execute();
+            }
 
-                @Override
-                public void onFail(RetrofitError error) {
+            @Override
+            public void onFail(RetrofitError error) {
 
-                }
-            });
-            repoClient.execute();
+            }
+        });
+        repoClient.execute();
     }
 
     private boolean checkPermissions(IssueInfo issueInfo) {
@@ -188,7 +189,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     @Override
     public void onResponseOk(PullRequestStory pullRequestStory, Response r) {
-            hideProgressDialog();
+        hideProgressDialog();
         this.pullRequestStory = pullRequestStory;
         this.pullRequestStory.pullRequest.repository = repository;
         applyIssue();
@@ -419,7 +420,7 @@ public class PullRequestDetailActivity extends BackActivity
     }
 
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 
@@ -862,7 +863,6 @@ public class PullRequestDetailActivity extends BackActivity
         setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
         finish();
     }
-
 
 
     @Override

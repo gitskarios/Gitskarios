@@ -33,6 +33,7 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -411,7 +412,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 
