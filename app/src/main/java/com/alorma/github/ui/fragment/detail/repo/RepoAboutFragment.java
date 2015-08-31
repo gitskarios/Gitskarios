@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.basesdk.client.BaseClient;
-import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
@@ -37,6 +36,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.w3c.dom.Text;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -51,13 +52,15 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     private Repo currentRepo;
     private TextView htmlContentView;
     private ImageView profileIcon;
-    private ImageView isStarredIcon;
-    private ImageView isWatchedIcon;
+
+    private TextView starredPlaceholder;
+    private TextView watchedPlaceholder;
+    private TextView forkPlaceHolder;
+
     private TextView authorName;
     private View fork;
     private TextView forkOfTextView;
     private TextView createdAtTextView;
-    //    private TextView issuesIcon;
     private Boolean repoStarred = null;
     private Boolean repoWatched = null;
     private ImageView forkIcon;
@@ -99,10 +102,11 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
         createdIcon = (ImageView) view.findViewById(R.id.createdIcon);
 
-        isStarredIcon = (ImageView) view.findViewById(R.id.isStarredIcon);
-        isWatchedIcon = (ImageView) view.findViewById(R.id.isWatchedIcon);
+        starredPlaceholder = (TextView) view.findViewById(R.id.starredPlaceholder);
+        watchedPlaceholder = (TextView) view.findViewById(R.id.watchedPlaceHolder);
+        forkPlaceHolder = (TextView) view.findViewById(R.id.forkPlaceHolder);
 
-        isStarredIcon.setOnClickListener(new View.OnClickListener() {
+        starredPlaceholder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (repoStarred != null) {
@@ -111,12 +115,19 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             }
         });
 
-        isWatchedIcon.setOnClickListener(new View.OnClickListener() {
+        watchedPlaceholder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (repoWatched != null) {
                     changeWatchedStatus();
                 }
+            }
+        });
+
+        forkPlaceHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FORK ¿?
             }
         });
 
@@ -208,6 +219,12 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
             createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), currentRepo.created_at, R.string.created_at));
 
+            starredPlaceholder.setText(String.valueOf(currentRepo.stargazers_count));
+            watchedPlaceholder.setText(String.valueOf(currentRepo.subscribers_count));
+            forkPlaceHolder.setText(String.valueOf(currentRepo.forks_count));
+
+            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_repo_forked).sizeDp(24).colorRes(R.color.primary);
+            forkPlaceHolder.setCompoundDrawables(drawable, null, null, null);
         }
     }
 
@@ -325,13 +342,13 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
     private void changeStarView() {
         if (getActivity() != null) {
-            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(36).paddingDp(10);
+            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(24);
             if (repoStarred != null && repoStarred) {
                 drawable.colorRes(R.color.primary);
             } else {
                 drawable.colorRes(R.color.icons);
             }
-            isStarredIcon.setImageDrawable(drawable);
+            starredPlaceholder.setCompoundDrawables(drawable, null, null, null);
         }
     }
 
@@ -394,13 +411,13 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
     private void changeWatchView() {
         if (getActivity() != null) {
-            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(36).paddingDp(10);
+            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(24);
             if (repoWatched != null && repoWatched) {
                 drawable.colorRes(R.color.primary);
             } else {
                 drawable.colorRes(R.color.icons);
             }
-            isWatchedIcon.setImageDrawable(drawable);
+            watchedPlaceholder.setCompoundDrawables(drawable, null, null, null);
         }
     }
 
