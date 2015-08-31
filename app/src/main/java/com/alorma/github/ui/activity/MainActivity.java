@@ -20,7 +20,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
@@ -46,10 +45,10 @@ import com.mikepenz.actionitembadge.library.ActionItemBadge;
 import com.mikepenz.actionitembadge.library.utils.BadgeStyle;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
-import com.mikepenz.materialdrawer.accountswitcher.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -193,17 +192,17 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         drawer.addDrawerItems(
                 new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_events),
                 new PrimaryDrawerItem().withName(R.string.navigation_general_repositories).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_repositories),
-                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people).withCheckable(false),
-                new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withCheckable(false),
+                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people).withSelectable(false),
+                new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withSelectable(false),
                 new DividerDrawerItem(),
-                new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withCheckable(false),
-                new SecondaryDrawerItem().withName(R.string.support_development).withIcon(Octicons.Icon.oct_heart).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_support_development).withCheckable(false),
-                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withCheckable(false),
-                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withCheckable(false)
+                new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withSelectable(false),
+                new SecondaryDrawerItem().withName(R.string.support_development).withIcon(Octicons.Icon.oct_heart).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_support_development).withSelectable(false),
+                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withSelectable(false),
+                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withSelectable(false)
         );
         drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
-            public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 int identifier = drawerItem.getIdentifier();
                 switch (identifier) {
                     case R.id.nav_drawer_events:
@@ -237,7 +236,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 return false;
             }
         });
-        drawer.withSelectedItem(0);
+        drawer.withSelectedItemByPosition(0);
         resultDrawer = drawer.build();
     }
 
@@ -270,7 +269,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             @Override
             public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
                 if (iProfile.getIdentifier() != -1) {
-                    Account account = accountMap.get(iProfile.getName());
+                    Account account = accountMap.get(iProfile.getName().getText());
                     if (selectedAccount != null) {
                         if (account.name.equals(selectedAccount.name)) {
                             User user = new User();
