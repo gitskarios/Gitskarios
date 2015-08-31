@@ -19,7 +19,7 @@
         android:layout_marginLeft="-18dp"
         android:layout_marginTop="@dimen/gapMedium"
         android:clickable="false"
-        app:biv_maskDrawable="@drawable/circle_mask" />
+        app:biv_maskDrawable="@drawable/material_drawer_circle_mask" />
 
     <TextView
         android:id="@+id/shaContent"
