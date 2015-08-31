@@ -220,26 +220,28 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     protected void fabClick() {
         isInCompareMode = !isInCompareMode;
         checkFAB();
-        if (getActivity() instanceof AppCompatActivity) {
-            cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub)
-                    .setTitle(":base ... :head")
-                    .setMenu(R.menu.menu_commits_compare)
-                    .start(this);
+        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            if (getActivity().findViewById(R.id.cab_stub) != null) {
+                cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub)
+                        .setTitle(":base ... :head")
+                        .setMenu(R.menu.menu_commits_compare)
+                        .start(this);
 
-            if (cab.getMenu() != null) {
-                MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
+                if (cab.getMenu() != null) {
+                    MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
 
-                if (itemCompare != null) {
-                    IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(Color.WHITE);
-                    itemCompare.setIcon(iconicsDrawable);
-                    itemCompare.setEnabled(false);
-                }
+                    if (itemCompare != null) {
+                        IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(Color.WHITE);
+                        itemCompare.setIcon(iconicsDrawable);
+                        itemCompare.setEnabled(false);
+                    }
 
-                MenuItem itemChangeBranch = cab.getMenu().findItem(R.id.action_repo_change_branch);
+                    MenuItem itemChangeBranch = cab.getMenu().findItem(R.id.action_repo_change_branch);
 
-                if (itemChangeBranch != null) {
-                    IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar().color(Color.WHITE);
-                    itemChangeBranch.setIcon(iconicsDrawable);
+                    if (itemChangeBranch != null) {
+                        IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar().color(Color.WHITE);
+                        itemChangeBranch.setIcon(iconicsDrawable);
+                    }
                 }
             }
         }

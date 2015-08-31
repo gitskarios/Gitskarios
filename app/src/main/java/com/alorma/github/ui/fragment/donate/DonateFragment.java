@@ -100,14 +100,16 @@ public class DonateFragment extends BaseFragment {
 
     private void buy(String sku) {
         try {
-            purchaseId = UUID.randomUUID().toString();
-            Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(),
-                    sku, "inapp", purchaseId);
-            if (buyIntentBundle != null) {
-                PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-                if (pendingIntent != null) {
-                    getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
-                            1001, new Intent(), 0, 0, 0);
+            if (mService != null) {
+                purchaseId = UUID.randomUUID().toString();
+                Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(),
+                        sku, "inapp", purchaseId);
+                if (buyIntentBundle != null) {
+                    PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+                    if (pendingIntent != null) {
+                        getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
+                                1001, new Intent(), 0, 0, 0);
+                    }
                 }
             }
         } catch (RemoteException | IntentSender.SendIntentException e) {
