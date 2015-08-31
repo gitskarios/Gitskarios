@@ -89,65 +89,6 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         }
     }
 
-    /*  public EventAdapter(Context context, Collection<GithubEvent> collection) {
-        super(context, new ArrayList<GithubEvent>());
-        addAll(collection);
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        GithubEvent githubEvent = getItem(position);
-
-        //get the viewHolder
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = inflate(githubEvent);
-            viewHolder = new ViewHolder((GithubEventView) convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        //here it will get populated :O
-        viewHolder.view.setEvent(githubEvent);
-        return convertView;
-    }
-
-
-    @Override
-    public void addAll(Collection<? extends GithubEvent> collection) {
-        for (GithubEvent githubEvent : collection) {
-            if (checkEventHandled(githubEvent)) {
-                add(githubEvent);
-            } else if (Fabric.isInitialized()) {
-                Crashlytics.log(githubEvent.type + " not handled");
-            }
-        }
-    }
-
-    @Override
-    public void addAll(GithubEvent... items) {
-        super.addAll(items);
-        for (GithubEvent githubEvent : items) {
-            if (checkEventHandled(githubEvent)) {
-                add(githubEvent);
-            } else if (Fabric.isInitialized()) {
-                Crashlytics.log(githubEvent.type + " not handled");
-            }
-        }
-    }
-
-    @Override
-    public void addAll(Collection<? extends  GithubEvent> collection, boolean paging) {
-        if (!paging) {
-            clear();
-        }
-
-        addAll(collection);
-    }
-*/
-
-
     private boolean checkEventHandled(GithubEvent event) {
         return event.getType() != null && (event.getType() == EventType.PushEvent)
                 || (event.getType() == EventType.WatchEvent)

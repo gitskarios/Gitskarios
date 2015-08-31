@@ -14,6 +14,7 @@ import org.joda.time.Seconds;
 import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,10 +32,10 @@ public class TimeUtils {
     }
 
     public static String getTimeAgoString(Context context, String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        /*DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
         DateTime dt = formatter.parseDateTime(date);
-        DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
+        DateTime dtNow = DateTime.now();
 
         Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
         int text = R.plurals.years_ago;
@@ -74,6 +75,13 @@ public class TimeUtils {
             }
         }
 
-        return context.getResources().getQuantityString(text, time, time);
+        return context.getResources().getQuantityString(text, time, time);*/
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.UTC);
+
+        DateTime dt = formatter.parseDateTime(date);
+        PrettyTime p = new PrettyTime();
+
+        return p.format(new Date(dt.getMillis()));
     }
 }

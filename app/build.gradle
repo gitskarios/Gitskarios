@@ -136,6 +136,7 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'org.ocpsoft.prettytime:prettytime:3.2.4.Final'
 
     compile('com.mikepenz:materialdrawer:3.1.2@aar') {
         transitive = true
