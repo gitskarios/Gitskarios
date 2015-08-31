@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
+import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -28,6 +29,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
     @Override
     protected void onBindViewHolder(ViewHolder holder, Repo repo) {
         holder.textTitle.setText(repo.name);
+        new EmojiBitmapLoader().parseTextView(holder.textTitle);
 
         String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);
         applyIcon(holder.textStarts, Octicons.Icon.oct_star);
@@ -40,6 +42,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
         if (repo.description != null) {
             holder.textDescription.setVisibility(View.VISIBLE);
             holder.textDescription.setText(repo.description);
+            new EmojiBitmapLoader().parseTextView(holder.textDescription);
         } else {
             holder.textDescription.setVisibility(View.GONE);
         }

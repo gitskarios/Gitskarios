@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;

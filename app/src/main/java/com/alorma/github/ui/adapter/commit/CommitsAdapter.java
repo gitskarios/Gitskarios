@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -39,11 +40,13 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     private boolean shortMessage;
     private RepoInfo repoInfo;
     private CommitsAdapterListener commitsAdapterListener;
+    private EmojiBitmapLoader emojiBitmapLoader;
 
     public CommitsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
         super(inflater);
         this.shortMessage = shortMessage;
         this.repoInfo = repoInfo;
+        emojiBitmapLoader = new EmojiBitmapLoader();
     }
 
     @Override
@@ -116,6 +119,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
         } else {
             holder.title.setText(message);
         }
+        emojiBitmapLoader.parseTextView(holder.title);
 
         if (commit.sha != null) {
             holder.sha.setText(commit.shortSha());
