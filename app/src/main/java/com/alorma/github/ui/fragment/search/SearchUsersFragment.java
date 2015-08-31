@@ -37,7 +37,7 @@ public class SearchUsersFragment extends BaseUsersListFragment {
         if (query != null) {
             setQuery(query);
         } else {
-            setEmpty();
+            setEmpty(false);
         }
     }
 

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.alorma.github.R;
@@ -24,14 +23,12 @@ import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
-import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
@@ -210,7 +207,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
             getAdapter().clear();
         }
         if (issues == null || issues.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -229,7 +226,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                 getAdapter().addAll(issues);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -248,7 +245,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }

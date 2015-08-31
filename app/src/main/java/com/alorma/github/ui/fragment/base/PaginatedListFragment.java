@@ -36,7 +36,7 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
                     onResponse(itemType, refreshing);
                     refreshing = false;
                 } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                    setEmpty();
+                    setEmpty(false);
                 }
             }
         }
@@ -56,7 +56,7 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
             ErrorHandler.onError(getActivity(), "Paginated list fragment", error);
         }
         if (error != null && error.getResponse() != null) {
-            setEmpty(error.getResponse().getStatus());
+            setEmpty(true, error.getResponse().getStatus());
         }
     }
 

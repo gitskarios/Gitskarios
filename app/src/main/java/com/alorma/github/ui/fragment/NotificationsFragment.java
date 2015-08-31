@@ -73,10 +73,10 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         super.onResponseOk(notifications, r);
         if (notifications != null) {
             if (notifications.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
-                setEmpty();
+                setEmpty(false);
             }
         } else {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -113,7 +113,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
             } else {
                 if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                    setEmpty();
+                    setEmpty(false);
                 }
 
             }
@@ -124,7 +124,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     public void onFail(RetrofitError error) {
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(true);
         }
     }
 

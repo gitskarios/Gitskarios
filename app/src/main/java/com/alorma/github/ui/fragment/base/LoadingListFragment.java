@@ -170,22 +170,29 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         return false;
     }
 
-    public void setEmpty() {
+    public void setEmpty(boolean withError) {
         stopRefresh();
         if (getActivity() != null) {
             if (error_view != null) {
                 error_view.setVisibility(View.VISIBLE);
                 error_view.setTitle(getNoDataText());
-                error_view.setOnRetryListener(this);
+                error_view.showRetryButton(withError);
+                if (withError) {
+                    error_view.setOnRetryListener(this);
+                }
             }
         }
     }
 
-    public void setEmpty(int statusCode) {
+    public void setEmpty(boolean withError, int statusCode) {
         if (getActivity() != null) {
             if (error_view != null) {
                 error_view.setVisibility(View.VISIBLE);
                 error_view.setError(statusCode);
+                error_view.showRetryButton(withError);
+                if (withError) {
+                    error_view.setOnRetryListener(this);
+                }
             }
         }
     }

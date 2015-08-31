@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -156,13 +155,13 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     public void onFail(RetrofitError error) {
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(true);
         }
     }
 
     @Override
-    public void setEmpty(int statusCode) {
-        super.setEmpty(statusCode);
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
         if (fab != null) {
             fab.setVisibility(View.INVISIBLE);
         }

@@ -79,7 +79,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
                 setAdapter(adapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -88,7 +88,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }

@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -40,7 +39,7 @@ public class SearchReposFragment extends BaseReposListFragment {
         if (query != null) {
             setQuery(query);
         } else {
-            setEmpty();
+            setEmpty(false);
         }
     }
 

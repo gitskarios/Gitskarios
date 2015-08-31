@@ -62,7 +62,7 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
                 setAdapter(adapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 

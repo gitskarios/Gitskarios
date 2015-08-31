@@ -79,7 +79,7 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
                 getAdapter().addAll(issueStoryDetails);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -148,14 +148,14 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }
 
     @Override
-    public void setEmpty(int statusCode) {
-        super.setEmpty(statusCode);
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
         if (fab != null) {
             fab.setVisibility(View.INVISIBLE);
         }

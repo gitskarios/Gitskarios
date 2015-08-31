@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,17 +12,13 @@ import android.widget.Spinner;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.PullRequest;
-import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullsClient;
-import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
-import com.alorma.github.ui.activity.SearchIssuesActivity;
-import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.adapter.issues.PullRequestsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -145,7 +138,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
             getAdapter().clear();
         }
         if (issues == null || issues.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -162,7 +155,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
                 getAdapter().addAll(issues);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -171,7 +164,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }

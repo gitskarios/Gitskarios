@@ -143,7 +143,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
                 displayContent(contents);
             } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                setEmpty();
+                setEmpty(false);
             }
         }
     }
@@ -153,7 +153,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
         if (getActivity() != null) {
             if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                 if (error != null && error.getResponse() != null) {
-                    setEmpty(error.getResponse().getStatus());
+                    setEmpty(true, error.getResponse().getStatus());
                 }
             }
             ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
@@ -225,8 +225,8 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
 
     @Override
-    public void setEmpty(int statusCode) {
-        super.setEmpty(statusCode);
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
     }
 
     @Override
