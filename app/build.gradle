@@ -119,7 +119,7 @@ dependencies {
     compile project(':libraries:breadcrumbs')
     compile project(':libraries:atelier')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
         transitive = true;
     }
     compile 'com.github.xiprox.errorview:library:2.2.0'
