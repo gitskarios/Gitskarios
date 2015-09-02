@@ -119,7 +119,7 @@ dependencies {
     compile project(':libraries:breadcrumbs')
     compile project(':libraries:atelier')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
         transitive = true;
     }
     compile 'com.github.xiprox.errorview:library:2.2.0'
@@ -130,30 +130,31 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.0.0'
     compile 'com.google.android.gms:play-services-analytics:7.8.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'org.ocpsoft.prettytime:prettytime:3.2.4.Final'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
 
-    compile('com.mikepenz:aboutlibraries:5.2.0@aar') {
+    compile('com.mikepenz:aboutlibraries:5.2.1@aar') {
         transitive = true
     }
-    compile('com.mikepenz:materialdrawer:4.0.3@aar') {
+    compile('com.mikepenz:materialdrawer:4.0.5@aar') {
         transitive = true
     }
     compile('com.mikepenz:actionitembadge:3.1.1@aar')
     compile 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
     compile 'com.mikepenz:google-material-typeface:1.2.0.1@aar'
 
-    compile 'com.github.d-max:spots-dialog:0.3'
+    compile 'com.github.d-max:spots-dialog:0.4'
     compile 'com.squareup:otto:1.3.8'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'io.realm:realm-android:0.81.1'
-    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.1@aar'
+    compile 'io.realm:realm-android:0.82.1'
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
+
     compile 'com.afollestad:material-cab:0.1.4'
+    compile 'com.afollestad:material-dialogs:0.7.9.1'
 //    compile 'com.binaryfork:spanny:1.0.2'
 //    compile 'com.github.Musenkishi:Atelier:1.3.1'
 
