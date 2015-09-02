@@ -1,8 +1,7 @@
 package com.alorma.github.ui.view;
 
-import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -13,19 +12,18 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 public class GitskariosProfileDrawerItem extends ProfileDrawerItem {
 
     @Override
-    public View convertView(LayoutInflater inflater, View convertView, ViewGroup parent) {
-        View v = super.convertView(inflater, convertView, parent);
+    public void bindView(RecyclerView.ViewHolder holder) {
+        super.bindView(holder);
 
-        TextView text = (TextView) v.findViewById(com.mikepenz.materialdrawer.R.id.name);
-        TextView mail = (TextView) v.findViewById(com.mikepenz.materialdrawer.R.id.email);
+        TextView text = (TextView) holder.itemView.findViewById(com.mikepenz.materialdrawer.R.id.material_drawer_name);
+        TextView mail = (TextView) holder.itemView.findViewById(com.mikepenz.materialdrawer.R.id.material_drawer_email);
 
         if (text != null && mail != null) {
             text.setVisibility(View.VISIBLE);
             mail.setVisibility(View.VISIBLE);
-            text.setText(this.getName());
-            mail.setText(this.getEmail());
-        }
 
-        return v;
+            this.getName().applyTo(text);
+            this.getEmail().applyTo(mail);
+        }
     }
 }

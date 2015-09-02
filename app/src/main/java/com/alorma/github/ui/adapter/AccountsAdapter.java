@@ -58,9 +58,9 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.Holder
 
         public Holder(View itemView) {
             super(itemView);
-            this.profileIcon = (ImageView) itemView.findViewById(R.id.profileIcon);
-            this.name = (TextView) itemView.findViewById(R.id.name);
-            this.email = (TextView) itemView.findViewById(R.id.email);
+            this.profileIcon = (ImageView) itemView.findViewById(R.id.material_drawer_profileIcon);
+            this.name = (TextView) itemView.findViewById(R.id.material_drawer_name);
+            this.email = (TextView) itemView.findViewById(R.id.material_drawer_email);
         }
     }
 }
