@@ -336,9 +336,9 @@ public class PullRequestDetailActivity extends BackActivity
             MenuItem itemShare = menu.findItem(R.id.share_issue);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
             } else {
-                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
             }
 
         }

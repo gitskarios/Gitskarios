@@ -108,7 +108,7 @@ def getGHCallback(pro) {
 
 assembleRelease.dependsOn clean
 assembleRelease.doLast {
-    tasks.crashlyticsUploadDistributionRelease.execute()
+//    tasks.crashlyticsUploadDistributionRelease.execute()
 }
 
 dependencies {

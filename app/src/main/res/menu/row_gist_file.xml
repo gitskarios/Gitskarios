@@ -5,7 +5,7 @@
     <item
         android:title="@string/Share"
         android:id="@+id/action_toolbar_share"
-        android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
+        android:icon="@drawable/ic_menu_share_mtrl_alpha"
         app:showAsAction="always" />
 
 </menu>
