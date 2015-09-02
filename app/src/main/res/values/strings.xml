@@ -401,7 +401,8 @@
     <string name="pulls_fragment_title">Pull requests</string>
     <string name="no_pullrequest_ound">No pull requests found</string>
     <string name="navigation_from_orgs">From organizations</string>
-    <string name="action_add_shortcut">Add to home</string>
+    <string name="action_add_shortcut">Add to launcher</string>
     <string name="repo_add_to_homescreen">Repository shortcut created</string>
+    <string name="issue_add_to_homescreen">Issue shortcut created</string>
 
 </resources>

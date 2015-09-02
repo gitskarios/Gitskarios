@@ -85,7 +85,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         return intent;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

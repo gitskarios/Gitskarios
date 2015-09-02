@@ -37,6 +37,7 @@ import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
@@ -53,6 +54,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
+import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
@@ -70,6 +72,9 @@ import retrofit.client.Response;
 public class IssueDetailActivity extends BackActivity implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener, IssueDetailRequestListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
+    public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
+    public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";
+    public static final String ISSUE_INFO_NUMBER = "ISSUE_INFO_NUMBER";
 
     private static final int NEW_COMMENT_REQUEST = 1243;
     private static final int ISSUE_BODY_EDIT = 4252;
@@ -95,6 +100,18 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         return intent;
     }
 
+    public static Intent createShortcutLauncherIntent(Context context, IssueInfo issueInfo) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ISSUE_INFO_REPO_NAME, issueInfo.repoInfo.name);
+        bundle.putString(ISSUE_INFO_REPO_OWNER, issueInfo.repoInfo.owner);
+        bundle.putInt(ISSUE_INFO_NUMBER, issueInfo.num);
+
+        Intent intent = new Intent(context, IssueDetailActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +120,21 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         if (getIntent().getExtras() != null) {
 
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+
+            if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
+                String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
+                String owner = getIntent().getExtras().getString(ISSUE_INFO_REPO_OWNER);
+
+                RepoInfo repoInfo = new RepoInfo();
+                repoInfo.name = name;
+                repoInfo.owner = owner;
+
+                int num = getIntent().getExtras().getInt(ISSUE_INFO_NUMBER);
+
+                issueInfo = new IssueInfo();
+                issueInfo.repoInfo = repoInfo;
+                issueInfo.num = num;
+            }
 
             primary = getResources().getColor(R.color.primary);
             primaryDark = getResources().getColor(R.color.primary_dark_alpha);
@@ -404,6 +436,9 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                     Intent intent = getShareIntent();
                     startActivity(intent);
                 }
+                break;
+            case R.id.action_add_shortcut:
+                ShortcutUtils.addShortcut(this, issueInfo);
                 break;
         }
 
