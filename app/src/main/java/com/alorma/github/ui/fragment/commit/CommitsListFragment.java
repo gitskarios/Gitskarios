@@ -94,6 +94,7 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
         super.executeRequest();
         CommitInfo commitInfo = new CommitInfo();
         commitInfo.repoInfo = repoInfo;
+        commitInfo.sha = repoInfo.branch;
         ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, path, 0);
         client.setOnResultCallback(this);
         client.execute();

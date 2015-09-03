@@ -203,34 +203,36 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                int identifier = drawerItem.getIdentifier();
-                switch (identifier) {
-                    case R.id.nav_drawer_events:
-                        onUserEventsSelected();
-                        break;
-                    case R.id.nav_drawer_repositories:
-                        onReposSelected();
-                        break;
-                    case R.id.nav_drawer_people:
-                        onPeopleSelected();
-                        break;
-                    case R.id.nav_drawer_gists:
-                        onGistsSelected();
-                        break;
-                    case R.id.nav_drawer_settings:
-                        onSettingsSelected();
-                        break;
-                    case R.id.nav_drawer_about:
-                        onAboutSelected();
-                        break;
-                    case R.id.nav_drawer_sign_out:
-                        signOut();
-                        break;
-                    case R.id.nav_drawer_support_development:
-                        if (donateFragment != null) {
-                            donateFragment.launchDonate();
-                        }
-                        break;
+                if (drawerItem != null) {
+                    int identifier = drawerItem.getIdentifier();
+                    switch (identifier) {
+                        case R.id.nav_drawer_events:
+                            onUserEventsSelected();
+                            break;
+                        case R.id.nav_drawer_repositories:
+                            onReposSelected();
+                            break;
+                        case R.id.nav_drawer_people:
+                            onPeopleSelected();
+                            break;
+                        case R.id.nav_drawer_gists:
+                            onGistsSelected();
+                            break;
+                        case R.id.nav_drawer_settings:
+                            onSettingsSelected();
+                            break;
+                        case R.id.nav_drawer_about:
+                            onAboutSelected();
+                            break;
+                        case R.id.nav_drawer_sign_out:
+                            signOut();
+                            break;
+                        case R.id.nav_drawer_support_development:
+                            if (donateFragment != null) {
+                                donateFragment.launchDonate();
+                            }
+                            break;
+                    }
                 }
 
                 return false;
