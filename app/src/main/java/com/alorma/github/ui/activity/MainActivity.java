@@ -256,8 +256,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 return false;
             }
         });
-        drawer.withSelectedItemByPosition(1);
         resultDrawer = drawer.build();
+        resultDrawer.setSelection(R.id.nav_drawer_events);
     }
 
     private void changeNotificationState(boolean enabled) {
