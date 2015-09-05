@@ -24,6 +24,7 @@ import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
+import com.alorma.github.ui.activity.ForksActivity;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
@@ -122,7 +123,10 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         forkPlaceHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // FORK ¿?
+                if (repoInfo != null) {
+                    Intent intent = ForksActivity.launchIntent(v.getContext(), repoInfo);
+                    startActivity(intent);
+                }
             }
         });
 

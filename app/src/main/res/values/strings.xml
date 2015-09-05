@@ -406,5 +406,7 @@
     <string name="issue_add_to_homescreen">Issue shortcut created</string>
     <string name="menu_enable_notifications">Notifications</string>
     <string name="menu_enable_notifications_description">Enable android notifications</string>
+    <string name="no_forked_repositories">No forks</string>
+    <string name="forks_screen_title">Forks of %s</string>
 
 </resources>

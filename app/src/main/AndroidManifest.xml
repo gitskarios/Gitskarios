@@ -142,6 +142,7 @@
         <activity android:name=".ui.activity.SearchIssuesActivity" />
         <activity android:name=".ui.activity.PullRequestCommitsActivity" />
         <activity android:name=".ui.activity.PullRequestFilesActivity" />
+        <activity android:name=".ui.activity.ForksActivity" />
         <activity
             android:name=".ui.activity.ContentEditorActivity"
             android:windowSoftInputMode="adjustPan" />

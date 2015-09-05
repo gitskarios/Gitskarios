@@ -17,6 +17,8 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
 
+    private boolean showOwnerName;
+
     public ReposAdapter(LayoutInflater inflater) {
         super(inflater);
     }
@@ -28,8 +30,8 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
 
     @Override
     protected void onBindViewHolder(ViewHolder holder, Repo repo) {
-        holder.textTitle.setText(repo.name);
-        new EmojiBitmapLoader().parseTextView(holder.textTitle);
+        holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
+        //new EmojiBitmapLoader().parseTextView(holder.textTitle);
 
         String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);
         applyIcon(holder.textStarts, Octicons.Icon.oct_star);
@@ -52,6 +54,11 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
         } else {
             holder.repoPrivate.setVisibility(View.GONE);
         }
+    }
+
+    public void showOwnerName(boolean showOwnerName) {
+        this.showOwnerName = showOwnerName;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

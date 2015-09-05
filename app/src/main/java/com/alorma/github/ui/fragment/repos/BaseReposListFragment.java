@@ -50,9 +50,14 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
         settings.registerListener(this);
 
         ReposAdapter reposAdapter = new ReposAdapter(LayoutInflater.from(getActivity()));
+        reposAdapter.showOwnerName(showAdapterOwnerName());
         reposAdapter.addAll(repos);
 
         setAdapter(reposAdapter);
+    }
+
+    protected boolean showAdapterOwnerName() {
+        return false;
     }
 
     @Override

@@ -1,10 +1,6 @@
 package com.alorma.github.ui.fragment.repos;
 
-import android.os.Bundle;
-
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.repos.GithubReposClient;
-import com.alorma.github.sdk.services.repos.UserReposClient;
 import com.alorma.github.sdk.services.repos.UserReposFromOrganizationClient;
 
 public class ReposFragmentFromOrgs extends BaseReposListFragment {
