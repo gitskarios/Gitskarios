@@ -41,6 +41,7 @@ import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
+import com.alorma.github.ui.view.SecondarySwitchDrawerItem;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
@@ -84,7 +85,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private ChangelogDialogSupport dialog;
     private int notificationsSizeCount = 0;
     private DonateFragment donateFragment;
-    private SwitchDrawerItem notificationsDrawerItem;
+    private SecondarySwitchDrawerItem notificationsDrawerItem;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -201,19 +202,24 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 }
             }
         };
-        notificationsDrawerItem = new SwitchDrawerItem().withName(R.string.menu_enable_notifications)
+        notificationsDrawerItem = new SecondarySwitchDrawerItem()
+                .withName(R.string.menu_enable_notifications)
+                .withDescription(R.string.menu_enable_notifications_description)
                 .withIdentifier(R.id.nav_drawer_notifications)
                 .withCheckable(false)
                 .withOnCheckedChangeListener(notificationsCheckedListener)
-                .withSelectable(false);
+                .withSelectable(false)
+                .withIcon(Octicons.Icon.oct_bell)
+                .withIconColor(iconColor);
         drawer.addDrawerItems(
-                notificationsDrawerItem,
                 new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_events),
                 new PrimaryDrawerItem().withName(R.string.navigation_general_repositories).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_repositories),
                 new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people),
                 new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withSelectable(false),
                 new DividerDrawerItem(),
+                notificationsDrawerItem,
                 new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withSelectable(false),
+                new DividerDrawerItem(),
                 new SecondaryDrawerItem().withName(R.string.support_development).withIcon(Octicons.Icon.oct_heart).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_support_development).withSelectable(false),
                 new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withSelectable(false),
                 new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withSelectable(false)

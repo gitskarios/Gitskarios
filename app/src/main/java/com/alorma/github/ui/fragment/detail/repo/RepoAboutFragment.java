@@ -228,7 +228,7 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     }
 
     private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
-        return new IconicsDrawable(getActivity(), icon).colorRes(R.color.accent).sizeDp(sizeDp);
+        return new IconicsDrawable(getActivity(), icon).colorRes(R.color.primary).sizeDp(sizeDp);
     }
 
     @Override
