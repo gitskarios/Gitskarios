@@ -404,5 +404,6 @@
     <string name="action_add_shortcut">Add desktop shortchut</string>
     <string name="repo_add_to_homescreen">Repository shortcut created</string>
     <string name="issue_add_to_homescreen">Issue shortcut created</string>
+    <string name="menu_enable_notifications">Notifications</string>
 
 </resources>

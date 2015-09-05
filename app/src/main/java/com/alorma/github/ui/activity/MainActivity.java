@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
@@ -49,11 +51,13 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
@@ -80,7 +84,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private ChangelogDialogSupport dialog;
     private int notificationsSizeCount = 0;
     private DonateFragment donateFragment;
-
+    private SwitchDrawerItem notificationsDrawerItem;
 
     public static void startActivity(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -189,10 +193,24 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         drawer.withActivity(this);
         drawer.withToolbar(getToolbar());
         drawer.withAccountHeader(headerResult);
+        OnCheckedChangeListener notificationsCheckedListener = new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
+                if (iDrawerItem != null && iDrawerItem.getIdentifier() == R.id.nav_drawer_notifications) {
+                    changeNotificationState(b);
+                }
+            }
+        };
+        notificationsDrawerItem = new SwitchDrawerItem().withName(R.string.menu_enable_notifications)
+                .withIdentifier(R.id.nav_drawer_notifications)
+                .withCheckable(false)
+                .withOnCheckedChangeListener(notificationsCheckedListener)
+                .withSelectable(false);
         drawer.addDrawerItems(
+                notificationsDrawerItem,
                 new PrimaryDrawerItem().withName(R.string.menu_events).withIcon(Octicons.Icon.oct_calendar).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_events),
                 new PrimaryDrawerItem().withName(R.string.navigation_general_repositories).withIcon(Octicons.Icon.oct_repo).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_repositories),
-                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people).withSelectable(false),
+                new PrimaryDrawerItem().withName(R.string.navigation_people).withIcon(Octicons.Icon.oct_person).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_people),
                 new PrimaryDrawerItem().withName(R.string.navigation_gists).withIcon(Octicons.Icon.oct_gist).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_gists).withSelectable(false),
                 new DividerDrawerItem(),
                 new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withSelectable(false),
@@ -238,8 +256,28 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 return false;
             }
         });
-        drawer.withSelectedItemByPosition(0);
+        drawer.withSelectedItemByPosition(1);
         resultDrawer = drawer.build();
+    }
+
+    private void changeNotificationState(boolean enabled) {
+        if (selectedAccount != null) {
+            if (enabled) {
+                ContentResolver.addPeriodicSync(
+                        selectedAccount,
+                        getString(R.string.account_type),
+                        Bundle.EMPTY,
+                        1800);
+                ContentResolver.setSyncAutomatically(selectedAccount, getString(R.string.account_type), true);
+            } else {
+                ContentResolver.removePeriodicSync(
+                        selectedAccount,
+                        getString(R.string.account_type),
+                        Bundle.EMPTY
+                );
+                ContentResolver.setSyncAutomatically(selectedAccount, getString(R.string.account_type), false);
+            }
+        }
     }
 
     private void buildHeader() {
@@ -302,6 +340,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private void selectAccount(final Account account) {
         boolean changingUser = selectedAccount != null && !selectedAccount.name.equals(account.name);
         this.selectedAccount = account;
+
+        if (notificationsDrawerItem != null) {
+            notificationsDrawerItem.withChecked(selectedAccount != null
+                    && ContentResolver.getSyncAutomatically(selectedAccount, getString(R.string.account_type)));
+            if (resultDrawer != null) {
+                resultDrawer.updateItem(notificationsDrawerItem);
+            }
+        }
+
         StoreCredentials credentials = new StoreCredentials(MainActivity.this);
         credentials.clear();
         String authToken = AccountsHelper.getUserToken(this, account);
@@ -330,8 +377,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    private boolean hasInflated = false;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -350,7 +395,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     R.color.accent_dark,
                     Color.WHITE, getResources().getDimensionPixelOffset(R.dimen.gapMicro));
 
-            ActionItemBadge.update(this, menu.findItem(R.id.action_notifications), Octicons.Icon.oct_inbox, badgeStyle, notificationsSizeCount);
+            ActionItemBadge.update(this, menu.findItem(R.id.action_notifications), Octicons.Icon.oct_bell
+                    , badgeStyle, notificationsSizeCount);
         } else {
             ActionItemBadge.hide(menu.findItem(R.id.action_notifications));
         }

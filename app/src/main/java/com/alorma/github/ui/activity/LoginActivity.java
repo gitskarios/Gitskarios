@@ -45,6 +45,7 @@ import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.AccountsAdapter;
 import com.android.vending.billing.IInAppBillingService;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -444,13 +445,14 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     }
 
     private void checkAndEnableSyncAdapter(Account account) {
-        if (!ContentResolver.isSyncActive(account, getString(R.string.account_type))) {
-            ContentResolver.setIsSyncable(account, getString(R.string.account_type), ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
+        ContentResolver.setIsSyncable(account, getString(R.string.account_type), ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
+        if (ContentResolver.getIsSyncable(account, getString(R.string.account_type)) <= 0) {
             ContentResolver.addPeriodicSync(
                     account,
                     getString(R.string.account_type),
                     Bundle.EMPTY,
                     1800);
+            ContentResolver.setSyncAutomatically(account, getString(R.string.account_type), true);
         }
     }
 
