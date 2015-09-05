@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion versionName="2.5.5" changeDate="Aug 31,2015">
+        <changelogtext>Add shortchuts to launcher (Repository, Issue and Pull Request)</changelogtext>
+    </changelogversion>
     <changelogversion versionName="2.5.4" changeDate="Aug 31,2015">
         <changelogtext>Bug fixes</changelogtext>
     </changelogversion>
