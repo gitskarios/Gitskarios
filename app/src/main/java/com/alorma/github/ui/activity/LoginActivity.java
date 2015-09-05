@@ -446,7 +446,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void checkAndEnableSyncAdapter(Account account) {
         ContentResolver.setIsSyncable(account, getString(R.string.account_type), ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
-        if (ContentResolver.getIsSyncable(account, getString(R.string.account_type)) <= 0) {
+        if (ContentResolver.getSyncAutomatically(account, getString(R.string.account_type))) {
             ContentResolver.addPeriodicSync(
                     account,
                     getString(R.string.account_type),
