@@ -33,10 +33,9 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.w3c.dom.Text;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -63,8 +62,6 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     private TextView createdAtTextView;
     private Boolean repoStarred = null;
     private Boolean repoWatched = null;
-    private ImageView forkIcon;
-    private ImageView createdIcon;
     private View author;
 
     public static RepoAboutFragment newInstance(Repo currentRepo, RepoInfo repoInfo) {
@@ -97,10 +94,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
         fork = view.findViewById(R.id.fork);
         forkOfTextView = (TextView) fork.findViewById(R.id.forkOf);
-        forkIcon = (ImageView) fork.findViewById(R.id.forkIcon);
 
         createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
-        createdIcon = (ImageView) view.findViewById(R.id.createdIcon);
 
         starredPlaceholder = (TextView) view.findViewById(R.id.starredPlaceholder);
         watchedPlaceholder = (TextView) view.findViewById(R.id.watchedPlaceHolder);
@@ -212,25 +207,28 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
             if (currentRepo.parent != null) {
                 fork.setVisibility(View.VISIBLE);
-                forkIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_repo_forked).colorRes(R.color.primary).actionBar());
+                forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
                 forkOfTextView.setText(currentRepo.parent.owner.login + "/" + currentRepo.parent.name);
             }
 
-            createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
+            createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
             createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), currentRepo.created_at, R.string.created_at));
 
             starredPlaceholder.setText(String.valueOf(currentRepo.stargazers_count));
             watchedPlaceholder.setText(String.valueOf(currentRepo.subscribers_count));
             forkPlaceHolder.setText(String.valueOf(currentRepo.forks_count));
 
-            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_repo_forked).sizeDp(24).colorRes(R.color.primary);
-            forkPlaceHolder.setCompoundDrawables(drawable, null, null, null);
+            forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
         }
     }
 
     @Override
     public void onFail(RetrofitError error) {
         // TODO HTML readme cannot be shown
+    }
+
+    private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
+        return new IconicsDrawable(getActivity(), icon).colorRes(R.color.accent).sizeDp(sizeDp);
     }
 
     @Override

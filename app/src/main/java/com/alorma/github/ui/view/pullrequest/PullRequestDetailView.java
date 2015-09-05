@@ -35,6 +35,7 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
@@ -156,7 +157,7 @@ public class PullRequestDetailView extends LinearLayout {
             if (textMilestone != null) {
                 Milestone milestone = pullRequest.milestone;
                 if (milestone != null) {
-                    textMilestone.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_milestone).actionBar().paddingDp(8).colorRes(getColorIcons()), null, null, null);
+                    textMilestone.setCompoundDrawables(getIcon(Octicons.Icon.oct_milestone), null, null, null);
                     textMilestone.setText(milestone.title);
                     textMilestone.setVisibility(View.VISIBLE);
                 } else {
@@ -167,7 +168,7 @@ public class PullRequestDetailView extends LinearLayout {
             if (textAssignee != null) {
                 final User assignee = pullRequest.assignee;
                 if (assignee != null) {
-                    textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textAssignee.setCompoundDrawables(getIcon(Octicons.Icon.oct_person), null, null, null);
                     textAssignee.setText(assignee.login);
                     textAssignee.setVisibility(View.VISIBLE);
                     textAssignee.setOnClickListener(new OnClickListener() {
@@ -185,7 +186,7 @@ public class PullRequestDetailView extends LinearLayout {
             if (textRepository != null) {
                 final Repo repo = pullRequest.repository;
                 if (repo != null) {
-                    textRepository.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textRepository.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo), null, null, null);
                     textRepository.setText(repo.full_name);
                     textRepository.setVisibility(View.VISIBLE);
                     textRepository.setOnClickListener(new OnClickListener() {
@@ -205,7 +206,7 @@ public class PullRequestDetailView extends LinearLayout {
 
             if (textCommits != null) {
                 if (pullRequest.commits > 0) {
-                    textCommits.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_git_commit).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textCommits.setCompoundDrawables(getIcon(Octicons.Icon.oct_git_commit), null, null, null);
                     textCommits.setText(getResources().getString(R.string.num_of_commits, pullRequest.commits));
                     textCommits.setVisibility(View.VISIBLE);
                     textCommits.setOnClickListener(new OnClickListener() {
@@ -225,7 +226,7 @@ public class PullRequestDetailView extends LinearLayout {
 
             if (textFiles != null) {
                 if (pullRequest.changed_files > 0) {
-                    textFiles.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_file_binary).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textFiles.setCompoundDrawables(getIcon(Octicons.Icon.oct_file_binary), null, null, null);
                     textFiles.setText(getResources().getString(R.string.num_of_files, pullRequest.changed_files));
                     textFiles.setVisibility(View.VISIBLE);
                     textFiles.setOnClickListener(new OnClickListener() {
@@ -284,6 +285,10 @@ public class PullRequestDetailView extends LinearLayout {
                 body.setOnClickListener(editClickListener);
             }
         }
+    }
+
+    private IconicsDrawable getIcon(IIcon icon) {
+        return new IconicsDrawable(getContext(), icon).actionBar().colorRes(getColorIcons());
     }
 
     public int getColorIcons() {

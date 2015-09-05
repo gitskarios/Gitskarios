@@ -55,22 +55,11 @@
             android:visibility="gone"
             tools:ignore="UseCompoundDrawables">
 
-            <ImageView
-                android:id="@+id/forkIcon"
-                android:layout_width="@dimen/material_drawer_item_profile_icon"
-                android:layout_height="@dimen/material_drawer_item_profile_icon"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-                android:clickable="false"
-                tools:ignore="ContentDescription" />
-
             <TextView
                 android:id="@+id/forkOf"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawablePadding="@dimen/gapLarge"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical|left"
                 android:lines="1"
@@ -88,21 +77,11 @@
             android:background="@null"
             android:clickable="false">
 
-            <ImageView
-                android:id="@+id/createdIcon"
-                android:layout_width="@dimen/material_drawer_item_profile_icon"
-                android:layout_height="@dimen/material_drawer_item_profile_icon"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-                android:clickable="false" />
-
             <TextView
                 android:id="@+id/createdAt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawablePadding="@dimen/gapLarge"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical|left"
                 android:lines="1"
