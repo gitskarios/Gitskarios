@@ -98,7 +98,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         donateFragment = new DonateFragment();
 
-        getSupportFragmentManager().beginTransaction().add(donateFragment, "donate").commit();
+        if (getSupportFragmentManager() != null) {
+            getSupportFragmentManager().beginTransaction().add(donateFragment, "donate").commit();
+        }
 
         setContentView(R.layout.generic_toolbar);
 
@@ -108,14 +110,16 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private boolean checkChangeLog() {
-        int currentVersion = BuildConfig.VERSION_CODE;
-        GitskariosSettings settings = new GitskariosSettings(this);
-        int version = settings.getVersion(0);
+        if (getSupportFragmentManager() != null) {
+            int currentVersion = BuildConfig.VERSION_CODE;
+            GitskariosSettings settings = new GitskariosSettings(this);
+            int version = settings.getVersion(0);
 
-        if (currentVersion > version) {
-            settings.saveVersion(currentVersion);
-            dialog = ChangelogDialogSupport.create();
-            dialog.show(getSupportFragmentManager(), "changelog");
+            if (currentVersion > version) {
+                settings.saveVersion(currentVersion);
+                dialog = ChangelogDialogSupport.create();
+                dialog.show(getSupportFragmentManager(), "changelog");
+            }
         }
 
         return false;
@@ -379,8 +383,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         reposFragment = null;
         eventsFragment = null;
 
-
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (getSupportFragmentManager() != null) {
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
     @Override
@@ -453,13 +458,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
-        this.lastUsedFragment = fragment;
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content, fragment);
-        if (addToBackStack) {
-            ft.addToBackStack(null);
+        if (getSupportFragmentManager() != null) {
+            this.lastUsedFragment = fragment;
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content, fragment);
+            if (addToBackStack) {
+                ft.addToBackStack(null);
+            }
+            ft.commit();
         }
-        ft.commit();
     }
 
     @Override

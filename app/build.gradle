@@ -5,13 +5,13 @@ apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionName "2.5.7.1"
-        versionCode 2571
+        versionName "2.5.8.0"
+        versionCode 2580
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -119,7 +119,7 @@ dependencies {
     compile project(':libraries:breadcrumbs')
     compile project(':libraries:atelier')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
     compile 'com.github.xiprox.errorview:library:2.2.0'
@@ -141,7 +141,7 @@ dependencies {
         transitive = true
     }
     compile('com.mikepenz:actionitembadge:3.1.1@aar')
-    compile 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
+    compile 'com.mikepenz:octicons-typeface:3.0.1@aar'
     compile 'com.mikepenz:google-material-typeface:1.2.0.1@aar'
 
     compile 'com.github.d-max:spots-dialog:0.4'
@@ -150,16 +150,13 @@ dependencies {
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'io.realm:realm-android:0.82.1'
+    compile 'io.realm:realm-android:0.82.2'
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
 
     compile 'com.afollestad:material-cab:0.1.4'
     compile 'com.afollestad:material-dialogs:0.7.9.1'
-//    compile 'com.binaryfork:spanny:1.0.2'
-//    compile 'com.github.Musenkishi:Atelier:1.3.1'
 
     compile 'com.github.pedrovgs:renderers:2.0.3'
     compile 'com.jakewharton:butterknife:7.0.1'
 
-    compile 'com.afollestad:cabinet-plugin-framework:0.1.0'
 }

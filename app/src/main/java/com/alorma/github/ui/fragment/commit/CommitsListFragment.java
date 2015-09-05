@@ -183,7 +183,7 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
 
     @Override
     public boolean onBackPressed() {
-        if (cab.isActive()) {
+        if (cab != null && cab.isActive()) {
             cab.finish();
             return false;
         } else {
