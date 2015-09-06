@@ -458,14 +458,16 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
-        if (getSupportFragmentManager() != null) {
+        if (fragment != null && getSupportFragmentManager() != null) {
             this.lastUsedFragment = fragment;
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content, fragment);
-            if (addToBackStack) {
-                ft.addToBackStack(null);
+            if (ft != null) {
+                ft.replace(R.id.content, fragment);
+                if (addToBackStack) {
+                    ft.addToBackStack(null);
+                }
+                ft.commit();
             }
-            ft.commit();
         }
     }
 
