@@ -23,6 +23,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
+import com.alorma.github.ui.fragment.commit.CommitStatusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,24 +74,15 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
                 commitFilesFragment.setOnFileRequestListener(this);
                 listFragments.add(commitFilesFragment);
 
+                listFragments.add(CommitStatusFragment.newInstance(info));
+
                 CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
                 listFragments.add(commitCommentsFragment);
 
                 viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-                if (ViewCompat.isLaidOut(tabLayout)) {
-                    tabLayout.setupWithViewPager(viewPager);
-                } else {
-                    tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                        @Override
-                        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                            tabLayout.setupWithViewPager(viewPager);
-
-                            tabLayout.removeOnLayoutChangeListener(this);
-                        }
-                    });
-                }
+                tabLayout.setupWithViewPager(viewPager);
             } else {
-                Toast.makeText(this, "Info invalid", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
     }
@@ -153,6 +145,8 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
                 case 0:
                     return getString(R.string.commits_detail_files);
                 case 1:
+                    return getString(R.string.commits_detail_statuses);
+                case 2:
                     return getString(R.string.commits_detail_comments);
             }
             return "";

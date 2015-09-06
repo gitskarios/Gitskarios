@@ -83,7 +83,7 @@ public class ReviewCommentView extends LinearLayout {
 
     private void setTime(long time) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(time));
+        String date = TimeUtils.getTimeAgoString(formatter.print(time));
         createdAt.setText(getContext().getResources().getString(R.string.comment_on_diff, date));
     }
 }
