@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion versionName="2.5.9" changeDate="Sep 06,2015">
+    <changelogversion changeDate="Sep 07,2015" versionName="2.5.9.1">
+        <changelogtext>Fix notifications clear not marked as read</changelogtext>
+    </changelogversion>
+    <changelogversion changeDate="Sep 06,2015" versionName="2.5.9">
         <changelogtext>Show statues from commit and pull request</changelogtext>
-        </changelogversion>
-    <changelogversion versionName="2.5.7" changeDate="Sep 05,2015">
+    </changelogversion>
+    <changelogversion changeDate="Sep 05,2015" versionName="2.5.7">
         <changelogtext>Show forks from repository</changelogtext>
         <changelogtext>Add shortchut to desktop (Repository, Issue and Pull Request)</changelogtext>
-        <changelogtext>Add switch on left Drawer, you can enable Android notifications when you have Github notifications</changelogtext>
-    </changelogversion>
-    <changelogversion versionName="2.5.4" changeDate="Aug 31,2015">
-        <changelogtext>Bug fixes</changelogtext>
-    </changelogversion>
-    <changelogversion versionName="2.5.3" changeDate="Aug 10,2015">
-        <changelogtext>Added new tab on Repositories screen, you can see organization's repositories</changelogtext>
-        <changelogtext>Add badge in notification icon, so you will know how many notifications you have</changelogtext>
-        <changelogtext>Small bugfixes</changelogtext>
-    </changelogversion>
-    <changelogversion versionName="2.5.2.1" changeDate="Aug 08,2015">
-        <changelogtext>Navigate up to repository screen, or user screen from Issue and Pull Request</changelogtext>
+        <changelogtext>Add switch on left Drawer, you can enable Android notifications when you have
+            Github notifications
+        </changelogtext>
     </changelogversion>
 </changelog>
