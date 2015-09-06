@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
     <changelogversion versionName="2.5.9" changeDate="Sep 06,2015">
-        <changelogtext>Show statues from commit</changelogtext>
+        <changelogtext>Show statues from commit and pull request</changelogtext>
         </changelogversion>
     <changelogversion versionName="2.5.7" changeDate="Sep 05,2015">
         <changelogtext>Show forks from repository</changelogtext>
