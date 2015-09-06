@@ -11,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
-import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
 import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -121,7 +119,7 @@ public class IssueTimelineView extends LinearLayout {
 
     private void setTime(long time) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(time));
+        String date = TimeUtils.getTimeAgoString(formatter.print(time));
         createdAt.setText(date);
     }
 

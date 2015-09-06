@@ -408,5 +408,7 @@
     <string name="menu_enable_notifications_description">Enable android notifications</string>
     <string name="no_forked_repositories">No forks</string>
     <string name="forks_screen_title">Forks of %s</string>
+    <string name="commits_detail_statuses">Status</string>
+    <string name="no_status">No status</string>
 
 </resources>

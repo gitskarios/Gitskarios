@@ -24,7 +24,6 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.github.ui.activity.ReposActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
@@ -97,7 +96,7 @@ public class IssueDetailView extends LinearLayout {
 
             if (issue.user != null) {
                 profileName.setText(issue.user.login);
-                profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), issue.created_at));
+                profileEmail.setText(TimeUtils.getTimeAgoString(issue.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(issue.user.avatar_url, profileIcon);
                 OnClickListener issueUserClick = new OnClickListener() {
