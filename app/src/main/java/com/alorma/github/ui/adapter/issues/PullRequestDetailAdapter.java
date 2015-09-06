@@ -87,7 +87,10 @@ public class PullRequestDetailAdapter extends RecyclerView.Adapter<PullRequestDe
         int viewType = getItemViewType(position);
 
         if (position == 0) {
-            ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo, pullRequestStory.pullRequest, permissions);
+            ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo
+                    , pullRequestStory.pullRequest
+                    , pullRequestStory.statusResponse
+                    , permissions);
             ((PullRequestHolder) holder).pullRequestDetailView.setIssueDetailRequestListener(issueDetailRequestListener);
             ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(pullRequestActionsListener);
         } else {

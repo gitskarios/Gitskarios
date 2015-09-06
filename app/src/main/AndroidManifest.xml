@@ -60,6 +60,7 @@
         <activity android:name=".ui.activity.OrganizationActivity" />
         <activity android:name=".ui.activity.ReleaseDetailActivity" />
         <activity android:name=".ui.activity.CompareRepositoryCommitsActivity" />
+        <activity android:name=".ui.activity.StatusActivity" />
         <activity
             android:name=".ui.activity.ManageRepositoryActivity"
             android:label="@string/repository_settings" />

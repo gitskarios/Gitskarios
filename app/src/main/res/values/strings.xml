@@ -408,7 +408,13 @@
     <string name="menu_enable_notifications_description">Enable android notifications</string>
     <string name="no_forked_repositories">No forks</string>
     <string name="forks_screen_title">Forks of %s</string>
+    <string name="status_screen_title">Status of %s</string>
     <string name="commits_detail_statuses">Status</string>
     <string name="no_status">No status</string>
-
+    <string name="status_checks_success">All checks have passed</string>
+    <string name="status_checks_pending">Some checks are pending</string>
+    <string name="status_checks_failure">Checks failed</string>
+    <string name="no_status_checks_num">No checks</string>
+    <string name="one_status_checks_num">1 check</string>
+    <string name="other_status_checks_num">%d checks</string>
 </resources>

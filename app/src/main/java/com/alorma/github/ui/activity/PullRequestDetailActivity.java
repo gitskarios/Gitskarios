@@ -213,12 +213,6 @@ public class PullRequestDetailActivity extends BackActivity
         repoClient.execute();
     }
 
-    private boolean checkPermissions(IssueInfo issueInfo) {
-        return issueInfo != null
-                && issueInfo.repoInfo != null
-                && issueInfo.repoInfo.permissions == null;
-    }
-
     @Override
     public void onResponseOk(PullRequestStory pullRequestStory, Response r) {
         hideProgressDialog();

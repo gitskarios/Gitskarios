@@ -64,4 +64,9 @@
     <plurals name="time_just_now">
         <item quantity="other">just now</item>
     </plurals>
+    <plurals name="status_checks_num">
+        <item quantity="zero">@string/no_status_checks_num</item>
+        <item quantity="one">@string/one_status_checks_num</item>
+        <item quantity="other">@string/other_status_checks_num</item>
+    </plurals>
 </resources>
