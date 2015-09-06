@@ -30,12 +30,12 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
     private SwipeRefreshLayout swipe;
     protected FloatingActionButton fab;
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     private ErrorView error_view;
 
     private Adapter adapter;
     private View loadingView;
-    private boolean fromRetry = false;
+    protected boolean fromRetry = false;
     private boolean fromPaginated;
 
     @Override

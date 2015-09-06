@@ -2,26 +2,26 @@ package com.alorma.github.ui.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.basesdk.client.BaseClient;
-import com.alorma.github.bean.ClearNotification;
-import com.alorma.github.bean.UnsubscribeThreadNotification;
+import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
 import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +33,6 @@ import retrofit.client.Response;
  * Created by Bernat on 19/02/2015.
  */
 public class NotificationsFragment extends PaginatedListFragment<List<Notification>, NotificationsAdapter> implements NotificationsAdapter.NotificationsAdapterListener {
-
-    private StickyRecyclerHeadersDecoration headersDecoration;
 
     public static NotificationsFragment newInstance() {
         return new NotificationsFragment();
@@ -81,41 +79,34 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     }
 
     @Override
-    protected void onResponse(final List<Notification> notifications, boolean refreshing) {
+    protected void onResponse(final List<Notification> notifications, final boolean refreshing) {
         if (notifications != null && notifications.size() > 0) {
             if (notifications.size() > 0) {
                 if (getAdapter() != null && getAdapter().getItemCount() > 0) {
                     hideEmpty();
                 }
 
-                Map<String, Integer> ids = new HashMap<>();
+                Map<Long, NotificationsParent> parents = new HashMap<>();
 
-                int id = 0;
                 for (Notification notification : notifications) {
-                    if (ids.get(notification.repository.name) == null) {
-                        ids.put(notification.repository.name, id++);
+                    if (parents.get(notification.repository.id) == null) {
+                        NotificationsParent notificationsParent = new NotificationsParent();
+                        parents.put(notification.repository.id, notificationsParent);
+                        notificationsParent.repo = notification.repository;
+                        notificationsParent.notifications = new ArrayList<>();
                     }
-                    notification.adapter_repo_parent_id = ids.get(notification.repository.name);
+                    parents.get(notification.repository.id).notifications.add(notification);
                 }
 
-                Collections.sort(notifications, Notification.Comparators.REPO_ID);
                 NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
-                notificationsAdapter.addAll(notifications);
+                notificationsAdapter.addAll(parents.values());
                 notificationsAdapter.setNotificationsAdapterListener(this);
 
                 setAdapter(notificationsAdapter);
-
-
-                if (headersDecoration == null) {
-                    headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
-                    addItemDecoration(headersDecoration);
-                }
-
             } else {
                 if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                     setEmpty(false);
                 }
-
             }
         }
     }
@@ -143,22 +134,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         return R.string.no_notifications;
     }
 
-    @Override
-    public void onNotificationClick(Notification item) {
-        String type = item.subject.type;
-
-        Uri uri = null;
-        if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
-            uri = Uri.parse(item.subject.url);
-        } else {
-            uri = Uri.parse(item.repository.html_url);
-        }
-
-        Intent intent = new UrlsManager(getActivity()).checkUri(uri);
-        if (intent != null) {
-            startActivity(intent);
-        }
-    }
 
     @Override
     public void onRefresh() {
@@ -169,57 +144,107 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
     }
 
     @Override
-    public void clearRepoNotifications(final ClearNotification clearNotification) {
-        if (clearNotification.isAllRepository()) {
-            RepoInfo repoInfo = new RepoInfo();
-            repoInfo.owner = clearNotification.getNotification().repository.owner.login;
-            repoInfo.name = clearNotification.getNotification().repository.name;
-            MarkRepoNotificationsRead client = new MarkRepoNotificationsRead(getActivity(), repoInfo);
-            client.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
-                @Override
-                public void onResponseOk(Response response, Response r) {
-                    executeRequest();
-                }
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
+    }
 
-                @Override
-                public void onFail(RetrofitError error) {
+    @Override
+    public void onNotificationClick(Notification notification) {
+        String type = notification.subject.type;
 
-                }
-            });
-            client.execute();
+        Uri uri = null;
+        if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
+            uri = Uri.parse(notification.subject.url);
         } else {
-            final MarkNotificationAsRead notificationAsRead = new MarkNotificationAsRead(getActivity(), clearNotification.getNotification());
-            notificationAsRead.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
-                @Override
-                public void onResponseOk(Response response, Response r) {
-                    if (response != null && response.getStatus() == 205) {
-                        getAdapter().remove(clearNotification.getNotification());
-                    }
-                }
+            uri = Uri.parse(notification.repository.html_url);
+        }
 
-                @Override
-                public void onFail(RetrofitError error) {
-
-                }
-            });
-            notificationAsRead.execute();
+        Intent intent = new UrlsManager(getActivity()).checkUri(uri);
+        if (intent != null) {
+            startActivity(intent);
         }
     }
 
     @Override
-        public void unsubscribeThreadNotification(final UnsubscribeThreadNotification unsubscribeThreadNotification) {
-        final UnsubscribeThread unsubscribeThread = new UnsubscribeThread(getActivity(), unsubscribeThreadNotification.getNotification());
-        unsubscribeThread.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+    protected void startRefresh() {
+        fromRetry = true;
+        super.startRefresh();
+    }
+
+    @Override
+    public void clearNotifications(Notification notification) {
+        startRefresh();
+        if (getAdapter() != null) {
+            getAdapter().clear();
+        }
+        MarkNotificationAsRead notificationAsRead = new MarkNotificationAsRead(getActivity(), notification);
+        notificationAsRead.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
             @Override
             public void onResponseOk(Response response, Response r) {
-                if (response != null && response.getStatus() == 204) {
-                    getAdapter().remove(unsubscribeThreadNotification.getNotification());
+                if (response != null && response.getStatus() == 205) {
+                    executeRequest();
                 }
             }
 
             @Override
             public void onFail(RetrofitError error) {
 
+            }
+        });
+        notificationAsRead.execute();
+    }
+
+    @Override
+    public void requestRepo(NotificationsParent item) {
+        RepoInfo repoInfo = new RepoInfo();
+        repoInfo.owner = item.repo.owner.login;
+        repoInfo.name = item.repo.name;
+
+        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+        startActivity(intent);
+    }
+
+    @Override
+    public void clearRepoNotifications(NotificationsParent item) {
+        startRefresh();
+        if (getAdapter() != null) {
+            getAdapter().clear();
+        }
+        RepoInfo repoInfo = new RepoInfo();
+        repoInfo.owner = item.repo.owner.login;
+        repoInfo.name = item.repo.name;
+        MarkRepoNotificationsRead client = new MarkRepoNotificationsRead(getActivity(), repoInfo);
+        client.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+            @Override
+            public void onResponseOk(Response response, Response r) {
+                if (response != null && response.getStatus() == 205) {
+                    executeRequest();
+                }
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        client.execute();
+    }
+
+    @Override
+    public void unsubscribeThreadNotification(Notification notification) {
+        startRefresh();
+        final UnsubscribeThread unsubscribeThread = new UnsubscribeThread(getActivity(), notification);
+        unsubscribeThread.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+            @Override
+            public void onResponseOk(Response response, Response r) {
+                if (response != null && response.getStatus() == 204) {
+                    executeRequest();
+                }
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+                stopRefresh();
             }
         });
         unsubscribeThread.execute();
