@@ -11,10 +11,12 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
+import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
@@ -30,8 +32,20 @@ import java.util.List;
  */
 public class ReleaseDetailActivity extends BackActivity {
 
+    private static final String RELEASE_INFO = "RELEASE_INFO";
     private static final String RELEASE = "RELEASE";
     private static final String REPO_INFO = "REPO_INFO";
+
+    public static Intent launchIntent(Context context, ReleaseInfo releaseInfo) {
+        Intent intent = new Intent(context, ReleaseDetailActivity.class);
+
+        Bundle extras = new Bundle();
+        extras.putParcelable(RELEASE_INFO, releaseInfo);
+
+        intent.putExtras(extras);
+
+        return intent;
+    }
 
     public static Intent launchIntent(Context context, Release release, RepoInfo repoInfo) {
         Intent intent = new Intent(context, ReleaseDetailActivity.class);
@@ -51,53 +65,49 @@ public class ReleaseDetailActivity extends BackActivity {
         setContentView(R.layout.release_detail_activity);
 
         if (getIntent().getExtras() != null) {
-            Release release = getIntent().getExtras().getParcelable(RELEASE);
-            RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
-            String name = release.name;
-            if (TextUtils.isEmpty(name)) {
-                name = release.tag_name;
-            }
-            setTitle(name);
-
-            final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
-
-            final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-
-            List<Fragment> listFragments = new ArrayList<>();
-            listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
-
-            List<ReleaseAsset> assets = new ArrayList<>();
-
-            assets.addAll(release.assets);
-
-            ReleaseAsset zipAsset = new ReleaseAsset();
-            zipAsset.name = getString(R.string.release_asset_zip);
-            zipAsset.browser_download_url = release.zipball_url;
-            assets.add(zipAsset);
-
-            ReleaseAsset tarAsset = new ReleaseAsset();
-            tarAsset.name = getString(R.string.release_asset_tar);
-            tarAsset.browser_download_url = release.tarball_url;
-            assets.add(tarAsset);
-
-            listFragments.add(ReleaseAssetsFragment.newInstance(assets));
-
-            viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-
-            if (ViewCompat.isLaidOut(tabLayout)) {
-                tabLayout.setupWithViewPager(viewPager);
-            } else {
-                tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                    @Override
-                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                        tabLayout.setupWithViewPager(viewPager);
-
-                        tabLayout.removeOnLayoutChangeListener(this);
-                    }
-                });
+            if (getIntent().getExtras().containsKey(RELEASE)) {
+                Release release = getIntent().getExtras().getParcelable(RELEASE);
+                RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+                showRelease(release, repoInfo);
+            } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
+                ReleaseInfo release = getIntent().getExtras().getParcelable(RELEASE_INFO);
+                Toast.makeText(this, "Should load release", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void showRelease(Release release, RepoInfo repoInfo) {
+        String name = release.name;
+        if (TextUtils.isEmpty(name)) {
+            name = release.tag_name;
+        }
+        setTitle(name);
+
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+
+        List<Fragment> listFragments = new ArrayList<>();
+        listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
+
+        List<ReleaseAsset> assets = new ArrayList<>();
+
+        assets.addAll(release.assets);
+
+        ReleaseAsset zipAsset = new ReleaseAsset();
+        zipAsset.name = getString(R.string.release_asset_zip);
+        zipAsset.browser_download_url = release.zipball_url;
+        assets.add(zipAsset);
+
+        ReleaseAsset tarAsset = new ReleaseAsset();
+        tarAsset.name = getString(R.string.release_asset_tar);
+        tarAsset.browser_download_url = release.tarball_url;
+        assets.add(tarAsset);
+
+        listFragments.add(ReleaseAssetsFragment.newInstance(assets));
+
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
     }
 
     private class NavigationPagerAdapter extends FragmentPagerAdapter {

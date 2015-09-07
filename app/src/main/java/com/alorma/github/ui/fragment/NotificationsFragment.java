@@ -153,12 +153,12 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         String type = notification.subject.type;
 
         Uri uri = null;
-        if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
+/*        if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest")) {
             uri = Uri.parse(notification.subject.url);
         } else {
             uri = Uri.parse(notification.repository.html_url);
-        }
-
+        }*/
+        uri = Uri.parse(notification.subject.url);
         Intent intent = new UrlsManager(getActivity()).checkUri(uri);
         if (intent != null) {
             startActivity(intent);
