@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion changeDate="Sep 07,2015" versionName="2.5.10">
+        <changelogtext>Load release detail from events list or notifications</changelogtext>
+    </changelogversion>
     <changelogversion changeDate="Sep 07,2015" versionName="2.5.9.1">
         <changelogtext>Fix notifications clear not marked as read</changelogtext>
     </changelogversion>
