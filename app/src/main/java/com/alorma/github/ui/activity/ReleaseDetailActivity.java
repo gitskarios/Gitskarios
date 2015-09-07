@@ -3,6 +3,7 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,10 +15,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.basesdk.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.repo.GetReleaseClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
@@ -27,14 +30,20 @@ import com.alorma.github.ui.fragment.releases.ReleaseAssetsFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by Bernat on 22/02/2015.
  */
-public class ReleaseDetailActivity extends BackActivity {
+public class ReleaseDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Release> {
 
     private static final String RELEASE_INFO = "RELEASE_INFO";
     private static final String RELEASE = "RELEASE";
     private static final String REPO_INFO = "REPO_INFO";
+    private ReleaseInfo releaseInfo;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     public static Intent launchIntent(Context context, ReleaseInfo releaseInfo) {
         Intent intent = new Intent(context, ReleaseDetailActivity.class);
@@ -71,9 +80,14 @@ public class ReleaseDetailActivity extends BackActivity {
                 RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
                 showRelease(release, repoInfo);
             } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
-                ReleaseInfo release = getIntent().getExtras().getParcelable(RELEASE_INFO);
-                Toast.makeText(this, "Should load release", Toast.LENGTH_SHORT).show();
+                releaseInfo = getIntent().getExtras().getParcelable(RELEASE_INFO);
+                GetReleaseClient releaseClient = new GetReleaseClient(this, releaseInfo);
+                releaseClient.setOnResultCallback(this);
+                releaseClient.execute();
             }
+
+            tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+            viewPager = (ViewPager) findViewById(R.id.pager);
         }
     }
 
@@ -84,9 +98,6 @@ public class ReleaseDetailActivity extends BackActivity {
         }
         setTitle(name);
 
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
         List<Fragment> listFragments = new ArrayList<>();
         listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
@@ -108,6 +119,17 @@ public class ReleaseDetailActivity extends BackActivity {
         listFragments.add(ReleaseAssetsFragment.newInstance(assets));
 
         viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public void onResponseOk(Release release, Response r) {
+        showRelease(release, releaseInfo.repoInfo);
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+
     }
 
     private class NavigationPagerAdapter extends FragmentPagerAdapter {
