@@ -15,6 +15,7 @@ import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
 import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
@@ -150,6 +151,14 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
 
     @Override
     public void onNotificationClick(Notification notification) {
+
+        GitskariosSettings settings = new GitskariosSettings(getActivity());
+        boolean markAsRead = settings.markAsRead();
+
+        if (markAsRead) {
+            clearNotifications(notification);
+        }
+
         String type = notification.subject.type;
 
         Uri uri = null;

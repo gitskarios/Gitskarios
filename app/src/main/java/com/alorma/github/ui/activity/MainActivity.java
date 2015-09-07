@@ -246,6 +246,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         case R.id.nav_drawer_gists:
                             onGistsSelected();
                             break;
+                        case R.id.nav_drawer_notifications:
+                            openNotifications();
+                            break;
                         case R.id.nav_drawer_settings:
                             onSettingsSelected();
                             break;
@@ -446,11 +449,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             Intent intent = SearchActivity.launchIntent(this);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_notifications) {
-            Intent intent = NotificationsActivity.launchIntent(this);
-            startActivity(intent);
+            openNotifications();
         }
 
         return false;
+    }
+
+    private void openNotifications() {
+        Intent intent = NotificationsActivity.launchIntent(this);
+        startActivity(intent);
     }
 
     private void setFragment(Fragment fragment) {
