@@ -20,7 +20,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 

@@ -26,8 +26,8 @@ import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
-import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
@@ -58,7 +58,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;

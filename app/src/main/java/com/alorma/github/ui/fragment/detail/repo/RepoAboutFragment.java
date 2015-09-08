@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;

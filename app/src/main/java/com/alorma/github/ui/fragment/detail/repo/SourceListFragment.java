@@ -14,7 +14,7 @@ import android.widget.LinearBreadcrumb;
 import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;

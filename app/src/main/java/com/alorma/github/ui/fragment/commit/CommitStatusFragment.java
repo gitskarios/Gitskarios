@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.GithubStatus;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.services.repo.GetShaCombinedStatus;
 import com.alorma.github.ui.adapter.commit.GithubStatusAdapter;
-import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 

@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;

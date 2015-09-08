@@ -3,8 +3,8 @@ package com.alorma.github;
 import android.app.Application;
 import android.content.Context;
 
-import com.alorma.github.basesdk.client.credentials.GithubDeveloperCredentials;
-import com.alorma.github.basesdk.client.credentials.SimpleDeveloperCredentialsProvider;
+import com.alorma.github.sdk.security.GithubDeveloperCredentials;
+import com.alorma.gitskarios.core.client.credentials.SimpleDeveloperCredentialsProvider;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;

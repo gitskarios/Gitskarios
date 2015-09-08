@@ -21,7 +21,7 @@ import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistsFileActivity;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 
 import java.util.ArrayList;
 

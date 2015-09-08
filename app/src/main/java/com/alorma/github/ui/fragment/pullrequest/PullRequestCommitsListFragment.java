@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;

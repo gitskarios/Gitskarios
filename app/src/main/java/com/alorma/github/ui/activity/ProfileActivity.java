@@ -20,8 +20,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
-import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.bean.ProfileItem;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;

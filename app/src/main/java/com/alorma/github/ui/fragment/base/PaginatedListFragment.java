@@ -1,6 +1,6 @@
 package com.alorma.github.ui.fragment.base;
 
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.info.PaginationLink;
 import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.ui.ErrorHandler;

@@ -3,27 +3,21 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetReleaseClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
-import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.releases.ReleaseAboutFragment;
 import com.alorma.github.ui.fragment.releases.ReleaseAssetsFragment;
 

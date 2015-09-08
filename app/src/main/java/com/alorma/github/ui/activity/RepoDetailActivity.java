@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;

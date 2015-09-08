@@ -7,13 +7,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.CommitInfo;

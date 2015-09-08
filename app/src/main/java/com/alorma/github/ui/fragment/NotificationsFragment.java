@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;

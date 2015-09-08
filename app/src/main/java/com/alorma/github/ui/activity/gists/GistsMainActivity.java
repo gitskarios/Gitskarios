@@ -14,7 +14,7 @@ import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.GistsFragment;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 
 import java.util.List;
 
