@@ -15,7 +15,4 @@ branches:
    - develop
    - master
 
-notifications:
-  email: false
-
-script: ./gradlew assembleDebug --stacktrace --info
+script: ./gradlew assembleDebug --info
