@@ -10,12 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Notification;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.activity.NotificationsActivity;
 
@@ -28,6 +28,8 @@ import java.util.Map;
  * Created by Bernat on 07/06/2015.
  */
 public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
+
+    private static final int MAX_LINES_NOTIFICATION = 5;
 
     public NotificationsSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -64,22 +66,18 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
                         }
                     }
 
-/*                    if (notificationMap.size() == 1) {
-                        Long repoId = notificationMap.keySet().iterator().next();
+                    for (Long repoId : notificationMap.keySet()) {
                         List<Notification> notificationList = notificationMap.get(repoId);
                         if (notificationList != null) {
                             if (notificationList.size() == 1) {
                                 fireSingleNotifications(account.name, token, notificationList.get(0));
-                            } else if (notificationList.size() <= 3) {
-                                for (Notification notification : notificationList) {
-                                    fireSingleNotifications(account.name, token, notification);
-                                }
                             } else {
                                 fireNotificationByRepository(account.name, token, repoId, notificationList);
                             }
                         }
-                    } else*/
+                    }
 
+/*
                     if (notificationMap.size() <= 3) {
                         for (Long repoId : notificationMap.keySet()) {
                             List<Notification> notificationList = notificationMap.get(repoId);
@@ -93,39 +91,20 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
                         }
                     } else {
                         fireAllInOneNotifications(account.name, token, notifications, notificationMap.size());
-                    }
+                    }*/
                 }
             }
         }
     }
 
-    private NotificationCompat.Builder createNotificationBuilder(PendingIntent pendingIntent) {
+    private NotificationCompat.Builder createNotificationBuilder(Repo repository, PendingIntent pendingIntent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
+        builder.setContentTitle(repository.full_name);
         builder.setSmallIcon(R.drawable.ic_stat_name);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
         builder.setLights(getContext().getResources().getColor(R.color.primary), 1000, 2000);
         return builder;
-    }
-
-    @NonNull
-    private StringBuilder getExpandedText(List<Notification> notifications) {
-        StringBuilder msgBuilder = new StringBuilder();
-
-        for (int i = 0; i < notifications.size(); i++) {
-            Notification notification = notifications.get(i);
-            msgBuilder.append("<b>")
-                    .append("[")
-                    .append(notification.subject.type)
-                    .append("] ")
-                    .append("</b>")
-                    .append(notification.subject.title);
-
-            if (i < notifications.size() - 1) {
-                msgBuilder.append("<br />");
-            }
-        }
-        return msgBuilder;
     }
 
     private void fireSingleNotifications(String account, String token, Notification githubNotification) {
@@ -134,9 +113,7 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
-            NotificationCompat.Builder builder = createNotificationBuilder(pendingIntent);
-
-            builder.setContentTitle(account + ": " + githubNotification.repository.full_name);
+            NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, pendingIntent);
 
             StringBuilder msgBuilder = new StringBuilder();
             msgBuilder.append("<b>")
@@ -161,41 +138,37 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
-            NotificationCompat.Builder builder = createNotificationBuilder(pendingIntent);
+            NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, pendingIntent);
 
-            builder.setContentTitle(getContext().getResources().getString(R.string.app_name));
-            builder.setContentText(notifications.get(0).repository.full_name + " " + notifications.size() + " notifications");
+            builder.setContentText(notifications.size() + " notifications");
             builder.setSubText(account);
 
-            StringBuilder msgBuilder = getExpandedText(notifications);
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(Html.fromHtml(msgBuilder.toString())));
+            for (int i = 0; i < Math.min(MAX_LINES_NOTIFICATION, notifications.size()); i++) {
+                Notification notification = notifications.get(i);
+                StringBuilder msgBuilder = new StringBuilder();
+                msgBuilder.append("<b>")
+                        .append("[")
+                        .append(notification.subject.type)
+                        .append("] ")
+                        .append("</b>")
+                        .append(notification.subject.title);
+
+                inboxStyle.addLine(Html.fromHtml(msgBuilder.toString()));
+            }
+
+            if (notifications.size() > MAX_LINES_NOTIFICATION) {
+                inboxStyle.addLine("...");
+                inboxStyle.setBigContentTitle(notifications.get(0).repository.full_name);
+                inboxStyle.setSummaryText(" +" + (notifications.size() - MAX_LINES_NOTIFICATION) + " more");
+            }
+
+            builder.setStyle(inboxStyle);
 
             android.app.Notification notification = builder.build();
 
             fireNotification((int) repoId, notification);
-        }
-    }
-
-    private void fireAllInOneNotifications(String account, String token, List<Notification> notifications, int reposSize) {
-        if (notifications != null && notifications.size() > 0) {
-            Intent intent = NotificationsActivity.launchIntent(getContext(), token);
-
-            PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
-
-            NotificationCompat.Builder builder = createNotificationBuilder(pendingIntent);
-
-            builder.setContentTitle(getContext().getResources().getString(R.string.app_name));
-            builder.setContentText(notifications.size() + " notifications in " + reposSize + " repositories");
-            builder.setSubText(account);
-
-            StringBuilder msgBuilder = getExpandedText(notifications);
-
-            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(msgBuilder.toString()));
-
-            android.app.Notification notification = builder.build();
-
-            fireNotification(token.hashCode(), notification);
         }
     }
 
