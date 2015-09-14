@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion changeDate="Sep 14,2015" versionName="2.5.11">
+        <changelogtext>Notifications improved: Now you will receive more specific notifications.</changelogtext>
+        <changelogtext>Disable notification: on simple notification, swipe it hides from system forever, but keep in the list screen</changelogtext>
+    </changelogversion>
     <changelogversion changeDate="Sep 07,2015" versionName="2.5.10">
         <changelogtext>Load release detail from events list or notifications</changelogtext>
         <changelogtext>New setting: Mark notification as read when open it.</changelogtext>
     </changelogversion>
     <changelogversion changeDate="Sep 07,2015" versionName="2.5.9.1">
         <changelogtext>Fix notifications clear not marked as read</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 06,2015" versionName="2.5.9">
-        <changelogtext>Show statues from commit and pull request</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 05,2015" versionName="2.5.7">
-        <changelogtext>Show forks from repository</changelogtext>
-        <changelogtext>Add shortchut to desktop (Repository, Issue and Pull Request)</changelogtext>
-        <changelogtext>Add switch on left Drawer, you can enable Android notifications when you have
-            Github notifications
-        </changelogtext>
     </changelogversion>
 </changelog>
