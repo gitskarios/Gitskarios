@@ -15,4 +15,4 @@ branches:
    - develop
    - master
 
-script: ./gradlew assembleDebug --debug
+script: ./gradlew assembleDebug
