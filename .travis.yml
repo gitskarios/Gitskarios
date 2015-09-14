@@ -18,4 +18,4 @@ branches:
 notifications:
   email: false
 
-script: ./gradlew assembleDebug
+script: ./gradlew assembleDebug --stacktrace --info
