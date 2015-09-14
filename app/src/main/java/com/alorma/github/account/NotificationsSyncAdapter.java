@@ -12,6 +12,7 @@ import android.content.SyncResult;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 
@@ -20,6 +21,8 @@ import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.activity.NotificationsActivity;
+import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.utils.NotificationsHelper;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
@@ -56,6 +59,16 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
             List<Notification> notifications = notificationsClient.executeSync();
 
             if (notifications != null) {
+                List<Notification> newNotifications = new ArrayList<>();
+
+                for (Notification notification : notifications) {
+                    boolean showNotification = NotificationsHelper.checkNotFireNotification(getContext(), notification.id);
+                    if (showNotification) {
+                        newNotifications.add(notification);
+                    }
+                }
+                notifications = newNotifications;
+
                 if (notifications.size() == 1) {
                     fireSingleNotifications(account.name, token, notifications.get(0));
                 } else if (notifications.size() > 0) {
@@ -80,30 +93,15 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
                             }
                         }
                     }
-
-/*
-                    if (notificationMap.size() <= 3) {
-                        for (Long repoId : notificationMap.keySet()) {
-                            List<Notification> notificationList = notificationMap.get(repoId);
-                            if (notificationList != null) {
-                                if (notificationList.size() == 1) {
-                                    fireSingleNotifications(account.name, token, notificationList.get(0));
-                                } else {
-                                    fireNotificationByRepository(account.name, token, repoId, notificationList);
-                                }
-                            }
-                        }
-                    } else {
-                        fireAllInOneNotifications(account.name, token, notifications, notificationMap.size());
-                    }*/
                 }
             }
         }
     }
 
-    private NotificationCompat.Builder createNotificationBuilder(Repo repository, PendingIntent pendingIntent, String account) {
+    private NotificationCompat.Builder createNotificationBuilder(Repo repository, String account, PendingIntent pendingIntent,
+                                                                 @Nullable PendingIntent cancelIntent) {
 
-        int color = getContext().getResources().getColor(R.color.primary);
+        int color = AttributesUtils.getPrimaryColor(getContext());
         int shape_notifications_avatar = getContext().getResources().getDimensionPixelOffset(R.dimen.shape_notifications_avatar);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
@@ -144,6 +142,9 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         builder.setContentIntent(pendingIntent);
+        if (cancelIntent != null) {
+            builder.setDeleteIntent(cancelIntent);
+        }
         builder.setAutoCancel(true);
         builder.setColor(color);
         builder.setLights(color, 1000, 2000);
@@ -152,11 +153,14 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void fireSingleNotifications(String account, String token, Notification githubNotification) {
         if (githubNotification != null) {
-            Intent intent = NotificationsActivity.launchIntent(getContext(), token);
+            Intent intentNotificationsActivity = NotificationsActivity.launchIntent(getContext(), token);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intentNotificationsActivity, 0);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
+            Intent intentDisableService = NotificationsDisableService.createIntentSingleNotification(getContext(), githubNotification);
+            PendingIntent cancelIntent = PendingIntent.getService(getContext(), (int) githubNotification.id,
+                    intentDisableService, PendingIntent.FLAG_ONE_SHOT);
 
-            NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, pendingIntent, account);
+            NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, account, pendingIntent, cancelIntent);
 
             StringBuilder msgBuilder = new StringBuilder();
             msgBuilder.append("<b>")
@@ -180,7 +184,7 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
-            NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, pendingIntent, account);
+            NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, account, pendingIntent, null);
 
             builder.setContentText(notifications.size() + " notifications");
 

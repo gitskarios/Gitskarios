@@ -167,8 +167,7 @@
         </service>
         <service
             android:name=".account.NotificationsSyncService"
-            android:exported="true"
-            android:process=":sync">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
@@ -177,6 +176,8 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/notifications_syncadapter" />
         </service>
+
+        <service android:name=".account.NotificationsDisableService" />
 
         <provider
             android:name=".account.StubContentProvider"
