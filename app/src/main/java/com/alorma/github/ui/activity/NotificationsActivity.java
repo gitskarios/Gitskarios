@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,5 +41,8 @@ public class NotificationsActivity extends BackActivity {
         if (getToolbar() != null) {
             ViewCompat.setElevation(getToolbar(), 4);
         }
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 }
