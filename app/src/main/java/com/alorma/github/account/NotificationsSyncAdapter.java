@@ -9,6 +9,8 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -18,6 +20,8 @@ import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.activity.NotificationsActivity;
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,13 +101,52 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private NotificationCompat.Builder createNotificationBuilder(Repo repository, PendingIntent pendingIntent) {
+    private NotificationCompat.Builder createNotificationBuilder(Repo repository, PendingIntent pendingIntent, String account) {
+
+        int color = getContext().getResources().getColor(R.color.primary);
+        int shape_notifications_avatar = getContext().getResources().getDimensionPixelOffset(R.dimen.shape_notifications_avatar);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
         builder.setContentTitle(repository.full_name);
         builder.setSmallIcon(R.drawable.ic_stat_name);
+        builder.setSubText(account);
+
+        try {
+            String owner = String.valueOf(repository.owner.login.charAt(0));
+            String repo = String.valueOf(repository.name.charAt(0));
+
+            String key = owner + repo;
+
+            ColorGenerator generator = ColorGenerator.MATERIAL;
+
+            TextDrawable drawable = TextDrawable
+                    .builder()
+                    .beginConfig()
+                    .width(shape_notifications_avatar)
+                    .height(shape_notifications_avatar)
+                    .endConfig()
+                    .buildRound(key, generator.getColor(key));
+
+            Bitmap bitmap = null;
+            if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+
+            builder.setLargeIcon(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
-        builder.setLights(getContext().getResources().getColor(R.color.primary), 1000, 2000);
+        builder.setColor(color);
+        builder.setLights(color, 1000, 2000);
         return builder;
     }
 
@@ -113,7 +156,7 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
-            NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, pendingIntent);
+            NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, pendingIntent, account);
 
             StringBuilder msgBuilder = new StringBuilder();
             msgBuilder.append("<b>")
@@ -124,7 +167,6 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
                     .append(githubNotification.subject.title);
 
             builder.setContentText(Html.fromHtml(msgBuilder.toString()));
-            builder.setSubText(account);
 
             android.app.Notification notification = builder.build();
 
@@ -138,10 +180,9 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
-            NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, pendingIntent);
+            NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, pendingIntent, account);
 
             builder.setContentText(notifications.size() + " notifications");
-            builder.setSubText(account);
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
