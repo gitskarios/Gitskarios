@@ -2,8 +2,11 @@ package com.alorma.github.ui.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
@@ -45,6 +48,11 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         super.onResume();
 
         getActivity().setTitle(R.string.notifications);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.notifications_list_fragment, null, false);
     }
 
     @Override
