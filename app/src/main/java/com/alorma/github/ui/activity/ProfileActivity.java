@@ -1,6 +1,9 @@
 package com.alorma.github.ui.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.SearchManager;
+import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.bean.ProfileItem;
@@ -59,7 +63,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         OnCheckFollowingUser {
 
     private static final String USER = "USER";
+    private static final String ACCOUNT = "ACCOUNT";
     private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
+    public static final String URL_PROFILE = "URL_PROFILE";
 
     private ImageView image;
 
@@ -67,11 +73,15 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     private boolean followingUser = false;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ProfileItemsAdapter profileItemsAdapter;
+    private boolean updateProfile = false;
+    private Account selectedAccount;
 
-    public static Intent createLauncherIntent(Context context) {
+    public static Intent createLauncherIntent(Context context, Account selectedAccount) {
         Intent intent = new Intent(context, ProfileActivity.class);
         Bundle extras = new Bundle();
         extras.putBoolean(AUTHENTICATED_USER, true);
+        extras.putParcelable(ACCOUNT, selectedAccount);
+        intent.putExtras(extras);
         return intent;
     }
 
@@ -110,6 +120,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             GithubUsersClient<User> requestClient;
             user = null;
             if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey(ACCOUNT)) {
+                    selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
+                }
                 if (getIntent().getExtras().containsKey(USER)) {
                     user = getIntent().getParcelableExtra(USER);
                 }
@@ -120,6 +133,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             if (user != null) {
                 if (user.login.equalsIgnoreCase(settings.getUserName())) {
                     requestClient = new GetAuthUserClient(this);
+                    updateProfile = true;
                     collapsingToolbarLayout.setTitle(settings.getUserName());
                 } else {
                     requestClient = new RequestUserClient(this, user.login);
@@ -127,6 +141,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                 }
             } else {
                 requestClient = new GetAuthUserClient(this);
+                updateProfile = true;
             }
 
             invalidateOptionsMenu();
@@ -192,6 +207,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
         invalidateOptionsMenu();
 
+        if (updateProfile && selectedAccount != null) {
+            AccountManager accountManager = AccountManager.get(this);
+            accountManager.setUserData(selectedAccount, AccountsHelper.USER_PIC, user.avatar_url);
+            ImageLoader.getInstance().clearMemoryCache();
+            ImageLoader.getInstance().clearDiskCache();
+        }
+
         if (!user.login.equalsIgnoreCase(settings.getUserName())) {
             CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
             checkFollowingUser.setOnCheckFollowingUser(this);
@@ -205,7 +227,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         fillCardPlan(user);
 
         if (getSupportActionBar() != null) {
-
             ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
@@ -373,5 +394,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         followingUser = following;
         hideProgressDialog();
         invalidateOptionsMenu();
+    }
+
+    @Override
+    protected void close() {
+        if (user != null && updateProfile) {
+            Intent intent = new Intent();
+            Bundle extras = new Bundle();
+            extras.putString(URL_PROFILE, user.avatar_url);
+            intent.putExtras(extras);
+            setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
+        }
+        super.close();
     }
 }

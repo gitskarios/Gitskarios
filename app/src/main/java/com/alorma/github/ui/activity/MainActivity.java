@@ -74,6 +74,7 @@ import retrofit.client.Response;
 
 public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener {
 
+    private static final int PROFILE_REQUEST_CODE = 555;
     private GeneralReposFragment reposFragment;
     private EventsListFragment eventsFragment;
 
@@ -332,8 +333,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                         if (account.name.equals(selectedAccount.name)) {
                             User user = new User();
                             user.login = account.name;
-                            Intent launcherIntent = ProfileActivity.createLauncherIntent(MainActivity.this);
-                            startActivity(launcherIntent);
+                            Intent launcherIntent = ProfileActivity.createLauncherIntent(MainActivity.this, selectedAccount);
+                            startActivityForResult(launcherIntent, PROFILE_REQUEST_CODE);
                         } else {
                             selectAccount(account);
                         }
@@ -484,9 +485,30 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PROFILE_REQUEST_CODE && resultCode == RESULT_FIRST_USER) {
+            if (data != null) {
+                if (data.getExtras() != null) {
+                    if (headerResult != null) {
+                        IProfile activeProfile = headerResult.getActiveProfile();
+                        if (activeProfile != null) {
+                            if (data.getExtras().containsKey(ProfileActivity.URL_PROFILE)) {
+                                activeProfile.withIcon(data.getExtras().getString(ProfileActivity.URL_PROFILE));
+                                headerResult.updateProfile(activeProfile);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean onProfileSelected() {
-        Intent launcherIntent = ProfileActivity.createLauncherIntent(this);
-        startActivity(launcherIntent);
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(this, selectedAccount);
+        startActivityForResult(launcherIntent, PROFILE_REQUEST_CODE);
         return false;
     }
 
