@@ -20,10 +20,6 @@ public class ErrorHandler {
             if (context != null) {
                 Toast.makeText(context, "Error: " + tag + "\n" + error, Toast.LENGTH_SHORT).show();
             }
-        } else {
-            if (error != null && error.getMessage() != null && Fabric.isInitialized()) {
-                Crashlytics.logException(error);
-            }
         }
     }
 
