@@ -77,6 +77,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
                 listFragments.add(commitCommentsFragment);
 
                 viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+                viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
                 tabLayout.setupWithViewPager(viewPager);
             } else {
                 finish();
