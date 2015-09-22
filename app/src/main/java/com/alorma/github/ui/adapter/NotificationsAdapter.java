@@ -56,7 +56,16 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsPare
 
     private void bindNotificationView(View view, final Notification noti) {
         TextView name = (TextView) view.findViewById(R.id.text);
-        name.setText(noti.subject.title);
+        String type = noti.subject.type;
+        String title = noti.subject.title;
+        StringBuilder msgBuilder = new StringBuilder();
+        msgBuilder.append("<b>")
+                .append("[")
+                .append(type)
+                .append("] ")
+                .append("</b>")
+                .append(title);
+        name.setText(msgBuilder.toString());
 
         name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +131,6 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsPare
             text_repo = (TextView) itemView.findViewById(R.id.text_repo);
             clear_all_repo = (ImageView) itemView.findViewById(R.id.clear_all_repo);
             notificationsPlaceHolder = (ViewGroup) itemView.findViewById(R.id.notificationsPlaceHolder);
-
 
 
             text_repo.setOnClickListener(new View.OnClickListener() {
