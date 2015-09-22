@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
@@ -82,41 +83,41 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
                 releaseClient.setOnResultCallback(this);
                 releaseClient.execute();
             }
-
         }
     }
 
     private void showRelease(Release release, RepoInfo repoInfo) {
-        String name = release.name;
-        if (TextUtils.isEmpty(name)) {
-            name = release.tag_name;
-        }
-        setTitle(name);
+        if (release != null) {
+            String name = release.name;
+            if (TextUtils.isEmpty(name)) {
+                name = release.tag_name;
+            }
+            setTitle(name);
 
+            List<Fragment> listFragments = new ArrayList<>();
+            listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
 
-        List<Fragment> listFragments = new ArrayList<>();
-        listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
+            List<ReleaseAsset> assets = new ArrayList<>();
 
-        List<ReleaseAsset> assets = new ArrayList<>();
+            assets.addAll(release.assets);
 
-        assets.addAll(release.assets);
+            ReleaseAsset zipAsset = new ReleaseAsset();
+            zipAsset.name = getString(R.string.release_asset_zip);
+            zipAsset.browser_download_url = release.zipball_url;
+            assets.add(zipAsset);
 
-        ReleaseAsset zipAsset = new ReleaseAsset();
-        zipAsset.name = getString(R.string.release_asset_zip);
-        zipAsset.browser_download_url = release.zipball_url;
-        assets.add(zipAsset);
+            ReleaseAsset tarAsset = new ReleaseAsset();
+            tarAsset.name = getString(R.string.release_asset_tar);
+            tarAsset.browser_download_url = release.tarball_url;
+            assets.add(tarAsset);
 
-        ReleaseAsset tarAsset = new ReleaseAsset();
-        tarAsset.name = getString(R.string.release_asset_tar);
-        tarAsset.browser_download_url = release.tarball_url;
-        assets.add(tarAsset);
+            listFragments.add(ReleaseAssetsFragment.newInstance(assets));
 
-        listFragments.add(ReleaseAssetsFragment.newInstance(assets));
-
-        if (viewPager != null) {
-            viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-            if (tabLayout != null) {
-                tabLayout.setupWithViewPager(viewPager);
+            if (viewPager != null) {
+                viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+                if (tabLayout != null) {
+                    tabLayout.setupWithViewPager(viewPager);
+                }
             }
         }
     }
@@ -129,36 +130,5 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
     @Override
     public void onFail(RetrofitError error) {
 
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.repo_release_fragment_detail_title);
-                case 1:
-                    return getString(R.string.repo_release_fragment_assets_title);
-            }
-            return "";
-        }
     }
 }
