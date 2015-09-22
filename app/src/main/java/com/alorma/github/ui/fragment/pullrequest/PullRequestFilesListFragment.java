@@ -17,7 +17,7 @@ import com.alorma.github.sdk.services.pullrequest.GetPullRequestFiles;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 
 import java.util.List;
 
@@ -67,7 +67,8 @@ public class PullRequestFilesListFragment extends BaseFragment implements BaseCl
     @Override
     public void onResponseOk(List<CommitFile> commitFiles, Response r) {
         if (getActivity() != null) {
-            CommitFilesAdapter adapter = new CommitFilesAdapter(getActivity(), commitFiles);
+            CommitFilesAdapter adapter = new CommitFilesAdapter(LayoutInflater.from(getActivity()));
+            adapter.addAll(commitFiles);
             adapter.setOnFileRequestListener(this);
             recyclerView.setAdapter(adapter);
         }

@@ -1,1 +1,1 @@
-include ':app', ':sdks:GithubAndroidSdk', ':sdks:BaseSDK', ':libraries:breadcrumbs'
+include ':app', ':sdks:GithubAndroidSdk', ':libraries:breadcrumbs', ':libraries:atelier', ':sdks:gitskarios-core'

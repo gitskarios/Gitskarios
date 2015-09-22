@@ -14,56 +14,29 @@ import org.joda.time.Seconds;
 import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Bernat on 10/04/2015.
  */
 public class TimeUtils {
 
-    public static String getTimeString(Context context, String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public static String getDateToText(Context context, Date date, int resId) {
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.at_date_format), Locale.getDefault());
+
+        return context.getString(resId, sdf.format(date));
+    }
+
+    public static String getTimeAgoString(String date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.UTC);
 
         DateTime dt = formatter.parseDateTime(date);
-        DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
+        PrettyTime p = new PrettyTime();
 
-        Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-        int text = R.string.time_ago_at_years;
-        int time = years.getYears();
-
-        if (time == 0) {
-            Months months = Months.monthsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-            text = R.string.time_ago_at_months;
-            time = months.getMonths();
-
-            if (time == 0) {
-
-                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-                text = R.string.time_ago_at_days;
-                time = days.getDays();
-
-                if (time == 0) {
-                    Hours hours = Hours.hoursBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                    time = hours.getHours();
-                    text = R.string.time_ago_at_hours;
-
-                    if (time == 0) {
-                        Minutes minutes = Minutes.minutesBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                        time = minutes.getMinutes();
-                        text = R.string.time_ago_at_minutes;
-                        if (time == 0) {
-                            Seconds seconds = Seconds.secondsBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                            time = seconds.getSeconds();
-                            if (time > 5) {
-                                text = R.string.time_ago_at_seconds;
-                            } else {
-                                text = R.string.time_ago_just_now;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return context.getResources().getString(text, time);
+        return p.format(new Date(dt.getMillis()));
     }
 }

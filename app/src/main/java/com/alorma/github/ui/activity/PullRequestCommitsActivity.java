@@ -7,17 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.PullRequest;
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
-
-import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import com.alorma.gitskarios.core.client.BaseClient;
 
 /**
  * Created by Bernat on 17/06/2015.

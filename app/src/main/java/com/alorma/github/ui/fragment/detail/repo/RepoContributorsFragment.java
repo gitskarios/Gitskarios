@@ -1,27 +1,27 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
-import com.alorma.github.sdk.bean.dto.response.ListUsers;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
-import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
+import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bernat on 11/04/2015.
  */
-public class RepoContributorsFragment extends BaseUsersListFragment implements TitleProvider, PermissionsManager, BackManager {
+public class RepoContributorsFragment extends PaginatedListFragment<List<Contributor>, UsersAdapter> implements TitleProvider, PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String OWNER_USER = "OWNER_USER";
@@ -38,46 +38,16 @@ public class RepoContributorsFragment extends BaseUsersListFragment implements T
         return fragment;
     }
 
-    @Override
-    protected void loadArguments() {
-        if (getArguments() != null) {
-            repoInfo = getArguments().getParcelable(REPO_INFO);
-            owner = getArguments().getParcelable(OWNER_USER);
-        }
-    }
-
-    @Override
-    protected UsersAdapter setUpList(ListUsers users) {
-        UsersAdapter adapter = super.setUpList(users);
-        adapter.setRepoOwner(owner.login);
-        return adapter;
-    }
-
-    @Override
     protected void executeRequest() {
-        super.executeRequest();
-
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
+        contributorsClient.setOnResultCallback(this);
         contributorsClient.execute();
     }
 
-    @Override
     protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo, page);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
+        contributorsClient.setOnResultCallback(this);
         contributorsClient.execute();
-    }
-
-    @Override
-    protected Octicons.Icon getNoDataIcon() {
-        return Octicons.Icon.oct_person;
-    }
-
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_contributors;
     }
 
     @Override
@@ -91,38 +61,58 @@ public class RepoContributorsFragment extends BaseUsersListFragment implements T
     }
 
     @Override
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
+    }
+
+    @Override
     public boolean onBackPressed() {
         return true;
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
-        @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
-
-            if (contributors != null) {
-                ListUsers users = new ListUsers();
-
-                users.add(owner);
-                for (Contributor contributor : contributors) {
-                    if (contributor != null
-                            && contributor.author != null
-                            && contributor.author.login != null
-                            && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-                        users.add(users.size(), contributor.author);
-                    }
-                }
-                RepoContributorsFragment.this.onResponseOk(users, r);
-            }
-
-            if (contributors == null || contributors.size() == 0 && (getListAdapter() != null && getListAdapter().getCount() == 0)) {
-                setEmpty();
-            }
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            repoInfo = getArguments().getParcelable(REPO_INFO);
+            owner = getArguments().getParcelable(OWNER_USER);
         }
+    }
 
-        @Override
-        public void onFail(RetrofitError error) {
-            if (getListAdapter() != null && getListAdapter().getCount() == 0) {
-                setEmpty();
+    @Override
+    protected Octicons.Icon getNoDataIcon() {
+        return Octicons.Icon.oct_person;
+    }
+
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_contributors;
+    }
+
+    @Override
+    protected void onResponse(List<Contributor> contributors, boolean refreshing) {
+        if (contributors != null) {
+            List<User> users = new ArrayList<>();
+
+            users.add(owner);
+            for (Contributor contributor : contributors) {
+                if (contributor != null
+                        && contributor.author != null
+                        && contributor.author.login != null
+                        && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                    users.add(users.size(), contributor.author);
+                }
+            }
+
+            if (getAdapter() == null) {
+                UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+                adapter.addAll(users);
+                setAdapter(adapter);
+            } else {
+                getAdapter().addAll(users);
             }
         }
     }

@@ -2,8 +2,10 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +15,14 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -31,7 +34,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -46,11 +49,13 @@ import retrofit.client.Response;
 public class NewIssueActivity extends BackActivity implements BaseClient.OnResultCallback<Issue> {
 
     public static final String REPO_INFO = "REPO_INFO";
+    private static final int EMOJI_CODE = 1554;
+    private static final int NEW_ISSUE_REQUEST = 575;
 
     private boolean creatingIssue = false;
     private RepoInfo repoInfo;
     private EditText editTitle;
-    private EditText editBody;
+    private TextView editBody;
     private User issueAssignee;
     private TextView userTextView;
     private TextView milestoneTextView;
@@ -59,6 +64,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private Integer[] positionsSelectedLabels;
     private CharSequence[] selectedLabels;
+    private boolean editBodyHasFocus;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -88,7 +94,16 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void findViews() {
         editTitle = (EditText) findViewById(R.id.editTitle);
-        editBody = (EditText) findViewById(R.id.editBody);
+        editBody = (TextView) findViewById(R.id.editBody);
+
+        editBody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String hint = getString(R.string.add_issue_body);
+                Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, null, false, false);
+                startActivityForResult(intent, NEW_ISSUE_REQUEST);
+            }
+        });
 
         if (repoInfo.permissions != null && !repoInfo.permissions.push) {
             findViewById(R.id.pushAccessLayout).setVisibility(View.GONE);
@@ -121,7 +136,19 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             userTextView.setOnClickListener(pushAccessListener);
             milestoneTextView.setOnClickListener(pushAccessListener);
             labelsTextView.setOnClickListener(pushAccessListener);
+
+            if (getToolbar() != null) {
+                ViewCompat.setElevation(getToolbar(), 8);
+            }
         }
+
+        editBody.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editBodyHasFocus = hasFocus;
+                invalidateOptionsMenu();
+            }
+        });
     }
 
     public Drawable pushAccessInfoIcon(IIcon icon) {
@@ -183,6 +210,16 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         if (item != null) {
             item.setEnabled(!creatingIssue);
         }
+
+        if (editBodyHasFocus) {
+            menu.add(0, R.id.action_add_emoji, 100, R.string.add_emoji);
+
+            MenuItem emojiMenu = menu.findItem(R.id.action_add_emoji);
+            emojiMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            Drawable emojiIcon = new IconicsDrawable(this, Octicons.Icon.oct_octoface).actionBar().color(Color.WHITE);
+            emojiMenu.setIcon(emojiIcon);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -193,8 +230,22 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             case R.id.action_send:
                 checkDataAndCreateIssue();
                 break;
+            case R.id.action_add_emoji:
+                Intent intent = new Intent(this, EmojisActivity.class);
+                startActivityForResult(intent, EMOJI_CODE);
+                break;
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null) {
+            String content = data.getStringExtra(ContentEditorActivity.CONTENT);
+            editBody.setText(content);
+        }
     }
 
     private void createIssue(IssueRequest issue) {
@@ -212,6 +263,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             issueInfo.num = issue.number;
             Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo);
             startActivity(launcherIntent);
+            setResult(RESULT_OK);
             finish();
         }
     }
@@ -235,9 +287,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         contributorsClient.execute();
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
+    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
         @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
+        public void onResponseOk(List<Contributor> contributors, Response r) {
             final List<User> users = new ArrayList<>();
             String owner = repoInfo.owner;
             boolean exist = false;
@@ -299,7 +351,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
      */
 
     private void openMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
     }

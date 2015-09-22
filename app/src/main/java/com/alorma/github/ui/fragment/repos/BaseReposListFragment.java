@@ -1,77 +1,70 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.view.View;
-import android.widget.ListView;
+import android.view.LayoutInflater;
 
-import com.alorma.github.UrlsManager;
-import com.alorma.github.sdk.bean.dto.response.ListRepos;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.util.Collection;
+import java.util.List;
+
 import retrofit.RetrofitError;
 
 /**
  * Created by Bernat on 17/07/2014.
  */
-public abstract class BaseReposListFragment extends PaginatedListFragment<ListRepos> implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class BaseReposListFragment extends PaginatedListFragment<List<Repo>, ReposAdapter> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    protected ReposAdapter reposAdapter;
     private GitskariosSettings settings;
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (reposAdapter != null && reposAdapter.getCount() >= position) {
-            Repo item = reposAdapter.getItem(position);
-            if (item != null) {
-                startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.html_url)));
-            }
-        }
-    }
-
-    @Override
-    protected void onResponse(ListRepos repos, boolean refreshing) {
+    protected void onResponse(List<Repo> repos, boolean refreshing) {
         if (repos.size() > 0) {
             hideEmpty();
-            if (getListAdapter() != null) {
-                reposAdapter.addAll(repos, paging);
-            } else if (reposAdapter == null) {
-                setUpList(repos);
+            if (getAdapter() != null) {
+                getAdapter().addAll(repos);
             } else {
-                setListAdapter(reposAdapter);
+                setUpList(repos);
             }
-        } else if (reposAdapter == null || reposAdapter.getCount() == 0) {
-            setEmpty();
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            setEmpty(false);
         }
     }
 
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
-        if (reposAdapter == null || reposAdapter.getCount() == 0) {
-            setEmpty();
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            if (error != null && error.getResponse() != null) {
+                setEmpty(true, error.getResponse().getStatus());
+            }
         }
     }
 
-    protected void setUpList(ListRepos repos) {
+    protected void setUpList(Collection<Repo> repos) {
         settings = new GitskariosSettings(getActivity());
         settings.registerListener(this);
 
-        reposAdapter = new ReposAdapter(getActivity(), repos);
+        ReposAdapter reposAdapter = new ReposAdapter(LayoutInflater.from(getActivity()));
+        reposAdapter.showOwnerName(showAdapterOwnerName());
+        reposAdapter.addAll(repos);
 
-        setListAdapter(reposAdapter);
+        setAdapter(reposAdapter);
+    }
+
+    protected boolean showAdapterOwnerName() {
+        return false;
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
-        if (reposAdapter != null) {
-            reposAdapter.clear();
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
+        if (getAdapter() != null) {
+            getAdapter().clear();
         }
     }
 

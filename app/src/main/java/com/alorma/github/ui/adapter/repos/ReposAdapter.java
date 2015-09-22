@@ -1,82 +1,100 @@
 package com.alorma.github.ui.adapter.repos;
 
-import android.content.Context;
+import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.UrlsManager;
+import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import java.util.Collection;
-import java.util.List;
+public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
 
-public class ReposAdapter extends ArrayAdapter<Repo> {
+    private boolean showOwnerName;
 
-    private final LayoutInflater mInflater;
-    private final int primaryDark;
-    private final int secondaryTextColor;
-
-    public ReposAdapter(Context context, List<Repo> repos) {
-        super(context, 0, 0, repos);
-        this.mInflater = LayoutInflater.from(context);
-
-        this.primaryDark = AttributesUtils.getPrimaryDarkColor(context);
-        this.secondaryTextColor = AttributesUtils.getPrimaryDarkColor(context);
+    public ReposAdapter(LayoutInflater inflater) {
+        super(inflater);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View v = mInflater.inflate(R.layout.row_repo, viewGroup, false);
-        ReposHolder reposHolder = new ReposHolder(v);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(getInflater().inflate(R.layout.row_repo, parent, false));
+    }
 
-        Repo repo = getItem(position);
+    @Override
+    protected void onBindViewHolder(ViewHolder holder, Repo repo) {
+        holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
+        //new EmojiBitmapLoader().parseTextView(holder.textTitle);
 
-        reposHolder.textTitle.setText(repo.name);
-        reposHolder.textTitle.setTextColor(primaryDark);
+        String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);
+        applyIcon(holder.textStarts, Octicons.Icon.oct_star);
+        holder.textStarts.setText(starText);
 
-        String starText = getContext().getResources().getString(R.string.star_icon_text, repo.stargazers_count);
-        applyIcon(reposHolder.textStarts, Octicons.Icon.oct_star);
-        reposHolder.textStarts.setText(starText);
-
-        String forkText = getContext().getResources().getString(R.string.fork_icon_text, repo.forks_count);
-        applyIcon(reposHolder.textForks, Octicons.Icon.oct_repo_forked);
-        reposHolder.textForks.setText(forkText);
+        String forkText = holder.itemView.getResources().getString(R.string.fork_icon_text, repo.forks_count);
+        applyIcon(holder.textForks, Octicons.Icon.oct_repo_forked);
+        holder.textForks.setText(forkText);
 
         if (repo.description != null) {
-            reposHolder.textDescription.setVisibility(View.VISIBLE);
-            reposHolder.textDescription.setText(repo.description);
+            holder.textDescription.setVisibility(View.VISIBLE);
+            holder.textDescription.setText(repo.description);
+            new EmojiBitmapLoader().parseTextView(holder.textDescription);
         } else {
-            reposHolder.textDescription.setVisibility(View.GONE);
+            holder.textDescription.setVisibility(View.GONE);
         }
 
         if (repo.isPrivate) {
-            reposHolder.repoPrivate.setVisibility(View.VISIBLE);
+            holder.repoPrivate.setVisibility(View.VISIBLE);
         } else {
-            reposHolder.repoPrivate.setVisibility(View.GONE);
+            holder.repoPrivate.setVisibility(View.GONE);
         }
-        return v;
+    }
+
+    public void showOwnerName(boolean showOwnerName) {
+        this.showOwnerName = showOwnerName;
+        notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView textTitle;
+        public TextView repoPrivate;
+        public TextView textDescription;
+        public TextView textForks;
+        public TextView textStarts;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            textTitle = (TextView) itemView.findViewById(R.id.repoName);
+            repoPrivate = (TextView) itemView.findViewById(R.id.repoPrivate);
+            textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
+            textStarts = (TextView) itemView.findViewById(R.id.textStarts);
+            textForks = (TextView) itemView.findViewById(R.id.textForks);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Repo item = getItem(getAdapterPosition());
+                    if (item != null) {
+                        v.getContext().startActivity(new UrlsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
+                    }
+                }
+            });
+        }
     }
 
     private void applyIcon(TextView textView, Octicons.Icon value) {
-        IconicsDrawable drawableForks = new IconicsDrawable(getContext(), value);
+        IconicsDrawable drawableForks = new IconicsDrawable(textView.getContext(), value);
         drawableForks.sizeRes(R.dimen.textSizeSmall);
         drawableForks.colorRes(R.color.icons);
         textView.setCompoundDrawables(null, null, drawableForks, null);
-        int offset = getContext().getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);
+        int offset = textView.getResources().getDimensionPixelOffset(R.dimen.textSizeSmall);
         textView.setCompoundDrawablePadding(offset);
-    }
-
-    public void addAll(Collection<? extends Repo> collection, boolean paging) {
-        if (!paging) {
-            clear();
-        }
-        super.addAll(collection);
     }
 
 }

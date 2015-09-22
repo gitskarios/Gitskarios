@@ -10,12 +10,13 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
-import com.alorma.github.sdk.bean.dto.response.ListGists;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.GistsFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
+
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -91,9 +92,9 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
                     @Override
                     public void onFail(RetrofitError error) {
                         UserGistsClient userGistsClient = new UserGistsClient(GistsMainActivity.this, finalGistId);
-                        userGistsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListGists>() {
+                        userGistsClient.setOnResultCallback(new BaseClient.OnResultCallback<List<Gist>>() {
                             @Override
-                            public void onResponseOk(ListGists gists, Response r) {
+                            public void onResponseOk(List<Gist> gists, Response r) {
                                 setTitle(getString(R.string.user_gists, finalGistId));
                                 showGistsFragment(finalGistId);
                             }

@@ -1,15 +1,13 @@
 package com.alorma.github.ui.fragment.commit;
 
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
-import com.alorma.github.sdk.bean.dto.response.ListEvents;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.services.commit.GetCommitCommentsClient;
 import com.alorma.github.ui.adapter.commit.CommitCommentAdapter;
-import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -18,9 +16,8 @@ import java.util.List;
 /**
  * Created by Bernat on 23/06/2015.
  */
-public class CommitCommentsFragment extends PaginatedListFragment<List<CommitComment>> {
+public class CommitCommentsFragment extends PaginatedListFragment<List<CommitComment>, CommitCommentAdapter> {
 
-    private CommitCommentAdapter commentsAdapter;
     private static final String INFO = "INFO";
     private CommitInfo info;
 
@@ -56,25 +53,15 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
     protected void onResponse(List<CommitComment> commitComments, boolean refreshing) {
         if (commitComments != null && commitComments.size() > 0) {
             hideEmpty();
-            if (getListAdapter() != null) {
-                commentsAdapter.addAll(commitComments, paging);
-            } else if (commentsAdapter == null) {
-                setUpList(commitComments);
+            if (getAdapter() != null) {
+                getAdapter().addAll(commitComments);
             } else {
-                setListAdapter(commentsAdapter);
+                CommitCommentAdapter commentsAdapter = new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
+                setAdapter(commentsAdapter);
             }
-        } else if (commentsAdapter == null || commentsAdapter.getCount() == 0) {
-            setEmpty();
+        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            setEmpty(false);
         }
-    }
-
-    protected CommitCommentAdapter setUpList(List<CommitComment> commitComments) {
-        commentsAdapter = new CommitCommentAdapter(getActivity(), commitComments, info.repoInfo);
-        setListAdapter(commentsAdapter);
-        if (getListView() != null) {
-            getListView().setDivider(null);
-        }
-        return commentsAdapter;
     }
 
     @Override

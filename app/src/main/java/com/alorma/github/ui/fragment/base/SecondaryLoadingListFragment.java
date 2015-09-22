@@ -1,7 +1,5 @@
 package com.alorma.github.ui.fragment.base;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;

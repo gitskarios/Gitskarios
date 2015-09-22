@@ -120,23 +120,7 @@ public class SearchIssuesActivity extends BackActivity implements SearchView.OnQ
         return false;
     }
 
-    @Override
-    public void request() {
-        if (query != null) {
-            IssuesSearchClient searchClient = new IssuesSearchClient(this, query);
-            searchClient.setOnResultCallback(issuesListFragment);
-            searchClient.execute();
-        }
-    }
 
-    @Override
-    public void requestPaginated(int page) {
-        if (query != null) {
-            IssuesSearchClient searchClient = new IssuesSearchClient(this, query, page);
-            searchClient.setOnResultCallback(issuesListFragment);
-            searchClient.execute();
-        }
-    }
 
     private void search(String query) {
         if (query == null) {
@@ -150,6 +134,11 @@ public class SearchIssuesActivity extends BackActivity implements SearchView.OnQ
 
         this.query = query;
 
-        request();
+        issuesListFragment.executeSearch();
+    }
+
+    @Override
+    public String request() {
+        return this.query;
     }
 }

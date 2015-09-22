@@ -1,35 +1,38 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearBreadcrumb;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ListContents;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -37,14 +40,12 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment implements BaseClient.OnResultCallback<ListContents>, TitleProvider, BranchManager
-        , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager {
+public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> implements BaseClient.OnResultCallback<List<Content>>, TitleProvider, BranchManager
+        , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
 
     private RepoInfo repoInfo;
-
-    private RepoSourceAdapter contentAdapter;
 
     private LinearBreadcrumb breadCrumbs;
     private String currentPath;
@@ -110,11 +111,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     private void getContent() {
         currentPath = "/";
 
-        if (contentAdapter != null) {
-            contentAdapter.clear();
+        if (getAdapter() != null) {
+            getAdapter().clear();
         }
 
-        contentAdapter = null;
+        setAdapter(null);
 
         breadCrumbs.initRootCrumb();
 
@@ -134,15 +135,15 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     }
 
     @Override
-    public void onResponseOk(ListContents contents, Response r) {
+    public void onResponseOk(List<Content> contents, Response r) {
         if (getActivity() != null) {
             if (contents != null && contents.size() > 0) {
 
                 Collections.sort(contents, Content.Comparators.TYPE);
 
                 displayContent(contents);
-            } else if (contentAdapter == null || contentAdapter.getCount() == 0) {
-                setEmpty();
+            } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                setEmpty(false);
             }
         }
     }
@@ -150,14 +151,16 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
     @Override
     public void onFail(RetrofitError error) {
         if (getActivity() != null) {
-            if (contentAdapter == null || contentAdapter.getCount() == 0) {
-                setEmpty();
+            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                if (error != null && error.getResponse() != null) {
+                    setEmpty(true, error.getResponse().getStatus());
+                }
             }
             ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
         }
     }
 
-    private void displayContent(ListContents contents) {
+    private void displayContent(List<Content> contents) {
         if (getActivity() != null) {
             stopRefresh();
 
@@ -165,50 +168,65 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
                 breadCrumbs.addPath(currentPath, "/");
             }
 
-            contentAdapter = new RepoSourceAdapter(getActivity(), contents);
-            setListAdapter(contentAdapter);
+            RepoSourceAdapter contentAdapter = new RepoSourceAdapter(getActivity(), LayoutInflater.from(getActivity()));
+            contentAdapter.setSourceAdapterListener(this);
+            contentAdapter.addAll(contents);
+            setAdapter(contentAdapter);
         }
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        if (contentAdapter != null && contentAdapter.getCount() >= position) {
-            Content item = contentAdapter.getItem(position);
-            if (item.isDir()) {
-                getPathContent(item.path);
-            } else if (item.isFile()) {
-                FileInfo info = new FileInfo();
-                info.repoInfo = repoInfo;
-                info.name = item.name;
-                info.path = item.path;
-                Intent intent = FileActivity.createLauncherIntent(getActivity(), info, false);
-                startActivity(intent);
-            }
-        }
-    }
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (contentAdapter != null && contentAdapter.getCount() >= position) {
-            Content item = contentAdapter.getItem(position);
-
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.name);
-            intent.putExtra(Intent.EXTRA_TEXT, item._links.html);
+    public void onContentClick(Content item) {
+        if (item.isDir()) {
+            getPathContent(item.path);
+        } else if (item.isFile()) {
+            FileInfo info = new FileInfo();
+            info.repoInfo = repoInfo;
+            info.name = item.name;
+            info.path = item.path;
+            Intent intent = FileActivity.createLauncherIntent(getActivity(), info, false);
             startActivity(intent);
-            return true;
         }
-
-        return super.onItemLongClick(parent, view, position, id);
     }
 
     @Override
-    public void setEmpty() {
-        super.setEmpty();
+    public void onContentMenuAction(Content content, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_content_share:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, repoInfo.owner + "/" + repoInfo.name);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, content._links.html);
+                startActivity(shareIntent);
+                break;
+            case R.id.action_content_open:
+                Intent viewIntent = new Intent(Intent.ACTION_VIEW);
+                viewIntent.setData(Uri.parse(content._links.html));
+                viewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(viewIntent);
+                break;
+            case R.id.action_copy_content_url:
+                copy(content._links.html);
+                Toast.makeText(getActivity(), getString(R.string.url_of_copied, content.name), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_content_history:
+                Intent intent = ContentCommitsActivity.createLauncherIntent(getActivity(), repoInfo, content.path, content.name);
+                startActivity(intent);
+                break;
+        }
+    }
+
+    public void copy(String text) {
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Gitskarios", text);
+        clipboard.setPrimaryClip(clip);
+    }
+
+
+    @Override
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
     }
 
     @Override
@@ -274,6 +292,11 @@ public class SourceListFragment extends LoadingListFragment implements BaseClien
 
     @Override
     public void setPermissions(boolean admin, boolean push, boolean pull) {
+
+    }
+
+    @Override
+    public void loadMoreItems() {
 
     }
 

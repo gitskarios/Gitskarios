@@ -1,12 +1,13 @@
 package com.alorma.github.ui.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.SearchManager;
+import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,8 +23,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.bean.ProfileItem;
-import com.alorma.github.sdk.bean.dto.response.ListOrganizations;
+import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
@@ -37,18 +41,16 @@ import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.adapter.ProfileItemsAdapter;
-import com.alorma.github.ui.cards.profile.BioCard;
-import com.alorma.github.ui.cards.profile.GithubDataCard;
-import com.alorma.github.ui.cards.profile.GithubPlanCard;
-import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
-import com.alorma.gitskarios.basesdk.client.StoreCredentials;
+import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.musenkishi.atelier.Atelier;
+import com.musenkishi.atelier.ColorType;
+import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -57,11 +59,13 @@ import retrofit.client.Response;
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-        PaletteUtils.PaletteUtilsListener,
+//        PaletteUtils.PaletteUtilsListener,
         OnCheckFollowingUser {
 
     private static final String USER = "USER";
+    private static final String ACCOUNT = "ACCOUNT";
     private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
+    public static final String URL_PROFILE = "URL_PROFILE";
 
     private ImageView image;
 
@@ -69,11 +73,15 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     private boolean followingUser = false;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ProfileItemsAdapter profileItemsAdapter;
+    private boolean updateProfile = false;
+    private Account selectedAccount;
 
-    public static Intent createLauncherIntent(Context context) {
+    public static Intent createLauncherIntent(Context context, Account selectedAccount) {
         Intent intent = new Intent(context, ProfileActivity.class);
         Bundle extras = new Bundle();
         extras.putBoolean(AUTHENTICATED_USER, true);
+        extras.putParcelable(ACCOUNT, selectedAccount);
+        intent.putExtras(extras);
         return intent;
     }
 
@@ -112,6 +120,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             GithubUsersClient<User> requestClient;
             user = null;
             if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey(ACCOUNT)) {
+                    selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
+                }
                 if (getIntent().getExtras().containsKey(USER)) {
                     user = getIntent().getParcelableExtra(USER);
                 }
@@ -122,6 +133,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             if (user != null) {
                 if (user.login.equalsIgnoreCase(settings.getUserName())) {
                     requestClient = new GetAuthUserClient(this);
+                    updateProfile = true;
                     collapsingToolbarLayout.setTitle(settings.getUserName());
                 } else {
                     requestClient = new RequestUserClient(this, user.login);
@@ -129,6 +141,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                 }
             } else {
                 requestClient = new GetAuthUserClient(this);
+                updateProfile = true;
             }
 
             invalidateOptionsMenu();
@@ -184,7 +197,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     }
 
     @Override
-    public void onResponseOk(User user, Response r) {
+    public void onResponseOk(final User user, Response r) {
         this.user = user;
         collapsingToolbarLayout.setTitle(user.login);
 
@@ -194,29 +207,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
         invalidateOptionsMenu();
 
+        if (updateProfile && selectedAccount != null) {
+            AccountManager accountManager = AccountManager.get(this);
+            accountManager.setUserData(selectedAccount, AccountsHelper.USER_PIC, user.avatar_url);
+            ImageLoader.getInstance().clearMemoryCache();
+            ImageLoader.getInstance().clearDiskCache();
+        }
+
         if (!user.login.equalsIgnoreCase(settings.getUserName())) {
             CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
             checkFollowingUser.setOnCheckFollowingUser(this);
             checkFollowingUser.execute();
-        }
-
-        if (getSupportActionBar() != null) {
-            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
-        }
-    }
-
-    @Override
-    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
-
-        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
-
-        image.setImageDrawable(drawable);
-
-        if (palette.getSwatches().size() > 0) {
-            Palette.Swatch swatch = palette.getSwatches().get(0);
-            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
-        } else {
-            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
         }
 
         fillCardBio(user);
@@ -225,12 +226,68 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
         fillCardPlan(user);
 
+        if (getSupportActionBar() != null) {
+            ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    Atelier.with(ProfileActivity.this, user.avatar_url)
+                            .load(loadedImage)
+                            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+                            .listener(new Atelier.OnPaletteRenderedListener() {
+                                @Override
+                                public void onRendered(Palette palette, int generatedColor) {
+                                    applyColors(generatedColor);
+                                    profileItemsAdapter.setAvatarColor(generatedColor);
+                                }
+                            })
+                            .into(image);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+//            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
+        }
     }
 
-    private void applyColors(int rgb, int textColor) {
+//    @Override
+//    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
+//
+//        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
+//
+//        image.setImageDrawable(drawable);
+//
+//        if (palette.getSwatches().size() > 0) {
+//            Palette.Swatch swatch = palette.getSwatches().get(0);
+//            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
+//        } else {
+//            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
+//        }
+//
+//        fillCardBio(user);
+//
+//        fillCardGithubData(user);
+//
+//        fillCardPlan(user);
+//
+//    }
+
+    private void applyColors(int rgb) {
         collapsingToolbarLayout.setContentScrimColor(rgb);
-        collapsingToolbarLayout.setExpandedTitleColor(textColor);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(textColor);
+        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         collapsingToolbarLayout.setStatusBarScrimColor(rgb);
         profileItemsAdapter.setAvatarColor(rgb);
 
@@ -268,11 +325,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             profileItemsAdapter.add(profileUserEmail);
         }
         if (user.created_at != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.joined_at_date_format), Locale.getDefault());
-
-            String joined = getString(R.string.joined_at, sdf.format(user.created_at));
-
-            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, joined, null);
+            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at, R.string.joined_at), null);
             profileItemsAdapter.add(profileUserCreated);
         }
     }
@@ -296,9 +349,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         profileItemsAdapter.add(profileItemOrgs);
 
         GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
-        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<ListOrganizations>() {
+        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<List<Organization>>() {
             @Override
-            public void onResponseOk(ListOrganizations organizations, Response r) {
+            public void onResponseOk(List<Organization> organizations, Response r) {
                 if (organizations != null && organizations.size() > 0) {
                     profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
                     profileItemsAdapter.notifyDataSetChanged();
@@ -341,5 +394,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         followingUser = following;
         hideProgressDialog();
         invalidateOptionsMenu();
+    }
+
+    @Override
+    protected void close() {
+        if (user != null && updateProfile) {
+            Intent intent = new Intent();
+            Bundle extras = new Bundle();
+            extras.putString(URL_PROFILE, user.avatar_url);
+            intent.putExtras(extras);
+            setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
+        }
+        super.close();
     }
 }

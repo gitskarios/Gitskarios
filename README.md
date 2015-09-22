@@ -1,34 +1,20 @@
 [![Build Status](https://travis-ci.org/gitskarios/Gitskarios.svg?branch=develop)](https://travis-ci.org/gitskarios/Gitskarios)
 
+[![Issue Stats](http://issuestats.com/github/gitskarios/gitskarios/badge/pr?style=flat)](http://issuestats.com/github/gitskarios/gitskarios)
+
+[![Issue Stats](http://issuestats.com/github/gitskarios/gitskarios/badge/issue?style=flat)](http://issuestats.com/github/gitskarios/gitskarios)
+
+[![Join the chat at https://gitter.im/gitskarios/Gitskarios](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gitskarios/Gitskarios?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.alorma.github&utm_source=github&utm_medium=github&utm_campaign=github)
+
 # README #
 
-## FORK ##
+Gitskarios is an Android Aplication that allows you to access GitHub, see your profile, search people, star repositories, and more!
 
-Thanks dev for forking Gitskarios!
+## CONTRIBUTING ##
 
-Since now, if you want to use your own version of Gitskarios, you should generate specific App on Github
-
-[Github OAuth](https://developer.github.com/v3/oauth/).
-
-    If you want distinct apps for debug and release, you should generate two applications.
-
-In order to use this sdk, you must enable three metadata keys in your `AndroidManifest.xml`
-
-``` groovy
-<meta-data
-    android:name="com.alorma.github.sdk.client"
-    android:value="@string/gh_client_id"/>
-
-<meta-data
-    android:name="com.alorma.github.sdk.secret"
-    android:value="@string/gh_client_secret"/>
-
-<meta-data
-    android:name="com.alorma.github.sdk.oauth"
-    android:value="@string/gh_client_callback"/>
-```
-
-In Gitskarios, this keys are hidden from repository, so you should create your own string files, or place it directly in `value`
+Follow the instructions that describe how to fork this project : [Fork this project](FORK.md)
 
 ## LICENSE ##
 

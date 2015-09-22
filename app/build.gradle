@@ -4,14 +4,14 @@ apply plugin: 'com.github.ben-manes.versions'
 //gradle dependencyUpdates -Drevision=release
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
-        versionName "2.4.5"
-        versionCode 2450
+        targetSdkVersion 23
+        versionName "2.5.11.0"
+        versionCode 25110
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -23,21 +23,35 @@ android {
         playStore
     }
 
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
         }
         release {
             minifyEnabled false
             if (signingConfigs.playStore != null) {
                 signingConfig signingConfigs.playStore
             }
+            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
+            ext.betaDistributionGroupAliases="gitskarios-alpha-testers"
         }
     }
-}
-
-def getVersionCode() {
-    return 'git rev-list --count HEAD'.execute().text.toInteger()
 }
 
 def getCurrentGitHash() {
@@ -68,40 +82,83 @@ if (propFile.canRead()) {
     android.buildTypes.release.signingConfig = null
 }
 
+def getGHId(pro) {
+    if (pro) {
+        return hasProperty('GH_PRO_ID') ? GH_PRO_ID : System.getenv('GH_PRO_ID')
+    } else {
+        return hasProperty('GH_DEV_ID') ? GH_DEV_ID : System.getenv('GH_DEV_ID')
+    }
+}
 
+def getGHSecret(pro) {
+    if (pro) {
+        return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
+    } else {
+        return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
+    }
+}
+
+def getGHCallback(pro) {
+    if (pro) {
+        return hasProperty('GH_PRO_CALLBACK') ? GH_PRO_CALLBACK : System.getenv('GH_PRO_CALLBACK')
+    } else {
+        return hasProperty('GH_DEV_CALLBACK') ? GH_DEV_CALLBACK : System.getenv('GH_DEV_CALLBACK')
+    }
+}
+
+assembleRelease.dependsOn clean
+assembleRelease.doLast {
+    tasks.crashlyticsUploadDistributionRelease.execute()
+}
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:palette-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.android.support:cardview-v7:22.2.0'
-    compile 'com.google.android.gms:play-services-analytics:7.5.0'
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
     releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
     // Submodules
-    
+
     compile project(':libraries:breadcrumbs')
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
-    compile 'com.afollestad:material-dialogs:0.7.6.0'
-    compile 'se.emilsjolander:stickylistheaders:2.7.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.mikepenz.iconics:octicons-typeface:2.2.0@aar'
-    compile 'com.github.d-max:spots-dialog:0.3'
-    compile 'com.squareup:otto:1.3.8'
-    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile project(':libraries:atelier')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.mikepenz:materialdrawer:3.0.8@aar') {
-        transitive = true
-    }
-    compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
-    compile('com.mikepenz:aboutlibraries:5.0.5@aar') {
+    compile 'com.github.xiprox.errorview:library:2.2.0'
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:palette-v7:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.android.support:cardview-v7:23.0.1'
+    compile 'com.google.android.gms:play-services-analytics:7.8.0'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    compile 'se.emilsjolander:stickylistheaders:2.7.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
+
+    compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
         transitive = true
     }
-    compile 'com.github.mrengineer13:snackbar:1.2.0'
+    compile('com.mikepenz:materialdrawer:4.0.8@aar') {
+        transitive = true
+    }
+    compile('com.mikepenz:actionitembadge:3.1.1@aar')
+    compile 'com.mikepenz:octicons-typeface:3.0.1@aar'
+    compile 'com.mikepenz:google-material-typeface:1.2.0@aar'
+
+    compile 'com.github.d-max:spots-dialog:0.4'
+    compile 'com.squareup:otto:1.3.8'
+    compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
-    compile 'com.android.support:design:22.2.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
+    compile 'io.realm:realm-android:0.82.2'
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
+
+    compile 'com.afollestad:material-cab:0.1.4'
+    compile 'com.afollestad:material-dialogs:0.7.9.1'
+
+    compile 'com.github.pedrovgs:renderers:2.0.3'
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
 }

@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.gh4a.utils.FileUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -139,6 +140,9 @@ public class HttpImageGetter implements ImageGetter {
             return hide(view);
 
         view.setText(html);
+
+        new EmojiBitmapLoader().parseTextView(view);
+
         view.setVisibility(VISIBLE);
         view.setTag(null);
         return this;

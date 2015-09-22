@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
@@ -26,7 +25,6 @@ import com.alorma.github.inapp.Base64;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.dto.response.ListBranches;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
@@ -36,9 +34,10 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.ui.view.CopyWebView;
 import com.alorma.github.utils.ImageUtils;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
@@ -152,7 +151,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         if (MarkdownUtils.isMarkdown(content.name)) {
             RequestMarkdownDTO request = new RequestMarkdownDTO();
             request.text = decodeContent();
-            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request, new Handler());
+            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request);
             markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
                 @Override
                 public void onResponseOk(final String s, Response r) {
@@ -270,7 +269,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         }
     }
 
-    private class ParseBranchesCallback implements BaseClient.OnResultCallback<ListBranches> {
+    private class ParseBranchesCallback implements BaseClient.OnResultCallback<List<Branch>> {
         private String path;
 
         public ParseBranchesCallback(String path) {
@@ -278,7 +277,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         }
 
         @Override
-        public void onResponseOk(ListBranches branches, Response r) {
+        public void onResponseOk(List<Branch> branches, Response r) {
             for (Branch branch : branches) {
                 if (path != null && path.contains(branch.name)) {
                     fileInfo.repoInfo.branch = branch.name;

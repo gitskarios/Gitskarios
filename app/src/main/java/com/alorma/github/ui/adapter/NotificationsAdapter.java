@@ -1,134 +1,161 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
-import com.alorma.github.bean.ClearNotification;
-import com.alorma.github.bean.UnsubscribeThreadNotification;
+import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.sdk.bean.dto.response.Notification;
+import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.squareup.otto.Bus;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
  * Created by Bernat on 19/02/2015.
  */
-public class NotificationsAdapter extends ArrayAdapter<Notification> implements StickyListHeadersAdapter {
+public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsParent, NotificationsAdapter.ViewHolder> {
 
-    private final LayoutInflater mInflater;
     private final IconicsDrawable iconDrawable;
+    private NotificationsAdapterListener notificationsAdapterListener;
 
-    @Inject
-    Bus bus;
+    public NotificationsAdapter(Context context, LayoutInflater inflater) {
+        super(inflater);
 
-    public NotificationsAdapter(Context context, List<Notification> notifications) {
-        super(context, 0, notifications);
-        mInflater = LayoutInflater.from(context);
-
-        iconDrawable = new IconicsDrawable(getContext(), Octicons.Icon.oct_check);
-        iconDrawable.sizeRes(R.dimen.gapLarge);
-        iconDrawable.color(AttributesUtils.getSecondaryTextColor(getContext()));
+        iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_check);
+        iconDrawable.sizeDp(14);
+        iconDrawable.color(AttributesUtils.getSecondaryTextColor(context));
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = mInflater.inflate(R.layout.notification_row, parent, false);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(getInflater().inflate(R.layout.notification_parent_row, parent, false));
+    }
 
+    @Override
+    protected void onBindViewHolder(ViewHolder holder, NotificationsParent notification) {
+        holder.text_repo.setText(notification.repo.full_name);
+        holder.clear_all_repo.setImageDrawable(iconDrawable);
 
-        final Notification item = getItem(position);
+        for (Notification noti : notification.notifications) {
+            View view = getInflater().inflate(R.layout.notification_row, holder.notificationsPlaceHolder, false);
+            bindNotificationView(view, noti);
+            holder.notificationsPlaceHolder.addView(view);
+        }
+    }
 
-        v.setOnClickListener(new View.OnClickListener() {
+    private void bindNotificationView(View view, final Notification noti) {
+        TextView name = (TextView) view.findViewById(R.id.text);
+        name.setText(noti.subject.title);
+
+        name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bus != null && item != null) {
-                    bus.post(item);
-                    bus.post(new ClearNotification(item, false));
+                if (notificationsAdapterListener != null) {
+                    notificationsAdapterListener.onNotificationClick(noti);
                 }
             }
         });
 
-        TextView text = (TextView) v.findViewById(R.id.text);
-        text.setText(item.subject.title);
-
-        ImageView iv = (ImageView) v.findViewById(R.id.clearNotifications);
-        iv.setOnClickListener(new View.OnClickListener() {
+        ImageView overflow = (ImageView) view.findViewById(R.id.overflow);
+        overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 popupMenu.inflate(R.menu.notifications_row_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-
-                        switch (menuItem.getItemId()) {
-
-                            case R.id.action_notification_unsubscribe:
-                                bus.post(new UnsubscribeThreadNotification(item));
-                                break;
-                            case R.id.action_notification_mark_read:
-                                bus.post(new ClearNotification(item, false));
-                                break;
-
-                        }
-
-                        return true;
-                    }
-                });
+                popupMenu.setOnMenuItemClickListener(new MenuListener(noti));
                 popupMenu.show();
             }
         });
-
-        return v;
     }
 
-    @Override
-    public View getHeaderView(int i, View view, ViewGroup viewGroup) {
-        View v = mInflater.inflate(R.layout.notification_row_header, viewGroup, false);
+    private class MenuListener implements PopupMenu.OnMenuItemClickListener {
 
-        final Notification item = getItem(i);
+        private Notification notification;
 
-        TextView tv = (TextView) v.findViewById(R.id.text);
-        tv.setText(item.repository.full_name);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.getContext().startActivity(new UrlsManager(view.getContext()).manageRepos(Uri.parse(item.repository.html_url)));
+        public MenuListener(Notification notification) {
+            this.notification = notification;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+
+                case R.id.action_notification_unsubscribe:
+                    if (notificationsAdapterListener != null) {
+                        notificationsAdapterListener.unsubscribeThreadNotification(notification);
+                    }
+                    break;
+                case R.id.action_notification_mark_read:
+                    if (notificationsAdapterListener != null) {
+                        notificationsAdapterListener.clearNotifications(notification);
+                    }
+                    break;
+
             }
-        });
-
-        ImageView iv = (ImageView) v.findViewById(R.id.clearNotifications);
-        iv.setImageDrawable(iconDrawable);
-
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //bus.post(new ClearNotification(item, true));
-            }
-        });
-
-        return v;
+            return true;
+        }
     }
 
-    @Override
-    public long getHeaderId(int i) {
-        return getItem(i).adapter_repo_parent_id;
+    public void setNotificationsAdapterListener(NotificationsAdapterListener notificationsAdapterListener) {
+        this.notificationsAdapterListener = notificationsAdapterListener;
     }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView text_repo;
+        private final ImageView clear_all_repo;
+        private final ViewGroup notificationsPlaceHolder;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            text_repo = (TextView) itemView.findViewById(R.id.text_repo);
+            clear_all_repo = (ImageView) itemView.findViewById(R.id.clear_all_repo);
+            notificationsPlaceHolder = (ViewGroup) itemView.findViewById(R.id.notificationsPlaceHolder);
+
+
+
+            text_repo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (notificationsAdapterListener != null) {
+                        NotificationsParent item = getItem(getAdapterPosition());
+                        notificationsAdapterListener.requestRepo(item);
+                    }
+                }
+            });
+
+            clear_all_repo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (notificationsAdapterListener != null) {
+                        NotificationsParent item = getItem(getAdapterPosition());
+                        notificationsAdapterListener.clearRepoNotifications(item);
+                    }
+                }
+            });
+        }
+    }
+
+    public interface NotificationsAdapterListener {
+        void onNotificationClick(Notification notification);
+
+        void clearNotifications(Notification notification);
+
+        void unsubscribeThreadNotification(Notification notification);
+
+        void requestRepo(NotificationsParent item);
+
+        void clearRepoNotifications(NotificationsParent item);
+    }
 }

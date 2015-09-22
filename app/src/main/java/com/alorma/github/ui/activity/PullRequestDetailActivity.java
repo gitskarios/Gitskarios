@@ -3,9 +3,9 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,42 +15,53 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
+import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
-import com.alorma.github.sdk.bean.dto.response.ListContributors;
 import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
+import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
+import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.github.ui.dialog.NewIssueCommentActivity;
+import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
@@ -65,11 +76,17 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class PullRequestDetailActivity extends BackActivity implements BaseClient.OnResultCallback<PullRequestStory>, View.OnClickListener, PullRequestDetailView.PullRequestActionsListener {
+public class PullRequestDetailActivity extends BackActivity
+        implements BaseClient.OnResultCallback<PullRequestStory>,
+        View.OnClickListener, PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener {
 
     public static final String ISSUE_INFO = "ISSUE_INFO";
+    public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
+    public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";
+    public static final String ISSUE_INFO_NUMBER = "ISSUE_INFO_NUMBER";
 
     private static final int NEW_COMMENT_REQUEST = 1243;
+    private static final int ISSUE_BODY_EDIT = 4252;
 
     private boolean shouldRefreshOnBack;
     private IssueInfo issueInfo;
@@ -78,11 +95,26 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     private PullRequestStory pullRequestStory;
     private int primary;
     private int primaryDark;
+    private AppBarLayout appbarLayout;
+    private ProgressBar loadingView;
+    private Repo repository;
 
     public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(ISSUE_INFO, issueInfo);
+
+        Intent intent = new Intent(context, PullRequestDetailActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createShortcutLauncherIntent(Context context, IssueInfo issueInfo) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ISSUE_INFO_REPO_NAME, issueInfo.repoInfo.name);
+        bundle.putString(ISSUE_INFO_REPO_OWNER, issueInfo.repoInfo.owner);
+        bundle.putInt(ISSUE_INFO_NUMBER, issueInfo.num);
 
         Intent intent = new Intent(context, PullRequestDetailActivity.class);
         intent.putExtras(bundle);
@@ -95,7 +127,23 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         setContentView(R.layout.activity_pullrequest_detail);
 
         if (getIntent().getExtras() != null) {
+
             issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+
+            if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
+                String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
+                String owner = getIntent().getExtras().getString(ISSUE_INFO_REPO_OWNER);
+
+                RepoInfo repoInfo = new RepoInfo();
+                repoInfo.name = name;
+                repoInfo.owner = owner;
+
+                int num = getIntent().getExtras().getInt(ISSUE_INFO_NUMBER);
+
+                issueInfo = new IssueInfo();
+                issueInfo.repoInfo = repoInfo;
+                issueInfo.num = num;
+            }
 
             primary = getResources().getColor(R.color.primary);
             primaryDark = getResources().getColor(R.color.primary_dark_alpha);
@@ -104,10 +152,38 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         }
     }
 
+    private void checkEditTitle() {
+        if (issueInfo != null && pullRequestStory != null && pullRequestStory.pullRequest != null) {
+
+            StoreCredentials credentials = new StoreCredentials(this);
+
+            GitskariosSettings settings = new GitskariosSettings(this);
+            if (settings.shouldShowDialogEditIssue()) {
+                if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
+                    showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
+                } else if (pullRequestStory.pullRequest.user.login.equals(credentials.getUserName())) {
+                    showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
+                }
+            }
+        }
+    }
+
+    private void showEditDialog(int content) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.dialog_edit_issue)
+                .content(content)
+                .positiveText(R.string.ok)
+                .show();
+    }
+
     private void findViews() {
+        appbarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
+
+        loadingView = (ProgressBar) findViewById(R.id.loading_view);
 
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
@@ -117,27 +193,41 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     @Override
     protected void getContent() {
         super.getContent();
-        PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(this, issueInfo);
-        pullRequestStoryLoader.setOnResultCallback(this);
-        pullRequestStoryLoader.execute();
+        loadingView.setVisibility(View.VISIBLE);
+        GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
+        repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+            @Override
+            public void onResponseOk(Repo repo, Response r) {
+                repository = repo;
+                issueInfo.repoInfo.permissions = repo.permissions;
+                PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
+                pullRequestStoryLoader.setOnResultCallback(PullRequestDetailActivity.this);
+                pullRequestStoryLoader.execute();
+            }
+
+            @Override
+            public void onFail(RetrofitError error) {
+
+            }
+        });
+        repoClient.execute();
     }
 
     @Override
     public void onResponseOk(PullRequestStory pullRequestStory, Response r) {
+        hideProgressDialog();
         this.pullRequestStory = pullRequestStory;
+        this.pullRequestStory.pullRequest.repository = repository;
         applyIssue();
     }
 
     private void applyIssue() {
+        loadingView.setVisibility(View.GONE);
+        checkEditTitle();
         changeColor(pullRequestStory.pullRequest);
 
         fab.setVisibility(pullRequestStory.pullRequest.locked ? View.GONE : View.VISIBLE);
         fab.setOnClickListener(pullRequestStory.pullRequest.locked ? null : this);
-
-        if (getSupportActionBar() != null) {
-            String issueName = issueInfo.repoInfo.name;
-            getSupportActionBar().setSubtitle(getString(R.string.pull_requests_subtitle, issueName));
-        }
 
         String status = getString(R.string.issue_status_open);
         if (IssueState.closed == pullRequestStory.pullRequest.state) {
@@ -147,6 +237,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         }
         setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
         PullRequestDetailAdapter adapter = new PullRequestDetailAdapter(this, getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, issueInfo.repoInfo.permissions, this);
+        adapter.setIssueDetailRequestListener(this);
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
@@ -169,8 +260,11 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 int color = (Integer) animator.getAnimatedValue();
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
+                if (appbarLayout != null) {
+                    appbarLayout.setBackgroundColor(color);
+                }
+                if (getToolbar() != null) {
+                    getToolbar().setBackgroundColor(color);
                 }
             }
 
@@ -268,9 +362,9 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
             MenuItem itemShare = menu.findItem(R.id.share_issue);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
             } else {
-                itemShare.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
+                itemShare.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
             }
 
         }
@@ -311,7 +405,8 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
     }
 
     public void onAddComment() {
-        Intent intent = NewIssueCommentActivity.launchIntent(PullRequestDetailActivity.this, issueInfo);
+        String hint = getString(R.string.add_comment);
+        Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
         startActivityForResult(intent, NEW_COMMENT_REQUEST);
     }
 
@@ -345,17 +440,46 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
                     startActivity(intent);
                 }
                 break;
+            case R.id.action_add_shortcut:
+                ShortcutUtils.addShortcut(this, issueInfo);
+                break;
         }
 
         return true;
     }
 
     private void editMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open);
         milestonesClient.setOnResultCallback(new MilestonesCallback());
         milestonesClient.execute();
 
         showProgressDialog(R.style.SpotDialog_loading_milestones);
+    }
+
+
+    @Override
+    public void onTitleEditRequest() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.edit_issue_title)
+                .input(null, pullRequestStory.pullRequest.title, false, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+
+                        EditIssueTitleRequestDTO editIssueTitleRequestDTO = new EditIssueTitleRequestDTO();
+                        editIssueTitleRequestDTO.title = charSequence.toString();
+                        executeEditIssue(editIssueTitleRequestDTO, R.string.issue_change_title);
+                    }
+                })
+                .positiveText(R.string.edit_issue_button_ok)
+                .neutralText(R.string.edit_issue_button_neutral)
+                .show();
+    }
+
+    @Override
+    public void onContentEditRequest() {
+        String body = pullRequestStory.pullRequest.body != null ? pullRequestStory.pullRequest.body.replace("\n", "<br />") : "";
+        Intent launcherIntent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, getString(R.string.edit_issue_body_hint), body, true, false);
+        startActivityForResult(launcherIntent, ISSUE_BODY_EDIT);
     }
 
     @Override
@@ -523,9 +647,9 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         contributorsClient.execute();
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<ListContributors> {
+    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
         @Override
-        public void onResponseOk(ListContributors contributors, Response r) {
+        public void onResponseOk(List<Contributor> contributors, Response r) {
             final List<User> users = new ArrayList<>();
             String owner = issueInfo.repoInfo.owner;
             boolean exist = false;
@@ -544,7 +668,6 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
 
             Collections.reverse(users);
             UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(PullRequestDetailActivity.this, users);
-
             MaterialDialog.Builder builder = new MaterialDialog.Builder(PullRequestDetailActivity.this);
             builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
                 @Override
@@ -587,6 +710,7 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
+                shouldRefreshOnBack = true;
                 hideProgressDialog();
                 getContent();
 
@@ -749,8 +873,9 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
             public void onResponseOk(Issue issue, Response r) {
                 if (issue != null) {
                     getContent();
+                    shouldRefreshOnBack = true;
 
-                    Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(fab, R.string.pullrequest_change, Snackbar.LENGTH_SHORT).show();
                 }
             }
 
@@ -768,12 +893,41 @@ public class PullRequestDetailActivity extends BackActivity implements BaseClien
         finish();
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data != null) {
             if (requestCode == NEW_COMMENT_REQUEST) {
-                getContent();
+                showProgressDialog(R.style.SpotDialog_loading_adding_comment);
+                String body = data.getStringExtra(ContentEditorActivity.CONTENT);
+                final NewIssueCommentClient client = new NewIssueCommentClient(this, issueInfo, body);
+                client.setOnResultCallback(new BaseClient.OnResultCallback<GithubComment>() {
+                    @Override
+                    public void onResponseOk(GithubComment githubComment, Response r) {
+                        getContent();
+                        Snackbar.make(fab, R.string.add_comment_issue_ok, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFail(RetrofitError error) {
+                        // TODO on comment fail
+
+                        Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT).setAction(R.string.retry, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                client.execute();
+                            }
+                        }).show();
+                    }
+                });
+                client.execute();
+
+            } else if (requestCode == ISSUE_BODY_EDIT) {
+                EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
+                bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
+
+                executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
             }
         }
     }

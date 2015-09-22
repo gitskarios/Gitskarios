@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion versionName="2.4.5" changeDate="Jul 25,2015">
-        <changelogtext>Some bug fix</changelogtext>
+    <changelogversion changeDate="Sep 14,2015" versionName="2.5.11">
+        <changelogtext>Notifications improved: Now you will receive more specific notifications.</changelogtext>
+        <changelogtext>Disable notification: on simple notification, swipe it hides from system forever, but keep in the list screen</changelogtext>
     </changelogversion>
-
-    <changelogversion versionName="2.4.4">
-        <changelogtext>[b]NEW:[/b] Pull request support</changelogtext>
-        <changelogtext>[b]IMPROVEMENT:[/b] Long click on source list share file.</changelogtext>
-        <changelogtext>[b]FIX:[/b] Some small bug fixes.</changelogtext>
+    <changelogversion changeDate="Sep 07,2015" versionName="2.5.10">
+        <changelogtext>Load release detail from events list or notifications</changelogtext>
+        <changelogtext>New setting: Mark notification as read when open it.</changelogtext>
     </changelogversion>
-
+    <changelogversion changeDate="Sep 07,2015" versionName="2.5.9.1">
+        <changelogtext>Fix notifications clear not marked as read</changelogtext>
+    </changelogversion>
 </changelog>

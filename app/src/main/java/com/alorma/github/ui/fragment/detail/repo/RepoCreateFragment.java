@@ -16,7 +16,7 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.request.CreateRepoRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.ui.popup.GitIgnorePopup;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -131,7 +131,7 @@ public class RepoCreateFragment extends Fragment implements View.OnClickListener
         boolean hasWiki = repoWikiCheck.isChecked();
         boolean hasDownloads = repoDownloadsCheck.isChecked();
 
-        CreateRepoRequestDTO repoRequestDTO = new CreateRepoRequestDTO();
+        RepoRequestDTO repoRequestDTO = new RepoRequestDTO();
         repoRequestDTO.name = title;
         repoRequestDTO.description = description;
         repoRequestDTO.isPrivate = isPrivate;

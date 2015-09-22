@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.alorma.github.R;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.CommitInfo;
@@ -19,7 +20,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
-import com.alorma.gitskarios.basesdk.client.BaseClient;
+import com.alorma.github.ui.fragment.commit.CommitStatusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,27 +56,31 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
         if (getIntent().getExtras() != null) {
             info = getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
 
-            setTitle(String.valueOf(info.repoInfo));
+            if (info != null && info.repoInfo != null) {
 
-            getContent();
+                setTitle(String.valueOf(info.repoInfo));
 
-            TabLayout slidingTabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                getContent();
 
+                final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+                listFragments = new ArrayList<>();
 
-            listFragments = new ArrayList<>();
+                commitFilesFragment = CommitFilesFragment.newInstance(info);
+                commitFilesFragment.setOnFileRequestListener(this);
+                listFragments.add(commitFilesFragment);
 
-            commitFilesFragment = CommitFilesFragment.newInstance(info);
-            commitFilesFragment.setOnFileRequestListener(this);
-            listFragments.add(commitFilesFragment);
+                listFragments.add(CommitStatusFragment.newInstance(info));
 
-            CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
-            listFragments.add(commitCommentsFragment);
+                CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
+                listFragments.add(commitCommentsFragment);
 
-            viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-            slidingTabLayout.setupWithViewPager(viewPager);
-
+                viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+                tabLayout.setupWithViewPager(viewPager);
+            } else {
+                finish();
+            }
         }
     }
 
@@ -137,6 +142,8 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
                 case 0:
                     return getString(R.string.commits_detail_files);
                 case 1:
+                    return getString(R.string.commits_detail_statuses);
+                case 2:
                     return getString(R.string.commits_detail_comments);
             }
             return "";

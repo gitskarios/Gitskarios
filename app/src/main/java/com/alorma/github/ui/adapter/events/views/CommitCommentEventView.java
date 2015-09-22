@@ -63,7 +63,7 @@ public class CommitCommentEventView extends GithubEventView<CommitCommentEventPa
 
         TextView textDate = (TextView) findViewById(R.id.textDate);
 
-        String timeString = TimeUtils.getTimeString(textDate.getContext(), event.created_at);
+        String timeString = TimeUtils.getTimeAgoString(event.created_at);
 
         textDate.setText(timeString);
     }

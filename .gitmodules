@@ -4,6 +4,3 @@ url=https://github.com/gitskarios/GithubAndroidSdk.git
 [submodule "sdks/GithubAndroidSdk"]
 	path = sdks/GithubAndroidSdk
 	url = https://github.com/gitskarios/GithubAndroidSdk
-[submodule "sdks/BaseSDK"]
-	path = sdks/BaseSDK
-	url = https://github.com/gitskarios/BaseSDK

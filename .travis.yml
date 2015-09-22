@@ -1,20 +1,18 @@
 language: android
+sudo: true
 android:
   components:
-   - build-tools-22.0.1
-   - android-22
+   - build-tools-23.0.1
+   - android-23
    - extra-android-m2repository
    - extra-google-google_play_services
    - extra-google-m2repository
   licenses:
-    - android-sdk-license-.+
+   - android-sdk-license-.+
 
 branches:
   only:
-    - develop
-    - master
+   - develop
+   - master
 
-notifications:
-  email: false
-
-script: ./gradlew assembleDebug crashlyticsUploadDistributionDebug
+script: ./gradlew assembleDebug

@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -40,7 +39,7 @@ public class SearchReposFragment extends BaseReposListFragment {
         if (query != null) {
             setQuery(query);
         } else {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -67,6 +66,10 @@ public class SearchReposFragment extends BaseReposListFragment {
                 RepoSearchClient client = new RepoSearchClient(getActivity(), query);
                 client.setOnResultCallback(this);
                 client.execute();
+                query = null;
+                if (getAdapter() != null) {
+                    getAdapter().clear();
+                }
             }
         }
     }
@@ -79,6 +82,10 @@ public class SearchReposFragment extends BaseReposListFragment {
                 RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
                 client.setOnResultCallback(this);
                 client.execute();
+                query = null;
+                if (getAdapter() != null) {
+                    getAdapter().clear();
+                }
             }
         }
     }
@@ -88,16 +95,16 @@ public class SearchReposFragment extends BaseReposListFragment {
         executeRequest();
     }
 
-    @Override
+/*    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        if (reposAdapter != null && reposAdapter.getCount() >= position) {
+        if (reposAdapter != null && reposAdapter.getItemCount() >= position) {
             Repo item = reposAdapter.getItem(position);
             if (onSearchReposListener != null) {
                 onSearchReposListener.onRepoItemSelected(item);
             }
         }
-    }
+    }*/
 
     public void setOnSearchReposListener(OnSearchReposListener onSearchReposListener) {
         this.onSearchReposListener = onSearchReposListener;

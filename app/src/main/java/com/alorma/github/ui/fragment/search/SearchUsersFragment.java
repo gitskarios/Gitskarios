@@ -37,7 +37,7 @@ public class SearchUsersFragment extends BaseUsersListFragment {
         if (query != null) {
             setQuery(query);
         } else {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -59,6 +59,10 @@ public class SearchUsersFragment extends BaseUsersListFragment {
                 UsersSearchClient client = new UsersSearchClient(getActivity(), query);
                 client.setOnResultCallback(this);
                 client.execute();
+                query = null;
+                if (getAdapter() != null) {
+                    getAdapter().clear();
+                }
             }
         }
     }
@@ -71,6 +75,10 @@ public class SearchUsersFragment extends BaseUsersListFragment {
                 UsersSearchClient client = new UsersSearchClient(getActivity(), query, page);
                 client.setOnResultCallback(this);
                 client.execute();
+                query = null;
+                if (getAdapter() != null) {
+                    getAdapter().clear();
+                }
             }
         }
     }
