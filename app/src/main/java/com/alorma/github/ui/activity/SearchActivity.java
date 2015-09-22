@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -64,7 +65,7 @@ public class SearchActivity extends BackActivity {
         listFragments.add(searchReposFragment);
         listFragments.add(searchUsersFragment);
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
         tabLayout.setupWithViewPager(viewPager);
 
         searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -86,35 +87,6 @@ public class SearchActivity extends BackActivity {
                 return false;
             }
         });
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (listFragments.get(position) instanceof TitleProvider) {
-                int title = ((TitleProvider) listFragments.get(position)).getTitle();
-                return getResources().getString(title);
-            }
-            return "";
-        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
