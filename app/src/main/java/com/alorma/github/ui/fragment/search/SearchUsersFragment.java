@@ -8,12 +8,13 @@ import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 08/08/2014.
  */
-public class SearchUsersFragment extends BaseUsersListFragment {
+public class SearchUsersFragment extends BaseUsersListFragment implements TitleProvider {
 
     private String query;
 
@@ -93,4 +94,8 @@ public class SearchUsersFragment extends BaseUsersListFragment {
         return R.string.no_results;
     }
 
+    @Override
+    public int getTitle() {
+        return R.string.navigation_people;
+    }
 }

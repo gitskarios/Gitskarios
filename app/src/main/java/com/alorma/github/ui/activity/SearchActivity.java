@@ -10,15 +10,19 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -61,18 +65,27 @@ public class SearchActivity extends BackActivity {
         listFragments.add(searchUsersFragment);
 
         viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        if (ViewCompat.isLaidOut(tabLayout)) {
-            tabLayout.setupWithViewPager(viewPager);
-        } else {
-            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
 
-                    tabLayout.removeOnLayoutChangeListener(this);
+        searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (textView.length() > 0) {
+                    switch (actionId) {
+                        case EditorInfo.IME_ACTION_DONE:
+                        case EditorInfo.IME_ACTION_SEARCH:
+                        case EditorInfo.IME_ACTION_SEND:
+                        case EditorInfo.IME_ACTION_NEXT:
+                        case EditorInfo.IME_ACTION_GO:
+                            if (textView.getText() != null) {
+                                search(textView.getText().toString());
+                            }
+                            break;
+                    }
                 }
-            });
-        }
+                return false;
+            }
+        });
     }
 
     private class NavigationPagerAdapter extends FragmentPagerAdapter {
@@ -96,11 +109,9 @@ public class SearchActivity extends BackActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.navigation_repos_search);
-                case 1:
-                    return getString(R.string.navigation_people);
+            if (listFragments.get(position) instanceof TitleProvider) {
+                int title = ((TitleProvider) listFragments.get(position)).getTitle();
+                return getResources().getString(title);
             }
             return "";
         }
