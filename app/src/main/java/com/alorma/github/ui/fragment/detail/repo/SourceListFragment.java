@@ -326,7 +326,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
     @Override
     public boolean onBackPressed() {
-        if (breadCrumbs.size() == 1) {
+        if (breadCrumbs != null && breadCrumbs.size() == 1) {
             return true;
         } else {
             navigateUp();

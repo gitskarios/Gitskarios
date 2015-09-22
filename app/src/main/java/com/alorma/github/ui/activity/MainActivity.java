@@ -27,6 +27,7 @@ import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Notification;
@@ -471,16 +472,20 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private void setFragment(Fragment fragment, boolean addToBackStack) {
-        if (fragment != null && getSupportFragmentManager() != null) {
-            this.lastUsedFragment = fragment;
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            if (ft != null) {
-                ft.replace(R.id.content, fragment);
-                if (addToBackStack) {
-                    ft.addToBackStack(null);
+        try {
+            if (fragment != null && getSupportFragmentManager() != null) {
+                this.lastUsedFragment = fragment;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                if (ft != null) {
+                    ft.replace(R.id.content, fragment);
+                    if (addToBackStack) {
+                        ft.addToBackStack(null);
+                    }
+                    ft.commit();
                 }
-                ft.commit();
             }
+        } catch (Exception e) {
+            ErrorHandler.onError(this, "MainActivity.setFragment()", e);
         }
     }
 
