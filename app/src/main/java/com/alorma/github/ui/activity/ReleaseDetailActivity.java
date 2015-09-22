@@ -69,6 +69,9 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
 
         if (getIntent().getExtras() != null) {
 
+            tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+            viewPager = (ViewPager) findViewById(R.id.pager);
+
             if (getIntent().getExtras().containsKey(RELEASE)) {
                 Release release = getIntent().getExtras().getParcelable(RELEASE);
                 RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
@@ -80,8 +83,6 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
                 releaseClient.execute();
             }
 
-            tabLayout = (TabLayout) findViewById(R.id.tabStrip);
-            viewPager = (ViewPager) findViewById(R.id.pager);
         }
     }
 
@@ -112,8 +113,12 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
 
         listFragments.add(ReleaseAssetsFragment.newInstance(assets));
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        tabLayout.setupWithViewPager(viewPager);
+        if (viewPager != null) {
+            viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+            if (tabLayout != null) {
+                tabLayout.setupWithViewPager(viewPager);
+            }
+        }
     }
 
     @Override
