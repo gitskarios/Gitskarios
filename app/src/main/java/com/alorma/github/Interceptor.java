@@ -71,7 +71,15 @@ public class Interceptor extends Activity {
     }
 
     private Intent onFail() {
-        if (failIntent == null) {
+        if (failIntent == null && getIntent() != null) {
+            return generateFailIntentWithoutGitskarios();
+        } else {
+            return failIntent;
+        }
+    }
+
+    private Intent generateFailIntentWithoutGitskarios() {
+        try {
             Intent intent = new Intent(getIntent().getAction());
             intent.setData(getIntent().getData());
             intent.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -96,11 +104,10 @@ public class Interceptor extends Activity {
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[targetedShareIntents.size()]));
 
                 return chooserIntent;
-            } else {
-                return getIntent();
             }
-        } else {
-            return failIntent;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return failIntent;
     }
 }
