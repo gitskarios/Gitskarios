@@ -185,28 +185,30 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (menu.findItem(R.id.action_manage_repo) == null) {
-            if (currentRepo != null && currentRepo.permissions != null) {
-                if (currentRepo.permissions.admin) {
-                    getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+        if (menu != null) {
+            if (menu.findItem(R.id.action_manage_repo) == null) {
+                if (currentRepo != null && currentRepo.permissions != null) {
+                    if (currentRepo.permissions.admin) {
+                        getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+                    }
                 }
             }
-        }
 
-        MenuItem item = menu.findItem(R.id.share_repo);
+            MenuItem item = menu.findItem(R.id.share_repo);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
-        } else {
-            item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
-        }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
+            } else {
+                item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
+            }
 
-        MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
+            MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
 
-        Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
+            Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
 
-        if (menuChangeBranch != null) {
-            menuChangeBranch.setIcon(changeBranch);
+            if (menuChangeBranch != null) {
+                menuChangeBranch.setIcon(changeBranch);
+            }
         }
 
         return true;
