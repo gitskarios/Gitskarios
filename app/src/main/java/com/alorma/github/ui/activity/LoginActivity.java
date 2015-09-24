@@ -167,7 +167,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                 requestTokenClient.setOnResultCallback(new BaseClient.OnResultCallback<Token>() {
                     @Override
                     public void onResponseOk(Token token, Response r) {
-                        if (token.access_token != null) {giot
+                        if (token.access_token != null) {
                             endAccess(token.access_token, token.scope);
                         } else if (token.error != null) {
                             Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
