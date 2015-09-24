@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,7 +66,7 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsPare
                 .append("] ")
                 .append("</b>")
                 .append(title);
-        name.setText(msgBuilder.toString());
+        name.setText(Html.fromHtml(msgBuilder.toString()));
 
         name.setOnClickListener(new View.OnClickListener() {
             @Override
