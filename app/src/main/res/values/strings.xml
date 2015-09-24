@@ -428,4 +428,6 @@
     <string name="gist_creator_editor_discard">Discard gist</string>
     <string name="languages">Languages</string>
     <string name="language">Language</string>
+    <string name="gist_file_created_removed">Remove</string>
+    <string name="gist_creator_remove_file">Remove file %s from current gist?</string>
 </resources>

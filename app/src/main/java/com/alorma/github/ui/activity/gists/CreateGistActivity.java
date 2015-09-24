@@ -275,4 +275,20 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
         this.editingPosition = position;
         launchEditor(gistFile);
     }
+
+    @Override
+    public void removeFile(int position, final GistFile item) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.content(getString(R.string.gist_creator_remove_file, item.filename));
+        builder.positiveText(R.string.ok);
+        builder.negativeText(R.string.cancel);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                adapter.remove(item);
+            }
+        });
+        builder.show();
+    }
 }
