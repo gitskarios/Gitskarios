@@ -1,25 +1,18 @@
 package com.alorma.github.ui.activity.gists;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.ui.activity.LanguagesActivity;
@@ -100,13 +93,37 @@ public class GistEditorActivity extends BackActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
+            case android.R.id.home:
+                String filename = editTitle.getText().toString();
+                String content = editText.getText().toString();
+
+                if (!TextUtils.isEmpty(filename) || !TextUtils.isEmpty(content)) {
+                    showDialogCancelFile();
+                } else {
+                    finish();
+                }
+                break;
             case R.id.gist_editor_add_file_action:
                 endGistFile();
                 break;
         }
         return true;
+    }
+
+    private void showDialogCancelFile() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.content(R.string.gist_editor_cancel_job);
+        builder.positiveText(R.string.ok);
+        builder.negativeText(R.string.cancel);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                finish();
+            }
+        });
+        builder.show();
     }
 
     private void endGistFile() {

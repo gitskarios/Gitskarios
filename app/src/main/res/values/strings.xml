@@ -422,4 +422,5 @@
     <string name="pref_mark_as_read_summary">Mark notifications as read when open</string>
     <string name="gist_file_editor_all_languages">All languages</string>
     <string name="gist_editor_add_file_action">Add file</string>
+    <string name="gist_editor_cancel_job">Do you want to discard this gist file?</string>
 </resources>
