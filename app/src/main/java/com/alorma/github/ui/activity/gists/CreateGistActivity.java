@@ -129,10 +129,9 @@ public class CreateGistActivity extends BackActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                String description = gistDescription.getText().toString();
                 int gistFiles = adapter.getItemCount();
 
-                if (!TextUtils.isEmpty(description) || gistFiles > 0) {
+                if (gistFiles > 0) {
                     showDialogCancelGist();
                 } else {
                     finish();
