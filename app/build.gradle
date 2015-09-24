@@ -58,7 +58,6 @@ android {
             if (signingConfigs.playStore != null) {
                 signingConfig signingConfigs.playStore
             }
-            debuggable true
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
