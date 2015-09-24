@@ -130,7 +130,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         fromApp = getIntent().getBooleanExtra(ADDING_FROM_APP, false);
         fromDeleteRepo = getIntent().getBooleanExtra(FROM_DELETE, false);
 
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationIcon(R.drawable.ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +152,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         if (fromDeleteRepo) {
             openExternalLogin(new GitHub());
+        } else if (accounts != null && accounts.length == 0 && BuildConfig.BUILD_TYPE.equals("cloudtest") && BuildConfig.GH_GITSKARIOS_ACCOUNT_TOKEN != null) {
+            endAccess(BuildConfig.GH_GITSKARIOS_ACCOUNT_TOKEN, SCOPES);
         } else if (fromLogin) {
             loginButton.setEnabled(false);
             showProgressDialog(R.style.SpotDialog_Login);
@@ -165,7 +167,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                 requestTokenClient.setOnResultCallback(new BaseClient.OnResultCallback<Token>() {
                     @Override
                     public void onResponseOk(Token token, Response r) {
-                        if (token.access_token != null) {
+                        if (token.access_token != null) {giot
                             endAccess(token.access_token, token.scope);
                         } else if (token.error != null) {
                             Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
@@ -365,7 +367,9 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         this.accessToken = accessToken;
         this.scope = scope;
 
-        progressDialog.setMessage(getString(R.string.loading_user));
+        if (progressDialog != null) {
+            progressDialog.setMessage(getString(R.string.loading_user));
+        }
 
         GetAuthUserClient userClient = new GetAuthUserClient(this, accessToken);
         userClient.setOnResultCallback(this);
