@@ -129,7 +129,6 @@ public class CreateGistActivity extends BackActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                String description = gistDescription.getText().toString();
                 int gistFiles = adapter.getItemCount();
 
                 if (gistFiles > 0) {
