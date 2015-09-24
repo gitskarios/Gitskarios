@@ -38,7 +38,7 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class CreateGistActivity extends BackActivity {
+public class CreateGistActivity extends BackActivity implements GistCreatedDetailFilesAdapter.GistCreateAdapterListener {
 
     private static final int GIST_FILE_CREATOR = 540;
     private static final int GIST_FILE_EDITOR = 541;
@@ -49,6 +49,7 @@ public class CreateGistActivity extends BackActivity {
     private EditText gistDescription;
     private Switch gistPrivate;
     private RecyclerView recyclerView;
+    private int editingPosition;
 
     public static Intent createLauncherIntent(Context context) {
         return new Intent(context, CreateGistActivity.class);
@@ -63,6 +64,7 @@ public class CreateGistActivity extends BackActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new GistCreatedDetailFilesAdapter(LayoutInflater.from(this));
+        adapter.setGistCreateAdapterListener(this);
         recyclerView.setAdapter(adapter);
 
         sharingMode = Intent.ACTION_SEND.equals(getIntent().getAction());
@@ -119,7 +121,11 @@ public class CreateGistActivity extends BackActivity {
                     case GIST_FILE_CREATOR:
                         adapter.add(file);
                         break;
+                    case GIST_FILE_EDITOR:
+                        adapter.update(editingPosition, file);
+                        break;
                 }
+                editingPosition = -1;
             }
         }
     }
@@ -262,5 +268,11 @@ public class CreateGistActivity extends BackActivity {
             });
             publishGistClient.execute();
         }
+    }
+
+    @Override
+    public void updateFile(int position, GistFile gistFile) {
+        this.editingPosition = position;
+        launchEditor(gistFile);
     }
 }

@@ -196,7 +196,7 @@
     <string name="open_gist">Open gist</string>
     <string name="user_gists">%s gists</string>
     <string name="editor_content_hint">Code</string>
-    <string name="editor_title_hint">Filename</string>
+    <string name="editor_title_hint">Filename including extension</string>
     <string name="editor_discard">Empty file discarded</string>
     <string name="publish_gist">Publish gist</string>
     <string name="publishing_gist">Publishing</string>
@@ -426,4 +426,6 @@
     <string name="gist_creator_cancel_job">Do you want to discard this gist?</string>
     <string name="gist_creator_not_empty">You introduced gist description, but any gist files\nDo you want to discard this gist?</string>
     <string name="gist_creator_editor_discard">Discard gist</string>
+    <string name="languages">Languages</string>
+    <string name="language">Language</string>
 </resources>

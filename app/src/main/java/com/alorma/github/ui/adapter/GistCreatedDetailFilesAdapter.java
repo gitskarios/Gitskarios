@@ -19,13 +19,15 @@ import java.util.List;
  */
 public class GistCreatedDetailFilesAdapter extends RecyclerArrayAdapter<GistFile, GistCreatedDetailFilesAdapter.ViewHolder> {
 
+    private GistCreateAdapterListener gistCreateAdapterListener;
+
     public GistCreatedDetailFilesAdapter(LayoutInflater inflater) {
         super(inflater);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.text_with_overflow, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false));
     }
 
     @Override
@@ -35,14 +37,38 @@ public class GistCreatedDetailFilesAdapter extends RecyclerArrayAdapter<GistFile
         }
     }
 
+    public void setGistCreateAdapterListener(GistCreateAdapterListener gistCreateAdapterListener) {
+        this.gistCreateAdapterListener = gistCreateAdapterListener;
+    }
+
+    public void update(int editingPosition, GistFile file) {
+        if (editingPosition > -1) {
+            if (getItemCount() > editingPosition) {
+                getItems().set(editingPosition, file);
+                notifyItemChanged(editingPosition);
+            }
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView text;
-        public final ImageView overflow;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            text = (TextView) itemView.findViewById(R.id.text);
-            overflow = (ImageView) itemView.findViewById(R.id.overflow);
+            text = (TextView) itemView.findViewById(android.R.id.text1);
+
+            text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (gistCreateAdapterListener != null) {
+                        gistCreateAdapterListener.updateFile(getAdapterPosition(), getItem(getAdapterPosition()));
+                    }
+                }
+            });
         }
+    }
+
+    public interface GistCreateAdapterListener {
+        void updateFile(int position, GistFile gistFile);
     }
 }

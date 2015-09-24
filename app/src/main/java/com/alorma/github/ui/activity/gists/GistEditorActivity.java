@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -43,6 +44,7 @@ public class GistEditorActivity extends BackActivity {
     private EditText editTitle;
     private EditText editText;
     private String currentLanguage;
+    private Button buttonLanguages;
 
     public static Intent createLauncherIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, GistEditorActivity.class);
@@ -73,18 +75,23 @@ public class GistEditorActivity extends BackActivity {
 
         editTitle = (EditText) findViewById(R.id.editTitle);
         editText = (EditText) findViewById(R.id.editText);
-        View buttonLanguages = findViewById(R.id.buttonLanguages);
+        buttonLanguages = (Button) findViewById(R.id.buttonLanguages);
 
         String title = null;
         String text = null;
+        String language = null;
 
         if (getIntent().getExtras() != null) {
             title = getIntent().getExtras().getString(Intent.EXTRA_TITLE);
             text = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+            language = getIntent().getExtras().getString(EXTRA_LANGUAGE);
         }
 
         editTitle.setText(title);
         editText.setText(text);
+        if (language != null) {
+            buttonLanguages.setText(language);
+        }
 
         buttonLanguages.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +172,8 @@ public class GistEditorActivity extends BackActivity {
 
         if (data != null && requestCode == LANGUAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             currentLanguage = data.getStringExtra(LanguagesActivity.EXTRA_LANGUAGE);
+
+            buttonLanguages.setText(currentLanguage);
         }
     }
 }

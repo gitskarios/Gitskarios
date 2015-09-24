@@ -7,22 +7,34 @@
 
     <include layout="@layout/toolbar" />
 
-    <EditText
-        android:id="@+id/editTitle"
-        style="@style/Base.TextAppearance.AppCompat.Subhead"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_margin="@dimen/gapMedium"
-        android:background="@null"
-        android:hint="@string/editor_title_hint" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/windowBackground"
+        android:orientation="horizontal"
+        android:padding="@dimen/gapMedium">
 
-    <Button
-        android:id="@+id/buttonLanguages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gapLarge"
-        android:background="?attr/selectableItemBackground"
-        android:text="Languages" />
+        <EditText
+            android:id="@+id/editTitle"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_alignTop="@+id/buttonLanguages"
+            android:layout_marginRight="@dimen/gapSmall"
+            android:layout_toLeftOf="@+id/buttonLanguages"
+            android:layout_toStartOf="@+id/buttonLanguages"
+            android:background="@null"
+            android:hint="@string/editor_title_hint" />
+
+        <Button
+            android:id="@+id/buttonLanguages"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="96dp"
+            android:text="@string/language" />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/editText"
