@@ -129,12 +129,17 @@ public class CreateGistActivity extends BackActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
+                String description = gistDescription.getText().toString();
                 int gistFiles = adapter.getItemCount();
 
                 if (gistFiles > 0) {
                     showDialogCancelGist();
                 } else {
-                    finish();
+                    if (!TextUtils.isEmpty(description)) {
+                        showDialogNotEmpty();
+                    } else {
+                        finish();
+                    }
                 }
                 break;
             case R.id.action_publish_gist:
@@ -143,6 +148,21 @@ public class CreateGistActivity extends BackActivity {
         }
 
         return true;
+    }
+
+    private void showDialogNotEmpty() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.content(R.string.gist_creator_not_empty);
+        builder.positiveText(R.string.gist_creator_editor_discard);
+        builder.negativeText(R.string.cancel);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                finish();
+            }
+        });
+        builder.show();
     }
 
     private void showDialogCancelGist() {

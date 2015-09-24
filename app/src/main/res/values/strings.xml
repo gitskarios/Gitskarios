@@ -424,4 +424,6 @@
     <string name="gist_editor_add_file_action">Add file</string>
     <string name="gist_file_editor_cancel_job">Do you want to discard this gist file?</string>
     <string name="gist_creator_cancel_job">Do you want to discard this gist?</string>
+    <string name="gist_creator_not_empty">You introduced gist description, but any gist files\n Do you want to discard this gist?</string>
+    <string name="gist_creator_editor_discard">Discard gist</string>
 </resources>
