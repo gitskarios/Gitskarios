@@ -1,77 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="148dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/ctlLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="72dp"
-                android:layout_marginRight="36dp"
-                android:layout_marginTop="@dimen/gapMedium"
-                android:orientation="vertical"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <EditText
-                    android:id="@+id/gistDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/gist_description"
-                    android:singleLine="true" />
-
-                <Switch
-                    android:id="@+id/gistPrivate"
-                    style="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gapMedium"
-                    android:checked="true"
-                    android:text="@string/gist_private" />
-            </LinearLayout>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="?actionBarSize"
-        android:paddingRight="72dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:orientation="vertical">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:borderWidth="0dp"
-        app:layout_anchor="@id/appbarLayout"
-        app:layout_anchorGravity="bottom|right|end" />
+        <include layout="@layout/toolbar" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/gistDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gapLarge"
+            android:layout_marginBottom="@dimen/gapMedium"
+            android:hint="@string/gist_description"
+            android:singleLine="true" />
+
+        <Switch
+            android:id="@+id/gistPrivate"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/gapLarge"
+            android:layout_marginRight="@dimen/gapLarge"
+            android:layout_marginTop="0dp"
+            android:checked="true"
+            android:text="@string/gist_private" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/gapMedium"
+            android:layout_marginTop="@dimen/gapLarge"
+            android:clipToPadding="false"
+            android:paddingBottom="64dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </LinearLayout>
+
+    <include layout="@layout/fab" />
+
+</android.support.design.widget.CoordinatorLayout>

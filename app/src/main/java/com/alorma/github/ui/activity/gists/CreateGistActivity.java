@@ -1,30 +1,28 @@
 package com.alorma.github.ui.activity.gists;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
-import com.alorma.github.ui.fragment.GistEditorFragment;
+import com.alorma.github.ui.adapter.GistCreatedDetailFilesAdapter;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -39,9 +37,12 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class CreateGistActivity extends BackActivity implements GistEditorFragment.GistEditorListener, GistDetailFilesAdapter.GistFilesAdapterListener {
-    private GistDetailFilesAdapter adapter;
-    private GistEditorFragment editorFragment;
+public class CreateGistActivity extends BackActivity {
+
+    private static final int GIST_FILE_CREATOR = 540;
+    private static final int GIST_FILE_EDITOR = 541;
+
+    private GistCreatedDetailFilesAdapter adapter;
     private boolean sharingMode;
     private AlertDialog spotsDialog;
     private EditText gistDescription;
@@ -58,11 +59,9 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         setContentView(R.layout.activity_create);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count), StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new GistDetailFilesAdapter(this);
-        adapter.setInEditMode(true);
-        adapter.setGistFilesAdapterListener(this);
+        adapter = new GistCreatedDetailFilesAdapter(LayoutInflater.from(this));
         recyclerView.setAdapter(adapter);
 
         sharingMode = Intent.ACTION_SEND.equals(getIntent().getAction());
@@ -88,35 +87,13 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
     }
 
     private void launchEmptyEditor() {
-
-        editorFragment = null;
-        editorFragment = GistEditorFragment.newInstance(getIntent().getExtras());
-        editorFragment.setGistEditorListener(this);
-
-        launchEditor(editorFragment);
+        Intent intent = GistEditorActivity.createLauncherIntent(this, getIntent().getExtras());
+        startActivityForResult(intent, GIST_FILE_CREATOR);
     }
 
-    private void launchEditor(int position, GistFile file) {
-        editorFragment = null;
-        editorFragment = GistEditorFragment.newInstance(position, file);
-        editorFragment.setGistEditorListener(this);
-
-        launchEditor(editorFragment);
-    }
-
-    private void launchEditor(GistEditorFragment editorFragment) {
-        createEmptyFileAndAdd();
-
-        boolean fullScreen = getResources().getBoolean(R.bool.editor_fullscreen);
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (fullScreen) {
-            ft.replace(android.R.id.content, editorFragment);
-            ft.addToBackStack(null);
-            ft.commit();
-        } else {
-            editorFragment.show(ft, "editor");
-        }
+    private void launchEditor(GistFile file) {
+        Intent intent = GistEditorActivity.createLauncherIntent(this, file);
+        startActivityForResult(intent, GIST_FILE_EDITOR);
     }
 
     @Override
@@ -128,6 +105,22 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
         publishIcon.color(Color.WHITE);
         publishItem.setIcon(publishIcon);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data != null && resultCode == RESULT_OK) {
+            GistFile file = data.getParcelableExtra(GistEditorActivity.EXTRA_FILE);
+            if (file != null) {
+                switch (requestCode) {
+                    case GIST_FILE_CREATOR:
+                        adapter.add(file);
+                        break;
+                }
+            }
+        }
     }
 
     @Override
@@ -147,8 +140,8 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
             gist.isPublic = !gistPrivate.isChecked();
             gist.description = gistDescription.getText().toString();
             Map<String, GistFile> files = new HashMap<>();
-            for (GistFile gistFile : adapter.getGistFileList()) {
-                if (!TextUtils.isEmpty(gistFile.filename) && !TextUtils.isEmpty(gistFile.content))  {
+            for (GistFile gistFile : adapter.getItems()) {
+                if (!TextUtils.isEmpty(gistFile.filename) && !TextUtils.isEmpty(gistFile.content)) {
                     files.put(gistFile.filename, gistFile);
                 }
             }
@@ -179,56 +172,5 @@ public class CreateGistActivity extends BackActivity implements GistEditorFragme
             });
             publishGistClient.execute();
         }
-    }
-
-    private void createEmptyFileAndAdd() {
-        adapter.newEmptyItem();
-    }
-
-    @Override
-    public void onGistEditorUpdate(String title, String text) {
-        adapter.updateCurrentItem(title, text);
-    }
-
-    @Override
-    public void onGistEditorUpdate(int position, GistFile file) {
-        if (adapter.getItemCount() == 1 && (TextUtils.isEmpty(file.filename) && TextUtils.isEmpty(file.content))) {
-            finish();
-        } else {
-            if (editorFragment != null) {
-                editorFragment.setGistEditorListener(null);
-                getFragmentManager().beginTransaction().remove(editorFragment).commit();
-            }
-            adapter.updateItem(position, file);
-        }
-    }
-
-    @Override
-    public void onGistEditorFinish(GistFile file) {
-        if (editorFragment != null) {
-            editorFragment.setGistEditorListener(null);
-            getFragmentManager().beginTransaction().remove(editorFragment).commit();
-
-            if (TextUtils.isEmpty(file.filename) && TextUtils.isEmpty(file.content)) {
-                if (sharingMode) {
-                    Toast.makeText(this, R.string.editor_discard, Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    adapter.clearCurrent();
-                    Snackbar.make(recyclerView, R.string.editor_discard, Snackbar.LENGTH_SHORT).show();
-                }
-            } else {
-                if (TextUtils.isEmpty(file.filename)) {
-                    file.filename = "File" + adapter.getItemCount() + ".txt";
-                }
-                adapter.addFile(file);
-                invalidateOptionsMenu();
-            }
-        }
-    }
-
-    @Override
-    public void onGistFilesSelected(int position, GistFile file) {
-        launchEditor(position, file);
     }
 }

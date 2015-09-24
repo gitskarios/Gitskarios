@@ -134,4 +134,5 @@ public class SearchActivity extends BackActivity {
     public void onBackPressed() {
         finish();
     }
+
 }

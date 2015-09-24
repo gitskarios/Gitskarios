@@ -420,4 +420,6 @@
     <string name="app_settings_about">About</string>
     <string name="pref_mark_as_read">Mark as read</string>
     <string name="pref_mark_as_read_summary">Mark notifications as read when open</string>
+    <string name="gist_file_editor_all_languages">All languages</string>
+    <string name="gist_editor_add_file_action">Add file</string>
 </resources>
