@@ -113,16 +113,24 @@ public class GistEditorActivity extends BackActivity {
 
     private void showDialogCancelFile() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-        builder.content(R.string.gist_editor_cancel_job);
+        builder.content(R.string.gist_file_editor_cancel_job);
         builder.positiveText(R.string.ok);
         builder.negativeText(R.string.cancel);
+        builder.neutralText(R.string.gist_editor_add_file_action);
         builder.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                finish();
-            }
-        });
+                             @Override
+                             public void onPositive(MaterialDialog dialog) {
+                                 super.onPositive(dialog);
+                                 finish();
+                             }
+
+                             @Override
+                             public void onNeutral(MaterialDialog dialog) {
+                                 super.onNeutral(dialog);
+                                 endGistFile();
+                             }
+                         }
+        );
         builder.show();
     }
 

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
@@ -125,13 +126,46 @@ public class CreateGistActivity extends BackActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
 
-        if (item.getItemId() == R.id.action_publish_gist) {
-            publishGist();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                String description = gistDescription.getText().toString();
+                int gistFiles = adapter.getItemCount();
+
+                if (!TextUtils.isEmpty(description) || gistFiles > 0) {
+                    showDialogCancelGist();
+                } else {
+                    finish();
+                }
+                break;
+            case R.id.action_publish_gist:
+                publishGist();
+                break;
         }
 
         return true;
+    }
+
+    private void showDialogCancelGist() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        builder.content(R.string.gist_creator_cancel_job);
+        builder.positiveText(R.string.ok);
+        builder.negativeText(R.string.cancel);
+        builder.neutralText(R.string.publish_gist);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                finish();
+            }
+
+            @Override
+            public void onNeutral(MaterialDialog dialog) {
+                super.onNeutral(dialog);
+                publishGist();
+            }
+        });
+        builder.show();
     }
 
     private void publishGist() {
