@@ -40,6 +40,7 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
+            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
         }
         release {
             minifyEnabled false
@@ -49,7 +50,19 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
+            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
             ext.betaDistributionGroupAliases="gitskarios-alpha-testers"
+        }
+        cloudtest {
+            minifyEnabled false
+            if (signingConfigs.playStore != null) {
+                signingConfig signingConfigs.playStore
+            }
+            debuggable true
+            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
+            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "\"" + getGHCustomToken(true) + "\""
         }
     }
 }
@@ -106,6 +119,14 @@ def getGHCallback(pro) {
     }
 }
 
+def getGHCustomToken(pro) {
+    if (pro) {
+        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
+    } else {
+        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
+    }
+}
+
 assembleRelease.dependsOn clean
 assembleRelease.doLast {
     tasks.crashlyticsUploadDistributionRelease.execute()
@@ -114,6 +135,7 @@ assembleRelease.doLast {
 dependencies {
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
     releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
+    cloudtestCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
     // Submodules
 
     compile project(':libraries:breadcrumbs')
