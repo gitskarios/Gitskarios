@@ -155,44 +155,7 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
 
         return true;
     }
-
-    private void showDialogNotEmpty() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-        builder.content(R.string.gist_creator_not_empty);
-        builder.positiveText(R.string.gist_creator_editor_discard);
-        builder.negativeText(R.string.cancel);
-        builder.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                finish();
-            }
-        });
-        builder.show();
-    }
-
-    private void showDialogCancelGist() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-        builder.content(R.string.gist_creator_cancel_job);
-        builder.positiveText(R.string.ok);
-        builder.negativeText(R.string.cancel);
-        builder.neutralText(R.string.publish_gist);
-        builder.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                finish();
-            }
-
-            @Override
-            public void onNeutral(MaterialDialog dialog) {
-                super.onNeutral(dialog);
-                publishGist();
-            }
-        });
-        builder.show();
-    }
-
+    
     private void showDialogNotEmpty() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
         builder.content(R.string.gist_creator_not_empty);
