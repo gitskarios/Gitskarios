@@ -79,18 +79,17 @@ public class GistEditorActivity extends BackActivity {
 
         String title = null;
         String text = null;
-        String language = null;
 
         if (getIntent().getExtras() != null) {
             title = getIntent().getExtras().getString(Intent.EXTRA_TITLE);
             text = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
-            language = getIntent().getExtras().getString(EXTRA_LANGUAGE);
+            currentLanguage = getIntent().getExtras().getString(EXTRA_LANGUAGE);
         }
 
         editTitle.setText(title);
         editText.setText(text);
-        if (language != null) {
-            buttonLanguages.setText(language);
+        if (currentLanguage != null) {
+            buttonLanguages.setText(currentLanguage);
         }
 
         buttonLanguages.setOnClickListener(new View.OnClickListener() {
