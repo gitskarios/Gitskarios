@@ -3,18 +3,16 @@ package com.alorma.github.utils;
 import android.content.Context;
 
 import com.alorma.github.R;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
-import org.joda.time.Months;
-import org.joda.time.Seconds;
-import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.ocpsoft.prettytime.PrettyTime;
+import org.ocpsoft.prettytime.units.Century;
+import org.ocpsoft.prettytime.units.Millennium;
+import org.ocpsoft.prettytime.units.Month;
+import org.ocpsoft.prettytime.units.Week;
+import org.ocpsoft.prettytime.units.Year;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,6 +34,12 @@ public class TimeUtils {
 
         DateTime dt = formatter.parseDateTime(date);
         PrettyTime p = new PrettyTime();
+
+        p.removeUnit(Millennium.class);
+        p.removeUnit(Century.class);
+        p.removeUnit(Year.class);
+        p.removeUnit(Month.class);
+        p.removeUnit(Week.class);
 
         return p.format(new Date(dt.getMillis()));
     }

@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -19,6 +20,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullsClient;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
+import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.adapter.issues.PullRequestsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -36,7 +38,7 @@ import retrofit.client.Response;
  */
 public class PullRequestsListFragment extends PaginatedListFragment<List<PullRequest>, PullRequestsAdapter> implements
         View.OnClickListener, TitleProvider, PermissionsManager,
-        BackManager, PullRequestsAdapter.IssuesAdapterListener {
+        BackManager, IssuesAdapter.IssuesAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -237,7 +239,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
     }
 
     @Override
-    public void onPullRequestOpenRequest(PullRequest item) {
+    public void onIssueOpenRequest(Issue item) {
         if (item != null) {
             IssueInfo info = new IssueInfo();
             info.repoInfo = repoInfo;

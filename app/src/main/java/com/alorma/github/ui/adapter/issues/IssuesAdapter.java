@@ -1,7 +1,7 @@
 package com.alorma.github.ui.adapter.issues;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +9,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.view.LabelView;
+import com.alorma.github.utils.TextUtils;
+import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.wefika.flowlayout.FlowLayout;
 
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.ViewHolder> {
+public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
 
     private IssuesAdapterListener issuesAdapterListener;
 
@@ -37,28 +41,62 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.Vi
     protected void onBindViewHolder(ViewHolder holder, Issue issue) {
         holder.title.setText(issue.title);
 
-        holder.num.setText("#" + issue.number);
+        String timeAgo = TimeUtils.getTimeAgoString(issue.created_at);
+        String info = holder.info.getContext().getResources().getString(R.string.issue_info, issue.number, timeAgo, issue.user.login);
 
-        if (issue.user != null) {
-            holder.autor.setText(Html.fromHtml(holder.itemView.getResources().getString(R.string.issue_created_by, issue.user.login)));
-            ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(issue.user.avatar_url, holder.avatar);
-        }
+        holder.info.setText(info);
 
-        int colorState = holder.itemView.getResources().getColor(R.color.issue_state_close);
-        if (IssueState.open == issue.state) {
-            colorState = holder.itemView.getResources().getColor(R.color.issue_state_open);
-        }
+        int colorState = getColorState(issue);
 
-        holder.num.setTextColor(colorState);
-        IconicsDrawable iconDrawable;
-        if (issue.state == IssueState.closed) {
-            iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_issue_closed);
+        IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), getIconStateDrawable(issue));
+        iconDrawable.colorRes(colorState);
+        holder.imageState.setImageDrawable(iconDrawable);
+
+        if (issue.labels != null) {
+            holder.labelsLayout.removeAllViews();
+            if (issue.labels.size() > 0) {
+                holder.labelsLayout.setVisibility(View.VISIBLE);
+                int margin = holder.labelsLayout.getContext().getResources().getDimensionPixelOffset(R.dimen.gapSmall);
+                for (Label label : issue.labels) {
+                    LabelView labelView = new LabelView(holder.labelsLayout.getContext());
+                    labelView.setLabel(label);
+                    holder.labelsLayout.addView(labelView);
+
+                    if (labelView.getLayoutParams() != null && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
+                        FlowLayout.LayoutParams layoutParams = (FlowLayout.LayoutParams) labelView.getLayoutParams();
+                        layoutParams.height = FlowLayout.LayoutParams.WRAP_CONTENT;
+                        layoutParams.width = FlowLayout.LayoutParams.WRAP_CONTENT;
+                        layoutParams.setMargins(margin, margin, margin, margin);
+                        labelView.setLayoutParams(layoutParams);
+                    }
+                }
+            } else {
+                holder.labelsLayout.setVisibility(View.GONE);
+            }
         } else {
-            iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_issue_opened);
+            holder.labelsLayout.setVisibility(View.GONE);
         }
-        iconDrawable.colorRes(R.color.gray_github_medium);
-        holder.pullRequest.setImageDrawable(iconDrawable);
+
+        TextUtils.applyNumToTextView(holder.numComments, Octicons.Icon.oct_comment_discussion, issue.comments);
+    }
+
+    @NonNull
+    protected IIcon getIconStateDrawable(Issue issue) {
+        IIcon iconDrawable;
+        if (issue.state == IssueState.closed) {
+            iconDrawable = Octicons.Icon.oct_issue_closed;
+        } else {
+            iconDrawable = Octicons.Icon.oct_issue_opened;
+        }
+        return iconDrawable;
+    }
+
+    protected int getColorState(Issue issue) {
+        int colorState = R.color.issue_state_close;
+        if (IssueState.open == issue.state) {
+            colorState = R.color.issue_state_open;
+        }
+        return colorState;
     }
 
     public void setIssuesAdapterListener(IssuesAdapterListener issuesAdapterListener) {
@@ -67,19 +105,19 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue , IssuesAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
-        private final TextView num;
-        private final TextView autor;
-        private final ImageView avatar;
-        private final ImageView pullRequest;
+        private final TextView info;
+        private final ImageView imageState;
+        private final TextView numComments;
+        private FlowLayout labelsLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.textTitle);
-            num = (TextView) itemView.findViewById(R.id.textIssueNumber);
-            autor = (TextView) itemView.findViewById(R.id.textAuthor);
-            avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
-            pullRequest = (ImageView) itemView.findViewById(R.id.pullRequest);
+            info = (TextView) itemView.findViewById(R.id.textInfo);
+            numComments = (TextView) itemView.findViewById(R.id.numComments);
+            imageState = (ImageView) itemView.findViewById(R.id.imageState);
+            labelsLayout = (FlowLayout) itemView.findViewById(R.id.labelsLayout);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

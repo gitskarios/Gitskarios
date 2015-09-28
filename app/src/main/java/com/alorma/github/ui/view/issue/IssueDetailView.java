@@ -126,13 +126,13 @@ public class IssueDetailView extends LinearLayout {
 
             if (issue.labels != null && issue.labels.size() > 0) {
                 labelsLayout.setVisibility(View.VISIBLE);
+                int margin = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
                 for (Label label : issue.labels) {
                     LabelView labelView = new LabelView(getContext());
                     labelView.setLabel(label);
                     labelsLayout.addView(labelView);
 
                     if (labelView.getLayoutParams() != null && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
-                        int margin = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
                         FlowLayout.LayoutParams layoutParams = (FlowLayout.LayoutParams) labelView.getLayoutParams();
                         layoutParams.height = FlowLayout.LayoutParams.WRAP_CONTENT;
                         layoutParams.width = FlowLayout.LayoutParams.WRAP_CONTENT;

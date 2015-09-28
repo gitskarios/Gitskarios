@@ -1,5 +1,7 @@
 package com.alorma.github.ui.adapter.issues;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,14 +17,45 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullRequestsAdapter.ViewHolder> {
+public class PullRequestsAdapter extends IssuesAdapter {
+    public PullRequestsAdapter(LayoutInflater inflater) {
+        super(inflater);
+    }
 
+    @Override
+    protected int getColorState(Issue issue) {
+        int colorState = R.color.pullrequest_state_close;
+        if (IssueState.open == issue.state) {
+            colorState = R.color.pullrequest_state_open;
+        } else if ((issue instanceof PullRequest) && ((PullRequest) issue).merged) {
+            colorState = R.color.pullrequest_state_merged;
+        }
+        return colorState;
+    }
+
+    @NonNull
+    @Override
+    protected IIcon getIconStateDrawable(Issue issue) {
+        IIcon iconDrawable;
+        if (issue.state == IssueState.closed) {
+            iconDrawable = Octicons.Icon.oct_issue_closed;
+        } else if ((issue instanceof PullRequest) && ((PullRequest) issue).merged) {
+            iconDrawable = Octicons.Icon.oct_git_merge;
+        } else {
+            iconDrawable = Octicons.Icon.oct_issue_opened;
+        }
+
+        return iconDrawable;
+    }
+
+/*
     private IssuesAdapterListener issuesAdapterListener;
 
     public PullRequestsAdapter(LayoutInflater inflater) {
@@ -38,7 +71,7 @@ public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullR
     protected void onBindViewHolder(ViewHolder holder, PullRequest issue) {
         holder.title.setText(issue.title);
 
-        holder.num.setText("#" + issue.number);
+        holder.num.setText(String.format("#%d", issue.number));
 
         if (issue.user != null) {
             holder.autor.setText(Html.fromHtml(holder.itemView.getResources().getString(R.string.issue_created_by, issue.user.login)));
@@ -46,12 +79,7 @@ public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullR
             instance.displayImage(issue.user.avatar_url, holder.avatar);
         }
 
-        int colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_close);
-        if (IssueState.open == issue.state) {
-            colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_open);
-        } else if (issue.merged) {
-            colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_merged);
-        }
+        int colorState = getColorState(holder, issue);
 
         holder.num.setTextColor(colorState);
         IconicsDrawable iconDrawable;
@@ -62,6 +90,16 @@ public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullR
         }
         iconDrawable.colorRes(R.color.gray_github_medium);
         holder.pullRequest.setImageDrawable(iconDrawable);
+    }
+
+    private int getColorState(ViewHolder holder, PullRequest issue) {
+        int colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_close);
+        if (IssueState.open == issue.state) {
+            colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_open);
+        } else if (issue.merged) {
+            colorState = holder.itemView.getResources().getColor(R.color.pullrequest_state_merged);
+        }
+        return colorState;
     }
 
     public void setIssuesAdapterListener(IssuesAdapterListener issuesAdapterListener) {
@@ -79,7 +117,7 @@ public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullR
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.textTitle);
-            num = (TextView) itemView.findViewById(R.id.textIssueNumber);
+            num = (TextView) itemView.findViewById(R.id.textInfo);
             autor = (TextView) itemView.findViewById(R.id.textAuthor);
             avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
             pullRequest = (ImageView) itemView.findViewById(R.id.pullRequest);
@@ -99,5 +137,5 @@ public class PullRequestsAdapter extends RecyclerArrayAdapter<PullRequest, PullR
 
     public interface IssuesAdapterListener {
         void onPullRequestOpenRequest(PullRequest issue);
-    }
+    }*/
 }

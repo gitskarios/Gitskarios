@@ -79,7 +79,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
     }
 
     @Override
-    public void addAll(Collection<GithubEvent> items) {
+    public void addAll(Collection<? extends GithubEvent> items) {
         for (GithubEvent githubEvent : items) {
             if (checkEventHandled(githubEvent)) {
                 add(githubEvent);
@@ -106,7 +106,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         this.eventAdapterListener = eventAdapterListener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private GithubEventView view;
 
         private ViewHolder(GithubEventView itemView) {
