@@ -40,6 +40,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -72,10 +73,11 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     protected void onResponse(List<GithubEvent> githubEvents, boolean refreshing) {
         if (githubEvents != null && githubEvents.size() > 0) {
             hideEmpty();
+            githubEvents = parseGithubEvents(githubEvents);
             if (getAdapter() != null) {
                 getAdapter().addAll(githubEvents);
             } else {
-                EventAdapter eventAdapter = new EventAdapter(LayoutInflater.from(getActivity()));
+                EventAdapter eventAdapter = new EventAdapter(getActivity(), LayoutInflater.from(getActivity()));
                 eventAdapter.setEventAdapterListener(this);
                 eventAdapter.addAll(githubEvents);
                 setAdapter(eventAdapter);
@@ -83,6 +85,31 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty(false);
         }
+    }
+
+    private List<GithubEvent> parseGithubEvents(List<GithubEvent> githubEvents) {
+        List<GithubEvent> newEvents = new ArrayList<>();
+
+        for (GithubEvent githubEvent : githubEvents) {
+            if (checkEventHandled(githubEvent)) {
+                newEvents.add(githubEvent);
+            }
+        }
+
+        return newEvents;
+    }
+
+    private boolean checkEventHandled(GithubEvent event) {
+        return event.getType() != null && (event.getType() == EventType.PushEvent)
+                || (event.getType() == EventType.WatchEvent)
+                || (event.getType() == EventType.CreateEvent)
+                || (event.getType() == EventType.IssueCommentEvent)
+                || (event.getType() == EventType.CommitCommentEvent)
+                || (event.getType() == EventType.IssuesEvent)
+                || (event.getType() == EventType.ForkEvent)
+                || (event.getType() == EventType.ReleaseEvent)
+                || (event.getType() == EventType.PullRequestEvent)
+                || (event.getType() == EventType.DeleteEvent);
     }
 
     @Override
