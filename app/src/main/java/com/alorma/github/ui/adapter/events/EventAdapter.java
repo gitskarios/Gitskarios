@@ -28,6 +28,7 @@ import com.alorma.github.ui.adapter.events.views.PushEventView;
 import com.alorma.github.ui.adapter.events.views.ReleaseEventView;
 import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
 import com.alorma.github.ui.adapter.events.views.WatchEventView;
+import com.alorma.github.utils.TimeUtils;
 import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -52,31 +53,6 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-/*        if (viewType == EventType.PushEvent.ordinal()) {
-            v = new PushEventView(parent.getContext());
-        } else if (viewType == EventType.WatchEvent.ordinal()) {
-            v = new WatchEventView(parent.getContext());
-        } else if (viewType == EventType.CreateEvent.ordinal()) {
-            v = new CreatedEventView(parent.getContext());
-        } else if (viewType == EventType.IssueCommentEvent.ordinal()) {
-            v = new IssueCommentEventView(parent.getContext());
-        } else if (viewType == EventType.CommitCommentEvent.ordinal()) {
-            v = new CommitCommentEventView(parent.getContext());
-        } else if (viewType == EventType.IssuesEvent.ordinal()) {
-            v = new IssueEventView(parent.getContext());
-        } else if (viewType == EventType.ForkEvent.ordinal()) {
-            v = new ForkEventView(parent.getContext());
-        } else if (viewType == EventType.DeleteEvent.ordinal()) {
-            v = new DeleteEventView(parent.getContext());
-        } else if (viewType == EventType.ReleaseEvent.ordinal()) {
-            v = new ReleaseEventView(parent.getContext());
-        } else if (viewType == EventType.PullRequestEvent.ordinal()) {
-            v = new PullRequestEventView(parent.getContext());
-        } else {
-            v = new UnhandledEventView(parent.getContext());
-        }*/
-
         return new ViewHolder(getInflater().inflate(R.layout.payload_watch, parent, false));
     }
 
@@ -86,6 +62,10 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         int textRes = R.string.event_generic_by;
 
         holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, getTextForEvent(githubEvent))));
+
+        String timeString = TimeUtils.getTimeAgoString(githubEvent.created_at);
+
+        holder.textDate.setText(timeString);
     }
 
     public String getTextForEvent(GithubEvent event) {
