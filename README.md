@@ -12,7 +12,7 @@
 
 # README #
 
-Gitskarios is an Android Aplication that allows you to access GitHub, see your profile, search people, star repositories, and more!
+Gitskarios is an Android Application that allows you to access GitHub, see your profile, search people, star repositories, and more!
 
 ## CONTRIBUTING ##
 
