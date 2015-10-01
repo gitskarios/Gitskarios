@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion changeDate="Sep 29,2015" versionName="2.5.15">
-        <changelogtext>Stability improvements.</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 23,2015" versionName="2.5.14">
-        <changelogtext>Improved Gists.</changelogtext>
-        <changelogtext>Stability improvements.</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 14,2015" versionName="2.5.11">
-        <changelogtext>Notifications improved: Now you will receive more specific notifications.</changelogtext>
-        <changelogtext>Disable notification: on simple notification, swipe it hides from system forever, but keep in the list screen</changelogtext>
+    <changelogversion changeDate="Oct 01,2015" versionName="2.5.16">
+        <changelogtext>Github events feed improved</changelogtext>
     </changelogversion>
 </changelog>
