@@ -64,4 +64,11 @@
         android:indeterminate="true"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <View
+        android:id="@+id/revealView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorAccent"
+        android:visibility="invisible"/>
 </FrameLayout>

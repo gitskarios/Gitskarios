@@ -1,11 +1,16 @@
 package com.alorma.github.ui.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,6 +106,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             public void onClick(View v) {
                 String hint = getString(R.string.add_issue_body);
                 Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, null, false, false);
+
                 startActivityForResult(intent, NEW_ISSUE_REQUEST);
             }
         });

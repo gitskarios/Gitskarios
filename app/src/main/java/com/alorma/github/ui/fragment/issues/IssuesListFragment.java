@@ -1,14 +1,19 @@
 package com.alorma.github.ui.fragment.issues;
 
+import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -55,6 +60,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     private SearchClientRequest searchClientRequest;
 
     private int currentFilter = 0;
+    private View revealView;
 
     public static IssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
         Bundle bundle = new Bundle();
@@ -82,6 +88,8 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        revealView = view.findViewById(R.id.revealView);
+
         Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         String[] items = getResources().getStringArray(R.array.issues_filter);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
@@ -102,6 +110,15 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
 
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (revealView != null) {
+            revealView.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -269,9 +286,48 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     protected void fabClick() {
         super.fabClick();
         if (repoInfo.permissions != null) {
-            Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-            startActivityForResult(intent, ISSUE_REQUEST);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
+                animateRevealFab();
+            } else {
+                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+                startActivityForResult(intent, ISSUE_REQUEST);
+            }
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void animateRevealFab() {
+        float x = fab.getX() + (fab.getWidth() / 2);
+        float y = fab.getY() + (fab.getHeight() / 2);
+
+        int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
+        Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
+        revealView.setVisibility(View.VISIBLE);
+        anim.setDuration(600);
+        anim.setInterpolator(new AccelerateInterpolator());
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+                startActivityForResult(intent, ISSUE_REQUEST);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        anim.start();
     }
 
     @Override
