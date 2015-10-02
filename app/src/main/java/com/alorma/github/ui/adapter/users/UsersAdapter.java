@@ -1,7 +1,13 @@
 package com.alorma.github.ui.adapter.users;
 
+import android.animation.Animator;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +32,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Bernat on 14/07/2014.
@@ -88,6 +95,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
         private final ImageView avatar;
         private final TextView text;
         private final View textRootView;
+        private int color;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -97,12 +105,26 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     User user = getItem(getAdapterPosition());
                     if (user.type == UserType.Organization) {
                         v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
                     } else {
-                        v.getContext().startActivity(ProfileActivity.createLauncherIntent(v.getContext(), user));
+                        final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
+                        if (textRootView.getBackground() instanceof ColorDrawable) {
+                            int color = ((ColorDrawable) textRootView.getBackground()).getColor();
+                            intent.putExtra(ProfileActivity.EXTRA_COLOR, color);
+                        }
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            View sharedView = avatar;
+                            String transitionName = "avatar";
+
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext(), sharedView, transitionName);
+                            v.getContext().startActivity(intent, transitionActivityOptions.toBundle());
+                        } else {
+                            v.getContext().startActivity(intent);
+                        }
                     }
                 }
             });

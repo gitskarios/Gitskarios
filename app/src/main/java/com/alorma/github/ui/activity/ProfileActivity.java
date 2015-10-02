@@ -3,7 +3,6 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.SearchManager;
-import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,19 +16,19 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.gitskarios.core.client.BaseClient;
-import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.bean.ProfileItem;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
+import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.GithubUsersClient;
@@ -42,6 +41,8 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.adapter.ProfileItemsAdapter;
 import com.alorma.github.utils.TimeUtils;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
@@ -62,6 +63,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 //        PaletteUtils.PaletteUtilsListener,
         OnCheckFollowingUser {
 
+    public static final String EXTRA_COLOR = "EXTRA_COLOR";
+
     private static final String USER = "USER";
     private static final String ACCOUNT = "ACCOUNT";
     private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
@@ -75,6 +78,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     private ProfileItemsAdapter profileItemsAdapter;
     private boolean updateProfile = false;
     private Account selectedAccount;
+    private boolean colorApplied;
+    private int avatarColor;
 
     public static Intent createLauncherIntent(Context context, Account selectedAccount) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -102,6 +107,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setAllowEnterTransitionOverlap(false);
+        }
+
+        if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
+            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, -1);
+            if (avatarColor != -1) {
+                applyColors(avatarColor);
+            }
+        }
 
         image = (ImageView) findViewById(R.id.imgToolbar);
 
@@ -146,8 +162,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
             invalidateOptionsMenu();
 
-            showProgressDialog(R.style.SpotDialog_LoadingUser);
-
             requestClient.setOnResultCallback(this);
             requestClient.execute();
         }
@@ -178,14 +192,11 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_menu_follow_user) {
-            showProgressDialog(R.style.SpotDialog_LoadingUser);
 
             FollowUserClient followUserClient = new FollowUserClient(this, user.login);
             followUserClient.setOnCheckFollowingUser(this);
             followUserClient.execute();
         } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
-            showProgressDialog(R.style.SpotDialog_LoadingUser);
-
             UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
             unfollowUserClient.setOnCheckFollowingUser(this);
             unfollowUserClient.execute();
@@ -200,8 +211,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     public void onResponseOk(final User user, Response r) {
         this.user = user;
         collapsingToolbarLayout.setTitle(user.login);
-
-        hideProgressDialog();
 
         StoreCredentials settings = new StoreCredentials(this);
 
@@ -240,17 +249,22 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    Atelier.with(ProfileActivity.this, user.avatar_url)
-                            .load(loadedImage)
-                            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                            .listener(new Atelier.OnPaletteRenderedListener() {
-                                @Override
-                                public void onRendered(Palette palette, int generatedColor) {
-                                    applyColors(generatedColor);
-                                    profileItemsAdapter.setAvatarColor(generatedColor);
-                                }
-                            })
-                            .into(image);
+                    if (!colorApplied) {
+                        Atelier.with(ProfileActivity.this, user.avatar_url)
+                                .load(loadedImage)
+                                .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+                                .listener(new Atelier.OnPaletteRenderedListener() {
+                                    @Override
+                                    public void onRendered(Palette palette, int generatedColor) {
+                                        applyColors(generatedColor);
+                                        profileItemsAdapter.setAvatarColor(generatedColor);
+                                    }
+                                })
+                                .into(image);
+                    } else {
+                        profileItemsAdapter.setAvatarColor(avatarColor);
+                    }
+
                 }
 
                 @Override
@@ -285,6 +299,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 //    }
 
     private void applyColors(int rgb) {
+        colorApplied = true;
         collapsingToolbarLayout.setContentScrimColor(rgb);
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
@@ -386,13 +401,12 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
     @Override
     public void onFail(RetrofitError error) {
-        hideProgressDialog();
+
     }
 
     @Override
     public void onCheckFollowUser(String username, boolean following) {
         followingUser = following;
-        hideProgressDialog();
         invalidateOptionsMenu();
     }
 

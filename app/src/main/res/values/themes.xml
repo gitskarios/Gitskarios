@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="AppTheme.AppCompat.Default">
+    <style name="AppTheme" parent="Base.AppTheme" />
+    <style name="AppTheme.Search" parent="Base.AppTheme" />
+
+    <style name="Base.AppTheme" parent="AppTheme.AppCompat.Default">
         <item name="android:windowBackground">@color/white</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
@@ -19,7 +22,7 @@
     </style>
 
 
-    <style name="AppThemeSearch" parent="AppTheme.AppCompat.Default">
+    <style name="Base.AppTheme.Search" parent="AppTheme.AppCompat.Default">
         <item name="windowActionModeOverlay">false</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
         <item name="colorPrimary">@color/white</item>
