@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion changeDate="Oct 02,2015" versionName="2.5.17">
+        <changelogtext>Add some UI enhancements.</changelogtext>
+    </changelogversion>
     <changelogversion changeDate="Sep 29,2015" versionName="2.5.15">
         <changelogtext>Stability improvements.</changelogtext>
     </changelogversion>
