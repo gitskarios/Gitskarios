@@ -2,7 +2,8 @@ package com.alorma.github.emoji;
 
 import android.content.Context;
 
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.github.sdk.services.emojis.EmojisClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;

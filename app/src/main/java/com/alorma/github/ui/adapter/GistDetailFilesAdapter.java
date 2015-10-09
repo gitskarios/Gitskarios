@@ -113,55 +113,6 @@ public class GistDetailFilesAdapter extends RecyclerView.Adapter<GistDetailFiles
         notifyItemInserted(gistFileList.size());
     }
 
-    public List<GistFile> getGistFileList() {
-        return this.gistFileList;
-    }
-
-    public void newEmptyItem() {
-        GistFile gistFile = new GistFile();
-        gistFileList.add(0, gistFile);
-        notifyItemInserted(0);
-    }
-
-    public void updateCurrentItem(String title, String text) {
-        if (getItemCount() > 0) {
-            GistFile gistFile = gistFileList.get(0);
-            gistFile.filename = title;
-            gistFile.content = text;
-            gistFile.type = "text/plain";
-        }
-    }
-
-    public void updateItem(int position, GistFile updatedFile) {
-        if (updatedFile != null && getItemCount() >= position) {
-            GistFile file = gistFileList.get(position);
-            file.filename = updatedFile.filename;
-            file.content = updatedFile.content;
-            notifyItemChanged(position);
-        }
-    }
-
-    public void setInEditMode(boolean inEditMode) {
-        this.isInEditMode = inEditMode;
-        notifyDataSetChanged();
-    }
-
-    public void addFile(GistFile file) {
-        if (getItemCount() > 0) {
-            gistFileList.remove(0);
-            notifyItemRemoved(0);
-            gistFileList.add(0, file);
-            notifyItemInserted(0);
-        }
-    }
-
-    public void clearCurrent() {
-        if (getItemCount() > 0) {
-            gistFileList.remove(0);
-            notifyItemRemoved(0);
-        }
-    }
-
     public void setGistFilesAdapterListener(GistFilesAdapterListener gistFilesAdapterListener) {
         this.gistFilesAdapterListener = gistFilesAdapterListener;
     }

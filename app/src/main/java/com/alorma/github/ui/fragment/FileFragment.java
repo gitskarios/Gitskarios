@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
@@ -35,7 +34,7 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.ui.view.CopyWebView;
 import com.alorma.github.utils.ImageUtils;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -152,7 +151,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         if (MarkdownUtils.isMarkdown(content.name)) {
             RequestMarkdownDTO request = new RequestMarkdownDTO();
             request.text = decodeContent();
-            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request, new Handler());
+            GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request);
             markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
                 @Override
                 public void onResponseOk(final String s, Response r) {

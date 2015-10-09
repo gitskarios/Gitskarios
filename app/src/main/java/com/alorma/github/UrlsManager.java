@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.UriMatcher;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -11,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.CommitDetailActivity;
@@ -18,6 +20,7 @@ import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
+import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
 
@@ -39,10 +42,11 @@ public class UrlsManager {
     private static final int URI_REPO_BRANCH_HOTFIX = 8;
     private static final int URI_RELEASES_TAG = 9;
     private static final int URI_RELEASES = 10;
-    private static final int URI_RELEASES_LATEST = 11;
-    private static final int URI_TAGS = 12;
-    private static final int URI_PULL_REQUEST = 13;
-    private static final int URI_ISSUE_COMMENT = 14;
+    private static final int URI_RELEASES_IDENTIFIER = 11;
+    private static final int URI_RELEASES_LATEST = 12;
+    private static final int URI_TAGS = 13;
+    private static final int URI_PULL_REQUEST = 14;
+    private static final int URI_ISSUE_COMMENT = 15;
 
 
     private final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -57,9 +61,10 @@ public class UrlsManager {
             uriMatcher.addURI("github.com", key, UriMatcher.NO_MATCH + i++);
         }
 
-        uriMatcher.addURI("github.com", "*/*/releases/latest", URI_RELEASES_LATEST);
-        uriMatcher.addURI("github.com", "*/*/releases/tag/*", URI_RELEASES_TAG);
+//        uriMatcher.addURI("github.com", "*/*/releases/latest", URI_RELEASES_LATEST);
+//        uriMatcher.addURI("github.com", "*/*/releases/tag/*", URI_RELEASES_TAG);
         uriMatcher.addURI("github.com", "*/*/releases", URI_RELEASES);
+        uriMatcher.addURI("github.com", "*/*/releases/#", URI_RELEASES_IDENTIFIER);
 
         uriMatcher.addURI("github.com", "*/*/tags", URI_TAGS);
 
@@ -96,6 +101,7 @@ public class UrlsManager {
         });
     }
 
+    @Nullable
     public Intent checkUri(Uri uri) {
 
         uri = normalizeUri(uri);
@@ -123,10 +129,13 @@ public class UrlsManager {
                 case URI_PULL_REQUEST:
                     intent = manageIssuePullRequest(uri);
                     break;
-                case URI_RELEASES_TAG:
-                case URI_TAGS:
+                case URI_RELEASES_IDENTIFIER:
+                    intent = manageReleasesWithId(uri);
+                    break;
                 case URI_RELEASES:
                 case URI_RELEASES_LATEST:
+                case URI_RELEASES_TAG:
+                case URI_TAGS:
                 case URI_ISSUE_COMMENT:
                     if (Fabric.isInitialized()) {
                         Crashlytics.log(uri.toString());
@@ -244,6 +253,16 @@ public class UrlsManager {
         info.num = Integer.parseInt(lastPathSegment);
 
         return PullRequestDetailActivity.createLauncherIntent(context, info);
+    }
+
+    private Intent manageReleasesWithId(Uri uri) {
+        ReleaseInfo info = new ReleaseInfo();
+
+        info.repoInfo = extractRepo(uri);
+
+        info.num = Integer.valueOf(uri.getLastPathSegment());
+
+        return ReleaseDetailActivity.launchIntent(context, info);
     }
 
     private Intent manageFile(Uri uri) {

@@ -40,7 +40,7 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
         notifyDataSetChanged();
     }
 
-    public void addAll(Collection<ItemType> items) {
+    public void addAll(Collection<? extends ItemType> items) {
         this.items.addAll(items);
         notifyDataSetChanged();
     }

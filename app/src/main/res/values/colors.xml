@@ -47,4 +47,8 @@
     <color name="commit_deletions">#9aff0000</color>
     <color name="release_prerelease">#9aff0000</color>
     <color name="release_version">#ff009d00</color>
+
+    <color name="github_status_green">#13b413</color>
+    <color name="github_status_yellow">#e9c645</color>
+    <color name="github_status_red">#b5ff0000</color>
 </resources>

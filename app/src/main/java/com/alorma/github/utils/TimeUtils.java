@@ -3,17 +3,16 @@ package com.alorma.github.utils;
 import android.content.Context;
 
 import com.alorma.github.R;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
-import org.joda.time.Months;
-import org.joda.time.Seconds;
-import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.ocpsoft.prettytime.PrettyTime;
+import org.ocpsoft.prettytime.units.Century;
+import org.ocpsoft.prettytime.units.Millennium;
+import org.ocpsoft.prettytime.units.Month;
+import org.ocpsoft.prettytime.units.Week;
+import org.ocpsoft.prettytime.units.Year;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,50 +29,18 @@ public class TimeUtils {
         return context.getString(resId, sdf.format(date));
     }
 
-    public static String getTimeAgoString(Context context, String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public static String getTimeAgoString(String date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.UTC);
 
         DateTime dt = formatter.parseDateTime(date);
-        DateTime dtNow = DateTime.now().withZone(DateTimeZone.UTC);
+        PrettyTime p = new PrettyTime();
 
-        Years years = Years.yearsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-        int text = R.plurals.years_ago;
-        int time = years.getYears();
+        p.removeUnit(Millennium.class);
+        p.removeUnit(Century.class);
+        p.removeUnit(Year.class);
+        p.removeUnit(Month.class);
+        p.removeUnit(Week.class);
 
-        if (time == 0) {
-            Months months = Months.monthsBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-            text = R.plurals.months_ago;
-            time = months.getMonths();
-
-            if (time == 0) {
-
-                Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), dtNow.withTimeAtStartOfDay());
-                text = R.plurals.days_ago;
-                time = days.getDays();
-
-                if (time == 0) {
-                    Hours hours = Hours.hoursBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                    time = hours.getHours();
-                    text = R.plurals.hours_ago;
-
-                    if (time == 0) {
-                        Minutes minutes = Minutes.minutesBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                        time = minutes.getMinutes();
-                        text = R.plurals.minutes_ago;
-                        if (time == 0) {
-                            Seconds seconds = Seconds.secondsBetween(dt.toLocalDateTime(), dtNow.toLocalDateTime());
-                            time = seconds.getSeconds();
-                            if (time > 5) {
-                                text = R.plurals.seconds_ago;
-                            } else {
-                                text = R.plurals.time_just_now;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return context.getResources().getQuantityString(text, time, time);
+        return p.format(new Date(dt.getMillis()));
     }
 }

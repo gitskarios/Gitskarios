@@ -30,7 +30,7 @@ public class UsersAdapterSpinner extends ArrayAdapter<User> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View v = mInflater.inflate(R.layout.material_drawer_item_profile, viewGroup, false);
+        View v = mInflater.inflate(R.layout.item_profile, viewGroup, false);
         UsersHolder userHolder = new UsersHolder(v);
 
         User user = getItem(position);
@@ -38,11 +38,6 @@ public class UsersAdapterSpinner extends ArrayAdapter<User> {
         userHolder.fill(user);
 
         return v;
-    }
-
-    private String getDate(Date created_at) {
-        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return sdf.format(created_at);
     }
 
     public void addAll(Collection<? extends User> collection, boolean paging) {

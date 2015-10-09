@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.renderers.releases.assets.ReleaseAssetRendererBuilder;
 import com.alorma.github.ui.renderers.releases.assets.ReleaseAssetsRenderer;
 import com.pedrogomez.renderers.ListAdapteeCollection;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Created by a557114 on 30/07/2015.
  */
-public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssetsRenderer.OnReleaseAssetClicked {
+public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
 
     private static final String RELEASE_ASSETS = "RELEASE_ASSETS";
 
@@ -85,5 +86,10 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
         dm.enqueue(request);
 
         Toast.makeText(context, "Download started in gitskarios/" + fileName, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.repo_release_fragment_assets_title;
     }
 }

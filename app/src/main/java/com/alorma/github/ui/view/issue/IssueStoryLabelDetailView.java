@@ -77,7 +77,7 @@ public class IssueStoryLabelDetailView extends LinearLayout {
         ImageLoader.getInstance().displayImage(user.avatar_url, profileIcon);
         labelsView.setLabels(labels);
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(created_at));
+        String date = TimeUtils.getTimeAgoString(formatter.print(created_at));
         String dateText = getContext().getResources().getString(added ? R.string.aissue_detail_add_labels : R.string.aissue_detail_removed_labels, date);
         createdAt.setText(dateText);
     }

@@ -1,12 +1,9 @@
 package com.alorma.github.ui.fragment.events;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -29,22 +25,19 @@ import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventP
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
-import com.alorma.github.sdk.bean.info.CommitInfo;
+import com.alorma.github.sdk.bean.dto.response.events.payload.ReleaseEventPayload;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
-import com.alorma.github.ui.activity.CommitDetailActivity;
+import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.github.utils.TextUtils;
 import com.google.gson.Gson;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -80,24 +73,50 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     protected void onResponse(List<GithubEvent> githubEvents, boolean refreshing) {
         if (githubEvents != null && githubEvents.size() > 0) {
             hideEmpty();
+            githubEvents = parseGithubEvents(githubEvents);
             if (getAdapter() != null) {
                 getAdapter().addAll(githubEvents);
             } else {
-                EventAdapter eventAdapter = new EventAdapter(LayoutInflater.from(getActivity()));
+                EventAdapter eventAdapter = new EventAdapter(getActivity(), LayoutInflater.from(getActivity()));
                 eventAdapter.setEventAdapterListener(this);
                 eventAdapter.addAll(githubEvents);
                 setAdapter(eventAdapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
+    }
+
+    private List<GithubEvent> parseGithubEvents(List<GithubEvent> githubEvents) {
+        List<GithubEvent> newEvents = new ArrayList<>();
+
+        for (GithubEvent githubEvent : githubEvents) {
+            if (checkEventHandled(githubEvent)) {
+                newEvents.add(githubEvent);
+            }
+        }
+
+        return newEvents;
+    }
+
+    private boolean checkEventHandled(GithubEvent event) {
+        return event.getType() != null && (event.getType() == EventType.PushEvent)
+                || (event.getType() == EventType.WatchEvent)
+                || (event.getType() == EventType.CreateEvent)
+                || (event.getType() == EventType.IssueCommentEvent)
+                || (event.getType() == EventType.CommitCommentEvent)
+                || (event.getType() == EventType.IssuesEvent)
+                || (event.getType() == EventType.ForkEvent)
+                || (event.getType() == EventType.ReleaseEvent)
+                || (event.getType() == EventType.PullRequestEvent)
+                || (event.getType() == EventType.DeleteEvent);
     }
 
     @Override
     public void onFail(RetrofitError error) {
         super.onFail(error);
         if (error != null && error.getResponse() != null) {
-            setEmpty(error.getResponse().getStatus());
+            setEmpty(true, error.getResponse().getStatus());
         }
     }
 
@@ -175,6 +194,16 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                 String forkeeRepo = forkEventPayload.forkee.full_name;
 
                 showReposDialogDialog(parentRepo, forkeeRepo);
+            }
+        } else if (type == EventType.ReleaseEvent) {
+            String payload = gson.toJson(item.payload);
+            ReleaseEventPayload releaseEventPayload = gson.fromJson(payload, ReleaseEventPayload.class);
+            if (releaseEventPayload != null) {
+                Intent intent = new UrlsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
+
+                if (intent != null) {
+                    startActivity(intent);
+                }
             }
         } else {
             // TODO manage TAGs

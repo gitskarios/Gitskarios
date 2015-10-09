@@ -60,7 +60,7 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
                 setAdapter(commentsAdapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 

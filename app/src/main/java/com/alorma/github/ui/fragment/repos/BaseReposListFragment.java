@@ -1,12 +1,8 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ListView;
 
-import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
@@ -35,7 +31,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
                 setUpList(repos);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -44,7 +40,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }
@@ -54,14 +50,19 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
         settings.registerListener(this);
 
         ReposAdapter reposAdapter = new ReposAdapter(LayoutInflater.from(getActivity()));
+        reposAdapter.showOwnerName(showAdapterOwnerName());
         reposAdapter.addAll(repos);
 
         setAdapter(reposAdapter);
     }
 
+    protected boolean showAdapterOwnerName() {
+        return false;
+    }
+
     @Override
-    public void setEmpty(int statusCode) {
-        super.setEmpty(statusCode);
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
         if (getAdapter() != null) {
             getAdapter().clear();
         }

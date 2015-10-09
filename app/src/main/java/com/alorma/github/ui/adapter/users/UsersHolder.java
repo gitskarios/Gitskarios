@@ -24,28 +24,31 @@ public class UsersHolder {
         this.authorEmail = (TextView) v.findViewById(R.id.email);
     }
 
-    public UsersHolder(Activity act) {
-        this.authorAvatar = (ImageView) act.findViewById(R.id.profileIcon);
-        this.authorLogin = (TextView) act.findViewById(R.id.name);
-        this.authorEmail = (TextView) act.findViewById(R.id.email);
-    }
-
     public void fill(User user) {
-        this.authorAvatar.setVisibility(View.VISIBLE);
-        this.authorLogin.setVisibility(View.VISIBLE);
-        this.authorEmail.setVisibility(View.VISIBLE);
+        if (authorAvatar != null) {
+            this.authorAvatar.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(user.avatar_url)) {
+                ImageLoader.getInstance().displayImage(user.avatar_url, authorAvatar);
+                authorAvatar.setVisibility(View.VISIBLE);
+            } else {
+                authorAvatar.setVisibility(View.GONE);
+            }
+        }
 
-        if (!TextUtils.isEmpty(user.avatar_url)) {
-            ImageLoader.getInstance().displayImage(user.avatar_url, authorAvatar);
-            authorAvatar.setVisibility(View.VISIBLE);
-        } else {
-            authorAvatar.setVisibility(View.GONE);
+        if (authorLogin != null) {
+            this.authorLogin.setVisibility(View.VISIBLE);
+
+
+            if (!TextUtils.isEmpty(user.login)) {
+                authorLogin.setText(user.login);
+            }
         }
-        if (!TextUtils.isEmpty(user.login)) {
-            authorLogin.setText(user.login);
-        }
-        if (!TextUtils.isEmpty(user.login)) {
-            authorEmail.setText(user.email);
+
+        if (authorEmail != null) {
+            this.authorEmail.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(user.login)) {
+                authorEmail.setText(user.email);
+            }
         }
     }
 

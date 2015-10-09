@@ -6,70 +6,65 @@
     android:background="?selectableItemBackground"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/imageState"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/gapMedium" />
+
     <TextView
         android:id="@+id/textTitle"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/gapMedium"
-        android:layout_marginEnd="@dimen/gapMedium"
-        android:layout_marginLeft="@dimen/gapLarge"
-        android:layout_marginRight="@dimen/gapMedium"
-        android:layout_marginStart="@dimen/gapLarge"
         android:layout_marginTop="@dimen/gapMedium"
-        android:layout_toLeftOf="@+id/textIssueNumber"
-        android:layout_toStartOf="@+id/textIssueNumber"
+        android:layout_toLeftOf="@+id/numComments"
+        android:layout_toRightOf="@+id/imageState"
+        android:layout_toStartOf="@+id/numComments"
         android:ellipsize="end"
         android:maxLines="2"
         android:textSize="@dimen/textSizeMedium" />
 
-    <TextView
-        android:id="@+id/textIssueNumber"
-        style="@style/TextAppearance.AppCompat.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/textTitle"
-        android:layout_marginEnd="@dimen/gapMedium"
-        android:layout_marginRight="@dimen/gapMedium"
-        android:textSize="@dimen/textSizeMedium" />
-
-    <com.alorma.github.ui.view.CircularImageView
-        android:id="@id/avatarAuthor"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_alignLeft="@+id/textTitle"
-        android:layout_alignStart="@+id/textTitle"
-        android:layout_alignTop="@+id/textAuthor"
-        android:layout_marginBottom="@dimen/gapLarge" />
+    <com.wefika.flowlayout.FlowLayout
+        android:id="@+id/labelsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTitle"
+        android:layout_toLeftOf="@+id/numComments"
+        android:layout_toRightOf="@+id/imageState"
+        android:layout_toStartOf="@+id/numComments"
+        android:gravity="start|top"
+        android:minHeight="?attr/actionBarSize" />
 
     <TextView
-        android:id="@+id/textAuthor"
+        android:id="@+id/textInfo"
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/textTitle"
         android:layout_alignRight="@+id/textTitle"
-        android:layout_below="@+id/textTitle"
-        android:layout_marginLeft="@dimen/gapMedium"
-        android:layout_marginStart="@dimen/gapMedium"
-        android:layout_toEndOf="@id/avatarAuthor"
-        android:layout_toRightOf="@id/avatarAuthor"
-        android:gravity="center_vertical"
+        android:layout_below="@+id/labelsLayout"
+        android:layout_marginBottom="@dimen/gapMedium"
+        android:layout_toRightOf="@+id/imageState"
         android:textSize="@dimen/textSizeSmall" />
 
-    <ImageView
-        android:id="@+id/pullRequest"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignEnd="@+id/textIssueNumber"
-        android:layout_alignRight="@+id/textIssueNumber"
-        android:layout_below="@+id/textIssueNumber"
-        android:layout_marginTop="@dimen/gapLarge" />
-
+    <TextView
+        android:id="@+id/numComments"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/gapMedium"
+        android:gravity="center_vertical"
+        android:minHeight="24dp"
+        android:minWidth="24dp"
+        android:textSize="@dimen/textSizeSmall" />
 
 </RelativeLayout>

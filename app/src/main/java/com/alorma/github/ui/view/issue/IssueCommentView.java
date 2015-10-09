@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -91,7 +90,7 @@ public class IssueCommentView extends LinearLayout {
 
     private void setTime(long time) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(time));
+        String date = TimeUtils.getTimeAgoString(formatter.print(time));
         createdAt.setText(date);
     }
 

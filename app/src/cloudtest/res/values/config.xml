@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gitskarios CLOUD TEST</string>
+    <string name="account_name">Github account CLOUD TEST</string>
+    <string name="account_type">com.alorma.github.cloudtest.account</string>
+    <string name="oauth_scheme">gitskariosgithubdevel</string>
+</resources>

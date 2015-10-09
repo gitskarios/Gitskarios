@@ -12,16 +12,13 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.CompareCommit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.CompareCommitsClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.adapter.commit.CommitsAdapter;
-import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.compare.CompareCommitsListFragment;
 import com.alorma.github.ui.fragment.compare.CompareFilesListFragment;
-import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,21 +4,20 @@ import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
  * Created by Bernat on 08/08/2014.
  */
-public class SearchReposFragment extends BaseReposListFragment {
+public class SearchReposFragment extends BaseReposListFragment implements TitleProvider {
 
     private String query = null;
-    private OnSearchReposListener onSearchReposListener;
 
     public static SearchReposFragment newInstance(String query) {
         Bundle args = new Bundle();
@@ -40,7 +39,7 @@ public class SearchReposFragment extends BaseReposListFragment {
         if (query != null) {
             setQuery(query);
         } else {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -96,22 +95,8 @@ public class SearchReposFragment extends BaseReposListFragment {
         executeRequest();
     }
 
-/*    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (reposAdapter != null && reposAdapter.getItemCount() >= position) {
-            Repo item = reposAdapter.getItem(position);
-            if (onSearchReposListener != null) {
-                onSearchReposListener.onRepoItemSelected(item);
-            }
-        }
-    }*/
-
-    public void setOnSearchReposListener(OnSearchReposListener onSearchReposListener) {
-        this.onSearchReposListener = onSearchReposListener;
-    }
-
-    public interface OnSearchReposListener {
-        void onRepoItemSelected(Repo repo);
+    @Override
+    public int getTitle() {
+        return R.string.navigation_repos_search;
     }
 }

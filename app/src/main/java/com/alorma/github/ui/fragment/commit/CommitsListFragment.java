@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -93,7 +92,10 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, path, 0);
+        CommitInfo commitInfo = new CommitInfo();
+        commitInfo.repoInfo = repoInfo;
+        commitInfo.sha = repoInfo.branch;
+        ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, path, 0);
         client.setOnResultCallback(this);
         client.execute();
     }
@@ -101,7 +103,9 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        ListCommitsClient client = new ListCommitsClient(getActivity(), repoInfo, page);
+        CommitInfo commitInfo = new CommitInfo();
+        commitInfo.repoInfo = repoInfo;
+        ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, page);
         client.setOnResultCallback(this);
         client.execute();
     }
@@ -152,13 +156,13 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     public void onFail(RetrofitError error) {
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(true);
         }
     }
 
     @Override
-    public void setEmpty(int statusCode) {
-        super.setEmpty(statusCode);
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
         if (fab != null) {
             fab.setVisibility(View.INVISIBLE);
         }
@@ -179,7 +183,7 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
 
     @Override
     public boolean onBackPressed() {
-        if (cab.isActive()) {
+        if (cab != null && cab.isActive()) {
             cab.finish();
             return false;
         } else {
@@ -216,26 +220,28 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     protected void fabClick() {
         isInCompareMode = !isInCompareMode;
         checkFAB();
-        if (getActivity() instanceof AppCompatActivity) {
-            cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub)
-                    .setTitle(":base ... :head")
-                    .setMenu(R.menu.menu_commits_compare)
-                    .start(this);
+        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            if (getActivity().findViewById(R.id.cab_stub) != null) {
+                cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub)
+                        .setTitle(":base ... :head")
+                        .setMenu(R.menu.menu_commits_compare)
+                        .start(this);
 
-            if (cab.getMenu() != null) {
-                MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
+                if (cab.getMenu() != null) {
+                    MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
 
-                if (itemCompare != null) {
-                    IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(Color.WHITE);
-                    itemCompare.setIcon(iconicsDrawable);
-                    itemCompare.setEnabled(false);
-                }
+                    if (itemCompare != null) {
+                        IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(Color.WHITE);
+                        itemCompare.setIcon(iconicsDrawable);
+                        itemCompare.setEnabled(false);
+                    }
 
-                MenuItem itemChangeBranch = cab.getMenu().findItem(R.id.action_repo_change_branch);
+                    MenuItem itemChangeBranch = cab.getMenu().findItem(R.id.action_repo_change_branch);
 
-                if (itemChangeBranch != null) {
-                    IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar().color(Color.WHITE);
-                    itemChangeBranch.setIcon(iconicsDrawable);
+                    if (itemChangeBranch != null) {
+                        IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar().color(Color.WHITE);
+                        itemChangeBranch.setIcon(iconicsDrawable);
+                    }
                 }
             }
         }

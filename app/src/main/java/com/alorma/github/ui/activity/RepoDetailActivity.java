@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -38,7 +39,7 @@ import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -54,10 +55,10 @@ import retrofit.client.Response;
 public class RepoDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
     public static final String REPO_INFO = "REPO_INFO";
-    private static final int EDIT_REPO = 464;
+    public static final String REPO_INFO_NAME = "REPO_INFO_NAME";
+    public static final String REPO_INFO_OWNER = "REPO_INFO_OWNER";
 
-    private Boolean repoStarred = false;
-    private Boolean repoWatched = false;
+    private static final int EDIT_REPO = 464;
 
     private Repo currentRepo;
     private ViewPager viewPager;
@@ -74,6 +75,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         return intent;
     }
 
+    public static Intent createShortcutLauncherIntent(Context context, RepoInfo repoInfo) {
+        Bundle bundle = new Bundle();
+        bundle.putString(REPO_INFO_NAME, repoInfo.name);
+        bundle.putString(REPO_INFO_OWNER, repoInfo.owner);
+
+        Intent intent = new Intent(context, RepoDetailActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,14 +93,28 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         if (getIntent().getExtras() != null) {
             RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
-            setTitle(repoInfo.name);
+            if (repoInfo == null) {
+                if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras().containsKey(REPO_INFO_OWNER)) {
+                    String name = getIntent().getExtras().getString(REPO_INFO_NAME);
+                    String owner = getIntent().getExtras().getString(REPO_INFO_OWNER);
 
-            tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                    repoInfo = new RepoInfo();
+                    repoInfo.name = name;
+                    repoInfo.owner = owner;
+                }
+            }
 
-            viewPager = (ViewPager) findViewById(R.id.pager);
+            if (repoInfo != null) {
+                setTitle(repoInfo.name);
 
-            load(repoInfo);
+                tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
+                viewPager = (ViewPager) findViewById(R.id.pager);
+
+                load(repoInfo);
+            } else {
+                finish();
+            }
         } else {
             finish();
         }
@@ -160,28 +185,30 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (menu.findItem(R.id.action_manage_repo) == null) {
-            if (currentRepo != null && currentRepo.permissions != null) {
-                if (currentRepo.permissions.admin) {
-                    getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+        if (menu != null) {
+            if (menu.findItem(R.id.action_manage_repo) == null) {
+                if (currentRepo != null && currentRepo.permissions != null) {
+                    if (currentRepo.permissions.admin) {
+                        getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+                    }
                 }
             }
-        }
 
-        MenuItem item = menu.findItem(R.id.share_repo);
+            MenuItem item = menu.findItem(R.id.share_repo);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha, getTheme()));
-        } else {
-            item.setIcon(getResources().getDrawable(R.drawable.abc_ic_menu_share_mtrl_alpha));
-        }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
+            } else {
+                item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
+            }
 
-        MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
+            MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
 
-        Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
+            Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
 
-        if (menuChangeBranch != null) {
-            menuChangeBranch.setIcon(changeBranch);
+            if (menuChangeBranch != null) {
+                menuChangeBranch.setIcon(changeBranch);
+            }
         }
 
         return true;
@@ -210,6 +237,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         } else if (item.getItemId() == R.id.action_manage_repo) {
             Intent intent = ManageRepositoryActivity.createIntent(this, getRepoInfo(), createRepoRequest());
             startActivityForResult(intent, EDIT_REPO);
+        } else if (item.getItemId() == R.id.action_add_shortcut) {
+            ShortcutUtils.addShortcut(this, getRepoInfo());
         }
 
         return false;

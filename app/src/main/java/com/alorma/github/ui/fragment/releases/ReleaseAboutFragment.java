@@ -17,6 +17,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -28,7 +29,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by a557114 on 30/07/2015.
  */
-public class ReleaseAboutFragment extends BaseFragment {
+public class ReleaseAboutFragment extends BaseFragment implements TitleProvider{
 
     private static final String RELEASE = "RELEASE";
     private static final String REPO_INFO = "REPO_INFO";
@@ -105,5 +106,10 @@ public class ReleaseAboutFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.repo_release_fragment_detail_title;
     }
 }

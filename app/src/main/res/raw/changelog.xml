@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion versionName="2.5.3" changeDate="Aug 10,2015">
-        <changelogtext>Added new tab on Repositories screen, you can see organization's repositories</changelogtext>
-        <changelogtext>Add badge in notification icon, so you will know how many notifications you have</changelogtext>
-        <changelogtext>Small bugfixes</changelogtext>
-    </changelogversion>
-    <changelogversion versionName="2.5.2.1" changeDate="Aug 08,2015">
-        <changelogtext>Navigate up to repository screen, or user screen from Issue and Pull Request</changelogtext>
-    </changelogversion>
-    <changelogversion versionName="2.5.2" changeDate="Aug 02,2015">
-        <changelogtext>Manage repository: change properties such as name, description, etc...</changelogtext>
-        <changelogtext>Added pull request tab</changelogtext>
-        <changelogtext>Delete repository from Manage repository</changelogtext>
-        <changelogtext>Fix DeviceID request permission</changelogtext>
-        <changelogtext>Fix support development action appears twice</changelogtext>
-        <changelogtext>Fix bugs</changelogtext>
+    <changelogversion changeDate="Oct 01,2015" versionName="2.5.16">
+        <changelogtext>Github events feed improved</changelogtext>
     </changelogversion>
 </changelog>

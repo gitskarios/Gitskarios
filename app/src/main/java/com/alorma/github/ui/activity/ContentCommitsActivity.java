@@ -53,9 +53,10 @@ public class ContentCommitsActivity extends BackActivity {
 
             ViewCompat.setElevation(getToolbar(), 8);
 
-
             LinearBreadcrumb breadCrumbs = (LinearBreadcrumb) findViewById(R.id.breadCrumbs);
-            breadCrumbs.addPath(path, File.separator);
+            if (path != null) {
+                breadCrumbs.addPath(path, File.separator);
+            }
         }
     }
 }

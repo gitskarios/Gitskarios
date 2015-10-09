@@ -14,7 +14,7 @@ import android.widget.LinearBreadcrumb;
 import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.BaseClient;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -143,7 +143,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
                 displayContent(contents);
             } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                setEmpty();
+                setEmpty(false);
             }
         }
     }
@@ -153,7 +153,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
         if (getActivity() != null) {
             if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                 if (error != null && error.getResponse() != null) {
-                    setEmpty(error.getResponse().getStatus());
+                    setEmpty(true, error.getResponse().getStatus());
                 }
             }
             ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
@@ -225,8 +225,8 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
 
     @Override
-    public void setEmpty(int statusCode) {
-        super.setEmpty(statusCode);
+    public void setEmpty(boolean withError, int statusCode) {
+        super.setEmpty(withError, statusCode);
     }
 
     @Override
@@ -326,7 +326,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
     @Override
     public boolean onBackPressed() {
-        if (breadCrumbs.size() == 1) {
+        if (breadCrumbs != null && breadCrumbs.size() == 1) {
             return true;
         } else {
             navigateUp();

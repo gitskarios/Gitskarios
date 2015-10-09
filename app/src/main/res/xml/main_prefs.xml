@@ -20,23 +20,22 @@
         android:key="repos_download_type"
         android:title="@string/pref_repos_download_type" />
 
-    <!--    <com.afollestad.materialdialogs.prefs.MaterialListPreference
-            android:entries="@array/screenItemsValues"
-            android:entryValues="@array/screenItemsValues"
-            android:key="screen_default"
-            android:title="@string/pref_screen_item" />-->
+    <CheckBoxPreference
+        android:key="pref_mark_as_read"
+        android:summary="@string/pref_mark_as_read_summary"
+        android:title="@string/pref_mark_as_read" />
+    <PreferenceCategory android:title="@string/app_settings_about">
+        <Preference
+            android:key="gitskarios"
+            android:title="@string/action_visit_gitskarios" />
 
-    <Preference
-        android:key="gitskarios"
-        android:title="@string/action_visit_gitskarios" />
-
-    <Preference
-        android:key="changelog"
-        android:title="@string/changelog" />
-    <Preference
-        android:key="git_hash"
-        android:selectable="false"
-        android:summary="@string/app_git_hash"
-        android:title="@string/app_git_hash_title" />
-
+        <Preference
+            android:key="changelog"
+            android:title="@string/changelog" />
+        <Preference
+            android:key="git_hash"
+            android:selectable="false"
+            android:summary="@string/app_git_hash"
+            android:title="@string/app_git_hash_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

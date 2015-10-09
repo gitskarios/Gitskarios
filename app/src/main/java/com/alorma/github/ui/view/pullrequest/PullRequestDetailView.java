@@ -12,9 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
@@ -22,12 +23,14 @@ import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestCommitsActivity;
 import com.alorma.github.ui.activity.PullRequestFilesActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.StatusActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
@@ -35,6 +38,7 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
@@ -57,10 +61,14 @@ public class PullRequestDetailView extends LinearLayout {
     private TextView textCommits;
     private TextView textFiles;
     private TextView mergeButton;
+    private TextView textRepository;
+    private ImageView icon_status;
+    private TextView name_status;
+    private TextView description_status;
+    private View status_ly;
 
     private IssueDetailRequestListener issueDetailRequestListener;
     private PullRequestActionsListener pullRequestActionsListener;
-    private TextView textRepository;
 
     public PullRequestDetailView(Context context) {
         super(context);
@@ -96,19 +104,26 @@ public class PullRequestDetailView extends LinearLayout {
         textMilestone = (TextView) findViewById(R.id.textMilestone);
         textAssignee = (TextView) findViewById(R.id.textAssignee);
         textCommits = (TextView) findViewById(R.id.textCommits);
+        status_ly = findViewById(R.id.status_ly);
+        icon_status = (ImageView) findViewById(R.id.icon_status);
+        name_status = (TextView) findViewById(R.id.name_status);
+        description_status = (TextView) findViewById(R.id.description_status);
         textFiles = (TextView) findViewById(R.id.textFiles);
         textRepository = (TextView) findViewById(R.id.textRepository);
         mergeButton = (TextView) findViewById(R.id.mergeButton);
     }
 
-    public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest, Permissions permissions) {
+    public void setPullRequest(final RepoInfo repoInfo
+            , final PullRequest pullRequest
+            , GithubStatusResponse statusResponse
+            , Permissions permissions) {
         if (this.pullRequest == null) {
             this.pullRequest = pullRequest;
             title.setText(pullRequest.title);
 
             if (pullRequest.user != null) {
                 profileName.setText(pullRequest.user.login);
-                profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), pullRequest.created_at));
+                profileEmail.setText(TimeUtils.getTimeAgoString(pullRequest.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(pullRequest.user.avatar_url, profileIcon);
                 OnClickListener issueUserClick = new OnClickListener() {
@@ -156,7 +171,7 @@ public class PullRequestDetailView extends LinearLayout {
             if (textMilestone != null) {
                 Milestone milestone = pullRequest.milestone;
                 if (milestone != null) {
-                    textMilestone.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_milestone).actionBar().paddingDp(8).colorRes(getColorIcons()), null, null, null);
+                    textMilestone.setCompoundDrawables(getIcon(Octicons.Icon.oct_milestone), null, null, null);
                     textMilestone.setText(milestone.title);
                     textMilestone.setVisibility(View.VISIBLE);
                 } else {
@@ -167,7 +182,7 @@ public class PullRequestDetailView extends LinearLayout {
             if (textAssignee != null) {
                 final User assignee = pullRequest.assignee;
                 if (assignee != null) {
-                    textAssignee.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textAssignee.setCompoundDrawables(getIcon(Octicons.Icon.oct_person), null, null, null);
                     textAssignee.setText(assignee.login);
                     textAssignee.setVisibility(View.VISIBLE);
                     textAssignee.setOnClickListener(new OnClickListener() {
@@ -185,7 +200,7 @@ public class PullRequestDetailView extends LinearLayout {
             if (textRepository != null) {
                 final Repo repo = pullRequest.repository;
                 if (repo != null) {
-                    textRepository.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textRepository.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo), null, null, null);
                     textRepository.setText(repo.full_name);
                     textRepository.setVisibility(View.VISIBLE);
                     textRepository.setOnClickListener(new OnClickListener() {
@@ -205,7 +220,7 @@ public class PullRequestDetailView extends LinearLayout {
 
             if (textCommits != null) {
                 if (pullRequest.commits > 0) {
-                    textCommits.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_git_commit).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textCommits.setCompoundDrawables(getIcon(Octicons.Icon.oct_git_commit), null, null, null);
                     textCommits.setText(getResources().getString(R.string.num_of_commits, pullRequest.commits));
                     textCommits.setVisibility(View.VISIBLE);
                     textCommits.setOnClickListener(new OnClickListener() {
@@ -223,9 +238,58 @@ public class PullRequestDetailView extends LinearLayout {
                 }
             }
 
+            if (status_ly != null) {
+                if (statusResponse != null && statusResponse.total_count > 0) {
+                    IIcon icon = Octicons.Icon.oct_check;
+                    int background = R.drawable.github_status_circle_green;
+                    int text = R.string.status_checks_success;
+                    if (statusResponse.state.equals("pending")) {
+                        icon = Octicons.Icon.oct_clock;
+                        text = R.string.status_checks_pending;
+                        background = R.drawable.github_status_circle_yellow;
+                    } else if (statusResponse.state.equals("failure")) {
+                        icon = Octicons.Icon.oct_x;
+                        background = R.drawable.github_status_circle_red;
+                        text = R.string.status_checks_failure;
+                    }
+
+                    IconicsDrawable drawable = new IconicsDrawable(icon_status.getContext(), icon)
+                            .colorRes(R.color.white)
+                            .sizeRes(R.dimen.material_drawer_item_primary)
+                            .paddingRes(R.dimen.gapMedium);
+                    icon_status.setImageDrawable(drawable);
+
+                    icon_status.setBackgroundResource(background);
+
+                    name_status.setText(text);
+                    description_status.setText(
+                            getContext().getResources().getQuantityString(R.plurals.status_checks_num
+                                    , statusResponse.total_count, statusResponse.total_count));
+
+                    status_ly.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CommitInfo commitInfo = new CommitInfo();
+                            IssueInfo issueInfo = new IssueInfo();
+
+                            commitInfo.repoInfo = repoInfo;
+                            commitInfo.sha = pullRequest.head.ref;
+
+                            issueInfo.repoInfo = repoInfo;
+                            issueInfo.num = pullRequest.number;
+
+                            Intent intent = StatusActivity.launchIntent(v.getContext(), issueInfo, commitInfo);
+                            v.getContext().startActivity(intent);
+                        }
+                    });
+                } else {
+                    status_ly.setVisibility(View.GONE);
+                }
+            }
+
             if (textFiles != null) {
                 if (pullRequest.changed_files > 0) {
-                    textFiles.setCompoundDrawables(new IconicsDrawable(getContext(), Octicons.Icon.oct_file_binary).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null, null);
+                    textFiles.setCompoundDrawables(getIcon(Octicons.Icon.oct_file_binary), null, null, null);
                     textFiles.setText(getResources().getString(R.string.num_of_files, pullRequest.changed_files));
                     textFiles.setVisibility(View.VISIBLE);
                     textFiles.setOnClickListener(new OnClickListener() {
@@ -284,6 +348,10 @@ public class PullRequestDetailView extends LinearLayout {
                 body.setOnClickListener(editClickListener);
             }
         }
+    }
+
+    private IconicsDrawable getIcon(IIcon icon) {
+        return new IconicsDrawable(getContext(), icon).actionBar().colorRes(getColorIcons());
     }
 
     public int getColorIcons() {

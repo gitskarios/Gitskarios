@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,10 +18,8 @@ import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullsClient;
-import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
-import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.adapter.issues.PullRequestsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -43,7 +38,7 @@ import retrofit.client.Response;
  */
 public class PullRequestsListFragment extends PaginatedListFragment<List<PullRequest>, PullRequestsAdapter> implements
         View.OnClickListener, TitleProvider, PermissionsManager,
-        BackManager, PullRequestsAdapter.IssuesAdapterListener {
+        BackManager, IssuesAdapter.IssuesAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -145,7 +140,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
             getAdapter().clear();
         }
         if (issues == null || issues.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -162,7 +157,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
                 getAdapter().addAll(issues);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -171,7 +166,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }
@@ -244,7 +239,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
     }
 
     @Override
-    public void onPullRequestOpenRequest(PullRequest item) {
+    public void onIssueOpenRequest(Issue item) {
         if (item != null) {
             IssueInfo info = new IssueInfo();
             info.repoInfo = repoInfo;

@@ -28,7 +28,7 @@
                 android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
                 android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
                 android:clickable="false"
-                app:biv_maskDrawable="@drawable/circle_mask" />
+                app:biv_maskDrawable="@drawable/material_drawer_circle_mask" />
 
             <TextView
                 android:id="@+id/authorName"
@@ -42,6 +42,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textSize="@dimen/material_drawer_item_profile_text"
+                tools:ignore="ObsoleteLayoutParam,RtlHardcoded,UnusedAttribute"
                 tools:text="Author name" />
 
         </LinearLayout>
@@ -51,23 +52,14 @@
             style="@style/repo_overview_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_drawer_item_profile"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/forkIcon"
-                android:layout_width="@dimen/material_drawer_item_profile_icon"
-                android:layout_height="@dimen/material_drawer_item_profile_icon"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-                android:clickable="false" />
+            android:visibility="gone"
+            tools:ignore="UseCompoundDrawables">
 
             <TextView
                 android:id="@+id/forkOf"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawablePadding="@dimen/gapLarge"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical|left"
                 android:lines="1"
@@ -82,24 +74,14 @@
             style="@style/repo_overview_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_drawer_item_profile"
-            android:clickable="false"
-            android:background="@null">
-
-            <ImageView
-                android:id="@+id/createdIcon"
-                android:layout_width="@dimen/material_drawer_item_profile_icon"
-                android:layout_height="@dimen/material_drawer_item_profile_icon"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-                android:clickable="false" />
+            android:background="@null"
+            android:clickable="false">
 
             <TextView
                 android:id="@+id/createdAt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawablePadding="@dimen/gapLarge"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical|left"
                 android:lines="1"
@@ -109,62 +91,32 @@
 
         </LinearLayout>
 
-        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/issues"-->
-            <!--style="@style/repo_overview_item"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/material_drawer_item_profile">-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/issuesIcon"-->
-                <!--android:layout_width="@dimen/material_drawer_item_profile_icon"-->
-                <!--android:layout_height="@dimen/material_drawer_item_profile_icon"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"-->
-                <!--android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"-->
-                <!--android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"-->
-                <!--android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"-->
-                <!--android:clickable="false"-->
-                <!--android:gravity="center"-->
-                <!--android:textColor="?colorPrimary"-->
-                <!--android:textSize="@dimen/textSizeXLarge" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/issuesNumber"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:fontFamily="sans-serif-medium"-->
-                <!--android:gravity="center_vertical|left"-->
-                <!--android:lines="1"-->
-                <!--android:singleLine="true"-->
-                <!--android:text="@string/open_issues"-->
-                <!--android:textSize="@dimen/material_drawer_item_profile_text" />-->
-
-        <!--</LinearLayout>-->
-
         <LinearLayout
             style="@style/repo_overview_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_drawer_item_profile"
+            android:layout_marginLeft="@dimen/gapMedium"
             android:background="@null"
             android:clickable="false"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/isStarredIcon"
+            <TextView
+                android:id="@+id/starredPlaceholder"
+                style="@style/PlaceholderRepoAbout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true" />
+                android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/isWatchedIcon"
+            <TextView
+                android:id="@+id/watchedPlaceHolder"
+                style="@style/PlaceholderRepoAbout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true" />
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/forkPlaceHolder"
+                style="@style/PlaceholderRepoAbout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

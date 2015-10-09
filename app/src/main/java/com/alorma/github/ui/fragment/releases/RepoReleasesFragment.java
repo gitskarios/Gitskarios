@@ -7,7 +7,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.RepoReleaseClient;
+import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.adapter.ReleasesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
@@ -53,7 +53,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
     protected void executeRequest() {
         super.executeRequest();
 
-        RepoReleaseClient client = new RepoReleaseClient(getActivity(), repoInfo, 0);
+        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, 0);
         client.setOnResultCallback(this);
         client.execute();
     }
@@ -62,7 +62,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
-        RepoReleaseClient client = new RepoReleaseClient(getActivity(), repoInfo, 0);
+        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, 0);
         client.setOnResultCallback(this);
         client.execute();
     }
@@ -79,7 +79,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
                 setAdapter(adapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -88,7 +88,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             if (error != null && error.getResponse() != null) {
-                setEmpty(error.getResponse().getStatus());
+                setEmpty(true, error.getResponse().getStatus());
             }
         }
     }

@@ -19,7 +19,6 @@ package com.musenkishi.atelier;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -30,7 +29,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.util.Pair;
@@ -141,8 +139,6 @@ public class Atelier {
             applyColorToView((TextView) target.getView(), color, fromCache);
         } else if (target.getView() instanceof CardView) {
             applyColorToView((CardView) target.getView(), color, fromCache);
-        } else if (target.getView() instanceof FloatingActionButton) {
-            applyColorToView((FloatingActionButton) target.getView(), color, fromCache, target.shouldMaskDrawable());
         } else if (target.getView() instanceof ImageView) {
             applyColorToView((ImageView) target.getView(), color, fromCache, target.shouldMaskDrawable());
         } else {
@@ -203,75 +199,6 @@ public class Atelier {
             });
             colorAnimation.setDuration(300);
             colorAnimation.start();
-        }
-    }
-
-    private static void applyColorToView(final FloatingActionButton floatingActionButton, int color, boolean fromCache, boolean shouldMask) {
-        if (fromCache) {
-            if (shouldMask) {
-                if (floatingActionButton.getDrawable() != null) {
-                    floatingActionButton.getDrawable().mutate()
-                            .setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-                } else if (floatingActionButton.getBackground() != null) {
-                    floatingActionButton.getBackground().mutate()
-                            .setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-                }
-            } else {
-                ColorStateList colorStateList = ColorStateList.valueOf(color);
-                floatingActionButton.setBackgroundTintList(colorStateList);
-            }
-        } else {
-            if (shouldMask) {
-
-                Integer colorFrom;
-                ValueAnimator.AnimatorUpdateListener imageAnimatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        if (floatingActionButton.getDrawable() != null) {
-                            floatingActionButton.getDrawable().mutate()
-                                    .setColorFilter((Integer) valueAnimator
-                                            .getAnimatedValue(), PorterDuff.Mode.MULTIPLY);
-                        } else if (floatingActionButton.getBackground() != null) {
-                            floatingActionButton.getBackground().mutate()
-                                    .setColorFilter((Integer) valueAnimator
-                                            .getAnimatedValue(), PorterDuff.Mode.MULTIPLY);
-                        }
-                    }
-                };
-                ValueAnimator.AnimatorUpdateListener animatorUpdateListener;
-
-                PaletteTag paletteTag = (PaletteTag) floatingActionButton.getTag(viewTagKey);
-                animatorUpdateListener = imageAnimatorUpdateListener;
-                colorFrom = paletteTag.getColor();
-                floatingActionButton.setTag(viewTagKey, new PaletteTag(paletteTag.getId(), color));
-
-                Integer colorTo = color;
-                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                colorAnimation.addUpdateListener(animatorUpdateListener);
-                colorAnimation.setDuration(300);
-                colorAnimation.start();
-
-            } else {
-
-                Integer colorFrom = Color.parseColor("#FFFAFAFA");
-
-                ColorStateList colorStateList = floatingActionButton.getBackgroundTintList();
-                if (colorStateList != null) {
-                    colorFrom = colorStateList.getDefaultColor();
-                }
-
-                Integer colorTo = color;
-                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animator) {
-                        int color = (Integer) animator.getAnimatedValue();
-                        floatingActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
-                    }
-                });
-                colorAnimation.setDuration(300);
-                colorAnimation.start();
-            }
         }
     }
 

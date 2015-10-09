@@ -97,7 +97,7 @@ public class PullRequestCommitsView extends LinearLayout {
             profileIcon.setImageDrawable(iconDrawable);
         }
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(getContext(), formatter.print(pullRequestStoryCommitsList.createdAt()));
+        String date = TimeUtils.getTimeAgoString(formatter.print(pullRequestStoryCommitsList.createdAt()));
         String pushedDate = getContext().getResources().getString(R.string.pushed) + " " + date;
 
         createdAt.setText(pushedDate);

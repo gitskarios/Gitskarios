@@ -7,18 +7,25 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +33,17 @@ import java.util.List;
 /**
  * Created by Bernat on 31/01/2015.
  */
-public class SearchActivity extends BackActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class SearchActivity extends BackActivity {
 
-    private SearchView searchView;
+    private EditText searchView;
     private SearchReposFragment searchReposFragment;
     private SearchUsersFragment searchUsersFragment;
     private ViewPager viewPager;
-    private List<Fragment> listFragments;
     private String lastQuery;
 
     public static Intent launchIntent(Context context) {
         return new Intent(context, SearchActivity.class);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,8 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
 
         setTitle("");
 
+        searchView = (EditText) findViewById(R.id.searchView);
+
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -54,127 +61,64 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
         searchReposFragment = SearchReposFragment.newInstance(null);
         searchUsersFragment = SearchUsersFragment.newInstance(null);
 
-        listFragments = new ArrayList<>();
+        List<Fragment> listFragments = new ArrayList<>();
         listFragments.add(searchReposFragment);
         listFragments.add(searchUsersFragment);
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        if (ViewCompat.isLaidOut(tabLayout)) {
-            tabLayout.setupWithViewPager(viewPager);
-        } else {
-            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    tabLayout.setupWithViewPager(viewPager);
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+        tabLayout.setupWithViewPager(viewPager);
 
-                    tabLayout.removeOnLayoutChangeListener(this);
+        searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (textView.length() > 0) {
+                    switch (actionId) {
+                        case EditorInfo.IME_ACTION_DONE:
+                        case EditorInfo.IME_ACTION_SEARCH:
+                        case EditorInfo.IME_ACTION_SEND:
+                        case EditorInfo.IME_ACTION_NEXT:
+                        case EditorInfo.IME_ACTION_GO:
+                            if (textView.getText() != null) {
+                                search(textView.getText().toString());
+                            }
+                            break;
+                    }
                 }
-            });
-        }
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.navigation_repos_search);
-                case 1:
-                    return getString(R.string.navigation_people);
+                return false;
             }
-            return "";
-        }
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         if (getToolbar() != null) {
-            getToolbar().inflateMenu(R.menu.people_menu);
+            getToolbar().inflateMenu(R.menu.search_activity_menu);
 
             MenuItem searchItem = menu.findItem(R.id.action_search);
 
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    return false;
-                }
+            IconicsDrawable searchIcon = new IconicsDrawable(getApplicationContext(), Octicons.Icon.oct_search).actionBar().colorRes(R.color.gray_github_medium);
 
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    clearSearch();
-                    return false;
-                }
-            });
-
-
-            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            searchView.setIconifiedByDefault(false);
-            searchView.setSubmitButtonEnabled(true);
-            searchView.setOnQueryTextListener(this);
-            searchView.setOnCloseListener(this);
+            searchItem.setIcon(searchIcon);
         }
 
         return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        MenuItemCompat.expandActionView(searchItem);
-
-        if (searchView != null) {
-            searchView.requestFocus();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            if (searchView != null && searchView.getText() != null) {
+                String searchText = searchView.getText().toString();
+                if (!TextUtils.isEmpty(searchText)) {
+                    if (!searchText.equals(lastQuery)) {
+                        lastQuery = searchText;
+                        search(searchText);
+                    }
+                }
+            }
         }
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    private void clearSearch() {
-        if (searchUsersFragment != null) {
-            getFragmentManager().popBackStack();
-            searchUsersFragment = null;
-        }
-
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String s) {
-        if (!s.equals(lastQuery)) {
-            lastQuery = s;
-            search(s);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean onClose() {
-        clearSearch();
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     private void search(String query) {
@@ -190,4 +134,5 @@ public class SearchActivity extends BackActivity implements SearchView.OnQueryTe
     public void onBackPressed() {
         finish();
     }
+
 }

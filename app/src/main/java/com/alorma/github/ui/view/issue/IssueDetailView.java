@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.basesdk.client.StoreCredentials;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
@@ -24,7 +24,6 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.github.ui.activity.ReposActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
@@ -97,7 +96,7 @@ public class IssueDetailView extends LinearLayout {
 
             if (issue.user != null) {
                 profileName.setText(issue.user.login);
-                profileEmail.setText(TimeUtils.getTimeAgoString(getContext(), issue.created_at));
+                profileEmail.setText(TimeUtils.getTimeAgoString(issue.created_at));
                 ImageLoader instance = ImageLoader.getInstance();
                 instance.displayImage(issue.user.avatar_url, profileIcon);
                 OnClickListener issueUserClick = new OnClickListener() {
@@ -127,13 +126,13 @@ public class IssueDetailView extends LinearLayout {
 
             if (issue.labels != null && issue.labels.size() > 0) {
                 labelsLayout.setVisibility(View.VISIBLE);
+                int margin = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
                 for (Label label : issue.labels) {
                     LabelView labelView = new LabelView(getContext());
                     labelView.setLabel(label);
                     labelsLayout.addView(labelView);
 
                     if (labelView.getLayoutParams() != null && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
-                        int margin = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
                         FlowLayout.LayoutParams layoutParams = (FlowLayout.LayoutParams) labelView.getLayoutParams();
                         layoutParams.height = FlowLayout.LayoutParams.WRAP_CONTENT;
                         layoutParams.width = FlowLayout.LayoutParams.WRAP_CONTENT;

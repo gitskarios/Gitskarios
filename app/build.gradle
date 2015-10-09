@@ -4,14 +4,14 @@ apply plugin: 'com.github.ben-manes.versions'
 //gradle dependencyUpdates -Drevision=release
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
-        versionName "2.5.3"
-        versionCode 2530
+        targetSdkVersion 23
+        versionName "2.5.16"
+        versionCode 25160
         resValue "string", "app_git_hash", getCurrentGitHash()
     }
 
@@ -40,6 +40,7 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
+            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
         }
         release {
             minifyEnabled false
@@ -49,7 +50,18 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
+            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
             ext.betaDistributionGroupAliases="gitskarios-alpha-testers"
+        }
+        cloudtest {
+            minifyEnabled false
+            if (signingConfigs.playStore != null) {
+                signingConfig signingConfigs.playStore
+            }
+            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
+            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
+            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "\"" + getGHCustomToken(true) + "\""
         }
     }
 }
@@ -106,6 +118,14 @@ def getGHCallback(pro) {
     }
 }
 
+def getGHCustomToken(pro) {
+    if (pro) {
+        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
+    } else {
+        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
+    }
+}
+
 assembleRelease.dependsOn clean
 assembleRelease.doLast {
     tasks.crashlyticsUploadDistributionRelease.execute()
@@ -114,47 +134,52 @@ assembleRelease.doLast {
 dependencies {
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
     releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
+    cloudtestCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
     // Submodules
 
     compile project(':libraries:breadcrumbs')
     compile project(':libraries:atelier')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
-    compile('com.mikepenz:aboutlibraries:5.0.6@aar') {
-        transitive = true
-    }
     compile 'com.github.xiprox.errorview:library:2.2.0'
-    compile 'com.android.support:design:22.2.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:palette-v7:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.google.android.gms:play-services-analytics:7.5.0'
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:palette-v7:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.android.support:cardview-v7:23.0.1'
+    compile 'com.google.android.gms:play-services-analytics:7.8.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
 
-    compile('com.mikepenz:materialdrawer:3.1.2@aar') {
+    compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
         transitive = true
     }
-    compile('com.mikepenz:actionitembadge:3.0.4@aar')
-    compile 'com.mikepenz.iconics:octicons-typeface:2.2.0@aar'
+    compile('com.mikepenz:materialdrawer:4.0.8@aar') {
+        transitive = true
+    }
+    compile('com.mikepenz:actionitembadge:3.1.1@aar')
+    compile 'com.mikepenz:octicons-typeface:3.0.1@aar'
+    compile 'com.mikepenz:google-material-typeface:1.2.0@aar'
 
-    compile 'com.github.d-max:spots-dialog:0.3'
+    compile 'com.github.d-max:spots-dialog:0.4'
     compile 'com.squareup:otto:1.3.8'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'io.realm:realm-android:0.81.1'
-    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.1@aar'
+    compile 'io.realm:realm-android:0.82.2'
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
+
     compile 'com.afollestad:material-cab:0.1.4'
-//    compile 'com.binaryfork:spanny:1.0.2'
-//    compile 'com.github.Musenkishi:Atelier:1.3.1'
+    compile 'com.afollestad:material-dialogs:0.7.9.1'
 
     compile 'com.github.pedrovgs:renderers:2.0.3'
     compile 'com.jakewharton:butterknife:7.0.1'
+
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
 }

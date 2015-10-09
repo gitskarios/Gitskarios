@@ -6,13 +6,20 @@
         <item name="color">@color/white</item>
     </style>
 
+    <style name="DrawerArrowStyleGray" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/gray_github_medium</item>
+    </style>
+
     <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorSecondary">@color/accent</item>
     </style>
+
     <style name="FileRowToolbar" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorPrimary">@color/black_semi_transparent</item>
         <item name="android:textColorSecondary">@color/accent</item>
     </style>
+
     <style name="CommitContentRowToolbar" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorPrimary">@color/black_semi_transparent</item>
         <item name="android:textColorSecondary">@color/accent</item>
@@ -93,6 +100,7 @@
     <style name="SpotDialog.loading_adding_milestones">
         <item name="DialogTitleText">@string/adding_milestone</item>
     </style>
+
     <style name="SpotDialog.loading_adding_comment">
         <item name="DialogTitleText">@string/adding_comment</item>
     </style>
@@ -100,6 +108,7 @@
     <style name="SpotDialog.loading_adding_assignee">
         <item name="DialogTitleText">@string/adding_assignee</item>
     </style>
+
     <style name="SpotDialog.loading_merging">
         <item name="DialogTitleText">@string/merging</item>
     </style>
@@ -190,5 +199,13 @@
         <item name="android:paddingLeft">@dimen/material_drawer_vertical_padding</item>
         <item name="android:paddingRight">@dimen/material_drawer_vertical_padding</item>
         <item name="android:paddingStart">@dimen/material_drawer_vertical_padding</item>
+    </style>
+
+    <style name="PlaceholderRepoAbout" parent="Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:drawablePadding">@dimen/gapMedium</item>
     </style>
 </resources>

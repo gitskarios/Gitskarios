@@ -31,7 +31,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<List<U
                 setAdapter(adapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
+            setEmpty(false);
         }
     }
 
@@ -39,7 +39,7 @@ public abstract class BaseUsersListFragment extends PaginatedListFragment<List<U
     public void onFail(RetrofitError error) {
         super.onFail(error);
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-        setEmpty();
+        setEmpty(true);
         }
     }
 

@@ -1,5 +1,11 @@
 package com.alorma.github.utils;
 
+import android.widget.TextView;
+
+import com.alorma.github.R;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -34,4 +40,20 @@ public class TextUtils {
         return content;
     }
 
+    public static void applyNumToTextView(TextView textView, Octicons.Icon value, int num) {
+        IconicsDrawable drawable = new IconicsDrawable(textView.getContext(), value);
+        drawable.sizeRes(R.dimen.textSizeSmall);
+        int colorRes;
+        if (num > 0) {
+            colorRes = R.color.icons;
+        } else {
+            colorRes = R.color.gray_github_light_selected;
+        }
+        drawable.colorRes(colorRes);
+        textView.setCompoundDrawables(null, null, drawable, null);
+        int offset = textView.getResources().getDimensionPixelOffset(R.dimen.gapSmall);
+        textView.setCompoundDrawablePadding(offset);
+        textView.setText(String.valueOf(num));
+        textView.setTextColor(textView.getContext().getResources().getColor(colorRes));
+    }
 }
