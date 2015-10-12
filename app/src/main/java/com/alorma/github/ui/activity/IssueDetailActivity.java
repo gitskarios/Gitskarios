@@ -732,61 +732,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         }
     }
 
-    /**
-     * Close issue
-     */
-
-    private void closeIssueDialog() {
-        String title = getString(R.string.closeIssue);
-        String accept = getString(R.string.accept);
-        String cancel = getString(R.string.cancel);
-
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .title(title)
-                .positiveText(accept)
-                .negativeText(cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        super.onPositive(materialDialog);
-                        closeIssue();
-                    }
-                })
-                .build();
-
-        dialog.show();
-    }
-
-    private void closeIssue() {
-        changeIssueState(IssueState.closed);
-    }
-
-    private void reopenIssue() {
-        changeIssueState(IssueState.open);
-    }
-
-    private void changeIssueState(IssueState state) {
-        ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(this, issueInfo, state);
-        changeIssueStateClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
-            @Override
-            public void onResponseOk(Issue issue, Response r) {
-                if (issue != null) {
-                    getContent();
-                    IssueDetailActivity.this.issueStory.issue = issue;
-                    shouldRefreshOnBack = true;
-
-                    Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-
-            }
-        });
-        changeIssueStateClient.execute();
-    }
-
     @Override
     public void onBackPressed() {
         setResult(shouldRefreshOnBack ? RESULT_FIRST_USER : RESULT_OK);
