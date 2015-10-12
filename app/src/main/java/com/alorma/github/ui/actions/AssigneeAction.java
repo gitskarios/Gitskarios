@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
@@ -27,11 +28,12 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 12/10/2015.
  */
-public class AssigneeAction extends Action<RepoInfo, Boolean> {
+public class AssigneeAction extends Action<Boolean> {
 
     private Context context;
     private IssueInfo issueInfo;
     private User user;
+    private MaterialDialog dialog;
 
     public AssigneeAction(Context context, IssueInfo issueInfo, User user) {
         this.context = context;
@@ -40,7 +42,12 @@ public class AssigneeAction extends Action<RepoInfo, Boolean> {
     }
 
     @Override
-    public Action<RepoInfo, Boolean> execute() {
+    public Action<Boolean> execute() {
+        dialog = new MaterialDialog.Builder(context)
+                .content(R.string.changing_assignee)
+                .progress(true, 0)
+                .theme(Theme.DARK)
+                .show();
         EditIssueAssigneeRequestDTO editIssueRequestDTO = new EditIssueAssigneeRequestDTO();
         if (user != null) {
             editIssueRequestDTO.assignee = user.login;
@@ -56,18 +63,23 @@ public class AssigneeAction extends Action<RepoInfo, Boolean> {
         client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
             @Override
             public void onResponseOk(Issue issue, Response r) {
-                if (getCallback() != null) {
-                    getCallback().onResult(true);
-                }
+                returnResult(true);
             }
 
             @Override
             public void onFail(RetrofitError error) {
-                if (getCallback() != null) {
-                    getCallback().onResult(false);
-                }
+                returnResult(false);
             }
         });
         client.execute();
+    }
+
+    private void returnResult(boolean t) {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        if (getCallback() != null) {
+            getCallback().onResult(t);
+        }
     }
 }

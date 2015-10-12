@@ -122,16 +122,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
                             int color = (int) textRootView.getTag();
                             intent.putExtra(ProfileActivity.EXTRA_COLOR, color);
                         }
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            View sharedView = avatar;
-                            String transitionName = "avatar";
-
-                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext(), sharedView, transitionName);
-                            v.getContext().startActivity(intent, transitionActivityOptions.toBundle());
-                        } else {
-                            v.getContext().startActivity(intent);
-                        }
+                        v.getContext().startActivity(intent);
                     }
                 }
             });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -22,10 +23,11 @@ import retrofit.client.Response;
 /**
  * Created by Bernat on 12/10/2015.
  */
-public class CollaboratorsPickerAction extends Action<RepoInfo, User> implements BaseClient.OnResultCallback<List<User>> {
+public class CollaboratorsPickerAction extends Action<User> implements BaseClient.OnResultCallback<List<User>> {
 
     private Context context;
     private IssueInfo issueInfo;
+    private MaterialDialog dialog;
 
     public CollaboratorsPickerAction(Context context, IssueInfo issueInfo) {
         this.context = context;
@@ -33,8 +35,14 @@ public class CollaboratorsPickerAction extends Action<RepoInfo, User> implements
     }
 
     @Override
-    public Action<RepoInfo, User> execute() {
-        GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(context, item);
+    public Action<User> execute() {
+        dialog = new MaterialDialog.Builder(context)
+                .content(R.string.loading_collaborators)
+                .progress(true, 0)
+                .theme(Theme.DARK)
+                .show();
+
+        GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(context, issueInfo.repoInfo);
         contributorsClient.setOnResultCallback(this);
         contributorsClient.execute();
         return this;
@@ -42,6 +50,10 @@ public class CollaboratorsPickerAction extends Action<RepoInfo, User> implements
 
     @Override
     public void onResponseOk(final List<User> users, Response r) {
+
+        if (dialog != null) {
+            dialog.dismiss();
+        }
         if (users != null) {
             Collections.reverse(users);
             UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(context, users);
@@ -75,6 +87,8 @@ public class CollaboratorsPickerAction extends Action<RepoInfo, User> implements
 
     @Override
     public void onFail(RetrofitError error) {
-
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }
