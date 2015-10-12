@@ -22,6 +22,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
+import com.alorma.github.ui.actions.CloseAction;
+import com.alorma.github.ui.actions.ReopenAction;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
@@ -423,10 +425,22 @@ public class PullRequestDetailActivity extends BackActivity
                 finish();
                 break;
             case R.id.action_close_issue:
-                closeIssueDialog();
+                new CloseAction(this, issueInfo, R.string.closePullRequest).setCallback(new ActionCallback<Issue>() {
+                    @Override
+                    public void onResult(Issue issue) {
+                        getContent();
+                        Snackbar.make(fab, R.string.pullrequest_change, Snackbar.LENGTH_SHORT).show();
+                    }
+                }).execute();
                 break;
             case R.id.action_reopen_issue:
-                reopenIssue();
+                new ReopenAction(this, issueInfo, R.string.reopenPullrequst).setCallback(new ActionCallback<Issue>() {
+                    @Override
+                    public void onResult(Issue issue) {
+                        getContent();
+                        Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+                    }
+                }).execute();
                 break;
             case R.id.issue_edit_milestone:
                 editMilestone();

@@ -18,21 +18,18 @@ import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.actions.ActionCallback;
-import com.alorma.github.ui.actions.AssigneeAction;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
-import com.alorma.github.ui.actions.CollaboratorsPickerAction;
+import com.alorma.github.ui.actions.CloseAction;
+import com.alorma.github.ui.actions.ReopenAction;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
-import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
-import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -40,7 +37,6 @@ import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
@@ -52,12 +48,10 @@ import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
-import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -68,7 +62,6 @@ import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -422,10 +415,22 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 finish();
                 break;
             case R.id.action_close_issue:
-                closeIssueDialog();
+                new CloseAction(this, issueInfo, R.string.closeIssue).setCallback(new ActionCallback<Issue>() {
+                    @Override
+                    public void onResult(Issue issue) {
+                        getContent();
+                        Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+                    }
+                }).execute();
                 break;
             case R.id.action_reopen_issue:
-                reopenIssue();
+                new ReopenAction(this, issueInfo, R.string.reopenIssue).setCallback(new ActionCallback<Issue>() {
+                    @Override
+                    public void onResult(Issue issue) {
+                        getContent();
+                        Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+                    }
+                }).execute();
                 break;
             case R.id.issue_edit_milestone:
                 editMilestone();
