@@ -109,16 +109,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         setContentView(R.layout.profile_activity);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setAllowEnterTransitionOverlap(false);
+//            getWindow().setAllowEnterTransitionOverlap(false);
         }
-
-        if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
-            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, -1);
-            if (avatarColor != -1) {
-                applyColors(avatarColor);
-            }
-        }
-
         image = (ImageView) findViewById(R.id.imgToolbar);
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
@@ -128,6 +120,14 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         recycler.setItemAnimator(new DefaultItemAnimator());
         profileItemsAdapter = new ProfileItemsAdapter(this);
         recycler.setAdapter(profileItemsAdapter);
+
+        if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
+            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, -1);
+            if (avatarColor != -1) {
+                applyColors(avatarColor);
+            }
+        }
+
     }
 
     @Override
@@ -155,6 +155,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                     requestClient = new RequestUserClient(this, user.login);
                     collapsingToolbarLayout.setTitle(user.login);
                 }
+                loadImageAvatar(user);
             } else {
                 requestClient = new GetAuthUserClient(this);
                 updateProfile = true;
@@ -236,44 +237,47 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         fillCardPlan(user);
 
         if (getSupportActionBar() != null) {
-            ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if (!colorApplied) {
-                        Atelier.with(ProfileActivity.this, user.avatar_url)
-                                .load(loadedImage)
-                                .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                                .listener(new Atelier.OnPaletteRenderedListener() {
-                                    @Override
-                                    public void onRendered(Palette palette, int generatedColor) {
-                                        applyColors(generatedColor);
-                                        profileItemsAdapter.setAvatarColor(generatedColor);
-                                    }
-                                })
-                                .into(image);
-                    } else {
-                        profileItemsAdapter.setAvatarColor(avatarColor);
-                    }
-
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
+            loadImageAvatar(user);
 //            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
         }
+    }
+
+    private void loadImageAvatar(final User user) {
+        ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                if (!colorApplied) {
+                    Atelier.with(ProfileActivity.this, user.avatar_url)
+                            .load(loadedImage)
+                            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+                            .listener(new Atelier.OnPaletteRenderedListener() {
+                                @Override
+                                public void onRendered(Palette palette, int generatedColor) {
+                                    applyColors(generatedColor);
+                                }
+                            })
+                            .into(image);
+                } else {
+                    profileItemsAdapter.setAvatarColor(avatarColor);
+                }
+
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
     }
 
 //    @Override
@@ -299,14 +303,17 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 //    }
 
     private void applyColors(int rgb) {
-        colorApplied = true;
-        collapsingToolbarLayout.setContentScrimColor(rgb);
-        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
-        collapsingToolbarLayout.setStatusBarScrimColor(rgb);
-        profileItemsAdapter.setAvatarColor(rgb);
-
         try {
+            colorApplied = true;
+            if (collapsingToolbarLayout != null) {
+                collapsingToolbarLayout.setContentScrimColor(rgb);
+                collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
+                collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+                collapsingToolbarLayout.setStatusBarScrimColor(rgb);
+            }
+            if (profileItemsAdapter != null) {
+                profileItemsAdapter.setAvatarColor(rgb);
+            }
             if (rgb != 0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     getWindow().setStatusBarColor(rgb);

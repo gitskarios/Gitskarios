@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
@@ -600,38 +601,38 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
      */
 
     private void openAssignee() {
-        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), issueInfo.repoInfo);
+        GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(getApplicationContext(), issueInfo.repoInfo);
         contributorsClient.setOnResultCallback(new ContributorsCallback());
         contributorsClient.execute();
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
+    private class ContributorsCallback implements BaseClient.OnResultCallback<List<User>> {
         @Override
-        public void onResponseOk(List<Contributor> contributors, Response r) {
-            final List<User> users = new ArrayList<>();
+        public void onResponseOk(List<User> users, Response r) {
+            final List<User> finalUsers = new ArrayList<>();
             String owner = issueInfo.repoInfo.owner;
             boolean exist = false;
-            if (contributors != null) {
-                for (Contributor contributor : contributors) {
-                    exist = contributor.author.login.equals(owner);
-                    users.add(contributor.author);
+            if (users != null) {
+                for (User user : users) {
+                    exist = user.login.equals(owner);
+                    finalUsers.add(user);
                 }
             }
 
             if (!exist) {
                 User user = new User();
                 user.login = owner;
-                users.add(user);
+                finalUsers.add(user);
             }
 
-            Collections.reverse(users);
+            Collections.reverse(finalUsers);
             UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(IssueDetailActivity.this, users);
 
             MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
             builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
                 @Override
                 public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                    User user = users.get(i);
+                    User user = finalUsers.get(i);
                     setAssigneeUser(user);
                     materialDialog.dismiss();
                 }

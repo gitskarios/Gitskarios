@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,12 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
                 Atelier.with(context, imageUri)
                         .load(loadedImage)
                         .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+                        .listener(new Atelier.OnPaletteRenderedListener() {
+                            @Override
+                            public void onRendered(Palette palette, int generatedColor) {
+                                holder.textRootView.setTag(generatedColor);
+                            }
+                        })
                         .into(holder.textRootView);
 
                 //Set color to text in a TextView
@@ -95,7 +102,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
         private final ImageView avatar;
         private final TextView text;
         private final View textRootView;
-        private int color;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -111,8 +118,8 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
                         v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
                     } else {
                         final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
-                        if (textRootView.getBackground() instanceof ColorDrawable) {
-                            int color = ((ColorDrawable) textRootView.getBackground()).getColor();
+                        if (textRootView.getTag() != null) {
+                            int color = (int) textRootView.getTag();
                             intent.putExtra(ProfileActivity.EXTRA_COLOR, color);
                         }
 
