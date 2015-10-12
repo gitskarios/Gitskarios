@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion changeDate="Oct 12,2015" versionName="2.5.18">
+        <changelogtext>Add some UI enhancements.</changelogtext>
+        <changelogtext>Android Marshmallow improvements.</changelogtext>
+        <changelogtext>Stability improvements.</changelogtext>
+    </changelogversion>
     <changelogversion changeDate="Oct 02,2015" versionName="2.5.17">
         <changelogtext>Add some UI enhancements.</changelogtext>
     </changelogversion>

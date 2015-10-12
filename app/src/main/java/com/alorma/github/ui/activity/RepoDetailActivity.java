@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
@@ -214,23 +215,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         return true;
     }
 
-    private Intent getShareIntent() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(Intent.EXTRA_SUBJECT, currentRepo.full_name);
-        intent.putExtra(Intent.EXTRA_TEXT, currentRepo.svn_url);
-        return intent;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
         if (item.getItemId() == R.id.share_repo) {
             if (currentRepo != null) {
-                Intent intent = getShareIntent();
-                startActivity(intent);
+                String title = currentRepo.full_name;
+                String url = currentRepo.svn_url;
+
+                new ShareAction(this, title, url).execute();
             }
         } else if (item.getItemId() == R.id.action_repo_change_branch) {
             changeBranch();

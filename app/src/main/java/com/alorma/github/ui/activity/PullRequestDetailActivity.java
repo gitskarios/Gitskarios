@@ -24,6 +24,7 @@ import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.actions.CloseAction;
 import com.alorma.github.ui.actions.ReopenAction;
+import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
@@ -453,8 +454,9 @@ public class PullRequestDetailActivity extends BackActivity
                 break;
             case R.id.share_issue:
                 if (pullRequestStory != null && pullRequestStory.pullRequest != null) {
-                    Intent intent = getShareIntent();
-                    startActivity(intent);
+                    String title = issueInfo.toString();
+                    String url = pullRequestStory.pullRequest.html_url;
+                    new ShareAction(this, title, url).execute();
                 }
                 break;
             case R.id.action_add_shortcut:

@@ -22,6 +22,7 @@ import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.actions.CloseAction;
 import com.alorma.github.ui.actions.ReopenAction;
+import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
@@ -390,15 +391,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         return true;
     }
 
-    private Intent getShareIntent() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(Intent.EXTRA_SUBJECT, issueInfo.toString());
-        intent.putExtra(Intent.EXTRA_TEXT, issueStory.issue.html_url);
-        return intent;
-    }
-
     public void onAddComment() {
         String hint = getString(R.string.add_comment);
         Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
@@ -443,8 +435,11 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 break;
             case R.id.share_issue:
                 if (issueStory != null && issueStory.issue != null) {
-                    Intent intent = getShareIntent();
-                    startActivity(intent);
+
+                    String title = issueInfo.toString();
+                    String url = issueStory.issue.html_url;
+
+                    new ShareAction(this, title, url).execute();
                 }
                 break;
             case R.id.action_add_shortcut:

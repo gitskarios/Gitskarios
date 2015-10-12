@@ -434,4 +434,5 @@
     <string name="issue_info">#%1$d opened %2$s by %3$s</string>
     <string name="loading_collaborators">Loading collaborators</string>
     <string name="changing_assignee">Changing assignee</string>
+    <string name="share_intent_title">Share via...</string>
 </resources>
