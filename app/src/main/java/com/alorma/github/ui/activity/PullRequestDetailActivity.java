@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
+import com.alorma.github.ui.actions.ActionCallback;
+import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.Head;
@@ -430,7 +432,7 @@ public class PullRequestDetailActivity extends BackActivity
                 editMilestone();
                 break;
             case R.id.issue_edit_assignee:
-                openAssignee();
+                new ChangeAssigneeAction(this, issueInfo).setCallback(new AssigneActionCallback()).execute();
                 break;
             case R.id.issue_edit_labels:
                 openLabels();
@@ -635,75 +637,6 @@ public class PullRequestDetailActivity extends BackActivity
         EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
         editIssueRequestDTO.milestone = null;
         executeEditIssue(editIssueRequestDTO, R.string.issue_change_clear_milestone);
-    }
-
-
-    /**
-     * Assignee
-     */
-    private void openAssignee() {
-        GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(getApplicationContext(), issueInfo.repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
-        contributorsClient.execute();
-    }
-
-    private class ContributorsCallback implements BaseClient.OnResultCallback<List<User>> {
-        @Override
-        public void onResponseOk(List<User> users, Response r) {
-            final List<User> finalUsers = new ArrayList<>();
-            String owner = issueInfo.repoInfo.owner;
-            boolean exist = false;
-            if (users != null) {
-                for (User user : users) {
-                    exist = user.login.equals(owner);
-                    finalUsers.add(user);
-                }
-            }
-
-            if (!exist) {
-                User user = new User();
-                user.login = owner;
-                finalUsers.add(user);
-            }
-
-            Collections.reverse(finalUsers);
-            UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(PullRequestDetailActivity.this, users);
-
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(PullRequestDetailActivity.this);
-            builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
-                @Override
-                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                    User user = finalUsers.get(i);
-                    setAssigneeUser(user);
-                    materialDialog.dismiss();
-                }
-            });
-            builder.negativeText(R.string.no_assignee);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onNegative(MaterialDialog dialog) {
-                    super.onNegative(dialog);
-                    setAssigneeUser(null);
-                }
-            });
-            builder.show();
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-
-        }
-    }
-
-    private void setAssigneeUser(User user) {
-        showProgressDialog(R.style.SpotDialog_loading_adding_assignee);
-        EditIssueAssigneeRequestDTO editIssueRequestDTO = new EditIssueAssigneeRequestDTO();
-        if (user != null) {
-            editIssueRequestDTO.assignee = user.login;
-        } else {
-            editIssueRequestDTO.assignee = null;
-        }
-        executeEditIssue(editIssueRequestDTO, R.string.issue_change_assignee);
     }
 
     private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
@@ -930,6 +863,18 @@ public class PullRequestDetailActivity extends BackActivity
 
                 executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
             }
+        }
+    }
+
+    private class AssigneActionCallback implements ActionCallback<Boolean> {
+        @Override
+        public void onResult(Boolean result) {
+            if (result) {
+                Snackbar.make(fab, "Assignee changed", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(fab, "Assignee change failed", Snackbar.LENGTH_SHORT).show();
+            }
+            getContent();
         }
     }
 }
