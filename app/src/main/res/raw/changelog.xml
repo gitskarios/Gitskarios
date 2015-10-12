@@ -5,12 +5,6 @@
         <changelogtext>Android Marshmallow improvements.</changelogtext>
         <changelogtext>Stability improvements.</changelogtext>
     </changelogversion>
-    <changelogversion changeDate="Oct 02,2015" versionName="2.5.17">
-        <changelogtext>Add some UI enhancements.</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 29,2015" versionName="2.5.15">
-        <changelogtext>Stability improvements.</changelogtext>
-    </changelogversion>
     <changelogversion changeDate="Sep 23,2015" versionName="2.5.14">
         <changelogtext>Improved Gists.</changelogtext>
         <changelogtext>Stability improvements.</changelogtext>
