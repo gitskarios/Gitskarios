@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Notification;
@@ -318,6 +319,14 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             @Override
             public Drawable placeholder(Context context) {
                 return new IconicsDrawable(context, Octicons.Icon.oct_octoface);
+            }
+
+            @Override
+            public Drawable placeholder(Context ctx, String tag) {
+                IconicsDrawable drawable = new IconicsDrawable(ctx, Octicons.Icon.oct_octoface);
+                drawable.color(AttributesUtils.getSecondaryTextColor(ctx));
+                drawable.sizeDp(24);
+                return drawable;
             }
         });
 

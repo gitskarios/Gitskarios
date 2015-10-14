@@ -5,16 +5,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
@@ -30,7 +29,6 @@ import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
-import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
@@ -43,6 +41,11 @@ import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.ShortcutUtils;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.MiniDrawer;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
@@ -64,10 +67,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private static final int EDIT_REPO = 464;
 
     private Repo currentRepo;
-    private ViewPager viewPager;
     private List<Fragment> listFragments;
-    private TabLayout tabLayout;
     private RepoInfo requestRepoInfo;
+    private ViewGroup viewMiniDrawer;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -110,9 +112,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             if (repoInfo != null) {
                 setTitle(repoInfo.name);
 
-                tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                viewMiniDrawer = (ViewGroup) findViewById(R.id.miniDrawerLayout);
 
-                viewPager = (ViewPager) findViewById(R.id.pager);
+                createDrawer();
 
                 load(repoInfo);
             } else {
@@ -121,6 +123,21 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         } else {
             finish();
         }
+    }
+
+    private void createDrawer() {
+        ArrayList<IDrawerItem> items = new ArrayList<>();
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_info).withIconColorRes(R.color.icons));
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_file_directory).withIconColorRes(R.color.icons));
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_git_commit).withIconColorRes(R.color.icons));
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_issue_opened).withIconColorRes(R.color.icons));
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_git_pull_request).withIconColorRes(R.color.icons));
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_tag).withIconColorRes(R.color.icons));
+        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_person).withIconColorRes(R.color.icons));
+        Drawer drawer = new DrawerBuilder(this).withInnerShadow(true).withDrawerItems(items).buildView();
+        View miniDrawer = new MiniDrawer().withDrawer(drawer).withInnerShadow(true).build(this);
+
+        viewMiniDrawer.addView(miniDrawer);
     }
 
     private void load(RepoInfo repoInfo) {
@@ -145,35 +162,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         }
 
         return repoInfo;
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (listFragments.get(position) != null && listFragments.get(position) instanceof TitleProvider) {
-                return getString(((TitleProvider) listFragments.get(position)).getTitle());
-            }
-            return "";
-        }
-
     }
 
     @Override
@@ -293,7 +281,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 getSupportActionBar().setSubtitle(getRepoInfo().branch);
             }
 
-            createFragments();
+            RepoAboutFragment aboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content, aboutFragment);
+            ft.commit();
 
             this.invalidateOptionsMenu();
 
@@ -308,28 +299,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         }
     }
 
-    private void createFragments() {
-
-        createListFragments();
-
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-
-        viewPager.setOffscreenPageLimit(listFragments.size());
-        if (ViewCompat.isLaidOut(tabLayout)) {
-            tabLayout.setupWithViewPager(viewPager);
-        } else {
-            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    tabLayout.setupWithViewPager(viewPager);
-
-                    tabLayout.removeOnLayoutChangeListener(this);
-                }
-            });
-        }
-    }
-
-    private void createListFragments() {
+    /*private void createListFragments() {
         if (listFragments != null) {
             listFragments.clear();
         }
@@ -351,7 +321,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             listFragments.add(repoReleasesFragment);
             listFragments.add(repoCollaboratorsFragment);
         }
-    }
+    }*/
 
     @Override
     public void onFail(RetrofitError error) {
@@ -395,20 +365,21 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                     .startActivities();
             finish();
         } else {
-            int currentItem = viewPager.getCurrentItem();
-
-            if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()) {
-                Fragment fragment = listFragments.get(currentItem);
-                if (fragment != null && fragment instanceof BackManager) {
-                    if (((BackManager) fragment).onBackPressed()) {
-                        finish();
-                    }
-                } else {
-                    finish();
-                }
-            } else {
-                finish();
-            }
+            // TODO -> Source fragment
+//            int currentItem = viewPager.getCurrentItem();
+//
+//            if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()) {
+//                Fragment fragment = listFragments.get(currentItem);
+//                if (fragment != null && fragment instanceof BackManager) {
+//                    if (((BackManager) fragment).onBackPressed()) {
+//                        finish();
+//                    }
+//                } else {
+//                    finish();
+//                }
+//            } else {
+//                finish();
+//            }
         }
     }
 }
