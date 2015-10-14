@@ -18,7 +18,7 @@ public class BackActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            close();
+            close(true);
             return true;
         }
         return false;
@@ -26,10 +26,10 @@ public class BackActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        close();
+        close(false);
     }
 
-    protected void close() {
+    protected void close(boolean navigateUp) {
         finish();
     }
 }

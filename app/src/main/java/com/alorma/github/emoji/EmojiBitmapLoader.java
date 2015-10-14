@@ -76,6 +76,10 @@ public class EmojiBitmapLoader {
     }
 
     private void loadFromTextView() {
+
+        // TODO '[^:]+'
+        // TODO  '([^:']+)' i agafa el matx 1
+        // TODO [[^']|:]:((\+|\-)?\w+|\d):[[^']|:]
         final String regex = ":((\\+|\\-)?\\w+|\\d):";
         Pattern pattern = Pattern.compile(regex);
 

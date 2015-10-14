@@ -20,7 +20,7 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     private StoreCredentials storeCredentials;
 
-    protected final Context context;
+    protected Context context;
     private OnResultCallback<K> onResultCallback;
     protected Handler handler;
     private ApiClient client;
@@ -32,7 +32,9 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     public BaseClient(Context context, ApiClient client) {
         this.client = client;
-        this.context = context.getApplicationContext();
+        if (context != null) {
+            this.context = context.getApplicationContext();
+        }
         storeCredentials = new StoreCredentials(context);
     }
 
@@ -121,8 +123,10 @@ public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, 
 
     private void sendError(RetrofitError error) {
         if (error.getResponse() != null && error.getResponse().getStatus() == 401) {
-            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-            manager.sendBroadcast(new UnAuthIntent(storeCredentials.token()));
+            if (context != null) {
+                LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+                manager.sendBroadcast(new UnAuthIntent(storeCredentials.token()));
+            }
         } else {
             if (onResultCallback != null) {
                 onResultCallback.onFail(error);

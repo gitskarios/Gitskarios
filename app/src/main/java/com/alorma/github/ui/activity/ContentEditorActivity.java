@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -249,7 +248,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     }
 
     @Override
-    protected void close() {
+    protected void close(boolean navigateUp) {
         int result = RESULT_CANCELED;
         if (!allowEmpty) {
             finish();

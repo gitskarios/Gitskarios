@@ -16,8 +16,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.transition.Slide;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -418,7 +416,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     }
 
     @Override
-    protected void close() {
+    protected void close(boolean navigateUp) {
         if (user != null && updateProfile) {
             Intent intent = new Intent();
             Bundle extras = new Bundle();
@@ -426,6 +424,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             intent.putExtras(extras);
             setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
         }
-        super.close();
+        super.close(navigateUp);
     }
 }

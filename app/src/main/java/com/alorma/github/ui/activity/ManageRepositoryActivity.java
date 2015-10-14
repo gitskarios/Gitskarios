@@ -4,14 +4,12 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.RepositoryManagerFragment;
 
@@ -58,7 +56,7 @@ public class ManageRepositoryActivity extends BackActivity{
     }
 
     @Override
-    protected void close() {
+    protected void close(boolean navigateUp) {
         RepoRequestDTO repoRequestDTO = repositoryManagerFragment.getRepoRequestDTO();
         if (!TextUtils.isEmpty(repoRequestDTO.name))  {
             Intent data = new Intent();

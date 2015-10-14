@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -17,8 +18,6 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
-import com.alorma.github.ui.actions.ShareAction;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -27,6 +26,7 @@ import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
@@ -41,6 +41,7 @@ import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.ShortcutUtils;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -55,6 +56,7 @@ import retrofit.client.Response;
  */
 public class RepoDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
 
+    public static final String FROM_URL = "FROM_URL";
     public static final String REPO_INFO = "REPO_INFO";
     public static final String REPO_INFO_NAME = "REPO_INFO_NAME";
     public static final String REPO_INFO_OWNER = "REPO_INFO_OWNER";
@@ -384,20 +386,29 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     }
 
     @Override
-    public void onBackPressed() {
-        int currentItem = viewPager.getCurrentItem();
+    protected void close(boolean navigateUp) {
+        boolean fromUrl = getIntent().getExtras().getBoolean(FROM_URL, false);
+        if (navigateUp && fromUrl) {
+            Intent upIntent = new Intent(this, MainActivity.class);
+            TaskStackBuilder.create(this)
+                    .addNextIntentWithParentStack(upIntent)
+                    .startActivities();
+            finish();
+        } else {
+            int currentItem = viewPager.getCurrentItem();
 
-        if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()) {
-            Fragment fragment = listFragments.get(currentItem);
-            if (fragment != null && fragment instanceof BackManager) {
-                if (((BackManager) fragment).onBackPressed()) {
-                    super.onBackPressed();
+            if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()) {
+                Fragment fragment = listFragments.get(currentItem);
+                if (fragment != null && fragment instanceof BackManager) {
+                    if (((BackManager) fragment).onBackPressed()) {
+                        finish();
+                    }
+                } else {
+                    finish();
                 }
             } else {
-                super.onBackPressed();
+                finish();
             }
-        } else {
-            super.onBackPressed();
         }
     }
 }
