@@ -62,7 +62,7 @@ public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, R
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
-        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, 0);
+        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, page);
         client.setOnResultCallback(this);
         client.execute();
     }
