@@ -51,8 +51,8 @@
             style="@style/repo_overview_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_drawer_item_profile"
-            android:clickable="false"
-            android:background="@null">
+            android:background="@null"
+            android:clickable="false">
 
             <ImageView
                 android:id="@+id/createdIcon"
@@ -78,12 +78,25 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/htmlContentView"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:padding="@dimen/gapMedium" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/htmlContentView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/gapMedium"
+                android:padding="@dimen/gapMedium" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
 
     </LinearLayout>
 </ScrollView>

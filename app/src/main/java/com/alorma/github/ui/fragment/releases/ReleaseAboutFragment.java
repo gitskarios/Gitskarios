@@ -10,15 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
@@ -26,10 +29,13 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by a557114 on 30/07/2015.
  */
-public class ReleaseAboutFragment extends BaseFragment implements TitleProvider{
+public class ReleaseAboutFragment extends BaseFragment implements TitleProvider {
 
     private static final String RELEASE = "RELEASE";
     private static final String REPO_INFO = "REPO_INFO";
@@ -39,6 +45,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider{
     private TextView htmlContentView;
     private TextView createdAtTextView;
     private ImageView createdIcon;
+    private View progressBar;
 
     public static ReleaseAboutFragment newInstance(Release release, RepoInfo repoInfo) {
         ReleaseAboutFragment releaseAboutFragment = new ReleaseAboutFragment();
@@ -69,43 +76,62 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider{
         createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
         createdIcon = (ImageView) view.findViewById(R.id.createdIcon);
 
+        progressBar = view.findViewById(R.id.progressBar);
         htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
 
         final Release release = getArguments().getParcelable(RELEASE);
 
-        User owner = release.author;
-        ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
-        authorName.setText(owner.login);
+        if (release != null) {
+            User owner = release.author;
+            ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
+            authorName.setText(owner.login);
 
-        createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
-        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
+            createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
+            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
 
-        RepoInfo repoInfo = getArguments().getParcelable(REPO_INFO);
+            final RepoInfo repoInfo = getArguments().getParcelable(REPO_INFO);
 
-        if (release.body != null && htmlContentView != null) {
-            String htmlCode = HtmlUtils.format(release.body).toString();
-            HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
+            if (repoInfo != null && release.body != null && htmlContentView != null) {
 
-            imageGetter.repoInfo(repoInfo);
-            imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
+                RequestMarkdownDTO requestMarkdownDTO = new RequestMarkdownDTO();
+                requestMarkdownDTO.text = release.body;
+                GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), requestMarkdownDTO);
+                markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
+                    @Override
+                    public void onResponseOk(String s, Response r) {
+                        String htmlCode = HtmlUtils.format(s).toString();
+                        HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
 
-            htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-        }
+                        imageGetter.repoInfo(repoInfo);
+                        imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
 
-        author.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (release.author != null) {
-                    if (release.author.type == UserType.User) {
-                        Intent intent = ProfileActivity.createLauncherIntent(getActivity(), release.author);
-                        startActivity(intent);
-                    } else if (release.author.type == UserType.Organization) {
-                        Intent intent = OrganizationActivity.launchIntent(getActivity(), release.author.login);
-                        startActivity(intent);
+                        htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFail(RetrofitError error) {
+
+                    }
+                });
+                markdownClient.execute();
+            }
+
+            author.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (release.author != null) {
+                        if (release.author.type == UserType.User) {
+                            Intent intent = ProfileActivity.createLauncherIntent(getActivity(), release.author);
+                            startActivity(intent);
+                        } else if (release.author.type == UserType.Organization) {
+                            Intent intent = OrganizationActivity.launchIntent(getActivity(), release.author.login);
+                            startActivity(intent);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
