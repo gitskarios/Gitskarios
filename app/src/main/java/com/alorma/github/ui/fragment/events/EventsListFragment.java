@@ -51,6 +51,7 @@ import retrofit.RetrofitError;
 public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter> implements EventAdapter.EventAdapterListener {
 
     private String username;
+    private Gson gson = new Gson();
 
     public static EventsListFragment newInstance(String username) {
         Bundle bundle = new Bundle();
@@ -155,7 +156,6 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     @Override
     public void onItem(GithubEvent item) {
         EventType type = item.getType();
-        Gson gson = new Gson();
         if (type == EventType.IssueCommentEvent) {
             String s = gson.toJson(item.payload);
             IssueCommentEventPayload payload = gson.fromJson(s, IssueCommentEventPayload.class);
