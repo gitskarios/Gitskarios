@@ -29,6 +29,10 @@
         android:key="pref_repo_has_downloads"
         android:title="@string/pref_repo_has_downloads" />
 
+    <!--<CheckBoxPreference-->
+        <!--android:key="pref_repo_is_private"-->
+        <!--android:title="@string/pref_repo_is_private" />-->
+
     <com.afollestad.materialdialogs.prefs.MaterialListPreference
         android:key="pref_repo_default_branch"
         android:title="@string/pref_repo_default_branch"

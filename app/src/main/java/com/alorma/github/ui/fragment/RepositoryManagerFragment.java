@@ -125,6 +125,16 @@ public class RepositoryManagerFragment extends PreferenceFragment {
             }
         });
 
+//        CheckBoxPreference pref_repo_is_private = (CheckBoxPreference) findPreference("pref_repo_is_private");
+//        pref_repo_is_private.setChecked(repoRequestDTO.isPrivate);
+//        pref_repo_is_private.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//            @Override
+//            public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                repoRequestDTO.isPrivate = (Boolean) newValue;
+//                return true;
+//            }
+//        });
+
         pref_repo_default_branch = (ListPreference) findPreference("pref_repo_default_branch");
         pref_repo_default_branch.setTitle(repoRequestDTO.default_branch);
         pref_repo_default_branch.setEnabled(false);

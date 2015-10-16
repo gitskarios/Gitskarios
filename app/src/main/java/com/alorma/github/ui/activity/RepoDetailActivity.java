@@ -243,6 +243,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private RepoRequestDTO createRepoRequest() {
         RepoRequestDTO dto = new RepoRequestDTO();
 
+        dto.isPrivate = currentRepo.isPrivate;
         dto.name = currentRepo.name;
         dto.description = currentRepo.description;
         dto.default_branch = currentRepo.default_branch;
