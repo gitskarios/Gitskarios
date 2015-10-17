@@ -50,7 +50,8 @@
         <activity android:name=".ui.activity.CommitDetailActivity" />
         <activity
             android:name=".ui.activity.RepoDetailActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme.RepoDetail" />
         <activity
             android:name=".ui.activity.SearchActivity"
             android:theme="@style/AppTheme.Search" />

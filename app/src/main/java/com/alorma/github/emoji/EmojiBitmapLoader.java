@@ -2,9 +2,7 @@ package com.alorma.github.emoji;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.text.Editable;
 import android.text.SpannableString;
-import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.EditText;
@@ -40,7 +38,7 @@ public class EmojiBitmapLoader {
     }
 
     public void parseTextView(final TextView textView) {
-        this.textView = textView;
+        /*this.textView = textView;
 
         if (textView.getEditableText() != null) {
             spannableString = new SpannableString(textView.getEditableText());
@@ -53,8 +51,8 @@ public class EmojiBitmapLoader {
 
 
         if (emojisMap.size() == 0) {
-            EmojisProvider provider = new EmojisProvider();
-            provider.getEmojis(textView.getContext(), new EmojisProvider.EmojisCallback() {
+            EmojisProvider provider = new EmojisProvider(textView.getContext());
+            provider.getEmojis(new EmojisProvider.EmojisCallback() {
                 @Override
                 public void onEmojisLoaded(List<Emoji> emojis) {
 
@@ -72,7 +70,7 @@ public class EmojiBitmapLoader {
             });
         } else {
             loadFromTextView();
-        }
+        }*/
     }
 
     private void loadFromTextView() {

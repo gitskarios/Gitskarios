@@ -5,6 +5,6 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
-    <style name="AppTheme.Search" parent="Base.AppTheme" />
+    <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
 
 </resources>

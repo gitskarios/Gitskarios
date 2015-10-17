@@ -158,7 +158,7 @@ dependencies {
     compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
         transitive = true
     }
-    compile('com.mikepenz:materialdrawer:4.3.5@aar') {
+    compile('com.mikepenz:materialdrawer:4.3.7@aar') {
         transitive = true
     }
     compile('com.mikepenz:actionitembadge:3.1.1@aar')
@@ -171,7 +171,6 @@ dependencies {
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'io.realm:realm-android:0.83.1'
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
 
     compile 'com.afollestad:material-cab:0.1.4'
