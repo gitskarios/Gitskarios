@@ -146,7 +146,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_git_pull_request).withIdentifier(R.id.repo_detail_nav_fragment_pull_request));
         items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_tag).withIdentifier(R.id.repo_detail_nav_fragment_releases));
         items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_person).withIdentifier(R.id.repo_detail_nav_fragment_members));
-        drawer = new DrawerBuilder(this).withDrawerItems(items).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+
+        Drawer.OnDrawerItemClickListener onDrawerItemClickListener = (Drawer.OnDrawerItemClickListener) new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
@@ -199,7 +200,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 }
                 return false;
             }
-        }).buildView();
+        };
+
+
+        drawer = new DrawerBuilder(this).withDrawerItems(items).withOnDrawerItemClickListener(onDrawerItemClickListener).buildView();
         miniDrawer = new MiniDrawer().withDrawer(drawer);
 
         viewMiniDrawer.addView(miniDrawer.build(this));
@@ -224,6 +228,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             } else {
                 repoInfo.branch = currentRepo.default_branch;
             }
+            repoInfo.permissions = currentRepo.permissions;
         }
 
         return repoInfo;
