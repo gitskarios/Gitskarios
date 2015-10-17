@@ -2,7 +2,6 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -47,6 +48,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.MiniDrawer;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
@@ -122,13 +124,19 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             if (repoInfo != null) {
                 setTitle(repoInfo.name);
 
+
                 drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
                 viewMiniDrawer = (ViewGroup) findViewById(R.id.miniDrawerLayout);
 
                 createDrawer();
 
-                load(repoInfo);
+                boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString());
+                if (contains) {
+                    onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<Repo>get(repoInfo.toString()), null);
+                } else {
+                    load(repoInfo);
+                }
             } else {
                 finish();
             }
@@ -203,7 +211,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         };
 
 
-        drawer = new DrawerBuilder(this).withDrawerItems(items).withOnDrawerItemClickListener(onDrawerItemClickListener).buildView();
+        Drawer.OnDrawerItemLongClickListener drawerItemLongClick =  new Drawer.OnDrawerItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(View view, int position, IDrawerItem drawerItem) {
+                if (drawerItem instanceof Nameable) {
+                    Toast.makeText(RepoDetailActivity.this, ((Nameable) drawerItem).getName().getText(), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        };
+        drawer = new DrawerBuilder(this).withDrawerItems(items).withOnDrawerItemClickListener(onDrawerItemClickListener).withOnDrawerItemLongClickListener(drawerItemLongClick).buildView();
         miniDrawer = new MiniDrawer().withDrawer(drawer);
 
         viewMiniDrawer.addView(miniDrawer.build(this));
@@ -359,6 +376,8 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 Permissions permissions = repo.permissions;
                 ((PermissionsManager) currentFragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
             }
+
+            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(getRepoInfo().toString(), repo);
         }
     }
 
