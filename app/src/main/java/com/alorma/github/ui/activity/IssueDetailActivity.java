@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.actions.CloseAction;
@@ -85,7 +87,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     private IssueStory issueStory;
     private int primary;
     private int primaryDark;
-    private AppBarLayout appbarLayout;
     private ProgressBar loadingView;
     public Repo repository;
 
@@ -167,8 +168,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
     }
 
     private void findViews() {
-        appbarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
-
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
@@ -177,12 +176,15 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
         fab.setImageDrawable(drawable);
+
+        ViewCompat.setElevation(getToolbar(), getResources().getDimensionPixelOffset(R.dimen.gapSmall));
     }
 
     @Override
     protected void getContent() {
         super.getContent();
         loadingView.setVisibility(View.VISIBLE);
+        boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.ISSUE).contains(issueInfo.toString());
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
             repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
@@ -200,11 +202,18 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
                 }
             });
             repoClient.execute();
+        } else if (contains) {
+            onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.ISSUE).<IssueStory>get(issueInfo.toString()), null);
+            loadIssue();
         } else {
-            IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
-            issueStoryLoader.setOnResultCallback(this);
-            issueStoryLoader.execute();
+            loadIssue();
         }
+    }
+
+    private void loadIssue() {
+        IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
+        issueStoryLoader.setOnResultCallback(this);
+        issueStoryLoader.execute();
     }
 
     private boolean checkPermissions(IssueInfo issueInfo) {
@@ -221,6 +230,7 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
 
         checkEditTitle();
         applyIssue();
+        QnCacheProvider.getInstance(QnCacheProvider.TYPE.ISSUE).set(issueInfo.toString(), issueStory);
     }
 
     private void applyIssue() {
@@ -256,9 +266,6 @@ public class IssueDetailActivity extends BackActivity implements BaseClient.OnRe
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 int color = (Integer) animator.getAnimatedValue();
-                if (appbarLayout != null) {
-                    appbarLayout.setBackgroundColor(color);
-                }
                 if (getToolbar() != null) {
                     getToolbar().setBackgroundColor(color);
                 }

@@ -13,6 +13,8 @@ android {
         versionName "2.5.18"
         versionCode 25180
         resValue "string", "app_git_hash", getCurrentGitHash()
+
+        multiDexEnabled true
     }
 
     lintOptions {
@@ -180,6 +182,10 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
 
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.fewlaps.quitnowcache:quitnow-cache:1.1'
+    compile ("com.fewlaps.quitnowcache:quitnow-cache:1.2") {
+        exclude module: 'joda-time'
+    }
+
+    compile 'com.android.support:multidex:1.0.1'
 
 }

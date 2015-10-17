@@ -1,11 +1,11 @@
 package com.alorma.github;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 import com.alorma.github.sdk.security.GithubDeveloperCredentials;
-import com.alorma.gitskarios.core.client.credentials.SimpleDeveloperCredentialsProvider;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.gitskarios.core.client.credentials.SimpleDeveloperCredentialsProvider;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -18,7 +18,7 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Created by Bernat on 08/07/2014.
  */
-public class GitskariosApplication extends Application {
+public class GitskariosApplication extends MultiDexApplication {
 
     @Override
     public void onCreate() {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -19,6 +20,8 @@ import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.cache.QnCacheProvider;
+import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
@@ -101,7 +104,6 @@ public class PullRequestDetailActivity extends BackActivity
     private PullRequestStory pullRequestStory;
     private int primary;
     private int primaryDark;
-    private AppBarLayout appbarLayout;
     private ProgressBar loadingView;
     private Repo repository;
 
@@ -183,8 +185,6 @@ public class PullRequestDetailActivity extends BackActivity
     }
 
     private void findViews() {
-        appbarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
-
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fab = (FloatingActionButton) findViewById(R.id.fabButton);
@@ -194,29 +194,50 @@ public class PullRequestDetailActivity extends BackActivity
         IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
         fab.setImageDrawable(drawable);
+
+        ViewCompat.setElevation(getToolbar(), getResources().getDimensionPixelOffset(R.dimen.gapSmall));
     }
 
     @Override
     protected void getContent() {
         super.getContent();
         loadingView.setVisibility(View.VISIBLE);
-        GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
-        repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
-            @Override
-            public void onResponseOk(Repo repo, Response r) {
-                repository = repo;
-                issueInfo.repoInfo.permissions = repo.permissions;
-                PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
-                pullRequestStoryLoader.setOnResultCallback(PullRequestDetailActivity.this);
-                pullRequestStoryLoader.execute();
-            }
+        boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.PULL_REQUEST).contains(issueInfo.toString());
+        if (checkPermissions(issueInfo)) {
+            GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
+            repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
 
-            @Override
-            public void onFail(RetrofitError error) {
+                @Override
+                public void onResponseOk(Repo repo, Response r) {
+                    issueInfo.repoInfo.permissions = repo.permissions;
+                    repository = repo;
 
-            }
-        });
-        repoClient.execute();
+                loadPullRequest();}
+
+                @Override
+                public void onFail(RetrofitError error) {
+
+                }
+            });
+            repoClient.execute();
+        } else if (contains) {
+            onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.PULL_REQUEST).<PullRequestStory>get(issueInfo.toString()), null);
+            loadPullRequest();
+        } else {
+            loadPullRequest();
+        }
+    }
+
+    private boolean checkPermissions(IssueInfo issueInfo) {
+        return issueInfo != null
+                && issueInfo.repoInfo != null
+                && issueInfo.repoInfo.permissions == null;
+    }
+
+    private void loadPullRequest() {
+        PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
+        pullRequestStoryLoader.setOnResultCallback(PullRequestDetailActivity.this);
+        pullRequestStoryLoader.execute();
     }
 
     @Override
@@ -247,6 +268,8 @@ public class PullRequestDetailActivity extends BackActivity
         recyclerView.setAdapter(adapter);
 
         invalidateOptionsMenu();
+        QnCacheProvider.getInstance(QnCacheProvider.TYPE.PULL_REQUEST).set(issueInfo.toString(), pullRequestStory);
+
     }
 
     private void changeColor(PullRequest pullRequest) {
@@ -266,9 +289,6 @@ public class PullRequestDetailActivity extends BackActivity
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 int color = (Integer) animator.getAnimatedValue();
-                if (appbarLayout != null) {
-                    appbarLayout.setBackgroundColor(color);
-                }
                 if (getToolbar() != null) {
                     getToolbar().setBackgroundColor(color);
                 }

@@ -12,7 +12,9 @@ import java.util.Map;
 public class QnCacheProvider {
 
     public enum TYPE {
-        REPO
+        REPO,
+        ISSUE,
+        PULL_REQUEST
     }
 
     private static final Map<TYPE, QNCache> mapCaches = new HashMap<>();

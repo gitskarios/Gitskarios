@@ -124,7 +124,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             if (repoInfo != null) {
                 setTitle(repoInfo.name);
 
-
                 drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
                 viewMiniDrawer = (ViewGroup) findViewById(R.id.miniDrawerLayout);
@@ -133,7 +132,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
                 boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString());
                 if (contains) {
-                    onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<Repo>get(repoInfo.toString()), null);
+                    Repo repo = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<Repo>get(repoInfo.toString());
+                    onResponseOk(repo, null);
+                    load(repoInfo);
                 } else {
                     load(repoInfo);
                 }
@@ -367,8 +368,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 getSupportActionBar().setSubtitle(getRepoInfo().branch);
             }
 
-            repoAboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
-            setFragment(repoAboutFragment);
+            if (currentFragment == null) {
+                repoAboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
+                setFragment(repoAboutFragment);
+            }
 
             this.invalidateOptionsMenu();
 
@@ -376,7 +379,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 Permissions permissions = repo.permissions;
                 ((PermissionsManager) currentFragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
             }
-
+            drawer_layout.openDrawer(Gravity.LEFT);
             QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(getRepoInfo().toString(), repo);
         }
     }
