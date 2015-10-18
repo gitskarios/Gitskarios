@@ -143,19 +143,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     }
 
     public Drawable getPageTitle(IIcon icon) {
-        return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.white);
+        return new IconicsDrawable(this, icon).sizeDp(getResources().getDimensionPixelSize(R.dimen.tabsIcon)).colorRes(R.color.white);
     }
-    /*
-    Drawable image = ContextCompat.getDrawable(context, imageResId[position]);
-    image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-    SpannableString sb = new SpannableString(" ");
-    ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-    sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    return sb;
-     */
 
     private void createNavigation() {
-
 
         tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_info)).setTag(R.id.repo_detail_nav_fragment_info));
         tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_file_directory)).setTag(R.id.repo_detail_nav_fragment_source));
@@ -168,8 +159,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Integer tabId = (Integer) tab.getTag();
-                onNavigationSelected(tabId);
+                if (tab.getTag() != null && tab.getTag() instanceof Integer) {
+                    int tabId = (Integer) tab.getTag();
+                    onNavigationSelected(tabId);
+                }
             }
 
             @Override

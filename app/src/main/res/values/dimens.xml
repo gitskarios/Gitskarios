@@ -83,5 +83,6 @@
     <dimen name="extra_action_bar_size">88dp</dimen>
     <dimen name="profile_header">224dp</dimen>
     <dimen name="material_drawer_item_secondary_description">12sp</dimen>
+    <dimen name="tabsIcon">14dp</dimen>
 
 </resources>
