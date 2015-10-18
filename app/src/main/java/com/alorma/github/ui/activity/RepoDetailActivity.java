@@ -60,11 +60,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
     private Repo currentRepo;
     private RepoInfo requestRepoInfo;
-    /*    private Drawer drawer;
-        private MiniDrawer miniDrawer;*/
-    /*    private ViewGroup viewMiniDrawer;
-        private DrawerLayout drawer_layout;*/
-
     private RepoAboutFragment repoAboutFragment;
     private Fragment currentFragment;
     private SourceListFragment sourceListFragment;
@@ -115,12 +110,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             if (repoInfo != null) {
                 setTitle(repoInfo.name);
-/*
-
-                drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-                viewMiniDrawer = (ViewGroup) findViewById(R.id.miniDrawerLayout);
-*/
 
                 tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
@@ -143,7 +132,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     }
 
     public Drawable getPageTitle(IIcon icon) {
-        return new IconicsDrawable(this, icon).sizeDp(getResources().getDimensionPixelSize(R.dimen.tabsIcon)).colorRes(R.color.white);
+        return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.white);
     }
 
     private void createNavigation() {
@@ -175,40 +164,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
 
             }
         });
-
-        /*ArrayList<IDrawerItem> items = new ArrayList<>();
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_info).withIdentifier(R.id.repo_detail_nav_fragment_info));
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_file_directory).withIdentifier(R.id.repo_detail_nav_fragment_source));
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_git_commit).withIdentifier(R.id.repo_detail_nav_fragment_commmits));
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_issue_opened).withIdentifier(R.id.repo_detail_nav_fragment_issues));
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_git_pull_request).withIdentifier(R.id.repo_detail_nav_fragment_pull_request));
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_tag).withIdentifier(R.id.repo_detail_nav_fragment_releases));
-        items.add(new PrimaryDrawerItem().withIcon(Octicons.Icon.oct_person).withIdentifier(R.id.repo_detail_nav_fragment_members));
-
-        Drawer.OnDrawerItemClickListener onDrawerItemClickListener = (Drawer.OnDrawerItemClickListener) new Drawer.OnDrawerItemClickListener() {
-            @Override
-            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-
-                if (drawerItem != null && currentRepo != null) {
-
-                return false;
-            }
-        };
-
-
-        Drawer.OnDrawerItemLongClickListener drawerItemLongClick =  new Drawer.OnDrawerItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(View view, int position, IDrawerItem drawerItem) {
-                if (drawerItem instanceof Nameable) {
-                    Toast.makeText(RepoDetailActivity.this, ((Nameable) drawerItem).getName().getText(), Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        };
-        drawer = new DrawerBuilder(this).withDrawerItems(items).withOnDrawerItemClickListener(onDrawerItemClickListener).withOnDrawerItemLongClickListener(drawerItemLongClick).buildView();
-        miniDrawer = new MiniDrawer().withDrawer(drawer);
-
-        viewMiniDrawer.addView(miniDrawer.build(this));*/
     }
 
     private void onNavigationSelected(int itemId) {
@@ -220,39 +175,27 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 setFragment(repoAboutFragment);
                 break;
             case R.id.repo_detail_nav_fragment_source:
-                if (sourceListFragment == null) {
-                    sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
-                }
+                sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
                 setFragment(sourceListFragment);
                 break;
             case R.id.repo_detail_nav_fragment_commmits:
-                if (commitsListFragment == null) {
-                    commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
-                }
+                commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
                 setFragment(commitsListFragment);
                 break;
             case R.id.repo_detail_nav_fragment_issues:
-                if (issuesListFragment == null) {
-                    issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
-                }
+                issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
                 setFragment(issuesListFragment);
                 break;
             case R.id.repo_detail_nav_fragment_pull_request:
-                if (pullRequestsListFragment == null) {
-                    pullRequestsListFragment = PullRequestsListFragment.newInstance(getRepoInfo());
-                }
+                pullRequestsListFragment = PullRequestsListFragment.newInstance(getRepoInfo());
                 setFragment(pullRequestsListFragment);
                 break;
             case R.id.repo_detail_nav_fragment_releases:
-                if (repoReleasesFragment == null) {
-                    repoReleasesFragment = RepoReleasesFragment.newInstance(getRepoInfo(), currentRepo.permissions);
-                }
+                repoReleasesFragment = RepoReleasesFragment.newInstance(getRepoInfo(), currentRepo.permissions);
                 setFragment(repoReleasesFragment);
                 break;
             case R.id.repo_detail_nav_fragment_members:
-                if (repoContributorsFragment == null) {
-                    repoContributorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
-                }
+                repoContributorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
                 setFragment(repoContributorsFragment);
                 break;
         }
@@ -410,7 +353,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 Permissions permissions = repo.permissions;
                 ((PermissionsManager) currentFragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
             }
-//            drawer_layout.openDrawer(Gravity.LEFT);
             QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(getRepoInfo().toString(), repo);
         }
     }
@@ -420,8 +362,6 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, fragment);
         ft.commit();
-
-//        drawer_layout.closeDrawers();
     }
 
     @Override
@@ -465,9 +405,7 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                     .addNextIntentWithParentStack(upIntent)
                     .startActivities();
             finish();
-        }/* else if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
-            drawer_layout.closeDrawers();
-        } */ else if (currentFragment != null && currentFragment instanceof BackManager) {
+        } else if (currentFragment != null && currentFragment instanceof BackManager) {
             if (((BackManager) currentFragment).onBackPressed()) {
                 finish();
             }
