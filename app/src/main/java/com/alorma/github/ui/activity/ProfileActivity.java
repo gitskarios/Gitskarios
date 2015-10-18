@@ -106,9 +106,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setAllowEnterTransitionOverlap(false);
-        }
         image = (ImageView) findViewById(R.id.imgToolbar);
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);

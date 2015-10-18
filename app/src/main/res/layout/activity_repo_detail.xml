@@ -28,24 +28,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize" />
         </FrameLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            android:id="@+id/miniDrawerLayout"
-            android:layout_width="72dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@color/material_drawer_dark_selected"/>
-    </android.support.v4.widget.DrawerLayout>
-
+        android:layout_height="match_parent" />
 </LinearLayout>

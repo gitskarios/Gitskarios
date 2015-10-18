@@ -14,7 +14,8 @@ public class QnCacheProvider {
     public enum TYPE {
         REPO,
         ISSUE,
-        PULL_REQUEST
+        PULL_REQUEST,
+        PROFILE
     }
 
     private static final Map<TYPE, QNCache> mapCaches = new HashMap<>();
