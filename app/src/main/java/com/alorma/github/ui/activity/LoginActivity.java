@@ -26,6 +26,7 @@ import android.support.annotation.StyleRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Toast;
 
@@ -110,13 +111,22 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         final View loginButton = findViewById(R.id.login);
+        final View enterpriseLogin = findViewById(R.id.enterpriseLogin);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login();
+                login(null);
             }
         });
+
+        enterpriseLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchEnterpriseLogin();
+            }
+        });
+
 
         enableCreateGist(false);
 
@@ -182,10 +192,15 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                 requestTokenClient.execute();
             }
         } else if (fromAccounts) {
-            login();
+            login(null);
         } else if (!fromApp && accounts != null && accounts.length > 0) {
             openMain();
         }
+    }
+
+    private void launchEnterpriseLogin() {
+        Intent intent = new Intent(this, GithubEnterpriseLoginActivity.class);
+        startActivityForResult(intent, 1111);
     }
 
     private void closeLoginActivity(boolean fromApp, boolean fromDelete) {
@@ -216,12 +231,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
     }
 
-    private void login() {
+    private void login(String url) {
         if (multipleAccountFeatureRequired()) {
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
         } else {
-            openExternalLogin(new GitHub());
+            openExternalLogin(new GitHub(url));
         }
     }
 
@@ -239,8 +254,10 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
             return;
         }
 
+        String ouathUrl = client.getApiOauthUrlEndpoint() != null ? client.getApiOauthUrlEndpoint() : OAUTH_URL;
+
         String url = String.format("%s?client_id=%s&scope=" + SCOPES,
-                OAUTH_URL, GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
+                ouathUrl, GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
 
         Uri callbackUri = Uri.EMPTY.buildUpon()
                 .scheme(getString(R.string.oauth_scheme))

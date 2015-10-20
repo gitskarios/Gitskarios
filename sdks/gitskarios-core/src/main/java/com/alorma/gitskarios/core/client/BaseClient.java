@@ -18,7 +18,7 @@ import retrofit.converter.Converter;
 
 public abstract class BaseClient<K> implements Callback<K>, RequestInterceptor, RestAdapter.Log {
 
-    private StoreCredentials storeCredentials;
+    protected StoreCredentials storeCredentials;
 
     protected Context context;
     private OnResultCallback<K> onResultCallback;

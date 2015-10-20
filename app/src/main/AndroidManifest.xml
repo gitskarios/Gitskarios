@@ -61,6 +61,7 @@
         <activity android:name=".ui.activity.OrganizationActivity" />
         <activity android:name=".ui.activity.ReleaseDetailActivity" />
         <activity android:name=".ui.activity.LanguagesActivity" />
+        <activity android:name=".ui.activity.GithubEnterpriseLoginActivity" />
         <activity android:name=".ui.activity.gists.GistEditorActivity" />
         <activity android:name=".ui.activity.CompareRepositoryCommitsActivity" />
         <activity android:name=".ui.activity.StatusActivity" />

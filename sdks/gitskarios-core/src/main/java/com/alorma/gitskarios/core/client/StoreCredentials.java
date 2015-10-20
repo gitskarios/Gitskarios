@@ -15,6 +15,7 @@ public class StoreCredentials {
 	private static final String USER_SCOPES_NO_ASK = StoreCredentials.class.getSimpleName() + ".USER_SCOPES_NO_ASK";
 	private final SharedPreferences.Editor editor;
 	private final SharedPreferences preferences;
+	public static final String KEY_URL = "KEY_URL";
 
 	public StoreCredentials(Context context) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -58,7 +59,17 @@ public class StoreCredentials {
 		editor.apply();
 	}
 
+	public void storeUrl(String url) {
+		editor.putString(KEY_URL, url);
+		editor.apply();
+	}
+
 	public String getUserName() {
 		return preferences.getString(USER_NAME, null);
+	}
+
+
+	public String getUrl() {
+		return preferences.getString(KEY_URL, null);
 	}
 }
