@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,12 +25,15 @@ import retrofit.client.Response;
  */
 public class GithubEnterpriseLoginActivity extends BackActivity implements BaseClient.OnResultCallback<User> {
 
+    public static final String EXTRA_USER = "EXTRA_USER";
+    public static final String EXTRA_ENTERPRISE_TOKEN = "EXTRA_ENTERPRISE_TOKEN";
+    public static final String EXTRA_ENTERPRISE_URL = "EXTRA_ENTERPRISE_URL";
+
     @Bind(R.id.enterpriseUrl)
     EditText enterpriseUrl;
-    @Bind(R.id.enterpriseApiClient)
-    EditText enterpriseApiClient;
     @Bind(R.id.enterpriseToken)
     EditText enterpriseToken;
+    private StoreCredentials credentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +44,10 @@ public class GithubEnterpriseLoginActivity extends BackActivity implements BaseC
 
     @OnClick(R.id.enterpriseLogin)
     public void onLogin() {
-        if (enterpriseUrl.length() > 0 && enterpriseApiClient.length() > 0 &&  enterpriseToken.length() > 0) {
-            StoreCredentials credentials = new StoreCredentials(this);
+        if (enterpriseUrl.length() > 0 && enterpriseToken.length() > 0) {
+            credentials = new StoreCredentials(this);
             credentials.storeToken(enterpriseToken.getText().toString());
             credentials.storeUrl(enterpriseUrl.getText().toString());
-
-
-            GithubDeveloperCredentials.init(new SimpleDeveloperCredentialsProvider(enterpriseApiClient.getText().toString(), null, null));
 
             GetAuthUserClient requestClient = new GetAuthUserClient(this, null);
             requestClient.setOnResultCallback(this);
@@ -56,7 +57,14 @@ public class GithubEnterpriseLoginActivity extends BackActivity implements BaseC
 
     @Override
     public void onResponseOk(User user, Response r) {
-        Toast.makeText(GithubEnterpriseLoginActivity.this, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_USER, user);
+        bundle.putString(EXTRA_ENTERPRISE_URL, credentials.getUrl());
+        bundle.putString(EXTRA_ENTERPRISE_TOKEN, credentials.token());
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

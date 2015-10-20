@@ -385,6 +385,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
 
+        String url = AccountsHelper.getUrl(this, account);
+
+        credentials.storeUrl(url);
+
         if (changingUser) {
             lastUsedFragment = null;
             clearFragments();

@@ -14,12 +14,6 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="API CLIENT"
-        android:id="@+id/enterpriseApiClient" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:hint="TOKEN"
         android:id="@+id/enterpriseToken" />
 

@@ -68,6 +68,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static final String FROM_DELETE = "FROM_DELETE";
     private static final String SKU_MULTI_ACCOUNT = "com.alorma.github.multiaccount";
     private static final String SCOPES = "gist,user,notifications,repo,delete_repo";
+    private static final int REQUEST_ENTERPRISE_LOGIN = 111;
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -94,6 +95,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private String purchaseId;
     private boolean fromApp;
     private boolean fromDeleteRepo;
+    private String customUrl;
 
     /**
      * There is three ways to get to this activity:
@@ -200,7 +202,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void launchEnterpriseLogin() {
         Intent intent = new Intent(this, GithubEnterpriseLoginActivity.class);
-        startActivityForResult(intent, 1111);
+        startActivityForResult(intent, REQUEST_ENTERPRISE_LOGIN);
     }
 
     private void closeLoginActivity(boolean fromApp, boolean fromDelete) {
@@ -364,6 +366,12 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     e.printStackTrace();
                 }
             }
+        } else if (requestCode == REQUEST_ENTERPRISE_LOGIN) {
+            this.accessToken = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN);
+            this.customUrl = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL);
+            User user = data.getExtras().getParcelable(GithubEnterpriseLoginActivity.EXTRA_USER);
+            this.scope = SCOPES;
+            onResponseOk(user, null);
         }
     }
 
@@ -442,6 +450,9 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         Account account = new Account(user.login, getString(R.string.account_type));
         Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, scope);
         userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
+        if (customUrl != null) {
+            userData.putString(AccountsHelper.USER_URL, customUrl);
+        }
 
         AccountManager accountManager = AccountManager.get(this);
         accountManager.addAccountExplicitly(account, null, userData);
@@ -451,7 +462,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
         result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
-
         setAccountAuthenticatorResult(result);
 
         checkAndEnableSyncAdapter(account);
