@@ -22,6 +22,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
@@ -56,32 +57,40 @@ public class UrlsManager {
         this.context = context;
         int i = 1000;
 
-        uriMatcher.addURI("github.com", "", URI_BASE + i);
+        String host = "github.com";
+
+        StoreCredentials credentials = new StoreCredentials(context);
+        if (credentials.getUrl() != null) {
+            Uri uri = Uri.parse(credentials.getUrl());
+            host = uri.getAuthority();
+        }
+
+        uriMatcher.addURI(host, "", URI_BASE + i);
         for (String key : context.getResources().getStringArray(R.array.reservedKeys)) {
-            uriMatcher.addURI("github.com", key, UriMatcher.NO_MATCH + i++);
+            uriMatcher.addURI(host, key, UriMatcher.NO_MATCH + i++);
         }
 
 //        uriMatcher.addURI("github.com", "*/*/releases/latest", URI_RELEASES_LATEST);
 //        uriMatcher.addURI("github.com", "*/*/releases/tag/*", URI_RELEASES_TAG);
-        uriMatcher.addURI("github.com", "*/*/releases", URI_RELEASES);
-        uriMatcher.addURI("github.com", "*/*/releases/#", URI_RELEASES_IDENTIFIER);
+        uriMatcher.addURI(host, "*/*/releases", URI_RELEASES);
+        uriMatcher.addURI(host, "*/*/releases/#", URI_RELEASES_IDENTIFIER);
 
-        uriMatcher.addURI("github.com", "*/*/tags", URI_TAGS);
+        uriMatcher.addURI(host, "*/*/tags", URI_TAGS);
 
-        uriMatcher.addURI("github.com", "*/*/commit/*", URI_COMMIT);
+        uriMatcher.addURI(host, "*/*/commit/*", URI_COMMIT);
 
-        uriMatcher.addURI("github.com", "*/*/issues/comments/#", URI_ISSUE_COMMENT);
-        uriMatcher.addURI("github.com", "*/*/issues/#", URI_ISSUE);
-        uriMatcher.addURI("github.com", "*/*/pull/#", URI_PULL_REQUEST);
+        uriMatcher.addURI(host, "*/*/issues/comments/#", URI_ISSUE_COMMENT);
+        uriMatcher.addURI(host, "*/*/issues/#", URI_ISSUE);
+        uriMatcher.addURI(host, "*/*/pull/#", URI_PULL_REQUEST);
 
-        uriMatcher.addURI("github.com", "*/*/tree/feature/*", URI_REPO_BRANCH_FEATURE);
-        uriMatcher.addURI("github.com", "*/*/tree/release/*", URI_REPO_BRANCH_RELEASE);
-        uriMatcher.addURI("github.com", "*/*/tree/hotfix/*", URI_REPO_BRANCH_HOTFIX);
-        uriMatcher.addURI("github.com", "*/*/tree/*", URI_REPO_BRANCH);
+        uriMatcher.addURI(host, "*/*/tree/feature/*", URI_REPO_BRANCH_FEATURE);
+        uriMatcher.addURI(host, "*/*/tree/release/*", URI_REPO_BRANCH_RELEASE);
+        uriMatcher.addURI(host, "*/*/tree/hotfix/*", URI_REPO_BRANCH_HOTFIX);
+        uriMatcher.addURI(host, "*/*/tree/*", URI_REPO_BRANCH);
 
-        uriMatcher.addURI("github.com", "*/*", URI_REPO);
+        uriMatcher.addURI(host, "*/*", URI_REPO);
 
-        uriMatcher.addURI("github.com", "*", URI_USER);
+        uriMatcher.addURI(host, "*", URI_USER);
     }
 
     public void manageUrls(final WebView webView) {
