@@ -11,6 +11,12 @@
         android:hint="URL"
         android:id="@+id/enterpriseUrl"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GENERATE TOKEN"
+        android:id="@+id/enterpriseGenerateToken" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="LOGIN"
-        android:id="@+id/enterpriseLogin" />
+        android:id="@+id/enterpriseLogin"
+        android:enabled="false"/>
 
 </LinearLayout>

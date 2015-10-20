@@ -1,18 +1,20 @@
 package com.alorma.github.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
-import com.alorma.gitskarios.core.client.credentials.SimpleDeveloperCredentialsProvider;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,6 +35,8 @@ public class GithubEnterpriseLoginActivity extends BackActivity implements BaseC
     EditText enterpriseUrl;
     @Bind(R.id.enterpriseToken)
     EditText enterpriseToken;
+    @Bind(R.id.enterpriseLogin)
+    Button enterpriseLogin;
     private StoreCredentials credentials;
 
     @Override
@@ -40,6 +44,33 @@ public class GithubEnterpriseLoginActivity extends BackActivity implements BaseC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.github_enterprise_login);
         ButterKnife.bind(this);
+
+
+        enterpriseToken.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                enterpriseLogin.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    @OnClick(R.id.enterpriseGenerateToken)
+    public void generateToken() {
+        if (enterpriseUrl.length() > 0) {
+            String url = enterpriseUrl.getText().toString() + "/settings/tokens";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.enterpriseLogin)
