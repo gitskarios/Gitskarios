@@ -183,7 +183,9 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 setFragment(commitsListFragment);
                 break;
             case R.id.repo_detail_nav_fragment_issues:
-                issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+                if (issuesListFragment == null) {
+                    issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+                }
                 setFragment(issuesListFragment);
                 break;
             case R.id.repo_detail_nav_fragment_pull_request:

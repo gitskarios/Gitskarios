@@ -43,11 +43,15 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         super.onCreate(savedInstanceState);
 
         loadArguments();
+        if (autoStart()) {
+            executeRequest();
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
 
         return inflater.inflate(useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
     }
@@ -79,10 +83,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
             int accent = AttributesUtils.getAccentColor(getActivity());
             swipe.setColorSchemeColors(accent);
             swipe.setOnRefreshListener(this);
-        }
-
-        if (autoStart()) {
-            executeRequest();
         }
     }
 
