@@ -160,7 +160,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     .withDescription(getString(R.string.add_account_description))
                     .withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add)
                             .actionBar().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
-                    .withIdentifier(-1);
+                    .withIdentifier(1101);
 
             headerResult.addProfiles(itemAdd);
 
@@ -337,7 +337,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         headerBuilder.withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
             @Override
             public boolean onProfileChanged(View view, IProfile iProfile, boolean b) {
-                if (iProfile.getIdentifier() != -1) {
+                if (iProfile.getIdentifier() != 1101) {
                     Account account = accountMap.get(iProfile.getName().getText());
                     if (selectedAccount != null) {
                         if (account.name.equals(selectedAccount.name)) {
