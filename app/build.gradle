@@ -36,6 +36,15 @@ android {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 
+    productFlavors {
+        github {
+            applicationId "com.alorma.github"
+        }
+        enterprise {
+            applicationId "com.alorma.github_enterprise"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -54,16 +63,6 @@ android {
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
             buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
             ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
-        }
-        cloudtest {
-            minifyEnabled false
-            if (signingConfigs.playStore != null) {
-                signingConfig signingConfigs.playStore
-            }
-            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
-            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "\"" + getGHCustomToken(true) + "\""
         }
     }
 }
@@ -120,23 +119,14 @@ def getGHCallback(pro) {
     }
 }
 
-def getGHCustomToken(pro) {
-    if (pro) {
-        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
-    } else {
-        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
-    }
-}
-
-assembleRelease.dependsOn clean
+/*assembleRelease.dependsOn clean
 assembleRelease.doLast {
     tasks.crashlyticsUploadDistributionRelease.execute()
-}
+}*/
 
 dependencies {
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
     releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
-    cloudtestCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
     // Submodules
 
     compile project(':libraries:breadcrumbs')
@@ -182,7 +172,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
 
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile ("com.fewlaps.quitnowcache:quitnow-cache:1.2") {
+    compile("com.fewlaps.quitnowcache:quitnow-cache:1.2") {
         exclude module: 'joda-time'
     }
 

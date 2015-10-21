@@ -33,15 +33,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
-import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.AccountsAdapter;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.android.vending.billing.IInAppBillingService;
 
@@ -66,7 +66,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     public static final String FROM_DELETE = "FROM_DELETE";
     private static final String SKU_MULTI_ACCOUNT = "com.alorma.github.multiaccount";
     private static final String SCOPES = "gist,user,notifications,repo,delete_repo";
-    private static final int REQUEST_ENTERPRISE_LOGIN = 111;
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
@@ -93,7 +92,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     private String purchaseId;
     private boolean fromApp;
     private boolean fromDeleteRepo;
-    private String customUrl;
 
     /**
      * There is three ways to get to this activity:
@@ -111,19 +109,11 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         final View loginButton = findViewById(R.id.login);
-        final View enterpriseLogin = findViewById(R.id.enterpriseLogin);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login(null);
-            }
-        });
-
-        enterpriseLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchEnterpriseLogin();
+                login();
             }
         });
 
@@ -161,8 +151,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
         if (fromDeleteRepo) {
             openExternalLogin();
-        } else if (accounts != null && accounts.length == 0 && BuildConfig.BUILD_TYPE.equals("cloudtest") && BuildConfig.GH_GITSKARIOS_ACCOUNT_TOKEN != null) {
-            endAccess(BuildConfig.GH_GITSKARIOS_ACCOUNT_TOKEN, SCOPES);
         } else if (fromLogin) {
             loginButton.setEnabled(false);
             showProgressDialog(R.style.SpotDialog_Login);
@@ -192,15 +180,10 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                 requestTokenClient.execute();
             }
         } else if (fromAccounts) {
-            login(null);
+            login();
         } else if (!fromApp && accounts != null && accounts.length > 0) {
             openMain();
         }
-    }
-
-    private void launchEnterpriseLogin() {
-        Intent intent = new Intent(this, GithubEnterpriseLoginActivity.class);
-        startActivityForResult(intent, REQUEST_ENTERPRISE_LOGIN);
     }
 
     private void closeLoginActivity(boolean fromApp, boolean fromDelete) {
@@ -231,7 +214,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         }
     }
 
-    private void login(String url) {
+    private void login() {
         if (multipleAccountFeatureRequired()) {
             SKUTask task = new SKUTask();
             task.execute(SKU_MULTI_ACCOUNT);
@@ -361,12 +344,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
                     e.printStackTrace();
                 }
             }
-        } else if (requestCode == REQUEST_ENTERPRISE_LOGIN) {
-            this.accessToken = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN);
-            this.customUrl = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL);
-            User user = data.getExtras().getParcelable(GithubEnterpriseLoginActivity.EXTRA_USER);
-            this.scope = SCOPES;
-            onResponseOk(user, null);
         }
     }
 
@@ -445,9 +422,6 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
         Account account = new Account(user.login, getString(R.string.account_type));
         Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, scope);
         userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
-        if (customUrl != null) {
-            userData.putString(AccountsHelper.USER_URL, customUrl);
-        }
 
         AccountManager accountManager = AccountManager.get(this);
         accountManager.addAccountExplicitly(account, null, userData);

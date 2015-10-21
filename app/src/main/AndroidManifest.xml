@@ -185,7 +185,7 @@
 
         <provider
             android:name=".account.StubContentProvider"
-            android:authorities="@string/account_type" />
+            android:authorities="${applicationId}" />
 
         <meta-data
             android:name="com.google.android.gms.version"

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="@dimen/gapMedium">
+
+    <EditText android:id="@+id/enterpriseUrl" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:hint="URL" />
+
+    <Button android:id="@+id/enterpriseGenerateToken" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:text="GENERATE TOKEN" />
+
+    <EditText android:id="@+id/enterpriseToken" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:hint="TOKEN" />
+
+    <Button android:id="@+id/enterpriseLogin" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:enabled="false" android:text="LOGIN" />
+
+
+    <com.alorma.github.ui.view.CircularImageView android:id="@+id/userImage"
+        android:layout_width="140dp" android:layout_height="140dp"
+        android:elevation="4dp"/>
+
+</LinearLayout>

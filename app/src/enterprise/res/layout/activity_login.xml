@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alorma.github.ui.activity.LoginActivity"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        tools:context="com.alorma.github.ui.activity.LoginActivity"
+        android:orientation="vertical"
+        android:id="@+id/loginLayout"
+        android:background="?colorPrimary">
+
+        <include layout="@layout/toolbar" />
+
+        <TextView
+            android:id="@+id/login"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="sans-serif"
+            android:lines="1"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp"
+            android:layout_toRightOf="@id/icon"
+            android:layout_toEndOf="@id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/textSizeMedium"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:text="@string/add_account" />
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:text="ENTERPRISE LOGIN"
+        android:id="@+id/enterpriseLogin"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler"
+        android:paddingLeft="@dimen/gapXLarge"
+        android:paddingStart="@dimen/gapXLarge"
+        android:paddingRight="@dimen/gapXLarge"
+        android:paddingEnd="@dimen/gapXLarge"
+        android:paddingBottom="@dimen/gapXLarge"
+        android:paddingTop="@dimen/gapMedium" />
+
+</LinearLayout>
