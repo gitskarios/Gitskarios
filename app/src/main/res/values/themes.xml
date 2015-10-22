@@ -129,7 +129,12 @@
 
 
     <style name="Toolbar.Popup.AppCompat" parent="Theme.AppCompat.Light">
+    </style>
 
+    <style name="AppTheme.Login" parent="Base.AppTheme.Login"/>
 
+    <style name="Base.AppTheme.Login">
+        <item name="android:background">?attr/colorPrimaryDark</item>
+        <item name="colorButtonNormal">@color/accent</item>
     </style>
 </resources>

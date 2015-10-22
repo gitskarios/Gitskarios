@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -24,7 +23,7 @@ import com.alorma.github.R;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
 import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.ui.activity.LoginActivity;
+import com.alorma.github.ui.activity.GithubLoginActivity;
 
 import dmax.dialog.SpotsDialog;
 
@@ -127,7 +126,7 @@ public class BaseActivity extends AppCompatActivity {
                                         storeCredentials.clear();
 
                                         Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();
@@ -145,7 +144,7 @@ public class BaseActivity extends AppCompatActivity {
                                         storeCredentials.clear();
 
                                         Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();

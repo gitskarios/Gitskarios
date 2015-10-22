@@ -57,7 +57,7 @@ import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginActivity extends AccountAuthenticatorActivity implements BaseClient.OnResultCallback<User> {
+public class GithubLoginActivity extends AccountAuthenticatorActivity implements BaseClient.OnResultCallback<User> {
 
     public static final String ARG_ACCOUNT_TYPE = "ARG_ACCOUNT_TYPE";
     public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
@@ -102,7 +102,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_github_login);
 
         createBillingService();
 
@@ -161,20 +161,20 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
             if (requestTokenClient == null) {
                 new StoreCredentials(this).clear();
-                requestTokenClient = new RequestTokenClient(LoginActivity.this, code);
+                requestTokenClient = new RequestTokenClient(GithubLoginActivity.this, code);
                 requestTokenClient.setOnResultCallback(new BaseClient.OnResultCallback<Token>() {
                     @Override
                     public void onResponseOk(Token token, Response r) {
                         if (token.access_token != null) {
                             endAccess(token.access_token, token.scope);
                         } else if (token.error != null) {
-                            Toast.makeText(LoginActivity.this, token.error, Toast.LENGTH_LONG).show();
+                            Toast.makeText(GithubLoginActivity.this, token.error, Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFail(RetrofitError error) {
-                        ErrorHandler.onError(LoginActivity.this, "WebViewCustomClient", error);
+                        ErrorHandler.onError(GithubLoginActivity.this, "WebViewCustomClient", error);
                     }
                 });
                 requestTokenClient.execute();
@@ -356,7 +356,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements BaseC
 
     private void openMain() {
         enableCreateGist(true);
-        MainActivity.startActivity(LoginActivity.this);
+        MainActivity.startActivity(GithubLoginActivity.this);
         finish();
     }
 

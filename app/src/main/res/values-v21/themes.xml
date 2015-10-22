@@ -7,4 +7,9 @@
 
     <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
 
+    <style name="AppTheme.Login" parent="Base.AppTheme.Login">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
 </resources>

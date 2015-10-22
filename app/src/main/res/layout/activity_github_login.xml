@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.alorma.github.ui.activity.LoginActivity"
+    tools:context="com.alorma.github.ui.activity.GithubLoginActivity"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        tools:context="com.alorma.github.ui.activity.LoginActivity"
+        tools:context="com.alorma.github.ui.activity.GithubLoginActivity"
         android:orientation="vertical"
         android:id="@+id/loginLayout"
         android:background="?colorPrimary">

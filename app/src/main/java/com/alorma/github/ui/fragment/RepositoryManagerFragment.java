@@ -23,7 +23,7 @@ import com.alorma.github.sdk.services.repo.BranchesCallback;
 import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
-import com.alorma.github.ui.activity.LoginActivity;
+import com.alorma.github.ui.activity.GithubLoginActivity;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -219,8 +219,8 @@ public class RepositoryManagerFragment extends PreferenceFragment {
             @Override
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.putExtra(LoginActivity.FROM_DELETE, true);
+                Intent intent = new Intent(getActivity(), GithubLoginActivity.class);
+                intent.putExtra(GithubLoginActivity.FROM_DELETE, true);
                 startActivityForResult(intent, REQUEST_DELETE);
             }
         });
