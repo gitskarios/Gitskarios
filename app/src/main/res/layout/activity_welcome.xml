@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.alorma.github.ui.activity.GithubLoginActivity">
+    tools:context="com.alorma.github.ui.activity.WelcomeActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -15,7 +15,7 @@
         android:src="@drawable/ic_launcher_web" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/appName"
         style="@style/TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,41 +28,31 @@
         android:gravity="center"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/appName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/gapXLarge"
         android:layout_marginLeft="@dimen/gapXLarge"
-        android:layout_marginRight="@dimen/gapXLarge">
+        android:layout_marginRight="@dimen/gapXLarge"
+        android:layout_marginTop="@dimen/gapXLarge"
+        android:orientation="vertical">
 
         <Button
+            android:id="@+id/buttonGithub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Github account"
-            android:id="@+id/button2"
-            android:layout_below="@+id/textView"
-            android:layout_alignLeft="@+id/textView"
-            android:layout_alignStart="@+id/textView"
-            android:layout_alignRight="@+id/textView"
-            android:layout_alignEnd="@+id/textView" />
+            android:text="@string/welcome_button_github" />
 
         <Button
+            android:id="@+id/buttonEnterprise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Github enterprise account"
-            android:id="@+id/button"
-            android:layout_below="@+id/textView"
-            android:layout_alignLeft="@+id/textView"
-            android:layout_alignStart="@+id/textView"
-            android:layout_alignRight="@+id/textView"
-            android:layout_alignEnd="@+id/textView"
-            android:layout_marginTop="@dimen/gapMedium" />
+            android:layout_marginTop="@dimen/gapMedium"
+            android:text="@string/welcome_button_enterprise" />
     </LinearLayout>
 
 </RelativeLayout>
