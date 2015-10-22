@@ -7,6 +7,7 @@
 
     <color name="primary_light">@color/md_brown_300</color>
     <color name="accent">@color/md_light_green_A400</color>
+    <color name="accent_welcome">#B58796</color>
     <color name="accent_dark">@color/md_light_green_A700</color>
     <color name="primary_text">@color/md_grey_900</color>
     <color name="secondary_text">#727272</color>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#3F51B5</color>
-    <color name="primary_dark">#303F9F</color>
-    <color name="primary_alpha">#FF3F51B5</color>
-    <color name="primary_dark_alpha">#FF303F9F</color>
+    <color name="primary">@color/md_indigo_600</color>
+    <color name="primary_dark">@color/md_indigo_800</color>
+    <color name="primary_alpha">@color/md_indigo_600</color>
+    <color name="primary_dark_alpha">@color/md_indigo_800</color>
 
     <color name="primary_light">#C5CAE9</color>
+    <color name="accent_welcome">#7CBDD6</color>
     <color name="accent">#FF5722</color>
     <color name="accent_dark">#ffba3f19</color>
     <color name="primary_text">#212121</color>

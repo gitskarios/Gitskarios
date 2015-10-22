@@ -8,8 +8,8 @@
     <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
 
     <style name="AppTheme.Welcome" parent="Base.AppTheme.Welcome">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

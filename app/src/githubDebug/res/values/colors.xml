@@ -7,6 +7,7 @@
 
     <color name="primary_light">#E1BEE7</color>
     <color name="accent">#FF009688</color>
+    <color name="accent_welcome">#9C7AD8</color>
     <color name="accent_dark">#ff006e60</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
