@@ -51,7 +51,6 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
-            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
         }
         release {
             minifyEnabled false
@@ -61,7 +60,6 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
-            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
             ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
         }
     }

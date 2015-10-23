@@ -220,7 +220,6 @@ public class RepositoryManagerFragment extends PreferenceFragment {
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
                 Intent intent = new Intent(getActivity(), GithubLoginActivity.class);
-                intent.putExtra(GithubLoginActivity.FROM_DELETE, true);
                 startActivityForResult(intent, REQUEST_DELETE);
             }
         });

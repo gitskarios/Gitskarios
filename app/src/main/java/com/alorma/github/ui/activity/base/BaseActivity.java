@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,10 @@ import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.ui.activity.GithubLoginActivity;
 
 import dmax.dialog.SpotsDialog;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Bernat on 19/07/2014.
@@ -104,6 +109,22 @@ public class BaseActivity extends AppCompatActivity {
         manager.unregisterReceiver(authReceiver);
     }
 
+    @NonNull
+    protected List<Account> getAccounts(String... accountTypes) {
+
+        AccountManager accountManager = AccountManager.get(this);
+
+        List<Account> accountList = new ArrayList<>();
+
+        if (accountTypes != null) {
+            for (String accountType : accountTypes) {
+                Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
+                accountList.addAll(Arrays.asList(accounts));
+            }
+        }
+        return accountList;
+    }
+
     private class AuthReceiver extends BroadcastReceiver {
 
         @Override
@@ -125,7 +146,8 @@ public class BaseActivity extends AppCompatActivity {
                                         StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
                                         storeCredentials.clear();
 
-                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
+                                            Toast.LENGTH_SHORT).show();
                                         Intent loginIntent = new Intent(BaseActivity.this, GithubLoginActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
@@ -143,7 +165,8 @@ public class BaseActivity extends AppCompatActivity {
                                         StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
                                         storeCredentials.clear();
 
-                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
+                                            Toast.LENGTH_SHORT).show();
                                         Intent loginIntent = new Intent(BaseActivity.this, GithubLoginActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
@@ -199,11 +222,14 @@ public class BaseActivity extends AppCompatActivity {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null
+                && netInfoWifi.isConnectedOrConnecting());
         }
     }
 
-    protected void showProgressDialog(@StyleRes int style) {
+    protected void showProgressDialog(
+        @StyleRes
+        int style) {
         if (progressDialog == null) {
             try {
                 progressDialog = new SpotsDialog(this, style);

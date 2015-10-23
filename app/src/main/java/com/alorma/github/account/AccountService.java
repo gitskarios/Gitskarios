@@ -57,9 +57,6 @@ public class AccountService extends Service {
             Bundle reply = new Bundle();
             Intent intent = new Intent(context, GithubLoginActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            intent.putExtra(GithubLoginActivity.ADDING_FROM_ACCOUNTS, true);
-            intent.putExtra(GithubLoginActivity.ARG_ACCOUNT_TYPE, accountType);
-            intent.putExtra(GithubLoginActivity.ARG_AUTH_TYPE, authTokenType);
             reply.putParcelable(AccountManager.KEY_INTENT, intent);
 
             return reply;
@@ -75,9 +72,6 @@ public class AccountService extends Service {
             Bundle reply = new Bundle();
             Intent intent = new Intent(context, GithubLoginActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            intent.putExtra(GithubLoginActivity.ADDING_FROM_ACCOUNTS, true);
-            intent.putExtra(GithubLoginActivity.ARG_ACCOUNT_TYPE, account.type);
-            intent.putExtra(GithubLoginActivity.ARG_AUTH_TYPE, authTokenType);
             reply.putParcelable(AccountManager.KEY_INTENT, intent);
 
             return reply;

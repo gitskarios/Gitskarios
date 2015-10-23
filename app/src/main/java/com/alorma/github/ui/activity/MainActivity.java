@@ -354,7 +354,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     return false;
                 } else {
                     Intent intent = new Intent(MainActivity.this, GithubLoginActivity.class);
-                    intent.putExtra(GithubLoginActivity.ADDING_FROM_APP, true);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
