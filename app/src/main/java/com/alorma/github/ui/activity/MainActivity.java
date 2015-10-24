@@ -103,8 +103,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         setContentView(R.layout.generic_toolbar);
 
-        createDrawer();
-
         checkChangeLog();
     }
 
@@ -131,6 +129,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         List<Account> accounts = getAccounts();
 
         if (accounts.size() > 0) {
+            createDrawer();
+
             if (headerResult != null) {
                 if (headerResult.getProfiles() != null) {
                     ArrayList<IProfile> iProfiles = new ArrayList<>(headerResult.getProfiles());
@@ -181,7 +181,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         if (!TextUtils.isEmpty(userAvatar)) {
             profileDrawerItem.withIcon(userAvatar);
         }
-        headerResult.addProfiles(profileDrawerItem);
+        if (headerResult != null) {
+            headerResult.addProfiles(profileDrawerItem);
+        }
     }
 
     private String getUserExtraName(Account account) {
@@ -236,11 +238,25 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 new DividerDrawerItem(),
                 notificationsDrawerItem,
                 new SecondaryDrawerItem().withName(R.string.navigation_settings).withIcon(Octicons.Icon.oct_gear).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_settings).withSelectable(false),
-                new DividerDrawerItem(),
-                new SecondaryDrawerItem().withName(R.string.support_development).withIcon(Octicons.Icon.oct_heart).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_support_development).withSelectable(false),
-                new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withSelectable(false),
-                new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withSelectable(false)
+                new DividerDrawerItem()
+                );
+
+        if (donateFragment.enabled()) {
+            SecondaryDrawerItem donateItem = new SecondaryDrawerItem().withName(R.string.support_development)
+                .withIcon(Octicons.Icon.oct_heart)
+                .withIconColor(iconColor)
+                .withIdentifier(R.id.nav_drawer_support_development)
+                .withSelectable(false);
+
+            drawer.addDrawerItems(donateItem);
+        }
+
+        drawer.addDrawerItems(new SecondaryDrawerItem().withName(R.string.navigation_about).withIcon(Octicons.Icon.oct_octoface).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_about).withSelectable(false),
+            new SecondaryDrawerItem().withName(R.string.navigation_sign_out).withIcon(Octicons.Icon.oct_sign_out).withIconColor(iconColor).withIdentifier(R.id.nav_drawer_sign_out).withSelectable(false)
         );
+
+
+
         drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -272,7 +288,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                             signOut();
                             break;
                         case R.id.nav_drawer_support_development:
-                            if (donateFragment != null) {
+                            if (donateFragment != null && donateFragment.enabled()) {
                                 donateFragment.launchDonate();
                             }
                             break;
@@ -368,6 +384,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         credentials.storeToken(authToken);
         credentials.storeUsername(account.name);
+
+        credentials.storeUrl(AccountsHelper.getUrl(this, account));
 
         String url = AccountsHelper.getUrl(this, account);
 

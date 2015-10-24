@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.AccountsFragmentManager;
+import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
 import com.alorma.github.sdk.login.AccountsHelper;
@@ -146,7 +147,7 @@ public class BaseActivity extends AppCompatActivity {
 
                                         Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
                                             Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginFragment.class);
+                                        Intent loginIntent = new Intent(BaseActivity.this, MainActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();
@@ -165,7 +166,7 @@ public class BaseActivity extends AppCompatActivity {
 
                                         Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
                                             Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginFragment.class);
+                                        Intent loginIntent = new Intent(BaseActivity.this, MainActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();
