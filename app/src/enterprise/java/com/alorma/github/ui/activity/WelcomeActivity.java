@@ -62,6 +62,8 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
 
     private Long startTime;
     private int countClick = 0;
+    private String accountType;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
 
     private void openCreate() {
 
+        accountType = getString(R.string.account_type);
         buttonEnterprise.setVisibility(View.INVISIBLE);
 
         buttonGithub.animate()
@@ -172,6 +175,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
 
     private void openCreateEnterprise() {
 
+        accountType = getString(R.string.enterprise_account_type);
         buttonGithub.setVisibility(View.INVISIBLE);
         buttonEnterprise.animate()
             .alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
@@ -219,13 +223,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
         if (requestCode == 2112) {
             if (data != null && data.getExtras() != null) {
                 if (data.getExtras().containsKey(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL) && data.getExtras().containsKey(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN))  {
-                    String url = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL);
+                    url = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL);
                     String token = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN);
 
                     StoreCredentials credentials = new StoreCredentials(this);
                     credentials.storeUrl(url);
 
                     endAccess(token);
+
                 }
             }
         }
@@ -281,13 +286,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     }
 
     private void addAccount(User user) {
-        Account account = new Account(user.login, getString(R.string.account_type));
-        Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url);
+        Account account = new Account(user.login, accountType);
+        Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, url);
+
         userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
         AccountManager accountManager = AccountManager.get(this);
         accountManager.addAccountExplicitly(account, null, userData);
-        accountManager.setAuthToken(account, getString(R.string.account_type), accessToken);
+        accountManager.setAuthToken(account, accountType, accessToken);
 
         Bundle result = new Bundle();
         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);

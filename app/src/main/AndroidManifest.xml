@@ -168,7 +168,7 @@
 
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/account_authenticator" />
+                android:resource="@xml/account_enterprise_authenticator" />
         </service>
         <service
             android:name=".account.NotificationsSyncService"
