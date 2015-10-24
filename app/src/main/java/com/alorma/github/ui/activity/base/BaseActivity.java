@@ -25,7 +25,7 @@ import com.alorma.github.ui.activity.AccountsFragmentManager;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
 import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.ui.activity.GithubLoginFragment;
+import com.alorma.github.account.GithubLoginFragment;
 
 import dmax.dialog.SpotsDialog;
 import java.util.List;

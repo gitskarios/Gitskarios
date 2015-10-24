@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.GithubLoginFragment"
+        tools:context=".account.GithubLoginFragment"
         android:background="@color/white">
 
         <ImageView

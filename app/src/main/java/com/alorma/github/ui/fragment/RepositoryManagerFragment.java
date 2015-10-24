@@ -17,7 +17,6 @@ import com.alorma.github.sdk.services.repo.BranchesCallback;
 import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
-import com.alorma.github.ui.activity.GithubLoginFragment;
 import com.alorma.gitskarios.core.client.BaseClient;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

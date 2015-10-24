@@ -18,10 +18,10 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
+import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -56,6 +56,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     private GithubLoginFragment loginFragment;
     private String accessToken;
 
+    private Long startTime;
+    private int countClick = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,25 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
         } else {
             showInitialButtons();
         }
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (startTime == null) {
+                    startTime = System.currentTimeMillis();
+                }
+                countClick++;
+
+                if (countClick >= 20  && startTime + TimeUnit.SECONDS.toMillis(5) <= System.currentTimeMillis()) {
+
+                }
+            }
+        });
+
+
+        loginFragment = new GithubLoginFragment();
+        loginFragment.setLoginCallback(this);
+        getFragmentManager().beginTransaction().add(loginFragment, "login").commit();
     }
 
     @NonNull
@@ -116,26 +138,24 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     private void openCreate() {
 
         buttonGithub.animate()
-            .alpha(0f)
-            .setDuration(TimeUnit.SECONDS.toMillis(1))
-            .setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
+            .alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-                }
+            }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    buttonGithub.setVisibility(View.INVISIBLE);
-                }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                buttonGithub.setVisibility(View.INVISIBLE);
+            }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+            @Override
+            public void onAnimationCancel(Animator animation) {
 
-                }
+            }
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
                 }
             })
@@ -144,9 +164,10 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
 
         progressBar.setVisibility(View.VISIBLE);
 
-        loginFragment = new GithubLoginFragment();
-        loginFragment.setLoginCallback(this);
-        getFragmentManager().beginTransaction().add(loginFragment, "login").commit();
+        boolean login = loginFragment.login();
+        if (!login) {
+            showInitialButtons();
+        }
     }
 
     @Override
@@ -155,6 +176,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
 
         if (loginFragment != null) {
             loginFragment.onNewIntent(intent);
+            loginFragment.setLoginCallback(this);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (loginFragment != null) {
+            loginFragment.finishPurchase(requestCode, resultCode, data);
         }
     }
 
@@ -243,5 +272,10 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     @Override
     public void onError(RetrofitError error) {
 
+    }
+
+    @Override
+    public void loginNotAvailable() {
+        showInitialButtons();
     }
 }

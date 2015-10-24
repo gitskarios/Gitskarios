@@ -1,4 +1,4 @@
-package com.alorma.github.ui.activity;
+package com.alorma.github.account;
 
 import android.app.Fragment;
 import android.content.ComponentName;
@@ -7,10 +7,13 @@ import android.content.pm.LabeledIntent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
+import com.alorma.github.ui.activity.AccountsFragmentManager;
+import com.alorma.github.ui.activity.PurchasesFragment;
 import com.alorma.gitskarios.core.client.BaseClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +23,44 @@ import retrofit.client.Response;
 public class GithubLoginFragment extends Fragment {
 
     public static final String SCOPES = "gist,user,notifications,repo,delete_repo";
-    public static final String EXTRA_ACCESS_TOKEN = "EXTRA_ACCESS_TOKEN";
 
     public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
 
     private RequestTokenClient requestTokenClient;
 
     private LoginCallback loginCallback;
+    private AccountsFragmentManager accountsFragment;
+    private PurchasesFragment purchasesFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        accountsFragment = new AccountsFragmentManager();
+        getFragmentManager().beginTransaction().add(accountsFragment, "accountsFragment").commit();
+        purchasesFragment = new PurchasesFragment();
+        getFragmentManager().beginTransaction().add(purchasesFragment, "purchasesFragment").commit();
+    }
 
-        openExternalLogin();
+    public boolean login() {
+        if (accountsFragment.getAccounts().isEmpty()) {
+            openExternalLogin();
+            return true;
+        } else if (accountsFragment.multipleAccountsAllowed()){
+            openExternalLogin();
+            return true;
+        } else {
+            purchasesFragment.checkSku(new PurchasesFragment.PurchasesCallback() {
+                @Override
+                public void onMultiAccountPurchaseResult(boolean multiAccountPurchased) {
+                    if (multiAccountPurchased) {
+                        openExternalLogin();
+                    } else {
+                        purchasesFragment.showDialogBuyMultiAccount();
+                    }
+                }
+            });
+            return false;
+        }
     }
 
     public void onNewIntent(Intent intent) {
@@ -103,9 +131,26 @@ public class GithubLoginFragment extends Fragment {
         this.loginCallback = loginCallback;
     }
 
+    public void finishPurchase(int requestCode, int resultCode, Intent data) {
+        purchasesFragment.finishPurchase(requestCode, resultCode, data, new PurchasesFragment.PurchasesCallback() {
+            @Override
+            public void onMultiAccountPurchaseResult(boolean multiAccountPurchased) {
+                if (multiAccountPurchased) {
+                    openExternalLogin();
+                } else {
+                    if (loginCallback != null){
+                        loginCallback.loginNotAvailable();
+                    }
+                }
+            }
+        });
+    }
+
     public interface LoginCallback {
         void endAccess(String accessToken);
 
         void onError(RetrofitError error);
+
+        void loginNotAvailable();
     }
 }

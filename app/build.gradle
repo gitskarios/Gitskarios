@@ -70,7 +70,7 @@ def getCurrentGitHash() {
 }
 
 def Properties props = new Properties()
-def propFile = file('../signing.properties')
+def propFile = file('../gradle.properties')
 if (propFile.canRead()) {
     props.load(new FileInputStream(propFile))
 

@@ -91,4 +91,6 @@ public abstract class BaseAccountsFragmentManager extends Fragment {
     public interface RemoveAccountCallback {
         void onAccountRemoved();
     }
+
+    public abstract boolean multipleAccountsAllowed();
 }

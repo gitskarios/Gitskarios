@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.account.BaseAccountsFragmentManager;
 
@@ -10,5 +11,10 @@ public class AccountsFragmentManager extends BaseAccountsFragmentManager {
     @Override
     protected String[] getAccountTypes() {
         return new String[]{getString(R.string.account_type)};
+    }
+
+    @Override
+    public boolean multipleAccountsAllowed() {
+        return BuildConfig.DEBUG;
     }
 }
