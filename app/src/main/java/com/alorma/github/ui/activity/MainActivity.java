@@ -291,6 +291,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             }
         }
 
+        headerBuilder.addProfiles(new ProfileDrawerItem().withIdentifier(1101)
+            .withName(getString(R.string.add_account))
+            .withIcon(Octicons.Icon.oct_octoface));
+
         return headerBuilder.build();
     }
 
@@ -328,8 +332,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         if (notificationsDrawerItem != null) {
             notificationsDrawerItem.withChecked(
-                selectedAccount != null
-                    && ContentResolver.getSyncAutomatically(selectedAccount, selectedAccount.type));
+                selectedAccount != null && ContentResolver.getSyncAutomatically(selectedAccount, selectedAccount.type));
             if (resultDrawer != null) {
                 resultDrawer.updateItem(notificationsDrawerItem);
             }

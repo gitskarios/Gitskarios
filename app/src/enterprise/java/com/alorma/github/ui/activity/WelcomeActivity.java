@@ -6,6 +6,7 @@ import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class WelcomeActivity extends AccountAuthenticatorActivity implements BaseClient.OnResultCallback<User>,GithubLoginFragment.LoginCallback {
+public class WelcomeActivity extends AccountAuthenticatorActivity
+    implements BaseClient.OnResultCallback<User>, GithubLoginFragment.LoginCallback {
 
     @Bind(R.id.imageView)
     ImageView imageView;
@@ -70,6 +73,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         ButterKnife.bind(this);
+
+        StoreCredentials credentials = new StoreCredentials(this);
+        credentials.clear();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -140,8 +146,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
         accountType = getString(R.string.account_type);
         buttonEnterprise.setVisibility(View.INVISIBLE);
 
-        buttonGithub.animate()
-            .alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
+        buttonGithub.animate().alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 
@@ -161,8 +166,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
             public void onAnimationRepeat(Animator animation) {
 
             }
-        })
-            .start();
+        }).start();
         progressBar.animate().alpha(1f).setStartDelay(300).setDuration(TimeUnit.SECONDS.toMillis(1)).start();
 
         progressBar.setVisibility(View.VISIBLE);
@@ -178,27 +182,29 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
         accountType = getString(R.string.enterprise_account_type);
         buttonGithub.setVisibility(View.INVISIBLE);
         buttonEnterprise.animate()
-            .alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+            .alpha(0f)
+            .setDuration(TimeUnit.SECONDS.toMillis(1))
+            .setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                buttonEnterprise.setVisibility(View.INVISIBLE);
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    buttonEnterprise.setVisibility(View.INVISIBLE);
+                }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                @Override
+                public void onAnimationRepeat(Animator animation) {
 
-            }
-        })
+                }
+            })
             .start();
         progressBar.animate().alpha(1f).setStartDelay(300).setDuration(TimeUnit.SECONDS.toMillis(1)).start();
 
@@ -212,6 +218,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        StoreCredentials credentials = new StoreCredentials(this);
+        credentials.clear();
+
         if (loginFragment != null) {
             loginFragment.onNewIntent(intent);
             loginFragment.setLoginCallback(this);
@@ -222,7 +231,8 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 2112) {
             if (data != null && data.getExtras() != null) {
-                if (data.getExtras().containsKey(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL) && data.getExtras().containsKey(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN))  {
+                if (data.getExtras().containsKey(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL) && data.getExtras()
+                    .containsKey(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN)) {
                     url = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_URL);
                     String token = data.getStringExtra(GithubEnterpriseLoginActivity.EXTRA_ENTERPRISE_TOKEN);
 
@@ -230,7 +240,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
                     credentials.storeUrl(url);
 
                     endAccess(token);
-
                 }
             }
         }
@@ -286,24 +295,26 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     }
 
     private void addAccount(User user) {
-        Account account = new Account(user.login, accountType);
-        Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, url);
+        if (checkSelfPermission("android.permission.AUTHENTICATE_ACCOUNTS") == PackageManager.PERMISSION_GRANTED) {
+            Account account = new Account(user.login, accountType);
+            Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, url);
 
-        userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
+            userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
-        AccountManager accountManager = AccountManager.get(this);
-        accountManager.addAccountExplicitly(account, null, userData);
-        accountManager.setAuthToken(account, accountType, accessToken);
+            AccountManager accountManager = AccountManager.get(this);
+            accountManager.addAccountExplicitly(account, null, userData);
+            accountManager.setAuthToken(account, accountType, accessToken);
 
-        Bundle result = new Bundle();
-        result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-        result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-        result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
-        setAccountAuthenticatorResult(result);
+            Bundle result = new Bundle();
+            result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+            result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+            result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
+            setAccountAuthenticatorResult(result);
 
-        checkAndEnableSyncAdapter(account);
+            checkAndEnableSyncAdapter(account);
 
-        setResult(RESULT_OK);
+            setResult(RESULT_OK);
+        }
     }
 
     private void checkAndEnableSyncAdapter(Account account) {
