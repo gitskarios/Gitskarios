@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment;
 
-import android.accounts.Account;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,22 +8,17 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.text.Html;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
-import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.repo.BranchesCallback;
 import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
-import com.alorma.github.ui.activity.GithubLoginActivity;
-
+import com.alorma.github.ui.activity.GithubLoginFragment;
+import com.alorma.gitskarios.core.client.BaseClient;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -36,7 +30,6 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     private static final String REPO_INFO = "REPO_INFO";
     private static final String REQUEST_DTO = "REQUEST_DTO";
     private static final int DESCRIPTION_EDIT = 544;
-    private static final int REQUEST_DELETE = 556;
 
     private RepoInfo repoInfo;
     private RepoRequestDTO repoRequestDTO;
@@ -153,35 +146,10 @@ public class RepositoryManagerFragment extends PreferenceFragment {
         pref_repo_delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                alertDeleteRepository();
+                deleteRepository();
                 return false;
             }
         });
-    }
-
-    private void alertDeleteRepository() {
-
-        StoreCredentials credentials = new StoreCredentials(getActivity());
-        String userName = credentials.getUserName();
-
-        String userScopes = AccountsHelper.getUserScopes(getActivity(), new Account(userName, getString(R.string.account_type)));
-        if (userScopes.contains("delete_repo")) {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(R.string.delete_repository);
-            builder.content(Html.fromHtml(getString(R.string.delete_repository_content, repoInfo.owner, repoInfo.name)));
-            builder.positiveText(R.string.delete);
-            builder.neutralText(R.string.cancel);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    super.onPositive(dialog);
-                    deleteRepository();
-                }
-            });
-            builder.show();
-        } else {
-            requestNewScope();
-        }
     }
 
     private void deleteRepository() {
@@ -208,22 +176,6 @@ public class RepositoryManagerFragment extends PreferenceFragment {
             }
         });
         deleteRepoClient.execute();
-    }
-
-    private void requestNewScope() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.delete_repository_scope_request);
-        builder.content(R.string.delete_repository_scope_request_content);
-        builder.positiveText(R.string.ok);
-        builder.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                Intent intent = new Intent(getActivity(), GithubLoginActivity.class);
-                startActivityForResult(intent, REQUEST_DELETE);
-            }
-        });
-        builder.show();
     }
 
     private void getBranches() {
@@ -253,8 +205,6 @@ public class RepositoryManagerFragment extends PreferenceFragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DESCRIPTION_EDIT && data != null) {
                 repoRequestDTO.description = data.getStringExtra(ContentEditorActivity.CONTENT);
-            } else if (requestCode == REQUEST_DELETE) {
-                alertDeleteRepository();
             }
         }
     }

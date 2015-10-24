@@ -437,4 +437,5 @@
     <string name="share_intent_title">Share via...</string>
     <string name="pref_repo_is_private">Is private</string>
     <string name="welcome_button_enterprise">Github enterprise account</string>
+    <string name="open_app">Open app!</string>
 </resources>

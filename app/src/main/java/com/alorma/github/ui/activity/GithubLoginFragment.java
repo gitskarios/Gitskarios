@@ -1,24 +1,23 @@
 package com.alorma.github.ui.activity;
 
+import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.LabeledIntent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
-import com.alorma.github.ui.ErrorHandler;
 import com.alorma.gitskarios.core.client.BaseClient;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class GithubLoginActivity extends Fragment {
+public class GithubLoginFragment extends Fragment {
 
     public static final String SCOPES = "gist,user,notifications,repo,delete_repo";
     public static final String EXTRA_ACCESS_TOKEN = "EXTRA_ACCESS_TOKEN";
@@ -109,35 +108,4 @@ public class GithubLoginActivity extends Fragment {
 
         void onError(RetrofitError error);
     }
-
-    /*
-    private void addAccount(User user) {
-        Account account = new Account(user.login, getString(R.string.account_type));
-        Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, scope);
-        userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
-
-        AccountManager accountManager = AccountManager.get(this);
-        accountManager.addAccountExplicitly(account, null, userData);
-        accountManager.setAuthToken(account, getString(R.string.account_type), accessToken);
-
-        Bundle result = new Bundle();
-        result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-        result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-        result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
-        setAccountAuthenticatorResult(result);
-
-        checkAndEnableSyncAdapter(account);
-
-        setResult(RESULT_OK);
-        finish();
-    }
-
-    private void checkAndEnableSyncAdapter(Account account) {
-        ContentResolver.setIsSyncable(account, getString(R.string.account_type), ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
-        if (ContentResolver.getSyncAutomatically(account, getString(R.string.account_type))) {
-            ContentResolver.addPeriodicSync(account, getString(R.string.account_type), Bundle.EMPTY, 1800);
-            ContentResolver.setSyncAutomatically(account, getString(R.string.account_type), true);
-        }
-    }
-    */
 }

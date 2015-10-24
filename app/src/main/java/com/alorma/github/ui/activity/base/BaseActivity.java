@@ -21,15 +21,13 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.activity.AccountsFragmentManager;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
 import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.ui.activity.GithubLoginActivity;
+import com.alorma.github.ui.activity.GithubLoginFragment;
 
 import dmax.dialog.SpotsDialog;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,10 +42,13 @@ public class BaseActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private SpotsDialog progressDialog;
+    private AccountsFragmentManager accountsFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        accountsFragmentManager = new AccountsFragmentManager();
+        getFragmentManager().beginTransaction().add(accountsFragmentManager, "accountsFragmentManager").commit();
     }
 
     @Override
@@ -110,19 +111,16 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @NonNull
-    protected List<Account> getAccounts(String... accountTypes) {
+    protected List<Account> getAccounts() {
+        return accountsFragmentManager.getAccounts();
+    }
 
-        AccountManager accountManager = AccountManager.get(this);
+    protected void removeAccount(Account selectedAccount, final AccountsFragmentManager.RemoveAccountCallback removeAccountCallback) {
+        accountsFragmentManager.removeAccount(selectedAccount, removeAccountCallback);
+    }
 
-        List<Account> accountList = new ArrayList<>();
-
-        if (accountTypes != null) {
-            for (String accountType : accountTypes) {
-                Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
-                accountList.addAll(Arrays.asList(accounts));
-            }
-        }
-        return accountList;
+    protected void changeNotificationState(Account account, boolean enabled) {
+        accountsFragmentManager.changeNotificationState(account, enabled);
     }
 
     private class AuthReceiver extends BroadcastReceiver {
@@ -148,7 +146,7 @@ public class BaseActivity extends AppCompatActivity {
 
                                         Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
                                             Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginActivity.class);
+                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginFragment.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();
@@ -167,7 +165,7 @@ public class BaseActivity extends AppCompatActivity {
 
                                         Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
                                             Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginActivity.class);
+                                        Intent loginIntent = new Intent(BaseActivity.this, GithubLoginFragment.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();

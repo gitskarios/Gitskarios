@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        tools:context="com.alorma.github.ui.activity.GithubLoginActivity">
+        tools:context=".ui.activity.GithubLoginFragment">
 
         <ImageView
             android:id="@+id/imageView"

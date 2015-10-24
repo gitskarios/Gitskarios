@@ -1,9 +1,6 @@
 package com.alorma.github.ui.activity;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
@@ -12,9 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +22,7 @@ import android.widget.ImageView;
 
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
+import com.alorma.github.account.BaseAccountsFragmentManager;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.core.client.BaseClient;
@@ -132,10 +128,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     public void onStart() {
         super.onStart();
 
-        AccountManager accountManager = AccountManager.get(this);
-        Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
+        List<Account> accounts = getAccounts();
 
-        if (accounts != null && accounts.length > 0) {
+        if (accounts.size() > 0) {
             if (headerResult != null) {
                 if (headerResult.getProfiles() != null) {
                     ArrayList<IProfile> iProfiles = new ArrayList<>(headerResult.getProfiles());
@@ -164,7 +159,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
             headerResult.addProfiles(itemAdd);
 
-            selectAccount(accounts[0]);
+            selectAccount(accounts.get(0));
+        } else {
+            StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+            storeCredentials.clear();
+
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -173,9 +176,11 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         String userAvatar = AccountsHelper.getUserAvatar(this, account);
         ProfileDrawerItem profileDrawerItem = new GitskariosProfileDrawerItem()
                 .withName(account.name)
-                .withIcon(userAvatar)
                 .withEmail(getUserExtraName(account))
                 .withIdentifier(i);
+        if (!TextUtils.isEmpty(userAvatar)) {
+            profileDrawerItem.withIcon(userAvatar);
+        }
         headerResult.addProfiles(profileDrawerItem);
     }
 
@@ -205,7 +210,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             @Override
             public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
                 if (iDrawerItem != null && iDrawerItem.getIdentifier() == R.id.nav_drawer_notifications) {
-                    changeNotificationState(b);
+                    changeNotificationState(selectedAccount, b);
                 }
 
                 if (!b) {
@@ -281,26 +286,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         resultDrawer.setSelection(R.id.nav_drawer_events);
     }
 
-    private void changeNotificationState(boolean enabled) {
-        if (selectedAccount != null) {
-            if (enabled) {
-                ContentResolver.addPeriodicSync(
-                        selectedAccount,
-                        getString(R.string.account_type),
-                        Bundle.EMPTY,
-                        1800);
-                ContentResolver.setSyncAutomatically(selectedAccount, getString(R.string.account_type), true);
-            } else {
-                ContentResolver.removePeriodicSync(
-                        selectedAccount,
-                        getString(R.string.account_type),
-                        Bundle.EMPTY
-                );
-                ContentResolver.setSyncAutomatically(selectedAccount, getString(R.string.account_type), false);
-            }
-        }
-    }
-
     private void buildHeader() {
 
         // Create the AccountHeader
@@ -353,7 +338,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     }
                     return false;
                 } else {
-                    Intent intent = new Intent(MainActivity.this, GithubLoginActivity.class);
+                    Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
@@ -574,47 +559,18 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     public void signOut() {
         if (selectedAccount != null) {
-            GitskariosSettings settings = new GitskariosSettings(this);
-            settings.saveVersion(0);
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
-                        @Override
-                        public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                            if (accountManagerFuture.isDone()) {
+            removeAccount(selectedAccount, new BaseAccountsFragmentManager.RemoveAccountCallback() {
+                @Override
+                public void onAccountRemoved() {
+                    StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+                    storeCredentials.clear();
 
-                                StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
-                                storeCredentials.clear();
-
-                                Intent intent = new Intent(MainActivity.this, GithubLoginActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    };
-                    AccountManager.get(this).removeAccount(selectedAccount, this, callback, new Handler());
-                } else {
-                    AccountManagerCallback<Boolean> callback = new AccountManagerCallback<Boolean>() {
-                        @Override
-                        public void run(AccountManagerFuture<Boolean> accountManagerFuture) {
-                            if (accountManagerFuture.isDone()) {
-
-                                StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
-                                storeCredentials.clear();
-
-                                Intent intent = new Intent(MainActivity.this, GithubLoginActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    };
-                    AccountManager.get(this).removeAccount(selectedAccount, callback, new Handler());
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            });
         }
     }
 

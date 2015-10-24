@@ -17,6 +17,17 @@
         android:src="@drawable/ic_launcher_web"
         />
 
+    <com.alorma.github.ui.view.CircularImageView
+        android:id="@+id/imageUser"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        android:src="@drawable/ic_launcher_web"
+        android:visibility="gone"
+        />
+
     <TextView
         android:id="@+id/appName"
         style="@style/TextAppearance.AppCompat.Headline"
@@ -54,6 +65,17 @@
             android:alpha="0"
             tools:alpha="1"
             android:text="@string/welcome_button_github"
+            />
+
+        <Button
+            android:id="@+id/buttonOpen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            tools:visibility="gone"
+            android:alpha="0"
+            tools:alpha="1"
+            android:text="@string/open_app"
             />
         <ProgressBar
             android:layout_width="wrap_content"
