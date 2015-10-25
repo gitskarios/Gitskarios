@@ -61,7 +61,10 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         handleImage(holder.authorAvatar, githubEvent);
         int textRes = R.string.event_generic_by;
 
-        holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, getTextForEvent(githubEvent))));
+        String textForEvent = getTextForEvent(githubEvent);
+
+        holder.authorName.setText(
+            Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, textForEvent)));
 
         String timeString = TimeUtils.getTimeAgoString(githubEvent.created_at);
 
@@ -79,13 +82,27 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
             case CreateEvent:
                 return "created repository" + " " + "<b>" + event.repo.name + "</b>";
             case CommitCommentEvent:
-                return "commented on commit " + "<b>" + event.repo.name + "@" + event.payload.comment.commit_id.substring(0, 10) + "</b>";
+                return "commented on commit "
+                    + "<b>"
+                    + event.repo.name
+                    + "@"
+                    + event.payload.comment.commit_id.substring(0, 10)
+                    + "</b>";
             case DownloadEvent:
                 return "";
             case FollowEvent:
                 return "";
             case ForkEvent:
-                return "forked" + " <b>" + event.repo.name + "</b>" + " " + "to" + " " + "<b>" + event.payload.forkee.full_name + "</b>";
+                return "forked"
+                    + " <b>"
+                    + event.repo.name
+                    + "</b>"
+                    + " "
+                    + "to"
+                    + " "
+                    + "<b>"
+                    + event.payload.forkee.full_name
+                    + "</b>";
             case GistEvent:
                 return "";
             case GollumEvent:
@@ -106,7 +123,14 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                     action = "merged";
                 }
 
-                return action + " pull request" + " " + "<b>" + event.repo.name + "#" + event.payload.pull_request.number + "</b>";
+                return action
+                    + " pull request"
+                    + " "
+                    + "<b>"
+                    + event.repo.name
+                    + "#"
+                    + event.payload.pull_request.number
+                    + "</b>";
             case PullRequestReviewCommentEvent:
                 return "";
             case PushEvent:
@@ -123,18 +147,34 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
             case TeamAddEvent:
                 return "";
             case DeleteEvent:
-                return "";
+                String deletedThing = "repository";
+                if (event.payload.ref != null) {
+                    deletedThing = "branch <b>" + event.payload.ref + "</b> at ";
+                }
+                return "deleted " + deletedThing + "<b>" + event.repo.name + "</b>";
             case ReleaseEvent:
-                return event.payload.action + " " + "<b>" + event.payload.release.tag_name + "</b>" + " " + "at" + " " + "<b>" + event.repo.name + "</b>";
+                return event.payload.action
+                    + " "
+                    + "<b>"
+                    + event.payload.release.tag_name
+                    + "</b>"
+                    + " "
+                    + "at"
+                    + " "
+                    + "<b>"
+                    + event.repo.name
+                    + "</b>";
         }
 
         return "";
-
     }
 
     public void handleImage(ImageView imageView, GithubEvent event) {
         ImageLoader.getInstance().cancelDisplayTask(imageView);
-        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2).bitmapConfig(Bitmap.Config.ALPHA_8).build();
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
+            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+            .bitmapConfig(Bitmap.Config.ALPHA_8)
+            .build();
         ImageLoader.getInstance().displayImage(event.actor.avatar_url, imageView, displayImageOptions);
     }
 
