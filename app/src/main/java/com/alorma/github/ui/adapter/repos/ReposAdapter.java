@@ -31,7 +31,6 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
     @Override
     protected void onBindViewHolder(ViewHolder holder, Repo repo) {
         holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
-        //new EmojiBitmapLoader().parseTextView(holder.textTitle);
 
         String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);
         applyIcon(holder.textStarts, Octicons.Icon.oct_star);
@@ -44,7 +43,6 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
         if (repo.description != null) {
             holder.textDescription.setVisibility(View.VISIBLE);
             holder.textDescription.setText(repo.description);
-            new EmojiBitmapLoader().parseTextView(holder.textDescription);
         } else {
             holder.textDescription.setVisibility(View.GONE);
         }

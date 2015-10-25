@@ -46,6 +46,7 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
     @Override
     protected void executeRequest() {
         super.executeRequest();
+
         bottomPaginationLink = null;
     }
 

@@ -13,6 +13,8 @@ android {
         versionName "2.5.18"
         versionCode 25180
         resValue "string", "app_git_hash", getCurrentGitHash()
+
+        multiDexEnabled true
     }
 
     lintOptions {
@@ -34,13 +36,21 @@ android {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 
+    productFlavors {
+        github {
+            applicationId "com.alorma.github"
+        }
+        enterprise {
+            applicationId "com.alorma.github_enterprise"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
-            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
         }
         release {
             minifyEnabled false
@@ -50,18 +60,7 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
-            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "null"
-            ext.betaDistributionGroupAliases="gitskarios-alpha-testers"
-        }
-        cloudtest {
-            minifyEnabled false
-            if (signingConfigs.playStore != null) {
-                signingConfig signingConfigs.playStore
-            }
-            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
-            buildConfigField "String", "GH_GITSKARIOS_ACCOUNT_TOKEN", "\"" + getGHCustomToken(true) + "\""
+            ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
         }
     }
 }
@@ -71,7 +70,7 @@ def getCurrentGitHash() {
 }
 
 def Properties props = new Properties()
-def propFile = file('../signing.properties')
+def propFile = file('../gradle.properties')
 if (propFile.canRead()) {
     props.load(new FileInputStream(propFile))
 
@@ -118,14 +117,6 @@ def getGHCallback(pro) {
     }
 }
 
-def getGHCustomToken(pro) {
-    if (pro) {
-        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
-    } else {
-        return hasProperty('GH_GITSKARIOS_ACCOUNT_TOKEN') ? GH_GITSKARIOS_ACCOUNT_TOKEN : System.getenv('GH_GITSKARIOS_ACCOUNT_TOKEN')
-    }
-}
-
 assembleRelease.dependsOn clean
 assembleRelease.doLast {
     tasks.crashlyticsUploadDistributionRelease.execute()
@@ -134,7 +125,6 @@ assembleRelease.doLast {
 dependencies {
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
     releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
-    cloudtestCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
     // Submodules
 
     compile project(':libraries:breadcrumbs')
@@ -158,7 +148,7 @@ dependencies {
     compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
         transitive = true
     }
-    compile('com.mikepenz:materialdrawer:4.0.8@aar') {
+    compile('com.mikepenz:materialdrawer:4.3.7@aar') {
         transitive = true
     }
     compile('com.mikepenz:actionitembadge:3.1.1@aar')
@@ -171,7 +161,6 @@ dependencies {
     compile 'com.wefika:flowlayout:0.4.0'
     compile 'com.github.alorma:diff-textview:1.1.0'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'io.realm:realm-android:0.83.1'
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
 
     compile 'com.afollestad:material-cab:0.1.4'
@@ -181,5 +170,10 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
 
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile("com.fewlaps.quitnowcache:quitnow-cache:1.2") {
+        exclude module: 'joda-time'
+    }
+
+    compile 'com.android.support:multidex:1.0.1'
 
 }

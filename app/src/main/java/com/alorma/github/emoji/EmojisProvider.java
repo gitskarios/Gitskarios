@@ -1,18 +1,17 @@
 package com.alorma.github.emoji;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.services.emojis.EmojisClient;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -21,76 +20,82 @@ import retrofit.client.Response;
  */
 public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<String, String>> {
 
+    public EmojisProvider(Context context) {
+        this.context = context;
+    }
+
     private Context context;
     private EmojisCallback emojisCallback;
-    private Realm instance;
 
-    public void getEmojis(Context context, EmojisCallback emojisCallback) {
-        this.context = context;
+
+    public List<Emoji> getEmojis() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String emojis = preferences.getString("EMOJIS", null);
+        if (emojis == null) {
+            return new ArrayList<>();
+        } else {
+            return new Gson().fromJson(emojis, ListEmojis.class);
+        }
+    }
+
+    public List<Emoji> getEmojis(String filter) {
+        List<Emoji> emojis = getEmojis();
+        if (filter != null) {
+            List<Emoji> emojisFilter = new ArrayList<>();
+            for (Emoji emoji : emojis) {
+                if (emoji.getKey().contains(filter)) {
+                    emojisFilter.add(emoji);
+                }
+            }
+            return emojisFilter;
+        } else {
+            return emojis;
+        }
+    }
+
+    public void getEmojis(EmojisCallback emojisCallback) {
+
         this.emojisCallback = emojisCallback;
-        instance = Realm.getInstance(context);
 
-        RealmQuery<EmojiVO> query = instance.where(EmojiVO.class);
-
-        RealmResults<EmojiVO> result = query.findAll();
+        List<Emoji> result = getEmojis();
 
         if (result.size() > 0) {
             if (emojisCallback != null) {
-                emojisCallback.onEmojisLoaded(transform(result));
+                emojisCallback.onEmojisLoaded(result);
             }
         } else {
             EmojisClient emojisClient = new EmojisClient(context);
             emojisClient.setOnResultCallback(this);
             emojisClient.execute();
         }
-        instance.close();
-        instance = null;
     }
 
-    public void getEmojis(Context context, EmojisCallback callback, String filter) {
+    public void getEmojis(EmojisCallback callback, String filter) {
         if (filter != null) {
-            this.context = context;
-            this.emojisCallback = callback;
-            instance = Realm.getInstance(context);
-
-            RealmQuery<EmojiVO> query = instance.where(EmojiVO.class);
-
-            RealmResults<EmojiVO> result = query.contains("key", filter.toLowerCase().replace(" ", "_")).findAll();
-
-            if (result.size() > 0) {
-                if (emojisCallback != null) {
-                    emojisCallback.onEmojisLoaded(transform(result));
-                }
-            } else {
-                if (emojisCallback != null) {
-                    emojisCallback.onEmojisLoadFail();
-                }
-            }
-            instance.close();
-            instance = null;
+            callback.onEmojisLoaded(getEmojis(filter));
+        } else {
+            getEmojis(callback);
         }
     }
 
     @Override
     public void onResponseOk(HashMap<String, String> emojis, Response r) {
-        instance = Realm.getInstance(context);
         if (emojis.size() > 0) {
-            RealmList<EmojiVO> emojiVOs = new RealmList<>();
+            List<Emoji> emojisList = new ArrayList<>();
+
             for (String key : emojis.keySet()) {
-                EmojiVO emojiVO = new EmojiVO(key, emojis.get(key));
-                emojiVOs.add(emojiVO);
+                Emoji emoji = new Emoji(key, emojis.get(key));
+                emojisList.add(emoji);
+                Gson gson = new Gson();
+                String json = gson.toJson(emojisList);
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                preferences.edit().putString("EMOJIS", json).apply();
             }
-            instance.beginTransaction();
-            instance.copyToRealmOrUpdate(emojiVOs);
-            List<EmojiVO> copyEmojiList = new ArrayList<>(emojiVOs);
 
             if (emojisCallback != null) {
-                emojisCallback.onEmojisLoaded(transform(copyEmojiList));
+                emojisCallback.onEmojisLoaded(emojisList);
             }
-
-            instance.commitTransaction();
-            instance.close();
-            instance = null;
         }
     }
 
@@ -99,20 +104,6 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
         if (emojisCallback != null) {
             emojisCallback.onEmojisLoadFail();
         }
-    }
-
-    public List<Emoji> transform(List<EmojiVO> vos) {
-        List<Emoji> emojis = new ArrayList<>();
-        if (vos != null) {
-            for (EmojiVO vo : vos) {
-                emojis.add(new Emoji(vo.getKey(), vo.getValue()));
-            }
-        }
-        return emojis;
-    }
-
-    public void setEmojisCallback(EmojisCallback emojisCallback) {
-        this.emojisCallback = emojisCallback;
     }
 
     public interface EmojisCallback {

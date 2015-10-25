@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import com.alorma.github.ui.activity.LoginActivity;
-
 /**
  * Created by Bernat on 27/03/2015.
  */
@@ -55,11 +53,8 @@ public class AccountService extends Service {
         @Override
         public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] strings, Bundle bundle) throws NetworkErrorException {
             Bundle reply = new Bundle();
-            Intent intent = new Intent(context, LoginActivity.class);
+            Intent intent = new Intent(context, GithubLoginFragment.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            intent.putExtra(LoginActivity.ADDING_FROM_ACCOUNTS, true);
-            intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, accountType);
-            intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
             reply.putParcelable(AccountManager.KEY_INTENT, intent);
 
             return reply;
@@ -73,11 +68,8 @@ public class AccountService extends Service {
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle bundle) throws NetworkErrorException {
             Bundle reply = new Bundle();
-            Intent intent = new Intent(context, LoginActivity.class);
+            Intent intent = new Intent(context, GithubLoginFragment.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            intent.putExtra(LoginActivity.ADDING_FROM_ACCOUNTS, true);
-            intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, account.type);
-            intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
             reply.putParcelable(AccountManager.KEY_INTENT, intent);
 
             return reply;

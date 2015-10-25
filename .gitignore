@@ -12,6 +12,8 @@ local.properties
 # Gradle generated files
 .gradle/
 
+gradle.properties
+
 # User-specific configurations
 .idea/*
 *.iml

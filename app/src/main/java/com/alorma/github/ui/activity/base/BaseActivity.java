@@ -13,20 +13,23 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.alorma.github.R;
+import com.alorma.github.ui.activity.AccountsFragmentManager;
+import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
 import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.ui.activity.LoginActivity;
+import com.alorma.github.account.GithubLoginFragment;
 
 import dmax.dialog.SpotsDialog;
+import java.util.List;
 
 /**
  * Created by Bernat on 19/07/2014.
@@ -40,10 +43,13 @@ public class BaseActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private SpotsDialog progressDialog;
+    private AccountsFragmentManager accountsFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        accountsFragmentManager = new AccountsFragmentManager();
+        getFragmentManager().beginTransaction().add(accountsFragmentManager, "accountsFragmentManager").commit();
     }
 
     @Override
@@ -105,6 +111,19 @@ public class BaseActivity extends AppCompatActivity {
         manager.unregisterReceiver(authReceiver);
     }
 
+    @NonNull
+    protected List<Account> getAccounts() {
+        return accountsFragmentManager.getAccounts();
+    }
+
+    protected void removeAccount(Account selectedAccount, final AccountsFragmentManager.RemoveAccountCallback removeAccountCallback) {
+        accountsFragmentManager.removeAccount(selectedAccount, removeAccountCallback);
+    }
+
+    protected void changeNotificationState(Account account, boolean enabled) {
+        accountsFragmentManager.changeNotificationState(account, enabled);
+    }
+
     private class AuthReceiver extends BroadcastReceiver {
 
         @Override
@@ -126,8 +145,9 @@ public class BaseActivity extends AppCompatActivity {
                                         StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
                                         storeCredentials.clear();
 
-                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
+                                            Toast.LENGTH_SHORT).show();
+                                        Intent loginIntent = new Intent(BaseActivity.this, MainActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();
@@ -144,8 +164,9 @@ public class BaseActivity extends AppCompatActivity {
                                         StoreCredentials storeCredentials = new StoreCredentials(BaseActivity.this);
                                         storeCredentials.clear();
 
-                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name), Toast.LENGTH_SHORT).show();
-                                        Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+                                        Toast.makeText(BaseActivity.this, getString(R.string.unauthorized, account.name),
+                                            Toast.LENGTH_SHORT).show();
+                                        Intent loginIntent = new Intent(BaseActivity.this, MainActivity.class);
                                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(loginIntent);
                                         finish();
@@ -200,11 +221,14 @@ public class BaseActivity extends AppCompatActivity {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null
+                && netInfoWifi.isConnectedOrConnecting());
         }
     }
 
-    protected void showProgressDialog(@StyleRes int style) {
+    protected void showProgressDialog(
+        @StyleRes
+        int style) {
         if (progressDialog == null) {
             try {
                 progressDialog = new SpotsDialog(this, style);

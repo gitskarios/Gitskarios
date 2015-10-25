@@ -79,7 +79,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
             case CreateEvent:
                 return "created repository" + " " + "<b>" + event.repo.name + "</b>";
             case CommitCommentEvent:
-                return "";
+                return "commented on commit " + "<b>" + event.repo.name + "@" + event.payload.comment.commit_id.substring(0, 10) + "</b>";
             case DownloadEvent:
                 return "";
             case FollowEvent:

@@ -7,17 +7,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.alorma.github.R;
+import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -39,14 +37,11 @@ import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.ShortcutUtils;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -64,10 +59,16 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private static final int EDIT_REPO = 464;
 
     private Repo currentRepo;
-    private ViewPager viewPager;
-    private List<Fragment> listFragments;
-    private TabLayout tabLayout;
     private RepoInfo requestRepoInfo;
+    private RepoAboutFragment repoAboutFragment;
+    private Fragment currentFragment;
+    private SourceListFragment sourceListFragment;
+    private CommitsListFragment commitsListFragment;
+    private IssuesListFragment issuesListFragment;
+    private PullRequestsListFragment pullRequestsListFragment;
+    private RepoReleasesFragment repoReleasesFragment;
+    private RepoContributorsFragment repoContributorsFragment;
+    private TabLayout tabLayout;
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -110,16 +111,95 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             if (repoInfo != null) {
                 setTitle(repoInfo.name);
 
-                tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+                tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
-                viewPager = (ViewPager) findViewById(R.id.pager);
+                createNavigation();
 
-                load(repoInfo);
+                boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString());
+                if (contains) {
+                    Repo repo = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<Repo>get(repoInfo.toString());
+                    onResponseOk(repo, null);
+                    load(repoInfo);
+                } else {
+                    load(repoInfo);
+                }
             } else {
                 finish();
             }
         } else {
             finish();
+        }
+    }
+
+    public Drawable getPageTitle(IIcon icon) {
+        return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.white);
+    }
+
+    private void createNavigation() {
+
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_info)).setTag(R.id.repo_detail_nav_fragment_info));
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_file_directory)).setTag(R.id.repo_detail_nav_fragment_source));
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_git_commit)).setTag(R.id.repo_detail_nav_fragment_commmits));
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_issue_opened)).setTag(R.id.repo_detail_nav_fragment_issues));
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_git_pull_request)).setTag(R.id.repo_detail_nav_fragment_pull_request));
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_tag)).setTag(R.id.repo_detail_nav_fragment_releases));
+        tabLayout.addTab(tabLayout.newTab().setIcon(getPageTitle(Octicons.Icon.oct_person)).setTag(R.id.repo_detail_nav_fragment_members));
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getTag() != null && tab.getTag() instanceof Integer) {
+                    int tabId = (Integer) tab.getTag();
+                    onNavigationSelected(tabId);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
+    private void onNavigationSelected(int itemId) {
+        switch (itemId) {
+            case R.id.repo_detail_nav_fragment_info:
+                if (repoAboutFragment == null) {
+                    repoAboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
+                }
+                setFragment(repoAboutFragment);
+                break;
+            case R.id.repo_detail_nav_fragment_source:
+                sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
+                setFragment(sourceListFragment);
+                break;
+            case R.id.repo_detail_nav_fragment_commmits:
+                commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
+                setFragment(commitsListFragment);
+                break;
+            case R.id.repo_detail_nav_fragment_issues:
+                if (issuesListFragment == null) {
+                    issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
+                }
+                setFragment(issuesListFragment);
+                break;
+            case R.id.repo_detail_nav_fragment_pull_request:
+                pullRequestsListFragment = PullRequestsListFragment.newInstance(getRepoInfo());
+                setFragment(pullRequestsListFragment);
+                break;
+            case R.id.repo_detail_nav_fragment_releases:
+                repoReleasesFragment = RepoReleasesFragment.newInstance(getRepoInfo(), currentRepo.permissions);
+                setFragment(repoReleasesFragment);
+                break;
+            case R.id.repo_detail_nav_fragment_members:
+                repoContributorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
+                setFragment(repoContributorsFragment);
+                break;
         }
     }
 
@@ -142,38 +222,10 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
             } else {
                 repoInfo.branch = currentRepo.default_branch;
             }
+            repoInfo.permissions = currentRepo.permissions;
         }
 
         return repoInfo;
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (listFragments.get(position) != null && listFragments.get(position) instanceof TitleProvider) {
-                return getString(((TitleProvider) listFragments.get(position)).getTitle());
-            }
-            return "";
-        }
-
     }
 
     @Override
@@ -258,26 +310,24 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
     private void changeBranch() {
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, getRepoInfo());
         repoBranchesClient.setOnResultCallback(new DialogBranchesCallback(this, getRepoInfo()) {
-            @Override
-            protected void onBranchSelected(String branch) {
-                currentRepo.default_branch = branch;
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setSubtitle(branch);
-                }
-                if (listFragments != null) {
-                    for (Fragment fragment : listFragments) {
-                        if (fragment instanceof BranchManager) {
-                            ((BranchManager) fragment).setCurrentBranch(branch);
-                        }
-                    }
-                }
-            }
+                                                   @Override
+                                                   protected void onBranchSelected(String branch) {
+                                                       currentRepo.default_branch = branch;
+                                                       if (getSupportActionBar() != null) {
+                                                           getSupportActionBar().setSubtitle(branch);
+                                                       }
+                                                       if (currentFragment != null && currentFragment instanceof BranchManager) {
+                                                           ((BranchManager) currentFragment).setCurrentBranch(branch);
+                                                       }
+                                                   }
 
-            @Override
-            protected void onNoBranches() {
+                                                   @Override
+                                                   protected void onNoBranches() {
 
-            }
-        });
+                                                   }
+                                               }
+
+        );
         repoBranchesClient.execute();
     }
 
@@ -294,64 +344,26 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                 getSupportActionBar().setSubtitle(getRepoInfo().branch);
             }
 
-            createFragments();
+            if (currentFragment == null) {
+                repoAboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
+                setFragment(repoAboutFragment);
+            }
 
             this.invalidateOptionsMenu();
 
-            if (listFragments != null) {
-                for (Fragment fragment : listFragments) {
-                    if (fragment instanceof PermissionsManager) {
-                        Permissions permissions = repo.permissions;
-                        ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
-                    }
-                }
+            if (currentFragment != null && currentFragment instanceof PermissionsManager) {
+                Permissions permissions = repo.permissions;
+                ((PermissionsManager) currentFragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
             }
+            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(getRepoInfo().toString(), repo);
         }
     }
 
-    private void createFragments() {
-
-        createListFragments();
-
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-
-        viewPager.setOffscreenPageLimit(listFragments.size());
-        if (ViewCompat.isLaidOut(tabLayout)) {
-            tabLayout.setupWithViewPager(viewPager);
-        } else {
-            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    tabLayout.setupWithViewPager(viewPager);
-
-                    tabLayout.removeOnLayoutChangeListener(this);
-                }
-            });
-        }
-    }
-
-    private void createListFragments() {
-        if (listFragments != null) {
-            listFragments.clear();
-        }
-        if (listFragments == null || listFragments.size() == 0 && currentRepo != null) {
-            RepoAboutFragment aboutFragment = RepoAboutFragment.newInstance(currentRepo, getRepoInfo());
-            SourceListFragment sourceListFragment = SourceListFragment.newInstance(getRepoInfo());
-            CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(getRepoInfo());
-            IssuesListFragment issuesListFragment = IssuesListFragment.newInstance(getRepoInfo(), false);
-            PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(getRepoInfo());
-            RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(getRepoInfo(), currentRepo.permissions);
-            RepoContributorsFragment repoCollaboratorsFragment = RepoContributorsFragment.newInstance(getRepoInfo(), currentRepo.owner);
-
-            listFragments = new ArrayList<>();
-            listFragments.add(aboutFragment);
-            listFragments.add(sourceListFragment);
-            listFragments.add(commitsListFragment);
-            listFragments.add(issuesListFragment);
-            listFragments.add(pullRequestsListFragment);
-            listFragments.add(repoReleasesFragment);
-            listFragments.add(repoCollaboratorsFragment);
-        }
+    private void setFragment(Fragment fragment) {
+        currentFragment = fragment;
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fragment);
+        ft.commit();
     }
 
     @Override
@@ -395,21 +407,12 @@ public class RepoDetailActivity extends BackActivity implements BaseClient.OnRes
                     .addNextIntentWithParentStack(upIntent)
                     .startActivities();
             finish();
-        } else {
-            int currentItem = viewPager.getCurrentItem();
-
-            if (listFragments != null && currentItem >= 0 && currentItem < listFragments.size()) {
-                Fragment fragment = listFragments.get(currentItem);
-                if (fragment != null && fragment instanceof BackManager) {
-                    if (((BackManager) fragment).onBackPressed()) {
-                        finish();
-                    }
-                } else {
-                    finish();
-                }
-            } else {
+        } else if (currentFragment != null && currentFragment instanceof BackManager) {
+            if (((BackManager) currentFragment).onBackPressed()) {
                 finish();
             }
+        } else {
+            finish();
         }
     }
 }

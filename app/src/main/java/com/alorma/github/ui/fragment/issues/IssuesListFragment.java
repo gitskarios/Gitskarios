@@ -146,6 +146,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
         }
     }
 
+
     protected void executeRequest() {
         super.executeRequest();
         if (repoInfo != null) {
@@ -213,18 +214,6 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                     issuesClient.execute();
                 }
             }
-        }
-    }
-
-    @Override
-    public void onResponseOk(List<Issue> issues, Response r) {
-        super.onResponseOk(issues, r);
-
-        if (getAdapter() != null && refreshing) {
-            getAdapter().clear();
-        }
-        if (issues == null || issues.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
-            setEmpty(false);
         }
     }
 

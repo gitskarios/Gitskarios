@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
@@ -30,6 +30,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
@@ -183,11 +184,23 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         if (repoInfo == null) {
             loadArguments();
         }
+
+        boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString() + "_README");
+        if (contains) {
+            onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<String>get(repoInfo.toString() + "_README"), null);
+            getReadme();
+        } else {
+            getReadme();
+        }
+
+
+        getStarWatchData();
+    }
+
+    private void getReadme() {
         GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
         repoMarkdownClient.setCallback(this);
         repoMarkdownClient.execute();
-
-        getStarWatchData();
     }
 
     @Override
@@ -200,6 +213,7 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
 
             htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(repoInfo.toString() + "_README", htmlCode);
         }
     }
 
@@ -238,9 +252,7 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     @Override
     public void setCurrentBranch(String branch) {
         if (getActivity() != null) {
-            GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
-            repoMarkdownClient.setCallback(this);
-            repoMarkdownClient.execute();
+            getReadme();
         }
     }
 

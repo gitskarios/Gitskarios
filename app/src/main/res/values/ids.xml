@@ -19,7 +19,7 @@
     <item name="action_user_star" type="id">action_user_star</item>
     <item name="action_repo_star" type="id">action_repo_star</item>
 
-    <item name="fab_expand_menu_button" type="id"/>
+    <item name="fab_expand_menu_button" type="id" />
     <item name="scrollable" type="id">scroll</item>
     <item name="fabLayout" type="id">fabLayout</item>
     <item name="cardsContainerScroll" type="id">cardsContainerScroll</item>
@@ -38,5 +38,17 @@
     <item name="action_menu_follow_user" type="id">action_menu_follow_user</item>
     <item name="action_menu_unfollow_user" type="id">action_menu_unfollow_user</item>
     <item name="action_add_emoji" type="id">action_add_emoji</item>
+    <item name="repo_detail_nav_fragment_info" type="id">repo_detail_nav_fragment_info</item>
+    <item name="repo_detail_nav_fragment_source" type="id">repo_detail_nav_fragment_source</item>
+    <item name="repo_detail_nav_fragment_commmits" type="id">repo_detail_nav_fragment_commmits
+    </item>
+    <item name="repo_detail_nav_fragment_issues" type="id">repo_detail_nav_fragment_issues</item>
+    <item name="repo_detail_nav_fragment_pull_request" type="id">
+        repo_detail_nav_fragment_pull_request
+    </item>
+    <item name="repo_detail_nav_fragment_releases" type="id">
+        repo_detail_nav_fragment_releases
+    </item>
+    <item name="repo_detail_nav_fragment_members" type="id">repo_detail_nav_fragment_members</item>
 
 </resources>

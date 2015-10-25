@@ -11,12 +11,12 @@ public abstract class EmojisFragment extends BaseFragment implements EmojisProvi
     public void onStart() {
         super.onStart();
 
-        EmojisProvider emojisProvider = new EmojisProvider();
-        emojisProvider.getEmojis(getActivity(), this);
+        EmojisProvider emojisProvider = new EmojisProvider(getContext());
+        emojisProvider.getEmojis(this);
     }
 
     public void filter(String filter) {
-        EmojisProvider emojisProvider = new EmojisProvider();
-        emojisProvider.getEmojis(getActivity(), this, filter);
+        EmojisProvider emojisProvider = new EmojisProvider(getContext());
+        emojisProvider.getEmojis(this, filter);
     }
 }

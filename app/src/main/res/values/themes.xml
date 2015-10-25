@@ -2,7 +2,24 @@
 <resources>
 
     <style name="AppTheme" parent="Base.AppTheme" />
-    <style name="AppTheme.Search" parent="Base.AppTheme" />
+
+    <style name="AppTheme.RepoDetail" parent="Base.AppTheme">
+        <item name="material_drawer_background">@color/material_drawer_dark_background</item>
+        <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>
+        <item name="material_drawer_primary_icon">@color/material_drawer_dark_primary_icon</item>
+        <item name="material_drawer_secondary_text">@color/material_drawer_dark_secondary_text
+        </item>
+        <item name="material_drawer_hint_text">@color/material_drawer_dark_hint_text</item>
+        <item name="material_drawer_hint_icon">@color/material_drawer_dark_hint_icon</item>
+        <item name="material_drawer_divider">@color/material_drawer_dark_divider</item>
+        <item name="material_drawer_selected">@color/material_drawer_dark_selected</item>
+        <item name="material_drawer_selected_text">@color/primary</item>
+        <item name="material_drawer_header_selection_text">
+            @color/material_drawer_header_selection_text
+        </item>
+    </style>
+
+    <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
 
     <style name="Base.AppTheme" parent="AppTheme.AppCompat.Default">
         <item name="android:windowBackground">@color/white</item>
@@ -110,9 +127,13 @@
 
     </style>
 
+    <style name="Toolbar.Popup.AppCompat" parent="Theme.AppCompat.Light" />
 
-    <style name="Toolbar.Popup.AppCompat" parent="Theme.AppCompat.Light">
+    <style name="AppTheme.Welcome" parent="Base.AppTheme.Welcome" />
 
-
+    <style name="Base.AppTheme.Welcome">
+        <item name="colorAccent">@color/accent_welcome</item>
+        <item name="android:windowBackground">?attr/colorPrimary</item>
+        <item name="colorButtonNormal">?attr/colorAccent</item>
     </style>
 </resources>
