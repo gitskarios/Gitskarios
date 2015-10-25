@@ -271,7 +271,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         DrawerImageLoader.init(new DrawerImage());
 
         AccountHeaderBuilder headerBuilder =
-            new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.primary_dark);
+            new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.accent_welcome);
 
         headerBuilder.withOnAccountHeaderListener(this);
 
@@ -291,9 +291,14 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             }
         }
 
-        headerBuilder.addProfiles(new ProfileDrawerItem().withIdentifier(1101)
+        ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem()
             .withName(getString(R.string.add_account))
-            .withIcon(Octicons.Icon.oct_octoface));
+            .withDescription(getString(R.string.add_account_description))
+            .withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add)
+                .actionBar().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
+            .withIdentifier(1101);
+
+        headerBuilder.addProfiles(itemAdd);
 
         return headerBuilder.build();
     }
