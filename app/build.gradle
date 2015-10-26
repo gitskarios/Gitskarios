@@ -1,4 +1,18 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.ben-manes.versions'
 //gradle dependencyUpdates -Drevision=release
