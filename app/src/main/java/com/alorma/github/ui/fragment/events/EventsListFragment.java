@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,22 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     implements EventAdapter.EventAdapterListener {
 
     private String username;
+    private Subscriber<Pair<List<GithubEvent>, Response>> subscriber = new Subscriber<Pair<List<GithubEvent>, Response>>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(Pair<List<GithubEvent>, Response> responseListPair) {
+            onResponseOk(responseListPair.first, responseListPair.second);
+        }
+    };
 
     public static EventsListFragment newInstance(String username) {
         Bundle bundle = new Bundle();
@@ -140,40 +157,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     protected void executeRequest() {
         super.executeRequest();
         GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username);
-
-        Subscriber<Response> responseSubscriber = new Subscriber<Response>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Response response) {
-                // TODO parseResponse(response);
-            }
-        };
-        eventsClient.observable(responseSubscriber)
-            .subscribe(new Subscriber<List<GithubEvent>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<GithubEvent> githubEvents) {
-                onResponseOk(githubEvents, null);
-            }
-        });
+        eventsClient.observable().subscribe(subscriber);
     }
 
     @Override
@@ -181,8 +165,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
         super.executePaginatedRequest(page);
 
         GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
-        eventsClient.setOnResultCallback(this);
-        eventsClient.execute();
+        eventsClient.observable().subscribe(subscriber);
     }
 
     @Override
