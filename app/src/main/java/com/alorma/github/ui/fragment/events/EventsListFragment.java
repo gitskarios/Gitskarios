@@ -47,6 +47,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
+import rx.Observer;
 import rx.Single;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -63,7 +64,8 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     implements EventAdapter.EventAdapterListener {
 
     private String username;
-    private Subscriber<Pair<List<GithubEvent>, Response>> subscriber = new Subscriber<Pair<List<GithubEvent>, Response>>() {
+
+    private Observer<Pair<List<GithubEvent>, Response>> subscriber = new Observer<Pair<List<GithubEvent>, Response>>() {
         @Override
         public void onCompleted() {
 
