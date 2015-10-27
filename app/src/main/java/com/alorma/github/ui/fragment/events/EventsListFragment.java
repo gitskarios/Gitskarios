@@ -44,11 +44,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
+import retrofit.client.Response;
+import rx.Observable;
+import rx.Single;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.observers.Subscribers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 03/10/2014.
  */
-public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter> implements EventAdapter.EventAdapterListener {
+public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter>
+    implements EventAdapter.EventAdapterListener {
 
     private String username;
 
@@ -101,15 +112,15 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
 
     private boolean checkEventHandled(GithubEvent event) {
         return event.getType() != null && (event.getType() == EventType.PushEvent)
-                || (event.getType() == EventType.WatchEvent)
-                || (event.getType() == EventType.CreateEvent)
-                || (event.getType() == EventType.IssueCommentEvent)
-                || (event.getType() == EventType.CommitCommentEvent)
-                || (event.getType() == EventType.IssuesEvent)
-                || (event.getType() == EventType.ForkEvent)
-                || (event.getType() == EventType.ReleaseEvent)
-                || (event.getType() == EventType.PullRequestEvent)
-                || (event.getType() == EventType.DeleteEvent);
+            || (event.getType() == EventType.WatchEvent)
+            || (event.getType() == EventType.CreateEvent)
+            || (event.getType() == EventType.IssueCommentEvent)
+            || (event.getType() == EventType.CommitCommentEvent)
+            || (event.getType() == EventType.IssuesEvent)
+            || (event.getType() == EventType.ForkEvent)
+            || (event.getType() == EventType.ReleaseEvent)
+            || (event.getType() == EventType.PullRequestEvent)
+            || (event.getType() == EventType.DeleteEvent);
     }
 
     @Override
@@ -129,8 +140,40 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     protected void executeRequest() {
         super.executeRequest();
         GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username);
-        eventsClient.setOnResultCallback(this);
-        eventsClient.execute();
+
+        Subscriber<Response> responseSubscriber = new Subscriber<Response>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Response response) {
+                // TODO parseResponse(response);
+            }
+        };
+        eventsClient.observable(responseSubscriber)
+            .subscribe(new Subscriber<List<GithubEvent>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<GithubEvent> githubEvents) {
+                onResponseOk(githubEvents, null);
+            }
+        });
     }
 
     @Override
@@ -264,18 +307,19 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                         digest.update(author.email.getBytes());
                         byte messageDigest[] = digest.digest();
                         StringBuffer hexString = new StringBuffer();
-                        for (int i = 0; i < messageDigest.length; i++)
+                        for (int i = 0; i < messageDigest.length; i++) {
                             hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+                        }
                         String hash = hexString.toString();
                         ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, holder.avatar);
                     } catch (NoSuchAlgorithmException e) {
-                        IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
+                        IconicsDrawable iconDrawable =
+                            new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
                         iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
                         iconDrawable.sizeDp(36);
                         iconDrawable.setAlpha(128);
                         holder.avatar.setImageDrawable(iconDrawable);
                     }
-
                 } else {
                     IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
                     iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
@@ -298,7 +342,6 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                 message = commit.commit.shortMessage();
             }
 
-
             holder.title.setText(message);
 
             if (commit.sha != null) {
@@ -310,7 +353,8 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
             if (commit.stats != null) {
                 String textCommitsStr = null;
                 if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-                    textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
+                    textCommitsStr = holder.itemView.getContext()
+                        .getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
                     holder.textNums.setVisibility(View.VISIBLE);
                 } else if (commit.stats.additions > 0) {
                     textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
@@ -384,5 +428,4 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
 
         builder.show();
     }
-
 }
