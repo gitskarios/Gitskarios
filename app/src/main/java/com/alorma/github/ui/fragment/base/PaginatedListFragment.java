@@ -25,9 +25,11 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
     public void onResponseOk(ItemType itemType, Response r) {
         hideEmpty();
         if (getActivity() != null && isAdded()) {
+            if (r != null) {
+                getLinkData(r);
+            }
             if (itemType != null && itemType instanceof List) {
                 if (((List) itemType).size() > 0) {
-                    getLinkData(r);
 
                     if (getAdapter() != null && refreshing) {
                         getAdapter().clear();
@@ -41,6 +43,10 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
             }
         }
         stopRefresh();
+    }
+
+    public void parseResponse(Response response) {
+        getLinkData(response);
     }
 
     @Override

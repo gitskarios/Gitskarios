@@ -65,7 +65,15 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
 
     private String username;
 
-    private Observer<Pair<List<GithubEvent>, Response>> subscriber = new Observer<Pair<List<GithubEvent>, Response>>() {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        EventAdapter eventAdapter = new EventAdapter(getActivity(), LayoutInflater.from(getActivity()));
+        eventAdapter.setEventAdapterListener(this);
+        setAdapter(eventAdapter);
+    }
+
+    private Observer<GithubEvent> subscriber = new Observer<GithubEvent>() {
         @Override
         public void onCompleted() {
 
@@ -77,8 +85,11 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
         }
 
         @Override
-        public void onNext(Pair<List<GithubEvent>, Response> responseListPair) {
-            onResponseOk(responseListPair.first, responseListPair.second);
+        public void onNext(GithubEvent event) {
+            if (getAdapter() != null) {
+                getAdapter().add(event);
+            }
+            stopRefresh();
         }
     };
 
@@ -101,32 +112,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
 
     @Override
     protected void onResponse(List<GithubEvent> githubEvents, boolean refreshing) {
-        if (githubEvents != null && githubEvents.size() > 0) {
-            hideEmpty();
-            githubEvents = parseGithubEvents(githubEvents);
-            if (getAdapter() != null) {
-                getAdapter().addAll(githubEvents);
-            } else {
-                EventAdapter eventAdapter = new EventAdapter(getActivity(), LayoutInflater.from(getActivity()));
-                eventAdapter.setEventAdapterListener(this);
-                eventAdapter.addAll(githubEvents);
-                setAdapter(eventAdapter);
-            }
-        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty(false);
-        }
-    }
 
-    private List<GithubEvent> parseGithubEvents(List<GithubEvent> githubEvents) {
-        List<GithubEvent> newEvents = new ArrayList<>();
-
-        for (GithubEvent githubEvent : githubEvents) {
-            if (checkEventHandled(githubEvent)) {
-                newEvents.add(githubEvent);
-            }
-        }
-
-        return newEvents;
     }
 
     private boolean checkEventHandled(GithubEvent event) {
@@ -159,7 +145,18 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     protected void executeRequest() {
         super.executeRequest();
         GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username);
-        eventsClient.observable().subscribe(subscriber);
+        eventsClient.observable().flatMap(new Func1<Pair<List<GithubEvent>, Response>, Observable<GithubEvent>>() {
+            @Override
+            public Observable<GithubEvent> call(Pair<List<GithubEvent>, Response> listResponsePair) {
+                parseResponse(listResponsePair.second);
+                return Observable.from(listResponsePair.first);
+            }
+        }).filter(new Func1<GithubEvent, Boolean>() {
+            @Override
+            public Boolean call(GithubEvent githubEvent) {
+                return checkEventHandled(githubEvent);
+            }
+        }).subscribe(subscriber);
     }
 
     @Override
@@ -167,7 +164,18 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
         super.executePaginatedRequest(page);
 
         GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
-        eventsClient.observable().subscribe(subscriber);
+        eventsClient.observable().flatMap(new Func1<Pair<List<GithubEvent>, Response>, Observable<GithubEvent>>() {
+            @Override
+            public Observable<GithubEvent> call(Pair<List<GithubEvent>, Response> listResponsePair) {
+                parseResponse(listResponsePair.second);
+                return Observable.from(listResponsePair.first);
+            }
+        }).filter(new Func1<GithubEvent, Boolean>() {
+            @Override
+            public Boolean call(GithubEvent githubEvent) {
+                return checkEventHandled(githubEvent);
+            }
+        }).subscribe(subscriber);
     }
 
     @Override
