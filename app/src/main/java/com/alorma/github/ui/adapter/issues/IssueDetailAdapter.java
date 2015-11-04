@@ -89,7 +89,8 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
 
     @Override
     public int getItemCount() {
-        return issueStory != null ? issueStory.details.size() + 1 : 0;
+        int detailsSize = issueStory.details != null ? issueStory.details.size() : 0;
+        return issueStory != null ? detailsSize + 1 : 0;
     }
 
     @Override

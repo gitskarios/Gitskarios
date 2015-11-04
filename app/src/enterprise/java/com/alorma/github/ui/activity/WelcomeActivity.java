@@ -6,18 +6,25 @@ import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -38,6 +45,8 @@ import retrofit.client.Response;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity
     implements BaseClient.OnResultCallback<User>, GithubLoginFragment.LoginCallback {
+
+    private static final String KEY_IMPORT = "KEY_IMPORT";
 
     @Bind(R.id.imageView)
     ImageView imageView;
@@ -60,12 +69,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     @Bind(R.id.buttonOpen)
     Button buttonOpen;
 
+    @Bind(R.id.importAccountsSwitch)
+    CompoundButton importAccountsSwitch;
+
     private GithubLoginFragment loginFragment;
     private String accessToken;
 
     private Long startTime;
     private int countClick = 0;
-    private String accountType;
     private String url;
 
     @Override
@@ -81,12 +92,25 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
-        List<Account> accounts = getAccounts(getString(R.string.account_type), getString(R.string.enterprise_account_type));
+        List<Account> accountsGitskarios = getAccounts(getString(R.string.account_type));
+        List<Account> accountsOctuirrel = getAccounts(getString(R.string.enterprise_account_type));
 
         String action = getIntent().getAction();
 
-        if (action != null && action.equals(Intent.ACTION_MAIN) && accounts.size() > 0) {
-            openMain();
+        Boolean importAccounts = getImportAccounts();
+
+        if (action != null && action.equals(Intent.ACTION_MAIN)) {
+            if (importAccounts != null && importAccounts) {
+                if (accountsGitskarios.size() > 0 || accountsOctuirrel.size() > 0) {
+                    openMain();
+                } else {
+                    showInitialButtons();
+                }
+            } else if (accountsOctuirrel.size() > 0) {
+                openMain();
+            } else {
+                showInitialButtons();
+            }
         } else {
             showInitialButtons();
         }
@@ -96,20 +120,67 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
         getFragmentManager().beginTransaction().add(loginFragment, "login").commit();
     }
 
+    @Nullable
+    private Boolean getImportAccounts() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Boolean importAccounts = null;
+        if (preferences.contains(KEY_IMPORT)) {
+            importAccounts = preferences.getBoolean(KEY_IMPORT, false);
+        }
+        return importAccounts;
+    }
+
+    @Nullable
+    private void setImportAccounts(boolean checked) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        preferences.edit().putBoolean(KEY_IMPORT, checked).apply();
+    }
+
     @NonNull
-    protected List<Account> getAccounts(String... accountTypes) {
+    protected List<Account> getAccounts(String accountType, String... accountTypes) {
+
+        if (accountTypes == null || accountTypes.length == 0) {
+            accountTypes = new String[] { accountType };
+        }
 
         AccountManager accountManager = AccountManager.get(this);
-
         List<Account> accountList = new ArrayList<>();
 
-        if (accountTypes != null) {
-            for (String accountType : accountTypes) {
-                Account[] accounts = accountManager.getAccountsByType(accountType);
-                accountList.addAll(Arrays.asList(accounts));
-            }
+        for (String account : accountTypes) {
+            Account[] accounts = accountManager.getAccountsByType(account);
+            accountList.addAll(Arrays.asList(accounts));
         }
         return accountList;
+    }
+
+    private String getGitskariosPackage() {
+        String packageName = "com.alorma.github";
+        if (BuildConfig.DEBUG) {
+            packageName += ".debug";
+        }
+        return packageName;
+    }
+
+    private void onImportEnabled() {
+        String packageName = getGitskariosPackage();
+
+        if (appInstalledOrNot(packageName)) {
+
+        }
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 
     private void showInitialButtons() {
@@ -134,6 +205,53 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
                 openCreateEnterprise();
             }
         });
+
+        if (appInstalledOrNot(getGitskariosPackage())) {
+            showImportOption();
+        } else {
+            hideImportOption();
+        }
+    }
+
+    private void showImportOption() {
+        importAccountsSwitch.setVisibility(View.VISIBLE);
+        importAccountsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setImportAccounts(isChecked);
+
+                if (isChecked) {
+                    importAccounts();
+
+                    buttonGithub.setVisibility(View.INVISIBLE);
+                    buttonEnterprise.setVisibility(View.INVISIBLE);
+
+                    buttonOpen.animate().alpha(1f).setDuration(600).start();
+
+                    buttonOpen.setVisibility(View.VISIBLE);
+                    buttonOpen.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            openMain();
+                        }
+                    });
+                } else {
+                    showInitialButtons();
+                }
+            }
+        });
+    }
+
+    private void importAccounts() {
+        List<Account> accounts = getAccounts(getString(R.string.account_type));
+        for (Account account : accounts) {
+
+        }
+    }
+
+    private void hideImportOption() {
+        importAccountsSwitch.setVisibility(View.INVISIBLE);
+        importAccountsSwitch.setOnCheckedChangeListener(null);
     }
 
     private void openMain() {
@@ -142,8 +260,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     }
 
     private void openCreate() {
-
-        accountType = getString(R.string.account_type);
         buttonEnterprise.setVisibility(View.INVISIBLE);
 
         buttonGithub.animate().alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
@@ -178,8 +294,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     }
 
     private void openCreateEnterprise() {
-
-        accountType = getString(R.string.enterprise_account_type);
         buttonGithub.setVisibility(View.INVISIBLE);
         buttonEnterprise.animate()
             .alpha(0f)
@@ -295,7 +409,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     }
 
     private void addAccount(User user) {
-        if (checkSelfPermission("android.permission.AUTHENTICATE_ACCOUNTS") == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, "android.permission.AUTHENTICATE_ACCOUNTS")
+            == PackageManager.PERMISSION_GRANTED) {
+            String accountType = getString(R.string.enterprise_account_type);
             Account account = new Account(user.login, accountType);
             Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url, url);
 

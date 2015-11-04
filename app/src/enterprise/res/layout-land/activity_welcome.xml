@@ -3,9 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryDark"
-    android:elevation="@dimen/gapMedium"
     tools:context="com.alorma.github.ui.activity.WelcomeActivity"
     >
+    <android.support.v7.widget.SwitchCompat
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/import_gitskarios_accounts"
+        android:id="@+id/importAccountsSwitch"
+        android:paddingLeft="@dimen/gapLarge"
+        android:paddingRight="@dimen/gapLarge"
+        android:layout_marginLeft="@dimen/gapLarge"
+        android:layout_marginRight="@dimen/gapXLarge"
+        android:layout_marginBottom="@dimen/gapMedium"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/gapLarge"
+        android:checked="false"
+        />
 
     <ImageView
         android:id="@+id/imageView"
@@ -39,7 +52,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/imageView"
-        android:layout_marginTop="@dimen/gapXLarge"
+        android:layout_marginTop="@dimen/gapLarge"
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/white"
