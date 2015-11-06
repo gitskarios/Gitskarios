@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.actions.CloseAction;
@@ -190,8 +189,7 @@ public class IssueDetailActivity extends BackActivity
   protected void getContent() {
     super.getContent();
     loadingView.setVisibility(View.VISIBLE);
-    boolean contains =
-        QnCacheProvider.getInstance(QnCacheProvider.TYPE.ISSUE).contains(issueInfo.toString());
+
     if (checkPermissions(issueInfo)) {
       GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
       repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
@@ -209,10 +207,6 @@ public class IssueDetailActivity extends BackActivity
         }
       });
       repoClient.execute();
-    } else if (contains) {
-      onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.ISSUE)
-          .<IssueStory>get(issueInfo.toString()), null);
-      loadIssue();
     } else {
       loadIssue();
     }
@@ -251,7 +245,6 @@ public class IssueDetailActivity extends BackActivity
 
     checkEditTitle();
     applyIssue();
-    QnCacheProvider.getInstance(QnCacheProvider.TYPE.ISSUE).set(issueInfo.toString(), issueStory);
   }
 
   private void applyIssue() {
@@ -336,7 +329,7 @@ public class IssueDetailActivity extends BackActivity
 
       }
     });
-    //animatorSet.start();
+    animatorSet.start();
   }
 
   @Override
