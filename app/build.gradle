@@ -131,10 +131,13 @@ def getGHCallback(pro) {
     }
 }
 
-assembleGithubRelease.dependsOn clean
-assembleGithubRelease.doLast {
+
+assembleRelease.dependsOn clean
+assembleRelease.doLast {
     tasks.crashlyticsUploadDistributionGithubRelease.execute()
+    tasks.crashlyticsUploadDistributionEnterpriseRelease.execute()
 }
+
 
 dependencies {
     debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
