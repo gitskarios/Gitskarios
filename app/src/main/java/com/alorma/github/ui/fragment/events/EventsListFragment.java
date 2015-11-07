@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Commit;
@@ -37,11 +38,14 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.utils.AttributesUtils;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.gson.Gson;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import io.fabric.sdk.android.Fabric;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -123,6 +127,8 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
           ids = filterIds.toArray(new Integer[filterIds.size()]);
         }
 
+        logAnswers("EVENT_FILTER_CLICK");
+
         new MaterialDialog.Builder(getActivity()).items(names)
             .itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
               @Override
@@ -137,6 +143,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                 EventsListFragment.this.filterNames = new ArrayStrings(filters);
                 saveFilter();
                 executeFromFilter();
+                logAnswers("EVENT_FILTER_APPLIED");
                 return false;
               }
             })
@@ -150,6 +157,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
                 EventsListFragment.this.filterNames = null;
                 clearSavedFilter();
                 executeFromFilter();
+                logAnswers("EVENT_FILTER_CLEAR");
               }
             })
             .show();
@@ -157,6 +165,12 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     }
 
     return true;
+  }
+
+  private void logAnswers(String event) {
+    if (BuildConfig.DEBUG && Fabric.isInitialized()) {
+      Answers.getInstance().logContentView(new ContentViewEvent().putContentName(event));
+    }
   }
 
   public void getSavedFilter() {
