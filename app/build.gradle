@@ -193,5 +193,6 @@ dependencies {
     }
 
     compile 'com.android.support:multidex:1.0.1'
+    compile 'io.reactivex:rxandroid:1.0.1'
 
 }

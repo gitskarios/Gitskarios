@@ -175,7 +175,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
             public Boolean call(GithubEvent githubEvent) {
                 return checkEventHandled(githubEvent);
             }
-        }).subscribe(subscriber);
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
     @Override

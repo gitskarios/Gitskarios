@@ -71,6 +71,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class IssueDetailActivity extends BackActivity
     implements BaseClient.OnResultCallback<IssueStory>, View.OnClickListener,
@@ -214,7 +215,7 @@ public class IssueDetailActivity extends BackActivity
 
   private void loadIssue() {
     IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
-    issueStoryLoader.observable().subscribe(new Subscriber<Pair<IssueStory, Response>>() {
+    issueStoryLoader.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Pair<IssueStory, Response>>() {
       @Override
       public void onCompleted() {
 

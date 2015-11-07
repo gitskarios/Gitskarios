@@ -227,7 +227,7 @@ public class PullRequestDetailActivity extends BackActivity
   private void loadPullRequest() {
     PullRequestStoryLoader pullRequestStoryLoader =
         new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
-    pullRequestStoryLoader.observable()
+    pullRequestStoryLoader.observable().observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<Pair<PullRequestStory, Response>>() {
           @Override
           public void onCompleted() {
