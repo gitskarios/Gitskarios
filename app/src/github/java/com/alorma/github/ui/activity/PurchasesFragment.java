@@ -55,7 +55,9 @@ public class PurchasesFragment extends Fragment {
     private void createBillingService() {
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
-        getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        if (mService == null) {
+            getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        }
     }
 
     public void checkSku(PurchasesCallback purchasesCallback) {

@@ -439,4 +439,6 @@
     <string name="welcome_button_enterprise">Github enterprise account</string>
     <string name="open_app">Open app!</string>
     <string name="import_gitskarios_accounts">Import gitskarios accounts</string>
+    <string name="event_list_filter">Filter events</string>
+    <string name="clear_filters">Clear filter</string>
 </resources>
