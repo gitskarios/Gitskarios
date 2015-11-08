@@ -84,6 +84,15 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
             swipe.setColorSchemeColors(accent);
             swipe.setOnRefreshListener(this);
         }
+
+        if (autoStart()) {
+            if (getAdapter() != null) {
+                getAdapter().clear();
+
+                setAdapter(null);
+            }
+            executeRequest();
+        }
     }
 
     protected RecyclerView.LayoutManager getLayoutManager() {
