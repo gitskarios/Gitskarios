@@ -26,7 +26,8 @@
                 android:background="@null"
                 android:hint="@string/search"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:imeActionLabel="@string/search"/>
 
         </android.support.v7.widget.Toolbar>
 

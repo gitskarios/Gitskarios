@@ -38,7 +38,6 @@ public class SearchActivity extends BackActivity {
     private EditText searchView;
     private SearchReposFragment searchReposFragment;
     private SearchUsersFragment searchUsersFragment;
-    private ViewPager viewPager;
     private String lastQuery;
 
     public static Intent launchIntent(Context context) {
@@ -56,7 +55,7 @@ public class SearchActivity extends BackActivity {
 
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
         searchReposFragment = SearchReposFragment.newInstance(null);
         searchUsersFragment = SearchUsersFragment.newInstance(null);
@@ -65,7 +64,8 @@ public class SearchActivity extends BackActivity {
         listFragments.add(searchReposFragment);
         listFragments.add(searchUsersFragment);
 
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+        viewPager.setAdapter(
+            new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
         tabLayout.setupWithViewPager(viewPager);
 
         searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
