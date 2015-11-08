@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
+import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
 import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
@@ -41,6 +43,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 01/01/2015.
@@ -48,7 +52,7 @@ import retrofit.client.Response;
 public class RepoAboutFragment extends Fragment implements TitleProvider, BranchManager, BackManager, BaseClient.OnResultCallback<String> {
 
     private static final String REPO_INFO = "REPO_INFO";
-    private static final String REPO = "REPO";
+
     private RepoInfo repoInfo;
     private Repo currentRepo;
     private TextView htmlContentView;
@@ -66,10 +70,9 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     private Boolean repoWatched = null;
     private View author;
 
-    public static RepoAboutFragment newInstance(Repo currentRepo, RepoInfo repoInfo) {
+    public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(REPO_INFO, repoInfo);
-        bundle.putParcelable(REPO, currentRepo);
 
         RepoAboutFragment f = new RepoAboutFragment();
         f.setArguments(bundle);
@@ -153,19 +156,19 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             public void onClick(View v) {
                 if (currentRepo != null && currentRepo.owner != null) {
                     if (currentRepo.owner.type == UserType.User) {
-                        Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
+                        Intent intent =
+                            ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
                         startActivity(intent);
                     } else if (currentRepo.owner.type == UserType.Organization) {
-                        Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
+                        Intent intent = OrganizationActivity.launchIntent(getActivity(),
+                            currentRepo.owner.login);
                         startActivity(intent);
                     }
                 }
             }
         });
 
-        loadArguments();
         getContent();
-        setData();
     }
 
     @Override
@@ -173,10 +176,14 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         return R.string.overview_fragment_title;
     }
 
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_info;
+    }
+
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = getArguments().getParcelable(REPO_INFO);
-            currentRepo = getArguments().getParcelable(REPO);
         }
     }
 
@@ -184,6 +191,28 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         if (repoInfo == null) {
             loadArguments();
         }
+
+        GetRepoClient repoClient = new GetRepoClient(getActivity(), repoInfo);
+        repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(
+            new Subscriber<Pair<Repo, Response>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Pair<Repo, Response> repoResponsePair) {
+                    currentRepo = repoResponsePair.first;
+                    getReadme();
+                    getStarWatchData();
+                    setData(currentRepo);
+                }
+            });
 
         boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString() + "_README");
         if (contains) {
@@ -193,8 +222,6 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             getReadme();
         }
 
-
-        getStarWatchData();
     }
 
     private void getReadme() {
@@ -217,24 +244,24 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         }
     }
 
-    private void setData() {
-        if (currentRepo != null) {
-            User owner = currentRepo.owner;
+    private void setData(Repo currentRepo) {
+        if (this.currentRepo != null) {
+            User owner = this.currentRepo.owner;
             ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
             authorName.setText(owner.login);
 
-            if (currentRepo.parent != null) {
+            if (this.currentRepo.parent != null) {
                 fork.setVisibility(View.VISIBLE);
                 forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
-                forkOfTextView.setText(currentRepo.parent.owner.login + "/" + currentRepo.parent.name);
+                forkOfTextView.setText(this.currentRepo.parent.owner.login + "/" + this.currentRepo.parent.name);
             }
 
             createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
-            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), currentRepo.created_at, R.string.created_at));
+            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at, R.string.created_at));
 
-            starredPlaceholder.setText(String.valueOf(currentRepo.stargazers_count));
-            watchedPlaceholder.setText(String.valueOf(currentRepo.subscribers_count));
-            forkPlaceHolder.setText(String.valueOf(currentRepo.forks_count));
+            starredPlaceholder.setText(String.valueOf(this.currentRepo.stargazers_count));
+            watchedPlaceholder.setText(String.valueOf(this.currentRepo.subscribers_count));
+            forkPlaceHolder.setText(String.valueOf(this.currentRepo.forks_count));
 
             forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
         }
@@ -261,7 +288,6 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     public boolean onBackPressed() {
         return true;
     }
-
 
     protected void getStarWatchData() {
         CheckRepoStarredClient repoStarredClient = new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name);

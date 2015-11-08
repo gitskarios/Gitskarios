@@ -28,6 +28,7 @@ import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
@@ -251,6 +252,11 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
     @Override
     public int getTitle() {
         return R.string.files_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_file_directory;
     }
 
     @Override

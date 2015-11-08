@@ -24,6 +24,8 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -115,6 +117,11 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     @Override
     public int getTitle() {
         return R.string.markdown_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_info;
     }
 
     public void reload() {

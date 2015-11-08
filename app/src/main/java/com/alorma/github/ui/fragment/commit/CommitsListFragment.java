@@ -30,6 +30,7 @@ import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -204,6 +205,11 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
     @Override
     public int getTitle() {
         return R.string.commits_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_git_commit;
     }
 
     @Override

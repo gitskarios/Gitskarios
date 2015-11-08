@@ -19,6 +19,8 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.renderers.releases.assets.ReleaseAssetRendererBuilder;
 import com.alorma.github.ui.renderers.releases.assets.ReleaseAssetsRenderer;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import com.pedrogomez.renderers.ListAdapteeCollection;
 import com.pedrogomez.renderers.RVRendererAdapter;
 
@@ -91,5 +93,10 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
     @Override
     public int getTitle() {
         return R.string.repo_release_fragment_assets_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_package;
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -13,25 +12,23 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Bernat on 11/04/2015.
  */
-public class RepoContributorsFragment extends PaginatedListFragment<List<Contributor>, UsersAdapter> implements TitleProvider, PermissionsManager, BackManager {
+public class RepoContributorsFragment extends PaginatedListFragment<List<Contributor>, UsersAdapter>
+    implements TitleProvider {
 
     private static final String REPO_INFO = "REPO_INFO";
-    private static final String OWNER_USER = "OWNER_USER";
     private RepoInfo repoInfo;
-    private User owner;
 
-    public static RepoContributorsFragment newInstance(RepoInfo repoInfo, User owner) {
+    public static RepoContributorsFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(REPO_INFO, repoInfo);
-        bundle.putParcelable(OWNER_USER, owner);
 
         RepoContributorsFragment fragment = new RepoContributorsFragment();
         fragment.setArguments(bundle);
@@ -56,8 +53,8 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
     }
 
     @Override
-    public void setPermissions(boolean admin, boolean push, boolean pull) {
-
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_person;
     }
 
     @Override
@@ -70,15 +67,9 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
         return null;
     }
 
-    @Override
-    public boolean onBackPressed() {
-        return true;
-    }
-
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = getArguments().getParcelable(REPO_INFO);
-            owner = getArguments().getParcelable(OWNER_USER);
         }
     }
 
@@ -97,7 +88,6 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
         if (contributors != null) {
             List<User> users = new ArrayList<>();
 
-            users.add(owner);
             for (Contributor contributor : contributors) {
                 if (contributor != null
                         && contributor.author != null

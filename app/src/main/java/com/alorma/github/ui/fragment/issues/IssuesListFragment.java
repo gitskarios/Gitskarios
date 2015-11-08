@@ -34,6 +34,7 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
@@ -363,6 +364,11 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
     @Override
     public int getTitle() {
         return R.string.issues_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_issue_opened;
     }
 
     public void setSearchClientRequest(SearchClientRequest searchClientRequest) {

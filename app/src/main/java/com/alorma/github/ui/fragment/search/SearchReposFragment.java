@@ -10,6 +10,7 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
@@ -98,5 +99,10 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
     @Override
     public int getTitle() {
         return R.string.navigation_repos_search;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_repo;
     }
 }

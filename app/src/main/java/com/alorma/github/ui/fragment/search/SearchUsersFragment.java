@@ -9,6 +9,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 /**
@@ -97,5 +98,10 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
     @Override
     public int getTitle() {
         return R.string.navigation_people;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_person;
     }
 }

@@ -26,6 +26,7 @@ import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.List;
@@ -213,6 +214,11 @@ public class PullRequestsListFragment extends PaginatedListFragment<List<PullReq
     @Override
     public int getTitle() {
         return R.string.pulls_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_git_pull_request;
     }
 
     public void clear() {

@@ -26,6 +26,7 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -137,5 +138,10 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
     @Override
     public int getTitle() {
         return R.string.repo_release_fragment_detail_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_tag;
     }
 }
