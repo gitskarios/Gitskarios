@@ -194,6 +194,9 @@ public class PullRequestDetailActivity extends BackActivity
   @Override
   protected void getContent() {
     super.getContent();
+
+    hideProgressDialog();
+
     loadingView.setVisibility(View.VISIBLE);
     if (checkPermissions(issueInfo)) {
       GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);

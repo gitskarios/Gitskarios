@@ -189,6 +189,9 @@ public class IssueDetailActivity extends BackActivity
   @Override
   protected void getContent() {
     super.getContent();
+
+    hideProgressDialog();
+
     loadingView.setVisibility(View.VISIBLE);
 
     if (checkPermissions(issueInfo)) {
