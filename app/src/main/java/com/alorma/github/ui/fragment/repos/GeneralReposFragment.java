@@ -75,7 +75,7 @@ public class GeneralReposFragment extends BaseFragment {
             switch (position) {
                 case 0:
                 default:
-                    return ReposFragment.newInstance();
+                    return CurrentAccountReposFragment.newInstance();
                 case 1:
                     return StarredReposFragment.newInstance();
                 case 2:

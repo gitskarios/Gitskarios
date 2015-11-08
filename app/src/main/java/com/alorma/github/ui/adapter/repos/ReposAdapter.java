@@ -18,6 +18,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
 
     private boolean showOwnerName;
+    private boolean showOwnerNameExtra = true;
 
     public ReposAdapter(LayoutInflater inflater) {
         super(inflater);
@@ -31,6 +32,12 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
     @Override
     protected void onBindViewHolder(ViewHolder holder, Repo repo) {
         holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
+
+        if (showOwnerNameExtra) {
+            holder.textOwnerName.setText(repo.owner.login);
+        } else {
+            holder.textOwnerName.setText("");
+        }
 
         String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);
         applyIcon(holder.textStarts, Octicons.Icon.oct_star);
@@ -59,9 +66,16 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+
+    public void showOwnerNameExtra(boolean showOwnerNameExtra) {
+        this.showOwnerNameExtra = showOwnerNameExtra;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textTitle;
         public TextView repoPrivate;
+        public TextView textOwnerName;
         public TextView textDescription;
         public TextView textForks;
         public TextView textStarts;
@@ -70,6 +84,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
             super(itemView);
             textTitle = (TextView) itemView.findViewById(R.id.repoName);
             repoPrivate = (TextView) itemView.findViewById(R.id.repoPrivate);
+            textOwnerName = (TextView) itemView.findViewById(R.id.textOwnerName);
             textDescription = (TextView) itemView.findViewById(R.id.descriptionText);
             textStarts = (TextView) itemView.findViewById(R.id.textStarts);
             textForks = (TextView) itemView.findViewById(R.id.textForks);

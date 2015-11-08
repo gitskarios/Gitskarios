@@ -9,7 +9,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
-import com.alorma.github.ui.fragment.repos.ReposFragment;
+import com.alorma.github.ui.fragment.repos.CurrentAccountReposFragment;
 
 public class ReposActivity extends BackActivity {
 
@@ -34,10 +34,11 @@ public class ReposActivity extends BackActivity {
         setTitle(getString(R.string.title_activity_repos, user));
 
         if (userType.equalsIgnoreCase("user")) {
-            ReposFragment reposFragment = ReposFragment.newInstance(user);
+            CurrentAccountReposFragment
+                currentAccountReposFragment = CurrentAccountReposFragment.newInstance(user);
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content, reposFragment);
+            ft.replace(R.id.content, currentAccountReposFragment);
             ft.commit();
         } else {
             OrgsReposFragment orgsReposFragment = OrgsReposFragment.newInstance(user);
