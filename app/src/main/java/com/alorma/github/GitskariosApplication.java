@@ -7,7 +7,6 @@ import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.gitskarios.core.client.credentials.SimpleDeveloperCredentialsProvider;
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -26,7 +25,7 @@ public class GitskariosApplication extends MultiDexApplication {
         super.onCreate();
 
         if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics(), new Answers());
+            Fabric.with(this, new Crashlytics());
 
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             Tracker tracker = analytics.newTracker(R.xml.global_tracker);

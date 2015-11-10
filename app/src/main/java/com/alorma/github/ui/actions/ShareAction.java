@@ -3,11 +3,7 @@ package com.alorma.github.ui.actions;
 import android.content.Context;
 import android.content.Intent;
 
-import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ShareEvent;
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Bernat on 12/10/2015.
@@ -34,11 +30,6 @@ public class ShareAction extends Action<Void> {
 
         Intent chooser = Intent.createChooser(intent, context.getResources().getString(R.string.share_intent_title));
         context.startActivity(chooser);
-
-        if (BuildConfig.DEBUG && Fabric.isInitialized()) {
-            Answers.getInstance().logShare(new ShareEvent());
-        }
-
         return this;
     }
 }

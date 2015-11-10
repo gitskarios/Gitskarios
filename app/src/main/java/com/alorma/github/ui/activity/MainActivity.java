@@ -7,8 +7,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,15 +19,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.account.BaseAccountsFragmentManager;
+import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.utils.DrawerImage;
+import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
-import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
@@ -34,11 +41,8 @@ import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
-import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.SecondarySwitchDrawerItem;
-import com.alorma.gitskarios.core.client.BaseClient;
-import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
@@ -59,8 +63,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import io.fabric.sdk.android.Fabric;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -96,20 +104,6 @@ public class MainActivity extends BaseActivity
     }
 
     setContentView(R.layout.generic_toolbar);
-
-    boolean changeLog = checkChangeLog();
-    if (changeLog) {
-      View view = findViewById(R.id.content);
-      Snackbar.make(view, R.string.app_updated, Snackbar.LENGTH_LONG)
-          .setAction("Changelog", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              dialog = ChangelogDialogSupport.create();
-              dialog.show(getSupportFragmentManager(), "changelog");
-            }
-          })
-          .show();
-    }
   }
 
   private boolean checkChangeLog() {
@@ -120,7 +114,8 @@ public class MainActivity extends BaseActivity
 
       if (currentVersion > version) {
         settings.saveVersion(currentVersion);
-        return true;
+        dialog = ChangelogDialogSupport.create();
+        dialog.show(getSupportFragmentManager(), "changelog");
       }
     }
 
@@ -535,7 +530,7 @@ public class MainActivity extends BaseActivity
           StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
           storeCredentials.clear();
 
-          Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+          Intent intent = new Intent(MainActivity.this, MainActivity.class);
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
           startActivity(intent);
           finish();

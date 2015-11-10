@@ -168,7 +168,7 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
   }
 
   private void logAnswers(String event) {
-    if (!BuildConfig.DEBUG && Fabric.isInitialized()) {
+    if (BuildConfig.DEBUG && Fabric.isInitialized()) {
       Answers.getInstance().logContentView(new ContentViewEvent().putContentName(event));
     }
   }

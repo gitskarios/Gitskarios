@@ -39,6 +39,16 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     private boolean fromPaginated;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        loadArguments();
+        if (autoStart()) {
+            executeRequest();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
