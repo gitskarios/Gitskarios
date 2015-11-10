@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+      android:key="pref_repo_name"
+      android:title="@string/pref_repo_manage_title"
+      android:summary="@string/pref_repo_manage_title_summary"
+      />
+
+  <Preference
+      android:key="pref_repo_description"
+      android:title="@string/pref_repo_manage_description"
+      android:summary="@string/pref_repo_manage_description_summary"
+      />
+
+  <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+      android:key="pref_repo_url"
+      android:title="@string/pref_repo_manage_homepage"
+      android:summary="@string/pref_repo_manage_homepage_summary"
+      />
+
+  <CheckBoxPreference
+      android:key="pref_repo_has_issues"
+      android:title="@string/pref_repo_has_issues"
+      />
+
+  <CheckBoxPreference
+      android:key="pref_repo_has_wiki"
+      android:title="@string/pref_repo_has_wiki"
+      />
+
+  <CheckBoxPreference
+      android:key="pref_repo_has_downloads"
+      android:title="@string/pref_repo_has_downloads"
+      />
+
+  <com.afollestad.materialdialogs.prefs.MaterialListPreference
+      android:key="pref_repo_gitignore"
+      android:title="@string/pref_repo_manage_gitignore"
+      />
+
+  <com.afollestad.materialdialogs.prefs.MaterialListPreference
+      android:key="pref_repo_license"
+      android:title="@string/pref_repo_manage_license"
+      />
+
+
+</PreferenceScreen>

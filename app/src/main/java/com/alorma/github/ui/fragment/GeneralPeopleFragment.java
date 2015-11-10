@@ -1,4 +1,4 @@
-package com.alorma.github.ui.activity;
+package com.alorma.github.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

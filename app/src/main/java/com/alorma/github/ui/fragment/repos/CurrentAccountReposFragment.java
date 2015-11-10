@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.repos;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Pair;
@@ -7,14 +8,19 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.GithubReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
+import com.alorma.github.ui.activity.CreateRepositoryActivity;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 import retrofit.client.Response;
 import rx.Observer;
 
 public class CurrentAccountReposFragment extends BaseReposListFragment {
 
-    private String username;
-    private Observer<? super Pair<List<Repo>, Response>> subscriber = new Observer<Pair<List<Repo>, Response>>() {
+  private static final int CREATE_REPOS = 131;
+
+  private String username;
+  private Observer<? super Pair<List<Repo>, Response>> subscriber =
+      new Observer<Pair<List<Repo>, Response>>() {
         @Override
         public void onCompleted() {
 
@@ -27,61 +33,74 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
 
         @Override
         public void onNext(Pair<List<Repo>, Response> listResponsePair) {
-            onResponseOk(listResponsePair.first, listResponsePair.second);
+          onResponseOk(listResponsePair.first, listResponsePair.second);
         }
-    };
+      };
 
-    public static CurrentAccountReposFragment newInstance() {
-        return new CurrentAccountReposFragment();
+  public static CurrentAccountReposFragment newInstance() {
+    return new CurrentAccountReposFragment();
+  }
+
+  @Override
+  protected void onResponse(List<Repo> repos, boolean refreshing) {
+    super.onResponse(repos, refreshing);
+
+    if (getAdapter() != null) {
+      getAdapter().showOwnerNameExtra(false);
     }
+  }
 
-    @Override
-    protected void onResponse(List<Repo> repos, boolean refreshing) {
-        super.onResponse(repos, refreshing);
+  public static CurrentAccountReposFragment newInstance(String username) {
+    CurrentAccountReposFragment currentAccountReposFragment = new CurrentAccountReposFragment();
+    if (username != null) {
+      Bundle bundle = new Bundle();
+      bundle.putString(USERNAME, username);
 
-        if (getAdapter() != null) {
-            getAdapter().showOwnerNameExtra(false);
-        }
+      currentAccountReposFragment.setArguments(bundle);
     }
+    return currentAccountReposFragment;
+  }
 
-    public static CurrentAccountReposFragment newInstance(String username) {
-        CurrentAccountReposFragment currentAccountReposFragment = new CurrentAccountReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
-
-            currentAccountReposFragment.setArguments(bundle);
-        }
-        return currentAccountReposFragment;
+  @Override
+  protected void loadArguments() {
+    if (getArguments() != null) {
+      username = getArguments().getString(USERNAME);
     }
+  }
 
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
 
+    GithubReposClient client = new UserReposClient(getActivity(), username);
+    client.observable().subscribe(subscriber);
+  }
 
-    @Override
-    protected void loadArguments() {
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
-    }
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
+    UserReposClient client = new UserReposClient(getActivity(), username, page);
+    client.observable().subscribe(subscriber);
+  }
 
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_repositories;
+  }
 
-        GithubReposClient client = new UserReposClient(getActivity(), username);
-        client.observable().subscribe(subscriber);
-    }
+  @Override
+  protected boolean useFAB() {
+    return true;
+  }
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
-        UserReposClient client = new UserReposClient(getActivity(), username, page);
-        client.observable().subscribe(subscriber);
-    }
+  @Override
+  protected Octicons.Icon getFABGithubIcon() {
+    return Octicons.Icon.oct_repo_create;
+  }
 
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_repositories;
-    }
-
+  @Override
+  protected void fabClick() {
+    Intent intent = new Intent(getActivity(), CreateRepositoryActivity.class);
+    startActivityForResult(intent, CREATE_REPOS);
+  }
 }

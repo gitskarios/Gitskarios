@@ -30,6 +30,7 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialogSupport;
+import com.alorma.github.ui.fragment.GeneralPeopleFragment;
 import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;

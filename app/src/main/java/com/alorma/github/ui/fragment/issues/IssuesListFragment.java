@@ -353,7 +353,6 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
             this.repoInfo.permissions = permissions;
             checkFAB();
         }
-
     }
 
     @Override
