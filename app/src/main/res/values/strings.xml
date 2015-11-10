@@ -441,4 +441,5 @@
     <string name="import_gitskarios_accounts">Import gitskarios accounts</string>
     <string name="event_list_filter">Filter events</string>
     <string name="clear_filters">Clear filter</string>
+    <string name="app_updated">Gitsakrios has been updated</string>
 </resources>
