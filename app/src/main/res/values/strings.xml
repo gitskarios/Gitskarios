@@ -380,6 +380,8 @@
     <string name="delete_repository">Delete repository</string>
     <string name="delete_repository_content">This action <b>CANNOT</b> be undone. This will permanently delete the <b>%1$s/%2$s</b> repository, wiki, issues, and comments, and remove all collaborator associations.</string>
     <string name="delete">DELETE</string>
+    <string name="delete_repository_scope_request">Scope request</string>
+    <string name="delete_repository_scope_request_content">In order to delete repositories, you will be redirect to reauthorizing github page.</string>
     <string name="pref_repo_manage_title">Title</string>
     <string name="pref_repo_manage_description">Description</string>
     <string name="pref_repo_default_branch">Default branch</string>
@@ -439,5 +441,4 @@
     <string name="import_gitskarios_accounts">Import gitskarios accounts</string>
     <string name="event_list_filter">Filter events</string>
     <string name="clear_filters">Clear filter</string>
-    <string name="app_updated">App updated</string>
 </resources>

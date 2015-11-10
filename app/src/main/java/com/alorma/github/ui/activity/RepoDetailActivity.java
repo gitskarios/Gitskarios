@@ -138,8 +138,6 @@ public class RepoDetailActivity extends BackActivity
             }
           }
         }
-
-        load();
       } else {
         finish();
       }
