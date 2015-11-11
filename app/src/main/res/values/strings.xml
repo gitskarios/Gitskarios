@@ -445,4 +445,6 @@
     <string name="create_repository_activity">New repository</string>
     <string name="pref_repo_manage_gitignore">Add .gitignore</string>
     <string name="pref_repo_manage_license">Add a license</string>
+    <string name="create_repository">CREATE</string>
+    <string name="pref_repo_auto_init">Create README.md</string>
 </resources>

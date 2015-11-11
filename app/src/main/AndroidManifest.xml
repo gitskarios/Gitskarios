@@ -160,7 +160,8 @@
             android:label="@string/emoji_activity" />
         <activity
             android:name="com.alorma.github.ui.activity.CreateRepositoryActivity"
-            android:label="@string/create_repository_activity" />
+            android:label="@string/create_repository_activity"
+            android:theme="@style/AppTheme.ColoredButton"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"

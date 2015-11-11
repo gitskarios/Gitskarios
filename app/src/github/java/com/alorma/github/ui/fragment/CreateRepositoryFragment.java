@@ -1,5 +1,7 @@
 package com.alorma.github.ui.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -26,6 +28,22 @@ public class CreateRepositoryFragment extends PreferenceFragment {
   private static final int DESCRIPTION_EDIT = 112;
 
   private RepoRequestDTO repoRequestDTO = new RepoRequestDTO();
+  private CreateRepositoryInterface nullInterface = new NullInterface();
+  private CreateRepositoryInterface createInterface = nullInterface;
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    if (context instanceof CreateRepositoryInterface) {
+      createInterface = (CreateRepositoryInterface) context;
+    }
+  }
+
+  @Override
+  public void onDetach() {
+    createInterface = nullInterface;
+    super.onDetach();
+  }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +59,7 @@ public class CreateRepositoryFragment extends PreferenceFragment {
       public boolean onPreferenceChange(Preference preference, Object newValue) {
         repoRequestDTO.name = (String) newValue;
         pref_repo_name.setTitle(repoRequestDTO.name);
+        checkState();
         return true;
       }
     });
@@ -67,7 +86,8 @@ public class CreateRepositoryFragment extends PreferenceFragment {
 
     CheckBoxPreference pref_repo_has_issues =
         (CheckBoxPreference) findPreference("pref_repo_has_issues");
-    pref_repo_has_issues.setChecked(repoRequestDTO.has_issues);
+    pref_repo_has_issues.setChecked(true);
+    repoRequestDTO.has_issues = true;
     pref_repo_has_issues.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
       @Override
       public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -78,7 +98,6 @@ public class CreateRepositoryFragment extends PreferenceFragment {
 
     CheckBoxPreference pref_repo_has_wiki =
         (CheckBoxPreference) findPreference("pref_repo_has_wiki");
-    pref_repo_has_wiki.setChecked(repoRequestDTO.has_wiki);
     pref_repo_has_wiki.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
       @Override
       public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -89,12 +108,24 @@ public class CreateRepositoryFragment extends PreferenceFragment {
 
     CheckBoxPreference pref_repo_has_downloads =
         (CheckBoxPreference) findPreference("pref_repo_has_downloads");
-    pref_repo_has_downloads.setChecked(repoRequestDTO.has_downloads);
     pref_repo_has_downloads.setOnPreferenceChangeListener(
         new Preference.OnPreferenceChangeListener() {
           @Override
           public boolean onPreferenceChange(Preference preference, Object newValue) {
             repoRequestDTO.has_downloads = (Boolean) newValue;
+            return true;
+          }
+        });
+
+    CheckBoxPreference pref_repo_auto_init =
+        (CheckBoxPreference) findPreference("pref_repo_auto_init");
+    pref_repo_auto_init.setChecked(true);
+    repoRequestDTO.auto_init = true;
+    pref_repo_has_downloads.setOnPreferenceChangeListener(
+        new Preference.OnPreferenceChangeListener() {
+          @Override
+          public boolean onPreferenceChange(Preference preference, Object newValue) {
+            repoRequestDTO.auto_init = (Boolean) newValue;
             return true;
           }
         });
@@ -143,5 +174,33 @@ public class CreateRepositoryFragment extends PreferenceFragment {
             pref_repo_gitignore.setEnabled(true);
           }
         });
+  }
+
+  private void checkState() {
+    if (createInterface != null) {
+      if (repoRequestDTO.isValid()) {
+        createInterface.onRepositoryReady(repoRequestDTO);
+      } else {
+        createInterface.onRepositoryNotReady();
+      }
+    }
+  }
+
+  public interface CreateRepositoryInterface {
+    void onRepositoryReady(RepoRequestDTO dto);
+    void onRepositoryNotReady();
+  }
+
+  private class NullInterface implements CreateRepositoryInterface {
+
+    @Override
+    public void onRepositoryReady(RepoRequestDTO dto) {
+
+    }
+
+    @Override
+    public void onRepositoryNotReady() {
+
+    }
   }
 }

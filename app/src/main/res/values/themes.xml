@@ -136,4 +136,8 @@
         <item name="android:windowBackground">?attr/colorPrimary</item>
         <item name="colorButtonNormal">?attr/colorAccent</item>
     </style>
+
+    <style name="AppTheme.ColoredButton">
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+    </style>
 </resources>

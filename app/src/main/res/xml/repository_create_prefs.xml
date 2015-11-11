@@ -21,6 +21,11 @@
       />
 
   <CheckBoxPreference
+      android:key="pref_repo_auto_init"
+      android:title="@string/pref_repo_auto_init"
+      />
+
+  <CheckBoxPreference
       android:key="pref_repo_has_issues"
       android:title="@string/pref_repo_has_issues"
       />
