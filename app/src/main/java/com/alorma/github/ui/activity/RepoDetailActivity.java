@@ -125,24 +125,30 @@ public class RepoDetailActivity extends BackActivity
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        for (int i = 0; i < fragments.size(); i++) {
-          Fragment fragment = fragments.get(i);
-          if (fragment instanceof TitleProvider) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            if (tab != null) {
-              IIcon iicon = ((TitleProvider) fragment).getTitleIcon();
-              if (iicon != null) {
-                Drawable icon = getPageTitle(iicon);
-                tab.setIcon(icon);
-              }
-            }
-          }
-        }
+        showTabsIcons(tabLayout);
+
+        load();
       } else {
         finish();
       }
     } else {
       finish();
+    }
+  }
+
+  private void showTabsIcons(TabLayout tabLayout) {
+    for (int i = 0; i < fragments.size(); i++) {
+      Fragment fragment = fragments.get(i);
+      if (fragment instanceof TitleProvider) {
+        TabLayout.Tab tab = tabLayout.getTabAt(i);
+        if (tab != null) {
+          IIcon iicon = ((TitleProvider) fragment).getTitleIcon();
+          if (iicon != null) {
+            Drawable icon = getPageTitle(iicon);
+            tab.setIcon(icon);
+          }
+        }
+      }
     }
   }
 
