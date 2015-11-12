@@ -18,4 +18,4 @@ branches:
 before_script:
 - git submodule update --init --recursive
 
-script: ./gradlew assembleDebug
+script: ./gradlew assembleGithubDebug
