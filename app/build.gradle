@@ -133,8 +133,8 @@ def getGHCallback(pro) {
 }
 
 dependencies {
-    debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
-    releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
+    debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'libraryDebug')
+    releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'libraryRelease')
     // Submodules
 
     compile project(':libraries:breadcrumbs')
