@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-<changelogversion changeDate="Nov 10,2015" versionName="2.6.3">
+<changelogversion changeDate="Nov 12,2015" versionName="2.6.5">
+         <changelogtext>Create repository from the app</changelogtext>
+         <changelogtext>Fix issues cannot be created</changelogtext>
+ </changelogversion>
+<changelogversion changeDate="Nov 10,2015" versionName="2.6.4">
          <changelogtext>Click user avatar to view profile. Thanks [b]IvBaranov[/b]</changelogtext>
  </changelogversion>
 <changelogversion changeDate="Nov 8,2015" versionName="2.6.3">

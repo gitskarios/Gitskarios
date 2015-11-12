@@ -447,4 +447,6 @@
     <string name="pref_repo_manage_license">Add a license</string>
     <string name="create_repository">CREATE</string>
     <string name="pref_repo_auto_init">Create README.md</string>
+
+    <string name="changelog">Changelog</string>
 </resources>
