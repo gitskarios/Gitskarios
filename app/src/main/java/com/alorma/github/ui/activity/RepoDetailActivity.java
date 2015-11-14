@@ -9,17 +9,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-
 import com.alorma.github.R;
-import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
@@ -27,8 +23,6 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
-import com.alorma.github.sdk.services.repo.GetRepoClient;
-import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
@@ -45,22 +39,21 @@ import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.ShortcutUtils;
 import com.alorma.gitskarios.core.client.BaseClient;
+import com.clean.presenter.Presenter;
+import com.clean.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 17/07/2014.
  */
 public class RepoDetailActivity extends BackActivity
-    implements BaseClient.OnResultCallback<Repo>, AdapterView.OnItemSelectedListener {
+    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -73,6 +66,7 @@ public class RepoDetailActivity extends BackActivity
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private ViewPager viewPager;
+  private RepoAboutFragment repoAboutFragment;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -126,13 +120,19 @@ public class RepoDetailActivity extends BackActivity
         tabLayout.setupWithViewPager(viewPager);
 
         showTabsIcons(tabLayout);
-
-        load();
       } else {
         finish();
       }
     } else {
       finish();
+    }
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    if (requestRepoInfo != null) {
+      load();
     }
   }
 
@@ -154,6 +154,60 @@ public class RepoDetailActivity extends BackActivity
 
   public Drawable getPageTitle(IIcon icon) {
     return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.white);
+  }
+
+  @Override
+  public void showLoading() {
+
+  }
+
+  private void load() {
+    RepositoryPresenter repositoryPresenter = new RepositoryPresenter(this);
+    repositoryPresenter.load(requestRepoInfo, this);
+  }
+
+  @Override
+  public void onResponse(Repo repo) {
+    hideProgressDialog();
+    if (repo != null) {
+      this.currentRepo = repo;
+
+      requestRepoInfo.branch = repo.default_branch;
+      requestRepoInfo.permissions = repo.permissions;
+
+      invalidateOptionsMenu();
+
+      setTitle(currentRepo.name);
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setSubtitle(requestRepoInfo.branch);
+      }
+
+      this.invalidateOptionsMenu();
+
+      Permissions permissions = repo.permissions;
+      for (Fragment fragment : fragments) {
+        if (fragment.isAdded()) {
+        /*
+        if (fragment instanceof PermissionsManager) {
+          ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push,
+              permissions.pull);
+        }
+        if (fragment instanceof BranchManager) {
+          ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
+        }
+        */
+        }
+      }
+
+      if (repoAboutFragment.isAdded()) {
+        repoAboutFragment.setRepository(repo);
+      }
+    }
+  }
+
+  @Override
+  public void hideLoading() {
+
   }
 
   private class NavigationAdapter extends FragmentPagerAdapter {
@@ -179,7 +233,11 @@ public class RepoDetailActivity extends BackActivity
   private void listFragments() {
     if (fragments == null) {
       fragments = new ArrayList<>();
-      fragments.add(RepoAboutFragment.newInstance(requestRepoInfo));
+      repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
+      if (currentRepo != null) {
+        repoAboutFragment.setRepository(currentRepo);
+      }
+      fragments.add(repoAboutFragment);
       fragments.add(SourceListFragment.newInstance(requestRepoInfo));
       fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
       fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
@@ -187,28 +245,6 @@ public class RepoDetailActivity extends BackActivity
       fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
       fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
     }
-  }
-
-  private void load() {
-    GetRepoClient repoClient = new GetRepoClient(this, requestRepoInfo);
-    repoClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Pair<Repo, Response>>() {
-          @Override
-          public void onCompleted() {
-
-          }
-
-          @Override
-          public void onError(Throwable e) {
-
-          }
-
-          @Override
-          public void onNext(Pair<Repo, Response> repoResponsePair) {
-            onResponseOk(repoResponsePair.first, repoResponsePair.second);
-          }
-        });
   }
 
   @Override
@@ -325,44 +361,6 @@ public class RepoDetailActivity extends BackActivity
   }
 
   @Override
-  public void onResponseOk(Repo repo, Response r) {
-    hideProgressDialog();
-    if (repo != null) {
-      this.currentRepo = repo;
-
-      requestRepoInfo.branch = repo.default_branch;
-      requestRepoInfo.permissions = repo.permissions;
-
-      invalidateOptionsMenu();
-
-      setTitle(currentRepo.name);
-      if (getSupportActionBar() != null) {
-        getSupportActionBar().setSubtitle(requestRepoInfo.branch);
-      }
-
-      this.invalidateOptionsMenu();
-
-      Permissions permissions = repo.permissions;
-      for (Fragment fragment : fragments) {
-        if (fragment instanceof PermissionsManager) {
-          ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push,
-              permissions.pull);
-        }
-        if (fragment instanceof BranchManager) {
-          ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
-        }
-      }
-
-      QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(requestRepoInfo.toString(), repo);
-    }
-  }
-
-  @Override
-  public void onFail(RetrofitError error) {
-    ErrorHandler.onError(this, "RepoDetailActivity", error);
-  }
-
-  @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
   }
@@ -382,7 +380,17 @@ public class RepoDetailActivity extends BackActivity
         showProgressDialog(R.style.SpotDialog_edit_repo);
         EditRepoClient editRepositoryClient =
             new EditRepoClient(this, requestRepoInfo, repoRequestDTO);
-        editRepositoryClient.setOnResultCallback(this);
+        editRepositoryClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+          @Override
+          public void onResponseOk(Repo repo, Response r) {
+            onResponse(repo);
+          }
+
+          @Override
+          public void onFail(RetrofitError error) {
+
+          }
+        });
         editRepositoryClient.execute();
       } else if (resultCode == RESULT_CANCELED) {
         finish();

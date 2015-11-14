@@ -14,7 +14,7 @@ import io.fabric.sdk.android.Fabric;
  */
 public class ErrorHandler {
 
-    public static void onError(Context context, String tag, Exception error) {
+    public static void onError(Context context, String tag, Throwable error) {
         Log.e(tag, "Error", error);
         if (BuildConfig.DEBUG) {
             if (context != null) {
@@ -22,5 +22,4 @@ public class ErrorHandler {
             }
         }
     }
-
 }

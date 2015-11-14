@@ -15,22 +15,23 @@ import rx.Subscriber;
 public class StarredReposFragment extends BaseReposListFragment {
 
     private String username;
-    private Observer<? super Pair<List<Repo>, Response>> subscriber = new Observer<Pair<List<Repo>, Response>>() {
-        @Override
-        public void onCompleted() {
+    private Observer<? super List<Repo>> subscriber =
+        new Observer<List<Repo>>() {
+            @Override
+            public void onCompleted() {
 
-        }
+            }
 
-        @Override
-        public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-        }
+            }
 
-        @Override
-        public void onNext(Pair<List<Repo>, Response> listResponsePair) {
-            onResponseOk(listResponsePair.first, listResponsePair.second);
-        }
-    };
+            @Override
+            public void onNext(List<Repo> repoList) {
+                onResponseOk(repoList, null);
+            }
+        };
 
     public static StarredReposFragment newInstance() {
         return new StarredReposFragment();

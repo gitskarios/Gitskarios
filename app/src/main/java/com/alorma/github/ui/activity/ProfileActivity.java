@@ -16,24 +16,23 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-
 import com.alorma.github.R;
 import com.alorma.github.bean.ProfileItem;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.sdk.services.user.GithubUsersClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
-import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
@@ -48,18 +47,17 @@ import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
 import java.util.List;
-
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by Bernat on 15/07/2014.
  */
-public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-//        PaletteUtils.PaletteUtilsListener,
-        OnCheckFollowingUser {
+public class ProfileActivity extends BackActivity {
 
     public static final String EXTRA_COLOR = "EXTRA_COLOR";
 
@@ -128,7 +126,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     @Override
     protected void getContent() {
         if (profileItemsAdapter == null || profileItemsAdapter.getItemCount() == 0) {
-            GithubUsersClient<User> requestClient;
+            GithubClient<User> requestClient;
             user = null;
             if (getIntent().getExtras() != null) {
                 if (getIntent().getExtras().containsKey(ACCOUNT)) {
@@ -158,8 +156,24 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
             invalidateOptionsMenu();
 
-            requestClient.setOnResultCallback(this);
-            requestClient.execute();
+            requestClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        onUserLoaded(user);
+                    }
+                });
         }
     }
 
@@ -188,14 +202,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_menu_follow_user) {
-
-            FollowUserClient followUserClient = new FollowUserClient(this, user.login);
-            followUserClient.setOnCheckFollowingUser(this);
-            followUserClient.execute();
+            followUserAction(new FollowUserClient(this, user.login));
         } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
-            UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
-            unfollowUserClient.setOnCheckFollowingUser(this);
-            unfollowUserClient.execute();
+            followUserAction(new UnfollowUserClient(this, user.login));
         }
 
         item.setEnabled(false);
@@ -203,8 +212,28 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         return true;
     }
 
-    @Override
-    public void onResponseOk(final User user, Response r) {
+    private void followUserAction(GithubClient<Boolean> githubClient) {
+        githubClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                followingUser = aBoolean;
+                invalidateOptionsMenu();
+            }
+        });
+    }
+
+    public void onUserLoaded(final User user) {
         this.user = user;
         collapsingToolbarLayout.setTitle(user.login);
 
@@ -220,16 +249,12 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         }
 
         if (!user.login.equalsIgnoreCase(settings.getUserName())) {
-            CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
-            checkFollowingUser.setOnCheckFollowingUser(this);
-            checkFollowingUser.execute();
+            followUserAction(new CheckFollowingUser(this, user.login));
         }
 
         fillCardBio(user);
 
         fillCardGithubData(user);
-
-        fillCardPlan(user);
 
         if (getSupportActionBar() != null) {
             loadImageAvatar(user);
@@ -342,7 +367,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             profileItemsAdapter.add(profileUserEmail);
         }
         if (user.created_at != null) {
-            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at, R.string.joined_at), null);
+            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(
+                this, user.created_at, R.string.joined_at), null);
             profileItemsAdapter.add(profileUserCreated);
         }
     }
@@ -366,9 +392,25 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         profileItemsAdapter.add(profileItemOrgs);
 
         GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
-        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<List<Organization>>() {
+        orgsClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .map(new Func1<Pair<List<Organization>,Integer>, List<Organization>>() {
+                @Override
+                public List<Organization> call(Pair<List<Organization>, Integer> listIntegerPair) {
+                    return listIntegerPair.first;
+                }
+            }).subscribe(new Subscriber<List<Organization>>() {
             @Override
-            public void onResponseOk(List<Organization> organizations, Response r) {
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Organization> organizations) {
                 if (organizations != null && organizations.size() > 0) {
                     profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
                     profileItemsAdapter.notifyDataSetChanged();
@@ -376,13 +418,7 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                     profileItemsAdapter.remove(profileItemOrgs);
                 }
             }
-
-            @Override
-            public void onFail(RetrofitError error) {
-
-            }
         });
-        orgsClient.execute();
 
         if (user.type == UserType.User) {
             Intent intentStarred = StarredReposActivity.launchIntent(this, user.login);
@@ -393,23 +429,6 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             ProfileItem profileItemWatched = new ProfileItem(Octicons.Icon.oct_eye, getString(R.string.profile_watched), intentWatched);
             profileItemsAdapter.add(profileItemWatched);
         }
-    }
-
-    private void fillCardPlan(User user) {
-        if (user.plan != null) {
-
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-
-    }
-
-    @Override
-    public void onCheckFollowUser(String username, boolean following) {
-        followingUser = following;
-        invalidateOptionsMenu();
     }
 
     @Override

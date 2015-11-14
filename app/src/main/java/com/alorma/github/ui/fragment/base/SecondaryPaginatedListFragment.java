@@ -3,8 +3,8 @@ package com.alorma.github.ui.fragment.base;
 import android.view.View;
 import android.widget.AbsListView;
 
-import com.alorma.github.sdk.bean.info.PaginationLink;
-import com.alorma.github.sdk.bean.info.RelType;
+import com.alorma.gitskarios.core.client.PaginationLink;
+import com.alorma.gitskarios.core.client.RelType;
 import com.alorma.gitskarios.core.client.BaseClient;
 
 import java.util.HashMap;

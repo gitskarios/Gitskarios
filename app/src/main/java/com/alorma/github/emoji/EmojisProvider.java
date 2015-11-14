@@ -3,29 +3,24 @@ package com.alorma.github.emoji;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import com.alorma.github.sdk.services.emojis.EmojisClient;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 08/07/2015.
  */
-public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<String, String>> {
+public class EmojisProvider {
 
     public EmojisProvider(Context context) {
         this.context = context;
     }
 
     private Context context;
-    private EmojisCallback emojisCallback;
 
 
     public List<Emoji> getEmojis() {
@@ -53,9 +48,7 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
         }
     }
 
-    public void getEmojis(EmojisCallback emojisCallback) {
-
-        this.emojisCallback = emojisCallback;
+    public void getEmojis(final EmojisCallback emojisCallback) {
 
         List<Emoji> result = getEmojis();
 
@@ -65,8 +58,43 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
             }
         } else {
             EmojisClient emojisClient = new EmojisClient(context);
-            emojisClient.setOnResultCallback(this);
-            emojisClient.execute();
+            emojisClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<HashMap<String, String>>() {
+
+                    List<Emoji> emojisList = new ArrayList<>();
+
+                    @Override
+                    public void onCompleted() {
+                        if (emojisCallback != null) {
+                            emojisCallback.onEmojisLoaded(emojisList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (emojisCallback != null) {
+                            emojisCallback.onEmojisLoadFail();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(HashMap<String, String> emojis) {
+                        if (emojis.size() > 0) {
+
+                            for (String key : emojis.keySet()) {
+                                Emoji emoji = new Emoji(key, emojis.get(key));
+                                emojisList.add(emoji);
+                                Gson gson = new Gson();
+                                String json = gson.toJson(emojisList);
+
+                                SharedPreferences preferences =
+                                    PreferenceManager.getDefaultSharedPreferences(context);
+                                preferences.edit().putString("EMOJIS", json).apply();
+                            }
+                        }
+                    }
+                });
         }
     }
 
@@ -75,34 +103,6 @@ public class EmojisProvider implements BaseClient.OnResultCallback<HashMap<Strin
             callback.onEmojisLoaded(getEmojis(filter));
         } else {
             getEmojis(callback);
-        }
-    }
-
-    @Override
-    public void onResponseOk(HashMap<String, String> emojis, Response r) {
-        if (emojis.size() > 0) {
-            List<Emoji> emojisList = new ArrayList<>();
-
-            for (String key : emojis.keySet()) {
-                Emoji emoji = new Emoji(key, emojis.get(key));
-                emojisList.add(emoji);
-                Gson gson = new Gson();
-                String json = gson.toJson(emojisList);
-
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                preferences.edit().putString("EMOJIS", json).apply();
-            }
-
-            if (emojisCallback != null) {
-                emojisCallback.onEmojisLoaded(emojisList);
-            }
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        if (emojisCallback != null) {
-            emojisCallback.onEmojisLoadFail();
         }
     }
 

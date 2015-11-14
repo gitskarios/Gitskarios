@@ -150,7 +150,7 @@ public class CreateRepositoryFragment extends PreferenceFragment {
     GitIgnoreClient gitIgnoreClient = new GitIgnoreClient(getActivity());
     gitIgnoreClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Pair<GitIgnoreTemplates, Response>>() {
+        .subscribe(new Subscriber<GitIgnoreTemplates>() {
           @Override
           public void onCompleted() {
           }
@@ -161,10 +161,10 @@ public class CreateRepositoryFragment extends PreferenceFragment {
           }
 
           @Override
-          public void onNext(Pair<GitIgnoreTemplates, Response> gitIgnoreTemplatesResponsePair) {
+          public void onNext(GitIgnoreTemplates gitIgnoreTemplates) {
             ArrayList<String> ignoreTemplates = new ArrayList<String>();
             ignoreTemplates.add("[none]");
-            ignoreTemplates.addAll(gitIgnoreTemplatesResponsePair.first);
+            ignoreTemplates.addAll(gitIgnoreTemplates);
             CharSequence[] templates = new CharSequence[ignoreTemplates.size()];
             for (int i = 0; i < ignoreTemplates.size(); i++) {
               templates[i] = ignoreTemplates.get(i);

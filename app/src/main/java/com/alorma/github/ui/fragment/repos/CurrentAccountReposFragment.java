@@ -19,23 +19,6 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
   private static final int CREATE_REPOS = 131;
 
   private String username;
-  private Observer<? super Pair<List<Repo>, Response>> subscriber =
-      new Observer<Pair<List<Repo>, Response>>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(Pair<List<Repo>, Response> listResponsePair) {
-          onResponseOk(listResponsePair.first, listResponsePair.second);
-        }
-      };
 
   public static CurrentAccountReposFragment newInstance() {
     return new CurrentAccountReposFragment();

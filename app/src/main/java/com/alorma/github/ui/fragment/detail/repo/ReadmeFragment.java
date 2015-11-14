@@ -28,11 +28,13 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 22/07/2014.
  */
-public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultCallback<String>, BranchManager, TitleProvider
+public class ReadmeFragment extends BaseFragment implements BranchManager, TitleProvider
         , PermissionsManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
@@ -78,35 +80,42 @@ public class ReadmeFragment extends BaseFragment implements BaseClient.OnResultC
     }
 
     private void getContent() {
-        GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
-        repoMarkdownClient.setCallback(this);
-        repoMarkdownClient.execute();
+        loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
     }
 
-    @Override
-    public void onResponseOk(final String htmlContent, Response r) {
-        if (htmlContent != null) {
-            String htmlCode = HtmlUtils.format(htmlContent).toString();
-            HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
+    private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
+        repoMarkdownClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-            imageGetter.repoInfo(repoInfo);
-            imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
+            }
 
-            htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-        }
-    }
+            @Override
+            public void onError(Throwable e) {
 
-    @Override
-    public void onFail(RetrofitError error) {
-// TODO HTML readme cannot be shown
+            }
+
+            @Override
+            public void onNext(String htmlContent) {
+                if (htmlContent != null) {
+                    String htmlCode = HtmlUtils.format(htmlContent).toString();
+                    HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
+
+                    imageGetter.repoInfo(repoInfo);
+                    imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
+
+                    htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+                }
+            }
+        });
     }
 
     @Override
     public void setCurrentBranch(String branch) {
         if (getActivity() != null) {
-            GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
-            repoMarkdownClient.setCallback(this);
-            repoMarkdownClient.execute();
+            repoInfo.branch = branch;
+            loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
         }
     }
 

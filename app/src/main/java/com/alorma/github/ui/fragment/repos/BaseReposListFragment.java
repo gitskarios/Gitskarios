@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
+import android.util.Pair;
 import android.view.LayoutInflater;
 
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -13,13 +14,33 @@ import java.util.Collection;
 import java.util.List;
 
 import retrofit.RetrofitError;
+import rx.Observer;
+import rx.Subscriber;
 
 /**
  * Created by Bernat on 17/07/2014.
  */
-public abstract class BaseReposListFragment extends PaginatedListFragment<List<Repo>, ReposAdapter> implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class BaseReposListFragment extends PaginatedListFragment<List<Repo>, ReposAdapter>
+    implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private GitskariosSettings settings;
+    protected Observer<? super Pair<List<Repo>, Integer>> subscriber =
+        new Subscriber<Pair<List<Repo>, Integer>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onError(e);
+            }
+
+            @Override
+            public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
+                onResponseOk(listIntegerPair.first, listIntegerPair.second);
+            }
+        };
 
     @Override
     protected void onResponse(List<Repo> repos, boolean refreshing) {
@@ -32,16 +53,6 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<List<R
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty(false);
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (error != null && error.getResponse() != null) {
-                setEmpty(true, error.getResponse().getStatus());
-            }
         }
     }
 

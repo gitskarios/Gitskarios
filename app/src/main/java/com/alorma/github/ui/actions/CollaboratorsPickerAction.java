@@ -2,28 +2,24 @@ package com.alorma.github.ui.actions;
 
 import android.content.Context;
 import android.view.View;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.gitskarios.core.client.BaseClient;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 12/10/2015.
  */
-public class CollaboratorsPickerAction extends Action<User> implements BaseClient.OnResultCallback<List<User>> {
+public class CollaboratorsPickerAction extends Action<User> {
 
     private Context context;
     private IssueInfo issueInfo;
@@ -43,14 +39,28 @@ public class CollaboratorsPickerAction extends Action<User> implements BaseClien
                 .show();
 
         GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(context, issueInfo.repoInfo);
-        contributorsClient.setOnResultCallback(this);
-        contributorsClient.execute();
+        contributorsClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<User>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<User> users) {
+                    showDialogSelect(users);
+                }
+            });
         return this;
     }
 
-    @Override
-    public void onResponseOk(final List<User> users, Response r) {
-
+    private void showDialogSelect(final List<User> users) {
         if (dialog != null) {
             dialog.dismiss();
         }
@@ -63,7 +73,7 @@ public class CollaboratorsPickerAction extends Action<User> implements BaseClien
                 @Override
                 public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
                     User user = users.get(i);
-                    setAssigneeUser(user);
+                    Observable.just(user).subscribe(CollaboratorsPickerAction.this);
                     materialDialog.dismiss();
                 }
             });
@@ -72,23 +82,17 @@ public class CollaboratorsPickerAction extends Action<User> implements BaseClien
                 @Override
                 public void onNegative(MaterialDialog dialog) {
                     super.onNegative(dialog);
-                    setAssigneeUser(null);
+                    Observable.<User>just(null).subscribe(CollaboratorsPickerAction.this);
                 }
             });
             builder.show();
         }
     }
 
-    private void setAssigneeUser(User user) {
+    @Override
+    public void onNext(User user) {
         if (getCallback() != null) {
             getCallback().onResult(user);
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        if (dialog != null) {
-            dialog.dismiss();
         }
     }
 }

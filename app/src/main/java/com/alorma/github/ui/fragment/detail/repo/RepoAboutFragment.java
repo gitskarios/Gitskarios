@@ -5,21 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
-import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
 import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
@@ -32,7 +30,6 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
@@ -40,16 +37,15 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 01/01/2015.
  */
-public class RepoAboutFragment extends Fragment implements TitleProvider, BranchManager, BackManager, BaseClient.OnResultCallback<String> {
+public class RepoAboutFragment extends Fragment
+    implements TitleProvider, BranchManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
 
@@ -168,7 +164,12 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             }
         });
 
-        getContent();
+        if (currentRepo != null) {
+            getStarWatchData();
+            setData();
+        }
+
+        getReadmeContent();
     }
 
     @Override
@@ -187,17 +188,33 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         }
     }
 
-    private void getContent() {
+    private void getReadmeContent() {
         if (repoInfo == null) {
             loadArguments();
         }
 
-        GetRepoClient repoClient = new GetRepoClient(getActivity(), repoInfo);
-        repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(
-            new Subscriber<Pair<Repo, Response>>() {
+        boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString() + "_README");
+        if (contains) {
+            onReadmeLoaded(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+                .<String>get(repoInfo.toString() + "_README"));
+        }
+        getReadme();
+    }
+
+    private void getReadme() {
+        loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
+    }
+
+    private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
+        repoMarkdownClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<String>() {
                 @Override
                 public void onCompleted() {
-
+                    if (currentRepo != null) {
+                        getStarWatchData();
+                        setData();
+                    }
                 }
 
                 @Override
@@ -206,32 +223,13 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
                 }
 
                 @Override
-                public void onNext(Pair<Repo, Response> repoResponsePair) {
-                    currentRepo = repoResponsePair.first;
-                    getReadme();
-                    getStarWatchData();
-                    setData(currentRepo);
+                public void onNext(String htmlContent) {
+                    onReadmeLoaded(htmlContent);
                 }
             });
-
-        boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString() + "_README");
-        if (contains) {
-            onResponseOk(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<String>get(repoInfo.toString() + "_README"), null);
-            getReadme();
-        } else {
-            getReadme();
-        }
-
     }
 
-    private void getReadme() {
-        GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
-        repoMarkdownClient.setCallback(this);
-        repoMarkdownClient.execute();
-    }
-
-    @Override
-    public void onResponseOk(final String htmlContent, Response r) {
+    private void onReadmeLoaded(String htmlContent) {
         if (htmlContent != null && htmlContentView != null) {
             String htmlCode = HtmlUtils.format(htmlContent).toString();
             HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
@@ -240,11 +238,12 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
 
             htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(repoInfo.toString() + "_README", htmlCode);
+            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+                .set(repoInfo.toString() + "_README", htmlCode);
         }
     }
 
-    private void setData(Repo currentRepo) {
+    private void setData() {
         if (this.currentRepo != null) {
             User owner = this.currentRepo.owner;
             ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
@@ -263,13 +262,9 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             watchedPlaceholder.setText(String.valueOf(this.currentRepo.subscribers_count));
             forkPlaceHolder.setText(String.valueOf(this.currentRepo.forks_count));
 
-            forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
+            forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null,
+                null, null);
         }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        // TODO HTML readme cannot be shown
     }
 
     private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
@@ -279,7 +274,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     @Override
     public void setCurrentBranch(String branch) {
         if (getActivity() != null) {
-            getReadme();
+            repoInfo.branch = branch;
+            loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
         }
     }
 
@@ -289,94 +285,85 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         return true;
     }
 
-    protected void getStarWatchData() {
-        CheckRepoStarredClient repoStarredClient = new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-        repoStarredClient.setOnResultCallback(new StarredResult());
-        repoStarredClient.execute();
+    Observer<Boolean> startObserver = new Observer<Boolean>() {
+        @Override
+        public void onCompleted() {
 
-        CheckRepoWatchedClient repoWatchedClient = new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-        repoWatchedClient.setOnResultCallback(new WatchedResult());
-        repoWatchedClient.execute();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            repoStarred = aBoolean;
+            changeStarView();
+        }
+    };
+
+    Observer<Boolean> watchObserver = new Observer<Boolean>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            repoWatched = aBoolean;
+            changeWatchView();
+        }
+    };
+
+    private void starAction(GithubClient<Boolean> starClient) {
+        starClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(startObserver);
+    }
+
+    private void watchAction(GithubClient<Boolean> starClient) {
+        starClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(watchObserver);
+    }
+
+    protected void getStarWatchData() {
+        starAction(
+            new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+
+        watchAction(
+            new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name));
     }
 
     private void changeStarStatus() {
         if (repoStarred) {
-            UnstarRepoClient unstarRepoClient = new UnstarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            unstarRepoClient.setOnResultCallback(new UnstarActionResult());
-            unstarRepoClient.execute();
+            starAction(
+                new UnstarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         } else {
-            StarRepoClient starRepoClient = new StarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            starRepoClient.setOnResultCallback(new StarActionResult());
-            starRepoClient.execute();
+            starAction(
+                new StarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         }
     }
 
     private void changeWatchedStatus() {
         if (repoWatched) {
-            UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
-            unwatchRepoClient.execute();
+            watchAction(
+                new UnwatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         } else {
-            WatchRepoClient watchRepoClient = new WatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            watchRepoClient.setOnResultCallback(new WatchActionResult());
-            watchRepoClient.execute();
+            watchAction(
+                new WatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         }
     }
 
-    /**
-     * Results for STAR
-     */
-    private class StarredResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = true;
-                changeStarView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            if (error != null) {
-                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-                    repoStarred = false;
-                    changeStarView();
-                }
-            }
-        }
-    }
-
-    private class UnstarActionResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = false;
-                changeStarView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeStarView();
-        }
-    }
-
-    private class StarActionResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = true;
-                changeStarView();
-            }
-
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeStarView();
+    public void setRepository(Repo repository) {
+        this.currentRepo = repository;
+        if (isAdded()) {
+            getReadme();
+            getStarWatchData();
+            setData();
+            getReadmeContent();
         }
     }
 
@@ -389,63 +376,6 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
                 drawable.colorRes(R.color.icons);
             }
             starredPlaceholder.setCompoundDrawables(drawable, null, null, null);
-        }
-    }
-
-    /**
-     * RESULTS FOR WATCH
-     */
-
-    private class WatchedResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = true;
-                changeWatchView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            if (error != null) {
-                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-                    repoWatched = false;
-                    changeWatchView();
-                }
-            }
-        }
-    }
-
-    private class UnwatchActionResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = false;
-                changeWatchView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeWatchView();
-        }
-    }
-
-    private class WatchActionResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = true;
-                changeWatchView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeWatchView();
         }
     }
 

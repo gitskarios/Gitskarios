@@ -45,10 +45,11 @@
       android:title="@string/pref_repo_manage_gitignore"
       />
 
+  <!--
   <com.afollestad.materialdialogs.prefs.MaterialListPreference
       android:key="pref_repo_license"
       android:title="@string/pref_repo_manage_license"
       />
-
+  -->
 
 </PreferenceScreen>

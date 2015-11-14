@@ -1,33 +1,22 @@
 package com.alorma.github.ui.fragment.base;
 
-import com.alorma.gitskarios.core.client.BaseClient;
-import com.alorma.github.sdk.bean.info.PaginationLink;
-import com.alorma.github.sdk.bean.info.RelType;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import retrofit.RetrofitError;
-import retrofit.client.Header;
-import retrofit.client.Response;
 
-public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerArrayAdapter> extends LoadingListFragment<Adapter> implements BaseClient.OnResultCallback<ItemType> {
+public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerArrayAdapter>
+    extends LoadingListFragment<Adapter>{
 
     protected static final String USERNAME = "USERNAME";
-    private PaginationLink bottomPaginationLink;
 
     protected boolean refreshing;
+    private Integer page;
 
-    @Override
-    public void onResponseOk(ItemType itemType, Response r) {
+    public void onResponseOk(ItemType itemType, Integer page) {
+        this.page = page;
         hideEmpty();
         if (getActivity() != null && isAdded()) {
-            if (r != null) {
-                getLinkData(r);
-            }
             if (itemType != null && itemType instanceof List) {
                 if (((List) itemType).size() > 0) {
 
@@ -45,50 +34,24 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
         stopRefresh();
     }
 
-    public void parseResponse(Response response) {
-        getLinkData(response);
-    }
-
     @Override
     protected void executeRequest() {
         super.executeRequest();
-
-        bottomPaginationLink = null;
+        page = null;
     }
 
-    @Override
-    public void onFail(RetrofitError error) {
+    private void onError(Throwable e) {
         stopRefresh();
         if (getActivity() != null) {
-            ErrorHandler.onError(getActivity(), "Paginated list fragment", error);
+            ErrorHandler.onError(getActivity(), "Paginated list fragment", e);
         }
-        if (error != null && error.getResponse() != null) {
-            setEmpty(true, error.getResponse().getStatus());
+        if (e != null && e instanceof RetrofitError && ((RetrofitError) e).getResponse() != null) {
+            setEmpty(true, ((RetrofitError) e).getResponse().getStatus());
         }
     }
 
     protected abstract void onResponse(ItemType itemType, boolean refreshing);
 
-    private void getLinkData(Response r) {
-        if (r != null) {
-            List<Header> headers = r.getHeaders();
-            Map<String, String> headersMap = new HashMap<String, String>(headers.size());
-            for (Header header : headers) {
-                headersMap.put(header.getName(), header.getValue());
-            }
-
-            String link = headersMap.get("Link");
-
-            if (link != null) {
-                String[] parts = link.split(",");
-                try {
-                    bottomPaginationLink = new PaginationLink(parts[0]);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     @Override
     public void onRefresh() {
@@ -106,9 +69,9 @@ public abstract class PaginatedListFragment<ItemType, Adapter extends RecyclerAr
 
     @Override
     public void loadMoreItems() {
-        if (bottomPaginationLink != null && bottomPaginationLink.rel == RelType.next) {
-            executePaginatedRequest(bottomPaginationLink.page);
-            bottomPaginationLink = null;
+        if (page != null) {
+            executePaginatedRequest(page);
+            page = null;
         }
     }
 }

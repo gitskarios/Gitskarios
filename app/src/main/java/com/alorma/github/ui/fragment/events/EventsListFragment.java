@@ -318,14 +318,6 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
   }
 
   @Override
-  public void onFail(RetrofitError error) {
-    super.onFail(error);
-    if (error != null && error.getResponse() != null) {
-      setEmpty(true, error.getResponse().getStatus());
-    }
-  }
-
-  @Override
   protected void loadArguments() {
     username = getArguments().getString(USERNAME);
   }
@@ -340,14 +332,12 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
   private void executeClient(GetUserEventsClient eventsClient) {
     eventsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
-        .flatMap(new Func1<Pair<List<GithubEvent>, Response>, Observable<GithubEvent>>() {
+        .flatMap(new Func1<List<GithubEvent>, Observable<GithubEvent>>() {
           @Override
-          public Observable<GithubEvent> call(Pair<List<GithubEvent>, Response> listResponsePair) {
-            parseResponse(listResponsePair.second);
-            return Observable.from(listResponsePair.first);
+          public Observable<GithubEvent> call(List<GithubEvent> githubEvents) {
+            return Observable.from(githubEvents);
           }
         })
-
         .filter(getFilterNames())
         .subscribe(subscriber);
   }

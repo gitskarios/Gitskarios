@@ -11,6 +11,7 @@ import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 08/08/2014.
@@ -59,8 +60,8 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
             if (query != null) {
                 super.executeRequest();
                 UsersSearchClient client = new UsersSearchClient(getActivity(), query);
-                client.setOnResultCallback(this);
-                client.execute();
+                client.observable().observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber);
                 query = null;
                 if (getAdapter() != null) {
                     getAdapter().clear();
@@ -75,8 +76,8 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
             if (query != null) {
                 super.executePaginatedRequest(page);
                 UsersSearchClient client = new UsersSearchClient(getActivity(), query, page);
-                client.setOnResultCallback(this);
-                client.execute();
+                client.observable().observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber);
                 query = null;
                 if (getAdapter() != null) {
                     getAdapter().clear();

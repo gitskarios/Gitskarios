@@ -62,27 +62,29 @@ public class CreateRepositoryActivity extends BackActivity
     CreateRepositoryClient client = new CreateRepositoryClient(this, dto);
     client.observable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Pair<Repo, Response>>() {
-              @Override
-              public void onCompleted() {
+        .subscribe(new Subscriber<Repo>() {
+            @Override
+            public void onCompleted() {
                 openRepo(repo);
-              }
+            }
 
-              @Override
-              public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
                 if (BuildConfig.DEBUG) {
-                  Snackbar.make(create, "Error creating repository: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
-                  e.printStackTrace();
+                    Snackbar.make(create, "Error creating repository: " + e.getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 } else {
-                  Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT)
+                        .show();
                 }
-              }
+            }
 
-              @Override
-              public void onNext(Pair<Repo, Response> repoResponsePair) {
-                repo = repoResponsePair.first;
-              }
-            });
+            @Override
+            public void onNext(Repo repo) {
+                CreateRepositoryActivity.this.repo = repo;
+            }
+        });
   }
 
   private void openRepo(Repo repo) {
