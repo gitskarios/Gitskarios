@@ -14,7 +14,7 @@ This url should follow the structure: `gitskariosgithubdevel://{domain}` It's ma
 
 ## FORK ##
 
-Once you have a valid Credentials, you can FORK this project in yout account / organization.
+Once you have a valid Credentials, you can FORK this project in your account / organization.
 
 This repository uses `develop` branch as default, and follow [Git-Flow](https://es.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
 
