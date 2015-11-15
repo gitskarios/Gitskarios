@@ -7,17 +7,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.afollestad.materialcab.MaterialCab;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.CommitDetailActivity;
@@ -33,22 +34,22 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit.RetrofitError;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CommitsListFragment extends PaginatedListFragment<List<Commit>, CommitsAdapter> implements TitleProvider, BranchManager, PermissionsManager
-        , BackManager, CommitsAdapter.CommitsAdapterListener, MaterialCab.Callback {
+public class CommitsListFragment extends PaginatedListFragment<CommitsAdapter>
+    implements TitleProvider, BranchManager, PermissionsManager, BackManager,
+    CommitsAdapter.CommitsAdapterListener, MaterialCab.Callback, Observer<List<Commit>> {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String PATH = "PATH";
@@ -96,9 +97,20 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
         CommitInfo commitInfo = new CommitInfo();
         commitInfo.repoInfo = repoInfo;
         commitInfo.sha = repoInfo.branch;
-        ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, path, 0);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new ListCommitsClient(getActivity(), commitInfo, path, 0));
+    }
+
+    private void setAction(final GithubListClient<List<Commit>> listCommitsClient) {
+        listCommitsClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
+                @Override
+                public List<Commit> call(Pair<List<Commit>, Integer> listIntegerPair) {
+                    setPage(listIntegerPair.second);
+                    return listIntegerPair.first;
+                }
+            })
+            .subscribe(this);
     }
 
     @Override
@@ -106,13 +118,24 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
         super.executePaginatedRequest(page);
         CommitInfo commitInfo = new CommitInfo();
         commitInfo.repoInfo = repoInfo;
-        ListCommitsClient client = new ListCommitsClient(getActivity(), commitInfo, page);
-        client.setOnResultCallback(this);
-        client.execute();
+
+        setAction(new ListCommitsClient(getActivity(), commitInfo, path, page));
     }
 
     @Override
-    protected void onResponse(final List<Commit> commits, boolean refreshing) {
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            setEmpty(true);
+        }
+    }
+
+    @Override
+    public void onNext(List<Commit> commits) {
         if (this.commits == null || refreshing) {
             this.commits = new ArrayList<>();
         }
@@ -150,14 +173,6 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
 
                 this.commits.add(commit);
             }
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty(true);
         }
     }
 
@@ -332,7 +347,9 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
 
     private void changeBranch() {
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-        repoBranchesClient.setOnResultCallback(new DialogBranchesCallback(getActivity(), repoInfo) {
+        repoBranchesClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new DialogBranchesCallback(getActivity(), repoInfo) {
             @Override
             protected void onBranchSelected(String branch) {
                 setCurrentBranch(branch);
@@ -343,7 +360,6 @@ public class CommitsListFragment extends PaginatedListFragment<List<Commit>, Com
 
             }
         });
-        repoBranchesClient.execute();
     }
 
     @Override

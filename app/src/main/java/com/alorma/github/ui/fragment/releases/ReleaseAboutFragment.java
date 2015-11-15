@@ -32,6 +32,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by a557114 on 30/07/2015.
@@ -97,9 +99,19 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
                 RequestMarkdownDTO requestMarkdownDTO = new RequestMarkdownDTO();
                 requestMarkdownDTO.text = release.body;
                 GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), requestMarkdownDTO);
-                markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
+                markdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
                     @Override
-                    public void onResponseOk(String s, Response r) {
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
                         String htmlCode = HtmlUtils.format(s).toString();
                         HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
 
@@ -109,13 +121,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
                         htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
                         progressBar.setVisibility(View.GONE);
                     }
-
-                    @Override
-                    public void onFail(RetrofitError error) {
-
-                    }
                 });
-                markdownClient.execute();
             }
 
             author.setOnClickListener(new View.OnClickListener() {

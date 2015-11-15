@@ -15,10 +15,9 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.LanguagesAdapter;
 
 import java.util.List;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
-/**
- * Created by Bernat on 24/09/2015.
- */
 public class LanguagesActivity extends BackActivity implements LanguagesAdapter.LanguageSelectedListener {
 
     public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";
@@ -54,8 +53,23 @@ public class LanguagesActivity extends BackActivity implements LanguagesAdapter.
 
     private void loadList(boolean showAllLanguages) {
         GetLanguagesClient client = new GetLanguagesClient(this, showAllLanguages);
-        List<String> strings = client.executeSync();
-        updateAdapter(strings);
+        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(
+            new Subscriber<List<String>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<String> strings) {
+                    updateAdapter(strings);
+                }
+            });
     }
 
     private void updateAdapter(List<String> strings) {

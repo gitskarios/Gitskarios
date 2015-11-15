@@ -1,22 +1,26 @@
 package com.alorma.github.ui.fragment.commit;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.info.CommitInfo;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.commit.GetCommitCommentsClient;
 import com.alorma.github.ui.adapter.commit.CommitCommentAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.List;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by Bernat on 23/06/2015.
  */
-public class CommitCommentsFragment extends PaginatedListFragment<List<CommitComment>, CommitCommentAdapter> {
+public class CommitCommentsFragment extends PaginatedListFragment<CommitCommentAdapter>
+    implements Observer<List<CommitComment>> {
 
     private static final String INFO = "INFO";
     private CommitInfo info;
@@ -33,9 +37,7 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
     protected void executeRequest() {
         super.executeRequest();
         if (info != null) {
-            GetCommitCommentsClient commitCommentsClient = new GetCommitCommentsClient(getActivity(), info);
-            commitCommentsClient.setOnResultCallback(this);
-            commitCommentsClient.execute();
+            setAction(new GetCommitCommentsClient(getActivity(), info));
         }
     }
 
@@ -43,20 +45,43 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
         if (info != null) {
-            GetCommitCommentsClient commitCommentsClient = new GetCommitCommentsClient(getActivity(), info, page);
-            commitCommentsClient.setOnResultCallback(this);
-            commitCommentsClient.execute();
+            setAction(new GetCommitCommentsClient(getActivity(), info, page));
         }
     }
 
+    private void setAction(GithubListClient<List<CommitComment>> client) {
+        client.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .map(new Func1<Pair<List<CommitComment>, Integer>, List<CommitComment>>() {
+                @Override
+                public List<CommitComment> call(
+                    Pair<List<CommitComment>, Integer> listIntegerPair) {
+                    setPage(listIntegerPair.second);
+                    return listIntegerPair.first;
+                }
+            })
+            .subscribe(this);
+    }
+
     @Override
-    protected void onResponse(List<CommitComment> commitComments, boolean refreshing) {
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(List<CommitComment> commitComments) {
         if (commitComments != null && commitComments.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {
                 getAdapter().addAll(commitComments);
             } else {
-                CommitCommentAdapter commentsAdapter = new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
+                CommitCommentAdapter commentsAdapter =
+                    new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
                 setAdapter(commentsAdapter);
             }
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
@@ -78,4 +103,5 @@ public class CommitCommentsFragment extends PaginatedListFragment<List<CommitCom
     protected int getNoDataText() {
         return R.string.no_commit_comments;
     }
+
 }

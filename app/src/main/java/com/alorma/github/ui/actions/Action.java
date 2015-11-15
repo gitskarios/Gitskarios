@@ -29,4 +29,8 @@ public abstract class Action<T> extends Subscriber<T> {
 
     }
 
+    @Override
+    public void onNext(T t) {
+
+    }
 }

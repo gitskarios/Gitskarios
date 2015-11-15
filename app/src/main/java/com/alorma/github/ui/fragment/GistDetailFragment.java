@@ -27,11 +27,13 @@ import java.util.ArrayList;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class GistDetailFragment extends Fragment implements BaseClient.OnResultCallback<Gist>, GistDetailFilesAdapter.GistFilesAdapterListener {
+public class GistDetailFragment extends Fragment implements Observer<Gist>, GistDetailFilesAdapter.GistFilesAdapterListener {
 
     public static final String GIST_ID = "GIST_ID";
     private RecyclerView recyclerView;
@@ -69,18 +71,27 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
             String id = getArguments().getString(GIST_ID);
 
             GetGistDetailClient detailClient = new GetGistDetailClient(getActivity(), id);
-            detailClient.setOnResultCallback(this);
-            detailClient.execute();
+            detailClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
         }
     }
 
     @Override
-    public void onResponseOk(Gist gist, Response r) {
+    public void onNext(Gist gist) {
         this.gist = gist;
         if (gistDetailListener != null) {
             gistDetailListener.onGistLoaded(gist);
         }
         adapter.addAll(new ArrayList<GistFile>(gist.files.values()));
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
     }
 
     public int getMenuId() {
@@ -121,11 +132,6 @@ public class GistDetailFragment extends Fragment implements BaseClient.OnResultC
 
         ComponentName componentName = new ComponentName(getActivity(), CreateGistActivity.class);
         getActivity().getPackageManager().setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-
     }
 
     public void setGistDetailListener(GistDetailListener gistDetailListener) {

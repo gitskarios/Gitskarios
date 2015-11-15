@@ -3,47 +3,37 @@ package com.alorma.github.ui.fragment.repos;
 import android.content.SharedPreferences;
 import android.util.Pair;
 import android.view.LayoutInflater;
-
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.Collection;
 import java.util.List;
-
-import retrofit.RetrofitError;
 import rx.Observer;
-import rx.Subscriber;
 
 /**
  * Created by Bernat on 17/07/2014.
  */
-public abstract class BaseReposListFragment extends PaginatedListFragment<List<Repo>, ReposAdapter>
-    implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class BaseReposListFragment extends PaginatedListFragment<ReposAdapter>
+    implements SharedPreferences.OnSharedPreferenceChangeListener, Observer<Pair<List<Repo>, Integer>> {
 
     private GitskariosSettings settings;
-    protected Observer<? super Pair<List<Repo>, Integer>> subscriber =
-        new Subscriber<Pair<List<Repo>, Integer>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                onError(e);
-            }
-
-            @Override
-            public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
-                onResponseOk(listIntegerPair.first, listIntegerPair.second);
-            }
-        };
 
     @Override
-    protected void onResponse(List<Repo> repos, boolean refreshing) {
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        onError(e);
+    }
+
+    @Override
+    public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
+        setPage(listIntegerPair.second);
+        List<Repo> repos = listIntegerPair.first;
         if (repos.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {

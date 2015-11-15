@@ -22,7 +22,6 @@ import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -30,10 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
-public class WelcomeActivity extends AccountAuthenticatorActivity implements BaseClient.OnResultCallback<User>,GithubLoginFragment.LoginCallback {
+public class WelcomeActivity extends AccountAuthenticatorActivity implements GithubLoginFragment.LoginCallback {
 
     @Bind(R.id.imageView)
     ImageView imageView;
@@ -191,12 +190,26 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     public void endAccess(String accessToken) {
         this.accessToken = accessToken;
         GetAuthUserClient authUserClient = new GetAuthUserClient(this, accessToken);
-        authUserClient.setOnResultCallback(this);
-        authUserClient.execute();
+        authUserClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<User>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(User user) {
+                onUserLoaded(user);
+            }
+        });
     }
 
-    @Override
-    public void onResponseOk(final User user, Response r) {
+    public void onUserLoaded(final User user) {
         appNameTextView.setText(user.login);
 
         imageUser.setVisibility(View.VISIBLE);
@@ -265,12 +278,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Bas
     }
 
     @Override
-    public void onFail(RetrofitError error) {
-
-    }
-
-    @Override
-    public void onError(RetrofitError error) {
+    public void onError(Throwable error) {
 
     }
 

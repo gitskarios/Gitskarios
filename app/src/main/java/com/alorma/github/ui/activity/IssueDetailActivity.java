@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -44,6 +45,7 @@ import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ActionCallback;
+import com.alorma.github.ui.actions.AddIssueCommentAction;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.actions.CloseAction;
 import com.alorma.github.ui.actions.ReopenAction;
@@ -66,6 +68,7 @@ import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -192,21 +195,25 @@ public class IssueDetailActivity extends BackActivity
 
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
-            repoClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+            repoClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Repo>() {
+                @Override
+                public void onCompleted() {
+
+                }
 
                 @Override
-                public void onResponseOk(Repo repo, Response r) {
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Repo repo) {
                     issueInfo.repoInfo.permissions = repo.permissions;
                     repository = repo;
                     getContent();
                 }
-
-                @Override
-                public void onFail(RetrofitError error) {
-
-                }
             });
-            repoClient.execute();
         } else {
             loadIssue();
         }
@@ -480,8 +487,8 @@ public class IssueDetailActivity extends BackActivity
     private void editMilestone() {
         GetMilestonesClient milestonesClient =
             new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open);
-        milestonesClient.setOnResultCallback(new MilestonesCallback());
-        milestonesClient.execute();
+        milestonesClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new MilestonesCallback());
 
         showProgressDialog(R.style.SpotDialog_loading_milestones);
     }
@@ -514,9 +521,9 @@ public class IssueDetailActivity extends BackActivity
         startActivityForResult(launcherIntent, ISSUE_BODY_EDIT);
     }
 
-    private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
+    private class MilestonesCallback implements Observer<List<Milestone>> {
         @Override
-        public void onResponseOk(final List<Milestone> milestones, Response r) {
+        public void onNext(final List<Milestone> milestones) {
             hideProgressDialog();
             if (milestones.size() == 0) {
                 showCreateMilestone();
@@ -583,7 +590,12 @@ public class IssueDetailActivity extends BackActivity
         }
 
         @Override
-        public void onFail(RetrofitError error) {
+        public void onError(Throwable error) {
+
+        }
+
+        @Override
+        public void onCompleted() {
 
         }
     }
@@ -608,18 +620,24 @@ public class IssueDetailActivity extends BackActivity
 
         CreateMilestoneClient createMilestoneClient =
             new CreateMilestoneClient(this, issueInfo.repoInfo, createMilestoneRequestDTO);
-        createMilestoneClient.setOnResultCallback(new BaseClient.OnResultCallback<Milestone>() {
+        createMilestoneClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<Milestone>() {
             @Override
-            public void onResponseOk(Milestone milestone, Response r) {
-                addMilestone(milestone);
+            public void onCompleted() {
+
             }
 
             @Override
-            public void onFail(RetrofitError error) {
-                hideProgressDialog();
+            public void onError(Throwable e) {
+
             }
+
+                @Override
+                public void onNext(Milestone milestone) {
+                    addMilestone(milestone);
+                }
         });
-        createMilestoneClient.execute();
     }
 
     private void addMilestone(Milestone milestone) {
@@ -640,23 +658,29 @@ public class IssueDetailActivity extends BackActivity
         final int changedText) {
         EditIssueClient client =
             new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
-        client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
-            @Override
-            public void onResponseOk(Issue issue, Response r) {
-                shouldRefreshOnBack = true;
-                hideProgressDialog();
-                getContent();
 
-                Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
-            }
+        client.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<Issue>() {
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onFail(RetrofitError error) {
-                ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
-                hideProgressDialog();
-            }
-        });
-        client.execute();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Issue issue) {
+                    shouldRefreshOnBack = true;
+                    hideProgressDialog();
+                    getContent();
+
+                    Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
+                }
+            });
     }
 
     /**
@@ -666,17 +690,17 @@ public class IssueDetailActivity extends BackActivity
     private void openLabels() {
         GithubIssueLabelsClient labelsClient =
             new GithubIssueLabelsClient(this, issueInfo.repoInfo);
-        labelsClient.setOnResultCallback(new LabelsCallback());
-        labelsClient.execute();
+        labelsClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new LabelsCallback());
     }
 
-    private class LabelsCallback implements BaseClient.OnResultCallback<List<Label>> {
+    private class LabelsCallback implements Observer<List<Label>> {
 
         private CharSequence[] selectedLabels;
-        private Integer[] positionsSelectedLabels;
 
         @Override
-        public void onResponseOk(List<Label> labels, Response r) {
+        public void onNext(List<Label> labels) {
             if (labels != null) {
                 List<String> items = new ArrayList<>();
                 List<String> selectedLabels = new ArrayList<>();
@@ -711,7 +735,6 @@ public class IssueDetailActivity extends BackActivity
                         public boolean onSelection(MaterialDialog materialDialog,
                             Integer[] integers, CharSequence[] charSequences) {
                             LabelsCallback.this.selectedLabels = charSequences;
-                            LabelsCallback.this.positionsSelectedLabels = integers;
                             return true;
                         }
                     });
@@ -730,7 +753,6 @@ public class IssueDetailActivity extends BackActivity
                     public void onNegative(MaterialDialog dialog) {
                         super.onNegative(dialog);
                         LabelsCallback.this.selectedLabels = null;
-                        LabelsCallback.this.positionsSelectedLabels = null;
                         setLabels(null);
                     }
 
@@ -744,8 +766,13 @@ public class IssueDetailActivity extends BackActivity
         }
 
         @Override
-        public void onFail(RetrofitError error) {
+        public void onError(Throwable error) {
             ErrorHandler.onError(IssueDetailActivity.this, "Issue detail", error);
+        }
+
+        @Override
+        public void onCompleted() {
+
         }
     }
 
@@ -785,37 +812,49 @@ public class IssueDetailActivity extends BackActivity
             if (requestCode == NEW_COMMENT_REQUEST) {
                 showProgressDialog(R.style.SpotDialog_loading_adding_comment);
                 String body = data.getStringExtra(ContentEditorActivity.CONTENT);
-                final NewIssueCommentClient client =
-                    new NewIssueCommentClient(this, issueInfo, body);
-                client.setOnResultCallback(new BaseClient.OnResultCallback<GithubComment>() {
-                    @Override
-                    public void onResponseOk(GithubComment githubComment, Response r) {
-                        getContent();
-                        Snackbar.make(fab, R.string.add_comment_issue_ok, Snackbar.LENGTH_SHORT)
-                            .show();
-                    }
 
-                    @Override
-                    public void onFail(RetrofitError error) {
-                        // TODO on comment fail
+                AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);
 
-                        Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT)
-                            .setAction(R.string.retry, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    client.execute();
-                                }
-                            })
-                            .show();
-                    }
-                });
-                client.execute();
+                addIssueCommentAction.setAddCommentCallback(new CommentCallback(body));
+                addIssueCommentAction.execute();
             } else if (requestCode == ISSUE_BODY_EDIT) {
                 EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
                 bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
 
                 executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
             }
+        }
+    }
+    @NonNull
+    private AddIssueCommentAction getAddIssueCommentAction(String body) {
+        return new AddIssueCommentAction(this, issueInfo, body, fab);
+    }
+
+    private class CommentCallback implements AddIssueCommentAction.AddCommentCallback {
+        private String body;
+
+        private CommentCallback(String body) {
+            this.body = body;
+        }
+
+        @Override
+        public void onCommentAdded() {
+            Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.retry, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AddIssueCommentAction addIssueCommentAction1 =
+                            getAddIssueCommentAction(body);
+                        addIssueCommentAction1.setAddCommentCallback(CommentCallback.this);
+                        addIssueCommentAction1.execute();
+                    }
+                })
+                .show();
+        }
+
+        @Override
+        public void onCommentError() {
+
         }
     }
 

@@ -8,6 +8,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -16,11 +17,10 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
-/**
- * Created by Bernat on 11/04/2015.
- */
-public class RepoContributorsFragment extends PaginatedListFragment<List<Contributor>, UsersAdapter>
+public class RepoContributorsFragment extends PaginatedListFragment<UsersAdapter>
     implements TitleProvider {
 
     private static final String REPO_INFO = "REPO_INFO";
@@ -36,15 +36,50 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
     }
 
     protected void executeRequest() {
-        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo);
-        contributorsClient.setOnResultCallback(this);
-        contributorsClient.execute();
+        setAction(new GetRepoContributorsClient(getActivity(), repoInfo));
     }
 
     protected void executePaginatedRequest(int page) {
-        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getActivity(), repoInfo, page);
-        contributorsClient.setOnResultCallback(this);
-        contributorsClient.execute();
+        setAction(new GetRepoContributorsClient(getActivity(), repoInfo, page));
+    }
+
+    private void setAction(GithubClient<List<Contributor>> client) {
+        client.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<List<Contributor>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Contributor> contributors) {
+                if (contributors != null) {
+                    List<User> users = new ArrayList<>();
+
+                    for (Contributor contributor : contributors) {
+                        if (contributor != null
+                            && contributor.author != null
+                            && contributor.author.login != null
+                            && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
+                            users.add(users.size(), contributor.author);
+                        }
+                    }
+
+                    if (getAdapter() == null) {
+                        UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+                        adapter.addAll(users);
+                        setAdapter(adapter);
+                    } else {
+                        getAdapter().addAll(users);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -83,27 +118,4 @@ public class RepoContributorsFragment extends PaginatedListFragment<List<Contrib
         return R.string.no_contributors;
     }
 
-    @Override
-    protected void onResponse(List<Contributor> contributors, boolean refreshing) {
-        if (contributors != null) {
-            List<User> users = new ArrayList<>();
-
-            for (Contributor contributor : contributors) {
-                if (contributor != null
-                        && contributor.author != null
-                        && contributor.author.login != null
-                        && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-                    users.add(users.size(), contributor.author);
-                }
-            }
-
-            if (getAdapter() == null) {
-                UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
-                adapter.addAll(users);
-                setAdapter(adapter);
-            } else {
-                getAdapter().addAll(users);
-            }
-        }
-    }
 }

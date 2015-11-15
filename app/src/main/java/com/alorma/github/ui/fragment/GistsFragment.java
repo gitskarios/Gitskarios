@@ -4,21 +4,27 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
-import com.alorma.github.ui.fragment.base.SecondaryPaginatedListFragment;
+import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.List;
 
-import retrofit.RetrofitError;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
-public class GistsFragment extends SecondaryPaginatedListFragment<List<Gist>, Gist> {
+public class GistsFragment extends PaginatedListFragment<GistsAdapter> {
 
-    private GistsAdapter gistsAdapter;
+    private static final String USERNAME = "USERNAME";
     public GistsFragmentListener gistsFragmentListener;
     private String username;
 
@@ -40,6 +46,14 @@ public class GistsFragment extends SecondaryPaginatedListFragment<List<Gist>, Gi
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        GistsAdapter adapter = new GistsAdapter(LayoutInflater.from(getActivity()));
+        setAdapter(adapter);
+    }
+
+    @Override
     protected Octicons.Icon getNoDataIcon() {
         return Octicons.Icon.oct_gist;
     }
@@ -50,60 +64,43 @@ public class GistsFragment extends SecondaryPaginatedListFragment<List<Gist>, Gi
     }
 
     @Override
-    protected void onListItemClick(Gist item) {
-        if (gistsFragmentListener != null) {
-            gistsFragmentListener.onGistsRequest(item);
-        }
-    }
-
-    @Override
-    protected void onResponse(List<Gist> gists, boolean refreshing) {
-        if (gists != null && gists.size() > 0) {
-
-            if (gistsAdapter == null || refreshing) {
-                gistsAdapter = new GistsAdapter(getActivity(), gists);
-                setListAdapter(gistsAdapter);
-            }
-
-            if (gistsAdapter.isLazyLoading()) {
-                if (gistsAdapter != null) {
-                    gistsAdapter.setLazyLoading(false);
-                    gistsAdapter.addAll(gists);
-                }
-            } else {
-                setListAdapter(gistsAdapter);
-            }
-        } else if (gistsAdapter == null || gistsAdapter.getCount() == 0) {
-            setEmpty();
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (gistsAdapter == null || gistsAdapter.getCount() == 0) {
-            setEmpty();
-        }
-    }
-
-    @Override
     protected void executeRequest() {
         super.executeRequest();
 
-        UserGistsClient gistsClient = new UserGistsClient(getActivity(), username);
-        gistsClient.setOnResultCallback(this);
-        gistsClient.execute();
+        setAction(new UserGistsClient(getActivity(), username));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
-        gistsAdapter.setLazyLoading(true);
+        setAction(new UserGistsClient(getActivity(), username, page));
+    }
 
-        UserGistsClient gistsClient = new UserGistsClient(getActivity(), username, page);
-        gistsClient.setOnResultCallback(this);
-        gistsClient.execute();
+    private void setAction(GithubListClient<List<Gist>> userGistsClient) {
+        userGistsClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .map(new Func1<Pair<List<Gist>,Integer>, List<Gist>>() {
+            @Override
+            public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
+                setPage(listIntegerPair.second);
+                return listIntegerPair.first;
+            }
+        }).subscribe(new Subscriber<List<Gist>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Gist> gists) {
+                getAdapter().addAll(gists);
+            }
+        });
     }
 
     @Override
@@ -120,6 +117,7 @@ public class GistsFragment extends SecondaryPaginatedListFragment<List<Gist>, Gi
         this.gistsFragmentListener = gistsFragmentListener;
     }
 
+    // TODO
     public interface GistsFragmentListener {
         void onGistsRequest(Gist gist);
     }

@@ -206,7 +206,7 @@ public class RepoCreateFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onGitIgnoreFailed(RetrofitError error) {
+    public void onGitIgnoreFailed(Throwable error) {
         buttonAddGitignore.setEnabled(true);
     }
 

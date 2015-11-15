@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
@@ -22,21 +22,21 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 19/02/2015.
  */
-public class NotificationsFragment extends PaginatedListFragment<List<Notification>, NotificationsAdapter> implements NotificationsAdapter.NotificationsAdapterListener {
+public class NotificationsFragment extends LoadingListFragment<NotificationsAdapter>
+    implements NotificationsAdapter.NotificationsAdapterListener {
 
     public static NotificationsFragment newInstance() {
         return new NotificationsFragment();
@@ -65,30 +65,29 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         }
 
         GetNotificationsClient client = new GetNotificationsClient(getActivity(), token);
-        client.setOnResultCallback(this);
-        client.execute();
+        client.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<Pair<List<Notification>, Integer>>() {
+                @Override
+                public void onCompleted() {
+                    stopRefresh();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                        setEmpty(true);
+                    }
+                }
+
+                @Override
+                public void onNext(Pair<List<Notification>, Integer> listIntegerPair) {
+                    onNotificationsReceived(listIntegerPair.first);
+                }
+            });
     }
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-
-    }
-
-    @Override
-    public void onResponseOk(final List<Notification> notifications, Response r) {
-        stopRefresh();
-        super.onResponseOk(notifications, r);
-        if (notifications != null) {
-            if (notifications.size() == 0 && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
-                setEmpty(false);
-            }
-        } else {
-            setEmpty(false);
-        }
-    }
-
-    @Override
-    protected void onResponse(final List<Notification> notifications, final boolean refreshing) {
+    private void onNotificationsReceived(List<Notification> notifications) {
         if (notifications != null && notifications.size() > 0) {
             if (notifications.size() > 0) {
                 if (getAdapter() != null && getAdapter().getItemCount() > 0) {
@@ -107,7 +106,8 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                     parents.get(notification.repository.id).notifications.add(notification);
                 }
 
-                NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
+                NotificationsAdapter notificationsAdapter =
+                    new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
                 notificationsAdapter.addAll(parents.values());
                 notificationsAdapter.setNotificationsAdapterListener(this);
 
@@ -117,14 +117,6 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
                     setEmpty(false);
                 }
             }
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty(true);
         }
     }
 
@@ -193,21 +185,7 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         if (getAdapter() != null) {
             getAdapter().clear();
         }
-        MarkNotificationAsRead notificationAsRead = new MarkNotificationAsRead(getActivity(), notification);
-        notificationAsRead.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
-            @Override
-            public void onResponseOk(Response response, Response r) {
-                if (response != null && response.getStatus() == 205) {
-                    executeRequest();
-                }
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-
-            }
-        });
-        notificationAsRead.execute();
+        setAction(new MarkNotificationAsRead(getActivity(), notification));
     }
 
     @Override
@@ -229,40 +207,33 @@ public class NotificationsFragment extends PaginatedListFragment<List<Notificati
         RepoInfo repoInfo = new RepoInfo();
         repoInfo.owner = item.repo.owner.login;
         repoInfo.name = item.repo.name;
-        MarkRepoNotificationsRead client = new MarkRepoNotificationsRead(getActivity(), repoInfo);
-        client.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
-            @Override
-            public void onResponseOk(Response response, Response r) {
-                if (response != null && response.getStatus() == 205) {
+        setAction(new MarkRepoNotificationsRead(getActivity(), repoInfo));
+    }
+
+    private void setAction(GithubClient<Boolean> booleanGithubClient) {
+        booleanGithubClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
                     executeRequest();
                 }
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-
-            }
-        });
-        client.execute();
+            });
     }
 
     @Override
     public void unsubscribeThreadNotification(Notification notification) {
         startRefresh();
-        final UnsubscribeThread unsubscribeThread = new UnsubscribeThread(getActivity(), notification);
-        unsubscribeThread.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
-            @Override
-            public void onResponseOk(Response response, Response r) {
-                if (response != null && response.getStatus() == 204) {
-                    executeRequest();
-                }
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-                stopRefresh();
-            }
-        });
-        unsubscribeThread.execute();
+        setAction(new UnsubscribeThread(getActivity(), notification));
     }
 }

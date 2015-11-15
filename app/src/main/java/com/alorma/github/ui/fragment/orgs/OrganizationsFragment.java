@@ -3,21 +3,27 @@ package com.alorma.github.ui.fragment.orgs;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Organization;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.List;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by Bernat on 13/07/2014.
  */
-public class OrganizationsFragment extends PaginatedListFragment<List<Organization>, OrganizationsAdapter> {
+public class OrganizationsFragment extends PaginatedListFragment<OrganizationsAdapter>
+implements Observer<List<Organization>>{
     private String username;
 
     public static OrganizationsFragment newInstance() {
@@ -38,21 +44,39 @@ public class OrganizationsFragment extends PaginatedListFragment<List<Organizati
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        GetOrgsClient client = new GetOrgsClient(getActivity(), username);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new GetOrgsClient(getActivity(), username));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        GetOrgsClient client = new GetOrgsClient(getActivity(), username, page);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new GetOrgsClient(getActivity(), username, page));
+    }
+
+    private void setAction(GithubListClient<List<Organization>> getOrgsClient) {
+        getOrgsClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .map(new Func1<Pair<List<Organization>,Integer>, List<Organization>>() {
+            @Override
+            public List<Organization> call(Pair<List<Organization>, Integer> listIntegerPair) {
+                setPage(listIntegerPair.second);
+                return listIntegerPair.first;
+            }
+        })
+        .subscribe(this);
     }
 
     @Override
-    protected void onResponse(List<Organization> organizations, boolean refreshing) {
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(List<Organization> organizations) {
         if (organizations.size() > 0) {
             if (getAdapter() != null) {
                 getAdapter().addAll(organizations);

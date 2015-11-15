@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class GithubLoginFragment extends Fragment {
 
@@ -76,22 +78,28 @@ public class GithubLoginFragment extends Fragment {
 
         if (requestTokenClient == null) {
             requestTokenClient = new RequestTokenClient(getActivity(), code);
-            requestTokenClient.setOnResultCallback(new BaseClient.OnResultCallback<Token>() {
+
+            requestTokenClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Token>() {
                 @Override
-                public void onResponseOk(Token token, Response r) {
-                    if (loginCallback != null && token.access_token != null) {
-                        loginCallback.endAccess(token.access_token);
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (loginCallback != null) {
+                        loginCallback.onError(e);
                     }
                 }
 
                 @Override
-                public void onFail(RetrofitError error) {
-                    if (loginCallback != null) {
-                        loginCallback.onError(error);
+                public void onNext(Token token) {
+                    if (loginCallback != null && token.access_token != null) {
+                        loginCallback.endAccess(token.access_token);
                     }
                 }
             });
-            requestTokenClient.execute();
         }
     }
 
@@ -149,7 +157,7 @@ public class GithubLoginFragment extends Fragment {
     public interface LoginCallback {
         void endAccess(String accessToken);
 
-        void onError(RetrofitError error);
+        void onError(Throwable error);
 
         void loginNotAvailable();
     }

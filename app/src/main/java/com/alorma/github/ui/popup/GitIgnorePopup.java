@@ -13,13 +13,17 @@ import com.alorma.github.sdk.bean.dto.response.GitIgnoreTemplates;
 import com.alorma.github.sdk.services.gtignore.GitIgnoreClient;
 import com.alorma.gitskarios.core.client.BaseClient;
 
+import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 13/10/2014.
  */
-public class GitIgnorePopup extends ListPopupWindow implements BaseClient.OnResultCallback<GitIgnoreTemplates>, AdapterView.OnItemClickListener, PopupWindow.OnDismissListener {
+public class GitIgnorePopup extends ListPopupWindow implements Observer<GitIgnoreTemplates>,
+    AdapterView.OnItemClickListener, PopupWindow.OnDismissListener {
 
     private final Context context;
     private GitIgnoreTemplates ignoresList;
@@ -49,7 +53,8 @@ public class GitIgnorePopup extends ListPopupWindow implements BaseClient.OnResu
     @Override
     public void show() {
         if (ignoresList != null) {
-            ignoresAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, ignoresList);
+            ignoresAdapter =
+                new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, ignoresList);
             setAdapter(ignoresAdapter);
             setOnItemClickListener(this);
             setOnDismissListener(this);
@@ -61,24 +66,28 @@ public class GitIgnorePopup extends ListPopupWindow implements BaseClient.OnResu
 
     private void loadData() {
         GitIgnoreClient client = new GitIgnoreClient(context);
-        client.setOnResultCallback(this);
-        client.execute();
+        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
 
     @Override
-    public void onResponseOk(GitIgnoreTemplates strings, Response r) {
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onNext(GitIgnoreTemplates gitIgnoreTemplates) {
         GitIgnoreTemplates templates = new GitIgnoreTemplates();
         templates.add(context.getString(R.string.no_gitignore_template));
-        templates.addAll(strings);
+        templates.addAll(gitIgnoreTemplates);
         ignoresList = templates;
         show();
     }
 
     @Override
-    public void onFail(RetrofitError error) {
+    public void onError(Throwable e) {
         if (onGitIgnoresListener != null) {
             dismiss();
-            onGitIgnoresListener.onGitIgnoreFailed(error);
+            onGitIgnoresListener.onGitIgnoreFailed(e);
         }
     }
 
@@ -112,7 +121,7 @@ public class GitIgnorePopup extends ListPopupWindow implements BaseClient.OnResu
 
         void onGitIgnoreSelected(String s);
 
-        void onGitIgnoreFailed(RetrofitError error);
+        void onGitIgnoreFailed(Throwable error);
 
         void onGitIgnoreDismissed();
     }

@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +64,10 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends BaseActivity
     implements OnMenuItemSelectedListener, AccountHeader.OnAccountHeaderListener {
@@ -420,21 +425,26 @@ public class MainActivity extends BaseActivity
 
   private void checkNotifications() {
     GetNotificationsClient client = new GetNotificationsClient(this);
-    client.setOnResultCallback(new BaseClient.OnResultCallback<List<Notification>>() {
+    client.observable().observeOn(AndroidSchedulers.mainThread())
+    .subscribe(new Observer<Pair<List<Notification>, Integer>>() {
       @Override
-      public void onResponseOk(List<Notification> notifications, Response r) {
-        if (notifications != null) {
-          notificationsSizeCount = notifications.size();
+      public void onCompleted() {
+
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onNext(Pair<List<Notification>, Integer> listIntegerPair) {
+        if (listIntegerPair.first != null) {
+          notificationsSizeCount = listIntegerPair.first.size();
           invalidateOptionsMenu();
         }
       }
-
-      @Override
-      public void onFail(RetrofitError error) {
-
-      }
     });
-    client.execute();
   }
 
   @Override

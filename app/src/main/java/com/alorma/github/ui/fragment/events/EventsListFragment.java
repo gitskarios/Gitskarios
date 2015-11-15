@@ -51,8 +51,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -61,7 +59,7 @@ import rx.functions.Func1;
 /**
  * Created by Bernat on 03/10/2014.
  */
-public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>, EventAdapter>
+public class EventsListFragment extends PaginatedListFragment<EventAdapter>
     implements EventAdapter.EventAdapterListener {
 
   private String username;
@@ -296,11 +294,6 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
     getActivity().setTitle(R.string.menu_events);
   }
 
-  @Override
-  protected void onResponse(List<GithubEvent> githubEvents, boolean refreshing) {
-
-  }
-
   private boolean checkEventHandled(GithubEvent event) {
     return event.getType() != null && (event.getType() == EventType.PushEvent)
         || (event.getType()
@@ -332,6 +325,13 @@ public class EventsListFragment extends PaginatedListFragment<List<GithubEvent>,
   private void executeClient(GetUserEventsClient eventsClient) {
     eventsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
+        .map(new Func1<Pair<List<GithubEvent>,Integer>, List<GithubEvent>>() {
+          @Override
+          public List<GithubEvent> call(Pair<List<GithubEvent>, Integer> listIntegerPair) {
+            setPage(listIntegerPair.second);
+            return listIntegerPair.first;
+          }
+        })
         .flatMap(new Func1<List<GithubEvent>, Observable<GithubEvent>>() {
           @Override
           public Observable<GithubEvent> call(List<GithubEvent> githubEvents) {

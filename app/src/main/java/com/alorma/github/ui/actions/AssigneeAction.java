@@ -24,6 +24,8 @@ import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 12/10/2015.
@@ -60,18 +62,23 @@ public class AssigneeAction extends Action<Boolean> {
 
     private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO) {
         EditIssueClient client = new EditIssueClient(context, issueInfo, editIssueRequestDTO);
-        client.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
+        client.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Issue>() {
             @Override
-            public void onResponseOk(Issue issue, Response r) {
-                returnResult(true);
+            public void onCompleted() {
+
             }
 
             @Override
-            public void onFail(RetrofitError error) {
+            public void onError(Throwable e) {
                 returnResult(false);
             }
+
+            @Override
+            public void onNext(Issue issue) {
+                returnResult(true);
+            }
         });
-        client.execute();
     }
 
     private void returnResult(boolean t) {
@@ -81,5 +88,10 @@ public class AssigneeAction extends Action<Boolean> {
         if (getCallback() != null) {
             getCallback().onResult(t);
         }
+    }
+
+    @Override
+    public void onNext(Boolean aBoolean) {
+
     }
 }

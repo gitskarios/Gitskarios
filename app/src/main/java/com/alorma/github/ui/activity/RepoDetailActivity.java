@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
-import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -29,7 +28,6 @@ import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
-import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
@@ -38,7 +36,6 @@ import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.ShortcutUtils;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.clean.presenter.Presenter;
 import com.clean.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -46,8 +43,8 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 17/07/2014.
@@ -333,31 +330,29 @@ public class RepoDetailActivity extends BackActivity
 
   private void changeBranch() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, requestRepoInfo);
-    BaseClient.OnResultCallback<List<Branch>> callback =
-        new DialogBranchesCallback(this, requestRepoInfo) {
-          @Override
-          protected void onBranchSelected(String branch) {
-            requestRepoInfo.branch = branch;
-            if (currentRepo != null) {
-              currentRepo.default_branch = branch;
-            }
-            if (getSupportActionBar() != null) {
-              getSupportActionBar().setSubtitle(branch);
-            }
-            for (Fragment fragment : fragments) {
-              if (fragment instanceof BranchManager) {
-                ((BranchManager) fragment).setCurrentBranch(branch);
-              }
-            }
-          }
+    repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread())
+    .subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
+      @Override
+      protected void onNoBranches() {
 
-          @Override
-          protected void onNoBranches() {
+      }
 
+      @Override
+      protected void onBranchSelected(String branch) {
+        requestRepoInfo.branch = branch;
+        if (currentRepo != null) {
+          currentRepo.default_branch = branch;
+        }
+        if (getSupportActionBar() != null) {
+          getSupportActionBar().setSubtitle(branch);
+        }
+        for (Fragment fragment : fragments) {
+          if (fragment instanceof BranchManager) {
+            ((BranchManager) fragment).setCurrentBranch(branch);
           }
-        };
-    repoBranchesClient.setOnResultCallback(callback);
-    repoBranchesClient.execute();
+        }
+      }
+    });
   }
 
   @Override
@@ -380,18 +375,23 @@ public class RepoDetailActivity extends BackActivity
         showProgressDialog(R.style.SpotDialog_edit_repo);
         EditRepoClient editRepositoryClient =
             new EditRepoClient(this, requestRepoInfo, repoRequestDTO);
-        editRepositoryClient.setOnResultCallback(new BaseClient.OnResultCallback<Repo>() {
+        editRepositoryClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Repo>() {
           @Override
-          public void onResponseOk(Repo repo, Response r) {
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onNext(Repo repo) {
             onResponse(repo);
           }
-
-          @Override
-          public void onFail(RetrofitError error) {
-
-          }
         });
-        editRepositoryClient.execute();
       } else if (resultCode == RESULT_CANCELED) {
         finish();
       }

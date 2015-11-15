@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,13 +18,13 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
@@ -36,18 +37,17 @@ import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 22/08/2014.
  */
-public class IssuesListFragment extends PaginatedListFragment<List<Issue>, IssuesAdapter> implements View.OnClickListener, TitleProvider, PermissionsManager,
+public class IssuesListFragment extends PaginatedListFragment<IssuesAdapter>
+    implements View.OnClickListener, TitleProvider, PermissionsManager,
         BackManager, IssuesAdapter.IssuesAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
@@ -160,9 +160,7 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                         issueInfo.state = IssueState.closed;
                     }
 
-                    IssuesSearchClient searchClient = new IssuesSearchClient(getActivity(), searchClientRequest.request());
-                    searchClient.setOnResultCallback(this);
-                    searchClient.execute();
+                    setAction(new IssuesSearchClient(getActivity(), searchClientRequest.request()));
                 }
             } else {
                 if (currentFilter == 0 || currentFilter == 1) {
@@ -174,12 +172,34 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                     }
                     HashMap<String, String> map = new HashMap<>();
                     map.put("state", issueInfo.state.name());
-                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, map);
-                    issuesClient.setOnResultCallback(this);
-                    issuesClient.execute();
+
+                    setAction(new GetIssuesClient(getActivity(), issueInfo, map));
                 }
             }
         }
+    }
+
+    private void setAction(GithubListClient<List<Issue>> client) {
+        client.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<Pair<List<Issue>, Integer>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                        setEmpty(true);
+                    }
+                }
+
+                @Override
+                public void onNext(Pair<List<Issue>, Integer> listIntegerPair) {
+                    onResponse(listIntegerPair.first);
+                }
+            });
     }
 
     @Override
@@ -196,9 +216,8 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                         issueInfo.state = IssueState.closed;
                     }
 
-                    IssuesSearchClient searchClient = new IssuesSearchClient(getActivity(), searchClientRequest.request(), page);
-                    searchClient.setOnResultCallback(this);
-                    searchClient.execute();
+                    setAction(
+                        new IssuesSearchClient(getActivity(), searchClientRequest.request(), page));
                 }
             } else {
                 if (currentFilter == 0 || currentFilter == 1) {
@@ -210,16 +229,14 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
                     }
                     HashMap<String, String> map = new HashMap<>();
                     map.put("state", issueInfo.state.name());
-                    GetIssuesClient issuesClient = new GetIssuesClient(getActivity(), issueInfo, map, page);
-                    issuesClient.setOnResultCallback(this);
-                    issuesClient.execute();
+
+                    setAction(new GetIssuesClient(getActivity(), issueInfo, map, page));
                 }
             }
         }
     }
 
-    @Override
-    protected void onResponse(List<Issue> issues, boolean refreshing) {
+    protected void onResponse(List<Issue> issues) {
         if (issues != null && issues.size() > 0) {
 
             issues = filterIssues(issues);
@@ -245,16 +262,6 @@ public class IssuesListFragment extends PaginatedListFragment<List<Issue>, Issue
             }
         }
         return newIssues;
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (error != null && error.getResponse() != null) {
-                setEmpty(true, error.getResponse().getStatus());
-            }
-        }
     }
 
     @Override

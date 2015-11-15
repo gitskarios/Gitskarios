@@ -38,4 +38,9 @@ public class ChangeAssigneeAction extends Action<Boolean> implements ActionCallb
             }
         }).execute();
     }
+
+    @Override
+    public void onNext(Boolean aBoolean) {
+
+    }
 }

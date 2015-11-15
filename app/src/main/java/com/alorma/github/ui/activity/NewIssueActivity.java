@@ -1,23 +1,17 @@
 package com.alorma.github.ui.activity;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
-import android.transition.Explode;
-import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.emoji.EmojisActivity;
@@ -39,19 +33,17 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
-public class NewIssueActivity extends BackActivity implements BaseClient.OnResultCallback<Issue> {
+public class NewIssueActivity extends BackActivity {
 
     public static final String REPO_INFO = "REPO_INFO";
     private static final int EMOJI_CODE = 1554;
@@ -222,7 +214,8 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
             MenuItem emojiMenu = menu.findItem(R.id.action_add_emoji);
             emojiMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            Drawable emojiIcon = new IconicsDrawable(this, Octicons.Icon.oct_octoface).actionBar().color(Color.WHITE);
+            Drawable emojiIcon = new IconicsDrawable(this, Octicons.Icon.oct_octoface).actionBar()
+                .color(Color.WHITE);
             emojiMenu.setIcon(emojiIcon);
         }
 
@@ -256,31 +249,40 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void createIssue(IssueRequest issue) {
         PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, repoInfo, issue);
-        postNewIssueClient.setOnResultCallback(this);
-        postNewIssueClient.execute();
-    }
+        postNewIssueClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Issue>() {
+                @Override
+                public void onCompleted() {
 
-    @Override
-    public void onResponseOk(Issue issue, Response r) {
-        hideProgressDialog();
-        if (issue != null) {
-            IssueInfo issueInfo = new IssueInfo();
-            issueInfo.repoInfo = repoInfo;
-            issueInfo.num = issue.number;
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo);
-            startActivity(launcherIntent);
-            setResult(RESULT_OK);
-            finish();
-        }
-    }
+                }
 
-    @Override
-    public void onFail(RetrofitError error) {
-        hideProgressDialog();
-        creatingIssue = false;
-        ErrorHandler.onError(this, "Creating issue", error);
-        invalidateOptionsMenu();
-        Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
+                @Override
+                public void onError(Throwable e) {
+                    hideProgressDialog();
+                    creatingIssue = false;
+                    ErrorHandler.onError(NewIssueActivity.this, "Creating issue", e);
+                    invalidateOptionsMenu();
+                    Toast.makeText(NewIssueActivity.this, R.string.create_issue_error,
+                        Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNext(Issue issue) {
+                    hideProgressDialog();
+                    if (issue != null) {
+                        IssueInfo issueInfo = new IssueInfo();
+                        issueInfo.repoInfo = repoInfo;
+                        issueInfo.num = issue.number;
+                        Intent launcherIntent =
+                            IssueDetailActivity.createLauncherIntent(NewIssueActivity.this,
+                                issueInfo);
+                        startActivity(launcherIntent);
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                }
+            });
     }
 
     /**
@@ -289,13 +291,27 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void openAssignee() {
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
-        contributorsClient.execute();
+        contributorsClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<Contributor>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<Contributor> contributors) {
+                    onContributorsLoaded(contributors);
+                }
+            });
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
-        @Override
-        public void onResponseOk(List<Contributor> contributors, Response r) {
+    public void onContributorsLoaded(List<Contributor> contributors) {
             final List<User> users = new ArrayList<>();
             String owner = repoInfo.owner;
             boolean exist = false;
@@ -335,11 +351,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             builder.show();
         }
 
-        @Override
-        public void onFail(RetrofitError error) {
-
-        }
-    }
 
     private void setAssigneeUser(User user) {
         this.issueAssignee = user;
@@ -358,13 +369,27 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void openMilestone() {
         GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open);
-        milestonesClient.setOnResultCallback(new MilestonesCallback());
-        milestonesClient.execute();
+        milestonesClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<Milestone>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<Milestone> milestones) {
+                    onMilestonesLoaded(milestones);
+                }
+            });
     }
 
-    private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
-        @Override
-        public void onResponseOk(final List<Milestone> milestones, Response r) {
+    public void onMilestonesLoaded(final List<Milestone> milestones) {
             if (milestones.size() == 0) {
                 showCreateMilestone();
             } else {
@@ -409,12 +434,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             }
         }
 
-        @Override
-        public void onFail(RetrofitError error) {
-
-        }
-    }
-
     private void showCreateMilestone() {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
         builder.title(R.string.add_milestone);
@@ -434,18 +453,24 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
         CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, repoInfo, createMilestoneRequestDTO);
-        createMilestoneClient.setOnResultCallback(new BaseClient.OnResultCallback<Milestone>() {
-            @Override
-            public void onResponseOk(Milestone milestone, Response r) {
-                addMilestone(milestone);
-            }
+        createMilestoneClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Milestone>() {
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onFail(RetrofitError error) {
-                hideProgressDialog();
-            }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onNext(Milestone milestone) {
+                    addMilestone(milestone);
+                }
         });
-        createMilestoneClient.execute();
     }
 
     private void addMilestone(Milestone milestone) {
@@ -463,14 +488,27 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void openLabels() {
         GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo);
-        labelsClient.setOnResultCallback(new LabelsCallback());
-        labelsClient.execute();
+        labelsClient.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<Label>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<Label> labels) {
+                    onLabelsLoaded(labels);
+                }
+            });
     }
 
-    private class LabelsCallback implements BaseClient.OnResultCallback<List<Label>> {
-
-        @Override
-        public void onResponseOk(List<Label> labels, Response r) {
+    public void onLabelsLoaded(List<Label> labels) {
             if (labels != null) {
                 List<String> items = new ArrayList<>();
                 for (Label label : labels) {
@@ -506,21 +544,11 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
                         positionsSelectedLabels = null;
                         setLabels(null);
                     }
-
-//                    @Override
-//                    public void onNeutral(MaterialDialog dialog) {
-//                        super.onNeutral(dialog);
-//                    }
                 });
                 builder.show();
             }
         }
 
-        @Override
-        public void onFail(RetrofitError error) {
-
-        }
-    }
 
     private void setLabels(CharSequence[] selectedLabels) {
         if (selectedLabels != null) {

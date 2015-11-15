@@ -19,9 +19,9 @@ import com.alorma.github.sdk.services.repo.BranchesCallback;
 import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
-import com.alorma.gitskarios.core.client.BaseClient;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by a557114 on 01/08/2015.
@@ -183,9 +183,21 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     builder.content(R.string.deleting_repository);
     deleteRepoDialog = builder.show();
     DeleteRepoClient deleteRepoClient = new DeleteRepoClient(getActivity(), repoInfo);
-    deleteRepoClient.setOnResultCallback(new BaseClient.OnResultCallback<Response>() {
+    deleteRepoClient.observable()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Response>() {
       @Override
-      public void onResponseOk(Response response, Response r) {
+      public void onCompleted() {
+
+      }
+
+          @Override
+          public void onError(Throwable e) {
+            Toast.makeText(getActivity(), "Repository delete failed", Toast.LENGTH_SHORT).show();
+          }
+
+          @Override
+          public void onNext(Response response) {
         if (getActivity() != null) {
           if (deleteRepoDialog != null) {
             deleteRepoDialog.dismiss();
@@ -194,35 +206,25 @@ public class RepositoryManagerFragment extends PreferenceFragment {
           getActivity().finish();
         }
       }
-
-      @Override
-      public void onFail(RetrofitError error) {
-        Toast.makeText(getActivity(), "Repository delete failed", Toast.LENGTH_SHORT).show();
-      }
     });
-    deleteRepoClient.execute();
   }
 
   private void getBranches() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-    repoBranchesClient.setOnResultCallback(new BranchesCallback(repoInfo) {
+    repoBranchesClient.observable()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new BranchesCallback(repoInfo) {
 
-      @Override
-      protected void showBranches(String[] branches, int defaultBranchPosition) {
-        if (branches != null && branches.length > 0) {
-          pref_repo_default_branch.setEntries(branches);
-          pref_repo_default_branch.setEntryValues(branches);
-          pref_repo_default_branch.setValueIndex(defaultBranchPosition);
-          pref_repo_default_branch.setEnabled(true);
-        }
-      }
-
-      @Override
-      public void onFail(RetrofitError error) {
-
-      }
-    });
-    repoBranchesClient.execute();
+              @Override
+              protected void showBranches(String[] branches, int defaultBranchPosition) {
+                if (branches != null && branches.length > 0) {
+                  pref_repo_default_branch.setEntries(branches);
+                  pref_repo_default_branch.setEntryValues(branches);
+                  pref_repo_default_branch.setValueIndex(defaultBranchPosition);
+                  pref_repo_default_branch.setEnabled(true);
+                }
+              }
+            });
   }
 
   @Override

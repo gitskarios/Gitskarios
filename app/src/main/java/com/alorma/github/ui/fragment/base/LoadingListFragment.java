@@ -37,6 +37,10 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     private View loadingView;
     protected boolean fromRetry = false;
     private boolean fromPaginated;
+    protected static final String USERNAME = "USERNAME";
+
+    protected boolean refreshing;
+    private Integer page;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,10 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
 
         return inflater.inflate(useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
     }
 
     @Override
@@ -103,6 +111,28 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         if (recyclerView != null) {
             recyclerView.removeItemDecoration(itemDecoration);
             recyclerView.addItemDecoration(itemDecoration);
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        refreshing = true;
+        executeRequest();
+    }
+
+    public void setRefreshing() {
+        this.refreshing = true;
+    }
+
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void loadMoreItems() {
+        if (page != null) {
+            executePaginatedRequest(page);
+            page = null;
         }
     }
 

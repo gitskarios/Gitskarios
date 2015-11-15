@@ -34,6 +34,8 @@ import java.util.Map;
 import dmax.dialog.SpotsDialog;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 02/04/2015.
@@ -212,24 +214,29 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
                     .show();
 
             PublishGistClient publishGistClient = new PublishGistClient(this, gist);
-            publishGistClient.setOnResultCallback(new BaseClient.OnResultCallback<Gist>() {
+            publishGistClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Gist>() {
                 @Override
-                public void onResponseOk(Gist gist, Response r) {
-                    if (spotsDialog != null) {
-                        spotsDialog.dismiss();
-                    }
-                    finish();
+                public void onCompleted() {
+
                 }
 
                 @Override
-                public void onFail(RetrofitError error) {
+                public void onError(Throwable e) {
                     if (spotsDialog != null) {
                         spotsDialog.dismiss();
                     }
                     Snackbar.make(recyclerView, R.string.publish_gist_fail, Snackbar.LENGTH_SHORT).show();
                 }
+
+                @Override
+                public void onNext(Gist gist) {
+                    if (spotsDialog != null) {
+                        spotsDialog.dismiss();
+                    }
+                    finish();
+                }
             });
-            publishGistClient.execute();
         }
     }
 

@@ -67,7 +67,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
                 super.executeRequest();
                 RepoSearchClient client = new RepoSearchClient(getActivity(), query);
                 client.observable().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+                .subscribe(this);
                 query = null;
                 if (getAdapter() != null) {
                     getAdapter().clear();
@@ -83,7 +83,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
                 super.executePaginatedRequest(page);
                 RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
                 client.observable().observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber);
+                    .subscribe(this);
                 query = null;
                 if (getAdapter() != null) {
                     getAdapter().clear();

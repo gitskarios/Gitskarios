@@ -27,11 +27,13 @@ import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 22/02/2015.
  */
-public class ReleaseDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Release> {
+public class ReleaseDetailActivity extends BackActivity implements Observer<Release> {
 
     private static final String RELEASE_INFO = "RELEASE_INFO";
     private static final String RELEASE = "RELEASE";
@@ -80,8 +82,7 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
             } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
                 releaseInfo = getIntent().getExtras().getParcelable(RELEASE_INFO);
                 GetReleaseClient releaseClient = new GetReleaseClient(this, releaseInfo);
-                releaseClient.setOnResultCallback(this);
-                releaseClient.execute();
+                releaseClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
             }
         }
     }
@@ -123,12 +124,17 @@ public class ReleaseDetailActivity extends BackActivity implements BaseClient.On
     }
 
     @Override
-    public void onResponseOk(Release release, Response r) {
+    public void onNext(Release release) {
         showRelease(release, releaseInfo.repoInfo);
     }
 
     @Override
-    public void onFail(RetrofitError error) {
+    public void onError(Throwable error) {
+
+    }
+
+    @Override
+    public void onCompleted() {
 
     }
 }

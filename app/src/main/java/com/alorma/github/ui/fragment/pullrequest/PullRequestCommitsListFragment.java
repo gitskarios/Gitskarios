@@ -1,43 +1,42 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
-
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestCommits;
 import com.alorma.github.sdk.services.pullrequest.PullRequestReviewCommentsClient;
 import com.alorma.github.ui.adapter.commit.PullRequestCommitsReviewCommentsAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
+import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
-public class PullRequestCommitsListFragment extends PaginatedListFragment<List<Commit>, PullRequestCommitsReviewCommentsAdapter> implements PermissionsManager
-        , BackManager {
+public class PullRequestCommitsListFragment
+    extends PaginatedListFragment<PullRequestCommitsReviewCommentsAdapter>
+    implements PermissionsManager, BackManager, Observer<List<Commit>> {
 
     private static final String ISSUE_INFO = "ISSUE_INFO";
 
@@ -55,14 +54,14 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     }
 
     @Override
-    protected void onResponse(final List<Commit> commits, boolean refreshing) {
+    public void onNext(final List<Commit> commits) {
         if (this.commits == null || refreshing) {
             this.commits = new ArrayList<>();
         }
         if (commits != null && commits.size() > 0) {
             orderCommits(commits);
 
-            getReviewComments();
+            //getReviewComments();
 
             List<IssueStoryDetail> issueStoryDetails = new ArrayList<>();
 
@@ -83,6 +82,8 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
         }
     }
 
+    // TODO
+    /*
     private void getReviewComments() {
         PullRequestReviewCommentsClient pullRequestReviewComments = new PullRequestReviewCommentsClient(getActivity(), issueInfo);
         pullRequestReviewComments.setOnResultCallback(new BaseClient.OnResultCallback<List<ReviewComment>>() {
@@ -134,23 +135,16 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
 
                 return dt.hourOfDay().roundFloorCopy().getMillis();
             }
-
-            @Override
-            public void onFail(RetrofitError error) {
-
-            }
         });
         pullRequestReviewComments.execute();
     }
+    */
 
     @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
+    public void onError(Throwable error) {
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (error != null && error.getResponse() != null) {
-                setEmpty(true, error.getResponse().getStatus());
+                setEmpty(true);
             }
-        }
     }
 
     @Override
@@ -198,17 +192,26 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        GetPullRequestCommits getPullRequestCommits = new GetPullRequestCommits(getActivity(), issueInfo);
-        getPullRequestCommits.setOnResultCallback(this);
-        getPullRequestCommits.execute();
+        setAction(new GetPullRequestCommits(getActivity(), issueInfo));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        GetPullRequestCommits getPullRequestCommits = new GetPullRequestCommits(getActivity(), issueInfo);
-        getPullRequestCommits.setOnResultCallback(this);
-        getPullRequestCommits.execute();
+        setAction(new GetPullRequestCommits(getActivity(), issueInfo, page));
+    }
+
+    private void setAction(GithubListClient<List<Commit>> client) {
+        client.observable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
+                @Override
+                public List<Commit> call(Pair<List<Commit>, Integer> listIntegerPair) {
+                    setPage(listIntegerPair.second);
+                    return listIntegerPair.first;
+                }
+            })
+            .subscribe(this);
     }
 
     @Override
@@ -232,6 +235,12 @@ public class PullRequestCommitsListFragment extends PaginatedListFragment<List<C
     protected boolean useFAB() {
         return false;
     }
+
+    @Override
+    public void onCompleted() {
+
+    }
+
 
     // TODO
 

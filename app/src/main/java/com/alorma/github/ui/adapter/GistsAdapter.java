@@ -1,47 +1,43 @@
 package com.alorma.github.ui.adapter;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
-
-import java.util.List;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import java.util.TreeMap;
 
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class GistsAdapter extends LazyAdapter<Gist> {
-    private final LayoutInflater mInflater;
+public class GistsAdapter extends RecyclerArrayAdapter<Gist, GistsAdapter.Holder> {
 
-    public GistsAdapter(Context context, List<Gist> objects) {
-        super(context, 0, objects);
-        this.mInflater = LayoutInflater.from(context);
+    public GistsAdapter(LayoutInflater inflater) {
+        super(inflater);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.row_gist, parent, false);
+    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new Holder(getInflater().inflate(R.layout.row_gist, parent, false));
+    }
 
-        Gist gist = getItem(position);
-
-        TextView textFileName = (TextView) view.findViewById(R.id.textFileName);
-        TextView textNumFiles = (TextView) view.findViewById(R.id.textNumFiles);
-        TextView gistPrivate = (TextView) view.findViewById(R.id.gistPrivate);
-
+    @Override
+    protected void onBindViewHolder(Holder holder, Gist gist) {
         TreeMap<String, GistFile> filesMap = new TreeMap<>(gist.files);
+
         GistFile firstFile = filesMap.firstEntry().getValue();
-        textFileName.setText(firstFile.filename);
 
-        textNumFiles.setText(view.getContext().getString(R.string.num_of_files, gist.files.size()));
+        holder.textFileName.setText(firstFile.filename);
 
-        TextView textDescription = (TextView) view.findViewById(R.id.textDescription);
+        holder.textNumFiles.setText(
+            holder.itemView.getContext().getString(R.string.num_of_files, gist.files.size()));
+
+        TextView textDescription = (TextView) holder.itemView.findViewById(R.id.textDescription);
 
         if (!TextUtils.isEmpty(gist.description)) {
             textDescription.setVisibility(View.VISIBLE);
@@ -51,11 +47,23 @@ public class GistsAdapter extends LazyAdapter<Gist> {
         }
 
         if (gist.isPublic) {
-            gistPrivate.setVisibility(View.GONE);
+            holder.gistPrivate.setVisibility(View.GONE);
         } else {
-            gistPrivate.setVisibility(View.VISIBLE);
+            holder.gistPrivate.setVisibility(View.VISIBLE);
         }
+    }
 
-        return view;
+    public class Holder extends RecyclerView.ViewHolder {
+        private final TextView textFileName;
+        private final TextView textNumFiles;
+        private final TextView gistPrivate;
+
+        public Holder(View itemView) {
+            super(itemView);
+
+            textFileName = (TextView) itemView.findViewById(R.id.textFileName);
+            textNumFiles = (TextView) itemView.findViewById(R.id.textNumFiles);
+            gistPrivate = (TextView) itemView.findViewById(R.id.gistPrivate);
+        }
     }
 }

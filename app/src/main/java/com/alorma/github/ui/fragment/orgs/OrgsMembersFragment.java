@@ -29,16 +29,12 @@ public class OrgsMembersFragment extends BaseUsersListFragment {
 
     @Override
     protected void executeRequest() {
-        OrgsMembersClient client = new OrgsMembersClient(getActivity(), org);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new OrgsMembersClient(getActivity(), org));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
-        OrgsMembersClient client = new OrgsMembersClient(getActivity(), org, page);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new OrgsMembersClient(getActivity(), org, page));
     }
 
     @Override

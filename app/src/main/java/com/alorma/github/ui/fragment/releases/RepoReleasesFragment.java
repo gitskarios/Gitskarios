@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.adapter.ReleasesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -22,7 +20,7 @@ import retrofit.RetrofitError;
 /**
  * Created by a557114 on 29/07/2015.
  */
-public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, ReleasesAdapter>
+public class RepoReleasesFragment extends PaginatedListFragment<ReleasesAdapter>
         implements TitleProvider {
 
     private static final String REPO_INFO = "REPO_INFO";

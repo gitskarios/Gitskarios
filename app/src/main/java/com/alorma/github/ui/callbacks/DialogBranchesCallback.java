@@ -50,11 +50,6 @@ public abstract class DialogBranchesCallback extends BranchesCallback implements
 
     protected abstract void onBranchSelected(String branch);
 
-    @Override
-    public void onFail(RetrofitError error) {
-        ErrorHandler.onError(context, "Branches callback", error);
-    }
-
     public Context getContext() {
         return context;
     }

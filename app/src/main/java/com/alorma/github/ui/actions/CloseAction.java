@@ -14,6 +14,7 @@ import com.alorma.gitskarios.core.client.BaseClient;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 12/10/2015.
@@ -63,24 +64,19 @@ public class CloseAction extends Action<Issue>{
                 .show();
 
         ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(context, issueInfo, state);
-        changeIssueStateClient.setOnResultCallback(new BaseClient.OnResultCallback<Issue>() {
-            @Override
-            public void onResponseOk(Issue issue, Response r) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-                if (issue != null) {
-                    if (getCallback() != null) {
-                        getCallback().onResult(issue);
-                    }
-                }
-            }
+        changeIssueStateClient.observable().observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this);
+    }
 
-            @Override
-            public void onFail(RetrofitError error) {
-
+    @Override
+    public void onNext(Issue issue) {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        if (issue != null) {
+            if (getCallback() != null) {
+                getCallback().onResult(issue);
             }
-        });
-        changeIssueStateClient.execute();
+        }
     }
 }

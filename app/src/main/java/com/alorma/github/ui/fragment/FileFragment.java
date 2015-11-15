@@ -18,7 +18,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.alorma.github.Base64;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
@@ -29,24 +28,20 @@ import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
-import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.ui.view.CopyWebView;
 import com.alorma.github.utils.ImageUtils;
-import com.alorma.gitskarios.core.client.BaseClient;
-
+import dmax.dialog.SpotsDialog;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import dmax.dialog.SpotsDialog;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class FileFragment extends BaseFragment implements BaseClient.OnResultCallback<Content> {
+public class FileFragment extends BaseFragment {
 
     public static final String FILE_INFO = "FILE_INFO";
     public static final String FROM_URL = "FROM_URL";
@@ -127,8 +122,9 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
             showProgressDialog(R.style.SpotDialog_OpeningFile);
 
             GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(getActivity(), fileInfo.repoInfo);
-            branchesClient.setOnResultCallback(new ParseBranchesCallback(fileInfo.path));
-            branchesClient.execute();
+            branchesClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ParseBranchesCallback(fileInfo.path));
         }
     }
 
@@ -136,13 +132,28 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         if (fileInfo.repoInfo != null) {
             showProgressDialog(R.style.SpotDialog_OpeningFile);
             GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), fileInfo);
-            fileContentClient.setOnResultCallback(this);
-            fileContentClient.execute();
+            fileContentClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Content>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Content content) {
+                        onContentLoaded(content);
+                    }
+                });
         }
     }
 
-    @Override
-    public void onResponseOk(Content content, Response r) {
+    public void onContentLoaded(Content content) {
         this.fileContent = content;
 
         hideProgressDialog();
@@ -152,27 +163,35 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
             RequestMarkdownDTO request = new RequestMarkdownDTO();
             request.text = decodeContent();
             GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request);
-            markdownClient.setOnResultCallback(new BaseClient.OnResultCallback<String>() {
-                @Override
-                public void onResponseOk(final String s, Response r) {
-                    if (getActivity() != null && isAdded()) {
-                        webView.clearCache(true);
-                        webView.clearFormData();
-                        webView.clearHistory();
-                        webView.clearMatches();
-                        webView.clearSslPreferences();
-                        webView.getSettings().setUseWideViewPort(false);
-                        webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-                        webView.loadDataWithBaseURL("http://github.com", s, "text/html; charset=UTF-8", null, null);
-                    }
-                }
+            markdownClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                @Override
-                public void onFail(RetrofitError error) {
-                    ErrorHandler.onError(getActivity(), "FileActivity", error);
-                }
-            });
-            markdownClient.execute();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (getActivity() != null && isAdded()) {
+                            webView.clearCache(true);
+                            webView.clearFormData();
+                            webView.clearHistory();
+                            webView.clearMatches();
+                            webView.clearSslPreferences();
+                            webView.getSettings().setUseWideViewPort(false);
+                            webView.setBackgroundColor(
+                                getResources().getColor(R.color.gray_github_light));
+                            webView.loadDataWithBaseURL("http://github.com", s,
+                                "text/html; charset=UTF-8", null, null);
+                        }
+                    }
+                });
         } else if (ImageUtils.isImage(content.name)) {
             if (getActivity() != null && isAdded()) {
                 try {
@@ -239,16 +258,6 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
 
     }
 
-    @Override
-    public void onFail(RetrofitError error) {
-        ErrorHandler.onError(getActivity(), "FileActivity", error);
-        try {
-            getActivity().finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     protected void showProgressDialog(@StyleRes int style) {
         if (progressDialog == null) {
             try {
@@ -269,7 +278,7 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         }
     }
 
-    private class ParseBranchesCallback implements BaseClient.OnResultCallback<List<Branch>> {
+    private class ParseBranchesCallback extends Subscriber<List<Branch>> {
         private String path;
 
         public ParseBranchesCallback(String path) {
@@ -277,7 +286,17 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
         }
 
         @Override
-        public void onResponseOk(List<Branch> branches, Response r) {
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(List<Branch> branches) {
             for (Branch branch : branches) {
                 if (path != null && path.contains(branch.name)) {
                     fileInfo.repoInfo.branch = branch.name;
@@ -287,11 +306,6 @@ public class FileFragment extends BaseFragment implements BaseClient.OnResultCal
                     break;
                 }
             }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-
         }
     }
 }

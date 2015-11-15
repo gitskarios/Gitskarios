@@ -3,7 +3,12 @@ package com.alorma.github.ui.fragment.users;
 import android.os.Bundle;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.GithubListClient;
+import com.alorma.github.sdk.services.user.UserFollowersClient;
 import com.alorma.github.sdk.services.user.UserFollowingClient;
+import java.util.List;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 13/07/2014.
@@ -28,16 +33,12 @@ public class FollowingFragment extends BaseUsersListFragment {
 
     @Override
     protected void executeRequest() {
-        UserFollowingClient client = new UserFollowingClient(getActivity(), username);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new UserFollowingClient(getActivity(), username));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
-        UserFollowingClient client = new UserFollowingClient(getActivity(), username, page);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new UserFollowingClient(getActivity(), username, page));
     }
 
     @Override

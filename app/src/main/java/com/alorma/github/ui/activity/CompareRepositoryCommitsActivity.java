@@ -25,11 +25,13 @@ import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by a557114 on 31/07/2015.
  */
-public class CompareRepositoryCommitsActivity extends BackActivity implements BaseClient.OnResultCallback<CompareCommit> {
+public class CompareRepositoryCommitsActivity extends BackActivity {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String BASE = "BASE";
@@ -61,8 +63,28 @@ public class CompareRepositoryCommitsActivity extends BackActivity implements Ba
             setTitle(base + " ... " + head);
 
             CompareCommitsClient compareCommitsClient = new CompareCommitsClient(this, repoInfo, base, head);
-            compareCommitsClient.setOnResultCallback(this);
-            compareCommitsClient.execute();
+            compareCommitsClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<CompareCommit>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(CompareCommit compareCommit) {
+                    if (commitsFragment != null) {
+                        commitsFragment.setCommits(compareCommit.commits);
+                    }
+                    if (filesFragment != null) {
+                        filesFragment.setFiles(compareCommit.files);
+                    }
+                }
+            });
 
             final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
@@ -92,22 +114,6 @@ public class CompareRepositoryCommitsActivity extends BackActivity implements Ba
             finish();
         }
     }
-
-    @Override
-    public void onResponseOk(CompareCommit compareCommit, Response r) {
-        if (commitsFragment != null) {
-            commitsFragment.setCommits(compareCommit.commits);
-        }
-        if (filesFragment != null) {
-            filesFragment.setFiles(compareCommit.files);
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-
-    }
-
 
     private class NavigationPagerAdapter extends FragmentPagerAdapter {
 
