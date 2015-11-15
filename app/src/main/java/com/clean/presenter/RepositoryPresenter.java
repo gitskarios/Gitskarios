@@ -24,16 +24,6 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
         GetRepoClient repoClient = new GetRepoClient(context, repoInfo);
 
-        /*
-        repoClient.setSaveCache(new Action1<Repo>() {
-            @Override
-            public void call(Repo repo) {
-                QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
-                    .set(repoInfo.toString(), repo, TimeUnit.MINUTES.toMillis(10));
-            }
-        });
-        */
-
         repoClient.observable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Subscriber<Repo>() {

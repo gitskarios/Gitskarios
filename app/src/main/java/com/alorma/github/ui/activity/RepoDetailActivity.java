@@ -46,9 +46,6 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-/**
- * Created by Bernat on 17/07/2014.
- */
 public class RepoDetailActivity extends BackActivity
     implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
 
@@ -235,12 +232,12 @@ public class RepoDetailActivity extends BackActivity
         repoAboutFragment.setRepository(currentRepo);
       }
       fragments.add(repoAboutFragment);
-      fragments.add(SourceListFragment.newInstance(requestRepoInfo));
-      fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
-      fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
-      fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
-      fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
-      fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
+      //fragments.add(SourceListFragment.newInstance(requestRepoInfo));
+      //fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
+      //fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
+      //fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
+      //fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
+      //fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
     }
   }
 
