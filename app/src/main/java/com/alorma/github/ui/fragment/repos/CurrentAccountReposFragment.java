@@ -25,8 +25,8 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
   }
 
   @Override
-  protected void onResponse(List<Repo> repos, boolean refreshing) {
-    super.onResponse(repos, refreshing);
+  public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
+    super.onNext(listIntegerPair);
 
     if (getAdapter() != null) {
       getAdapter().showOwnerNameExtra(false);
@@ -55,15 +55,13 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
   protected void executeRequest() {
     super.executeRequest();
 
-    GithubReposClient client = new UserReposClient(getActivity(), username);
-    client.observable().subscribe(subscriber);
+    setAction(new UserReposClient(getActivity(), username));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    UserReposClient client = new UserReposClient(getActivity(), username, page);
-    client.observable().subscribe(subscriber);
+    setAction(new UserReposClient(getActivity(), username, page));
   }
 
   @Override

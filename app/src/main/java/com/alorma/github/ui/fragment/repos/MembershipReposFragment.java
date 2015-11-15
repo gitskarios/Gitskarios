@@ -20,17 +20,13 @@ public class MembershipReposFragment extends BaseReposListFragment {
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        MemberReposClient memberReposClient = new MemberReposClient(getActivity());
-        memberReposClient.setOnResultCallback(this);
-        memberReposClient.execute();
+        setAction(new MemberReposClient(getActivity()));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        MemberReposClient memberReposClient = new MemberReposClient(getActivity(), page);
-        memberReposClient.setOnResultCallback(this);
-        memberReposClient.execute();
+        setAction(new MemberReposClient(getActivity(), page));
     }
 
     @Override

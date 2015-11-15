@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 
+import android.util.Pair;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -39,8 +40,7 @@ public class ListForksFragment extends BaseReposListFragment {
         if (repoInfo != null) {
             client = new GetForksClient(getActivity(), repoInfo);
             client.setSort(GetForksClient.STARGAZERS);
-            client.setOnResultCallback(this);
-            client.execute();
+            setAction(client);
         }
     }
 
@@ -49,15 +49,12 @@ public class ListForksFragment extends BaseReposListFragment {
         super.executePaginatedRequest(page);
         GetForksClient client = new GetForksClient(getActivity(), repoInfo, page);
         client.setSort(GetForksClient.STARGAZERS);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(client);
     }
 
     @Override
-    protected void onResponse(List<Repo> repos, boolean refreshing) {
-        super.onResponse(repos, refreshing);
-
-        if (getAdapter() != null) {
+    public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
+        super.onNext(listIntegerPair);if (getAdapter() != null) {
             getAdapter().showOwnerNameExtra(false);
         }
     }

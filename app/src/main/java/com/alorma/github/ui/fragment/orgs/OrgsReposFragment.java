@@ -44,18 +44,13 @@ public class OrgsReposFragment extends BaseReposListFragment {
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        GithubReposClient client = new OrgsReposClient(getActivity(), org);
-
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new OrgsReposClient(getActivity(), org));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        OrgsReposClient client = new OrgsReposClient(getActivity(), org, page);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new OrgsReposClient(getActivity(), org, page));
     }
 
     @Override

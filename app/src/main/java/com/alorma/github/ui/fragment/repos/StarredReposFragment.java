@@ -15,24 +15,6 @@ import rx.Subscriber;
 public class StarredReposFragment extends BaseReposListFragment {
 
     private String username;
-    private Observer<? super List<Repo>> subscriber =
-        new Observer<List<Repo>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<Repo> repoList) {
-                onResponseOk(repoList, null);
-            }
-        };
-
     public static StarredReposFragment newInstance() {
         return new StarredReposFragment();
     }
@@ -51,22 +33,19 @@ public class StarredReposFragment extends BaseReposListFragment {
     @Override
     protected void executeRequest() {
         super.executeRequest();
-        GithubReposClient client;
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
         }
 
-        client = new StarredReposClient(getActivity(), username);
-        client.observable().subscribe(subscriber);
+        setAction(new StarredReposClient(getActivity(), username));
     }
 
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        StarredReposClient client = new StarredReposClient(getActivity(), username, page);
-        client.observable().subscribe(subscriber);
+        setAction(new StarredReposClient(getActivity(), username, page));
     }
 
     @Override

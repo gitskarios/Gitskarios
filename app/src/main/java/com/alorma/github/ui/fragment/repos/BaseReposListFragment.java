@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
@@ -11,6 +13,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.Collection;
 import java.util.List;
 import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 17/07/2014.
@@ -67,6 +70,10 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ReposA
         if (getAdapter() != null) {
             getAdapter().clear();
         }
+    }
+    protected void setAction(GithubListClient<List<Repo>> reposClient) {
+        reposClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this);
     }
 
     @Override

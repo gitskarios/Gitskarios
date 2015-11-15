@@ -1,27 +1,25 @@
 package com.alorma.github.ui.fragment.releases;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.adapter.ReleasesAdapter;
 import com.alorma.github.ui.fragment.base.PaginatedListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.List;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
-import retrofit.RetrofitError;
-
-/**
- * Created by a557114 on 29/07/2015.
- */
 public class RepoReleasesFragment extends PaginatedListFragment<ReleasesAdapter>
-        implements TitleProvider {
+        implements TitleProvider, Observer<List<Release>> {
 
     private static final String REPO_INFO = "REPO_INFO";
     private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
@@ -49,22 +47,30 @@ public class RepoReleasesFragment extends PaginatedListFragment<ReleasesAdapter>
     protected void executeRequest() {
         super.executeRequest();
 
-        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, 0);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new GetRepoReleasesClient(getActivity(), repoInfo, 0));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
 
-        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, page);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new GetRepoReleasesClient(getActivity(), repoInfo, page));
+    }
+
+    private void setAction(GithubListClient<List<Release>> getRepoReleasesClient) {
+            getRepoReleasesClient.observable().observeOn(AndroidSchedulers.mainThread()).map(
+                new Func1<Pair<List<Release>,Integer>, List<Release>>() {
+                    @Override
+                    public List<Release> call(Pair<List<Release>, Integer> listIntegerPair) {
+                        setPage(listIntegerPair.second);
+                        return listIntegerPair.first;
+                    }
+                }).subscribe(
+                this);
     }
 
     @Override
-    protected void onResponse(List<Release> releases, boolean refreshing) {
+    public void onNext(List<Release> releases) {
         if (releases.size() > 0) {
             hideEmpty();
             if (getAdapter() != null) {
@@ -80,12 +86,14 @@ public class RepoReleasesFragment extends PaginatedListFragment<ReleasesAdapter>
     }
 
     @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable error) {
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (error != null && error.getResponse() != null) {
-                setEmpty(true, error.getResponse().getStatus());
-            }
+            setEmpty(true);
         }
     }
 

@@ -18,17 +18,13 @@ public class ReposFragmentFromOrgs extends BaseReposListFragment {
     protected void executeRequest() {
         super.executeRequest();
 
-        UserReposFromOrganizationClient client = new UserReposFromOrganizationClient(getActivity());
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new UserReposFromOrganizationClient(getActivity()));
     }
 
     @Override
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
-        UserReposFromOrganizationClient client = new UserReposFromOrganizationClient(getActivity(), page);
-        client.setOnResultCallback(this);
-        client.execute();
+        setAction(new UserReposFromOrganizationClient(getActivity(), page));
     }
 
     @Override
