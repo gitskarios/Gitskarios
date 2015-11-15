@@ -39,7 +39,6 @@ import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.SecondarySwitchDrawerItem;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
@@ -62,9 +61,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -426,25 +422,24 @@ public class MainActivity extends BaseActivity
   private void checkNotifications() {
     GetNotificationsClient client = new GetNotificationsClient(this);
     client.observable().observeOn(AndroidSchedulers.mainThread())
-    .subscribe(new Observer<Pair<List<Notification>, Integer>>() {
-      @Override
-      public void onCompleted() {
+        .subscribe(new Subscriber<List<Notification>>() {
+          @Override
+          public void onCompleted() {
 
-      }
+          }
 
-      @Override
-      public void onError(Throwable e) {
+          @Override
+          public void onError(Throwable e) {
 
-      }
+          }
 
-      @Override
-      public void onNext(Pair<List<Notification>, Integer> listIntegerPair) {
-        if (listIntegerPair.first != null) {
-          notificationsSizeCount = listIntegerPair.first.size();
-          invalidateOptionsMenu();
-        }
-      }
-    });
+          @Override
+          public void onNext(List<Notification> notifications) {
+            notificationsSizeCount = notifications.size();
+            invalidateOptionsMenu();
+          }
+        });
+
   }
 
   @Override

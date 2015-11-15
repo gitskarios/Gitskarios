@@ -67,7 +67,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
         GetNotificationsClient client = new GetNotificationsClient(getActivity(), token);
         client.observable()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Observer<Pair<List<Notification>, Integer>>() {
+            .subscribe(new Observer<List<Notification>>() {
                 @Override
                 public void onCompleted() {
                     stopRefresh();
@@ -81,8 +81,8 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
                 }
 
                 @Override
-                public void onNext(Pair<List<Notification>, Integer> listIntegerPair) {
-                    onNotificationsReceived(listIntegerPair.first);
+                public void onNext(List<Notification> notifications) {
+                    onNotificationsReceived(notifications);
                 }
             });
     }
