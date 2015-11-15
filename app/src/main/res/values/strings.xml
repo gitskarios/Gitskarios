@@ -449,4 +449,5 @@
     <string name="pref_repo_auto_init">Create README.md</string>
 
     <string name="changelog">Changelog</string>
+    <string name="error_login_user">Error requesting user</string>
 </resources>

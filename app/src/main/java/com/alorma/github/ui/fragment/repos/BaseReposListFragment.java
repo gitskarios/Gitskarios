@@ -25,7 +25,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ReposA
 
     @Override
     public void onCompleted() {
-
+        stopRefresh();
     }
 
     @Override
@@ -72,6 +72,7 @@ public abstract class BaseReposListFragment extends PaginatedListFragment<ReposA
         }
     }
     protected void setAction(GithubListClient<List<Repo>> reposClient) {
+        startRefresh();
         reposClient.observable().observeOn(AndroidSchedulers.mainThread())
             .subscribe(this);
     }

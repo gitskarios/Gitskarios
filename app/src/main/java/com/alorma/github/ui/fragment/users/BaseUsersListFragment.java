@@ -46,10 +46,11 @@ implements Observer<Pair<List<User>, Integer>>{
 
     @Override
     public void onCompleted() {
-
+        stopRefresh();
     }
 
     protected void setAction(GithubListClient<List<User>> userFollowersClient) {
+        startRefresh();
         userFollowersClient.observable().observeOn(AndroidSchedulers.mainThread())
             .subscribe(this);
     }

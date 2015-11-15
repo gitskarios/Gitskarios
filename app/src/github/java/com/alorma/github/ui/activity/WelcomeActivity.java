@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -199,7 +200,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
 
             @Override
             public void onError(Throwable e) {
-
+                WelcomeActivity.this.onError(e);
             }
 
             @Override
@@ -279,7 +280,8 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
 
     @Override
     public void onError(Throwable error) {
-
+        showInitialButtons();
+        Snackbar.make(imageView, R.string.error_login_user, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
