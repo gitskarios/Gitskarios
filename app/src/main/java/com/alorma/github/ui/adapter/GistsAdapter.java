@@ -17,6 +17,8 @@ import java.util.TreeMap;
  */
 public class GistsAdapter extends RecyclerArrayAdapter<Gist, GistsAdapter.Holder> {
 
+    private GistsAdapterListener gistsAdapterListener;
+
     public GistsAdapter(LayoutInflater inflater) {
         super(inflater);
     }
@@ -53,6 +55,10 @@ public class GistsAdapter extends RecyclerArrayAdapter<Gist, GistsAdapter.Holder
         }
     }
 
+    public void setGistsAdapterListener(GistsAdapterListener gistsAdapterListener) {
+        this.gistsAdapterListener = gistsAdapterListener;
+    }
+
     public class Holder extends RecyclerView.ViewHolder {
         private final TextView textFileName;
         private final TextView textNumFiles;
@@ -64,6 +70,19 @@ public class GistsAdapter extends RecyclerArrayAdapter<Gist, GistsAdapter.Holder
             textFileName = (TextView) itemView.findViewById(R.id.textFileName);
             textNumFiles = (TextView) itemView.findViewById(R.id.textNumFiles);
             gistPrivate = (TextView) itemView.findViewById(R.id.gistPrivate);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (gistsAdapterListener != null) {
+                        gistsAdapterListener.onGistSelected(getItem(getAdapterPosition()));
+                    }
+                }
+            });
         }
+    }
+
+    public interface GistsAdapterListener {
+        void onGistSelected(Gist gist);
     }
 }
