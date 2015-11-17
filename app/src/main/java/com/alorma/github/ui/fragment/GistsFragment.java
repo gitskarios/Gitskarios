@@ -88,12 +88,15 @@ public class GistsFragment extends PaginatedListFragment<GistsAdapter> {
         }).subscribe(new Subscriber<List<Gist>>() {
             @Override
             public void onCompleted() {
-
+                    stopRefresh();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                stopRefresh();
+                if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                    setEmpty(true);
+                }
             }
 
             @Override

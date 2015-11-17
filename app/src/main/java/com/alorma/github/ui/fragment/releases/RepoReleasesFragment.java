@@ -47,6 +47,10 @@ public class RepoReleasesFragment extends PaginatedListFragment<ReleasesAdapter>
     protected void executeRequest() {
         super.executeRequest();
 
+        if (getAdapter() !=  null) {
+            getAdapter().clear();
+        }
+
         setAction(new GetRepoReleasesClient(getActivity(), repoInfo, 0));
     }
 
@@ -87,11 +91,12 @@ public class RepoReleasesFragment extends PaginatedListFragment<ReleasesAdapter>
 
     @Override
     public void onCompleted() {
-
+        stopRefresh();
     }
 
     @Override
     public void onError(Throwable error) {
+        stopRefresh();
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty(true);
         }

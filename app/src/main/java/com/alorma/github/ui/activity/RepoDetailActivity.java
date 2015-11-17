@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,6 +103,9 @@ public class RepoDetailActivity extends BackActivity
       }
 
       if (requestRepoInfo != null) {
+        if (TextUtils.isEmpty(requestRepoInfo.branch)) {
+          requestRepoInfo.branch = "master";
+        }
         setTitle(requestRepoInfo.name);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -232,12 +236,12 @@ public class RepoDetailActivity extends BackActivity
         repoAboutFragment.setRepository(currentRepo);
       }
       fragments.add(repoAboutFragment);
-      //fragments.add(SourceListFragment.newInstance(requestRepoInfo));
-      //fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
-      //fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
-      //fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
-      //fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
-      //fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
+      fragments.add(SourceListFragment.newInstance(requestRepoInfo));
+      fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
+      fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
+      fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
+      fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
+      fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
     }
   }
 

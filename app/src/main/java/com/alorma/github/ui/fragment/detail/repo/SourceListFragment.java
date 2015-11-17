@@ -15,9 +15,11 @@ import android.widget.LinearBreadcrumb;
 import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
+import com.alorma.github.sdk.bean.dto.response.GitTree;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
+import com.alorma.github.sdk.services.git.GetGitTreeClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.ErrorHandler;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import retrofit.RetrofitError;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -49,7 +52,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
   private LinearBreadcrumb breadCrumbs;
   private String currentPath;
-  private Observer<Pair<List<Content>, Integer>> contentSubscriber;
+  private Observer<Pair<List<Content>, Integer>> subscriber;
 
   public static SourceListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -58,6 +61,38 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     SourceListFragment f = new SourceListFragment();
     f.setArguments(bundle);
     return f;
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    subscriber = new Observer<Pair<List<Content>, Integer>>() {
+      @Override
+      public void onCompleted() {
+        stopRefresh();
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        stopRefresh();
+        if (getActivity() != null) {
+          if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            if (e != null
+                && e instanceof RetrofitError
+                && ((RetrofitError) e).getResponse() != null) {
+              setEmpty(true, ((RetrofitError) e).getResponse().getStatus());
+            }
+          }
+          ErrorHandler.onError(getActivity(), "FilesTreeFragment", e);
+        }
+      }
+
+      @Override
+      public void onNext(Pair<List<Content>, Integer> listIntegerPair) {
+        onContentLoaded(listIntegerPair.first);
+      }
+    };
   }
 
   @Override
@@ -79,32 +114,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     if (getArguments() != null) {
       getContent();
     }
-
-    contentSubscriber = new Observer<Pair<List<Content>, Integer>>() {
-      @Override
-      public void onCompleted() {
-
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        if (getActivity() != null) {
-          if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (e != null
-                && e instanceof RetrofitError
-                && ((RetrofitError) e).getResponse() != null) {
-              setEmpty(true, ((RetrofitError) e).getResponse().getStatus());
-            }
-          }
-          ErrorHandler.onError(getActivity(), "FilesTreeFragment", e);
-        }
-      }
-
-      @Override
-      public void onNext(Pair<List<Content>, Integer> listIntegerPair) {
-        onContentLoaded(listIntegerPair.first);
-      }
-    };
   }
 
   private void navigateUp() {
@@ -148,7 +157,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
     repoContentsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(contentSubscriber);
+        .subscribe(subscriber);
   }
 
   @Override
@@ -249,11 +258,12 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   private void getPathContent(String path) {
     currentPath = path;
     startRefresh();
+
     GetRepoContentsClient repoContentsClient =
         new GetRepoContentsClient(getActivity(), repoInfo, path);
     repoContentsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(contentSubscriber);
+        .subscribe(subscriber);
   }
 
   private void onContentLoaded(List<Content> contents) {
@@ -331,7 +341,12 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
     @Override
     protected void onNoBranches() {
-      Toast.makeText(getContext(), R.string.no_branches_download, Toast.LENGTH_SHORT).show();
+      RepoInfo repoInfo = new RepoInfo();
+      repoInfo.owner = getRepoInfo().owner;
+      repoInfo.name = getRepoInfo().name;
+      GetArchiveLinkService getArchiveLinkService =
+          new GetArchiveLinkService(getContext(), repoInfo);
+      getArchiveLinkService.observable().subscribe();
     }
 
     @Override

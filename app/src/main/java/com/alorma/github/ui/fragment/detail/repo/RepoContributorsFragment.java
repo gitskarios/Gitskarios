@@ -48,12 +48,15 @@ public class RepoContributorsFragment extends PaginatedListFragment<UsersAdapter
         .subscribe(new Subscriber<List<Contributor>>() {
             @Override
             public void onCompleted() {
-
+                stopRefresh();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                stopRefresh();
+                if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                    setEmpty(true);
+                }
             }
 
             @Override

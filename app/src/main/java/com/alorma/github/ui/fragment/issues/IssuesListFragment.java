@@ -184,12 +184,12 @@ public class IssuesListFragment extends PaginatedListFragment<IssuesAdapter>
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Observer<Pair<List<Issue>, Integer>>() {
                 @Override
-                public void onCompleted() {
-
+                public void onCompleted() {stopRefresh();
                 }
 
                 @Override
                 public void onError(Throwable e) {
+                    stopRefresh();
                     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                         setEmpty(true);
                     }

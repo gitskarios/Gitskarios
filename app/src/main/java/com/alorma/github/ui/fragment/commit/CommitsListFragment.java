@@ -124,11 +124,12 @@ public class CommitsListFragment extends PaginatedListFragment<CommitsAdapter>
 
     @Override
     public void onCompleted() {
-
+        stopRefresh();
     }
 
     @Override
     public void onError(Throwable e) {
+        stopRefresh();
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty(true);
         }

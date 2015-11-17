@@ -162,6 +162,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<PullRequests
 
     @Override
     public void onError(Throwable error) {
+        stopRefresh();
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty(true);
         }
@@ -266,6 +267,6 @@ public class PullRequestsListFragment extends PaginatedListFragment<PullRequests
 
     @Override
     public void onCompleted() {
-
+            stopRefresh();
     }
 }
