@@ -270,7 +270,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     if (getActivity() != null) {
       if (contents != null && contents.size() > 0) {
 
-        Collections.sort(contents, Content.Comparators.TYPE);
+        Collections.sort(contents);
 
         displayContent(contents);
       } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {

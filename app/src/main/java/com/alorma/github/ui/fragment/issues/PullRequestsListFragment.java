@@ -80,6 +80,7 @@ public class PullRequestsListFragment extends PaginatedListFragment<PullRequests
                 if (currentFilter != position) {
                     currentFilter = position;
 
+                    clear();
                     onRefresh();
                 }
             }

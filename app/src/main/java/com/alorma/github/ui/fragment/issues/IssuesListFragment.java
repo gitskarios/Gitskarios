@@ -37,11 +37,13 @@ import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import rx.Observer;
+import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by Bernat on 22/08/2014.
@@ -102,6 +104,7 @@ public class IssuesListFragment extends PaginatedListFragment<IssuesAdapter>
                 if (currentFilter != position) {
                     currentFilter = position;
 
+                    clear();
                     onRefresh();
                 }
             }
@@ -182,22 +185,41 @@ public class IssuesListFragment extends PaginatedListFragment<IssuesAdapter>
     private void setAction(GithubListClient<List<Issue>> client) {
         client.observable()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Observer<Pair<List<Issue>, Integer>>() {
+            .doOnNext(new Action1<Pair<List<Issue>, Integer>>() {
                 @Override
-                public void onCompleted() {stopRefresh();
+                public void call(Pair<List<Issue>, Integer> listIntegerPair) {
+                    setPage(listIntegerPair.second);
+                }
+            })
+            .flatMap(new Func1<Pair<List<Issue>, Integer>, Observable<Issue>>() {
+                @Override
+                public Observable<Issue> call(Pair<List<Issue>, Integer> listIntegerPair) {
+                    return Observable.from(listIntegerPair.first);
+                }
+            })
+            .filter(new Func1<Issue, Boolean>() {
+                @Override
+                public Boolean call(Issue issue) {
+                    return issue.pullRequest == null;
+                }
+            })
+            .toList()
+            .subscribe(new Subscriber<List<Issue>>() {
+                @Override
+                public void onCompleted() {
+                    stopRefresh();
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    stopRefresh();
                     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
                         setEmpty(true);
                     }
                 }
 
                 @Override
-                public void onNext(Pair<List<Issue>, Integer> listIntegerPair) {
-                    onResponse(listIntegerPair.first);
+                public void onNext(List<Issue> issues) {
+                    onResponse(issues);
                 }
             });
     }
@@ -238,9 +260,6 @@ public class IssuesListFragment extends PaginatedListFragment<IssuesAdapter>
 
     protected void onResponse(List<Issue> issues) {
         if (issues != null && issues.size() > 0) {
-
-            issues = filterIssues(issues);
-
             if (getAdapter() == null) {
                 IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
                 issuesAdapter.setIssuesAdapterListener(this);
@@ -252,16 +271,6 @@ public class IssuesListFragment extends PaginatedListFragment<IssuesAdapter>
         } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty(false);
         }
-    }
-
-    private List<Issue> filterIssues(List<Issue> issues) {
-        List<Issue> newIssues = new ArrayList<>(issues.size());
-        for (Issue issue : issues) {
-            if (issue.pullRequest == null) {
-                newIssues.add(issue);
-            }
-        }
-        return newIssues;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
         IconicsDrawable iconDrawable = null;
         if (ContentType.dir.equals(content.type)) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_directory);
-        } else if (ContentType.submodule.equals(content.type)) {
+        } else if (ContentType.symlink.equals(content.type)) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_symlink_directory);
         } else if (ContentType.file.equals(content.type)) {
             iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_text);
