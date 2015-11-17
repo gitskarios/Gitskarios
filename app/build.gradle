@@ -54,9 +54,11 @@ android {
     productFlavors {
         github {
             applicationId "com.alorma.github"
+            ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
         }
         enterprise {
             applicationId "com.alorma.github_enterprise"
+            ext.betaDistributionGroupAliases = "gitskarios-enterprise-alpha-testers"
         }
     }
 
@@ -75,7 +77,6 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
             buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
-            ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
         }
     }
 }

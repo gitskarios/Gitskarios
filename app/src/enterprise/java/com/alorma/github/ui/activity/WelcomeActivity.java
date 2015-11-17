@@ -42,9 +42,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity
-    implements BaseClient.OnResultCallback<User>, GithubLoginFragment.LoginCallback {
+    implements GithubLoginFragment.LoginCallback {
 
     private static final String KEY_IMPORT = "KEY_IMPORT";
 
@@ -262,27 +264,28 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     private void openCreate() {
         buttonEnterprise.setVisibility(View.INVISIBLE);
 
-        buttonGithub.animate().alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+        buttonGithub.animate().alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(
+            new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                buttonGithub.setVisibility(View.INVISIBLE);
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    buttonGithub.setVisibility(View.INVISIBLE);
+                }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                @Override
+                public void onAnimationRepeat(Animator animation) {
 
-            }
-        }).start();
+                }
+            }).start();
         progressBar.animate().alpha(1f).setStartDelay(300).setDuration(TimeUnit.SECONDS.toMillis(1)).start();
 
         progressBar.setVisibility(View.VISIBLE);
@@ -363,12 +366,31 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     public void endAccess(String accessToken) {
         this.accessToken = accessToken;
         GetAuthUserClient authUserClient = new GetAuthUserClient(this, accessToken);
-        authUserClient.setOnResultCallback(this);
-        authUserClient.execute();
+        authUserClient.observable().observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<User>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    WelcomeActivity.this.onError(e);
+                }
+
+                @Override
+                public void onNext(User user) {
+                    onUserLoaded(user);
+                }
+            });
     }
 
     @Override
-    public void onResponseOk(final User user, Response r) {
+    public void onError(Throwable error) {
+
+    }
+
+    public void onUserLoaded(final User user) {
         appNameTextView.setText(user.login);
 
         imageUser.setVisibility(View.VISIBLE);
@@ -439,16 +461,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
             ContentResolver.addPeriodicSync(account, account.type, Bundle.EMPTY, 1800);
             ContentResolver.setSyncAutomatically(account, account.type, true);
         }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-
-    }
-
-    @Override
-    public void onError(RetrofitError error) {
-
     }
 
     @Override
