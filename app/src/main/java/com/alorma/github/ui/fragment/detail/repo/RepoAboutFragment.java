@@ -212,7 +212,6 @@ public class RepoAboutFragment extends Fragment
                 @Override
                 public void onCompleted() {
                     if (currentRepo != null) {
-                        getStarWatchData();
                         setData();
                     }
                 }

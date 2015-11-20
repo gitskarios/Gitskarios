@@ -1,5 +1,3 @@
 include ':app'
 include ':sdks:GithubAndroidSdk'
-include ':libraries:breadcrumbs'
-include ':libraries:atelier'
 include ':sdks:GithubAndroidSdk:GitskariosCore'

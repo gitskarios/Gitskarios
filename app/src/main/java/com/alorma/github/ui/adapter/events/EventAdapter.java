@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -12,30 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-import com.alorma.github.ui.adapter.events.views.CommitCommentEventView;
-import com.alorma.github.ui.adapter.events.views.CreatedEventView;
-import com.alorma.github.ui.adapter.events.views.DeleteEventView;
-import com.alorma.github.ui.adapter.events.views.ForkEventView;
-import com.alorma.github.ui.adapter.events.views.GenericFeedEventView;
-import com.alorma.github.ui.adapter.events.views.GithubEventView;
-import com.alorma.github.ui.adapter.events.views.IssueCommentEventView;
-import com.alorma.github.ui.adapter.events.views.IssueEventView;
-import com.alorma.github.ui.adapter.events.views.PullRequestEventView;
-import com.alorma.github.ui.adapter.events.views.PushEventView;
-import com.alorma.github.ui.adapter.events.views.ReleaseEventView;
-import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
-import com.alorma.github.ui.adapter.events.views.WatchEventView;
 import com.alorma.github.utils.TimeUtils;
-import com.crashlytics.android.Crashlytics;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
 import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
@@ -43,10 +28,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
-import java.util.Collection;
-
-import io.fabric.sdk.android.Fabric;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 /**
@@ -55,11 +36,13 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
     private final Resources resources;
+    private final int defaultProfileColor;
     private EventAdapterListener eventAdapterListener;
 
     public EventAdapter(Context context, LayoutInflater inflater) {
         super(inflater);
         resources = context.getResources();
+        defaultProfileColor = ContextCompat.getColor(context, R.color.primary);
     }
 
     @Override
@@ -206,8 +189,9 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                         .load(loadedImage)
                         .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
                         .listener(new Atelier.OnPaletteRenderedListener() {
-                            @Override public void onRendered(Palette palette, int generatedColor) {
-                                imageView.setTag(generatedColor);
+                            @Override
+                            public void onRendered(Palette palette) {
+                                imageView.setTag(palette.getVibrantColor(defaultProfileColor));
                             }
                         });
                 }

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
-import android.widget.LinearBreadcrumb;
+import com.alorma.github.ui.view.LinearBreadcrumb;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
