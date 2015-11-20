@@ -11,13 +11,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.alorma.library.R;
-
+import com.alorma.github.R;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +91,6 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
 
     private List<Crumb> mCrumbs;
 
-    private List<Crumb> mOldCrumbs;
     private LinearLayout mChildFrame;
     private int mActive;
     private SelectionCallback mCallback;
@@ -174,7 +171,6 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
 
     public void clearCrumbs() {
         try {
-            mOldCrumbs = new ArrayList<>(mCrumbs);
             mCrumbs.clear();
             mChildFrame.removeAllViews();
         } catch (IllegalStateException e) {

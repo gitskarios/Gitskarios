@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -76,6 +77,7 @@ public class ProfileActivity extends BackActivity {
     private Account selectedAccount;
     private boolean colorApplied;
     private int avatarColor;
+    private int defaultProfileColor;
 
     public static Intent createLauncherIntent(Context context, Account selectedAccount) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -103,6 +105,8 @@ public class ProfileActivity extends BackActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
+
+        defaultProfileColor = ContextCompat.getColor(this, R.color.primary);
 
         image = (ImageView) findViewById(R.id.imgToolbar);
 
@@ -282,8 +286,8 @@ public class ProfileActivity extends BackActivity {
                             .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
                             .listener(new Atelier.OnPaletteRenderedListener() {
                                 @Override
-                                public void onRendered(Palette palette, int generatedColor) {
-                                    applyColors(generatedColor);
+                                public void onRendered(Palette palette) {
+                                    applyColors(palette.getVibrantColor(defaultProfileColor));
                                 }
                             })
                             .into(image);

@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearBreadcrumb
+        <com.alorma.github.ui.view.LinearBreadcrumb
             android:id="@+id/breadCrumbs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

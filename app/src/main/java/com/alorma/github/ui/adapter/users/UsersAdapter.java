@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,7 +69,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Context context = holder.itemView.getContext();
+                final Context context = holder.itemView.getContext();
 
                 //Set color to a View's imageUri
                 Atelier.with(context, imageUri)
@@ -76,8 +77,9 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
                         .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
                         .listener(new Atelier.OnPaletteRenderedListener() {
                             @Override
-                            public void onRendered(Palette palette, int generatedColor) {
-                                holder.textRootView.setTag(generatedColor);
+                            public void onRendered(Palette palette) {
+                                int color = ContextCompat.getColor(context, R.color.primary);
+                                holder.textRootView.setTag(palette.getVibrantColor(color));
                             }
                         })
                         .into(holder.textRootView);
