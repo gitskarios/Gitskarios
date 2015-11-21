@@ -77,14 +77,17 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
   public void onNext(List<Release> releases) {
     if (releases.size() > 0) {
       hideEmpty();
-      if (getAdapter() != null) {
-        getAdapter().addAll(releases);
-      } else {
+      if (refreshing || getAdapter() == null) {
         ReleasesAdapter adapter = new ReleasesAdapter(LayoutInflater.from(getActivity()), repoInfo);
         adapter.addAll(releases);
         setAdapter(adapter);
+      } else {
+        getAdapter().addAll(releases);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty(false);
+    } else {
+      getAdapter().clear();
       setEmpty(false);
     }
   }
