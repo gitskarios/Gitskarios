@@ -119,10 +119,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     this.refreshing = true;
   }
 
-  public boolean isRefreshing() {
-    return refreshing;
-  }
-
   @Override
   public void loadMoreItems() {
     if (page != null) {

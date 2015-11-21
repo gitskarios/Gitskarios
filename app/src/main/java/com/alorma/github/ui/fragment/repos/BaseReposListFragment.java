@@ -1,14 +1,18 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import rx.Observer;
@@ -29,21 +33,27 @@ public abstract class BaseReposListFragment extends LoadingListFragment<ReposAda
 
   @Override
   public void onError(Throwable e) {
-    onError(e);
+    e.printStackTrace();
+    Snackbar.make(recyclerView, R.string.error_loading_repos, Snackbar.LENGTH_SHORT).show();
+    stopRefresh();
   }
 
   @Override
   public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
     setPage(listIntegerPair.second);
     List<Repo> repos = listIntegerPair.first;
+
     if (repos.size() > 0) {
       hideEmpty();
-      if (getAdapter() != null) {
-        getAdapter().addAll(repos);
-      } else {
+      if (refreshing || getAdapter() == null) {
         setUpList(repos);
+      } else {
+        getAdapter().addAll(repos);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty(false);
+    } else {
+      getAdapter().clear();
       setEmpty(false);
     }
   }
