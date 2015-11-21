@@ -142,17 +142,20 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
 
   @Override
   public void onNext(List<PullRequest> issues) {
-    if (issues != null && issues.size() > 0) {
-
-      if (getAdapter() == null) {
-        PullRequestsAdapter issuesAdapter = new PullRequestsAdapter(LayoutInflater.from(getActivity()));
-        issuesAdapter.setIssuesAdapterListener(this);
-        issuesAdapter.addAll(issues);
-        setAdapter(issuesAdapter);
+    if (issues.size() > 0) {
+      hideEmpty();
+      if (refreshing || getAdapter() == null) {
+        PullRequestsAdapter pullRequestsAdapter = new PullRequestsAdapter(LayoutInflater.from(getActivity()));
+        pullRequestsAdapter.setIssuesAdapterListener(this);
+        pullRequestsAdapter.addAll(issues);
+        setAdapter(pullRequestsAdapter);
       } else {
         getAdapter().addAll(issues);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty(false);
+    } else {
+      getAdapter().clear();
       setEmpty(false);
     }
   }

@@ -249,8 +249,9 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   }
 
   protected void onResponse(List<Issue> issues) {
-    if (issues != null && issues.size() > 0) {
-      if (getAdapter() == null) {
+    if (issues.size() > 0) {
+      hideEmpty();
+      if (refreshing || getAdapter() == null) {
         IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
         issuesAdapter.setIssuesAdapterListener(this);
         issuesAdapter.addAll(issues);
@@ -259,6 +260,9 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
         getAdapter().addAll(issues);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty(false);
+    } else {
+      getAdapter().clear();
       setEmpty(false);
     }
   }

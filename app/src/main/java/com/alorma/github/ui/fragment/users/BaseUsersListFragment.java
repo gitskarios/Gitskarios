@@ -23,16 +23,20 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
   public void onNext(Pair<List<User>, Integer> listIntegerPair) {
     setPage(listIntegerPair.second);
     List<User> users = listIntegerPair.first;
+
     if (users.size() > 0) {
       hideEmpty();
-      if (getAdapter() != null) {
-        getAdapter().addAll(users);
-      } else {
+      if (refreshing || getAdapter() == null) {
         UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
         adapter.addAll(users);
         setAdapter(adapter);
+      } else {
+        getAdapter().addAll(users);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty(false);
+    } else {
+      getAdapter().clear();
       setEmpty(false);
     }
   }

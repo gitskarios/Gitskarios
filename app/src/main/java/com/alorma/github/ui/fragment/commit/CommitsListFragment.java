@@ -54,8 +54,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   private static final String REPO_INFO = "REPO_INFO";
   private static final String PATH = "PATH";
 
-  private List<Commit> commits;
-
   private RepoInfo repoInfo;
   private StickyRecyclerHeadersDecoration headersDecoration;
   private String path;
@@ -107,7 +105,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
         setPage(listIntegerPair.second);
         return listIntegerPair.first;
       }
-    }).subscribe(this);
+    }).map(orderCommits()).subscribe(this);
   }
 
   @Override
@@ -134,20 +132,15 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
   @Override
   public void onNext(List<Commit> commits) {
-    if (this.commits == null || refreshing) {
-      this.commits = new ArrayList<>();
-    }
-    if (commits != null && commits.size() > 0) {
+    if (commits.size() > 0) {
+      hideEmpty();
 
-      orderCommits(commits);
-
-      if (getAdapter() == null) {
+      if (refreshing || getAdapter() == null) {
         CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false, repoInfo);
-        commitsAdapter.addAll(CommitsListFragment.this.commits);
+        commitsAdapter.addAll(commits);
         commitsAdapter.setCommitsAdapterListener(this);
         setAdapter(commitsAdapter);
       } else {
-
         getAdapter().addAll(commits);
       }
 
@@ -155,23 +148,34 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
         headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
         addItemDecoration(headersDecoration);
       }
+    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty(false);
+    } else {
+      getAdapter().clear();
+      setEmpty(false);
     }
   }
 
-  private void orderCommits(List<Commit> commits) {
+  private Func1<List<Commit>, List<Commit>> orderCommits() {
+    return new Func1<List<Commit>, List<Commit>>() {
+      @Override
+      public List<Commit> call(List<Commit> commits) {
+        List<Commit> newCommits = new ArrayList<>();
+        for (Commit commit : commits) {
+          if (commit.commit.author.date != null) {
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
 
-    for (Commit commit : commits) {
-      if (commit.commit.author.date != null) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
+            Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
-        Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+            commit.days = days.getDays();
 
-        commit.days = days.getDays();
-
-        this.commits.add(commit);
+            newCommits.add(commit);
+          }
+        }
+        return newCommits;
       }
-    }
+    };
   }
 
   @Override
