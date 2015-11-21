@@ -37,6 +37,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -278,18 +280,24 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
       if (this.currentRepo.parent != null) {
         fork.setVisibility(View.VISIBLE);
         forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
-        forkOfTextView.setText(this.currentRepo.parent.owner.login + "/" + this.currentRepo.parent.name);
+        forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login,
+            this.currentRepo.parent.name));
       }
 
       createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
       createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at, R.string.created_at));
 
-      starredPlaceholder.setText(String.valueOf(this.currentRepo.stargazers_count));
-      watchedPlaceholder.setText(String.valueOf(this.currentRepo.subscribers_count));
-      forkPlaceHolder.setText(String.valueOf(this.currentRepo.forks_count));
+      starredPlaceholder.setText(String.valueOf(placeHolderNum(this.currentRepo.stargazers_count)));
+      watchedPlaceholder.setText(String.valueOf(placeHolderNum(this.currentRepo.subscribers_count)));
+      forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
 
       forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
     }
+  }
+
+  private String placeHolderNum(int value) {
+    NumberFormat decimalFormat = new DecimalFormat();
+    return decimalFormat.format(value);
   }
 
   private IconicsDrawable getIcon(IIcon icon, int sizeDp) {

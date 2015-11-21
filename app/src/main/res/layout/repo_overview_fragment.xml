@@ -110,25 +110,28 @@
         android:orientation="horizontal"
         >
 
-      <TextView
+      <Button
           android:id="@+id/starredPlaceholder"
           style="@style/PlaceholderRepoAbout"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:padding="@dimen/gapMedium"
           />
 
-      <TextView
+      <Button
           android:id="@+id/watchedPlaceHolder"
           style="@style/PlaceholderRepoAbout"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:padding="@dimen/gapMedium"
           />
 
-      <TextView
+      <Button
           android:id="@+id/forkPlaceHolder"
           style="@style/PlaceholderRepoAbout"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:padding="@dimen/gapMedium"
           />
 
     </LinearLayout>

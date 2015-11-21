@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+  <changelogversion changeDate="Nov 12,2015" versionName="2.6.7">
+    <changelogtext>Search directly while tapping</changelogtext>
+    <changelogtext>A lot of bug fixes</changelogtext>
+  </changelogversion>
   <changelogversion changeDate="Nov 12,2015" versionName="2.6.5">
     <changelogtext>Create repository from the app</changelogtext>
     <changelogtext>Fix issues cannot be created</changelogtext>
