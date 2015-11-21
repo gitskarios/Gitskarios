@@ -19,9 +19,6 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import tr.xip.errorview.ErrorView;
 
-/**
- * Created by Bernat on 05/08/2014.
- */
 public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment
     implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, RecyclerArrayAdapter.RecyclerAdapterContentListener,
     ErrorView.RetryListener {

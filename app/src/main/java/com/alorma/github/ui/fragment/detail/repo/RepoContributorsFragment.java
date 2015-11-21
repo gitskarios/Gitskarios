@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> implements TitleProvider {
 
@@ -43,44 +44,50 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
   }
 
   private void setAction(GithubClient<List<Contributor>> client) {
-    client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Contributor>>() {
-      @Override
-      public void onCompleted() {
-        stopRefresh();
-      }
+    client.observable().observeOn(AndroidSchedulers.mainThread())
+        .map(new Func1<List<Contributor>, List<User>>() {
+          @Override
+          public List<User> call(List<Contributor> contributors) {
+            List<User> users = new ArrayList<User>();
+            for (Contributor contributor : contributors) {
+              users.add(contributor.author);
+            }
+            return users;
+          }
+        })
+        .subscribe(new Subscriber<List<User>>() {
+          @Override
+          public void onCompleted() {
+            stopRefresh();
+          }
 
-      @Override
-      public void onError(Throwable e) {
-        stopRefresh();
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-          setEmpty(true);
-        }
-      }
-
-      @Override
-      public void onNext(List<Contributor> contributors) {
-        if (contributors != null) {
-          List<User> users = new ArrayList<>();
-
-          for (Contributor contributor : contributors) {
-            if (contributor != null
-                && contributor.author != null
-                && contributor.author.login != null
-                && !contributor.author.login.equalsIgnoreCase(repoInfo.owner)) {
-              users.add(users.size(), contributor.author);
+          @Override
+          public void onError(Throwable e) {
+            stopRefresh();
+            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+              setEmpty(true);
             }
           }
 
-          if (getAdapter() == null) {
-            UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
-            adapter.addAll(users);
-            setAdapter(adapter);
-          } else {
-            getAdapter().addAll(users);
+          @Override
+          public void onNext(List<User> users) {
+            if (users.size() > 0) {
+              hideEmpty();
+              if (refreshing || getAdapter() == null) {
+                UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+                adapter.addAll(users);
+                setAdapter(adapter);
+              } else {
+                getAdapter().addAll(users);
+              }
+            } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+              setEmpty(false);
+            } else {
+              getAdapter().clear();
+              setEmpty(false);
+            }
           }
-        }
-      }
-    });
+        });
   }
 
   @Override
