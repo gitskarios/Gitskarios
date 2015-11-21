@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
@@ -12,7 +11,6 @@ import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import rx.Observer;
@@ -51,10 +49,10 @@ public abstract class BaseReposListFragment extends LoadingListFragment<ReposAda
         getAdapter().addAll(repos);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     } else {
       getAdapter().clear();
-      setEmpty(false);
+      setEmpty();
     }
   }
 

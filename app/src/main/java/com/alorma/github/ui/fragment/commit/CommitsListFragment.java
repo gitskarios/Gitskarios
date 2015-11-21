@@ -133,7 +133,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   public void onError(Throwable e) {
     stopRefresh();
     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(true);
+      setEmpty();
     }
   }
 
@@ -154,10 +154,10 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
       headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
       addItemDecoration(headersDecoration);
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     } else {
       getAdapter().clear();
-      setEmpty(false);
+      setEmpty();
     }
   }
 

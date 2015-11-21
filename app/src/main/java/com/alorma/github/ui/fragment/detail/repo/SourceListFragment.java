@@ -257,7 +257,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
         displayContent(contents);
       } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-        setEmpty(false);
+        setEmpty();
       }
     }
   }

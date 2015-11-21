@@ -144,6 +144,7 @@ dependencies {
   compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
     transitive = true;
   }
+  compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
   compile 'com.github.xiprox.errorview:library:2.2.0'
   compile 'com.android.support:design:23.1.1'
   compile 'com.android.support:appcompat-v7:23.1.1'

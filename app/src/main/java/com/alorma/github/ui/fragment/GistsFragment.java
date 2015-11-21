@@ -92,7 +92,7 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter> implements 
       public void onError(Throwable e) {
         stopRefresh();
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-          setEmpty(true);
+          setEmpty();
         }
       }
 

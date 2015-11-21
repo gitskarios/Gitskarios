@@ -70,7 +70,7 @@ public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequ
         getAdapter().addAll(issueStoryDetails);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     }
   }
 
@@ -135,7 +135,7 @@ public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequ
   @Override
   public void onError(Throwable error) {
     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(true);
+      setEmpty();
     }
   }
 

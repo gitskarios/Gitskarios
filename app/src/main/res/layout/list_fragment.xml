@@ -7,26 +7,19 @@
              android:background="@color/gray_github_light"
     >
 
-  <FrameLayout
-      android:id="@+id/listContainer"
+  <android.support.v4.widget.SwipeRefreshLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:id="@+id/swipe"
       >
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipe"
-        >
-
-      <android.support.v7.widget.RecyclerView
-          android:id="@id/recycler"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:drawSelectorOnTop="false"
-          />
-    </android.support.v4.widget.SwipeRefreshLayout>
-  </FrameLayout>
+        android:drawSelectorOnTop="false"
+        />
+  </android.support.v4.widget.SwipeRefreshLayout>
 
   <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
                               android:id="@+id/error_view"

@@ -79,7 +79,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
         setAdapter(commentsAdapter);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     }
   }
 

@@ -84,7 +84,7 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
         setAdapter(adapter);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     }
   }
 

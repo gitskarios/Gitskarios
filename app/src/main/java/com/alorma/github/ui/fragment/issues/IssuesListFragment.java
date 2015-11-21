@@ -204,7 +204,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
       @Override
       public void onError(Throwable e) {
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-          setEmpty(true);
+          setEmpty();
         }
       }
 
@@ -260,10 +260,10 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
         getAdapter().addAll(issues);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     } else {
       getAdapter().clear();
-      setEmpty(false);
+      setEmpty();
     }
   }
 

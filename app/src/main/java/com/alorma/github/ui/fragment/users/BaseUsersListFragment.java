@@ -34,10 +34,10 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
         getAdapter().addAll(users);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     } else {
       getAdapter().clear();
-      setEmpty(false);
+      setEmpty();
     }
   }
 

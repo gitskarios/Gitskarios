@@ -65,7 +65,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
           public void onError(Throwable e) {
             stopRefresh();
             if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-              setEmpty(true);
+              setEmpty();
             }
           }
 
@@ -81,10 +81,10 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
                 getAdapter().addAll(users);
               }
             } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-              setEmpty(false);
+              setEmpty();
             } else {
               getAdapter().clear();
-              setEmpty(false);
+              setEmpty();
             }
           }
         });

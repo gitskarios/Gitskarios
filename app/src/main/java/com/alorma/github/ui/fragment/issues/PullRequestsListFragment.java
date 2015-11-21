@@ -153,10 +153,10 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
         getAdapter().addAll(issues);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     } else {
       getAdapter().clear();
-      setEmpty(false);
+      setEmpty();
     }
   }
 
@@ -164,7 +164,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
   public void onError(Throwable error) {
     stopRefresh();
     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(true);
+      setEmpty();
     }
   }
 

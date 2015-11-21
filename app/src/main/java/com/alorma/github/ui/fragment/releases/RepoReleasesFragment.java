@@ -85,10 +85,10 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
         getAdapter().addAll(releases);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(false);
+      setEmpty();
     } else {
       getAdapter().clear();
-      setEmpty(false);
+      setEmpty();
     }
   }
 
@@ -101,7 +101,7 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
   public void onError(Throwable error) {
     stopRefresh();
     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty(true);
+      setEmpty();
     }
   }
 

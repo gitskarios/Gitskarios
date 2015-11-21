@@ -72,7 +72,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
       @Override
       public void onError(Throwable e) {
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-          setEmpty(true);
+          setEmpty();
         }
       }
 
@@ -109,7 +109,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
         setAdapter(notificationsAdapter);
       } else {
         if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-          setEmpty(false);
+          setEmpty();
         }
       }
     }

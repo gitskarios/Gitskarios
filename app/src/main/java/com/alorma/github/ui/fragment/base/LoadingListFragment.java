@@ -192,16 +192,22 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     return false;
   }
 
-  public void setEmpty(boolean withError) {
+  public void setEmpty() {
     stopRefresh();
     if (getActivity() != null) {
       if (error_view != null) {
         error_view.setVisibility(View.VISIBLE);
         error_view.setTitle(getNoDataText());
-        error_view.showRetryButton(withError);
-        if (withError) {
-          error_view.setOnRetryListener(this);
-        }
+        error_view.showRetryButton(true);
+        error_view.setOnRetryListener(this);
+      }
+    }
+
+    if (recyclerView != null) {
+      recyclerView.setLayoutManager(getLayoutManager());
+      recyclerView.setItemAnimator(getItemAnimator());
+      if (getItemDecoration() != null) {
+        recyclerView.addItemDecoration(getItemDecoration());
       }
     }
   }

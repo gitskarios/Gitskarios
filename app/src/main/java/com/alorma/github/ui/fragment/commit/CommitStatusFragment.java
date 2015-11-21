@@ -97,7 +97,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
     @Override
     public void onError(Throwable e) {
       if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-        setEmpty(true);
+        setEmpty();
       }
     }
 
@@ -114,7 +114,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
           setAdapter(adapter);
         }
       } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-        setEmpty(false);
+        setEmpty();
       }
     }
   }
