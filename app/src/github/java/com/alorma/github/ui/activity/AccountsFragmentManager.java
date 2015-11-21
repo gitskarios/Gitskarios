@@ -8,13 +8,13 @@ import com.alorma.github.account.BaseAccountsFragmentManager;
  * Created by bernat.borras on 24/10/15.
  */
 public class AccountsFragmentManager extends BaseAccountsFragmentManager {
-    @Override
-    protected String[] getAccountTypes() {
-        return new String[]{getString(R.string.account_type)};
-    }
+  @Override
+  protected String[] getAccountTypes() {
+    return new String[] { getString(R.string.account_type) };
+  }
 
-    @Override
-    public boolean multipleAccountsAllowed() {
-        return BuildConfig.DEBUG;
-    }
+  @Override
+  public boolean multipleAccountsAllowed() {
+    return BuildConfig.DEBUG;
+  }
 }

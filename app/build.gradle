@@ -1,17 +1,17 @@
 buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
+  repositories {
+    maven { url 'https://maven.fabric.io/public' }
+  }
 
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
+  dependencies {
+    classpath 'io.fabric.tools:gradle:1.+'
+  }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.fernandocejas.frodo'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+  maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'io.fabric'
@@ -19,174 +19,176 @@ apply plugin: 'com.github.ben-manes.versions'
 //gradle dependencyUpdates -Drevision=release
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+  compileSdkVersion 23
+  buildToolsVersion "23.0.1"
 
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionName "2.6.6"
-        versionCode 26600
-        resValue "string", "app_git_hash", getCurrentGitHash()
+  defaultConfig {
+    minSdkVersion 15
+    targetSdkVersion 23
+    versionName "2.6.6"
+    versionCode 26600
+    resValue "string", "app_git_hash", getCurrentGitHash()
 
-        multiDexEnabled true
+    multiDexEnabled true
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  signingConfigs {
+    playStore
+  }
+
+  packagingOptions {
+    exclude 'LICENSE.txt'
+    exclude 'META-INF/DEPENDENCIES'
+    exclude 'META-INF/ASL2.0'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/NOTICE.txt'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+  }
+
+  productFlavors {
+    github {
+      applicationId "com.alorma.github"
+      ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
     }
-
-    lintOptions {
-        abortOnError false
+    enterprise {
+      applicationId "com.alorma.github_enterprise"
+      ext.betaDistributionGroupAliases = "gitskarios-enterprise-alpha-testers"
     }
+  }
 
-    signingConfigs {
-        playStore
+  buildTypes {
+    debug {
+      applicationIdSuffix ".debug"
+      buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
+      buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
+      buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
     }
-
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    release {
+      minifyEnabled false
+      if (signingConfigs.playStore != null) {
+        signingConfig signingConfigs.playStore
+      }
+      buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
+      buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
+      buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
     }
-
-    productFlavors {
-        github {
-            applicationId "com.alorma.github"
-            ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
-        }
-        enterprise {
-            applicationId "com.alorma.github_enterprise"
-            ext.betaDistributionGroupAliases = "gitskarios-enterprise-alpha-testers"
-        }
-    }
-
-    buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
-        }
-        release {
-            minifyEnabled false
-            if (signingConfigs.playStore != null) {
-                signingConfig signingConfigs.playStore
-            }
-            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
-        }
-    }
+  }
 }
 
 def getCurrentGitHash() {
-    return 'git rev-parse --short HEAD'.execute().text.trim()
+  return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
 def Properties props = new Properties()
 def propFile = file('../gradle.properties')
 if (propFile.canRead()) {
-    props.load(new FileInputStream(propFile))
+  props.load(new FileInputStream(propFile))
 
-    if (props != null && props.containsKey('SIGN_FILE') && props.containsKey('SIGN_KEYSTORE_PASS') &&
-            props.containsKey('SIGN_KEYSTORE_ALIAS') && props.containsKey('SIGN_KEYSTORE_ALIAS_PASS')) {
+  if (props != null &&
+      props.containsKey('SIGN_FILE') &&
+      props.containsKey('SIGN_KEYSTORE_PASS') &&
+      props.containsKey('SIGN_KEYSTORE_ALIAS') &&
+      props.containsKey('SIGN_KEYSTORE_ALIAS_PASS')) {
 
-        println 'RELEASE BUILD SIGNING'
+    println 'RELEASE BUILD SIGNING'
 
-        android.signingConfigs.playStore.storeFile = file(props['SIGN_FILE'])
-        android.signingConfigs.playStore.storePassword = props['SIGN_KEYSTORE_PASS']
-        android.signingConfigs.playStore.keyAlias = props['SIGN_KEYSTORE_ALIAS']
-        android.signingConfigs.playStore.keyPassword = props['SIGN_KEYSTORE_ALIAS_PASS']
-    } else {
-        println 'RELEASE BUILD NOT FOUND SIGNING PROPERTIES'
+    android.signingConfigs.playStore.storeFile = file(props['SIGN_FILE'])
+    android.signingConfigs.playStore.storePassword = props['SIGN_KEYSTORE_PASS']
+    android.signingConfigs.playStore.keyAlias = props['SIGN_KEYSTORE_ALIAS']
+    android.signingConfigs.playStore.keyPassword = props['SIGN_KEYSTORE_ALIAS_PASS']
+  } else {
+    println 'RELEASE BUILD NOT FOUND SIGNING PROPERTIES'
 
-        android.buildTypes.release.signingConfig = null
-    }
-} else {
-    println 'RELEASE BUILD NOT FOUND SIGNING FILE'
     android.buildTypes.release.signingConfig = null
+  }
+} else {
+  println 'RELEASE BUILD NOT FOUND SIGNING FILE'
+  android.buildTypes.release.signingConfig = null
 }
 
 def getGHId(pro) {
-    if (pro) {
-        return hasProperty('GH_PRO_ID') ? GH_PRO_ID : System.getenv('GH_PRO_ID')
-    } else {
-        return hasProperty('GH_DEV_ID') ? GH_DEV_ID : System.getenv('GH_DEV_ID')
-    }
+  if (pro) {
+    return hasProperty('GH_PRO_ID') ? GH_PRO_ID : System.getenv('GH_PRO_ID')
+  } else {
+    return hasProperty('GH_DEV_ID') ? GH_DEV_ID : System.getenv('GH_DEV_ID')
+  }
 }
 
 def getGHSecret(pro) {
-    if (pro) {
-        return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
-    } else {
-        return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
-    }
+  if (pro) {
+    return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
+  } else {
+    return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
+  }
 }
 
 def getGHCallback(pro) {
-    if (pro) {
-        return hasProperty('GH_PRO_CALLBACK') ? GH_PRO_CALLBACK : System.getenv('GH_PRO_CALLBACK')
-    } else {
-        return hasProperty('GH_DEV_CALLBACK') ? GH_DEV_CALLBACK : System.getenv('GH_DEV_CALLBACK')
-    }
+  if (pro) {
+    return hasProperty('GH_PRO_CALLBACK') ? GH_PRO_CALLBACK : System.getenv('GH_PRO_CALLBACK')
+  } else {
+    return hasProperty('GH_DEV_CALLBACK') ? GH_DEV_CALLBACK : System.getenv('GH_DEV_CALLBACK')
+  }
 }
 
 dependencies {
-    debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'libraryDebug')
-    releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'libraryRelease')
-    // Submodules
-    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
-        transitive = true;
-    }
-    compile 'com.github.xiprox.errorview:library:2.2.0'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:palette-v7:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:cardview-v7:23.1.1'
-    compile 'com.google.android.gms:play-services-analytics:8.3.0'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'se.emilsjolander:stickylistheaders:2.7.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
+  debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'libraryDebug')
+  releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'libraryRelease')
+  // Submodules
+  provided 'com.squareup.dagger:dagger-compiler:1.2.2'
+  compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+    transitive = true;
+  }
+  compile 'com.github.xiprox.errorview:library:2.2.0'
+  compile 'com.android.support:design:23.1.1'
+  compile 'com.android.support:appcompat-v7:23.1.1'
+  compile 'com.android.support:palette-v7:23.1.1'
+  compile 'com.android.support:recyclerview-v7:23.1.1'
+  compile 'com.android.support:cardview-v7:23.1.1'
+  compile 'com.google.android.gms:play-services-analytics:8.3.0'
+  compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+  compile 'se.emilsjolander:stickylistheaders:2.7.0'
+  compile 'com.nineoldandroids:library:2.4.0'
+  compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
 
-    compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
-        transitive = true
-    }
-    compile('com.mikepenz:materialdrawer:4.3.7@aar') {
-        transitive = true
-    }
-    compile('com.mikepenz:actionitembadge:3.1.1@aar')
-    compile 'com.mikepenz:octicons-typeface:3.0.1@aar'
-    compile 'com.mikepenz:google-material-typeface:1.2.0@aar'
+  compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
+    transitive = true
+  }
+  compile('com.mikepenz:materialdrawer:4.3.7@aar') {
+    transitive = true
+  }
+  compile('com.mikepenz:actionitembadge:3.1.1@aar')
+  compile 'com.mikepenz:octicons-typeface:3.0.1@aar'
+  compile 'com.mikepenz:google-material-typeface:1.2.0@aar'
 
-    compile 'com.github.d-max:spots-dialog:0.4'
-    compile 'com.squareup:otto:1.3.8'
-    compile 'com.squareup.dagger:dagger:1.2.2'
-    compile 'com.wefika:flowlayout:0.4.0'
-    compile 'com.github.alorma:diff-textview:1.1.0'
-    compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
+  compile 'com.github.d-max:spots-dialog:0.4'
+  compile 'com.squareup:otto:1.3.8'
+  compile 'com.squareup.dagger:dagger:1.2.2'
+  compile 'com.wefika:flowlayout:0.4.0'
+  compile 'com.github.alorma:diff-textview:1.1.0'
+  compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
+  compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
 
-    compile 'com.afollestad:material-cab:0.1.4'
-    compile 'com.afollestad:material-dialogs:0.7.9.1'
+  compile 'com.afollestad:material-cab:0.1.4'
+  compile 'com.afollestad:material-dialogs:0.7.9.1'
 
-    compile 'com.github.pedrovgs:renderers:2.0.3'
-    compile 'com.jakewharton:butterknife:7.0.1'
+  compile 'com.github.pedrovgs:renderers:2.0.3'
+  compile 'com.jakewharton:butterknife:7.0.1'
 
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile("com.fewlaps.quitnowcache:quitnow-cache:1.2") {
-        exclude module: 'joda-time'
-    }
+  compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+  compile("com.fewlaps.quitnowcache:quitnow-cache:1.2") {
+    exclude module: 'joda-time'
+  }
 
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile('com.crashlytics.sdk.android:answers:1.3.3@aar') {
-        transitive = true;
-    }
-    compile 'com.github.Musenkishi:Atelier:1.3.1'
-
+  compile 'com.android.support:multidex:1.0.1'
+  compile 'io.reactivex:rxandroid:1.0.1'
+  compile('com.crashlytics.sdk.android:answers:1.3.3@aar') {
+    transitive = true;
+  }
+  compile 'com.github.Musenkishi:Atelier:1.3.1'
 }

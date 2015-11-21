@@ -11,31 +11,31 @@ import com.alorma.github.account.BaseAccountsFragmentManager;
  */
 public class AccountsFragmentManager extends BaseAccountsFragmentManager {
 
-    private static final String KEY_IMPORT = "KEY_IMPORT";
+  private static final String KEY_IMPORT = "KEY_IMPORT";
 
-    @Override
-    protected String[] getAccountTypes() {
-        Boolean importAccounts = getImportAccounts();
-        if (importAccounts != null && importAccounts) {
-            return new String[] { getString(R.string.account_type), getString(R.string.enterprise_account_type) };
-        } else {
-            return new String[] { getString(R.string.enterprise_account_type) };
-        }
+  @Override
+  protected String[] getAccountTypes() {
+    Boolean importAccounts = getImportAccounts();
+    if (importAccounts != null && importAccounts) {
+      return new String[] { getString(R.string.account_type), getString(R.string.enterprise_account_type) };
+    } else {
+      return new String[] { getString(R.string.enterprise_account_type) };
     }
+  }
 
-    @Nullable
-    private Boolean getImportAccounts() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+  @Nullable
+  private Boolean getImportAccounts() {
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        Boolean importAccounts = null;
-        if (preferences.contains(KEY_IMPORT)) {
-            importAccounts = preferences.getBoolean(KEY_IMPORT, false);
-        }
-        return importAccounts;
+    Boolean importAccounts = null;
+    if (preferences.contains(KEY_IMPORT)) {
+      importAccounts = preferences.getBoolean(KEY_IMPORT, false);
     }
+    return importAccounts;
+  }
 
-    @Override
-    public boolean multipleAccountsAllowed() {
-        return true;
-    }
+  @Override
+  public boolean multipleAccountsAllowed() {
+    return true;
+  }
 }

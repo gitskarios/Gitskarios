@@ -4,84 +4,80 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.widget.CompoundButton;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.languages.GetLanguagesClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.LanguagesAdapter;
-
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class LanguagesActivity extends BackActivity implements LanguagesAdapter.LanguageSelectedListener {
 
-    public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";
-    private LanguagesAdapter adapter;
+  public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";
+  private LanguagesAdapter adapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.languages_activity);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.languages_activity);
 
-        if (getToolbar() != null) {
-            ViewCompat.setElevation(getToolbar(), getResources().getDimension(R.dimen.gapSmall));
-        }
+    if (getToolbar() != null) {
+      ViewCompat.setElevation(getToolbar(), getResources().getDimension(R.dimen.gapSmall));
+    }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        adapter = new LanguagesAdapter(LayoutInflater.from(this));
-        adapter.setLanguageSelectedListener(this);
-        recyclerView.setAdapter(adapter);
+    adapter = new LanguagesAdapter(LayoutInflater.from(this));
+    adapter.setLanguageSelectedListener(this);
+    recyclerView.setAdapter(adapter);
 
-        CompoundButton switchAllLanguages = (CompoundButton) findViewById(R.id.allLanguagesSwitch);
+    CompoundButton switchAllLanguages = (CompoundButton) findViewById(R.id.allLanguagesSwitch);
 
-        loadList(false);
+    loadList(false);
 
-        switchAllLanguages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                loadList(isChecked);
-            }
+    switchAllLanguages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        loadList(isChecked);
+      }
+    });
+  }
+
+  private void loadList(boolean showAllLanguages) {
+    GetLanguagesClient client = new GetLanguagesClient(this, showAllLanguages);
+    client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<String>>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onNext(List<String> strings) {
+            updateAdapter(strings);
+          }
         });
-    }
+  }
 
-    private void loadList(boolean showAllLanguages) {
-        GetLanguagesClient client = new GetLanguagesClient(this, showAllLanguages);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(
-            new Subscriber<List<String>>() {
-                @Override
-                public void onCompleted() {
+  private void updateAdapter(List<String> strings) {
+    adapter.clear();
+    adapter.addAll(strings);
+  }
 
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(List<String> strings) {
-                    updateAdapter(strings);
-                }
-            });
-    }
-
-    private void updateAdapter(List<String> strings) {
-        adapter.clear();
-        adapter.addAll(strings);
-    }
-
-    @Override
-    public void onLanguageSelected(String language) {
-        Intent data = new Intent();
-        data.putExtra(EXTRA_LANGUAGE, language);
-        setResult(RESULT_OK, data);
-        finish();
-    }
+  @Override
+  public void onLanguageSelected(String language) {
+    Intent data = new Intent();
+    data.putExtra(EXTRA_LANGUAGE, language);
+    setResult(RESULT_OK, data);
+    finish();
+  }
 }

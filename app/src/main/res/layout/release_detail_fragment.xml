@@ -1,102 +1,113 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/author"
-            style="@style/repo_overview_item"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/material_drawer_item_profile">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical"
+    >
 
-            <com.mikepenz.materialdrawer.view.BezelImageView
-                android:id="@+id/profileIcon"
-                android:layout_width="@dimen/material_drawer_item_profile_icon"
-                android:layout_height="@dimen/material_drawer_item_profile_icon"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-                android:clickable="false"
-                app:biv_maskDrawable="@drawable/material_drawer_circle_mask" />
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-            <TextView
-                android:id="@+id/authorName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/profileIcon"
-                android:layout_toRightOf="@+id/profileIcon"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical|left"
-                android:lines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/material_drawer_item_profile_text"
-                tools:text="Author name" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/author"
+                  style="@style/repo_overview_item"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/material_drawer_item_profile"
+        >
 
-        </LinearLayout>
+      <com.mikepenz.materialdrawer.view.BezelImageView
+          android:id="@+id/profileIcon"
+          android:layout_width="@dimen/material_drawer_item_profile_icon"
+          android:layout_height="@dimen/material_drawer_item_profile_icon"
+          android:layout_gravity="center_vertical"
+          android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+          android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+          android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+          android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+          android:clickable="false"
+          app:biv_maskDrawable="@drawable/material_drawer_circle_mask"
+          />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/created"
-            style="@style/repo_overview_item"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/material_drawer_item_profile"
-            android:background="@null"
-            android:clickable="false">
-
-            <ImageView
-                android:id="@+id/createdIcon"
-                android:layout_width="@dimen/material_drawer_item_profile_icon"
-                android:layout_height="@dimen/material_drawer_item_profile_icon"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-                android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-                android:clickable="false" />
-
-            <TextView
-                android:id="@+id/createdAt"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical|left"
-                android:lines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/material_drawer_item_profile_text"
-                tools:text="Created at" />
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/htmlContentView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/gapMedium"
-                android:padding="@dimen/gapMedium" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-        </FrameLayout>
+      <TextView
+          android:id="@+id/authorName"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_centerVertical="true"
+          android:layout_toEndOf="@+id/profileIcon"
+          android:layout_toRightOf="@+id/profileIcon"
+          android:fontFamily="sans-serif-medium"
+          android:gravity="center_vertical|left"
+          android:lines="1"
+          android:singleLine="true"
+          android:textSize="@dimen/material_drawer_item_profile_text"
+          tools:text="Author name"
+          />
 
     </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/created"
+                  style="@style/repo_overview_item"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/material_drawer_item_profile"
+                  android:background="@null"
+                  android:clickable="false"
+        >
+
+      <ImageView
+          android:id="@+id/createdIcon"
+          android:layout_width="@dimen/material_drawer_item_profile_icon"
+          android:layout_height="@dimen/material_drawer_item_profile_icon"
+          android:layout_gravity="center_vertical"
+          android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+          android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+          android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+          android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+          android:clickable="false"
+          />
+
+      <TextView
+          android:id="@+id/createdAt"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:fontFamily="sans-serif-medium"
+          android:gravity="center_vertical|left"
+          android:lines="1"
+          android:singleLine="true"
+          android:textSize="@dimen/material_drawer_item_profile_text"
+          tools:text="Created at"
+          />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+      <TextView
+          android:id="@+id/htmlContentView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginTop="@dimen/gapMedium"
+          android:padding="@dimen/gapMedium"
+          />
+
+      <ProgressBar
+          android:id="@+id/progressBar"
+          style="?android:attr/progressBarStyle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          />
+
+    </FrameLayout>
+
+  </LinearLayout>
 </ScrollView>

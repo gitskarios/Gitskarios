@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,202 +37,195 @@ import rx.android.schedulers.AndroidSchedulers;
 public class NotificationsFragment extends LoadingListFragment<NotificationsAdapter>
     implements NotificationsAdapter.NotificationsAdapterListener {
 
-    public static NotificationsFragment newInstance() {
-        return new NotificationsFragment();
+  public static NotificationsFragment newInstance() {
+    return new NotificationsFragment();
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    getActivity().setTitle(R.string.notifications);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.notifications_list_fragment, null, false);
+  }
+
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
+
+    String token = null;
+    if (getArguments() != null && getArguments().containsKey(BaseActivity.EXTRA_WITH_TOKEN)) {
+      token = getArguments().getString(BaseActivity.EXTRA_WITH_TOKEN);
     }
 
+    GetNotificationsClient client = new GetNotificationsClient(getActivity(), token);
+    client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<Notification>>() {
+      @Override
+      public void onCompleted() {
+        stopRefresh();
+      }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+      @Override
+      public void onError(Throwable e) {
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+          setEmpty(true);
+        }
+      }
 
-        getActivity().setTitle(R.string.notifications);
-    }
+      @Override
+      public void onNext(List<Notification> notifications) {
+        onNotificationsReceived(notifications);
+      }
+    });
+  }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.notifications_list_fragment, null, false);
-    }
-
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
-
-        String token = null;
-        if (getArguments() != null && getArguments().containsKey(BaseActivity.EXTRA_WITH_TOKEN)) {
-            token = getArguments().getString(BaseActivity.EXTRA_WITH_TOKEN);
+  private void onNotificationsReceived(List<Notification> notifications) {
+    if (notifications != null && notifications.size() > 0) {
+      if (notifications.size() > 0) {
+        if (getAdapter() != null && getAdapter().getItemCount() > 0) {
+          hideEmpty();
         }
 
-        GetNotificationsClient client = new GetNotificationsClient(getActivity(), token);
-        client.observable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Observer<List<Notification>>() {
-                @Override
-                public void onCompleted() {
-                    stopRefresh();
-                }
+        Map<Long, NotificationsParent> parents = new HashMap<>();
 
-                @Override
-                public void onError(Throwable e) {
-                    if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                        setEmpty(true);
-                    }
-                }
-
-                @Override
-                public void onNext(List<Notification> notifications) {
-                    onNotificationsReceived(notifications);
-                }
-            });
-    }
-
-    private void onNotificationsReceived(List<Notification> notifications) {
-        if (notifications != null && notifications.size() > 0) {
-            if (notifications.size() > 0) {
-                if (getAdapter() != null && getAdapter().getItemCount() > 0) {
-                    hideEmpty();
-                }
-
-                Map<Long, NotificationsParent> parents = new HashMap<>();
-
-                for (Notification notification : notifications) {
-                    if (parents.get(notification.repository.id) == null) {
-                        NotificationsParent notificationsParent = new NotificationsParent();
-                        parents.put(notification.repository.id, notificationsParent);
-                        notificationsParent.repo = notification.repository;
-                        notificationsParent.notifications = new ArrayList<>();
-                    }
-                    parents.get(notification.repository.id).notifications.add(notification);
-                }
-
-                NotificationsAdapter notificationsAdapter =
-                    new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
-                notificationsAdapter.addAll(parents.values());
-                notificationsAdapter.setNotificationsAdapterListener(this);
-
-                setAdapter(notificationsAdapter);
-            } else {
-                if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                    setEmpty(false);
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void loadArguments() {
-
-    }
-
-    @Override
-    protected Octicons.Icon getNoDataIcon() {
-        return Octicons.Icon.oct_inbox;
-    }
-
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_notifications;
-    }
-
-
-    @Override
-    public void onRefresh() {
-        super.onRefresh();
-        if (getAdapter() != null) {
-            getAdapter().clear();
-        }
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
-
-    @Override
-    public void onNotificationClick(Notification notification) {
-
-        GitskariosSettings settings = new GitskariosSettings(getActivity());
-        boolean markAsRead = settings.markAsRead();
-
-        if (markAsRead) {
-            clearNotifications(notification);
+        for (Notification notification : notifications) {
+          if (parents.get(notification.repository.id) == null) {
+            NotificationsParent notificationsParent = new NotificationsParent();
+            parents.put(notification.repository.id, notificationsParent);
+            notificationsParent.repo = notification.repository;
+            notificationsParent.notifications = new ArrayList<>();
+          }
+          parents.get(notification.repository.id).notifications.add(notification);
         }
 
-        String type = notification.subject.type;
+        NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
+        notificationsAdapter.addAll(parents.values());
+        notificationsAdapter.setNotificationsAdapterListener(this);
 
-        Uri uri = null;
-        if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest") || type.equalsIgnoreCase("Release")) {
-            uri = Uri.parse(notification.subject.url);
-        } else {
-            uri = Uri.parse(notification.repository.html_url);
+        setAdapter(notificationsAdapter);
+      } else {
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+          setEmpty(false);
         }
-        Intent intent = new UrlsManager(getActivity()).checkUri(uri);
-        if (intent != null) {
-            startActivity(intent);
-        }
+      }
+    }
+  }
+
+  @Override
+  protected void loadArguments() {
+
+  }
+
+  @Override
+  protected Octicons.Icon getNoDataIcon() {
+    return Octicons.Icon.oct_inbox;
+  }
+
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_notifications;
+  }
+
+  @Override
+  public void onRefresh() {
+    super.onRefresh();
+    if (getAdapter() != null) {
+      getAdapter().clear();
+    }
+  }
+
+  @Override
+  protected RecyclerView.ItemDecoration getItemDecoration() {
+    return null;
+  }
+
+  @Override
+  public void onNotificationClick(Notification notification) {
+
+    GitskariosSettings settings = new GitskariosSettings(getActivity());
+    boolean markAsRead = settings.markAsRead();
+
+    if (markAsRead) {
+      clearNotifications(notification);
     }
 
-    @Override
-    protected void startRefresh() {
-        fromRetry = true;
-        super.startRefresh();
+    String type = notification.subject.type;
+
+    Uri uri = null;
+    if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest") || type.equalsIgnoreCase("Release")) {
+      uri = Uri.parse(notification.subject.url);
+    } else {
+      uri = Uri.parse(notification.repository.html_url);
     }
-
-    @Override
-    public void clearNotifications(Notification notification) {
-        startRefresh();
-        if (getAdapter() != null) {
-            getAdapter().clear();
-        }
-        setAction(new MarkNotificationAsRead(getActivity(), notification));
+    Intent intent = new UrlsManager(getActivity()).checkUri(uri);
+    if (intent != null) {
+      startActivity(intent);
     }
+  }
 
-    @Override
-    public void requestRepo(NotificationsParent item) {
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.owner = item.repo.owner.login;
-        repoInfo.name = item.repo.name;
+  @Override
+  protected void startRefresh() {
+    fromRetry = true;
+    super.startRefresh();
+  }
 
-        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivity(intent);
+  @Override
+  public void clearNotifications(Notification notification) {
+    startRefresh();
+    if (getAdapter() != null) {
+      getAdapter().clear();
     }
+    setAction(new MarkNotificationAsRead(getActivity(), notification));
+  }
 
-    @Override
-    public void clearRepoNotifications(NotificationsParent item) {
-        startRefresh();
-        if (getAdapter() != null) {
-            getAdapter().clear();
-        }
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.owner = item.repo.owner.login;
-        repoInfo.name = item.repo.name;
-        setAction(new MarkRepoNotificationsRead(getActivity(), repoInfo));
+  @Override
+  public void requestRepo(NotificationsParent item) {
+    RepoInfo repoInfo = new RepoInfo();
+    repoInfo.owner = item.repo.owner.login;
+    repoInfo.name = item.repo.name;
+
+    Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+    startActivity(intent);
+  }
+
+  @Override
+  public void clearRepoNotifications(NotificationsParent item) {
+    startRefresh();
+    if (getAdapter() != null) {
+      getAdapter().clear();
     }
+    RepoInfo repoInfo = new RepoInfo();
+    repoInfo.owner = item.repo.owner.login;
+    repoInfo.name = item.repo.name;
+    setAction(new MarkRepoNotificationsRead(getActivity(), repoInfo));
+  }
 
-    private void setAction(GithubClient<Boolean> booleanGithubClient) {
-        booleanGithubClient.observable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
+  private void setAction(GithubClient<Boolean> booleanGithubClient) {
+    booleanGithubClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
+      @Override
+      public void onCompleted() {
 
-                }
+      }
 
-                @Override
-                public void onError(Throwable e) {
+      @Override
+      public void onError(Throwable e) {
 
-                }
+      }
 
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    executeRequest();
-                }
-            });
-    }
+      @Override
+      public void onNext(Boolean aBoolean) {
+        executeRequest();
+      }
+    });
+  }
 
-    @Override
-    public void unsubscribeThreadNotification(Notification notification) {
-        startRefresh();
-        setAction(new UnsubscribeThread(getActivity(), notification));
-    }
+  @Override
+  public void unsubscribeThreadNotification(Notification notification) {
+    startRefresh();
+    setAction(new UnsubscribeThread(getActivity(), notification));
+  }
 }

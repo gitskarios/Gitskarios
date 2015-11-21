@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+    >
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"
-        android:transitionName="editor"/>
+  <include
+      android:id="@+id/toolbar"
+      layout="@layout/toolbar"
+      android:transitionName="editor"
+      />
 
-    <EditText
-        android:id="@+id/edit"
-        style="@android:style/Widget.Holo.Light.EditText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/toolbarExtra"
-        android:layout_below="@+id/toolbar"
-        android:background="@null"
-        android:gravity="top"
-        android:textColor="@android:color/black"
-        android:hint="@string/edit_hint"
-        android:padding="@dimen/gapMedium"/>
+  <EditText
+      android:id="@+id/edit"
+      style="@android:style/Widget.Holo.Light.EditText"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@+id/toolbarExtra"
+      android:layout_below="@+id/toolbar"
+      android:background="@null"
+      android:gravity="top"
+      android:textColor="@android:color/black"
+      android:hint="@string/edit_hint"
+      android:padding="@dimen/gapMedium"
+      />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarExtra"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/gray_github_light"
-        android:minHeight="?actionBarSize"
-        app:contentInsetStart="@dimen/second_keyline"
-        app:popupTheme="@style/Toolbar.Popup.AppCompat"
-        app:theme="@style/Toolbar.AppCompat.Light.Responsive" />
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbarExtra"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:background="@color/gray_github_light"
+      android:minHeight="?actionBarSize"
+      app:contentInsetStart="@dimen/second_keyline"
+      app:popupTheme="@style/Toolbar.Popup.AppCompat"
+      app:theme="@style/Toolbar.AppCompat.Light.Responsive"
+      />
 
 </RelativeLayout>

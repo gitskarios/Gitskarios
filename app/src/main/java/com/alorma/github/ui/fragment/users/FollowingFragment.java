@@ -1,55 +1,49 @@
 package com.alorma.github.ui.fragment.users;
 
 import android.os.Bundle;
-
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.services.client.GithubListClient;
-import com.alorma.github.sdk.services.user.UserFollowersClient;
 import com.alorma.github.sdk.services.user.UserFollowingClient;
-import java.util.List;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 13/07/2014.
  */
 public class FollowingFragment extends BaseUsersListFragment {
-    private String username;
+  private String username;
 
-    public static FollowingFragment newInstance() {
-        return new FollowingFragment();
+  public static FollowingFragment newInstance() {
+    return new FollowingFragment();
+  }
+
+  public static FollowingFragment newInstance(String username) {
+    FollowingFragment followingFragment = new FollowingFragment();
+    if (username != null) {
+      Bundle bundle = new Bundle();
+      bundle.putString(USERNAME, username);
+
+      followingFragment.setArguments(bundle);
     }
+    return followingFragment;
+  }
 
-    public static FollowingFragment newInstance(String username) {
-        FollowingFragment followingFragment = new FollowingFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
+  @Override
+  protected void executeRequest() {
+    setAction(new UserFollowingClient(getActivity(), username));
+  }
 
-            followingFragment.setArguments(bundle);
-        }
-        return followingFragment;
+  @Override
+  protected void executePaginatedRequest(int page) {
+    setAction(new UserFollowingClient(getActivity(), username, page));
+  }
+
+  @Override
+  protected void loadArguments() {
+    if (getArguments() != null) {
+      username = getArguments().getString(USERNAME);
     }
+  }
 
-    @Override
-    protected void executeRequest() {
-        setAction(new UserFollowingClient(getActivity(), username));
-    }
-
-    @Override
-    protected void executePaginatedRequest(int page) {
-        setAction(new UserFollowingClient(getActivity(), username, page));
-    }
-
-    @Override
-    protected void loadArguments() {
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
-    }
-
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_followings;
-    }
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_followings;
+  }
 }

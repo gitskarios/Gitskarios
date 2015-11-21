@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <item
-        android:id="@+id/add_content_editor_emojis"
-        android:title="@string/content_editor_emojis"
-        app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/add_content_editor_emojis"
+      android:title="@string/content_editor_emojis"
+      app:showAsAction="ifRoom"
+      />
 
-    <item
-        android:id="@+id/add_content_editor_picture"
-        android:title="@string/content_editor_picture"
-        app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/add_content_editor_picture"
+      android:title="@string/content_editor_picture"
+      app:showAsAction="ifRoom"
+      />
 
-    <item
-        android:id="@+id/add_content_editor_source"
-        android:title="@string/content_editor_source"
-        app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/add_content_editor_source"
+      android:title="@string/content_editor_source"
+      app:showAsAction="ifRoom"
+      />
 
-    <!--<item
-        android:id="@+id/add_content_editor_mentions"
-        android:title="@string/content_editor_mentions"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/add_content_editor_user"
-                android:title="@string/content_editor_user"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/add_content_editor_repo"
-                android:title="@string/content_editor_repo"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@+id/add_content_editor_issue"
-                android:title="@string/content_editor_issue"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>-->
+  <!--<item
+      android:id="@+id/add_content_editor_mentions"
+      android:title="@string/content_editor_mentions"
+      app:showAsAction="always">
+      <menu>
+          <item
+              android:id="@+id/add_content_editor_user"
+              android:title="@string/content_editor_user"
+              app:showAsAction="ifRoom" />
+          <item
+              android:id="@+id/add_content_editor_repo"
+              android:title="@string/content_editor_repo"
+              app:showAsAction="ifRoom" />
+          <item
+              android:id="@+id/add_content_editor_issue"
+              android:title="@string/content_editor_issue"
+              app:showAsAction="ifRoom" />
+      </menu>
+  </item>-->
 
 </menu>

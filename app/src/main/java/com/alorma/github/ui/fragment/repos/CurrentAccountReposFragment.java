@@ -2,17 +2,13 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Pair;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.services.repos.GithubReposClient;
 import com.alorma.github.sdk.services.repos.UserReposClient;
 import com.alorma.github.ui.activity.CreateRepositoryActivity;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
-import retrofit.client.Response;
-import rx.Observer;
 
 public class CurrentAccountReposFragment extends BaseReposListFragment {
 
@@ -24,15 +20,6 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
     return new CurrentAccountReposFragment();
   }
 
-  @Override
-  public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
-    super.onNext(listIntegerPair);
-
-    if (getAdapter() != null) {
-      getAdapter().showOwnerNameExtra(false);
-    }
-  }
-
   public static CurrentAccountReposFragment newInstance(String username) {
     CurrentAccountReposFragment currentAccountReposFragment = new CurrentAccountReposFragment();
     if (username != null) {
@@ -42,6 +29,15 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
       currentAccountReposFragment.setArguments(bundle);
     }
     return currentAccountReposFragment;
+  }
+
+  @Override
+  public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
+    super.onNext(listIntegerPair);
+
+    if (getAdapter() != null) {
+      getAdapter().showOwnerNameExtra(false);
+    }
   }
 
   @Override

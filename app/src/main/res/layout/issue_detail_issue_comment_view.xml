@@ -1,70 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+    >
 
-    <RelativeLayout
+  <RelativeLayout
+      android:layout_width="?android:listPreferredItemHeight"
+      android:layout_height="match_parent"
+      >
+
+    <com.alorma.github.ui.view.timeline.LineView
+        android:id="@+id/timeline"
         android:layout_width="?android:listPreferredItemHeight"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:tl_lineColor="@color/gray_github_medium"
+        app:tl_lineWidth="1dp"
+        />
 
-        <com.alorma.github.ui.view.timeline.LineView
-            android:id="@+id/timeline"
-            android:layout_width="?android:listPreferredItemHeight"
-            android:layout_height="match_parent"
-            app:tl_lineColor="@color/gray_github_medium"
-            app:tl_lineWidth="1dp" />
+    <com.mikepenz.materialdrawer.view.BezelImageView
+        android:id="@+id/profileIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+        android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+        android:clickable="false"
+        android:elevation="1dp"
+        app:biv_maskDrawable="@drawable/material_drawer_circle_mask"
+        />
+  </RelativeLayout>
 
-        <com.mikepenz.materialdrawer.view.BezelImageView
-            android:id="@+id/profileIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal|top"
-            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-            android:clickable="false"
-            android:elevation="1dp"
-            app:biv_maskDrawable="@drawable/material_drawer_circle_mask" />
-    </RelativeLayout>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:padding="@dimen/gapMedium"
+      >
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/userLogin"
+        style="@style/Base.TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/textSizeMedium"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/createdAt"
+        style="@style/Base.TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gapSmall"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/textSizeSmall"
+        />
+
+    <TextView
+        android:id="@+id/textBody"
+        style="@style/Base.TextAppearance.AppCompat.Caption"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/gapMedium">
+        android:gravity="center_vertical"
+        android:textSize="@dimen/textSizeSmall"
+        />
 
-        <TextView
-            android:id="@+id/userLogin"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeMedium"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/createdAt"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapSmall"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall" />
-
-        <TextView
-            android:id="@+id/textBody"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall" />
-
-    </LinearLayout>
+  </LinearLayout>
 
 </LinearLayout>

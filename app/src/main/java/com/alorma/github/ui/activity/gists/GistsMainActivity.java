@@ -21,140 +21,135 @@ import rx.functions.Func1;
 
 public class GistsMainActivity extends BackActivity implements GistsFragment.GistsFragmentListener {
 
-    private Toolbar toolbar;
-    private GistsFragment gistsFragment;
-    private String gistId;
+  private Toolbar toolbar;
+  private GistsFragment gistsFragment;
+  private String gistId;
 
-    public static Intent createLauncherIntent(Context context) {
-        return createLauncherIntent(context, null);
+  public static Intent createLauncherIntent(Context context) {
+    return createLauncherIntent(context, null);
+  }
+
+  public static Intent createLauncherIntent(Context context, String username) {
+    Intent intent = new Intent(context, GistsMainActivity.class);
+
+    if (username != null) {
+      Uri uri = Uri.parse("http://gist.github.com/" + username);
+      intent.setData(uri);
     }
 
-    public static Intent createLauncherIntent(Context context, String username) {
-        Intent intent = new Intent(context, GistsMainActivity.class);
+    return intent;
+  }
 
-        if (username != null) {
-            Uri uri = Uri.parse("http://gist.github.com/" + username);
-            intent.setData(uri);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.generic_toolbar);
+
+    toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    setTitle(R.string.title_gists);
+
+    Uri uri = null;
+
+    if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
+      uri = getIntent().getData();
+      if (uri == null && getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
+        try {
+          uri = Uri.parse(getIntent().getStringExtra(Intent.EXTRA_TEXT));
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-
-        return intent;
+      }
+    } else if (getIntent().getData() != null) {
+      try {
+        uri = getIntent().getData();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.generic_toolbar);
+    if (uri != null) {
+      String gistUser = null;
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle(R.string.title_gists);
+      gistId = uri.getLastPathSegment();
+      if (uri.getPathSegments().size() > 1) {
+        gistUser = uri.getPathSegments().get(0);
+      }
 
-        Uri uri = null;
+      if (gistId != null && gistUser == null) {
+        GetGistDetailClient gistDetailClient = new GetGistDetailClient(this, gistId);
+        gistDetailClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
+          @Override
+          public void onCompleted() {
 
-        if ((Intent.ACTION_SEND.equals(getIntent().getAction())) || (Intent.ACTION_VIEW.equals(getIntent().getAction()))) {
-            uri = getIntent().getData();
-            if (uri == null && getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
-                try {
-                    uri = Uri.parse(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+          }
 
-        } else if (getIntent().getData() != null) {
-            try {
-                uri = getIntent().getData();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+          @Override
+          public void onError(Throwable e) {
+            loadGists();
+          }
 
-        if (uri != null) {
-            String gistUser = null;
-
-            gistId = uri.getLastPathSegment();
-            if (uri.getPathSegments().size() > 1) {
-                gistUser = uri.getPathSegments().get(0);
-            }
-
-            if (gistId != null && gistUser == null) {
-                GetGistDetailClient gistDetailClient = new GetGistDetailClient(this, gistId);
-                gistDetailClient.observable().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Gist>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        loadGists();
-                    }
-
-                    @Override
-                    public void onNext(Gist gist) {
-                        loadGistDetail(gistId);
-                        finish();
-                    }
-                });
-            } else if (gistId != null) {
-                loadGistDetail(gistId);
-                finish();
-            } else {
-                showGistsFragment(null);
-            }
-        } else {
-            showGistsFragment(null);
-        }
-
-    }
-
-    private void loadGists() {
-        UserGistsClient userGistsClient = new UserGistsClient(GistsMainActivity.this, gistId);
-        userGistsClient.observable().observeOn(AndroidSchedulers.mainThread())
-        .map(new Func1<Pair<List<Gist>,Integer>, List<Gist>>() {
-            @Override
-            public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
-                return listIntegerPair.first;
-            }
-        }).subscribe(new Subscriber<List<Gist>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(GistsMainActivity.this, R.string.gist_not_loaded, Toast.LENGTH_SHORT)
-                    .show();
-                finish();
-            }
-
-            @Override
-            public void onNext(List<Gist> gists) {
-                setTitle(getString(R.string.user_gists, gistId));
-                showGistsFragment(gistId);
-            }
+          @Override
+          public void onNext(Gist gist) {
+            loadGistDetail(gistId);
+            finish();
+          }
         });
+      } else if (gistId != null) {
+        loadGistDetail(gistId);
+        finish();
+      } else {
+        showGistsFragment(null);
+      }
+    } else {
+      showGistsFragment(null);
     }
+  }
 
-    @Override
-    public void onGistsRequest(Gist gist) {
-        loadGistDetail(gist.id);
-    }
+  private void loadGists() {
+    UserGistsClient userGistsClient = new UserGistsClient(GistsMainActivity.this, gistId);
+    userGistsClient.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
+      @Override
+      public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
+        return listIntegerPair.first;
+      }
+    }).subscribe(new Subscriber<List<Gist>>() {
+      @Override
+      public void onCompleted() {
 
-    private void loadGistDetail(String gistId) {
-        Intent launcherIntent = GistDetailActivity.createLauncherIntent(this, gistId);
-        startActivity(launcherIntent);
-    }
+      }
 
-    private void showGistsFragment(String username) {
+      @Override
+      public void onError(Throwable e) {
+        Toast.makeText(GistsMainActivity.this, R.string.gist_not_loaded, Toast.LENGTH_SHORT).show();
+        finish();
+      }
 
-        gistsFragment = GistsFragment.newInstance(username);
-        gistsFragment.setGistsFragmentListener(this);
+      @Override
+      public void onNext(List<Gist> gists) {
+        setTitle(getString(R.string.user_gists, gistId));
+        showGistsFragment(gistId);
+      }
+    });
+  }
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content, gistsFragment);
-        ft.commit();
-    }
+  @Override
+  public void onGistsRequest(Gist gist) {
+    loadGistDetail(gist.id);
+  }
+
+  private void loadGistDetail(String gistId) {
+    Intent launcherIntent = GistDetailActivity.createLauncherIntent(this, gistId);
+    startActivity(launcherIntent);
+  }
+
+  private void showGistsFragment(String username) {
+
+    gistsFragment = GistsFragment.newInstance(username);
+    gistsFragment.setGistsFragmentListener(this);
+
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ft.replace(R.id.content, gistsFragment);
+    ft.commit();
+  }
 }

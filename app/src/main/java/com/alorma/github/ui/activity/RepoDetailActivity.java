@@ -47,8 +47,7 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class RepoDetailActivity extends BackActivity
-    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
+public class RepoDetailActivity extends BackActivity implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -91,8 +90,7 @@ public class RepoDetailActivity extends BackActivity
       requestRepoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
       if (requestRepoInfo == null) {
-        if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras()
-            .containsKey(REPO_INFO_OWNER)) {
+        if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras().containsKey(REPO_INFO_OWNER)) {
           String name = getIntent().getExtras().getString(REPO_INFO_NAME);
           String owner = getIntent().getExtras().getString(REPO_INFO_OWNER);
 
@@ -208,26 +206,6 @@ public class RepoDetailActivity extends BackActivity
 
   }
 
-  private class NavigationAdapter extends FragmentPagerAdapter {
-
-    private List<Fragment> fragments;
-
-    public NavigationAdapter(FragmentManager fm, List<Fragment> fragments) {
-      super(fm);
-      this.fragments = fragments;
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-      return fragments.get(position);
-    }
-
-    @Override
-    public int getCount() {
-      return fragments != null ? fragments.size() : 0;
-    }
-  }
-
   private void listFragments() {
     if (fragments == null) {
       fragments = new ArrayList<>();
@@ -275,8 +253,7 @@ public class RepoDetailActivity extends BackActivity
 
       MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
 
-      Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar()
-          .colorRes(R.color.white);
+      Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
 
       if (menuChangeBranch != null) {
         menuChangeBranch.setIcon(changeBranch);
@@ -303,8 +280,7 @@ public class RepoDetailActivity extends BackActivity
       changeBranch();
     } else if (item.getItemId() == R.id.action_manage_repo) {
       if (currentRepo != null) {
-        Intent intent =
-            ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
+        Intent intent = ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
         startActivityForResult(intent, EDIT_REPO);
       }
     } else if (item.getItemId() == R.id.action_add_shortcut) {
@@ -331,8 +307,7 @@ public class RepoDetailActivity extends BackActivity
 
   private void changeBranch() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, requestRepoInfo);
-    repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread())
-    .subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
+    repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
       @Override
       protected void onNoBranches() {
 
@@ -374,10 +349,8 @@ public class RepoDetailActivity extends BackActivity
       if (resultCode == RESULT_OK && data != null) {
         RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
         showProgressDialog(R.style.SpotDialog_edit_repo);
-        EditRepoClient editRepositoryClient =
-            new EditRepoClient(this, requestRepoInfo, repoRequestDTO);
-        editRepositoryClient.observable().observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Repo>() {
+        EditRepoClient editRepositoryClient = new EditRepoClient(this, requestRepoInfo, repoRequestDTO);
+        editRepositoryClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
           @Override
           public void onCompleted() {
 
@@ -417,6 +390,26 @@ public class RepoDetailActivity extends BackActivity
       }
     } else {
       finish();
+    }
+  }
+
+  private class NavigationAdapter extends FragmentPagerAdapter {
+
+    private List<Fragment> fragments;
+
+    public NavigationAdapter(FragmentManager fm, List<Fragment> fragments) {
+      super(fm);
+      this.fragments = fragments;
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+      return fragments.get(position);
+    }
+
+    @Override
+    public int getCount() {
+      return fragments != null ? fragments.size() : 0;
     }
   }
 }

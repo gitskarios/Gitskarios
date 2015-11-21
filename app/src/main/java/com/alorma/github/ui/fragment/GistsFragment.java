@@ -12,15 +12,14 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-public class GistsFragment extends PaginatedListFragment<GistsAdapter>
-    implements GistsAdapter.GistsAdapterListener {
+public class GistsFragment extends LoadingListFragment<GistsAdapter> implements GistsAdapter.GistsAdapterListener {
 
   private static final String USERNAME = "USERNAME";
   public GistsFragmentListener gistsFragmentListener;
@@ -77,34 +76,31 @@ public class GistsFragment extends PaginatedListFragment<GistsAdapter>
   }
 
   private void setAction(GithubListClient<List<Gist>> userGistsClient) {
-    userGistsClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
-          @Override
-          public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
-            setPage(listIntegerPair.second);
-            return listIntegerPair.first;
-          }
-        })
-        .subscribe(new Subscriber<List<Gist>>() {
-          @Override
-          public void onCompleted() {
-            stopRefresh();
-          }
+    userGistsClient.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
+      @Override
+      public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
+        setPage(listIntegerPair.second);
+        return listIntegerPair.first;
+      }
+    }).subscribe(new Subscriber<List<Gist>>() {
+      @Override
+      public void onCompleted() {
+        stopRefresh();
+      }
 
-          @Override
-          public void onError(Throwable e) {
-            stopRefresh();
-            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-              setEmpty(true);
-            }
-          }
+      @Override
+      public void onError(Throwable e) {
+        stopRefresh();
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+          setEmpty(true);
+        }
+      }
 
-          @Override
-          public void onNext(List<Gist> gists) {
-            getAdapter().addAll(gists);
-          }
-        });
+      @Override
+      public void onNext(List<Gist> gists) {
+        getAdapter().addAll(gists);
+      }
+    });
   }
 
   @Override
@@ -128,10 +124,6 @@ public class GistsFragment extends PaginatedListFragment<GistsAdapter>
     }
   }
 
-  public interface GistsFragmentListener {
-    void onGistsRequest(Gist gist);
-  }
-
   @Override
   protected void fabClick() {
     try {
@@ -140,5 +132,9 @@ public class GistsFragment extends PaginatedListFragment<GistsAdapter>
     } catch (ActivityNotFoundException e) {
       e.printStackTrace();
     }
+  }
+
+  public interface GistsFragmentListener {
+    void onGistsRequest(Gist gist);
   }
 }

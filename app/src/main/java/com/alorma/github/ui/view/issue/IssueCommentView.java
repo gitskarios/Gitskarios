@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -18,7 +17,6 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -27,71 +25,70 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class IssueCommentView extends LinearLayout {
 
-    private TextView body;
-    private ImageView profileIcon;
-    private TextView userText;
-    private TextView createdAt;
+  private TextView body;
+  private ImageView profileIcon;
+  private TextView userText;
+  private TextView createdAt;
 
-    public IssueCommentView(Context context) {
-        super(context);
-        init();
+  public IssueCommentView(Context context) {
+    super(context);
+    init();
+  }
+
+  public IssueCommentView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init();
+  }
+
+  public IssueCommentView(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  public IssueCommentView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+    init();
+  }
+
+  private void init() {
+    inflate(getContext(), R.layout.issue_detail_issue_comment_view, this);
+    setOrientation(VERTICAL);
+    body = (TextView) findViewById(R.id.textBody);
+
+    userText = (TextView) findViewById(R.id.userLogin);
+    profileIcon = (ImageView) findViewById(R.id.profileIcon);
+    createdAt = (TextView) findViewById(R.id.createdAt);
+  }
+
+  public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
+    GithubComment githubComment = issueStoryDetail.comment;
+
+    applyGenericIssueStory(issueStoryDetail);
+
+    if (githubComment.user != null) {
+      ImageLoader instance = ImageLoader.getInstance();
+      instance.displayImage(githubComment.user.avatar_url, profileIcon);
     }
 
-    public IssueCommentView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    if (githubComment.body_html != null) {
+      String htmlCode = HtmlUtils.format(githubComment.body_html).toString();
+      HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+      imageGetter.repoInfo(repoInfo);
+      imageGetter.bind(body, htmlCode, githubComment.hashCode());
+      body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
     }
+  }
 
-    public IssueCommentView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
+  private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
+    userText.setText(storyEvent.user().login);
+    ImageLoader.getInstance().displayImage(storyEvent.user().avatar_url, profileIcon);
+    setTime(storyEvent.createdAt());
+  }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public IssueCommentView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
-    private void init() {
-        inflate(getContext(), R.layout.issue_detail_issue_comment_view, this);
-        setOrientation(VERTICAL);
-        body = (TextView) findViewById(R.id.textBody);
-
-        userText = (TextView) findViewById(R.id.userLogin);
-        profileIcon = (ImageView) findViewById(R.id.profileIcon);
-        createdAt = (TextView) findViewById(R.id.createdAt);
-    }
-
-    public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
-        GithubComment githubComment = issueStoryDetail.comment;
-
-        applyGenericIssueStory(issueStoryDetail);
-
-        if (githubComment.user != null) {
-            ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(githubComment.user.avatar_url, profileIcon);
-        }
-
-        if (githubComment.body_html != null) {
-            String htmlCode = HtmlUtils.format(githubComment.body_html).toString();
-            HttpImageGetter imageGetter = new HttpImageGetter(getContext());
-            imageGetter.repoInfo(repoInfo);
-            imageGetter.bind(body, htmlCode, githubComment.hashCode());
-            body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-        }
-    }
-
-    private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
-        userText.setText(storyEvent.user().login);
-        ImageLoader.getInstance().displayImage(storyEvent.user().avatar_url, profileIcon);
-        setTime(storyEvent.createdAt());
-    }
-
-    private void setTime(long time) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date = TimeUtils.getTimeAgoString(formatter.print(time));
-        createdAt.setText(date);
-    }
-
+  private void setTime(long time) {
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    String date = TimeUtils.getTimeAgoString(formatter.print(time));
+    createdAt.setText(date);
+  }
 }

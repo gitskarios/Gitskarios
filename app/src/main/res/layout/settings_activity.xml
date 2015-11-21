@@ -4,13 +4,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/gray_github_light">
+              android:background="@color/gray_github_light"
+    >
 
-    <include layout="@layout/toolbar" />
+  <include layout="@layout/toolbar"/>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content"/>
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/content"
+      />
 
 </LinearLayout>

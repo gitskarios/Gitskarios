@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
@@ -24,7 +23,6 @@ import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.crashlytics.android.Crashlytics;
-
 import io.fabric.sdk.android.Fabric;
 
 /**

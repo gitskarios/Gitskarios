@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.alorma.github.ui.view.LinearBreadcrumb;
 import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
@@ -27,6 +26,7 @@ import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.ui.view.LinearBreadcrumb;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.Arrays;
@@ -40,8 +40,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by Bernat on 20/07/2014.
  */
 public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
-    implements TitleProvider, BranchManager,
-    LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
+    implements TitleProvider, BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
 
@@ -75,9 +74,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         stopRefresh();
         if (getActivity() != null) {
           if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (e != null
-                && e instanceof RetrofitError
-                && ((RetrofitError) e).getResponse() != null) {
+            if (e != null && e instanceof RetrofitError && ((RetrofitError) e).getResponse() != null) {
               setEmpty(true, ((RetrofitError) e).getResponse().getStatus());
             }
           }
@@ -93,8 +90,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.source_list_fragment, null, false);
   }
 
@@ -152,9 +148,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     breadCrumbs.initRootCrumb();
 
     GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
-    repoContentsClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(subscriber);
+    repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
   }
 
   @Override
@@ -175,8 +169,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         breadCrumbs.addPath(currentPath, "/");
       }
 
-      RepoSourceAdapter contentAdapter =
-          new RepoSourceAdapter(getActivity(), LayoutInflater.from(getActivity()));
+      RepoSourceAdapter contentAdapter = new RepoSourceAdapter(getActivity(), LayoutInflater.from(getActivity()));
       contentAdapter.setSourceAdapterListener(this);
       contentAdapter.addAll(contents);
       setAdapter(contentAdapter);
@@ -216,21 +209,17 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         break;
       case R.id.action_copy_content_url:
         copy(content._links.html);
-        Toast.makeText(getActivity(), getString(R.string.url_of_copied, content.name),
-            Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getString(R.string.url_of_copied, content.name), Toast.LENGTH_SHORT).show();
         break;
       case R.id.action_content_history:
-        Intent intent =
-            ContentCommitsActivity.createLauncherIntent(getActivity(), repoInfo, content.path,
-                content.name);
+        Intent intent = ContentCommitsActivity.createLauncherIntent(getActivity(), repoInfo, content.path, content.name);
         startActivity(intent);
         break;
     }
   }
 
   public void copy(String text) {
-    ClipboardManager clipboard =
-        (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
     ClipData clip = ClipData.newPlainText("Gitskarios", text);
     clipboard.setPrimaryClip(clip);
   }
@@ -256,11 +245,8 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     currentPath = path;
     startRefresh();
 
-    GetRepoContentsClient repoContentsClient =
-        new GetRepoContentsClient(getActivity(), repoInfo, path);
-    repoContentsClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(subscriber);
+    GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, path);
+    repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
   }
 
   private void onContentLoaded(List<Content> contents) {
@@ -315,8 +301,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   }
 
   @Override
-  public void onCrumbSelection(LinearBreadcrumb.Crumb crumb, String absolutePath, int count,
-      int index) {
+  public void onCrumbSelection(LinearBreadcrumb.Crumb crumb, String absolutePath, int count, int index) {
     if (crumb.getPath() != null && crumb.getPath().equals("/")) {
       getContent();
     } else {
@@ -330,6 +315,16 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
   }
 
+  @Override
+  public boolean onBackPressed() {
+    if (breadCrumbs != null && breadCrumbs.size() == 1) {
+      return true;
+    } else {
+      navigateUp();
+      return false;
+    }
+  }
+
   private class DownloadBranchesCallback extends DialogBranchesCallback {
 
     public DownloadBranchesCallback(Context context, RepoInfo repoInfo) {
@@ -341,8 +336,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
       RepoInfo repoInfo = new RepoInfo();
       repoInfo.owner = getRepoInfo().owner;
       repoInfo.name = getRepoInfo().name;
-      GetArchiveLinkService getArchiveLinkService =
-          new GetArchiveLinkService(getContext(), repoInfo);
+      GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
       getArchiveLinkService.observable().subscribe();
     }
 
@@ -354,19 +348,8 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
       repoInfo.owner = getRepoInfo().owner;
       repoInfo.name = getRepoInfo().name;
       repoInfo.branch = branch;
-      GetArchiveLinkService getArchiveLinkService =
-          new GetArchiveLinkService(getContext(), repoInfo);
+      GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
       getArchiveLinkService.observable().subscribe();
-    }
-  }
-
-  @Override
-  public boolean onBackPressed() {
-    if (breadCrumbs != null && breadCrumbs.size() == 1) {
-      return true;
-    } else {
-      navigateUp();
-      return false;
     }
   }
 }

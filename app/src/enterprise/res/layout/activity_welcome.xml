@@ -1,118 +1,118 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorPrimaryDark"
-    android:fitsSystemWindows="true"
-    tools:context="com.alorma.github.ui.activity.WelcomeActivity"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/colorPrimaryDark"
+                android:fitsSystemWindows="true"
+                tools:context="com.alorma.github.ui.activity.WelcomeActivity"
     >
-    <android.support.v7.widget.SwitchCompat
+  <android.support.v7.widget.SwitchCompat
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:text="@string/import_gitskarios_accounts"
+      android:id="@+id/importAccountsSwitch"
+      android:paddingLeft="@dimen/gapLarge"
+      android:paddingRight="@dimen/gapLarge"
+      android:layout_marginLeft="@dimen/gapSmall"
+      android:layout_marginRight="@dimen/gapSmall"
+      android:layout_marginBottom="@dimen/gapMedium"
+      android:layout_marginTop="@dimen/gapXLarge"
+      android:textColor="@color/white"
+      />
+
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_width="200dp"
+      android:layout_height="200dp"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="90dp"
+      android:src="@drawable/ic_launcher_web"
+      />
+
+  <com.alorma.github.ui.view.CircularImageView
+      android:id="@+id/imageUser"
+      android:layout_width="200dp"
+      android:layout_height="200dp"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="90dp"
+      android:src="@drawable/ic_launcher_web"
+      android:visibility="gone"
+      />
+
+  <TextView
+      android:id="@+id/appName"
+      style="@style/TextAppearance.AppCompat.Headline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentStart="true"
+      android:layout_below="@+id/imageView"
+      android:layout_marginTop="@dimen/gapXLarge"
+      android:gravity="center"
+      android:text="@string/app_name"
+      android:textColor="@color/white"
+      android:textSize="30sp"
+      />
+
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/appName"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="@dimen/gapLarge"
+      android:layout_marginLeft="@dimen/gapXLarge"
+      android:layout_marginRight="@dimen/gapXLarge"
+      android:layout_marginTop="@dimen/gapXLarge"
+      >
+
+    <Button
+        android:id="@+id/buttonOpen"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="@string/import_gitskarios_accounts"
-        android:id="@+id/importAccountsSwitch"
-        android:paddingLeft="@dimen/gapLarge"
-        android:paddingRight="@dimen/gapLarge"
-        android:layout_marginLeft="@dimen/gapSmall"
-        android:layout_marginRight="@dimen/gapSmall"
-        android:layout_marginBottom="@dimen/gapMedium"
-        android:layout_marginTop="@dimen/gapXLarge"
-        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        tools:visibility="gone"
+        android:alpha="0"
+        tools:alpha="1"
+        android:text="@string/open_app"
         />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
-        android:src="@drawable/ic_launcher_web"
-        />
-
-    <com.alorma.github.ui.view.CircularImageView
-        android:id="@+id/imageUser"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
-        android:src="@drawable/ic_launcher_web"
-        android:visibility="gone"
-        />
-
-    <TextView
-        android:id="@+id/appName"
-        style="@style/TextAppearance.AppCompat.Headline"
+    <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/imageView"
-        android:layout_marginTop="@dimen/gapXLarge"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="30sp"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center"
+        android:visibility="invisible"
         />
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/gapLarge"
-        android:layout_marginLeft="@dimen/gapXLarge"
-        android:layout_marginRight="@dimen/gapXLarge"
-        android:layout_marginTop="@dimen/gapXLarge"
+        android:orientation="vertical"
         >
 
-        <Button
-            android:id="@+id/buttonOpen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            tools:visibility="gone"
-            android:alpha="0"
-            tools:alpha="1"
-            android:text="@string/open_app"
-            />
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
-            android:layout_gravity="center"
-            android:visibility="invisible"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+      <Button
+          android:id="@+id/buttonGithub"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"
+          tools:visibility="visible"
+          android:alpha="0"
+          tools:alpha="1"
+          android:text="@string/welcome_button_github"
+          />
 
-            <Button
-                android:id="@+id/buttonGithub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                tools:visibility="visible"
-                android:alpha="0"
-                tools:alpha="1"
-                android:text="@string/welcome_button_github"
-                />
-
-            <Button
-                android:id="@+id/buttonEnterprise"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                tools:visibility="visible"
-                android:alpha="0"
-                tools:alpha="1"
-                android:text="@string/welcome_button_enterprise"
-                />
-        </LinearLayout>
-    </FrameLayout>
+      <Button
+          android:id="@+id/buttonEnterprise"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"
+          tools:visibility="visible"
+          android:alpha="0"
+          tools:alpha="1"
+          android:text="@string/welcome_button_enterprise"
+          />
+    </LinearLayout>
+  </FrameLayout>
 </RelativeLayout>

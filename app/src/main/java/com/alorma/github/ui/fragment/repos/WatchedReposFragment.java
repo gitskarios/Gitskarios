@@ -6,48 +6,47 @@ import com.alorma.github.sdk.services.repos.WatchedReposClient;
 
 public class WatchedReposFragment extends BaseReposListFragment {
 
-    private String username;
+  private String username;
 
-    public static WatchedReposFragment newInstance() {
-        return new WatchedReposFragment();
+  public static WatchedReposFragment newInstance() {
+    return new WatchedReposFragment();
+  }
+
+  public static WatchedReposFragment newInstance(String username) {
+    WatchedReposFragment reposFragment = new WatchedReposFragment();
+    if (username != null) {
+      Bundle bundle = new Bundle();
+      bundle.putString(USERNAME, username);
+
+      reposFragment.setArguments(bundle);
+    }
+    return reposFragment;
+  }
+
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
+
+    if (getArguments() != null) {
+      username = getArguments().getString(USERNAME);
     }
 
-    public static WatchedReposFragment newInstance(String username) {
-        WatchedReposFragment reposFragment = new WatchedReposFragment();
-        if (username != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(USERNAME, username);
+    setAction(new WatchedReposClient(getActivity(), username));
+  }
 
-            reposFragment.setArguments(bundle);
-        }
-        return reposFragment;
-    }
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
+    setAction(new WatchedReposClient(getActivity(), username, page));
+  }
 
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_watched_repositories;
+  }
 
-        if (getArguments() != null) {
-            username = getArguments().getString(USERNAME);
-        }
+  @Override
+  protected void loadArguments() {
 
-        setAction(new WatchedReposClient(getActivity(), username));
-
-    }
-
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
-        setAction(new WatchedReposClient(getActivity(), username, page));
-    }
-
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_watched_repositories;
-    }
-
-    @Override
-    protected void loadArguments() {
-
-    }
+  }
 }

@@ -37,8 +37,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
   private ListPreference pref_repo_default_branch;
   private MaterialDialog deleteRepoDialog;
 
-  public static RepositoryManagerFragment newInstance(RepoInfo repoInfo,
-      RepoRequestDTO repoRequestDTO) {
+  public static RepositoryManagerFragment newInstance(RepoInfo repoInfo, RepoRequestDTO repoRequestDTO) {
     RepositoryManagerFragment fragment = new RepositoryManagerFragment();
 
     Bundle args = new Bundle();
@@ -74,8 +73,8 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     pref_repo_description.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
       @Override
       public boolean onPreferenceClick(Preference preference) {
-        Intent intent = ContentEditorActivity.createLauncherIntent(getActivity(), repoInfo, 0, null,
-            repoRequestDTO.description, true, true);
+        Intent intent =
+            ContentEditorActivity.createLauncherIntent(getActivity(), repoInfo, 0, null, repoRequestDTO.description, true, true);
         startActivityForResult(intent, DESCRIPTION_EDIT);
         return false;
       }
@@ -90,8 +89,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
       }
     });
 
-    CheckBoxPreference pref_repo_has_issues =
-        (CheckBoxPreference) findPreference("pref_repo_has_issues");
+    CheckBoxPreference pref_repo_has_issues = (CheckBoxPreference) findPreference("pref_repo_has_issues");
     pref_repo_has_issues.setChecked(repoRequestDTO.has_issues);
     pref_repo_has_issues.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
       @Override
@@ -101,8 +99,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
       }
     });
 
-    CheckBoxPreference pref_repo_has_wiki =
-        (CheckBoxPreference) findPreference("pref_repo_has_wiki");
+    CheckBoxPreference pref_repo_has_wiki = (CheckBoxPreference) findPreference("pref_repo_has_wiki");
     pref_repo_has_wiki.setChecked(repoRequestDTO.has_wiki);
     pref_repo_has_wiki.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
       @Override
@@ -112,11 +109,9 @@ public class RepositoryManagerFragment extends PreferenceFragment {
       }
     });
 
-    CheckBoxPreference pref_repo_has_downloads =
-        (CheckBoxPreference) findPreference("pref_repo_has_downloads");
+    CheckBoxPreference pref_repo_has_downloads = (CheckBoxPreference) findPreference("pref_repo_has_downloads");
     pref_repo_has_downloads.setChecked(repoRequestDTO.has_downloads);
-    pref_repo_has_downloads.setOnPreferenceChangeListener(
-        new Preference.OnPreferenceChangeListener() {
+    pref_repo_has_downloads.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
           @Override
           public boolean onPreferenceChange(Preference preference, Object newValue) {
             repoRequestDTO.has_downloads = (Boolean) newValue;
@@ -137,8 +132,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     pref_repo_default_branch = (ListPreference) findPreference("pref_repo_default_branch");
     pref_repo_default_branch.setTitle(repoRequestDTO.default_branch);
     pref_repo_default_branch.setEnabled(false);
-    pref_repo_default_branch.setOnPreferenceChangeListener(
-        new Preference.OnPreferenceChangeListener() {
+    pref_repo_default_branch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
           @Override
           public boolean onPreferenceChange(Preference preference, Object newValue) {
             repoRequestDTO.default_branch = (String) newValue;
@@ -160,8 +154,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
   }
 
   private void checkDeleteRepository() {
-    Spanned content =
-        Html.fromHtml(getString(R.string.delete_repository_content, repoInfo.owner, repoInfo.name));
+    Spanned content = Html.fromHtml(getString(R.string.delete_repository_content, repoInfo.owner, repoInfo.name));
     new MaterialDialog.Builder(getActivity()).title(R.string.delete_repository)
         .content(content)
         .positiveText(R.string.ok)
@@ -183,21 +176,19 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     builder.content(R.string.deleting_repository);
     deleteRepoDialog = builder.show();
     DeleteRepoClient deleteRepoClient = new DeleteRepoClient(getActivity(), repoInfo);
-    deleteRepoClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Response>() {
+    deleteRepoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Response>() {
       @Override
       public void onCompleted() {
 
       }
 
-          @Override
-          public void onError(Throwable e) {
-            Toast.makeText(getActivity(), "Repository delete failed", Toast.LENGTH_SHORT).show();
-          }
+      @Override
+      public void onError(Throwable e) {
+        Toast.makeText(getActivity(), "Repository delete failed", Toast.LENGTH_SHORT).show();
+      }
 
-          @Override
-          public void onNext(Response response) {
+      @Override
+      public void onNext(Response response) {
         if (getActivity() != null) {
           if (deleteRepoDialog != null) {
             deleteRepoDialog.dismiss();
@@ -211,20 +202,18 @@ public class RepositoryManagerFragment extends PreferenceFragment {
 
   private void getBranches() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-    repoBranchesClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new BranchesCallback(repoInfo) {
+    repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new BranchesCallback(repoInfo) {
 
-              @Override
-              protected void showBranches(String[] branches, int defaultBranchPosition) {
-                if (branches != null && branches.length > 0) {
-                  pref_repo_default_branch.setEntries(branches);
-                  pref_repo_default_branch.setEntryValues(branches);
-                  pref_repo_default_branch.setValueIndex(defaultBranchPosition);
-                  pref_repo_default_branch.setEnabled(true);
-                }
-              }
-            });
+      @Override
+      protected void showBranches(String[] branches, int defaultBranchPosition) {
+        if (branches != null && branches.length > 0) {
+          pref_repo_default_branch.setEntries(branches);
+          pref_repo_default_branch.setEntryValues(branches);
+          pref_repo_default_branch.setValueIndex(defaultBranchPosition);
+          pref_repo_default_branch.setEnabled(true);
+        }
+      }
+    });
   }
 
   @Override

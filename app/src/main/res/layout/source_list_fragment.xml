@@ -1,64 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/listContentFL"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/gray_github_light">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@id/listContentFL"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/gray_github_light"
+    >
 
-    <LinearLayout
-        android:id="@+id/listContainer"
+  <LinearLayout
+      android:id="@+id/listContainer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+
+    <com.alorma.github.ui.view.LinearBreadcrumb
+        android:id="@+id/breadCrumbs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary"
+        android:paddingLeft="@dimen/gapLarge"
+        />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        >
 
-        <com.alorma.github.ui.view.LinearBreadcrumb
-            android:id="@+id/breadCrumbs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimary"
-            android:paddingLeft="@dimen/gapLarge" />
+      <android.support.v7.widget.RecyclerView
+          android:id="@id/recycler"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:drawSelectorOnTop="false"
+          android:paddingBottom="80dp"
+          android:clipToPadding="false"
+          />
+    </android.support.v4.widget.SwipeRefreshLayout>
+  </LinearLayout>
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+  <include
+      layout="@layout/fab"
+      android:layout_width="@dimen/fab"
+      android:layout_height="@dimen/fab"
+      android:layout_gravity="bottom|right|end"
+      android:layout_margin="@dimen/gapLarge"
+      android:visibility="gone"
+      />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@id/recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"
-                android:paddingBottom="80dp"
-                android:clipToPadding="false"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </LinearLayout>
+  <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
+                              android:id="@+id/error_view"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:visibility="gone"
+                              errorview:ev_showRetryButton="true"
+                              errorview:ev_showSubtitle="true"
+                              errorview:ev_showTitle="true"
+      />
 
-    <include
-        layout="@layout/fab"
-        android:layout_width="@dimen/fab"
-        android:layout_height="@dimen/fab"
-        android:layout_gravity="bottom|right|end"
-        android:layout_margin="@dimen/gapLarge"
-        android:visibility="gone" />
-
-    <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/error_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        errorview:ev_showRetryButton="true"
-        errorview:ev_showSubtitle="true"
-        errorview:ev_showTitle="true" />
-
-    <ProgressBar
-        android:id="@+id/loading_view"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="?attr/listPreferredItemHeight"
-        android:layout_height="?attr/listPreferredItemHeight"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone"
-        tools:visibility="visible" />
+  <ProgressBar
+      android:id="@+id/loading_view"
+      style="?android:attr/progressBarStyleSmall"
+      android:layout_width="?attr/listPreferredItemHeight"
+      android:layout_height="?attr/listPreferredItemHeight"
+      android:layout_gravity="center"
+      android:indeterminate="true"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
 </FrameLayout>

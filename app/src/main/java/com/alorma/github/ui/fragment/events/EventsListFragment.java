@@ -36,7 +36,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.utils.AttributesUtils;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
@@ -59,13 +59,40 @@ import rx.functions.Func1;
 /**
  * Created by Bernat on 03/10/2014.
  */
-public class EventsListFragment extends PaginatedListFragment<EventAdapter>
-    implements EventAdapter.EventAdapterListener {
+public class EventsListFragment extends LoadingListFragment<EventAdapter> implements EventAdapter.EventAdapterListener {
 
   private String username;
 
   private ArrayStrings filterNames;
   private ArrayIntegers filterIds;
+  private Observer<GithubEvent> subscriber = new Observer<GithubEvent>() {
+    @Override
+    public void onCompleted() {
+      stopRefresh();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(GithubEvent event) {
+      if (getAdapter() != null) {
+        getAdapter().add(event);
+      }
+    }
+  };
+
+  public static EventsListFragment newInstance(String username) {
+    Bundle bundle = new Bundle();
+    bundle.putString(USERNAME, username);
+
+    EventsListFragment f = new EventsListFragment();
+    f.setArguments(bundle);
+
+    return f;
+  }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -98,8 +125,7 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
 
     MenuItem item = menu.findItem(R.id.events_list_filter);
     if (item != null) {
-      item.setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_filter_list).colorRes(
-          R.color.white).actionBar());
+      item.setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_filter_list).colorRes(R.color.white).actionBar());
     }
   }
 
@@ -127,38 +153,32 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
 
         logAnswers("EVENT_FILTER_CLICK");
 
-        new MaterialDialog.Builder(getActivity()).items(names)
-            .itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
-              @Override
-              public boolean onSelection(MaterialDialog dialog, Integer[] which,
-                  CharSequence[] text) {
-                EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
-                List<CharSequence> filterNames = Arrays.asList(text);
-                List<String> filters = new ArrayList<>(filterNames.size());
-                for (CharSequence filterName : filterNames) {
-                  filters.add(String.valueOf(filterName));
-                }
-                EventsListFragment.this.filterNames = new ArrayStrings(filters);
-                saveFilter();
-                executeFromFilter();
-                logAnswers("EVENT_FILTER_APPLIED");
-                return false;
-              }
-            })
-            .positiveText(R.string.ok)
-            .neutralText(R.string.clear_filters)
-            .callback(new MaterialDialog.ButtonCallback() {
-              @Override
-              public void onNeutral(MaterialDialog dialog) {
-                super.onNeutral(dialog);
-                EventsListFragment.this.filterIds = null;
-                EventsListFragment.this.filterNames = null;
-                clearSavedFilter();
-                executeFromFilter();
-                logAnswers("EVENT_FILTER_CLEAR");
-              }
-            })
-            .show();
+        new MaterialDialog.Builder(getActivity()).items(names).itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
+          @Override
+          public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+            EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
+            List<CharSequence> filterNames = Arrays.asList(text);
+            List<String> filters = new ArrayList<>(filterNames.size());
+            for (CharSequence filterName : filterNames) {
+              filters.add(String.valueOf(filterName));
+            }
+            EventsListFragment.this.filterNames = new ArrayStrings(filters);
+            saveFilter();
+            executeFromFilter();
+            logAnswers("EVENT_FILTER_APPLIED");
+            return false;
+          }
+        }).positiveText(R.string.ok).neutralText(R.string.clear_filters).callback(new MaterialDialog.ButtonCallback() {
+          @Override
+          public void onNeutral(MaterialDialog dialog) {
+            super.onNeutral(dialog);
+            EventsListFragment.this.filterIds = null;
+            EventsListFragment.this.filterNames = null;
+            clearSavedFilter();
+            executeFromFilter();
+            logAnswers("EVENT_FILTER_CLEAR");
+          }
+        }).show();
         break;
     }
 
@@ -176,8 +196,7 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
 
     Gson gson = new Gson();
 
-    ArrayList events_filter =
-        gson.fromJson(shared.getString("EVENTS_FILTER", null), ArrayList.class);
+    ArrayList events_filter = gson.fromJson(shared.getString("EVENTS_FILTER", null), ArrayList.class);
 
     if (events_filter != null) {
       EventsListFragment.this.filterNames = new ArrayStrings();
@@ -186,8 +205,7 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
       }
     }
 
-    ArrayList events_filter_ids =
-        gson.fromJson(shared.getString("EVENTS_FILTER_IDS", null), ArrayList.class);
+    ArrayList events_filter_ids = gson.fromJson(shared.getString("EVENTS_FILTER_IDS", null), ArrayList.class);
 
     if (events_filter_ids != null) {
       EventsListFragment.this.filterIds = new ArrayIntegers();
@@ -197,32 +215,9 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
     }
   }
 
-  private class ArrayStrings extends ArrayList<String> {
-
-    public ArrayStrings(List<String> filterNames) {
-      super(filterNames);
-    }
-
-    public ArrayStrings() {
-
-    }
-  }
-
-  private class ArrayIntegers extends ArrayList<Integer> {
-
-    public ArrayIntegers(List<Integer> filterIds) {
-      super(filterIds);
-    }
-
-    public ArrayIntegers() {
-
-    }
-  }
-
   private void saveFilter() {
     if (filterNames != null && filterIds != null) {
-      SharedPreferences shared =
-          getActivity().getSharedPreferences("FILTERS", Context.MODE_PRIVATE);
+      SharedPreferences shared = getActivity().getSharedPreferences("FILTERS", Context.MODE_PRIVATE);
 
       Gson gson = new Gson();
       SharedPreferences.Editor edit = shared.edit();
@@ -252,39 +247,10 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
     return new Func1<GithubEvent, Boolean>() {
       @Override
       public Boolean call(GithubEvent githubEvent) {
-        return (filterNames != null && !filterNames.isEmpty()) ? filterNames.contains(
-            githubEvent.type.name()) : checkEventHandled(githubEvent);
+        return (filterNames != null && !filterNames.isEmpty()) ? filterNames.contains(githubEvent.type.name())
+            : checkEventHandled(githubEvent);
       }
     };
-  }
-
-  private Observer<GithubEvent> subscriber = new Observer<GithubEvent>() {
-    @Override
-    public void onCompleted() {
-      stopRefresh();
-    }
-
-    @Override
-    public void onError(Throwable e) {
-
-    }
-
-    @Override
-    public void onNext(GithubEvent event) {
-      if (getAdapter() != null) {
-        getAdapter().add(event);
-      }
-    }
-  };
-
-  public static EventsListFragment newInstance(String username) {
-    Bundle bundle = new Bundle();
-    bundle.putString(USERNAME, username);
-
-    EventsListFragment f = new EventsListFragment();
-    f.setArguments(bundle);
-
-    return f;
   }
 
   @Override
@@ -296,14 +262,11 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
 
   private boolean checkEventHandled(GithubEvent event) {
     return event.getType() != null && (event.getType() == EventType.PushEvent)
-        || (event.getType()
-        == EventType.WatchEvent)
+        || (event.getType() == EventType.WatchEvent)
         || (event.getType() == EventType.CreateEvent)
-        || (event.getType()
-        == EventType.IssueCommentEvent)
+        || (event.getType() == EventType.IssueCommentEvent)
         || (event.getType() == EventType.CommitCommentEvent)
-        || (event.getType()
-        == EventType.IssuesEvent)
+        || (event.getType() == EventType.IssuesEvent)
         || (event.getType() == EventType.ForkEvent)
         || (event.getType() == EventType.ReleaseEvent)
         || (event.getType() == EventType.PullRequestEvent)
@@ -325,7 +288,7 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
   private void executeClient(GetUserEventsClient eventsClient) {
     eventsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
-        .map(new Func1<Pair<List<GithubEvent>,Integer>, List<GithubEvent>>() {
+        .map(new Func1<Pair<List<GithubEvent>, Integer>, List<GithubEvent>>() {
           @Override
           public List<GithubEvent> call(Pair<List<GithubEvent>, Integer> listIntegerPair) {
             setPage(listIntegerPair.second);
@@ -386,16 +349,13 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
       String payload = gson.toJson(item.payload);
       IssueEventPayload issueEventPayload = gson.fromJson(payload, IssueEventPayload.class);
       if (issueEventPayload != null) {
-        startActivity(
-            new UrlsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
+        startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
       }
     } else if (type == EventType.PullRequestEvent) {
       String payload = gson.toJson(item.payload);
-      PullRequestEventPayload pullRequestEventPayload =
-          gson.fromJson(payload, PullRequestEventPayload.class);
+      PullRequestEventPayload pullRequestEventPayload = gson.fromJson(payload, PullRequestEventPayload.class);
       if (pullRequestEventPayload != null) {
-        startActivity(new UrlsManager(getActivity()).checkUri(
-            Uri.parse(pullRequestEventPayload.pull_request.html_url)));
+        startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(pullRequestEventPayload.pull_request.html_url)));
       }
     } else if (type == EventType.ForkEvent) {
       String payload = gson.toJson(item.payload);
@@ -410,8 +370,7 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
       String payload = gson.toJson(item.payload);
       ReleaseEventPayload releaseEventPayload = gson.fromJson(payload, ReleaseEventPayload.class);
       if (releaseEventPayload != null) {
-        Intent intent =
-            new UrlsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
+        Intent intent = new UrlsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
 
         if (intent != null) {
           startActivity(intent);
@@ -431,14 +390,59 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
     builder.title(R.string.event_select_commit);
     builder.adapter(adapter, new MaterialDialog.ListCallback() {
       @Override
-      public void onSelection(MaterialDialog materialDialog, View view, int i,
-          CharSequence charSequence) {
+      public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
         Commit item = adapter.getItem(i);
 
         startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(item.url)));
       }
     });
     builder.show();
+  }
+
+  private void showReposDialogDialog(final String... repos) {
+
+    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+    builder.title(R.string.event_select_repository);
+    builder.items(repos);
+    builder.alwaysCallSingleChoiceCallback();
+    builder.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+      @Override
+      public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+        String repoSelected = repos[i];
+        String[] split = repoSelected.split("/");
+        RepoInfo repoInfo = new RepoInfo();
+        repoInfo.owner = split[0];
+        repoInfo.name = split[1];
+
+        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+        startActivity(intent);
+        return true;
+      }
+    });
+
+    builder.show();
+  }
+
+  private class ArrayStrings extends ArrayList<String> {
+
+    public ArrayStrings(List<String> filterNames) {
+      super(filterNames);
+    }
+
+    public ArrayStrings() {
+
+    }
+  }
+
+  private class ArrayIntegers extends ArrayList<Integer> {
+
+    public ArrayIntegers(List<Integer> filterIds) {
+      super(filterIds);
+    }
+
+    public ArrayIntegers() {
+
+    }
   }
 
   private class CommitsAdapter extends ArrayAdapter<Commit> {
@@ -481,19 +485,16 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
               hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
             }
             String hash = hexString.toString();
-            ImageLoader.getInstance()
-                .displayImage("http://www.gravatar.com/avatar/" + hash, holder.avatar);
+            ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, holder.avatar);
           } catch (NoSuchAlgorithmException e) {
-            IconicsDrawable iconDrawable =
-                new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
+            IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
             iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
             iconDrawable.sizeDp(36);
             iconDrawable.setAlpha(128);
             holder.avatar.setImageDrawable(iconDrawable);
           }
         } else {
-          IconicsDrawable iconDrawable =
-              new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
+          IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
           iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
           iconDrawable.sizeDp(36);
           iconDrawable.setAlpha(128);
@@ -525,17 +526,14 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
       if (commit.stats != null) {
         String textCommitsStr = null;
         if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-          textCommitsStr = holder.itemView.getContext()
-              .getString(R.string.commit_file_add_del, commit.stats.additions,
-                  commit.stats.deletions);
+          textCommitsStr =
+              holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
           holder.textNums.setVisibility(View.VISIBLE);
         } else if (commit.stats.additions > 0) {
-          textCommitsStr = holder.itemView.getContext()
-              .getString(R.string.commit_file_add, commit.stats.additions);
+          textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
           holder.textNums.setVisibility(View.VISIBLE);
         } else if (commit.stats.deletions > 0) {
-          textCommitsStr = holder.itemView.getContext()
-              .getString(R.string.commit_file_del, commit.stats.deletions);
+          textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
           holder.textNums.setVisibility(View.VISIBLE);
         } else {
           holder.textNums.setVisibility(View.GONE);
@@ -550,8 +548,7 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
 
       if (commit.files != null && commit.files.size() > 0) {
         holder.numFiles.setVisibility(View.VISIBLE);
-        holder.numFiles.setText(
-            holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
+        holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
       } else {
         holder.numFiles.setVisibility(View.GONE);
       }
@@ -579,30 +576,5 @@ public class EventsListFragment extends PaginatedListFragment<EventAdapter>
         avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
       }
     }
-  }
-
-  private void showReposDialogDialog(final String... repos) {
-
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-    builder.title(R.string.event_select_repository);
-    builder.items(repos);
-    builder.alwaysCallSingleChoiceCallback();
-    builder.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-      @Override
-      public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-          CharSequence charSequence) {
-        String repoSelected = repos[i];
-        String[] split = repoSelected.split("/");
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.owner = split[0];
-        repoInfo.name = split[1];
-
-        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivity(intent);
-        return true;
-      }
-    });
-
-    builder.show();
   }
 }

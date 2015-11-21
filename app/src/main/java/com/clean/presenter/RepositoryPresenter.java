@@ -13,35 +13,33 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
-    private Context context;
+  private Context context;
 
-    public RepositoryPresenter(Context context) {
-        this.context = context;
-    }
+  public RepositoryPresenter(Context context) {
+    this.context = context;
+  }
 
-    @Override
-    public void load(@NonNull final RepoInfo repoInfo, @NonNull final Callback<Repo> repoCallback) {
+  @Override
+  public void load(@NonNull final RepoInfo repoInfo, @NonNull final Callback<Repo> repoCallback) {
 
-        GetRepoClient repoClient = new GetRepoClient(context, repoInfo);
+    GetRepoClient repoClient = new GetRepoClient(context, repoInfo);
 
-        repoClient.observable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<Repo>() {
+    repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
 
-                @Override
-                public void onNext(Repo repo) {
-                    repoCallback.onResponse(repo);
-                }
+      @Override
+      public void onNext(Repo repo) {
+        repoCallback.onResponse(repo);
+      }
 
-                @Override
-                public void onError(Throwable e) {
+      @Override
+      public void onError(Throwable e) {
 
-                }
+      }
 
-                @Override
-                public void onCompleted() {
+      @Override
+      public void onCompleted() {
 
-                }
-            });
-    }
+      }
+    });
+  }
 }

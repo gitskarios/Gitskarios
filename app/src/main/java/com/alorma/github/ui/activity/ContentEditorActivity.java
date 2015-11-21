@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.emoji.Emoji;
@@ -29,14 +28,13 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  */
 public class ContentEditorActivity extends BackActivity implements Toolbar.OnMenuItemClickListener {
 
+  public static final String CONTENT = "CONTENT";
   private static final String HINT = "HINT";
   private static final String PREFILL = "PREFILL";
   private static final String REPO_INFO = "REPO_INFO";
   private static final String ISSUE_NUM = "ISSUE_NUM";
   private static final String ALLOW_EMPTY = "ALLOW_EMPTY";
   private static final String BACK_IS_OK = "BACK_IS_OK";
-
-  public static final String CONTENT = "CONTENT";
   private static final int EMOJI_REQUEST = 1515;
 
   private EditText editText;
@@ -45,8 +43,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
   private boolean allowEmpty;
   private boolean backIsOk;
 
-  public static Intent createLauncherIntent(Context context,
-      String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
+  public static Intent createLauncherIntent(Context context, String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
     Intent intent = new Intent(context, ContentEditorActivity.class);
 
     if (hint != null) {
@@ -62,8 +59,8 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     return intent;
   }
 
-  public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum,
-      String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
+  public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum, String hint, String prefill,
+      boolean allowEmpty, boolean backIsOk) {
     Intent intent = new Intent(context, ContentEditorActivity.class);
 
     if (hint != null) {
@@ -106,8 +103,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
       String content = getIntent().getExtras().getString(PREFILL);
 
       if (!TextUtils.isEmpty(content)) {
-        if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras()
-            .containsKey(ISSUE_NUM)) {
+        if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(ISSUE_NUM)) {
           RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
           int issueNumber = getIntent().getExtras().getInt(ISSUE_NUM);
 
@@ -184,8 +180,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     MenuItem okItem = menu.findItem(R.id.action_ok);
 
     if (okItem != null) {
-      IconicsDrawable iconicsDrawable =
-          new IconicsDrawable(this, Octicons.Icon.oct_check).actionBar().color(Color.WHITE);
+      IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_check).actionBar().color(Color.WHITE);
       okItem.setIcon(iconicsDrawable);
     }
 

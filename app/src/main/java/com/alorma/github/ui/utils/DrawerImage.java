@@ -15,27 +15,26 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
 
-    @Override
-    public void set(ImageView imageView, Uri uri, Drawable placeholder) {
-        ImageLoader.getInstance().displayImage(uri.toString(), imageView);
-    }
+  @Override
+  public void set(ImageView imageView, Uri uri, Drawable placeholder) {
+    ImageLoader.getInstance().displayImage(uri.toString(), imageView);
+  }
 
-    @Override
-    public void cancel(ImageView imageView) {
+  @Override
+  public void cancel(ImageView imageView) {
 
-    }
+  }
 
-    @Override
-    public Drawable placeholder(Context context) {
-        return new IconicsDrawable(context, Octicons.Icon.oct_octoface);
-    }
+  @Override
+  public Drawable placeholder(Context context) {
+    return new IconicsDrawable(context, Octicons.Icon.oct_octoface);
+  }
 
-    @Override
-    public Drawable placeholder(Context ctx, String tag) {
-        IconicsDrawable drawable = new IconicsDrawable(ctx, Octicons.Icon.oct_octoface);
-        drawable.color(AttributesUtils.getSecondaryTextColor(ctx));
-        drawable.sizeDp(24);
-        return drawable;
-    }
-
+  @Override
+  public Drawable placeholder(Context ctx, String tag) {
+    IconicsDrawable drawable = new IconicsDrawable(ctx, Octicons.Icon.oct_octoface);
+    drawable.color(AttributesUtils.getSecondaryTextColor(ctx));
+    drawable.sizeDp(24);
+    return drawable;
+  }
 }

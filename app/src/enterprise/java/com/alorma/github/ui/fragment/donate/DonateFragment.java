@@ -9,16 +9,16 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
  */
 public class DonateFragment extends BaseFragment {
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+  }
 
-    public boolean enabled() {
-        return false;
-    }
+  public boolean enabled() {
+    return false;
+  }
 
-    public void launchDonate() {
+  public void launchDonate() {
 
-    }
+  }
 }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -18,15 +17,12 @@ import com.alorma.github.ui.fragment.RepositoryManagerFragment;
  */
 public class ManageRepositoryActivity extends BackActivity {
 
+  public static final String CONTENT = "CONTENT";
   private static final String REPO_INFO = "REPO_INFO";
   private static final String REQUEST_DTO = "REQUEST_DTO";
-
-  public static final String CONTENT = "CONTENT";
-
   private RepositoryManagerFragment repositoryManagerFragment;
 
-  public static Intent createIntent(Context context, RepoInfo repoInfo,
-      RepoRequestDTO repoRequestDTO) {
+  public static Intent createIntent(Context context, RepoInfo repoInfo, RepoRequestDTO repoRequestDTO) {
     Intent intent = new Intent(context, ManageRepositoryActivity.class);
 
     intent.putExtra(REPO_INFO, repoInfo);
@@ -41,8 +37,7 @@ public class ManageRepositoryActivity extends BackActivity {
     setContentView(R.layout.generic_toolbar);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
-      if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras()
-          .containsKey(REQUEST_DTO)) {
+      if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(REQUEST_DTO)) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
         RepoRequestDTO dto = getIntent().getExtras().getParcelable(REQUEST_DTO);
@@ -66,8 +61,7 @@ public class ManageRepositoryActivity extends BackActivity {
       setResult(RESULT_OK, data);
       finish();
     } else {
-      Toast.makeText(this, getString(R.string.edit_repo_title_cannot_empty), Toast.LENGTH_SHORT)
-          .show();
+      Toast.makeText(this, getString(R.string.edit_repo_title_cannot_empty), Toast.LENGTH_SHORT).show();
     }
   }
 }
