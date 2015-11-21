@@ -101,7 +101,7 @@ public class GistDetailFragment extends Fragment implements Observer<Gist>, Gist
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.action_gist_share) {
+    if (item != null && item.getItemId() == R.id.action_gist_share) {
       Uri uri = Uri.parse(gist.html_url);
       String owner = gist.user.login;
       Uri newUri = new Uri.Builder().scheme(uri.getScheme())

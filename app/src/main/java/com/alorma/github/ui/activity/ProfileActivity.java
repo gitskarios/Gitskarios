@@ -154,22 +154,24 @@ public class ProfileActivity extends BackActivity {
 
       invalidateOptionsMenu();
 
-      requestClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
-        @Override
-        public void onCompleted() {
+      requestClient.observable()
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Subscriber<User>() {
+            @Override
+            public void onCompleted() {
 
-        }
+            }
 
-        @Override
-        public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-        }
+            }
 
-        @Override
-        public void onNext(User user) {
-          onUserLoaded(user);
-        }
-      });
+            @Override
+            public void onNext(User user) {
+              onUserLoaded(user);
+            }
+          });
     }
   }
 
@@ -177,18 +179,21 @@ public class ProfileActivity extends BackActivity {
   public boolean onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
 
-    menu.clear();
+    if (menu != null) {
 
-    StoreCredentials settings = new StoreCredentials(this);
+      menu.clear();
 
-    if (user != null && !settings.getUserName().equals(user.login)) {
-      if (followingUser) {
-        menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
-      } else {
-        menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
+      StoreCredentials settings = new StoreCredentials(this);
+
+      if (user != null && !settings.getUserName().equals(user.login)) {
+        if (followingUser) {
+          menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
+        } else {
+          menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
+        }
+
+        menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
       }
-
-      menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
     return true;
@@ -209,23 +214,25 @@ public class ProfileActivity extends BackActivity {
   }
 
   private void followUserAction(GithubClient<Boolean> githubClient) {
-    githubClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
-      @Override
-      public void onCompleted() {
+    githubClient.observable()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Boolean>() {
+          @Override
+          public void onCompleted() {
 
-      }
+          }
 
-      @Override
-      public void onError(Throwable e) {
+          @Override
+          public void onError(Throwable e) {
 
-      }
+          }
 
-      @Override
-      public void onNext(Boolean aBoolean) {
-        followingUser = aBoolean;
-        invalidateOptionsMenu();
-      }
-    });
+          @Override
+          public void onNext(Boolean aBoolean) {
+            followingUser = aBoolean;
+            invalidateOptionsMenu();
+          }
+        });
   }
 
   public void onUserLoaded(final User user) {
@@ -343,14 +350,16 @@ public class ProfileActivity extends BackActivity {
     if (!TextUtils.isEmpty(user.company)) {
       Intent intent = new Intent(Intent.ACTION_SEARCH);
       intent.putExtra(SearchManager.QUERY, user.company);
-      ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
+      ProfileItem profileUserOrganization =
+          new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
       profileItemsAdapter.add(profileUserOrganization);
     }
     if (!TextUtils.isEmpty(user.location)) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
       Uri geo = Uri.parse("geo:0,0?q=" + user.location);
       intent.setData(geo);
-      ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
+      ProfileItem profileUserLocation =
+          new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
       profileItemsAdapter.add(profileUserLocation);
     }
     if (!TextUtils.isEmpty(user.email)) {
@@ -361,8 +370,8 @@ public class ProfileActivity extends BackActivity {
       profileItemsAdapter.add(profileUserEmail);
     }
     if (user.created_at != null) {
-      ProfileItem profileUserCreated =
-          new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at, R.string.joined_at), null);
+      ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock,
+          TimeUtils.getDateToText(this, user.created_at, R.string.joined_at), null);
       profileItemsAdapter.add(profileUserCreated);
     }
   }
@@ -382,7 +391,8 @@ public class ProfileActivity extends BackActivity {
     }
 
     Intent intent = OrganizationsActivity.launchIntent(this, user.login);
-    final ProfileItem profileItemOrgs = new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
+    final ProfileItem profileItemOrgs =
+        new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
     profileItemsAdapter.add(profileItemOrgs);
 
     GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
@@ -418,11 +428,15 @@ public class ProfileActivity extends BackActivity {
 
     if (user.type == UserType.User) {
       Intent intentStarred = StarredReposActivity.launchIntent(this, user.login);
-      ProfileItem profileItemStar = new ProfileItem(Octicons.Icon.oct_star, getString(R.string.profile_starreds), intentStarred);
+      ProfileItem profileItemStar =
+          new ProfileItem(Octicons.Icon.oct_star, getString(R.string.profile_starreds),
+              intentStarred);
       profileItemsAdapter.add(profileItemStar);
 
       Intent intentWatched = WatchedReposActivity.launchIntent(this, user.login);
-      ProfileItem profileItemWatched = new ProfileItem(Octicons.Icon.oct_eye, getString(R.string.profile_watched), intentWatched);
+      ProfileItem profileItemWatched =
+          new ProfileItem(Octicons.Icon.oct_eye, getString(R.string.profile_watched),
+              intentWatched);
       profileItemsAdapter.add(profileItemWatched);
     }
   }

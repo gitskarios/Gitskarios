@@ -44,11 +44,16 @@ public class Interceptor extends Activity {
   }
 
   private void fail() {
-    if (failIntent != null) {
-      startActivity(failIntent);
-      finish();
-    } else {
-      startActivity(onFail());
+    try {
+      if (failIntent != null) {
+        startActivity(failIntent);
+        finish();
+      } else {
+        startActivity(onFail());
+        finish();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
       finish();
     }
   }
@@ -84,7 +89,8 @@ public class Interceptor extends Activity {
       intent.addCategory(Intent.CATEGORY_BROWSABLE);
       intent.addCategory(Intent.CATEGORY_DEFAULT);
 
-      List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+      List<ResolveInfo> resolveInfos =
+          getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
       if (!resolveInfos.isEmpty()) {
         List<Intent> targetedShareIntents = new ArrayList<Intent>();
@@ -100,7 +106,8 @@ public class Interceptor extends Activity {
         }
 
         Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Open with...");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[targetedShareIntents.size()]));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
+            targetedShareIntents.toArray(new Parcelable[targetedShareIntents.size()]));
 
         return chooserIntent;
       }

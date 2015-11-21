@@ -108,15 +108,17 @@ public class PurchasesFragment extends Fragment {
 
     @Override
     protected Bundle doInBackground(String... strings) {
-      ArrayList<String> skuList = new ArrayList<>();
-      Collections.addAll(skuList, strings);
-      Bundle querySkus = new Bundle();
-      querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+      if (strings != null) {
+        ArrayList<String> skuList = new ArrayList<>();
+        Collections.addAll(skuList, strings);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
 
-      try {
-        return mService.getPurchases(3, getActivity().getPackageName(), "inapp", null);
-      } catch (RemoteException e) {
-        e.printStackTrace();
+        try {
+          return mService.getPurchases(3, getActivity().getPackageName(), "inapp", null);
+        } catch (RemoteException e) {
+          e.printStackTrace();
+        }
       }
       return null;
     }

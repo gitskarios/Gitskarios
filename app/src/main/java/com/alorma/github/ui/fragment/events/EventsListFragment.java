@@ -123,9 +123,12 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
 
-    MenuItem item = menu.findItem(R.id.events_list_filter);
-    if (item != null) {
-      item.setIcon(new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_filter_list).colorRes(R.color.white).actionBar());
+    if (getActivity() != null) {
+      MenuItem item = menu.findItem(R.id.events_list_filter);
+      if (item != null) {
+        item.setIcon(
+            new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_filter_list).colorRes(R.color.white).actionBar());
+      }
     }
   }
 
