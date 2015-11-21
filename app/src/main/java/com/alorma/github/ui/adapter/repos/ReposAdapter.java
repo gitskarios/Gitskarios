@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.text.DecimalFormat;
 
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
 
@@ -37,13 +38,11 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       holder.textOwnerName.setText("");
     }
 
-    String starText = holder.itemView.getResources().getString(R.string.star_icon_text, repo.stargazers_count);
     applyIcon(holder.textStarts, Octicons.Icon.oct_star);
-    holder.textStarts.setText(starText);
+    holder.textStarts.setText(new DecimalFormat().format(repo.stargazers_count));
 
-    String forkText = holder.itemView.getResources().getString(R.string.fork_icon_text, repo.forks_count);
     applyIcon(holder.textForks, Octicons.Icon.oct_repo_forked);
-    holder.textForks.setText(forkText);
+    holder.textForks.setText(new DecimalFormat().format(repo.forks_count));
 
     if (repo.description != null) {
       holder.textDescription.setVisibility(View.VISIBLE);
