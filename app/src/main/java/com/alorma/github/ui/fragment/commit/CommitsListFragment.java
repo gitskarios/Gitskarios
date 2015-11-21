@@ -151,10 +151,8 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
         getAdapter().addAll(commits);
       }
 
-      if (headersDecoration == null) {
-        headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
-        addItemDecoration(headersDecoration);
-      }
+      headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
+      addItemDecoration(headersDecoration);
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
       setEmpty(false);
     } else {
