@@ -3,14 +3,20 @@ package com.alorma.github.ui.fragment.search;
 import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 08/08/2014.
@@ -39,7 +45,7 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
     if (query != null) {
       setQuery(query);
     } else {
-      setEmpty(false);
+      setEmpty();
     }
   }
 
@@ -59,7 +65,10 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
       if (query != null) {
         super.executeRequest();
         UsersSearchClient client = new UsersSearchClient(getActivity(), query);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        client.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this);
         query = null;
         if (getAdapter() != null) {
           getAdapter().clear();
@@ -74,7 +83,18 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
       if (query != null) {
         super.executePaginatedRequest(page);
         UsersSearchClient client = new UsersSearchClient(getActivity(), query, page);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        client.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext(new Action1<Pair<List<User>, Integer>>() {
+              @Override
+              public void call(Pair<List<User>, Integer> listIntegerPair) {
+                if (getAdapter() != null) {
+                  getAdapter().clear();
+                }
+              }
+            })
+            .subscribe(this);
         query = null;
         if (getAdapter() != null) {
           getAdapter().clear();

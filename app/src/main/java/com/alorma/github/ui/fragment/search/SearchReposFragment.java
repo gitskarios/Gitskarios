@@ -3,14 +3,19 @@ package com.alorma.github.ui.fragment.search;
 import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 08/08/2014.
@@ -39,7 +44,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
     if (query != null) {
       setQuery(query);
     } else {
-      setEmpty(false);
+      setEmpty();
     }
   }
 
@@ -64,11 +69,24 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
       if (query != null) {
         super.executeRequest();
         RepoSearchClient client = new RepoSearchClient(getActivity(), query);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
-        query = null;
-        if (getAdapter() != null) {
-          getAdapter().clear();
-        }
+        client.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext(new Action1<Pair<List<Repo>, Integer>>() {
+                  @Override
+                  public void call(Pair<List<Repo>, Integer> listIntegerPair) {
+                    if (getAdapter() != null) {
+                      getAdapter().clear();
+                    }
+                  }
+                })
+            .doOnError(new Action1<Throwable>() {
+              @Override
+              public void call(Throwable throwable) {
+
+              }
+            })
+            .subscribe(this);
       }
     }
   }
@@ -79,11 +97,10 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
       if (query != null) {
         super.executePaginatedRequest(page);
         RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
-        query = null;
-        if (getAdapter() != null) {
-          getAdapter().clear();
-        }
+        client.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this);
       }
     }
   }

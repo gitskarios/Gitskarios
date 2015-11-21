@@ -18,10 +18,16 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by Bernat on 31/01/2015.
@@ -32,6 +38,7 @@ public class SearchActivity extends BackActivity {
   private SearchReposFragment searchReposFragment;
   private SearchUsersFragment searchUsersFragment;
   private String lastQuery;
+  private Subscription subscription;
 
   public static Intent launchIntent(Context context) {
     return new Intent(context, SearchActivity.class);
@@ -57,7 +64,8 @@ public class SearchActivity extends BackActivity {
     listFragments.add(searchReposFragment);
     listFragments.add(searchUsersFragment);
 
-    viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+    viewPager.setAdapter(
+        new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
     tabLayout.setupWithViewPager(viewPager);
 
     searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -79,6 +87,40 @@ public class SearchActivity extends BackActivity {
         return false;
       }
     });
+
+    subscription = RxTextView.textChanges(searchView)
+        .filter(new Func1<CharSequence, Boolean>() {
+          @Override
+          public Boolean call(CharSequence s) {
+            return s.length() >= 3;
+          }
+        })
+        .throttleLast(100, TimeUnit.MILLISECONDS)
+        .debounce(250, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<CharSequence>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onNext(CharSequence charSequence) {
+            search(charSequence.toString());
+          }
+        });
+  }
+
+  @Override
+  protected void onDestroy() {
+    subscription.unsubscribe();
+    super.onDestroy();
   }
 
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,7 +132,8 @@ public class SearchActivity extends BackActivity {
       MenuItem searchItem = menu.findItem(R.id.action_search);
 
       IconicsDrawable searchIcon =
-          new IconicsDrawable(getApplicationContext(), Octicons.Icon.oct_search).actionBar().colorRes(R.color.gray_github_medium);
+          new IconicsDrawable(getApplicationContext(), Octicons.Icon.oct_search)
+              .actionBar().colorRes(R.color.gray_github_medium);
 
       searchItem.setIcon(searchIcon);
     }
