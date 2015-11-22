@@ -50,7 +50,7 @@ public class RepoAboutFragment extends Fragment
     implements TitleProvider, BranchManager, BackManager {
 
   private static final String REPO_INFO = "REPO_INFO";
-  public static final int PLACEHOLDER_ICON_SIZE = 14;
+  public static final int PLACEHOLDER_ICON_SIZE = 20;
 
   private RepoInfo repoInfo;
   private Repo currentRepo;
@@ -74,7 +74,8 @@ public class RepoAboutFragment extends Fragment
 
     @Override
     public void onError(Throwable e) {
-
+      repoStarred = false;
+      changeStarView();
     }
 
     @Override
@@ -92,7 +93,8 @@ public class RepoAboutFragment extends Fragment
 
     @Override
     public void onError(Throwable e) {
-
+      repoWatched = false;
+      changeWatchView();
     }
 
     @Override
