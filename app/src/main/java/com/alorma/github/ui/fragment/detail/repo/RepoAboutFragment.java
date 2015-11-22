@@ -46,9 +46,11 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by Bernat on 01/01/2015.
  */
-public class RepoAboutFragment extends Fragment implements TitleProvider, BranchManager, BackManager {
+public class RepoAboutFragment extends Fragment
+    implements TitleProvider, BranchManager, BackManager {
 
   private static final String REPO_INFO = "REPO_INFO";
+  public static final int PLACEHOLDER_ICON_SIZE = 14;
 
   private RepoInfo repoInfo;
   private Repo currentRepo;
@@ -112,7 +114,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
     return inflater.inflate(R.layout.repo_overview_fragment, null, false);
@@ -190,7 +193,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
             Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
             startActivity(intent);
           } else if (currentRepo.owner.type == UserType.Organization) {
-            Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
+            Intent intent =
+                OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
             startActivity(intent);
           }
         }
@@ -226,9 +230,11 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
       loadArguments();
     }
 
-    boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).contains(repoInfo.toString() + "_README");
+    boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+        .contains(repoInfo.toString() + "_README");
     if (contains) {
-      onReadmeLoaded(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).<String>get(repoInfo.toString() + "_README"));
+      onReadmeLoaded(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+          .<String>get(repoInfo.toString() + "_README"));
     }
     getReadme();
   }
@@ -238,24 +244,26 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
   }
 
   private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
-    repoMarkdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
-      @Override
-      public void onCompleted() {
-        if (currentRepo != null) {
-          setData();
-        }
-      }
+    repoMarkdownClient.observable()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<String>() {
+          @Override
+          public void onCompleted() {
+            if (currentRepo != null) {
+              setData();
+            }
+          }
 
-      @Override
-      public void onError(Throwable e) {
+          @Override
+          public void onError(Throwable e) {
 
-      }
+          }
 
-      @Override
-      public void onNext(String htmlContent) {
-        onReadmeLoaded(htmlContent);
-      }
-    });
+          @Override
+          public void onNext(String htmlContent) {
+            onReadmeLoaded(htmlContent);
+          }
+        });
   }
 
   private void onReadmeLoaded(String htmlContent) {
@@ -267,31 +275,40 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
       imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
 
       htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-      QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO).set(repoInfo.toString() + "_README", htmlCode);
+      QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+          .set(repoInfo.toString() + "_README", htmlCode);
     }
   }
 
   private void setData() {
-    if (this.currentRepo != null) {
-      User owner = this.currentRepo.owner;
-      ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
-      authorName.setText(owner.login);
+    if (getActivity() != null) {
+      if (this.currentRepo != null) {
+        User owner = this.currentRepo.owner;
+        ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
+        authorName.setText(owner.login);
 
-      if (this.currentRepo.parent != null) {
-        fork.setVisibility(View.VISIBLE);
-        forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
-        forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login,
-            this.currentRepo.parent.name));
+        if (this.currentRepo.parent != null) {
+          fork.setVisibility(View.VISIBLE);
+          forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
+          forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login,
+              this.currentRepo.parent.name));
+        }
+
+        createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null,
+            null);
+        createdAtTextView.setText(
+            TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at,
+                R.string.created_at));
+
+        starredPlaceholder.setText(
+            String.valueOf(placeHolderNum(this.currentRepo.stargazers_count)));
+        watchedPlaceholder.setText(
+            String.valueOf(placeHolderNum(this.currentRepo.subscribers_count)));
+        forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
+
+        forkPlaceHolder.setCompoundDrawables(
+            getIcon(Octicons.Icon.oct_repo_forked, PLACEHOLDER_ICON_SIZE), null, null, null);
       }
-
-      createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
-      createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at, R.string.created_at));
-
-      starredPlaceholder.setText(String.valueOf(placeHolderNum(this.currentRepo.stargazers_count)));
-      watchedPlaceholder.setText(String.valueOf(placeHolderNum(this.currentRepo.subscribers_count)));
-      forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
-
-      forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
     }
   }
 
@@ -326,9 +343,11 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
   }
 
   protected void getStarWatchData() {
-    starAction(new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+    starAction(
+        new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name));
 
-    watchAction(new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+    watchAction(
+        new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name));
   }
 
   private void changeStarStatus() {
@@ -359,7 +378,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
   private void changeStarView() {
     if (getActivity() != null) {
-      IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(24);
+      IconicsDrawable drawable =
+          new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
       if (repoStarred != null && repoStarred) {
         drawable.colorRes(R.color.primary);
       } else {
@@ -371,7 +391,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
   private void changeWatchView() {
     if (getActivity() != null) {
-      IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(24);
+      IconicsDrawable drawable =
+          new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
       if (repoWatched != null && repoWatched) {
         drawable.colorRes(R.color.primary);
       } else {
