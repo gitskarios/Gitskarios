@@ -2,6 +2,7 @@ package com.alorma.github.ui.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -10,6 +11,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 
 /**
  * Created by Bernat on 15/07/2014.
@@ -18,7 +20,10 @@ public class UniversalImageLoaderUtils {
 
   public static ImageLoaderConfiguration getImageLoaderConfiguration(Context context) {
     ImageLoaderConfiguration config =
-        new ImageLoaderConfiguration.Builder(context).defaultDisplayImageOptions(getDisplayImageOptions(context)).build();
+        new ImageLoaderConfiguration.Builder(context)
+            .defaultDisplayImageOptions(getDisplayImageOptions(context))
+            .imageDecoder(new BaseImageDecoder(true))
+            .build();
     return config;
   }
 
@@ -27,7 +32,11 @@ public class UniversalImageLoaderUtils {
     drawable.color(AttributesUtils.getSecondaryTextColor(context));
     drawable.sizeDp(24);
     BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), drawableToBitmap(drawable));
-    return new DisplayImageOptions.Builder().showImageOnLoading(bitmapDrawable).cacheInMemory(true).cacheOnDisk(true).build();
+    return new DisplayImageOptions.Builder()
+        .showImageOnLoading(bitmapDrawable)
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
   }
 
   public static Bitmap drawableToBitmap(Drawable drawable) {

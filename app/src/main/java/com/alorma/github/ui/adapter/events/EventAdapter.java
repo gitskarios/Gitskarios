@@ -73,7 +73,11 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         }
         return textRes + " " + "<b>" + event.repo.name + "</b>";
       case CreateEvent:
-        return "created repository" + " " + "<b>" + event.repo.name + "</b>";
+        if (event.payload.ref != null) {
+          return "created branch <b>" + event.payload.ref + "</b> on repository" + " " + "<b>" + event.repo.name + "</b>";
+        } else {
+          return "created repository" + " " + "<b>" + event.repo.name + "</b>";
+        }
       case CommitCommentEvent:
         return "commented on commit " + "<b>" + event.repo.name + "@" + event.payload.comment.commit_id.substring(0, 10) + "</b>";
       case DownloadEvent:

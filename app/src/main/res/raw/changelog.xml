@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-  <changelogversion changeDate="Nov 22,2015" versionName="2.6.8">
+  <changelogversion changeDate="Nov 24,2015" versionName="2.6.9">
     <changelogtext>Fix STAR / WATCH issue</changelogtext>
   </changelogversion>
   <changelogversion changeDate="Nov 22,2015" versionName="2.6.7">
