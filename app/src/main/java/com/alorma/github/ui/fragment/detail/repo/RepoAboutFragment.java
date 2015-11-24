@@ -52,6 +52,10 @@ public class RepoAboutFragment extends Fragment
   private static final String REPO_INFO = "REPO_INFO";
   public static final int PLACEHOLDER_ICON_SIZE = 20;
 
+  private View author;
+  private Integer futureSubscribersCount;
+  private Integer futureStarredCount;
+
   private RepoInfo repoInfo;
   private Repo currentRepo;
   private TextView htmlContentView;
@@ -103,7 +107,6 @@ public class RepoAboutFragment extends Fragment
       changeWatchView();
     }
   };
-  private View author;
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -302,16 +305,26 @@ public class RepoAboutFragment extends Fragment
             TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at,
                 R.string.created_at));
 
-        starredPlaceholder.setText(
-            String.valueOf(placeHolderNum(this.currentRepo.stargazers_count)));
-        watchedPlaceholder.setText(
-            String.valueOf(placeHolderNum(this.currentRepo.subscribers_count)));
+        setStarsCount(currentRepo.stargazers_count);
+
+        setWatchersCount(currentRepo.subscribers_count);
+
         forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
 
         forkPlaceHolder.setCompoundDrawables(
             getIcon(Octicons.Icon.oct_repo_forked, PLACEHOLDER_ICON_SIZE), null, null, null);
       }
     }
+  }
+
+  private void setStarsCount(int stargazers_count) {
+    starredPlaceholder.setText(
+        String.valueOf(placeHolderNum(stargazers_count)));
+  }
+
+  private void setWatchersCount(int subscribers_count) {
+    watchedPlaceholder.setText(
+        String.valueOf(placeHolderNum(subscribers_count)));
   }
 
   private String placeHolderNum(int value) {
@@ -354,16 +367,20 @@ public class RepoAboutFragment extends Fragment
 
   private void changeStarStatus() {
     if (repoStarred) {
+      futureStarredCount = currentRepo.stargazers_count - 1;
       starAction(new UnstarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
     } else {
+      futureStarredCount = currentRepo.stargazers_count + 1;
       starAction(new StarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
     }
   }
 
   private void changeWatchedStatus() {
     if (repoWatched) {
+      futureSubscribersCount = currentRepo.subscribers_count - 1;
       watchAction(new UnwatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
     } else {
+      futureSubscribersCount = currentRepo.subscribers_count + 1;
       watchAction(new WatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
     }
   }
@@ -388,6 +405,11 @@ public class RepoAboutFragment extends Fragment
         drawable.colorRes(R.color.icons);
       }
       starredPlaceholder.setCompoundDrawables(drawable, null, null, null);
+
+      if (futureStarredCount != null) {
+        setStarsCount(futureStarredCount);
+        currentRepo.stargazers_count = futureStarredCount;
+      }
     }
   }
 
@@ -401,6 +423,11 @@ public class RepoAboutFragment extends Fragment
         drawable.colorRes(R.color.icons);
       }
       watchedPlaceholder.setCompoundDrawables(drawable, null, null, null);
+
+      if (futureSubscribersCount != null) {
+        setWatchersCount(futureSubscribersCount);
+        currentRepo.subscribers_count = futureSubscribersCount;
+      }
     }
   }
 }

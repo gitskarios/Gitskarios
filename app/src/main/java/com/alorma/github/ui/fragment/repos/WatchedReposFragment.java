@@ -24,12 +24,16 @@ public class WatchedReposFragment extends BaseReposListFragment {
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-
+  protected void loadArguments() {
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
+  }
+
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
+    loadArguments();
 
     setAction(new WatchedReposClient(getActivity(), username));
   }
@@ -43,10 +47,5 @@ public class WatchedReposFragment extends BaseReposListFragment {
   @Override
   protected int getNoDataText() {
     return R.string.no_watched_repositories;
-  }
-
-  @Override
-  protected void loadArguments() {
-
   }
 }

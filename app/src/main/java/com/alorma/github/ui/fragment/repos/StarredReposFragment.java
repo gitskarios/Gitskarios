@@ -24,12 +24,16 @@ public class StarredReposFragment extends BaseReposListFragment {
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-
+  protected void loadArguments() {
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
+  }
+
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
+    loadArguments();
 
     setAction(new StarredReposClient(getActivity(), username));
   }
@@ -45,8 +49,4 @@ public class StarredReposFragment extends BaseReposListFragment {
     return R.string.no_starred_repositories;
   }
 
-  @Override
-  protected void loadArguments() {
-
-  }
 }
