@@ -29,6 +29,7 @@ import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
+import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
@@ -60,7 +61,6 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private ViewPager viewPager;
-  private RepoAboutFragment repoAboutFragment;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -112,6 +112,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
         listFragments();
 
         NavigationAdapter adapter = new NavigationAdapter(getSupportFragmentManager(), fragments);
+
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -180,23 +181,20 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
       this.invalidateOptionsMenu();
 
-      Permissions permissions = repo.permissions;
-      for (Fragment fragment : fragments) {
-        if (fragment.isAdded()) {
-        /*
-        if (fragment instanceof PermissionsManager) {
-          ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push,
-              permissions.pull);
-        }
-        if (fragment instanceof BranchManager) {
-          ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
-        }
-        */
-        }
-      }
+      if (fragments != null) {
+        Permissions permissions = repo.permissions;
+        for (Fragment fragment : fragments) {
+          if (fragment.isAdded()) {
 
-      if (repoAboutFragment.isAdded()) {
-        repoAboutFragment.setRepository(repo);
+            if (fragment instanceof PermissionsManager) {
+              ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push,
+                  permissions.pull);
+            }
+            if (fragment instanceof BranchManager) {
+              ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
+            }
+          }
+        }
       }
     }
   }
@@ -207,20 +205,14 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
   }
 
   private void listFragments() {
-    if (fragments == null) {
       fragments = new ArrayList<>();
-      repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
-      if (currentRepo != null) {
-        repoAboutFragment.setRepository(currentRepo);
-      }
-      fragments.add(repoAboutFragment);
+      fragments.add(RepoAboutFragment.newInstance(requestRepoInfo));
       fragments.add(SourceListFragment.newInstance(requestRepoInfo));
       fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
       fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
       fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
       fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
       fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
-    }
   }
 
   @Override

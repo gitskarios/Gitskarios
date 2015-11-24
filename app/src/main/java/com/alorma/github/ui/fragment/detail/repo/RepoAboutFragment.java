@@ -30,6 +30,8 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
+import com.clean.presenter.Presenter;
+import com.clean.presenter.RepositoryPresenter;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
@@ -43,11 +45,12 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
+
 /**
  * Created by Bernat on 01/01/2015.
  */
 public class RepoAboutFragment extends Fragment
-    implements TitleProvider, BranchManager, BackManager {
+    implements TitleProvider, BranchManager, BackManager, Presenter.Callback<Repo> {
 
   private static final String REPO_INFO = "REPO_INFO";
   public static final int PLACEHOLDER_ICON_SIZE = 20;
@@ -206,12 +209,16 @@ public class RepoAboutFragment extends Fragment
       }
     });
 
-    if (currentRepo != null) {
-      getStarWatchData();
-      setData();
-    }
-
     getReadmeContent();
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    if (repoInfo != null) {
+      RepositoryPresenter repositoryPresenter = new RepositoryPresenter(getActivity());
+      repositoryPresenter.load(repoInfo, this);
+    }
   }
 
   @Override
@@ -429,5 +436,22 @@ public class RepoAboutFragment extends Fragment
         currentRepo.subscribers_count = futureSubscribersCount;
       }
     }
+  }
+
+  @Override
+  public void showLoading() {
+
+  }
+
+  @Override
+  public void onResponse(Repo repo) {
+    this.currentRepo = repo;
+    getStarWatchData();
+    setData();
+  }
+
+  @Override
+  public void hideLoading() {
+
   }
 }
