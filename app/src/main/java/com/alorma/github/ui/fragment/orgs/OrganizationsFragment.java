@@ -10,6 +10,7 @@ import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
+import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
@@ -51,6 +52,7 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
   }
 
   private void setAction(GithubListClient<List<Organization>> getOrgsClient) {
+    startRefresh();
     getOrgsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<List<Organization>, Integer>, List<Organization>>() {
@@ -65,7 +67,7 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
 
   @Override
   public void onCompleted() {
-
+    stopRefresh();
   }
 
   @Override
@@ -76,14 +78,18 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
   @Override
   public void onNext(List<Organization> organizations) {
     if (organizations.size() > 0) {
-      if (getAdapter() != null) {
-        getAdapter().addAll(organizations);
-      } else {
+      hideEmpty();
+      if (refreshing || getAdapter() == null) {
         OrganizationsAdapter adapter = new OrganizationsAdapter(LayoutInflater.from(getActivity()));
         adapter.addAll(organizations);
         setAdapter(adapter);
+      } else {
+        getAdapter().addAll(organizations);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
+    } else {
+      getAdapter().clear();
       setEmpty();
     }
   }
@@ -114,15 +120,5 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
   protected int getNoDataText() {
     return R.string.no_organizations;
   }
-
-/*    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        Organization item = getAdapter().getItem(position);
-
-        Intent intent = OrganizationActivity.newInstance(getActivity(), item.login);
-        startActivity(intent);
-    }*/
 }
 
