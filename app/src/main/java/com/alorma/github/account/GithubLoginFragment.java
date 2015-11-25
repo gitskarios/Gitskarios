@@ -75,53 +75,71 @@ public class GithubLoginFragment extends Fragment {
     if (requestTokenClient == null) {
       requestTokenClient = new RequestTokenClient(getActivity(), code);
 
-      requestTokenClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Token>() {
-        @Override
-        public void onCompleted() {
+      requestTokenClient.observable()
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Subscriber<Token>() {
+            @Override
+            public void onCompleted() {
 
-        }
+            }
 
-        @Override
-        public void onError(Throwable e) {
-          if (loginCallback != null) {
-            loginCallback.onError(e);
-          }
-        }
+            @Override
+            public void onError(Throwable e) {
+              if (loginCallback != null) {
+                loginCallback.onError(e);
+              }
+            }
 
-        @Override
-        public void onNext(Token token) {
-          if (loginCallback != null && token.access_token != null) {
-            loginCallback.endAccess(token.access_token);
-          }
-        }
-      });
+            @Override
+            public void onNext(Token token) {
+              if (loginCallback != null && token.access_token != null) {
+                loginCallback.endAccess(token.access_token);
+              }
+            }
+          });
     }
   }
 
   private void openExternalLogin() {
-    String url =
-        String.format("%s?client_id=%s&scope=" + SCOPES, OAUTH_URL, GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
+    String url = String.format("%s?client_id=%s&scope=" + SCOPES, OAUTH_URL,
+        GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
 
-    Uri callbackUri = Uri.EMPTY.buildUpon().scheme(getString(R.string.oauth_scheme)).authority("oauth").build();
+    Uri callbackUri =
+        Uri.EMPTY.buildUpon().scheme(getString(R.string.oauth_scheme)).authority("oauth").build();
 
-    url = Uri.parse(url).buildUpon().appendQueryParameter("redirect_uri", callbackUri.toString()).build().toString();
+    url = Uri.parse(url)
+        .buildUpon()
+        .appendQueryParameter("redirect_uri", callbackUri.toString())
+        .build()
+        .toString();
 
     final List<ResolveInfo> browserList = getBrowserList();
 
-    final List<LabeledIntent> intentList = new ArrayList<>();
+    if (browserList != null && !browserList.isEmpty()) {
+      final List<LabeledIntent> intentList = new ArrayList<>();
 
-    for (final ResolveInfo resolveInfo : browserList) {
-      final Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-      newIntent.setComponent(new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
+      for (final ResolveInfo resolveInfo : browserList) {
+        final Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        newIntent.setComponent(
+            new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
 
-      intentList.add(new LabeledIntent(newIntent, resolveInfo.resolvePackageName, resolveInfo.labelRes, resolveInfo.icon));
+        intentList.add(
+            new LabeledIntent(newIntent, resolveInfo.resolvePackageName, resolveInfo.labelRes,
+                resolveInfo.icon));
+      }
+
+      final Intent chooser =
+          Intent.createChooser(intentList.remove(0), "Choose your favorite browser");
+      LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
+      chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+
+      startActivity(chooser);
+    } else {
+      final Intent chooser = Intent.createChooser(new Intent(Intent.ACTION_VIEW, Uri.parse(url)),
+          "Choose your favorite browser");
+
+      startActivity(chooser);
     }
-
-    final Intent chooser = Intent.createChooser(intentList.remove(0), "Choose your favorite browser");
-    LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
-    chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
-
-    startActivity(chooser);
   }
 
   private List<ResolveInfo> getBrowserList() {
@@ -135,18 +153,19 @@ public class GithubLoginFragment extends Fragment {
   }
 
   public void finishPurchase(int requestCode, int resultCode, Intent data) {
-    purchasesFragment.finishPurchase(requestCode, resultCode, data, new PurchasesFragment.PurchasesCallback() {
-      @Override
-      public void onMultiAccountPurchaseResult(boolean multiAccountPurchased) {
-        if (multiAccountPurchased) {
-          openExternalLogin();
-        } else {
-          if (loginCallback != null) {
-            loginCallback.loginNotAvailable();
+    purchasesFragment.finishPurchase(requestCode, resultCode, data,
+        new PurchasesFragment.PurchasesCallback() {
+          @Override
+          public void onMultiAccountPurchaseResult(boolean multiAccountPurchased) {
+            if (multiAccountPurchased) {
+              openExternalLogin();
+            } else {
+              if (loginCallback != null) {
+                loginCallback.loginNotAvailable();
+              }
+            }
           }
-        }
-      }
-    });
+        });
   }
 
   public interface LoginCallback {

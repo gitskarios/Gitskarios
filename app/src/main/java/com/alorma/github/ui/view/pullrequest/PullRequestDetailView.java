@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   private IssueDetailRequestListener issueDetailRequestListener;
   private PullRequestActionsListener pullRequestActionsListener;
+  private TextView textBranch;
 
   public PullRequestDetailView(Context context) {
     super(context);
@@ -109,6 +111,7 @@ public class PullRequestDetailView extends LinearLayout {
     description_status = (TextView) findViewById(R.id.description_status);
     textFiles = (TextView) findViewById(R.id.textFiles);
     textRepository = (TextView) findViewById(R.id.textRepository);
+    textBranch = (TextView) findViewById(R.id.textBranch);
     mergeButton = (TextView) findViewById(R.id.mergeButton);
   }
 
@@ -345,6 +348,13 @@ public class PullRequestDetailView extends LinearLayout {
 
         title.setOnClickListener(editClickListener);
         body.setOnClickListener(editClickListener);
+      }
+
+      if (pullRequest.base != null && pullRequest.head != null) {
+        textBranch.setCompoundDrawables(getIcon(Octicons.Icon.oct_git_branch), null, null, null);
+        String branches = String.format("<b>[%s]</b> from <b>[%s]</b>", pullRequest.base.label,
+            pullRequest.head.label);
+        textBranch.setText(Html.fromHtml(branches));
       }
     }
   }

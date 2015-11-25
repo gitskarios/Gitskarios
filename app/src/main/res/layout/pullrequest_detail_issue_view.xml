@@ -207,6 +207,16 @@
             android:layout_marginLeft="@dimen/gapLarge"
             android:background="?selectableItemBackground"
             />
+        <TextView
+            style="@style/new_issue_push_access_row"
+            android:id="@+id/textBranch"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:layout_marginLeft="@dimen/gapLarge"
+            android:singleLine="false"
+            android:maxLines="2"
+            android:background="?selectableItemBackground"
+            />
 
       </LinearLayout>
 
