@@ -1,11 +1,7 @@
 [![Build Status](https://travis-ci.org/gitskarios/Gitskarios.svg?branch=develop)](https://travis-ci.org/gitskarios/Gitskarios)
-
 [![Issue Stats](http://issuestats.com/github/gitskarios/gitskarios/badge/pr?style=flat)](http://issuestats.com/github/gitskarios/gitskarios)
-
 [![Issue Stats](http://issuestats.com/github/gitskarios/gitskarios/badge/issue?style=flat)](http://issuestats.com/github/gitskarios/gitskarios)
-
 [![Join the chat at https://gitter.im/gitskarios/Gitskarios](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gitskarios/Gitskarios?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Join the telegram channel](https://img.shields.io/badge/TELEGRAM%20CHANNEL-Gitskarios-blue.svg)](https://telegram.me/gitskarios)
 
 [![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.alorma.github&utm_source=github&utm_medium=github&utm_campaign=github)
