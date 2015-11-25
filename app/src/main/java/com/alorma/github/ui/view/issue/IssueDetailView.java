@@ -30,6 +30,7 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
@@ -147,7 +148,7 @@ public class IssueDetailView extends LinearLayout {
         Milestone milestone = issue.milestone;
         if (milestone != null) {
           textMilestone.setCompoundDrawables(
-              new IconicsDrawable(getContext(), Octicons.Icon.oct_milestone).actionBar().paddingDp(8).colorRes(getColorIcons()), null, null,
+              getIcon(Octicons.Icon.oct_milestone), null, null,
               null);
           textMilestone.setText(milestone.title);
           textMilestone.setVisibility(View.VISIBLE);
@@ -160,7 +161,7 @@ public class IssueDetailView extends LinearLayout {
         final User assignee = issue.assignee;
         if (assignee != null) {
           textAssignee.setCompoundDrawables(
-              new IconicsDrawable(getContext(), Octicons.Icon.oct_person).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null,
+              getIcon(Octicons.Icon.oct_person), null, null,
               null);
           textAssignee.setText(assignee.login);
           textMilestone.setVisibility(View.VISIBLE);
@@ -180,7 +181,7 @@ public class IssueDetailView extends LinearLayout {
         final Repo repo = issue.repository;
         if (repo != null) {
           textRepository.setCompoundDrawables(
-              new IconicsDrawable(getContext(), Octicons.Icon.oct_repo).actionBar().colorRes(getColorIcons()).paddingDp(8), null, null,
+              getIcon(Octicons.Icon.oct_repo), null, null,
               null);
           textRepository.setText(repo.full_name);
           textRepository.setVisibility(View.VISIBLE);
@@ -218,6 +219,10 @@ public class IssueDetailView extends LinearLayout {
       title.setOnClickListener(editClickListener);
       body.setOnClickListener(editClickListener);
     }
+  }
+
+  private IconicsDrawable getIcon(IIcon icon) {
+    return new IconicsDrawable(getContext(), icon).actionBar().colorRes(getColorIcons());
   }
 
   public int getColorIcons() {

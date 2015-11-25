@@ -15,7 +15,6 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.Head;
 import com.alorma.github.sdk.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
-import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
@@ -48,7 +47,7 @@ import com.wefika.flowlayout.FlowLayout;
  */
 public class PullRequestDetailView extends LinearLayout {
 
-  private Issue pullRequest;
+  private PullRequest pullRequest;
 
   private TextView title;
   private TextView body;
@@ -364,10 +363,12 @@ public class PullRequestDetailView extends LinearLayout {
   }
 
   public int getColorIcons() {
-    if (pullRequest.state == IssueState.open) {
-      return R.color.issue_state_open;
+    if (pullRequest.merged) {
+      return R.color.pullrequest_state_merged;
+    } else if (pullRequest.state == IssueState.open) {
+      return R.color.pullrequest_state_open;
     } else {
-      return R.color.issue_state_close;
+      return R.color.pullrequest_state_close;
     }
   }
 

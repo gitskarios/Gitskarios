@@ -177,13 +177,14 @@
   </style>
 
   <style name="new_issue_push_access_row">
+    <item name="android:paddingLeft">8dp</item>
+    <item name="android:drawablePadding">24dp</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">@dimen/textSizeSmall</item>
     <item name="android:gravity">center_vertical|left</item>
     <item name="android:textColorHint">@color/secondary_text</item>
     <item name="android:lines">1</item>
     <item name="android:singleLine">true</item>
-    <item name="android:drawablePadding">@dimen/gapMedium</item>
     <item name="android:background">?selectableItemBackground</item>
   </style>
 
