@@ -70,6 +70,7 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -526,7 +527,7 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void editMilestone() {
-    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open, true);
     milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
       @Override
       public void onCompleted() {
@@ -756,7 +757,7 @@ public class PullRequestDetailActivity extends BackActivity
    */
 
   private void openLabels() {
-    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo);
+    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo, true);
     labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
   }
 
@@ -817,7 +818,6 @@ public class PullRequestDetailActivity extends BackActivity
   private class LabelsCallback extends Subscriber<List<Label>> {
 
     private CharSequence[] selectedLabels;
-    private Integer[] positionsSelectedLabels;
 
     public void onNext(List<Label> labels) {
       if (labels != null) {
@@ -850,7 +850,6 @@ public class PullRequestDetailActivity extends BackActivity
               @Override
               public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
                 LabelsCallback.this.selectedLabels = charSequences;
-                LabelsCallback.this.positionsSelectedLabels = integers;
                 return true;
               }
             });
@@ -869,7 +868,6 @@ public class PullRequestDetailActivity extends BackActivity
           public void onNegative(MaterialDialog dialog) {
             super.onNegative(dialog);
             LabelsCallback.this.selectedLabels = null;
-            LabelsCallback.this.positionsSelectedLabels = null;
             setLabels(null);
           }
         });

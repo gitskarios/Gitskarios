@@ -357,7 +357,7 @@ public class NewIssueActivity extends BackActivity {
    */
 
   private void openMilestone() {
-    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open, true);
     milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
       @Override
       public void onCompleted() {
@@ -470,7 +470,7 @@ public class NewIssueActivity extends BackActivity {
    */
 
   private void openLabels() {
-    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo);
+    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo, true);
     labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Label>>() {
       @Override
       public void onCompleted() {

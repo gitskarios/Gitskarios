@@ -62,6 +62,7 @@ import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import rx.Observer;
 import rx.Subscriber;
@@ -457,7 +458,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   }
 
   private void editMilestone() {
-    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open, true);
     milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new MilestonesCallback());
 
     showProgressDialog(R.style.SpotDialog_loading_milestones);
@@ -569,7 +570,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
    */
 
   private void openLabels() {
-    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo);
+    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo, true);
     labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
   }
 
