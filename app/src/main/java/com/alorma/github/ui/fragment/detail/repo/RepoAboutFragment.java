@@ -312,6 +312,9 @@ public class RepoAboutFragment extends Fragment
             TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at,
                 R.string.created_at));
 
+        changeStarView();
+        changeWatchView();
+
         setStarsCount(currentRepo.stargazers_count);
 
         setWatchersCount(currentRepo.subscribers_count);

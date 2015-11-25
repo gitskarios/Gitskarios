@@ -15,6 +15,14 @@ branches:
    - develop
    - master
 
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: "apps/Gitskarios/app/build/outputs/apk/app-github-debug.apk"
+  skip_cleanup: true
+  on:
+    tags: true
+
 before_script:
 - git submodule update --init --recursive
 
