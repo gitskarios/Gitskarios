@@ -13,6 +13,7 @@ branches:
   only:
   - develop
   - master
+  - /^v-.*$/
 deploy:
   provider: releases
   api_key:
