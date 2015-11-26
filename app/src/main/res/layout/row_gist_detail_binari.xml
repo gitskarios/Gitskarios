@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/gapMedium"
-    android:paddingTop="0dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:card_view="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="@dimen/gapMedium"
+              android:paddingTop="0dp"
+    >
 
-    <android.support.v7.widget.CardView
+  <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:minHeight="120dp"
+      card_view:cardUseCompatPadding="true"
+      card_view:cardElevation="4dp"
+      card_view:cardCornerRadius="3dp"
+      >
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="120dp"
-        card_view:cardUseCompatPadding="true"
-        card_view:cardElevation="4dp"
-        card_view:cardCornerRadius="3dp">
+        android:orientation="vertical"
+        android:padding="@dimen/gapMedium"
+        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/gapMedium">
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/textFileName"
+          style="@style/TextAppearance.AppCompat.Headline"
+          android:textColor="?colorControlNormal"
+          tools:text="MyFile.java"
+          />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textFileName"
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?colorControlNormal"
-                tools:text="MyFile.java" />
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/imageContent"
+          android:layout_marginTop="@dimen/gapMedium"
+          />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/imageContent"
-                android:layout_marginTop="@dimen/gapMedium" />
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
+  </android.support.v7.widget.CardView>
 
 </LinearLayout>

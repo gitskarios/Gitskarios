@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
-    <changelogversion changeDate="Sep 14,2015" versionName="2.5.11">
-        <changelogtext>Notifications improved: Now you will receive more specific notifications.</changelogtext>
-        <changelogtext>Disable notification: on simple notification, swipe it hides from system forever, but keep in the list screen</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 07,2015" versionName="2.5.10">
-        <changelogtext>Load release detail from events list or notifications</changelogtext>
-        <changelogtext>New setting: Mark notification as read when open it.</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="Sep 07,2015" versionName="2.5.9.1">
-        <changelogtext>Fix notifications clear not marked as read</changelogtext>
-    </changelogversion>
+  <changelogversion changeDate="Nov 24,2015" versionName="2.6.9">
+    <changelogtext>Fix STAR / WATCH issue</changelogtext>
+  </changelogversion>
+  <changelogversion changeDate="Nov 22,2015" versionName="2.6.7">
+    <changelogtext>Search directly while tapping</changelogtext>
+    <changelogtext>A lot of bug fixes</changelogtext>
+  </changelogversion>
+  <changelogversion changeDate="Nov 12,2015" versionName="2.6.5">
+    <changelogtext>Create repository from the app</changelogtext>
+    <changelogtext>Fix issues cannot be created</changelogtext>
+  </changelogversion>
+  <changelogversion changeDate="Nov 10,2015" versionName="2.6.4">
+    <changelogtext>Click user avatar to view profile. Thanks [b]IvBaranov[/b]</changelogtext>
+  </changelogversion>
 </changelog>

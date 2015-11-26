@@ -5,155 +5,128 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetReleaseClient;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.releases.ReleaseAboutFragment;
 import com.alorma.github.ui.fragment.releases.ReleaseAssetsFragment;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 22/02/2015.
  */
-public class ReleaseDetailActivity extends BackActivity implements BaseClient.OnResultCallback<Release> {
+public class ReleaseDetailActivity extends BackActivity implements Observer<Release> {
 
-    private static final String RELEASE_INFO = "RELEASE_INFO";
-    private static final String RELEASE = "RELEASE";
-    private static final String REPO_INFO = "REPO_INFO";
-    private ReleaseInfo releaseInfo;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+  private static final String RELEASE_INFO = "RELEASE_INFO";
+  private static final String RELEASE = "RELEASE";
+  private static final String REPO_INFO = "REPO_INFO";
+  private ReleaseInfo releaseInfo;
+  private TabLayout tabLayout;
+  private ViewPager viewPager;
 
-    public static Intent launchIntent(Context context, ReleaseInfo releaseInfo) {
-        Intent intent = new Intent(context, ReleaseDetailActivity.class);
+  public static Intent launchIntent(Context context, ReleaseInfo releaseInfo) {
+    Intent intent = new Intent(context, ReleaseDetailActivity.class);
 
-        Bundle extras = new Bundle();
-        extras.putParcelable(RELEASE_INFO, releaseInfo);
+    Bundle extras = new Bundle();
+    extras.putParcelable(RELEASE_INFO, releaseInfo);
 
-        intent.putExtras(extras);
+    intent.putExtras(extras);
 
-        return intent;
+    return intent;
+  }
+
+  public static Intent launchIntent(Context context, Release release, RepoInfo repoInfo) {
+    Intent intent = new Intent(context, ReleaseDetailActivity.class);
+
+    Bundle extras = new Bundle();
+    extras.putParcelable(RELEASE, release);
+    extras.putParcelable(REPO_INFO, repoInfo);
+
+    intent.putExtras(extras);
+
+    return intent;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.release_detail_activity);
+
+    if (getIntent().getExtras() != null) {
+
+      tabLayout = (TabLayout) findViewById(R.id.tabStrip);
+      viewPager = (ViewPager) findViewById(R.id.pager);
+
+      if (getIntent().getExtras().containsKey(RELEASE)) {
+        Release release = getIntent().getExtras().getParcelable(RELEASE);
+        RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+        showRelease(release, repoInfo);
+      } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
+        releaseInfo = getIntent().getExtras().getParcelable(RELEASE_INFO);
+        GetReleaseClient releaseClient = new GetReleaseClient(this, releaseInfo);
+        releaseClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+      }
     }
+  }
 
-    public static Intent launchIntent(Context context, Release release, RepoInfo repoInfo) {
-        Intent intent = new Intent(context, ReleaseDetailActivity.class);
+  private void showRelease(Release release, RepoInfo repoInfo) {
+    if (release != null) {
+      String name = release.name;
+      if (TextUtils.isEmpty(name)) {
+        name = release.tag_name;
+      }
+      setTitle(name);
 
-        Bundle extras = new Bundle();
-        extras.putParcelable(RELEASE, release);
-        extras.putParcelable(REPO_INFO, repoInfo);
+      List<Fragment> listFragments = new ArrayList<>();
+      listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
 
-        intent.putExtras(extras);
+      List<ReleaseAsset> assets = new ArrayList<>();
 
-        return intent;
-    }
+      assets.addAll(release.assets);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.release_detail_activity);
+      ReleaseAsset zipAsset = new ReleaseAsset();
+      zipAsset.name = getString(R.string.release_asset_zip);
+      zipAsset.browser_download_url = release.zipball_url;
+      assets.add(zipAsset);
 
-        if (getIntent().getExtras() != null) {
+      ReleaseAsset tarAsset = new ReleaseAsset();
+      tarAsset.name = getString(R.string.release_asset_tar);
+      tarAsset.browser_download_url = release.tarball_url;
+      assets.add(tarAsset);
 
-            if (getIntent().getExtras().containsKey(RELEASE)) {
-                Release release = getIntent().getExtras().getParcelable(RELEASE);
-                RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
-                showRelease(release, repoInfo);
-            } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
-                releaseInfo = getIntent().getExtras().getParcelable(RELEASE_INFO);
-                GetReleaseClient releaseClient = new GetReleaseClient(this, releaseInfo);
-                releaseClient.setOnResultCallback(this);
-                releaseClient.execute();
-            }
+      listFragments.add(ReleaseAssetsFragment.newInstance(assets));
 
-            tabLayout = (TabLayout) findViewById(R.id.tabStrip);
-            viewPager = (ViewPager) findViewById(R.id.pager);
+      if (viewPager != null) {
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+        if (tabLayout != null) {
+          tabLayout.setupWithViewPager(viewPager);
         }
+      }
     }
+  }
 
-    private void showRelease(Release release, RepoInfo repoInfo) {
-        String name = release.name;
-        if (TextUtils.isEmpty(name)) {
-            name = release.tag_name;
-        }
-        setTitle(name);
+  @Override
+  public void onNext(Release release) {
+    showRelease(release, releaseInfo.repoInfo);
+  }
 
+  @Override
+  public void onError(Throwable error) {
 
-        List<Fragment> listFragments = new ArrayList<>();
-        listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
+  }
 
-        List<ReleaseAsset> assets = new ArrayList<>();
+  @Override
+  public void onCompleted() {
 
-        assets.addAll(release.assets);
-
-        ReleaseAsset zipAsset = new ReleaseAsset();
-        zipAsset.name = getString(R.string.release_asset_zip);
-        zipAsset.browser_download_url = release.zipball_url;
-        assets.add(zipAsset);
-
-        ReleaseAsset tarAsset = new ReleaseAsset();
-        tarAsset.name = getString(R.string.release_asset_tar);
-        tarAsset.browser_download_url = release.tarball_url;
-        assets.add(tarAsset);
-
-        listFragments.add(ReleaseAssetsFragment.newInstance(assets));
-
-        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        tabLayout.setupWithViewPager(viewPager);
-    }
-
-    @Override
-    public void onResponseOk(Release release, Response r) {
-        showRelease(release, releaseInfo.repoInfo);
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-
-    }
-
-    private class NavigationPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> listFragments;
-
-        public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-            super(fm);
-            this.listFragments = listFragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return listFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.repo_release_fragment_detail_title);
-                case 1:
-                    return getString(R.string.repo_release_fragment_assets_title);
-            }
-            return "";
-        }
-    }
+  }
 }

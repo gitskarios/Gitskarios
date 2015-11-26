@@ -5,35 +5,30 @@ import com.alorma.github.sdk.services.repos.UserReposFromOrganizationClient;
 
 public class ReposFragmentFromOrgs extends BaseReposListFragment {
 
-    public static ReposFragmentFromOrgs newInstance() {
-        return new ReposFragmentFromOrgs();
-    }
+  public static ReposFragmentFromOrgs newInstance() {
+    return new ReposFragmentFromOrgs();
+  }
 
-    @Override
-    protected void loadArguments() {
+  @Override
+  protected void loadArguments() {
 
-    }
+  }
 
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
 
-        UserReposFromOrganizationClient client = new UserReposFromOrganizationClient(getActivity());
-        client.setOnResultCallback(this);
-        client.execute();
-    }
+    setAction(new UserReposFromOrganizationClient(getActivity()));
+  }
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
-        UserReposFromOrganizationClient client = new UserReposFromOrganizationClient(getActivity(), page);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
+    setAction(new UserReposFromOrganizationClient(getActivity(), page));
+  }
 
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_repositories;
-    }
-
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_repositories;
+  }
 }

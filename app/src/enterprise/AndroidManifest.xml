@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.alorma.github"
+    >
+
+
+  <application>
+    <activity
+        android:name=".ui.activity.GithubEnterpriseLoginActivity"
+        android:theme="@style/AppTheme.Welcome"
+        />
+
+    <service android:name=".account.AccountEnterpriseService">
+      <intent-filter>
+        <action android:name="android.accounts.AccountAuthenticator"/>
+      </intent-filter>
+
+      <meta-data
+          android:name="android.accounts.AccountAuthenticator"
+          android:resource="@xml/account_enterprise_authenticator"
+          />
+    </service>
+  </application>
+
+</manifest>

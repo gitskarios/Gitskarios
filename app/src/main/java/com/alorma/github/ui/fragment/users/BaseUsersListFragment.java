@@ -2,61 +2,73 @@ package com.alorma.github.ui.fragment.users;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
+import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.List;
-
-import retrofit.RetrofitError;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 13/07/2014.
  */
-public abstract class BaseUsersListFragment extends PaginatedListFragment<List<User>, UsersAdapter> {
+public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAdapter> implements Observer<Pair<List<User>, Integer>> {
 
-    @Override
-    protected void onResponse(List<User> users, boolean refreshing) {
-        if (users.size() > 0) {
-        hideEmpty();
-            if (getAdapter() != null) {
-                getAdapter().addAll(users);
-            } else {
-                UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
-                adapter.addAll(users);
-                setAdapter(adapter);
-            }
-        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty(false);
-        }
+  @Override
+  public void onNext(Pair<List<User>, Integer> listIntegerPair) {
+    setPage(listIntegerPair.second);
+    List<User> users = listIntegerPair.first;
+
+    if (users.size() > 0) {
+      hideEmpty();
+      if (refreshing || getAdapter() == null) {
+        UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+        adapter.addAll(users);
+        setAdapter(adapter);
+      } else {
+        getAdapter().addAll(users);
+      }
+    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
+    } else {
+      getAdapter().clear();
+      setEmpty();
     }
+  }
 
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-        setEmpty(true);
-        }
-    }
+  @Override
+  public void onError(Throwable e) {
 
-    @Override
-    protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
-    }
+  }
 
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
+  @Override
+  public void onCompleted() {
+    stopRefresh();
+  }
 
-    @Override
-    protected Octicons.Icon getNoDataIcon() {
-        return Octicons.Icon.oct_octoface;
-    }
+  protected void setAction(GithubListClient<List<User>> userFollowersClient) {
+    startRefresh();
+    userFollowersClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+  }
 
+  @Override
+  protected RecyclerView.LayoutManager getLayoutManager() {
+    return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
+  }
+
+  @Override
+  protected RecyclerView.ItemDecoration getItemDecoration() {
+    return null;
+  }
+
+  @Override
+  protected Octicons.Icon getNoDataIcon() {
+    return Octicons.Icon.oct_octoface;
+  }
 }
 

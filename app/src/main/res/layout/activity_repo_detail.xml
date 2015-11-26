@@ -1,48 +1,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
 
-    <android.support.design.widget.AppBarLayout
+  <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fitsSystemWindows="true"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      >
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        >
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+      <android.support.v7.widget.Toolbar
+          android:id="@id/toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?colorPrimary"
+          android:minHeight="?actionBarSize"
+          app:contentInsetStart="@dimen/second_keyline"
+          app:layout_scrollFlags="scroll|enterAlways"
+          />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?colorPrimary"
-                android:minHeight="?actionBarSize"
-                app:contentInsetStart="@dimen/second_keyline"
-                app:layout_scrollFlags="scroll|enterAlways" />
+      <ViewStub
+          android:id="@+id/cab_stub"
+          android:layout_width="match_parent"
+          android:layout_height="?actionBarSize"
+          />
+    </FrameLayout>
 
-            <ViewStub
-                android:id="@+id/cab_stub"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize" />
-        </FrameLayout>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabStrip"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="horizontal"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:tabGravity="fill"
-            app:tabMode="scrollable" />
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="?actionBarSize"
+        />
+  </android.support.design.widget.AppBarLayout>
 
+  <android.support.v4.view.ViewPager
+      android:id="@+id/content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
 </LinearLayout>

@@ -9,4 +9,5 @@
     android:background="?colorPrimary"
     app:contentInsetStart="@dimen/second_keyline"
     app:theme="@style/Toolbar.AppCompat.Responsive"
-    app:popupTheme="@style/Toolbar.Popup.AppCompat"/>
+    app:popupTheme="@style/Toolbar.Popup.AppCompat"
+    />

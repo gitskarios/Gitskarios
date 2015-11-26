@@ -1,81 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="reservedKeys">
-        <item>notifications</item>
-        <item>showcases</item>
-        <item>settings</item>
-        <item>blog</item>
-        <item>explore</item>
-        <item>dashboard</item>
-        <item>repositories</item>
-        <item>#</item>
-        <item>site</item>
-        <item>security</item>
-        <item>contact</item>
-        <item>about</item>
-        <item>orgs</item>
-    </string-array>
+  <string-array name="reservedKeys">
+    <item>notifications</item>
+    <item>showcases</item>
+    <item>settings</item>
+    <item>blog</item>
+    <item>explore</item>
+    <item>dashboard</item>
+    <item>repositories</item>
+    <item>#</item>
+    <item>site</item>
+    <item>security</item>
+    <item>contact</item>
+    <item>about</item>
+    <item>orgs</item>
+  </string-array>
 
-    <string-array name="repoDetailNavigation">
-        <item>@string/readme</item>
-        <item>@string/source</item>
-        <item>@string/issues</item>
-    </string-array>
+  <string-array name="repoDetailNavigation">
+    <item>@string/readme</item>
+    <item>@string/source</item>
+    <item>@string/issues</item>
+  </string-array>
 
-    <integer-array name="reposSort">
-        <item>@string/sort_created</item>
-        <item>@string/sort_updated</item>
-        <item>@string/sort_pushed</item>
-        <item>@string/sort_full_name</item>
-    </integer-array>
+  <integer-array name="reposSort">
+    <item>@string/sort_created</item>
+    <item>@string/sort_updated</item>
+    <item>@string/sort_pushed</item>
+    <item>@string/sort_full_name</item>
+  </integer-array>
 
-    <string-array name="reposSortValues">
-        <item>@string/sort_created_value</item>
-        <item>@string/sort_updated_value</item>
-        <item>@string/sort_pushed_value</item>
-        <item>@string/sort_full_name_value</item>
-    </string-array>
+  <string-array name="reposSortValues">
+    <item>@string/sort_created_value</item>
+    <item>@string/sort_updated_value</item>
+    <item>@string/sort_pushed_value</item>
+    <item>@string/sort_full_name_value</item>
+  </string-array>
 
-    <integer-array name="reposDownloadFileType">
-        <item>@string/download_zip</item>
-        <item>@string/download_tar</item>
-    </integer-array>
+  <integer-array name="reposDownloadFileType">
+    <item>@string/download_zip</item>
+    <item>@string/download_tar</item>
+  </integer-array>
 
-    <string-array name="reposDownloadFileTypeValues">
-        <item>@string/download_zip_value</item>
-        <item>@string/download_tar_value</item>
-    </string-array>
+  <string-array name="reposDownloadFileTypeValues">
+    <item>@string/download_zip_value</item>
+    <item>@string/download_tar_value</item>
+  </string-array>
 
-    <string-array name="screenItemsValues">
-        <item>@string/navigation_repos</item>
-        <item>@string/menu_events</item>
-    </string-array>
+  <string-array name="screenItemsValues">
+    <item>@string/navigation_repos</item>
+    <item>@string/menu_events</item>
+  </string-array>
 
-    <string-array name="issues_filter">
-        <item>Open issues</item>
-        <item>Closed issues</item>
-    </string-array>
+  <string-array name="issues_filter">
+    <item>Open issues</item>
+    <item>Closed issues</item>
+  </string-array>
 
-    <string-array name="pullrequest_filter">
-        <item>Open pull request</item>
-        <item>Closed &amp; Merged pull request</item>
-    </string-array>
+  <string-array name="pullrequest_filter">
+    <item>Open pull request</item>
+    <item>Closed &amp; Merged pull request</item>
+  </string-array>
 
-    <string name="sort_created">Created</string>
-    <string name="sort_updated">Updated</string>
-    <string name="sort_pushed">Pushed</string>
-    <string name="sort_full_name">Full name</string>
-    
-    <string name="sort_created_value">created</string>
-    <string name="sort_updated_value">updated</string>
-    <string name="sort_pushed_value">pushed</string>
-    <string name="sort_full_name_value">full_name</string>
-    
-    <string name="download_zip">Zip</string>
-    <string name="download_tar">Tar</string>
-    
-    <string name="download_zip_value">zipball</string>
-    <string name="download_tar_value">tarball</string>
+  <string name="sort_created">Created</string>
+  <string name="sort_updated">Updated</string>
+  <string name="sort_pushed">Pushed</string>
+  <string name="sort_full_name">Full name</string>
+
+  <string name="sort_created_value">created</string>
+  <string name="sort_updated_value">updated</string>
+  <string name="sort_pushed_value">pushed</string>
+  <string name="sort_full_name_value">full_name</string>
+
+  <string name="download_zip">Zip</string>
+  <string name="download_tar">Tar</string>
+
+  <string name="download_zip_value">zipball</string>
+  <string name="download_tar_value">tarball</string>
 
 
 </resources>

@@ -10,23 +10,20 @@ import static java.util.Locale.US;
 
 public class ImageUtils {
 
-    private static final String[] IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif"};
+  private static final String[] IMAGE_EXTENSIONS = { ".png", ".jpg", ".jpeg", ".gif" };
 
-    /**
-     * Is the the given file name a image file?
-     *
-     * @param name
-     * @return true if the name has a markdown extension, false otherwise
-     */
-    public static boolean isImage(String name) {
-        if (TextUtils.isEmpty(name))
-            return false;
+  /**
+   * Is the the given file name a image file?
+   *
+   * @return true if the name has a markdown extension, false otherwise
+   */
+  public static boolean isImage(String name) {
+    if (TextUtils.isEmpty(name)) return false;
 
-        name = name.toLowerCase(US);
-        for (String extension : IMAGE_EXTENSIONS)
-            if (name.endsWith(extension))
-                return true;
+    name = name.toLowerCase(US);
+    for (String extension : IMAGE_EXTENSIONS)
+      if (name.endsWith(extension)) return true;
 
-        return false;
-    }
+    return false;
+  }
 }

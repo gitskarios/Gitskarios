@@ -33,72 +33,70 @@ import android.graphics.Rect;
 import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.alorma.github.R;
 
 public class LineView extends View {
 
-    private int mLineColor = Color.GRAY;
-    private float mLineWidth = 3f;
-    private Paint linePaint;
-    private Rect rect;
+  private int mLineColor = Color.GRAY;
+  private float mLineWidth = 3f;
+  private Paint linePaint;
+  private Rect rect;
 
-    public LineView(Context context) {
-        super(context);
-        init(context, null, 0);
+  public LineView(Context context) {
+    super(context);
+    init(context, null, 0);
+  }
+
+  public LineView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init(context, attrs, 0);
+  }
+
+  public LineView(Context context, AttributeSet attrs, int defStyle) {
+    super(context, attrs, defStyle);
+    init(context, attrs, defStyle);
+  }
+
+  private void init(Context context, AttributeSet attrs, int defStyle) {
+    isInEditMode();
+    if (attrs != null) {
+      final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TimelineView, defStyle, 0);
+
+      if (a != null) {
+        mLineColor = a.getColor(R.styleable.TimelineView_tl_lineColor, mLineColor);
+
+        mLineWidth = a.getDimension(R.styleable.TimelineView_tl_lineWidth, mLineWidth);
+
+        a.recycle();
+      }
     }
 
-    public LineView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0);
-    }
+    createPaints();
 
-    public LineView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
+    rect = new Rect();
+  }
 
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        isInEditMode();
-        if (attrs != null) {
-            final TypedArray a = context.obtainStyledAttributes(
-                    attrs, R.styleable.TimelineView, defStyle, 0);
+  private void createPaints() {
+    linePaint = new Paint();
+    linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+    linePaint.setColor(mLineColor);
+  }
 
-            if (a != null) {
-                mLineColor = a.getColor(R.styleable.TimelineView_tl_lineColor, mLineColor);
+  public void setColorRes(@ColorRes int color) {
+    setColor(getResources().getColor(color));
+  }
 
-                mLineWidth = a.getDimension(R.styleable.TimelineView_tl_lineWidth, mLineWidth);
+  public void setColor(int color) {
+    mLineColor = color;
+    createPaints();
+    invalidate();
+  }
 
-                a.recycle();
-            }
-        }
+  @Override
+  protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    canvas.getClipBounds(rect);
 
-        createPaints();
-
-        rect = new Rect();
-    }
-
-    private void createPaints() {
-        linePaint = new Paint();
-        linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(mLineColor);
-    }
-
-    public void setColorRes(@ColorRes int color) {
-        setColor(getResources().getColor(color));
-    }
-
-    public void setColor(int color) {
-        mLineColor = color;
-        createPaints();
-        invalidate();
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.getClipBounds(rect);
-
-        canvas.drawLine(rect.centerX(), rect.top, rect.centerX(), rect.bottom, linePaint);
-    }
+    canvas.drawLine(rect.centerX(), rect.top, rect.centerX(), rect.bottom, linePaint);
+  }
 }
