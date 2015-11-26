@@ -21,6 +21,7 @@ deploy:
   file: apps/Gitskarios/app/build/outputs/apk/app-github-debug.apk
   on:
     tags: true
+    all_branches: true
 before_script:
 - git submodule update --init --recursive
 script: ./gradlew assembleGithubDebug
