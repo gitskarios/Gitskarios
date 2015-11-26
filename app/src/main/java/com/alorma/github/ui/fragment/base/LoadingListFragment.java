@@ -17,6 +17,8 @@ import com.alorma.github.ui.utils.DividerItemDecoration;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.ArrayList;
+import java.util.List;
 import tr.xip.errorview.ErrorView;
 
 public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment
@@ -34,6 +36,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   private View loadingView;
   private boolean fromPaginated;
   private Integer page;
+  private List<RecyclerView.ItemDecoration> listDecorators;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -101,8 +104,23 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
   protected void addItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
     if (recyclerView != null) {
+      if (listDecorators == null) {
+        listDecorators = new ArrayList<>();
+      }
+      listDecorators.add(itemDecoration);
       recyclerView.removeItemDecoration(itemDecoration);
       recyclerView.addItemDecoration(itemDecoration);
+    }
+  }
+
+  public void removeDecorations() {
+    if (recyclerView != null) {
+      if (listDecorators != null) {
+        for (RecyclerView.ItemDecoration listDecorator : listDecorators) {
+          recyclerView.removeItemDecoration(listDecorator);
+        }
+        listDecorators.clear();
+      }
     }
   }
 

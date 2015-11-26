@@ -17,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import com.alorma.github.R;
+import com.alorma.github.cache.QnCacheProvider;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -45,8 +47,12 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class RepoDetailActivity extends BackActivity implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
 
@@ -299,28 +305,60 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
   private void changeBranch() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, requestRepoInfo);
-    repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
-      @Override
-      protected void onNoBranches() {
-
-      }
-
-      @Override
-      protected void onBranchSelected(String branch) {
-        requestRepoInfo.branch = branch;
-        if (currentRepo != null) {
-          currentRepo.default_branch = branch;
-        }
-        if (getSupportActionBar() != null) {
-          getSupportActionBar().setSubtitle(branch);
-        }
-        for (Fragment fragment : fragments) {
-          if (fragment instanceof BranchManager) {
-            ((BranchManager) fragment).setCurrentBranch(branch);
+    Observable<List<Branch>> apiObservable =
+        repoBranchesClient.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext(new Action1<List<Branch>>() {
+          @Override
+          public void call(List<Branch> branches) {
+            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+                .set(requestRepoInfo.toString() + "branches", branches, TimeUnit.MINUTES.toMillis(10));
           }
+        });
+
+    Observable<List<Branch>> memCacheObservable = Observable.create(new Observable.OnSubscribe<List<Branch>>() {
+      @Override
+      public void call(Subscriber<? super List<Branch>> subscriber) {
+        try {
+          if (!subscriber.isUnsubscribed()) {
+            List<Branch> branches = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
+                .get(requestRepoInfo.toString() + "branches");
+            if (branches != null) {
+              subscriber.onNext(branches);
+            }
+          }
+          subscriber.onCompleted();
+        } catch (Exception e) {
+          subscriber.onError(e);
         }
       }
     });
+
+    Observable.concat(memCacheObservable, apiObservable)
+        .first()
+        .subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
+          @Override
+          protected void onNoBranches() {
+
+          }
+
+          @Override
+          protected void onBranchSelected(String branch) {
+            requestRepoInfo.branch = branch;
+            if (currentRepo != null) {
+              currentRepo.default_branch = branch;
+            }
+            if (getSupportActionBar() != null) {
+              getSupportActionBar().setSubtitle(branch);
+            }
+            for (Fragment fragment : fragments) {
+              if (fragment instanceof BranchManager) {
+                ((BranchManager) fragment).setCurrentBranch(branch);
+              }
+            }
+          }
+        });
   }
 
   @Override
