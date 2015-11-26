@@ -55,7 +55,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   private static final String PATH = "PATH";
 
   private RepoInfo repoInfo;
-  private StickyRecyclerHeadersDecoration headersDecoration;
   private String path;
   private boolean isInCompareMode = false;
   private String baseCompare = null;
@@ -151,7 +150,10 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
         getAdapter().addAll(commits);
       }
 
-      headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
+      removeDecorations();
+
+      StickyRecyclerHeadersDecoration headersDecoration =
+          new StickyRecyclerHeadersDecoration(getAdapter());
       addItemDecoration(headersDecoration);
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
       setEmpty();
@@ -278,7 +280,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
   @Override
   public void setCurrentBranch(String branch) {
-    if (repoInfo != null && !repoInfo.branch.equalsIgnoreCase(branch)) {
+    if (repoInfo != null) {
       repoInfo.branch = branch;
 
       if (getAdapter() != null) {

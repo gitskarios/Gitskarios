@@ -9,7 +9,6 @@ import com.alorma.github.sdk.services.repo.BranchesCallback;
 public abstract class DialogBranchesCallback extends BranchesCallback implements MaterialDialog.ListCallbackSingleChoice {
 
   private Context context;
-  private String[] branches;
 
   public DialogBranchesCallback(Context context, RepoInfo repoInfo) {
     super(repoInfo);
@@ -18,7 +17,6 @@ public abstract class DialogBranchesCallback extends BranchesCallback implements
 
   @Override
   protected void showBranches(String[] branches, int defaultBranchPosition) {
-    this.branches = branches;
     if (branches != null) {
       if (branches.length > 1) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
@@ -39,7 +37,7 @@ public abstract class DialogBranchesCallback extends BranchesCallback implements
   @Override
   public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
     materialDialog.dismiss();
-    onBranchSelected(branches[i]);
+    onBranchSelected(charSequence.toString());
     return true;
   }
 
