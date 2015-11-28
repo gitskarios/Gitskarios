@@ -453,5 +453,7 @@
   <string name="error_loading_repos">Error loading repositories</string>
   <string name="login_personal_token">Personal access token</string>
   <string name="open_github">Open github</string>
-  <string name="login_github_explanation">Visit github.com to register a new application tooken for Gitskarios</string>
+  <string name="i_have_code">I have a token</string>
+  <string name="login_button_advanced">Advanced login</string>
+  <string name="generateToken">Generate token</string>
 </resources>

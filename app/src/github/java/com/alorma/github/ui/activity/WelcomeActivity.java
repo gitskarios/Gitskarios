@@ -5,6 +5,7 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -20,6 +21,9 @@ import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -29,6 +33,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
 
   private GithubLoginFragment loginFragment;
   private String accessToken;
+  private Toolbar secondToolbar;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     setContentView(R.layout.activity_welcome);
     ButterKnife.bind(this);
 
-    Toolbar secondToolbar = (Toolbar) findViewById(R.id.second_toolbar);
+    secondToolbar = (Toolbar) findViewById(R.id.second_toolbar);
     ViewCompat.setElevation(secondToolbar, R.dimen.gapMedium);
 
     secondToolbar.setTitle(R.string.app_name);
@@ -50,18 +55,64 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     getFragmentManager().beginTransaction().add(loginFragment, "login").commit();
   }
 
-  @OnClick(R.id.openGithub)
-  public void openExternal() {
-    loginFragment.login(this);
-    //TODO Animate
-    ButterKnife.findById(this, R.id.loginLayout).setVisibility(View.VISIBLE);
+  private void changeLayouts() {
     ButterKnife.findById(this, R.id.enterLayout).setVisibility(View.GONE);
+    ButterKnife.findById(this, R.id.loginLayout).setVisibility(View.VISIBLE);
+
+    IconicsDrawable back = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_arrow_back)
+        .actionBar()
+        .paddingDp(4)
+        .color(Color.BLACK);
+
+    secondToolbar.setNavigationIcon(back);
+
+    secondToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        restoreView();
+      }
+    });
+  }
+
+  private void restoreView() {
+    ButterKnife.findById(this, R.id.enterLayout).setVisibility(View.VISIBLE);
+    ButterKnife.findById(this, R.id.loginLayout).setVisibility(View.GONE);
+    secondToolbar.setNavigationIcon(null);
+    secondToolbar.setNavigationOnClickListener(null);
+  }
+
+  @OnClick(R.id.openLogin)
+  public void openLogin() {
+    progressBar.setVisibility(View.VISIBLE);
+    ButterKnife.findById(this, R.id.accessToken).setVisibility(View.GONE);
+    ButterKnife.findById(this, R.id.generateToken).setVisibility(View.GONE);
+    ButterKnife.findById(this, R.id.loginGithub).setVisibility(View.GONE);
+    loginFragment.login(this);
+    changeLayouts();
+  }
+
+  @OnClick(R.id.openLoginAdvanced)
+  public void openLoginAdvanced() {
+    changeLayouts();
+    ButterKnife.findById(this, R.id.accessToken).setVisibility(View.VISIBLE);
+    ButterKnife.findById(this, R.id.generateToken).setVisibility(View.VISIBLE);
+    ButterKnife.findById(this, R.id.loginGithub).setVisibility(View.VISIBLE);
+  }
+
+  @OnClick(R.id.generateToken)
+  public void generateTokenGithub() {
+    loginFragment.loginAdvanced(this);
   }
 
   @OnClick(R.id.loginGithub)
-  public void login() {
-    EditText accessToken = ButterKnife.findById(this, R.id.accessToken);
-    endAccess(accessToken.getText().toString());
+  public void loginGithub() {
+    EditText tokenText = ButterKnife.findById(this, R.id.accessToken);
+    endAccess(tokenText.getText().toString());
+  }
+
+  @OnClick(R.id.textAboutGitskarios)
+  public void about() {
+
   }
 
   @Override
@@ -71,6 +122,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     }
   }
 
+  @Override
   public void endAccess(String accessToken) {
     this.accessToken = accessToken;
     progressBar.setVisibility(View.VISIBLE);
@@ -123,6 +175,17 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
       ContentResolver.setSyncAutomatically(account, getString(R.string.account_type), true);
     }
   }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+
+    if (loginFragment != null) {
+      loginFragment.onNewIntent(intent);
+      loginFragment.setLoginCallback(this);
+    }
+  }
+
 
   @Override
   public void onError(Throwable error) {

@@ -148,6 +148,7 @@
     <item name="colorControlNormal">@color/md_grey_600</item>
     <item name="colorControlActivated">@color/md_grey_600</item>
     <item name="colorControlHighlight">@color/md_grey_600</item>
+    <item name="colorButtonNormal">@color/accent</item>
     <item name="android:windowBackground">@color/md_grey_300</item>
   </style>
 
