@@ -9,11 +9,6 @@ android:
   - extra-google-m2repository
   licenses:
   - android-sdk-license-.+
-branches:
-  only:
-  - develop
-  - master
-  - /^v-.*$/
 deploy:
   provider: releases
   api_key:
@@ -24,4 +19,4 @@ deploy:
     all_branches: true
 before_script:
 - git submodule update --init --recursive
-script: ./gradlew assembleGithubDebug
+script: ./gradlew assembleGithubDebug assembleEnterpriseDebug
