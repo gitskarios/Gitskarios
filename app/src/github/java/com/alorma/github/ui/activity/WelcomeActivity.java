@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -21,9 +22,13 @@ import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
+import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -126,6 +131,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
   public void endAccess(String accessToken) {
     this.accessToken = accessToken;
     progressBar.setVisibility(View.VISIBLE);
+
+    if (Fabric.isInitialized()) {
+      EditText tokenText = ButterKnife.findById(this, R.id.accessToken);
+      Answers.getInstance().logLogin(new LoginEvent()
+          .putMethod(TextUtils.isEmpty(tokenText.getText()) ? "oauth" : "advanced")
+          .putSuccess(true));
+    }
+
     GetAuthUserClient authUserClient = new GetAuthUserClient(this, accessToken);
     authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
       @Override
