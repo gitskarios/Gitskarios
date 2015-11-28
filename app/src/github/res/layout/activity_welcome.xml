@@ -1,88 +1,110 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?attr/colorPrimaryDark"
-                android:elevation="@dimen/gapMedium"
-                tools:context="com.alorma.github.ui.activity.WelcomeActivity"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.alorma.github.ui.activity.WelcomeActivity"
     >
-
-  <ImageView
-      android:id="@+id/imageView"
-      android:layout_width="200dp"
-      android:layout_height="200dp"
-      android:layout_alignParentTop="true"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="90dp"
-      android:src="@drawable/ic_launcher_web"
-      />
-
-  <com.alorma.github.ui.view.CircularImageView
-      android:id="@+id/imageUser"
-      android:layout_width="200dp"
-      android:layout_height="200dp"
-      android:layout_alignParentTop="true"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="90dp"
-      android:src="@drawable/ic_launcher_web"
-      android:visibility="gone"
-      />
-
-  <TextView
-      android:id="@+id/appName"
-      style="@style/TextAppearance.AppCompat.Headline"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentStart="true"
-      android:layout_below="@+id/imageView"
-      android:layout_marginTop="@dimen/gapXLarge"
-      android:gravity="center"
-      android:text="@string/app_name"
-      android:textColor="@color/white"
-      android:textSize="30sp"
-      />
-
-  <FrameLayout
+  <android.support.v7.widget.Toolbar
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@id/toolbar"
+      android:layout_height="240dp"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/appName"
-      android:layout_centerHorizontal="true"
-      android:layout_marginBottom="@dimen/gapLarge"
+      android:background="?colorPrimary"
+      app:contentInsetStart="@dimen/second_keyline"
+      app:theme="@style/Toolbar.AppCompat.Responsive"
+      app:popupTheme="@style/Toolbar.Popup.AppCompat"
+      />
+  <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="100dp"
       android:layout_marginLeft="@dimen/gapXLarge"
       android:layout_marginRight="@dimen/gapXLarge"
-      android:layout_marginTop="@dimen/gapXXLarge"
+      android:layout_marginBottom="80dp"
       >
-
-    <Button
-        android:id="@+id/buttonGithub"
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:alpha="0"
-        tools:alpha="1"
-        android:text="@string/welcome_button_github"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/second_toolbar"
         />
 
-    <Button
-        android:id="@+id/buttonOpen"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        tools:visibility="gone"
-        android:alpha="0"
-        tools:alpha="1"
-        android:text="@string/open_app"
-        />
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        />
-  </FrameLayout>
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:id="@+id/enterLayout"
+        >
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/loginStart"
+          android:layout_marginTop="?actionBarSize"
+          android:layout_marginBottom="?actionBarSize"
+          android:padding="@dimen/gapXLarge"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_github_explanation"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/github_token"
+            />
+
+      </LinearLayout>
+      <Button
+          android:layout_width="wrap_content"
+          android:layout_height="?actionBarSize"
+          android:layout_gravity="bottom|right"
+          android:text="@string/open_github"
+          android:id="@+id/openGithub"
+          style="@style/Widget.AppCompat.Button.Borderless"
+          />
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/loginLayout"
+        >
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginTop="?actionBarSize"
+          android:layout_marginBottom="?actionBarSize"
+          android:padding="@dimen/gapXLarge"
+          android:orientation="vertical"
+          android:gravity="center"
+          >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_personal_token"
+            android:id="@+id/accessToken"
+            />
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:visibility="invisible"
+            />
+      </LinearLayout>
+
+      <Button
+          android:layout_width="wrap_content"
+          android:layout_height="?actionBarSize"
+          android:layout_gravity="bottom|right"
+          android:text="@string/login_button"
+          android:id="@+id/loginGithub"
+          style="@style/Widget.AppCompat.Button.Borderless"
+          />
+    </FrameLayout>
+  </android.support.v7.widget.CardView>
+
+</FrameLayout>

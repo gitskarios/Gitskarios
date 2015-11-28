@@ -3,55 +3,32 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.animation.Animator;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.alorma.github.R;
 import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity implements GithubLoginFragment.LoginCallback {
 
-  @Bind(R.id.imageView) ImageView imageView;
-
-  @Bind(R.id.imageUser) ImageView imageUser;
-
   @Bind(R.id.progressBar) ProgressBar progressBar;
-
-  @Bind(R.id.appName) TextView appNameTextView;
-
-  @Bind(R.id.buttonGithub) Button buttonGithub;
-
-  @Bind(R.id.buttonOpen) Button buttonOpen;
 
   private GithubLoginFragment loginFragment;
   private String accessToken;
-
-  private Long startTime;
-  private int countClick = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -59,116 +36,32 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     setContentView(R.layout.activity_welcome);
     ButterKnife.bind(this);
 
+    Toolbar secondToolbar = (Toolbar) findViewById(R.id.second_toolbar);
+    ViewCompat.setElevation(secondToolbar, R.dimen.gapMedium);
+
+    secondToolbar.setTitle(R.string.app_name);
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
-
-    List<Account> accounts = getAccounts(getString(R.string.account_type));
-
-    String action = getIntent().getAction();
-
-    if (action != null && action.equals(Intent.ACTION_MAIN) && accounts.size() > 0) {
-      openMain();
-    } else {
-      showInitialButtons();
-    }
-
-    imageView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (startTime == null) {
-          startTime = System.currentTimeMillis();
-        }
-        countClick++;
-
-        if (countClick >= 20 && startTime + TimeUnit.SECONDS.toMillis(5) <= System.currentTimeMillis()) {
-
-        }
-      }
-    });
 
     loginFragment = new GithubLoginFragment();
     loginFragment.setLoginCallback(this);
     getFragmentManager().beginTransaction().add(loginFragment, "login").commit();
   }
 
-  @NonNull
-  protected List<Account> getAccounts(String... accountTypes) {
-
-    AccountManager accountManager = AccountManager.get(this);
-
-    List<Account> accountList = new ArrayList<>();
-
-    if (accountTypes != null) {
-      for (String accountType : accountTypes) {
-        Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
-        accountList.addAll(Arrays.asList(accounts));
-      }
-    }
-    return accountList;
+  @OnClick(R.id.openGithub)
+  public void openExternal() {
+    loginFragment.login(this);
+    //TODO Animate
+    ButterKnife.findById(this, R.id.loginLayout).setVisibility(View.VISIBLE);
+    ButterKnife.findById(this, R.id.enterLayout).setVisibility(View.GONE);
   }
 
-  private void showInitialButtons() {
-    imageView.setVisibility(View.VISIBLE);
-    imageUser.setVisibility(View.GONE);
-    progressBar.setVisibility(View.GONE);
-    buttonOpen.setVisibility(View.INVISIBLE);
-    buttonGithub.animate().alpha(1f).setDuration(TimeUnit.SECONDS.toMillis(1)).start();
-    buttonGithub.setVisibility(View.VISIBLE);
-    buttonGithub.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        openCreate();
-      }
-    });
-  }
-
-  private void openMain() {
-    MainActivity.startActivity(this);
-    finish();
-  }
-
-  private void openCreate() {
-
-    buttonGithub.animate().alpha(0f).setDuration(TimeUnit.SECONDS.toMillis(1)).setListener(new Animator.AnimatorListener() {
-      @Override
-      public void onAnimationStart(Animator animation) {
-
-      }
-
-      @Override
-      public void onAnimationEnd(Animator animation) {
-        buttonGithub.setVisibility(View.INVISIBLE);
-      }
-
-      @Override
-      public void onAnimationCancel(Animator animation) {
-
-      }
-
-      @Override
-      public void onAnimationRepeat(Animator animation) {
-
-      }
-    }).start();
-    progressBar.animate().alpha(1f).setStartDelay(300).setDuration(TimeUnit.SECONDS.toMillis(1)).start();
-
-    progressBar.setVisibility(View.VISIBLE);
-
-    boolean login = loginFragment.login();
-    if (!login) {
-      showInitialButtons();
-    }
-  }
-
-  @Override
-  protected void onNewIntent(Intent intent) {
-    super.onNewIntent(intent);
-
-    if (loginFragment != null) {
-      loginFragment.onNewIntent(intent);
-      loginFragment.setLoginCallback(this);
-    }
+  @OnClick(R.id.loginGithub)
+  public void login() {
+    EditText accessToken = ButterKnife.findById(this, R.id.accessToken);
+    endAccess(accessToken.getText().toString());
   }
 
   @Override
@@ -178,9 +71,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     }
   }
 
-  @Override
   public void endAccess(String accessToken) {
     this.accessToken = accessToken;
+    progressBar.setVisibility(View.VISIBLE);
     GetAuthUserClient authUserClient = new GetAuthUserClient(this, accessToken);
     authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
       @Override
@@ -195,47 +88,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
 
       @Override
       public void onNext(User user) {
-        onUserLoaded(user);
-      }
-    });
-  }
-
-  public void onUserLoaded(final User user) {
-    appNameTextView.setText(user.login);
-
-    imageUser.setVisibility(View.VISIBLE);
-
-    buttonOpen.animate().alpha(1f).setDuration(600).start();
-
-    buttonOpen.setVisibility(View.VISIBLE);
-    buttonOpen.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
         addAccount(user);
-        openMain();
-      }
-    });
-
-    ImageLoader.getInstance().loadImage(user.avatar_url, new ImageLoadingListener() {
-      @Override
-      public void onLoadingStarted(String imageUri, View view) {
-
-      }
-
-      @Override
-      public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-      }
-
-      @Override
-      public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-        imageUser.setImageBitmap(loadedImage);
-        progressBar.setVisibility(View.INVISIBLE);
-      }
-
-      @Override
-      public void onLoadingCancelled(String imageUri, View view) {
-
+        MainActivity.startActivity(WelcomeActivity.this);
+        finish();
       }
     });
   }
@@ -261,7 +116,8 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
   }
 
   private void checkAndEnableSyncAdapter(Account account) {
-    ContentResolver.setIsSyncable(account, getString(R.string.account_type), ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
+    ContentResolver.setIsSyncable(account, getString(R.string.account_type),
+        ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
     if (ContentResolver.getSyncAutomatically(account, getString(R.string.account_type))) {
       ContentResolver.addPeriodicSync(account, getString(R.string.account_type), Bundle.EMPTY, 1800);
       ContentResolver.setSyncAutomatically(account, getString(R.string.account_type), true);
@@ -270,12 +126,11 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
 
   @Override
   public void onError(Throwable error) {
-    showInitialButtons();
-    Snackbar.make(imageView, R.string.error_login_user, Snackbar.LENGTH_LONG).show();
+
   }
 
   @Override
   public void loginNotAvailable() {
-    showInitialButtons();
+
   }
 }

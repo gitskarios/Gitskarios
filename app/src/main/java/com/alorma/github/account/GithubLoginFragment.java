@@ -2,45 +2,38 @@ package com.alorma.github.account;
 
 import android.app.Fragment;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LabeledIntent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Token;
-import com.alorma.github.sdk.security.GithubDeveloperCredentials;
-import com.alorma.github.sdk.services.login.RequestTokenClient;
-import com.alorma.github.ui.activity.AccountsFragmentManager;
+import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.activity.PurchasesFragment;
 import java.util.ArrayList;
 import java.util.List;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public class GithubLoginFragment extends Fragment {
 
-  public static final String SCOPES = "gist,user,notifications,repo,delete_repo";
-
-  public static String OAUTH_URL = "https://github.com/login/oauth/authorize";
-
-  private RequestTokenClient requestTokenClient;
+  public static String URL = "https://github.com/settings/tokens/new";
 
   private LoginCallback loginCallback;
-  private AccountsFragmentManager accountsFragment;
+  private AccountsManager accountsFragment;
   private PurchasesFragment purchasesFragment;
+
+  public GithubLoginFragment() {
+  }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    accountsFragment = new AccountsFragmentManager();
-    getFragmentManager().beginTransaction().add(accountsFragment, "accountsFragment").commit();
+    accountsFragment = new AccountsManager();
     purchasesFragment = new PurchasesFragment();
     getFragmentManager().beginTransaction().add(purchasesFragment, "purchasesFragment").commit();
   }
 
-  public boolean login() {
-    if (accountsFragment.getAccounts().isEmpty()) {
+  public boolean login(Context context) {
+    if (accountsFragment.getAccounts(context).isEmpty()) {
       openExternalLogin();
       return true;
     } else if (accountsFragment.multipleAccountsAllowed()) {
@@ -61,65 +54,14 @@ public class GithubLoginFragment extends Fragment {
     }
   }
 
-  public void onNewIntent(Intent intent) {
-    if (intent != null && intent.getData() != null && intent.getData().getScheme() != null) {
-      if (intent.getData().getScheme().equals(getString(R.string.oauth_scheme))) {
-        finishLogin(intent.getData());
-      }
-    }
-  }
-
-  private void finishLogin(Uri uri) {
-    String code = uri.getQueryParameter("code");
-
-    if (requestTokenClient == null) {
-      requestTokenClient = new RequestTokenClient(getActivity(), code);
-
-      requestTokenClient.observable()
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<Token>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-              if (loginCallback != null) {
-                loginCallback.onError(e);
-              }
-            }
-
-            @Override
-            public void onNext(Token token) {
-              if (loginCallback != null && token.access_token != null) {
-                loginCallback.endAccess(token.access_token);
-              }
-            }
-          });
-    }
-  }
-
   private void openExternalLogin() {
-    String url = String.format("%s?client_id=%s&scope=" + SCOPES, OAUTH_URL,
-        GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
-
-    Uri callbackUri =
-        Uri.EMPTY.buildUpon().scheme(getString(R.string.oauth_scheme)).authority("oauth").build();
-
-    url = Uri.parse(url)
-        .buildUpon()
-        .appendQueryParameter("redirect_uri", callbackUri.toString())
-        .build()
-        .toString();
-
     final List<ResolveInfo> browserList = getBrowserList();
 
     if (browserList != null && !browserList.isEmpty()) {
       final List<LabeledIntent> intentList = new ArrayList<>();
 
       for (final ResolveInfo resolveInfo : browserList) {
-        final Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        final Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
         newIntent.setComponent(
             new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
 
@@ -135,7 +77,7 @@ public class GithubLoginFragment extends Fragment {
 
       startActivity(chooser);
     } else {
-      final Intent chooser = Intent.createChooser(new Intent(Intent.ACTION_VIEW, Uri.parse(url)),
+      final Intent chooser = Intent.createChooser(new Intent(Intent.ACTION_VIEW, Uri.parse(URL)),
           "Choose your favorite browser");
 
       startActivity(chooser);
@@ -169,8 +111,6 @@ public class GithubLoginFragment extends Fragment {
   }
 
   public interface LoginCallback {
-    void endAccess(String accessToken);
-
     void onError(Throwable error);
 
     void loginNotAvailable();

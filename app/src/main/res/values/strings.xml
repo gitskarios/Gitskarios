@@ -451,4 +451,7 @@
   <string name="root">Root</string>
   <string name="atelier_view_tag">AtelierViewTag</string>
   <string name="error_loading_repos">Error loading repositories</string>
+  <string name="login_personal_token">Personal access token</string>
+  <string name="open_github">Open github</string>
+  <string name="login_github_explanation">Visit github.com to register a new application tooken for Gitskarios</string>
 </resources>

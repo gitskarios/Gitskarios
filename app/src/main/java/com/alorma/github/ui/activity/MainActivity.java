@@ -20,7 +20,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
-import com.alorma.github.account.BaseAccountsFragmentManager;
+import com.alorma.github.account.BaseAccountsManager;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
@@ -86,6 +86,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    AccountsManager accountsFragment = new AccountsManager();
+    List<Account> accounts = accountsFragment.getAccounts(this);
+
+    if (accounts.isEmpty()) {
+      Intent intent = new Intent(this, WelcomeActivity.class);
+      startActivity(intent);
+      finish();
+    }
 
     donateFragment = new DonateFragment();
 
@@ -513,7 +522,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
   public void signOut() {
     if (selectedAccount != null) {
-      removeAccount(selectedAccount, new BaseAccountsFragmentManager.RemoveAccountCallback() {
+      removeAccount(selectedAccount, new BaseAccountsManager.RemoveAccountCallback() {
         @Override
         public void onAccountRemoved() {
           StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);

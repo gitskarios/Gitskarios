@@ -4,12 +4,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import com.alorma.github.R;
-import com.alorma.github.account.BaseAccountsFragmentManager;
+import com.alorma.github.account.BaseAccountsManager;
 
 /**
  * Created by bernat.borras on 24/10/15.
  */
-public class AccountsFragmentManager extends BaseAccountsFragmentManager {
+public class AccountsFragmentManager extends BaseAccountsManager {
 
   private static final String KEY_IMPORT = "KEY_IMPORT";
 

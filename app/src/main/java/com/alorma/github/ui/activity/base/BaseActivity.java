@@ -21,7 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.github.ui.activity.AccountsFragmentManager;
+import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
@@ -40,13 +40,12 @@ public class BaseActivity extends AppCompatActivity {
 
   private Toolbar toolbar;
   private SpotsDialog progressDialog;
-  private AccountsFragmentManager accountsFragmentManager;
+  private AccountsManager accountsManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    accountsFragmentManager = new AccountsFragmentManager();
-    getFragmentManager().beginTransaction().add(accountsFragmentManager, "accountsFragmentManager").commit();
+    accountsManager = new AccountsManager();
   }
 
   @Override
@@ -110,15 +109,15 @@ public class BaseActivity extends AppCompatActivity {
 
   @NonNull
   protected List<Account> getAccounts() {
-    return accountsFragmentManager.getAccounts();
+    return accountsManager.getAccounts(this);
   }
 
-  protected void removeAccount(Account selectedAccount, final AccountsFragmentManager.RemoveAccountCallback removeAccountCallback) {
-    accountsFragmentManager.removeAccount(selectedAccount, removeAccountCallback);
+  protected void removeAccount(Account selectedAccount, final AccountsManager.RemoveAccountCallback removeAccountCallback) {
+    accountsManager.removeAccount(this, selectedAccount, removeAccountCallback);
   }
 
   protected void changeNotificationState(Account account, boolean enabled) {
-    accountsFragmentManager.changeNotificationState(account, enabled);
+    accountsManager.changeNotificationState(this, account, enabled);
   }
 
   public void reload() {
