@@ -115,10 +115,13 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     endAccess(tokenText.getText().toString());
   }
 
+  /*
   @OnClick(R.id.textAboutGitskarios)
   public void about() {
-
+    Intent intent =  new Intent(this, AboutActivity.class);
+    startActivity(intent);
   }
+  */
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {

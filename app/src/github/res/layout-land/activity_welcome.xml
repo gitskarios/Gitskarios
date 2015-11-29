@@ -70,6 +70,7 @@
             />
       </LinearLayout>
 
+        <!--
       <TextView
           android:layout_width="match_parent"
           android:layout_height="36dp"
@@ -80,28 +81,39 @@
           android:text="about gitskarios"
           android:id="@+id/textAboutGitskarios"
           />
+          -->
     </FrameLayout>
     <FrameLayout
-        android:layout_width="360dp"
+        android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:layout_height="match_parent"
         android:visibility="gone"
         tools:visibility="visible"
         android:id="@+id/loginLayout"
         >
-      <LinearLayout
+        <FrameLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:padding="@dimen/gapXLarge"
           android:orientation="vertical"
           android:gravity="center"
           >
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/login_personal_token"
-            android:id="@+id/accessToken"
-            />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <include layout="@layout/content_advanced_login"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_personal_token"
+                    android:id="@+id/accessToken"
+                    android:layout_marginLeft="8dp"
+                    android:layout_gravity="center_vertical"
+                    />
+            </LinearLayout>
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
@@ -109,7 +121,7 @@
             android:id="@+id/progressBar"
             android:visibility="invisible"
             />
-      </LinearLayout>
+        </FrameLayout>
       <Button
           android:layout_width="wrap_content"
           android:layout_height="?actionBarSize"

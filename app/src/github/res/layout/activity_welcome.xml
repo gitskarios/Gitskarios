@@ -71,6 +71,7 @@
             />
       </LinearLayout>
 
+        <!--
       <TextView
           android:layout_width="match_parent"
           android:layout_height="36dp"
@@ -80,6 +81,7 @@
           android:textColor="@color/md_grey_500"
           android:id="@+id/textAboutGitskarios"
           android:text="about gitskarios"/>
+          -->
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
@@ -97,10 +99,12 @@
           android:orientation="vertical"
           android:gravity="center"
           >
+          <include layout="@layout/content_advanced_login" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login_personal_token"
+            android:layout_marginTop="@dimen/gapLarge"
             android:id="@+id/accessToken"
             />
         <ProgressBar

@@ -176,6 +176,9 @@
         android:name=".ui.activity.ContentEditorActivity"
         android:windowSoftInputMode="adjustPan"
         />
+    <activity
+        android:name="com.alorma.github.ui.activity.AboutActivity"
+        android:label="@string/app_name" />
 
     <activity
         android:name="com.alorma.github.emoji.EmojisActivity"
