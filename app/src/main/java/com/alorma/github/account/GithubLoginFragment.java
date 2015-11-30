@@ -8,9 +8,9 @@ import android.content.pm.LabeledIntent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Token;
-import com.alorma.github.sdk.security.GithubDeveloperCredentials;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.activity.PurchasesFragment;
@@ -100,7 +100,10 @@ public class GithubLoginFragment extends Fragment {
     String code = uri.getQueryParameter("code");
 
     if (requestTokenClient == null) {
-      requestTokenClient = new RequestTokenClient(getActivity(), code);
+      requestTokenClient = new RequestTokenClient(getActivity(), code,
+          BuildConfig.CLIENT_ID,
+          BuildConfig.CLIENT_SECRET,
+          BuildConfig.CLIENT_CALLBACK);
 
       requestTokenClient.observable()
           .observeOn(AndroidSchedulers.mainThread())
@@ -128,17 +131,15 @@ public class GithubLoginFragment extends Fragment {
   }
 
   private void openExternalLogin() {
-    String url = String.format("%s?client_id=%s&scope=" + SCOPES, OAUTH_URL,
-        GithubDeveloperCredentials.getInstance().getProvider().getApiClient());
-
     Uri callbackUri =
         Uri.EMPTY.buildUpon().scheme(getString(R.string.oauth_scheme)).authority("oauth").build();
 
-    url = Uri.parse(url)
+    Uri uri = Uri.parse(OAUTH_URL)
         .buildUpon()
+        .appendQueryParameter("client_id", BuildConfig.APPLICATION_ID)
+        .appendQueryParameter("scope", SCOPES)
         .appendQueryParameter("redirect_uri", callbackUri.toString())
-        .build()
-        .toString();
+        .build();
 
     final List<ResolveInfo> browserList = getBrowserList();
 
@@ -146,7 +147,7 @@ public class GithubLoginFragment extends Fragment {
       final List<LabeledIntent> intentList = new ArrayList<>();
 
       for (final ResolveInfo resolveInfo : browserList) {
-        final Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        final Intent newIntent = new Intent(Intent.ACTION_VIEW, uri);
         newIntent.setComponent(
             new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
 
@@ -162,7 +163,7 @@ public class GithubLoginFragment extends Fragment {
 
       startActivity(chooser);
     } else {
-      final Intent chooser = Intent.createChooser(new Intent(Intent.ACTION_VIEW, Uri.parse(url)),
+      final Intent chooser = Intent.createChooser(new Intent(Intent.ACTION_VIEW, uri),
           "Choose your favorite browser");
 
       startActivity(chooser);

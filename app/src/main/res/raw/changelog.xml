@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+  <changelogversion changeDate="Nov 29,2015" versionName="2.6.11">
+    <changelogtext>New login method: You can control which scopes you provide to Gitskarios</changelogtext>
+  </changelogversion>
   <changelogversion changeDate="Nov 24,2015" versionName="2.6.9">
     <changelogtext>Fix STAR / WATCH issue</changelogtext>
   </changelogversion>
