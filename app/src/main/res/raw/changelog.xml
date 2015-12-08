@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+  <changelogversion changeDate="Dec 08,2015" versionName="2.6.12">
+    <changelogtext>Fixed notifications not working</changelogtext>
+  </changelogversion>
   <changelogversion changeDate="Nov 29,2015" versionName="2.6.11">
     <changelogtext>New login method: You can control which scopes you provide to Gitskarios</changelogtext>
   </changelogversion>

@@ -136,7 +136,7 @@ public class GithubLoginFragment extends Fragment {
 
     Uri uri = Uri.parse(OAUTH_URL)
         .buildUpon()
-        .appendQueryParameter("client_id", BuildConfig.APPLICATION_ID)
+        .appendQueryParameter("client_id", BuildConfig.CLIENT_ID)
         .appendQueryParameter("scope", SCOPES)
         .appendQueryParameter("redirect_uri", callbackUri.toString())
         .build();

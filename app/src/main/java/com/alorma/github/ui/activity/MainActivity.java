@@ -141,8 +141,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
       if (!accountList.isEmpty()) {
         selectedAccount = accountList.get(0);
-        selectAccount(selectedAccount);
         createDrawer();
+        selectAccount(selectedAccount);
         onUserEventsSelected();
       }
     }
@@ -182,7 +182,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         }
       }
     };
-    notificationsDrawerItem = new SecondarySwitchDrawerItem().withName(R.string.menu_enable_notifications)
+    notificationsDrawerItem = new SecondarySwitchDrawerItem()
+        .withName(R.string.menu_enable_notifications)
         .withDescription(R.string.menu_enable_notifications_description)
         .withIdentifier(R.id.nav_drawer_notifications)
         .withCheckable(false)
@@ -346,7 +347,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     if (notificationsDrawerItem != null) {
       notificationsDrawerItem.withChecked(
-          selectedAccount != null && ContentResolver.getSyncAutomatically(selectedAccount, selectedAccount.type));
+          selectedAccount != null && ContentResolver.getSyncAutomatically(selectedAccount,
+                  selectedAccount.type.replace(".account", "")));
       if (resultDrawer != null) {
         resultDrawer.updateItem(notificationsDrawerItem);
       }

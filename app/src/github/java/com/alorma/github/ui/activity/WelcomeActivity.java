@@ -115,14 +115,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     endAccess(tokenText.getText().toString());
   }
 
-  /*
-  @OnClick(R.id.textAboutGitskarios)
-  public void about() {
-    Intent intent =  new Intent(this, AboutActivity.class);
-    startActivity(intent);
-  }
-  */
-
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (loginFragment != null) {
@@ -177,19 +169,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
     result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
     result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
     setAccountAuthenticatorResult(result);
-
-    checkAndEnableSyncAdapter(account);
-
     setResult(RESULT_OK);
-  }
-
-  private void checkAndEnableSyncAdapter(Account account) {
-    ContentResolver.setIsSyncable(account, getString(R.string.account_type),
-        ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE);
-    if (ContentResolver.getSyncAutomatically(account, getString(R.string.account_type))) {
-      ContentResolver.addPeriodicSync(account, getString(R.string.account_type), Bundle.EMPTY, 1800);
-      ContentResolver.setSyncAutomatically(account, getString(R.string.account_type), true);
-    }
   }
 
   @Override
