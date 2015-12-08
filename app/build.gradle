@@ -8,20 +8,20 @@ buildscript {
   }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'com.fernandocejas.frodo'
 
 repositories {
   maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'io.fabric'
-apply plugin: 'com.github.ben-manes.versions'
 //gradle dependencyUpdates -Drevision=release
 
 android {
   compileSdkVersion 23
   buildToolsVersion '23.0.2'
-
+  dexOptions {
+    javaMaxHeapSize "4g"
+  }
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 23
