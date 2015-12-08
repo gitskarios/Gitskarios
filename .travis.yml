@@ -20,4 +20,4 @@ deploy:
     all_branches: true
 before_script:
 - git submodule update --init --recursive
-script: ./gradlew assembleGithubDebug assembleEnterpriseDebug
+script: ./gradlew assembleGithubDebug
