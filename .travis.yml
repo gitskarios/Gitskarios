@@ -2,7 +2,8 @@ language: android
 sudo: true
 android:
   components:
-  - build-tools-23.0.1
+  - tools
+  - build-tools-23.0.2
   - android-23
   - extra-android-m2repository
   - extra-google-google_play_services
