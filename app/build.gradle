@@ -181,7 +181,12 @@ dependencies {
   compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
 
   compile 'com.afollestad:material-cab:0.1.4'
-  compile 'com.afollestad:material-dialogs:0.7.9.1'
+  compile('com.github.afollestad.material-dialogs:core:0.8.5.2@aar') {
+    transitive = true
+  }
+  compile('com.github.afollestad.material-dialogs:commons:0.8.5.2@aar') {
+    transitive = true
+  }
 
   compile 'com.github.pedrovgs:renderers:2.0.3'
   compile 'com.jakewharton:butterknife:7.0.1'
