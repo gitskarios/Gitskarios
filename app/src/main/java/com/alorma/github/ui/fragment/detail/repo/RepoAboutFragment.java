@@ -29,6 +29,7 @@ import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.clean.presenter.Presenter;
 import com.clean.presenter.RepositoryPresenter;
@@ -296,7 +297,7 @@ public class RepoAboutFragment extends Fragment
     if (getActivity() != null) {
       if (this.currentRepo != null) {
         User owner = this.currentRepo.owner;
-        ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
+        UniversalImageLoaderUtils.loadUserAvatar(profileIcon, owner);
         authorName.setText(owner.login);
 
         if (this.currentRepo.parent != null) {

@@ -11,6 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
 import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
@@ -58,33 +59,7 @@ public class UserRender extends Renderer<User> {
   @Override
   public void render() {
     User user = getContent();
-    ImageLoader.getInstance().displayImage(user.avatar_url, avatarAuthorImage, new ImageLoadingListener() {
-      @Override
-      public void onLoadingStarted(String imageUri, View view) {
-
-      }
-
-      @Override
-      public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-      }
-
-      @Override
-      public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-        //Set color to a View's imageUri
-        Atelier.with(context, imageUri).load(loadedImage).swatch(new DarkVibrantSwatch(ColorType.BACKGROUND)).into(textRootView);
-
-        //Set color to text in a TextView
-        Atelier.with(context, imageUri).load(loadedImage).swatch(new DarkVibrantSwatch(ColorType.TEXT_TITLE)).into(textAuthorLogin);
-      }
-
-      @Override
-      public void onLoadingCancelled(String imageUri, View view) {
-
-      }
-    });
-
+    UniversalImageLoaderUtils.loadUserAvatar(avatarAuthorImage, user);
     textAuthorLogin.setText(user.login);
   }
 }

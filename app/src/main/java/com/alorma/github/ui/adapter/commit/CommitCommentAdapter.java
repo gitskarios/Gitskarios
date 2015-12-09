@@ -11,6 +11,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -42,15 +43,7 @@ public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, Co
 
       holder.textAuthor.setText(commitComment.user.login);
 
-      if (commitComment.user.avatar_url != null) {
-        ImageLoader.getInstance().displayImage(commitComment.user.avatar_url, holder.imageAuthor);
-      } else {
-        IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
-        iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
-        iconDrawable.sizeDp(36);
-        iconDrawable.setAlpha(128);
-        holder.imageAuthor.setImageDrawable(iconDrawable);
-      }
+      UniversalImageLoaderUtils.loadUserAvatar(holder.imageAuthor, commitComment.user);
     }
 
     if (commitComment.body_html != null) {

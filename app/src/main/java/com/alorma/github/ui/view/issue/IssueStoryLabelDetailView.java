@@ -13,6 +13,7 @@ import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
 import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
@@ -71,7 +72,8 @@ public class IssueStoryLabelDetailView extends LinearLayout {
 
   private void printLabelsEvent(boolean added, long created_at, User user, List<Label> labels) {
     userText.setText(user.login);
-    ImageLoader.getInstance().displayImage(user.avatar_url, profileIcon);
+
+    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, user);
     labelsView.setLabels(labels);
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String date = TimeUtils.getTimeAgoString(formatter.print(created_at));

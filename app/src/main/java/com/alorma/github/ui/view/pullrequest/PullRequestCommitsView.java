@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -67,32 +68,9 @@ public class PullRequestCommitsView extends LinearLayout {
 
   public void setPullRequestStoryCommitsList(PullRequestStoryCommitsList pullRequestStoryCommitsList) {
     userText.setText(pullRequestStoryCommitsList.user().login);
-    if (pullRequestStoryCommitsList.user().avatar_url != null) {
-      ImageLoader.getInstance().displayImage(pullRequestStoryCommitsList.user().avatar_url, profileIcon);
-    } else if (pullRequestStoryCommitsList.user().email != null) {
-      try {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        digest.update(pullRequestStoryCommitsList.user().email.getBytes());
-        byte messageDigest[] = digest.digest();
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < messageDigest.length; i++)
-          hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-        String hash = hexString.toString();
-        ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, profileIcon);
-      } catch (NoSuchAlgorithmException e) {
-        IconicsDrawable iconDrawable = new IconicsDrawable(profileIcon.getContext(), Octicons.Icon.oct_octoface);
-        iconDrawable.color(AttributesUtils.getSecondaryTextColor(profileIcon.getContext()));
-        iconDrawable.sizeDp(36);
-        iconDrawable.setAlpha(128);
-        profileIcon.setImageDrawable(iconDrawable);
-      }
-    } else {
-      IconicsDrawable iconDrawable = new IconicsDrawable(profileIcon.getContext(), Octicons.Icon.oct_octoface);
-      iconDrawable.color(AttributesUtils.getSecondaryTextColor(profileIcon.getContext()));
-      iconDrawable.sizeDp(36);
-      iconDrawable.setAlpha(128);
-      profileIcon.setImageDrawable(iconDrawable);
-    }
+
+    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, pullRequestStoryCommitsList.user());
+
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String date = TimeUtils.getTimeAgoString(formatter.print(pullRequestStoryCommitsList.createdAt()));
     String pushedDate = getContext().getResources().getString(R.string.pushed) + " " + date;

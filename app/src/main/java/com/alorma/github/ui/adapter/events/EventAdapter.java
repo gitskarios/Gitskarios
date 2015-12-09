@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,10 @@ import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
 import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
@@ -36,13 +40,11 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
   private final Resources resources;
-  private final int defaultProfileColor;
   private EventAdapterListener eventAdapterListener;
 
   public EventAdapter(Context context, LayoutInflater inflater) {
     super(inflater);
     resources = context.getResources();
-    defaultProfileColor = ContextCompat.getColor(context, R.color.primary);
   }
 
   @Override
@@ -146,43 +148,10 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
   }
 
   public void handleImage(final ImageView imageView, GithubEvent event) {
-    ImageLoader.getInstance().cancelDisplayTask(imageView);
-    DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
-        .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-        .bitmapConfig(Bitmap.Config.ALPHA_8)
-        .build();
-    ImageLoader.getInstance().displayImage(event.actor.avatar_url, imageView, displayImageOptions, new ImageLoadingListener() {
-          @Override
-          public void onLoadingStarted(String imageUri, View view) {
 
-          }
+    User actor = event.actor;
 
-          @Override
-          public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-          }
-
-          @Override
-          public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            Context context = imageView.getContext();
-
-            //Set color tag to imageView
-            Atelier.with(context, imageUri)
-                .load(loadedImage)
-                .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                .listener(new Atelier.OnPaletteRenderedListener() {
-                  @Override
-                  public void onRendered(Palette palette) {
-                    imageView.setTag(palette.getVibrantColor(defaultProfileColor));
-                  }
-                });
-          }
-
-          @Override
-          public void onLoadingCancelled(String imageUri, View view) {
-
-          }
-        });
+    UniversalImageLoaderUtils.loadUserAvatar(imageView, actor);
   }
 
   @Override

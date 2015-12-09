@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Release;
@@ -19,6 +20,7 @@ import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -26,7 +28,7 @@ import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -81,7 +83,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
 
     if (release != null) {
       User owner = release.author;
-      ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
+      UniversalImageLoaderUtils.loadUserAvatar(profileIcon, owner);
       authorName.setText(owner.login);
 
       createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());

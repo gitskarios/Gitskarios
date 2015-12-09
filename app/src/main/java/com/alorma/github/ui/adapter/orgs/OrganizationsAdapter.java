@@ -12,6 +12,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
 import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
@@ -39,34 +40,8 @@ public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, Org
 
   @Override
   protected void onBindViewHolder(final ViewHolder holder, Organization organization) {
-    ImageLoader.getInstance().displayImage(organization.avatar_url, holder.avatar, new ImageLoadingListener() {
-      @Override
-      public void onLoadingStarted(String imageUri, View view) {
 
-      }
-
-      @Override
-      public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-      }
-
-      @Override
-      public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-        Context context = holder.itemView.getContext();
-
-        //Set color to a View's imageUri
-        Atelier.with(context, imageUri).load(loadedImage).swatch(new DarkVibrantSwatch(ColorType.BACKGROUND)).into(holder.textRootView);
-
-        //Set color to text in a TextView
-        Atelier.with(context, imageUri).load(loadedImage).swatch(new DarkVibrantSwatch(ColorType.TEXT_TITLE)).into(holder.text);
-      }
-
-      @Override
-      public void onLoadingCancelled(String imageUri, View view) {
-
-      }
-    });
-
+    UniversalImageLoaderUtils.loadUserAvatar(holder.avatar, organization);
     holder.text.setText(organization.login);
   }
 

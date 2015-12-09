@@ -17,6 +17,7 @@ import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
 import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
@@ -44,43 +45,8 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
 
   @Override
   protected void onBindViewHolder(final ViewHolder holder, User user) {
-    ImageLoader.getInstance().displayImage(user.avatar_url, holder.avatar, new ImageLoadingListener() {
-      @Override
-      public void onLoadingStarted(String imageUri, View view) {
 
-      }
-
-      @Override
-      public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-      }
-
-      @Override
-      public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-        final Context context = holder.itemView.getContext();
-
-        //Set color to a View's imageUri
-        Atelier.with(context, imageUri)
-            .load(loadedImage)
-            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-            .listener(new Atelier.OnPaletteRenderedListener() {
-              @Override
-              public void onRendered(Palette palette) {
-                int color = ContextCompat.getColor(context, R.color.primary);
-                holder.textRootView.setTag(palette.getVibrantColor(color));
-              }
-            })
-            .into(holder.textRootView);
-
-        //Set color to text in a TextView
-        Atelier.with(context, imageUri).load(loadedImage).swatch(new DarkVibrantSwatch(ColorType.TEXT_TITLE)).into(holder.text);
-      }
-
-      @Override
-      public void onLoadingCancelled(String imageUri, View view) {
-
-      }
-    });
+    UniversalImageLoaderUtils.loadUserAvatarSquare(holder.avatar, user);
 
     holder.text.setText(user.login);
   }

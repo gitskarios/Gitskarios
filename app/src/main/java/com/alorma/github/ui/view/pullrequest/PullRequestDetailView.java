@@ -30,6 +30,7 @@ import com.alorma.github.ui.activity.PullRequestFilesActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.StatusActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TimeUtils;
 import com.alorma.gitskarios.core.client.StoreCredentials;
@@ -123,8 +124,8 @@ public class PullRequestDetailView extends LinearLayout {
       if (pullRequest.user != null) {
         profileName.setText(pullRequest.user.login);
         profileEmail.setText(TimeUtils.getTimeAgoString(pullRequest.created_at));
-        ImageLoader instance = ImageLoader.getInstance();
-        instance.displayImage(pullRequest.user.avatar_url, profileIcon);
+
+        UniversalImageLoaderUtils.loadUserAvatar(profileIcon, pullRequest.user);
         OnClickListener issueUserClick = new OnClickListener() {
           @Override
           public void onClick(View v) {

@@ -13,6 +13,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.joda.time.format.DateTimeFormat;
@@ -110,7 +111,7 @@ public class IssueTimelineView extends LinearLayout {
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
     userText.setText(storyEvent.user().login);
-    ImageLoader.getInstance().displayImage(storyEvent.user().avatar_url, profileIcon);
+    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, storyEvent.user());
     setTime(storyEvent.createdAt());
   }
 

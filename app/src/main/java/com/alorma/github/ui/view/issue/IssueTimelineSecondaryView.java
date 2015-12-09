@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -55,31 +56,6 @@ public class IssueTimelineSecondaryView extends LinearLayout {
   public void setCommit(PullRequestStoryCommit issueStoryDetail) {
     shaContent.setText(Html.fromHtml("<b>" + issueStoryDetail.commit.shortSha() + "</b> " + issueStoryDetail.commit.commit.shortMessage()));
 
-    if (issueStoryDetail.user().avatar_url != null) {
-      ImageLoader.getInstance().displayImage(issueStoryDetail.user().avatar_url, profileIcon);
-    } else if (issueStoryDetail.user().email != null) {
-      try {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        digest.update(issueStoryDetail.user().email.getBytes());
-        byte messageDigest[] = digest.digest();
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < messageDigest.length; i++)
-          hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-        String hash = hexString.toString();
-        ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, profileIcon);
-      } catch (NoSuchAlgorithmException e) {
-        IconicsDrawable iconDrawable = new IconicsDrawable(profileIcon.getContext(), Octicons.Icon.oct_octoface);
-        iconDrawable.color(AttributesUtils.getSecondaryTextColor(profileIcon.getContext()));
-        iconDrawable.sizeDp(36);
-        iconDrawable.setAlpha(128);
-        profileIcon.setImageDrawable(iconDrawable);
-      }
-    } else {
-      IconicsDrawable iconDrawable = new IconicsDrawable(profileIcon.getContext(), Octicons.Icon.oct_octoface);
-      iconDrawable.color(AttributesUtils.getSecondaryTextColor(profileIcon.getContext()));
-      iconDrawable.sizeDp(36);
-      iconDrawable.setAlpha(128);
-      profileIcon.setImageDrawable(iconDrawable);
-    }
+    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, issueStoryDetail.user());
   }
 }

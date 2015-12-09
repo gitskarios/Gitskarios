@@ -40,6 +40,8 @@ import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.adapter.ProfileItemsAdapter;
 import com.alorma.github.utils.TimeUtils;
 import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.musenkishi.atelier.Atelier;
 import com.musenkishi.atelier.ColorType;
@@ -260,11 +262,17 @@ public class ProfileActivity extends BackActivity {
 
     if (getSupportActionBar() != null) {
       loadImageAvatar(user);
-      //            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
     }
   }
 
   private void loadImageAvatar(final User user) {
+
+      TextDrawable drawable = TextDrawable.builder()
+              .beginConfig()
+              .endConfig()
+              .buildRect(user.login.substring(0, 1), ColorGenerator.MATERIAL.getColor(user.login.substring(0, 1)));
+      image.setImageDrawable(drawable);
+
     ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
       @Override
       public void onLoadingStarted(String imageUri, View view) {

@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -25,12 +26,8 @@ public class UsersHolder {
   public void fill(User user) {
     if (authorAvatar != null) {
       this.authorAvatar.setVisibility(View.VISIBLE);
-      if (!TextUtils.isEmpty(user.avatar_url)) {
-        ImageLoader.getInstance().displayImage(user.avatar_url, authorAvatar);
-        authorAvatar.setVisibility(View.VISIBLE);
-      } else {
-        authorAvatar.setVisibility(View.GONE);
-      }
+
+      UniversalImageLoaderUtils.loadUserAvatar(authorAvatar, user);
     }
 
     if (authorLogin != null) {

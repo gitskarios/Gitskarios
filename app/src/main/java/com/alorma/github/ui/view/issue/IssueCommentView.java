@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -67,8 +68,7 @@ public class IssueCommentView extends LinearLayout {
     applyGenericIssueStory(issueStoryDetail);
 
     if (githubComment.user != null) {
-      ImageLoader instance = ImageLoader.getInstance();
-      instance.displayImage(githubComment.user.avatar_url, profileIcon);
+      UniversalImageLoaderUtils.loadUserAvatar(profileIcon, githubComment.user);
     }
 
     if (githubComment.body_html != null) {
@@ -82,7 +82,7 @@ public class IssueCommentView extends LinearLayout {
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
     userText.setText(storyEvent.user().login);
-    ImageLoader.getInstance().displayImage(storyEvent.user().avatar_url, profileIcon);
+    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, storyEvent.user());
     setTime(storyEvent.createdAt());
   }
 

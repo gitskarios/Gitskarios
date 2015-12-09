@@ -16,6 +16,7 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -66,32 +67,8 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     }
 
     if (author != null) {
-      if (author.avatar_url != null) {
-        ImageLoader.getInstance().displayImage(author.avatar_url, holder.avatar);
-      } else if (author.email != null) {
-        try {
-          MessageDigest digest = MessageDigest.getInstance("MD5");
-          digest.update(author.email.getBytes());
-          byte messageDigest[] = digest.digest();
-          StringBuffer hexString = new StringBuffer();
-          for (int i = 0; i < messageDigest.length; i++)
-            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-          String hash = hexString.toString();
-          ImageLoader.getInstance().displayImage("http://www.gravatar.com/avatar/" + hash, holder.avatar);
-        } catch (NoSuchAlgorithmException e) {
-          IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
-          iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
-          iconDrawable.sizeDp(36);
-          iconDrawable.setAlpha(128);
-          holder.avatar.setImageDrawable(iconDrawable);
-        }
-      } else {
-        IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
-        iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
-        iconDrawable.sizeDp(36);
-        iconDrawable.setAlpha(128);
-        holder.avatar.setImageDrawable(iconDrawable);
-      }
+
+      UniversalImageLoaderUtils.loadUserAvatar(holder.avatar, author);
 
       if (author.login != null) {
         holder.user.setText(author.login);
