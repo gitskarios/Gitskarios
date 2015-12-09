@@ -1,3 +1,2 @@
 include ':app'
 include ':sdks:GithubAndroidSdk'
-include ':sdks:GithubAndroidSdk:GitskariosCore'
