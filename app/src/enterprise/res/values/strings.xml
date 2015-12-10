@@ -2,4 +2,5 @@
 <resources>
   <string name="github_enterprise_account">Github Enterprise</string>
   <string name="github_account">Github Account</string>
+  <string name="login_enterprise_url">Github enterprise url</string>
 </resources>
