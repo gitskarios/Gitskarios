@@ -91,4 +91,7 @@
   <dimen name="breadcrumb_arrow_size">18dp</dimen>
   <dimen name="breadcrumb_arrow_margin">8dp</dimen>
   <dimen name="breadcrumb_layout_margin">68dp</dimen>
+  <dimen name="app_bar_height">180dp</dimen>
+  <dimen name="fab_margin">16dp</dimen>
+  <dimen name="text_margin">16dp</dimen>
 </resources>

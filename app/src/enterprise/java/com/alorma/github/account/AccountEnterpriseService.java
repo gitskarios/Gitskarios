@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import com.alorma.github.ui.activity.WelcomeActivity;
+
 /**
  * Created by Bernat on 27/03/2015.
  */
@@ -54,7 +56,7 @@ public class AccountEnterpriseService extends Service {
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] strings,
         Bundle bundle) throws NetworkErrorException {
       Bundle reply = new Bundle();
-      Intent intent = new Intent(context, GithubLoginFragment.class);
+      Intent intent = new Intent(context, WelcomeActivity.class);
       intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
       reply.putParcelable(AccountManager.KEY_INTENT, intent);
 
@@ -71,7 +73,7 @@ public class AccountEnterpriseService extends Service {
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle bundle)
         throws NetworkErrorException {
       Bundle reply = new Bundle();
-      Intent intent = new Intent(context, GithubLoginFragment.class);
+      Intent intent = new Intent(context, WelcomeActivity.class);
       intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
       reply.putParcelable(AccountManager.KEY_INTENT, intent);
 

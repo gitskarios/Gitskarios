@@ -9,6 +9,10 @@
         android:name=".ui.activity.GithubEnterpriseLoginActivity"
         android:theme="@style/AppTheme.Welcome"
         />
+    <activity
+        android:name=".ui.activity.GithubLoginActivity"
+        android:theme="@style/AppTheme.Welcome"
+        />
 
     <service android:name=".account.AccountEnterpriseService">
       <intent-filter>

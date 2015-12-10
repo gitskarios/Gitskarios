@@ -28,7 +28,7 @@ public class GithubEnterpriseLoginActivity extends BackActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.github_enterprise_login);
+    setContentView(R.layout.activity_github_enterprise_login);
     ButterKnife.bind(this);
 
     enterpriseToken.addTextChangedListener(new TextWatcher() {
