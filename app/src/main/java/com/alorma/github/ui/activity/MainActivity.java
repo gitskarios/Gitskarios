@@ -282,7 +282,9 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     DrawerImageLoader.init(new DrawerImage());
 
-    AccountHeaderBuilder headerBuilder = new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.accent_welcome);
+    AccountHeaderBuilder headerBuilder =
+            new AccountHeaderBuilder().withActivity(this)
+                    .withHeaderBackground(R.color.accent_welcome);
 
     headerBuilder.withOnAccountHeaderListener(this);
 

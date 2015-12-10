@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,11 +31,13 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @OnClick(R.id.openLoginGithub)
     public void openGithub() {
-
+        Intent intent = new Intent(this, GithubLoginActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.openLoginGithubEnterprise)
     public void openGithubEnterprise() {
-
+        Intent intent = new Intent(this, GithubEnterpriseLoginActivity.class);
+        startActivity(intent);
     }
 }
