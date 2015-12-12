@@ -2,269 +2,360 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Pair;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.alorma.github.R;
-import com.alorma.github.bean.ProfileItem;
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.client.GithubClient;
-import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.activity.gists.GistsMainActivity;
-import com.alorma.github.ui.adapter.ProfileItemsAdapter;
-import com.alorma.github.utils.TimeUtils;
+import com.alorma.github.ui.utils.PaletteUtils;
 import com.alorma.gitskarios.core.client.StoreCredentials;
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.mikepenz.octicons_typeface_library.Octicons;
-import com.musenkishi.atelier.Atelier;
-import com.musenkishi.atelier.ColorType;
-import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.github.florent37.glidepalette.BitmapPalette;
+import com.github.florent37.glidepalette.GlidePalette;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 
 /**
  * Created by Bernat on 15/07/2014.
  */
 public class ProfileActivity extends BackActivity {
 
-  public static final String EXTRA_COLOR = "EXTRA_COLOR";
-  public static final String URL_PROFILE = "URL_PROFILE";
-  private static final String USER = "USER";
-  private static final String ACCOUNT = "ACCOUNT";
-  private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
-  private ImageView image;
+    public static final String EXTRA_COLOR = "EXTRA_COLOR";
+    public static final String URL_PROFILE = "URL_PROFILE";
+    private static final String USER = "USER";
+    private static final String ACCOUNT = "ACCOUNT";
+    private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
 
-  private User user;
-  private boolean followingUser = false;
-  private CollapsingToolbarLayout collapsingToolbarLayout;
-  private ProfileItemsAdapter profileItemsAdapter;
-  private boolean updateProfile = false;
-  private Account selectedAccount;
-  private boolean colorApplied;
-  private int avatarColor;
-  private int defaultProfileColor;
+    private User user;
 
-  public static Intent createLauncherIntent(Context context, Account selectedAccount) {
-    Intent intent = new Intent(context, ProfileActivity.class);
-    Bundle extras = new Bundle();
-    extras.putBoolean(AUTHENTICATED_USER, true);
-    extras.putParcelable(ACCOUNT, selectedAccount);
-    intent.putExtras(extras);
-    return intent;
-  }
+    private boolean followingUser = false;
+    private boolean updateProfile = false;
+    private Account selectedAccount;
+    private boolean colorApplied;
+    private int avatarColor;
 
-  public static Intent createLauncherIntent(Context context, User user) {
-    Bundle extras = new Bundle();
-    if (user != null) {
-      extras.putParcelable(USER, user);
+    @Bind(R.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
 
-      StoreCredentials settings = new StoreCredentials(context);
-      extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
+    @Bind(R.id.appbarLayout)
+    AppBarLayout appBarLayout;
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
+    @Bind(R.id.ctlLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+    @Bind(R.id.userAvatar)
+    ImageView userAvatar;
+
+    @Bind(R.id.userLogin)
+    TextView userLogin;
+
+    @Bind(R.id.userName)
+    TextView userName;
+
+    @Bind(R.id.tabLayout)
+    TabLayout tabLayout;
+
+    public static Intent createLauncherIntent(Context context, Account selectedAccount) {
+        Intent intent = new Intent(context, ProfileActivity.class);
+        Bundle extras = new Bundle();
+        extras.putBoolean(AUTHENTICATED_USER, true);
+        extras.putParcelable(ACCOUNT, selectedAccount);
+        intent.putExtras(extras);
+        return intent;
     }
-    Intent intent = new Intent(context, ProfileActivity.class);
-    intent.putExtras(extras);
-    return intent;
-  }
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.profile_activity);
+    public static Intent createLauncherIntent(Context context, User user) {
+        Bundle extras = new Bundle();
+        if (user != null) {
+            extras.putParcelable(USER, user);
 
-    defaultProfileColor = ContextCompat.getColor(this, R.color.primary);
-
-    image = (ImageView) findViewById(R.id.imgToolbar);
-
-    collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
-
-    RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
-    recycler.setLayoutManager(new LinearLayoutManager(this));
-    recycler.setItemAnimator(new DefaultItemAnimator());
-    profileItemsAdapter = new ProfileItemsAdapter(this);
-    recycler.setAdapter(profileItemsAdapter);
-
-    if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
-      avatarColor = getIntent().getIntExtra(EXTRA_COLOR, -1);
-      if (avatarColor != -1) {
-        applyColors(avatarColor);
-      }
+            StoreCredentials settings = new StoreCredentials(context);
+            extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
+        }
+        Intent intent = new Intent(context, ProfileActivity.class);
+        intent.putExtras(extras);
+        return intent;
     }
-  }
 
-  @Override
-  protected void getContent() {
-    if (profileItemsAdapter == null || profileItemsAdapter.getItemCount() == 0) {
-      GithubClient<User> requestClient;
-      user = null;
-      if (getIntent().getExtras() != null) {
-        if (getIntent().getExtras().containsKey(ACCOUNT)) {
-          selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.profile_activity);
+
+        ButterKnife.bind(this);
+
+        avatarColor = ContextCompat.getColor(this, R.color.primary);
+
+        TabLayout.Tab info = tabLayout.newTab().setText("INFO");
+        tabLayout.addTab(info);
+        tabLayout.addTab(tabLayout.newTab().setText("REPOSITORIES"));
+        tabLayout.addTab(tabLayout.newTab().setText("EVENTS"));
+        info.select();
+
+
+        if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
+            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, -1);
         }
-        if (getIntent().getExtras().containsKey(USER)) {
-          user = getIntent().getParcelableExtra(USER);
+
+    }
+
+    @Override
+    protected void getContent() {
+        GithubClient<User> requestClient;
+        user = null;
+        String avatar = null;
+        String login = null;
+        String name = null;
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey(ACCOUNT)) {
+                selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
+                avatar = AccountsHelper.getUserAvatar(this, selectedAccount);
+                login = selectedAccount.name;
+                name = AccountsHelper.getUserName(this, selectedAccount);
+            }
+            if (getIntent().getExtras().containsKey(USER)) {
+                user = getIntent().getParcelableExtra(USER);
+                avatar = user.avatar_url;
+                login = user.login;
+                name = user.name;
+            }
         }
-      }
 
-      StoreCredentials settings = new StoreCredentials(this);
+        if (login != null) {
+            userLogin.setText(login);
+        }
 
-      if (user != null) {
-        if (user.login.equalsIgnoreCase(settings.getUserName())) {
-          requestClient = new GetAuthUserClient(this);
-          updateProfile = true;
-          collapsingToolbarLayout.setTitle(settings.getUserName());
+        if (name != null) {
+            userName.setText(name);
+        }
+
+        if (avatar != null) {
+
+            Glide.with(this)
+                    .load(avatar)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(userAvatar);
+
+            Glide.with(this)
+                    .load(avatar)
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
+                                    if (profileSwatch == null) {
+                                        profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
+                                    }
+                                    if (profileSwatch == null) {
+                                        profileSwatch = PaletteUtils.getProfileSwatch(palette);
+                                    }
+
+                                    if (profileSwatch != null) {
+                                        applySwatchBackground(profileSwatch);
+                                        applySwatchTexts(profileSwatch);
+                                    }
+                                }
+                            });
+                        }
+                    });
+        }
+
+        StoreCredentials settings = new StoreCredentials(this);
+
+        if (user != null) {
+            if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                requestClient = new GetAuthUserClient(this);
+                updateProfile = true;
+                collapsingToolbarLayout.setTitle(settings.getUserName());
+            } else {
+                requestClient = new RequestUserClient(this, user.login);
+                collapsingToolbarLayout.setTitle(user.login);
+            }
         } else {
-          requestClient = new RequestUserClient(this, user.login);
-          collapsingToolbarLayout.setTitle(user.login);
+            requestClient = new GetAuthUserClient(this);
+            updateProfile = true;
         }
-        loadImageAvatar(user);
-      } else {
-        requestClient = new GetAuthUserClient(this);
-        updateProfile = true;
-      }
 
-      invalidateOptionsMenu();
+        invalidateOptionsMenu();
 
-      requestClient.observable()
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<User>() {
-            @Override
-            public void onCompleted() {
+        requestClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(User user) {
-              onUserLoaded(user);
-            }
-          });
+                    @Override
+                    public void onNext(User user) {
+                        onUserLoaded(user);
+                    }
+                });
+
     }
-  }
 
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    super.onPrepareOptionsMenu(menu);
+    private void applySwatchTexts(Palette.Swatch swatch) {
 
-    if (menu != null) {
+        int rgb = swatch.getTitleTextColor();
+        generateAvatarBackground(rgb);
+        userLogin.setTextColor(rgb);
+        userName.setTextColor(rgb);
 
-      menu.clear();
+        tabLayout.setTabTextColors(swatch.getBodyTextColor(), rgb);
+        tabLayout.setSelectedTabIndicatorColor(rgb);
+    }
 
-      StoreCredentials settings = new StoreCredentials(this);
+    private void applySwatchBackground(Palette.Swatch swatch) {
 
-      if (user != null && !settings.getUserName().equals(user.login)) {
-        if (followingUser) {
-          menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
+        int bkg = swatch.getRgb();
+
+        coordinatorLayout.setStatusBarBackgroundColor(bkg);
+        toolbar.setBackgroundColor(bkg);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(bkg);
+            getWindow().setNavigationBarColor(bkg);
+        }
+    }
+
+    private void generateAvatarBackground(int color) {
+        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
+        circle.getPaint().setColor(color);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            userAvatar.setBackground(circle);
         } else {
-          menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
+            userAvatar.setBackgroundDrawable(circle);
+        }
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (menu != null) {
+
+            menu.clear();
+
+            StoreCredentials settings = new StoreCredentials(this);
+
+            if (user != null && !settings.getUserName().equals(user.login)) {
+                if (followingUser) {
+                    menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
+                } else {
+                    menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
+                }
+
+                menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
         }
 
-        menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-      }
+        return true;
     }
 
-    return true;
-  }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_menu_follow_user) {
+            followUserAction(new FollowUserClient(this, user.login));
+        } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
+            followUserAction(new UnfollowUserClient(this, user.login));
+        }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    super.onOptionsItemSelected(item);
-    if (item.getItemId() == R.id.action_menu_follow_user) {
-      followUserAction(new FollowUserClient(this, user.login));
-    } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
-      followUserAction(new UnfollowUserClient(this, user.login));
+        item.setEnabled(false);
+
+        return true;
     }
 
-    item.setEnabled(false);
+    private void followUserAction(GithubClient<Boolean> githubClient) {
+        githubClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
 
-    return true;
-  }
+                    }
 
-  private void followUserAction(GithubClient<Boolean> githubClient) {
-    githubClient.observable()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Boolean>() {
-          @Override
-          public void onCompleted() {
+                    @Override
+                    public void onError(Throwable e) {
 
-          }
+                    }
 
-          @Override
-          public void onError(Throwable e) {
-
-          }
-
-          @Override
-          public void onNext(Boolean aBoolean) {
-            followingUser = aBoolean;
-            invalidateOptionsMenu();
-          }
-        });
-  }
-
-  public void onUserLoaded(final User user) {
-    this.user = user;
-    collapsingToolbarLayout.setTitle(user.login);
-
-    StoreCredentials settings = new StoreCredentials(this);
-
-    invalidateOptionsMenu();
-
-    if (updateProfile && selectedAccount != null) {
-      AccountManager accountManager = AccountManager.get(this);
-      accountManager.setUserData(selectedAccount, AccountsHelper.USER_PIC, user.avatar_url);
-      ImageLoader.getInstance().clearMemoryCache();
-      ImageLoader.getInstance().clearDiskCache();
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        followingUser = aBoolean;
+                        invalidateOptionsMenu();
+                    }
+                });
     }
 
-    if (!user.login.equalsIgnoreCase(settings.getUserName())) {
-      followUserAction(new CheckFollowingUser(this, user.login));
+    public void onUserLoaded(final User user) {
+        this.user = user;
+
+        userName.setText(user.name);
+
+        collapsingToolbarLayout.setTitle(user.login);
+
+        StoreCredentials settings = new StoreCredentials(this);
+
+        invalidateOptionsMenu();
+
+        if (updateProfile && selectedAccount != null) {
+            AccountManager accountManager = AccountManager.get(this);
+            accountManager.setUserData(selectedAccount, AccountsHelper.USER_PIC, user.avatar_url);
+            ImageLoader.getInstance().clearMemoryCache();
+            ImageLoader.getInstance().clearDiskCache();
+        }
+
+        if (!user.login.equalsIgnoreCase(settings.getUserName())) {
+            followUserAction(new CheckFollowingUser(this, user.login));
+        }
     }
-
-    fillCardBio(user);
-
-    fillCardGithubData(user);
-
-    if (getSupportActionBar() != null) {
-      loadImageAvatar(user);
-    }
-  }
-
+/*
   private void loadImageAvatar(final User user) {
 
       TextDrawable drawable = TextDrawable.builder()
@@ -293,7 +384,7 @@ public class ProfileActivity extends BackActivity {
               .listener(new Atelier.OnPaletteRenderedListener() {
                 @Override
                 public void onRendered(Palette palette) {
-                  applyColors(palette.getVibrantColor(defaultProfileColor));
+                  applyColors(palette.getVibrantColor(avatarColor));
                 }
               })
               .into(image);
@@ -308,28 +399,6 @@ public class ProfileActivity extends BackActivity {
       }
     });
   }
-
-  //    @Override
-  //    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
-  //
-  //        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
-  //
-  //        image.setImageDrawable(drawable);
-  //
-  //        if (palette.getSwatches().size() > 0) {
-  //            Palette.Swatch swatch = palette.getSwatches().get(0);
-  //            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
-  //        } else {
-  //            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
-  //        }
-  //
-  //        fillCardBio(user);
-  //
-  //        fillCardGithubData(user);
-  //
-  //        fillCardPlan(user);
-  //
-  //    }
 
   private void applyColors(int rgb) {
     try {
@@ -448,16 +517,17 @@ public class ProfileActivity extends BackActivity {
       profileItemsAdapter.add(profileItemWatched);
     }
   }
+  */
 
-  @Override
-  protected void close(boolean navigateUp) {
-    if (user != null && updateProfile) {
-      Intent intent = new Intent();
-      Bundle extras = new Bundle();
-      extras.putString(URL_PROFILE, user.avatar_url);
-      intent.putExtras(extras);
-      setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
+    @Override
+    protected void close(boolean navigateUp) {
+        if (user != null && updateProfile) {
+            Intent intent = new Intent();
+            Bundle extras = new Bundle();
+            extras.putString(URL_PROFILE, user.avatar_url);
+            intent.putExtras(extras);
+            setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
+        }
+        super.close(navigateUp);
     }
-    super.close(navigateUp);
-  }
 }

@@ -3,7 +3,7 @@
   <uses-permission android:name="com.android.vending.BILLING"/>
   <application>
     <activity
-        android:name=".ui.activity.WelcomeActivity"
+        android:name="com.alorma.github.ui.activity.WelcomeActivity"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.Welcome"
         android:launchMode="singleInstance"
