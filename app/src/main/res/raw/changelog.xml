@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+  <changelogversion changeDate="Dec 13,2015" versionName="2.7.0">
+    <changelogtext>Redesigned profile screen</changelogtext>
+  </changelogversion>
   <changelogversion changeDate="Dec 08,2015" versionName="2.6.12">
     <changelogtext>Fixed notifications not working</changelogtext>
   </changelogversion>
@@ -8,16 +11,5 @@
   </changelogversion>
   <changelogversion changeDate="Nov 24,2015" versionName="2.6.9">
     <changelogtext>Fix STAR / WATCH issue</changelogtext>
-  </changelogversion>
-  <changelogversion changeDate="Nov 22,2015" versionName="2.6.7">
-    <changelogtext>Search directly while tapping</changelogtext>
-    <changelogtext>A lot of bug fixes</changelogtext>
-  </changelogversion>
-  <changelogversion changeDate="Nov 12,2015" versionName="2.6.5">
-    <changelogtext>Create repository from the app</changelogtext>
-    <changelogtext>Fix issues cannot be created</changelogtext>
-  </changelogversion>
-  <changelogversion changeDate="Nov 10,2015" versionName="2.6.4">
-    <changelogtext>Click user avatar to view profile. Thanks [b]IvBaranov[/b]</changelogtext>
   </changelogversion>
 </changelog>
