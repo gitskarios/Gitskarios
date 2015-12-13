@@ -19,15 +19,18 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.client.GithubClient;
+import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
@@ -50,13 +53,16 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by Bernat on 15/07/2014.
  */
-public class ProfileActivity extends BackActivity {
+public class ProfileActivity extends BackActivity implements UserResumeFragment.UserResumeCallback {
 
     public static final String EXTRA_COLOR = "EXTRA_COLOR";
     public static final String URL_PROFILE = "URL_PROFILE";
@@ -150,86 +156,103 @@ public class ProfileActivity extends BackActivity {
             userResumeFragment = new UserResumeFragment();
         }
 
+        userResumeFragment.setUserResumeCallback(this);
+
     }
 
     @Override
     protected void getContent() {
-        GithubClient<User> requestClient;
-        user = null;
-        String avatar = null;
-        String login = null;
-        String name = null;
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().containsKey(ACCOUNT)) {
-                selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
-                avatar = AccountsHelper.getUserAvatar(this, selectedAccount);
-                login = selectedAccount.name;
-                name = AccountsHelper.getUserName(this, selectedAccount);
+        if (user == null) {
+            GithubClient<User> requestClient;
+            String avatar = null;
+            String login = null;
+            String name = null;
+            if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey(ACCOUNT)) {
+                    selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
+                    avatar = AccountsHelper.getUserAvatar(this, selectedAccount);
+                    login = selectedAccount.name;
+                    name = AccountsHelper.getUserName(this, selectedAccount);
+                }
+                if (getIntent().getExtras().containsKey(USER)) {
+                    user = getIntent().getParcelableExtra(USER);
+                    avatar = user.avatar_url;
+                    login = user.login;
+                    name = user.name;
+                }
             }
-            if (getIntent().getExtras().containsKey(USER)) {
-                user = getIntent().getParcelableExtra(USER);
-                avatar = user.avatar_url;
-                login = user.login;
-                name = user.name;
+
+            if (login != null) {
+                userLogin.setText(login);
+
+                List<Fragment> fragments = new ArrayList<>();
+
+                fragments.add(userResumeFragment);
+                fragments.add(UsernameReposFragment.newInstance(login));
+
+                PagerAdapter adapter = new ProfilePagerAdapter(this, getSupportFragmentManager(), fragments);
+                viewPager.setAdapter(adapter);
+                tabLayout.setupWithViewPager(viewPager);
             }
-        }
 
-        if (login != null) {
-            userLogin.setText(login);
+            if (name != null) {
+                userName.setText(name);
+            }
 
-            List<Fragment> fragments = new ArrayList<>();
+            if (avatar != null) {
+                loadAvatar(avatar);
+            }
 
-            fragments.add(userResumeFragment);
-            fragments.add(UsernameReposFragment.newInstance(login));
+            StoreCredentials settings = new StoreCredentials(this);
 
-            PagerAdapter adapter = new ProfilePagerAdapter(this, getSupportFragmentManager(), fragments);
-            viewPager.setAdapter(adapter);
-            tabLayout.setupWithViewPager(viewPager);
-        }
-
-        if (name != null) {
-            userName.setText(name);
-        }
-
-        if (avatar != null) {
-            loadAvatar(avatar);
-        }
-
-        StoreCredentials settings = new StoreCredentials(this);
-
-        if (user != null) {
-            if (user.login.equalsIgnoreCase(settings.getUserName())) {
+            if (user != null) {
+                if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                    requestClient = new GetAuthUserClient(this);
+                    updateProfile = true;
+                } else {
+                    requestClient = new RequestUserClient(this, user.login);
+                }
+            } else {
                 requestClient = new GetAuthUserClient(this);
                 updateProfile = true;
-            } else {
-                requestClient = new RequestUserClient(this, user.login);
             }
-        } else {
-            requestClient = new GetAuthUserClient(this);
-            updateProfile = true;
+
+            invalidateOptionsMenu();
+
+            Observable<Integer> organizations = new GetOrgsClient(this, login).observable()
+                    .map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
+                        @Override
+                        public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
+                            return listIntegerPair.first.size();
+                        }
+                    });
+
+            Observable.combineLatest(requestClient.observable(), organizations, new Func2<User, Integer, User>() {
+                @Override
+                public User call(User user, Integer organizations) {
+                    user.organizations = organizations;
+                    return user;
+                }
+            })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<User>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(User user) {
+                            onUserLoaded(user);
+                        }
+                    });
+
         }
-
-        invalidateOptionsMenu();
-
-        requestClient.observable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        onUserLoaded(user);
-                    }
-                });
-
     }
 
     private void loadAvatar(String avatar) {
@@ -395,5 +418,12 @@ public class ProfileActivity extends BackActivity {
             setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
         }
         super.close(navigateUp);
+    }
+
+    @Override
+    public void openRepos(String login) {
+        if (viewPager != null && viewPager.getAdapter() != null && viewPager.getAdapter().getCount() >= 1) {
+            viewPager.setCurrentItem(1);
+        }
     }
 }

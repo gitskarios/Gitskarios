@@ -8,13 +8,19 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.bean.ProfileItem;
+import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.services.orgs.GetOrgsClient;
+import com.alorma.github.ui.activity.OrganizationsActivity;
+import com.alorma.github.ui.activity.ReposActivity;
+import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
@@ -24,14 +30,21 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+
 /**
  * Created by bernat.borras on 13/12/15.
  */
-public class UserResumeFragment extends BaseFragment implements TitleProvider{
+public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
     private List<ProfileItem> profileItems = new ArrayList<>();
     ViewGroup cardAbout;
+    ViewGroup cardGithub;
     private int color = Color.BLACK;
+    private UserResumeCallback userResumeCallback;
+    private User user;
 
     @Nullable
     @Override
@@ -44,12 +57,15 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider{
         super.onViewCreated(view, savedInstanceState);
 
         cardAbout = (ViewGroup) view.findViewById(R.id.cardAbout);
+        cardGithub = (ViewGroup) view.findViewById(R.id.cardGithub);
 
     }
 
     public void fill(User user) {
+        this.user = user;
         if (getActivity() != null && isAdded()) {
             fillCardBio(user);
+            fillCardGithubData(user);
         }
     }
 
@@ -117,57 +133,46 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider{
         return Octicons.Icon.oct_info;
     }
 
-    /*
     private void fillCardGithubData(User user) {
+        if (user.organizations > 0) {
+            Intent intent = OrganizationsActivity.launchIntent(getActivity(), user.login);
+            final ProfileItem profileItemOrgs =
+                    new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
+            addItem(profileItemOrgs, cardGithub);
+        }
+
         if (user.public_repos > 0) {
             String text = getString(R.string.repos_num, user.public_repos);
-            Intent intent = ReposActivity.launchIntent(getActivity(), user.login, user.type);
-            ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, intent);
-            profileItemsAdapter.add(profileItemRepos);
+            ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, null);
+            profileItemRepos.setCallback(new ProfileItem.Callback() {
+                @Override
+                public void onSelected(int id) {
+                    notifyOpenRepos();
+                }
+            });
+            addItem(profileItemRepos, cardGithub);
         }
+
         if (user.public_gists > 0) {
             String text = getString(R.string.gists_num, user.public_gists);
             Intent intent = GistsMainActivity.createLauncherIntent(getActivity(), user.login);
             ProfileItem profileItemGists = new ProfileItem(Octicons.Icon.oct_gist, text, intent);
-            profileItemsAdapter.add(profileItemGists);
+            addItem(profileItemGists, cardGithub);
         }
 
-        Intent intent = OrganizationsActivity.launchIntent(getActivity(), user.login);
-        final ProfileItem profileItemOrgs =
-                new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
-        profileItemsAdapter.add(profileItemOrgs);
-
-        GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
-        orgsClient.observable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Pair<List<Organization>, Integer>, List<Organization>>() {
-                    @Override
-                    public List<Organization> call(Pair<List<Organization>, Integer> listIntegerPair) {
-                        return listIntegerPair.first;
-                    }
-                })
-                .subscribe(new Subscriber<List<Organization>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(List<Organization> organizations) {
-                        if (organizations != null && organizations.size() > 0) {
-                            profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
-                            profileItemsAdapter.notifyDataSetChanged();
-                        } else {
-                            profileItemsAdapter.remove(profileItemOrgs);
-                        }
-                    }
-                });
     }
-    */
 
+    private void notifyOpenRepos() {
+        if (userResumeCallback != null) {
+            userResumeCallback.openRepos(user.login);
+        }
+    }
+
+    public void setUserResumeCallback(UserResumeCallback userResumeCallback) {
+        this.userResumeCallback = userResumeCallback;
+    }
+
+    public interface UserResumeCallback {
+        void openRepos(String login);
+    }
 }
