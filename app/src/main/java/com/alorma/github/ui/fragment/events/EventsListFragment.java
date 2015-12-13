@@ -33,6 +33,7 @@ import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPa
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ReleaseEventPayload;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
@@ -62,7 +63,7 @@ import rx.functions.Func1;
  */
 public class EventsListFragment extends LoadingListFragment<EventAdapter> implements EventAdapter.EventAdapterListener {
 
-  private String username;
+  protected String username;
 
   private ArrayStrings filterNames;
   private ArrayIntegers filterIds;
@@ -108,10 +109,11 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     addNewAdapter();
   }
 
-  private void addNewAdapter() {
+  protected EventAdapter addNewAdapter() {
     EventAdapter eventAdapter = new EventAdapter(getActivity(), LayoutInflater.from(getActivity()));
     eventAdapter.setEventAdapterListener(this);
     setAdapter(eventAdapter);
+    return eventAdapter;
   }
 
   @Override
@@ -289,7 +291,15 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     executeClient(eventsClient);
   }
 
-  private void executeClient(GetUserEventsClient eventsClient) {
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
+
+    GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
+    executeClient(eventsClient);
+  }
+
+  protected void executeClient(GithubListClient<List<GithubEvent>> eventsClient) {
     eventsClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<List<GithubEvent>, Integer>, List<GithubEvent>>() {
@@ -307,14 +317,6 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
         })
         .filter(getFilterNames())
         .subscribe(subscriber);
-  }
-
-  @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-
-    GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
-    executeClient(eventsClient);
   }
 
   @Override

@@ -37,6 +37,7 @@ import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
 import com.alorma.github.ui.fragment.repos.CurrentAccountReposFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.users.UserResumeFragment;
@@ -189,9 +190,11 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
 
                 fragments.add(userResumeFragment);
                 fragments.add(UsernameReposFragment.newInstance(login));
+                fragments.add(CreatedEventsListFragment.newInstance(login));
 
                 PagerAdapter adapter = new ProfilePagerAdapter(this, getSupportFragmentManager(), fragments);
                 viewPager.setAdapter(adapter);
+                viewPager.setOffscreenPageLimit(fragments.size());
                 tabLayout.setupWithViewPager(viewPager);
             }
 

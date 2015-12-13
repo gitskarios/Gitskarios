@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/md_grey_200">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/gapMedium"
-            android:layout_marginBottom="@dimen/gapXLarge"
             card_view:cardElevation="4dp"
             tools:layout_height="120dp">
 

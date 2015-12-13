@@ -61,6 +61,15 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (user != null) {
+            fill(user);
+        }
+    }
+
     public void fill(User user) {
         this.user = user;
         if (getActivity() != null && isAdded()) {

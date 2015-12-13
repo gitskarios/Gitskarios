@@ -459,4 +459,5 @@
   <string name="user_resume_about">About</string>
   <string name="repositories">Repositories</string>
   <string name="user_resume_github">Github</string>
+  <string name="events">EVENTS</string>
 </resources>
