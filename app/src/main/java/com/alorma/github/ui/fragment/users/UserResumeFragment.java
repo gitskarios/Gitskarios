@@ -2,8 +2,10 @@ package com.alorma.github.ui.fragment.users;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,12 +21,17 @@ import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by bernat.borras on 13/12/15.
  */
 public class UserResumeFragment extends BaseFragment implements TitleProvider{
 
+    private List<ProfileItem> profileItems = new ArrayList<>();
     ViewGroup cardAbout;
+    private int color = Color.BLACK;
 
     @Nullable
     @Override
@@ -43,6 +50,13 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider{
     public void fill(User user) {
         if (getActivity() != null && isAdded()) {
             fillCardBio(user);
+        }
+    }
+
+    public void setColor(@ColorInt int color) {
+        this.color = color;
+        for (ProfileItem profileItem : profileItems) {
+            profileItem.updateColor(color);
         }
     }
 
@@ -84,10 +98,12 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider{
 
     private void addItem(ProfileItem profileItem, ViewGroup parent) {
         if (parent != null && profileItem != null) {
+            profileItem.color = color;
             View view = profileItem.getView(getActivity(), parent);
+            profileItems.add(profileItem);
             if (view != null) {
                 parent.addView(view);
-            };
+            }
         }
     }
 
@@ -98,7 +114,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider{
 
     @Override
     public IIcon getTitleIcon() {
-        return null;
+        return Octicons.Icon.oct_info;
     }
 
     /*

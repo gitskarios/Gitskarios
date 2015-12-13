@@ -134,11 +134,22 @@ public class ProfileActivity extends BackActivity {
         collapsingToolbarLayout.setTitle("");
         collapsingToolbarLayout.setTitleEnabled(false);
 
-        avatarColor = ContextCompat.getColor(this, R.color.primary);
-
         if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
-            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, -1);
+            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, ContextCompat.getColor(this, R.color.primary));
         }
+
+        if (getSupportFragmentManager() != null && getSupportFragmentManager().getFragments() != null) {
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                if (fragment instanceof UserResumeFragment) {
+                    userResumeFragment = (UserResumeFragment) fragment;
+                }
+            }
+        }
+
+        if (userResumeFragment == null) {
+            userResumeFragment = new UserResumeFragment();
+        }
+
     }
 
     @Override
@@ -168,7 +179,6 @@ public class ProfileActivity extends BackActivity {
 
             List<Fragment> fragments = new ArrayList<>();
 
-            userResumeFragment = new UserResumeFragment();
             fragments.add(userResumeFragment);
             fragments.add(UsernameReposFragment.newInstance(login));
 
@@ -263,6 +273,8 @@ public class ProfileActivity extends BackActivity {
 
         tabLayout.setTabTextColors(swatch.getBodyTextColor(), rgb);
         tabLayout.setSelectedTabIndicatorColor(rgb);
+
+        userResumeFragment.setColor(rgb);
     }
 
     private void generateAvatarBackground(int color) {
@@ -287,6 +299,7 @@ public class ProfileActivity extends BackActivity {
             getWindow().setStatusBarColor(bkg);
             getWindow().setNavigationBarColor(bkg);
         }
+
     }
 
     @Override

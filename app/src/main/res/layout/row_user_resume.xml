@@ -5,16 +5,16 @@
     android:background="?selectableItemBackground"
     android:orientation="horizontal">
 
-    <ImageView
+    <com.mikepenz.iconics.view.IconicsImageView
         android:id="@+id/image"
-        android:layout_width="?actionBarSize"
-        android:layout_height="?actionBarSize"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginLeft="16dp" />
 
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="56dp"
         android:gravity="center_vertical"
         android:paddingLeft="16dp" />
 

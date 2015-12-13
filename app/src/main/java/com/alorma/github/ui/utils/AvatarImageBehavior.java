@@ -1,7 +1,6 @@
 package com.alorma.github.ui.utils;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
