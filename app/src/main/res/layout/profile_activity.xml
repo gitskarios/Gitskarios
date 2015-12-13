@@ -8,38 +8,35 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
-        android:layout_height="284dp"
+        android:layout_height="wrap_content"
         android:background="?colorPrimary"
+        android:fitsSystemWindows="true"
+        android:minHeight="?actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/ctlLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent">
-            <android.support.v7.widget.Toolbar
-                android:id="@id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:contentInsetStart="@dimen/second_keyline"
-                android:contentInsetEnd="0dp"
-                app:popupTheme="@style/Toolbar.Popup.AppCompat"
-                app:theme="@style/Toolbar.AppCompat.Responsive" />
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gapXLarge"
+                android:fitsSystemWindows="true"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/gapXLarge">
+                app:layout_collapseMode="parallax">
 
                 <ImageView
                     android:id="@+id/userAvatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="@dimen/avatar_size_profile"
+                    android:layout_height="@dimen/avatar_size_profile"
                     android:layout_gravity="center_horizontal"
-                    android:padding="@dimen/gapMicro" />
+                    android:padding="@dimen/gapMicro"
+                    app:layout_behavior=" com.alorma.github.ui.utils.AvatarImageBehavior"
+                    tools:src="?colorAccent" />
 
                 <TextView
                     android:id="@id/userLogin"
@@ -65,13 +62,25 @@
                     tools:text="Bernat Borrás Paronella" />
             </LinearLayout>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
+            <android.support.v7.widget.Toolbar
+                android:id="@id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                android:background="@android:color/transparent"
+                app:contentInsetStart="@dimen/second_keyline"
+                app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways"
-                android:layout_gravity="bottom" />
+                app:popupTheme="@style/Toolbar.Popup.AppCompat"
+                app:theme="@style/Toolbar.AppCompat.Responsive.Transparent"
+                app:title="" />
         </android.support.design.widget.CollapsingToolbarLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="bottom"
+            app:layout_collapseMode="pin" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager

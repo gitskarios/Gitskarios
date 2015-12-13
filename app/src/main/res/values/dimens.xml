@@ -94,4 +94,7 @@
   <dimen name="app_bar_height">180dp</dimen>
   <dimen name="fab_margin">16dp</dimen>
   <dimen name="text_margin">16dp</dimen>
+  <dimen name="avatar_size_profile">100dp</dimen>
+  <dimen name="spacing_normal">16dp</dimen>
+  <dimen name="image_final_width">32dp</dimen>
 </resources>

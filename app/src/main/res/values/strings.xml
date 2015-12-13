@@ -456,4 +456,6 @@
   <string name="i_have_code">I have a token</string>
   <string name="login_button_advanced">Advanced login</string>
   <string name="generateToken">Generate token</string>
+  <string name="user_resume_about">About</string>
+  <string name="repositories">Repositories</string>
 </resources>

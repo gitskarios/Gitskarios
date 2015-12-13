@@ -125,6 +125,18 @@
 
   </style>
 
+  <style name="Toolbar.AppCompat.Responsive.Transparent"
+         parent="AppTheme.AppCompat.Responsive">
+
+
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
+    <item name="colorPrimary">@android:color/transparent</item>
+
+
+  </style>
+
 
   <style name="Toolbar.AppCompat.Light.Responsive"
          parent="AppTheme.AppCompat.Responsive">

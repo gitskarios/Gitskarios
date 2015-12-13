@@ -14,21 +14,8 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
 
   private static final int CREATE_REPOS = 131;
 
-  private String username;
-
   public static CurrentAccountReposFragment newInstance() {
     return new CurrentAccountReposFragment();
-  }
-
-  public static CurrentAccountReposFragment newInstance(String username) {
-    CurrentAccountReposFragment currentAccountReposFragment = new CurrentAccountReposFragment();
-    if (username != null) {
-      Bundle bundle = new Bundle();
-      bundle.putString(USERNAME, username);
-
-      currentAccountReposFragment.setArguments(bundle);
-    }
-    return currentAccountReposFragment;
   }
 
   @Override
@@ -41,23 +28,21 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
   }
 
   @Override
-  protected void loadArguments() {
-    if (getArguments() != null) {
-      username = getArguments().getString(USERNAME);
-    }
-  }
-
-  @Override
   protected void executeRequest() {
     super.executeRequest();
 
-    setAction(new UserReposClient(getActivity(), username));
+    setAction(new UserReposClient(getActivity()));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new UserReposClient(getActivity(), username, page));
+    setAction(new UserReposClient(getActivity(), page));
+  }
+
+  @Override
+  protected void loadArguments() {
+
   }
 
   @Override
