@@ -13,11 +13,11 @@ import java.util.List;
 /**
  * Created by bernat.borras on 13/12/15.
  */
-public class ProfilePagerAdapter extends FragmentPagerAdapter {
+public class ProfilePagesAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragments;
     private final Context context;
 
-    public ProfilePagerAdapter(Context context, FragmentManager fm, List<Fragment> fragments) {
+    public ProfilePagesAdapter(Context context, FragmentManager fm, List<Fragment> fragments) {
         super(fm);
         this.context = context;
         if (fragments == null) {
