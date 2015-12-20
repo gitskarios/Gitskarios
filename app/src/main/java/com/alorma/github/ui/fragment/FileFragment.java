@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +48,7 @@ public class FileFragment extends BaseFragment {
   private CopyWebView webView;
   private ImageView imageView;
   private Content fileContent;
+  private View loadingView;
 
   private FileInfo fileInfo;
   private boolean fromUrl;
@@ -67,12 +67,14 @@ public class FileFragment extends BaseFragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.activity_content, null, false);
+    return inflater.inflate(R.layout.file_fragment, null, false);
   }
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    loadingView = view.findViewById(R.id.loading_view);
 
     webView = (CopyWebView) view.findViewById(R.id.webview);
     webView.setWebViewListener(new CopyWebView.WebViewListener() {
@@ -113,13 +115,14 @@ public class FileFragment extends BaseFragment {
         }
       } else {
         webView.loadUrl("file:///android_asset/diff.html");
+        loadingView.setVisibility(View.GONE);
       }
     }
   }
 
   private void getBranches() {
     if (fileInfo.repoInfo != null) {
-      showProgressDialog(R.style.SpotDialog_OpeningFile);
+      showProgressDialog();
 
       GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(getActivity(), fileInfo.repoInfo);
       branchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new ParseBranchesCallback(fileInfo.path));
@@ -128,7 +131,7 @@ public class FileFragment extends BaseFragment {
 
   protected void getContent() {
     if (fileInfo.repoInfo != null) {
-      showProgressDialog(R.style.SpotDialog_OpeningFile);
+      showProgressDialog();
       GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), fileInfo);
       fileContentClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
         @Override
@@ -226,24 +229,12 @@ public class FileFragment extends BaseFragment {
     }
   }
 
-  protected void showProgressDialog(@StyleRes int style) {
-    if (progressDialog == null) {
-      try {
-        progressDialog = new SpotsDialog(getActivity(), style);
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+  protected void showProgressDialog() {
+    loadingView.setVisibility(View.VISIBLE);
   }
 
   protected void hideProgressDialog() {
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-      progressDialog = null;
-    }
+    loadingView.setVisibility(View.GONE);
   }
 
   protected class JavaScriptInterface {
