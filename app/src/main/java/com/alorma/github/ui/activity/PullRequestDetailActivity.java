@@ -545,7 +545,7 @@ public class PullRequestDetailActivity extends BackActivity
       }
     });
 
-    showProgressDialog(R.style.SpotDialog_loading_milestones);
+    showProgressDialog(R.string.loading_milestones);
   }
 
   @Override
@@ -590,7 +590,7 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void merge(String message, String sha, IssueInfo issueInfo) {
-    showProgressDialog(R.style.SpotDialog_loading_merging);
+    showProgressDialog(R.string.merging);
     MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
     mergeButtonRequest.commit_message = message;
     mergeButtonRequest.sha = sha;
@@ -713,14 +713,14 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void addMilestone(Milestone milestone) {
-    showProgressDialog(R.style.SpotDialog_loading_adding_milestones);
+    showProgressDialog(R.string.adding_milestone);
     EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
     editIssueRequestDTO.milestone = milestone.number;
     executeEditIssue(editIssueRequestDTO, R.string.issue_change_add_milestone);
   }
 
   private void clearMilestone() {
-    showProgressDialog(R.style.SpotDialog_clear_milestones);
+    showProgressDialog(R.string.clear_milestone);
     EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
     editIssueRequestDTO.milestone = null;
     executeEditIssue(editIssueRequestDTO, R.string.issue_change_clear_milestone);
@@ -795,7 +795,7 @@ public class PullRequestDetailActivity extends BackActivity
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == RESULT_OK && data != null) {
       if (requestCode == NEW_COMMENT_REQUEST) {
-        showProgressDialog(R.style.SpotDialog_loading_adding_comment);
+        showProgressDialog(R.string.adding_comment);
         final String body = data.getStringExtra(ContentEditorActivity.CONTENT);
         AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);
 

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ProgressBar;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
@@ -60,10 +61,11 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
-import io.fabric.sdk.android.Fabric;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -461,7 +463,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open, true);
     milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new MilestonesCallback());
 
-    showProgressDialog(R.style.SpotDialog_loading_milestones);
+    showProgressDialog(R.string.loading_milestones);
   }
 
   @Override
@@ -527,14 +529,14 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   }
 
   private void addMilestone(Milestone milestone) {
-    showProgressDialog(R.style.SpotDialog_loading_adding_milestones);
+    showProgressDialog(R.string.add_milestone);
     EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
     editIssueRequestDTO.milestone = milestone.number;
     executeEditIssue(editIssueRequestDTO, R.string.issue_change_add_milestone);
   }
 
   private void clearMilestone() {
-    showProgressDialog(R.style.SpotDialog_clear_milestones);
+    showProgressDialog(R.string.clear_milestone);
     EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
     editIssueRequestDTO.milestone = null;
     executeEditIssue(editIssueRequestDTO, R.string.issue_change_clear_milestone);
@@ -608,7 +610,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == RESULT_OK && data != null) {
       if (requestCode == NEW_COMMENT_REQUEST) {
-        showProgressDialog(R.style.SpotDialog_loading_adding_comment);
+        showProgressDialog(R.string.adding_comment);
         String body = data.getStringExtra(ContentEditorActivity.CONTENT);
 
         AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);

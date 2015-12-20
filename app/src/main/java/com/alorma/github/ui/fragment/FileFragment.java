@@ -31,7 +31,6 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.ui.view.CopyWebView;
 import com.alorma.github.utils.ImageUtils;
-import dmax.dialog.SpotsDialog;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import rx.Subscriber;
@@ -52,8 +51,6 @@ public class FileFragment extends BaseFragment {
 
   private FileInfo fileInfo;
   private boolean fromUrl;
-
-  private SpotsDialog progressDialog;
 
   public static FileFragment getInstance(FileInfo info, boolean fromUrl) {
     FileFragment fragment = new FileFragment();

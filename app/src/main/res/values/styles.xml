@@ -1,231 +1,135 @@
 <resources>
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/white</item>
+    </style>
+
+    <style name="DrawerArrowStyleGray" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/gray_github_medium</item>
+    </style>
+
+    <style name="GistFileRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorSecondary">@color/accent</item>
+    </style>
+
+    <style name="FileRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/black_semi_transparent</item>
+        <item name="android:textColorSecondary">@color/accent</item>
+    </style>
+
+    <style name="CommitContentRowToolbar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/black_semi_transparent</item>
+        <item name="android:textColorSecondary">@color/accent</item>
+    </style>
+
+    <style name="fab">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/fab_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:layout_gravity">right|bottom</item>
+    </style>
+
+    <style name="card_row_item_text">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="user_row_item">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Custom.Widget.Toolbar" parent="Widget.AppCompat.Toolbar">
+
+        <item name="maxButtonHeight">48dp</item>
+        <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
+        <item name="contentInsetStart">@dimen/first_keyline</item>
+    </style>
 
 
-  <style name="DrawerArrowStyle"
-         parent="Widget.AppCompat.DrawerArrowToggle">
-    <item name="spinBars">true</item>
-    <item name="color">@color/white</item>
-  </style>
-
-  <style name="DrawerArrowStyleGray"
-         parent="Widget.AppCompat.DrawerArrowToggle">
-    <item name="spinBars">true</item>
-    <item name="color">@color/gray_github_medium</item>
-  </style>
-
-  <style name="GistFileRowToolbar"
-         parent="Theme.AppCompat.NoActionBar">
-    <item name="android:textColorSecondary">@color/accent</item>
-  </style>
-
-  <style name="FileRowToolbar"
-         parent="Theme.AppCompat.NoActionBar">
-    <item name="android:textColorPrimary">@color/black_semi_transparent</item>
-    <item name="android:textColorSecondary">@color/accent</item>
-  </style>
-
-  <style name="CommitContentRowToolbar"
-         parent="Theme.AppCompat.NoActionBar">
-    <item name="android:textColorPrimary">@color/black_semi_transparent</item>
-    <item name="android:textColorSecondary">@color/accent</item>
-  </style>
-
-  <style name="fab">
-    <item name="android:layout_width">56dp</item>
-    <item name="android:layout_height">56dp</item>
-    <item name="android:textSize">40sp</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:background">@drawable/fab_button</item>
-    <item name="android:gravity">center</item>
-    <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
-    <item name="android:paddingBottom">16dp</item>
-    <item name="android:layout_gravity">right|bottom</item>
-  </style>
-
-  <style name="card_row_item_text">
-    <item name="android:gravity">center_vertical</item>
-    <item name="android:textSize">15sp</item>
-  </style>
-
-  <style name="user_row_item">
-    <item name="android:gravity">center_vertical</item>
-    <item name="android:textSize">15sp</item>
-  </style>
-
-  <style name="SpotDialog"
-         parent="android:Theme.DeviceDefault.Dialog">
-    <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
-    <item name="DialogSpotColor">?colorAccent</item>
-    <item name="DialogSpotCount">4</item>
-  </style>
-
-  <style name="SpotDialog.Login">
-    <item name="DialogTitleText">@string/acces_token_request</item>
-  </style>
-
-  <style name="SpotDialog.LoadingUser">
-    <item name="DialogTitleText">@string/loading_user</item>
-  </style>
-
-  <style name="SpotDialog.CreatingIssue">
-    <item name="DialogTitleText">@string/creating_issue</item>
-  </style>
-
-  <style name="SpotDialog.CommentIssue">
-    <item name="DialogTitleText">@string/comment_issue</item>
-  </style>
-
-  <style name="SpotDialog.OpeningFile">
-    <item name="DialogTitleText">@string/opening_file</item>
-  </style>
-
-  <style name="SpotDialog.StarringRepo">
-    <item name="DialogTitleText">@string/star_repo</item>
-  </style>
-
-  <style name="SpotDialog.UnstarringRepo">
-    <item name="DialogTitleText">@string/unstar_repo</item>
-  </style>
-
-  <style name="SpotDialog.WatchRepo">
-    <item name="DialogTitleText">@string/watch_repo</item>
-  </style>
-
-  <style name="SpotDialog.UnwatchRepo">
-    <item name="DialogTitleText">@string/unwatch_repo</item>
-  </style>
-
-  <style name="SpotDialog.LoadingContent">
-    <item name="DialogTitleText">@string/loading_content</item>
-  </style>
-
-  <style name="SpotDialog.loading_milestones">
-    <item name="DialogTitleText">@string/loading_milestones</item>
-  </style>
-
-  <style name="SpotDialog.loading_adding_milestones">
-    <item name="DialogTitleText">@string/adding_milestone</item>
-  </style>
-
-  <style name="SpotDialog.loading_adding_comment">
-    <item name="DialogTitleText">@string/adding_comment</item>
-  </style>
-
-  <style name="SpotDialog.loading_adding_assignee">
-    <item name="DialogTitleText">@string/adding_assignee</item>
-  </style>
-
-  <style name="SpotDialog.loading_merging">
-    <item name="DialogTitleText">@string/merging</item>
-  </style>
-
-  <style name="SpotDialog.clear_milestones">
-    <item name="DialogTitleText">@string/clear_milestone</item>
-  </style>
-
-  <style name="SpotDialog.edit_repo">
-    <item name="DialogTitleText">@string/edit_repo_loading</item>
-  </style>
-
-  <style name="SpotDialog.loading_issue">
-    <item name="DialogTitleText">@string/loading_issue</item>
-  </style>
-
-  <style name="menu_labels_style">
-    <item name="android:background">@drawable/fab_label_background</item>
-    <item name="android:textColor">@color/white</item>
-  </style>
-
-  <style name="Custom.Widget.Toolbar"
-         parent="Widget.AppCompat.Toolbar">
-
-    <item name="maxButtonHeight">48dp</item>
-    <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
-    <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
-    <item name="contentInsetStart">@dimen/first_keyline</item>
-  </style>
+    <style name="Custom.Widget.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">48dp</item>
+    </style>
 
 
-  <style name="Custom.Widget.Toolbar.Button.Navigation"
-         parent="Widget.AppCompat.Toolbar.Button.Navigation">
-    <item name="android:minWidth">48dp</item>
-  </style>
+    <style name="Custom.Widget.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
 
 
-  <style name="Custom.Widget.ActionButton.Overflow"
-         parent="Widget.AppCompat.ActionButton.Overflow">
-    <item name="android:paddingLeft">0dp</item>
-    <item name="android:paddingRight">0dp</item>
-  </style>
+    <style name="Custom.Widget.Actionbar" parent="Widget.AppCompat.ActionBar.Solid" />
 
 
-  <style name="Custom.Widget.Actionbar"
-         parent="Widget.AppCompat.ActionBar.Solid"/>
+    <style name="Custom.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
+        <item name="android:background">@color/primary</item>
+    </style>
 
 
-  <style name="Custom.Widget.ActionMode"
-         parent="Widget.AppCompat.ActionMode">
-    <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
-    <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
-    <item name="android:background">@color/primary</item>
-  </style>
+    <style name="Custom.Widget.ActionButton.CloseMode" parent="Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
 
+    <style name="new_issue_push_access_row">
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:drawablePadding">24dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/textSizeSmall</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:textColorHint">@color/secondary_text</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:background">?selectableItemBackground</item>
+    </style>
 
-  <style name="Custom.Widget.ActionButton.CloseMode"
-         parent="Widget.AppCompat.ActionButton.CloseMode">
-    <item name="android:layout_marginRight">20dp</item>
-  </style>
+    <string name="opening_file">Opening file</string>
+    <string name="merging">Merging</string>
+    <string name="adding_comment">Adding comment</string>
+    <string name="edit_repo_loading">Updating repository</string>
 
-  <style name="new_issue_push_access_row">
-    <item name="android:paddingLeft">8dp</item>
-    <item name="android:drawablePadding">24dp</item>
-    <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="android:textSize">@dimen/textSizeSmall</item>
-    <item name="android:gravity">center_vertical|left</item>
-    <item name="android:textColorHint">@color/secondary_text</item>
-    <item name="android:lines">1</item>
-    <item name="android:singleLine">true</item>
-    <item name="android:background">?selectableItemBackground</item>
-  </style>
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:windowTitleStyle">@style/TitleDialogTextStyle</item>
+    </style>
 
-  <string name="opening_file">Opening file</string>
-  <string name="merging">Merging</string>
-  <string name="adding_comment">Adding comment</string>
-  <string name="edit_repo_loading">Updating repository</string>
+    <style name="TitleDialogTextStyle" parent="Base.DialogWindowTitle.AppCompat">
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
 
-  <style name="AppCompatAlertDialogStyle"
-         parent="Theme.AppCompat.Light.Dialog.Alert">
-    <item name="colorAccent">@color/accent</item>
-    <item name="android:textColorPrimary">@color/primary_text</item>
-    <item name="android:windowTitleStyle">@style/TitleDialogTextStyle</item>
-  </style>
+    <style name="repo_overview_item">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingEnd">@dimen/material_drawer_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/material_drawer_vertical_padding</item>
+        <item name="android:paddingRight">@dimen/material_drawer_vertical_padding</item>
+        <item name="android:paddingStart">@dimen/material_drawer_vertical_padding</item>
+    </style>
 
-  <style name="TitleDialogTextStyle"
-         parent="Base.DialogWindowTitle.AppCompat">
-    <item name="android:textColor">@color/primary_dark</item>
-    <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
-  </style>
+    <style name="PlaceholderRepoAbout" parent="Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:drawablePadding">@dimen/gapMedium</item>
+    </style>
 
-  <style name="repo_overview_item">
-    <item name="android:background">?selectableItemBackground</item>
-    <item name="android:clickable">true</item>
-    <item name="android:orientation">horizontal</item>
-    <item name="android:paddingEnd">@dimen/material_drawer_vertical_padding</item>
-    <item name="android:paddingLeft">@dimen/material_drawer_vertical_padding</item>
-    <item name="android:paddingRight">@dimen/material_drawer_vertical_padding</item>
-    <item name="android:paddingStart">@dimen/material_drawer_vertical_padding</item>
-  </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-  <style name="PlaceholderRepoAbout"
-         parent="Base.TextAppearance.AppCompat.Subhead">
-    <item name="android:layout_weight">1</item>
-    <item name="android:background">?selectableItemBackground</item>
-    <item name="android:clickable">true</item>
-    <item name="android:drawablePadding">@dimen/gapMedium</item>
-  </style>
-  <style name="AppTheme.AppBarOverlay"
-      parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-  <style name="AppTheme.PopupOverlay"
-      parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

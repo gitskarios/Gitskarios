@@ -112,7 +112,7 @@ public class NewIssueCommentActivity extends BackActivity implements Observer<Gi
 
     if (item.getItemId() == R.id.action_send) {
       String body = edit.getText().toString();
-      showProgressDialog(R.style.SpotDialog_CommentIssue);
+      showProgressDialog(R.string.comment_issue);
       NewIssueCommentClient client = new NewIssueCommentClient(this, issueInfo, body);
       client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     } else if (item.getItemId() == R.id.action_add_emoji) {

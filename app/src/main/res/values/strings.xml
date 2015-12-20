@@ -460,4 +460,7 @@
   <string name="repositories">Repositories</string>
   <string name="user_resume_github">Github</string>
   <string name="events">EVENTS</string>
+  <string name="updating_repository">Updating repository</string>
+  <string name="loading_adding_content">Adding comment</string>
+  <string name="loading_merge">Merging</string>
 </resources>

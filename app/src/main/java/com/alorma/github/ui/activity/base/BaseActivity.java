@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +27,6 @@ import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.alorma.gitskarios.core.client.UnAuthIntent;
-import dmax.dialog.SpotsDialog;
 import java.util.List;
 
 /**
@@ -39,8 +40,8 @@ public class BaseActivity extends AppCompatActivity {
   private UpdateReceiver updateReceiver;
 
   private Toolbar toolbar;
-  private SpotsDialog progressDialog;
   private AccountsManager accountsManager;
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -142,10 +143,11 @@ public class BaseActivity extends AppCompatActivity {
     unregisterReceiver(updateReceiver);
   }
 
-  protected void showProgressDialog(@StyleRes int style) {
+  protected void showProgressDialog(@StringRes int text) {
     if (progressDialog == null) {
       try {
-        progressDialog = new SpotsDialog(this, style);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(text));
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();

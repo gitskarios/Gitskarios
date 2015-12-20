@@ -378,7 +378,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
     if (requestCode == EDIT_REPO) {
       if (resultCode == RESULT_OK && data != null) {
         RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
-        showProgressDialog(R.style.SpotDialog_edit_repo);
+        showProgressDialog(R.string.edit_repo_loading);
         EditRepoClient editRepositoryClient = new EditRepoClient(this, requestRepoInfo, repoRequestDTO);
         editRepositoryClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
           @Override

@@ -197,7 +197,7 @@ public class NewIssueActivity extends BackActivity {
 
     createIssue(issue);
 
-    showProgressDialog(R.style.SpotDialog_CreatingIssue);
+    showProgressDialog(R.string.creating_issue);
   }
 
   @Override
