@@ -13,6 +13,7 @@ android:
 
 before_script:
 - git submodule update --init --recursive
+
 script: ./gradlew clean assembleGithubDebug assembleEnterpriseDebug
 
 deploy:
@@ -20,8 +21,8 @@ deploy:
   api_key:
     secure: e8vh46Ei3Xf1KUk/+8UP0wXcIgqtuPLj2cZY3PdUCCo8C8Kc6xmtMRH6yAiNG0b02GmJf/yLn2MXJvC9spVf+vsGDtl+cqB4qBdaF9Ei5ekf1X+X3cjW9t6NR3acj85mxC4EjeIodO81PCcrJ+BZBHzEbi4Zy0HADfHuxTOHxwE=
   file_glob: true
-    file:
-      - app/build/outputs/apk/app*.apk
+  file:
+    - app/build/outputs/apk/app*.apk
   on:
     tags: true
     all_branches: true
