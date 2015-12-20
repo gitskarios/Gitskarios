@@ -25,8 +25,8 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 23
-    versionName "2.7.0"
-    versionCode 27000
+    versionName "2.7.1"
+    versionCode 27001
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -83,6 +83,23 @@ android {
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
     targetCompatibility JavaVersion.VERSION_1_7
+  }
+}
+
+// delete unaligned files
+android.applicationVariants.all { variant ->
+  variant.assemble.doLast {
+    variant.outputs.each { output ->
+      println "aligned " + output.outputFile
+      println "unaligned " + output.packageApplication.outputFile
+
+      File unaligned = output.packageApplication.outputFile;
+      File aligned = output.outputFile
+      if (!unaligned.getName().equalsIgnoreCase(aligned.getName())) {
+        println "deleting " + unaligned.getName()
+        unaligned.delete()
+      }
+    }
   }
 }
 
