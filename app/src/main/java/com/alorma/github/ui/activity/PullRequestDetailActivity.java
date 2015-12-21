@@ -903,6 +903,7 @@ public class PullRequestDetailActivity extends BackActivity
           addIssueCommentAction1.execute();
         }
       }).show();
+      getContent();
     }
 
     @Override

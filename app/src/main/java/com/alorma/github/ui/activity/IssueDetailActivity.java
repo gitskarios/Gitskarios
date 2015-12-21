@@ -798,6 +798,8 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
           addIssueCommentAction1.execute();
         }
       }).show();
+
+      getContent();
     }
 
     @Override
