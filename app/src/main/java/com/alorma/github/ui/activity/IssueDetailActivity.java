@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -70,7 +71,8 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class IssueDetailActivity extends BackActivity implements View.OnClickListener, IssueDetailRequestListener {
+
+public class IssueDetailActivity extends BackActivity implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -88,6 +90,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   private int primary;
   private int primaryDark;
   private ProgressBar loadingView;
+  private SwipeRefreshLayout swipe;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -167,6 +170,8 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     fab = (FloatingActionButton) findViewById(R.id.fabButton);
     loadingView = (ProgressBar) findViewById(R.id.loading_view);
+    swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
+    swipe.setColorSchemeResources(R.color.accent_dark);
 
     IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
@@ -240,6 +245,9 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     this.issueStory = issueStory;
     this.issueStory.issue.repository = repository;
 
+    swipe.setRefreshing(false);
+    swipe.setOnRefreshListener(this);
+
     checkEditTitle();
     applyIssue();
   }
@@ -270,6 +278,8 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
       colorState = ContextCompat.getColor(this, R.color.issue_state_open);
       colorStateDark = ContextCompat.getColor(this, R.color.issue_state_open_dark);
     }
+
+    swipe.setColorSchemeColors(colorState);
 
     ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
     colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -629,6 +639,12 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   @NonNull
   private AddIssueCommentAction getAddIssueCommentAction(String body) {
     return new AddIssueCommentAction(this, issueInfo, body, fab);
+  }
+
+  @Override
+  public void onRefresh() {
+    getContent();
+    swipe.setOnRefreshListener(null);
   }
 
   private class MilestonesCallback implements Observer<List<Milestone>> {

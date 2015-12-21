@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -76,8 +77,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
+
 public class PullRequestDetailActivity extends BackActivity
-    implements View.OnClickListener, PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener {
+    implements View.OnClickListener, PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -112,6 +114,7 @@ public class PullRequestDetailActivity extends BackActivity
   private ProgressBar loadingView;
   private Repo repository;
   private PullRequestDetailAdapter adapter;
+  private SwipeRefreshLayout swipe;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -190,6 +193,9 @@ public class PullRequestDetailActivity extends BackActivity
     recyclerView = (RecyclerView) findViewById(R.id.recycler);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     fab = (FloatingActionButton) findViewById(R.id.fabButton);
+
+    swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
+    swipe.setColorSchemeResources(R.color.accent);
 
     loadingView = (ProgressBar) findViewById(R.id.loading_view);
 
@@ -285,6 +291,10 @@ public class PullRequestDetailActivity extends BackActivity
     this.pullRequestStory = pullRequestStory;
     this.pullRequestStory.pullRequest.repository = repository;
 
+
+    swipe.setRefreshing(false);
+    swipe.setOnRefreshListener(this);
+
     GetShaCombinedStatus status = new GetShaCombinedStatus(this, issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
     status.observable()
         .observeOn(AndroidSchedulers.mainThread())
@@ -348,6 +358,8 @@ public class PullRequestDetailActivity extends BackActivity
       colorState = getResources().getColor(R.color.pullrequest_state_merged);
       colorStateDark = getResources().getColor(R.color.pullrequest_state_merged);
     }
+
+    swipe.setColorSchemeColors(colorState);
 
     ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
     colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -813,6 +825,12 @@ public class PullRequestDetailActivity extends BackActivity
   @NonNull
   private AddIssueCommentAction getAddIssueCommentAction(String body) {
     return new AddIssueCommentAction(this, issueInfo, body, fab);
+  }
+
+  @Override
+  public void onRefresh() {
+    getContent();
+    swipe.setOnRefreshListener(null);
   }
 
   private class LabelsCallback extends Subscriber<List<Label>> {
