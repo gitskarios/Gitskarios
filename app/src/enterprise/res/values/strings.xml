@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="github_enterprise_account">Github Enterprise</string>
-  <string name="github_account">Github Account</string>
-  <string name="login_enterprise_url">Github enterprise url</string>
+    <string name="github_enterprise_account">Github Enterprise</string>
+    <string name="github_account">Github Account</string>
+    <string name="login_enterprise_url">Github enterprise url</string>
+    <string name="invitation_custom_image">https://raw.githubusercontent.com/gitskarios/Gitskarios/develop/media/icon/enterprise/icon.png</string>
 </resources>

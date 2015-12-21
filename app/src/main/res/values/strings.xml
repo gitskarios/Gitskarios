@@ -463,4 +463,9 @@
   <string name="updating_repository">Updating repository</string>
   <string name="loading_adding_content">Adding comment</string>
   <string name="loading_merge">Merging</string>
+  <string name="navigation_invite">Invite friends</string>
+  <string name="invitation_title">Join Gitskarios</string>
+  <string name="invitation_message">Take a look at Gitskarios, Github on Android</string>
+  <string name="invitation_deep_link">http://github.com/gitskarios/Gitskarios</string>
+  <string name="invitation_cta">Invite</string>
 </resources>
