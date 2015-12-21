@@ -15,14 +15,19 @@
  */
 package com.github.mobile.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.util.Log;
+
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Image utilities
@@ -109,6 +114,18 @@ public class ImageUtils {
     }
 
     return getBitmap(imagePath, scale);
+  }
+
+  /**
+   * Get bitmap with maximum height or width
+   *
+   * @return image
+   */
+  public static Bitmap getBitmap(Context context, final String imagePath, int width, int height) throws ExecutionException, InterruptedException {
+    return Glide.with(context)
+            .load(imagePath)
+            .asBitmap()
+            .into(width, height).get();
   }
 
   /**

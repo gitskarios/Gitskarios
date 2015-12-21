@@ -8,13 +8,19 @@
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:orientation="vertical"
       >
 
     <include layout="@layout/repo_overview_numbers"/>
 
-    <TextView
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/htmlLoading"
+        android:layout_gravity="center_horizontal"/>
+
+    <WebView
         android:id="@+id/htmlContentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
