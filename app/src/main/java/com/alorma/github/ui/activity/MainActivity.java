@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,8 +44,14 @@ import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.SecondarySwitchDrawerItem;
 import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.crashlytics.android.answers.InviteEvent;
+import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.appinvite.AppInviteInvitationResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
@@ -97,6 +104,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        checkInvites();
+
         AccountsManager accountsFragment = new AccountsManager();
         List<Account> accounts = accountsFragment.getAccounts(this);
 
@@ -124,6 +133,36 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                     dialog.show(getSupportFragmentManager(), "changelog");
                 }
             }).show();
+        }
+    }
+
+    private void checkInvites() {
+        try {
+            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(AppInvite.API)
+                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                        }
+                    })
+                    .build();
+
+            AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, this, false)
+                    .setResultCallback(
+                            new ResultCallback<AppInviteInvitationResult>() {
+                                @Override
+                                public void onResult(@NonNull AppInviteInvitationResult result) {
+                                    if (Fabric.isInitialized()) {
+                                        Answers.getInstance()
+                                                .logCustom(new CustomEvent("invited")
+                                                        .putCustomAttribute("result"
+                                                                , String.valueOf(result.getStatus())));
+                                    }
+                                }
+                            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
