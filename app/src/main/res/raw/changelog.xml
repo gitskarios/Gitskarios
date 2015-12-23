@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+  <changelogversion changeDate="Dec 13,2015" versionName="2.7.2">
+    <changelogtext>Add refresh at Issue / Pull Request detail page</changelogtext>
+    <changelogtext>Restore badges display from README</changelogtext>
+    <changelogtext>Fix comment on issues / PR is not shown</changelogtext>
+    <changelogtext>Fix at file page, now you can cancel the request</changelogtext>
+  </changelogversion>
   <changelogversion changeDate="Dec 13,2015" versionName="2.7.0">
     <changelogtext>Redesigned profile screen</changelogtext>
   </changelogversion>
