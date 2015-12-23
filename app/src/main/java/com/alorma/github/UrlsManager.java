@@ -65,6 +65,23 @@ public class UrlsManager {
         if (credentials.getUrl() != null) {
             Uri uri = Uri.parse(credentials.getUrl());
             host = uri.getAuthority();
+
+            if (host == null) {
+                host = credentials.getUrl();
+            }
+
+            if (host != null) {
+                if (!host.startsWith("http://")) {
+                    host = "http://" + host;
+                }
+
+                Uri newUri = Uri.parse(host);
+
+                if (!"https".equals(newUri.getScheme())) {
+                    newUri = newUri.buildUpon().scheme("https").build();
+                }
+                host = newUri.getAuthority();
+            }
         }
 
         uriMatcher.addURI(host, "", URI_BASE + i);

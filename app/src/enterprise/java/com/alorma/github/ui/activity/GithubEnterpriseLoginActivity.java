@@ -73,7 +73,7 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
     @OnClick(R.id.loginGithub)
     public void onLogin() {
         if (enterpriseUrl.length() > 0 && enterpriseToken.length() > 0) {
-            final String url = enterpriseUrl.getText().toString();
+            String url = enterpriseUrl.getText().toString();
             final String token = enterpriseToken.getText().toString();
 
             if (Fabric.isInitialized()) {
@@ -82,9 +82,20 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
                         .putSuccess(true));
             }
             StoreCredentials storeCredentials = new StoreCredentials(this);
-            storeCredentials.storeUrl(url);
+
+            if (!url.startsWith("http://")) {
+                url = "http://" + url;
+            }
+
+            Uri uri = Uri.parse(url);
+
+            if (!"https".equals(uri.getScheme())) {
+                uri = uri.buildUpon().scheme("https").build();
+            }
+            storeCredentials.storeUrl(uri.toString());
 
             GetAuthUserClient authUserClient = new GetAuthUserClient(this, token);
+            final String finalUrl = url;
             authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
                 @Override
                 public void onCompleted() {
@@ -98,7 +109,7 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
 
                 @Override
                 public void onNext(User user) {
-                    addAccount(user, url, token);
+                    addAccount(user, finalUrl, token);
                     MainActivity.startActivity(GithubEnterpriseLoginActivity.this);
                     finish();
                 }
