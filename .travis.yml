@@ -14,7 +14,7 @@ android:
 before_script:
 - git submodule update --init --recursive
 
-script: ./gradlew clean assembleGithubDebug assembleEnterpriseDebug
+script: ./gradlew clean build check
 
 deploy:
   provider: releases
