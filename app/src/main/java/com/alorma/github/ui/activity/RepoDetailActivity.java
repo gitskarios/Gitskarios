@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import com.alorma.github.R;
-import com.alorma.github.cache.QnCacheProvider;
+import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
@@ -312,8 +312,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
         .doOnNext(new Action1<List<Branch>>() {
           @Override
           public void call(List<Branch> branches) {
-            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
-                .set(requestRepoInfo.toString() + "branches", branches, TimeUnit.MINUTES.toMillis(10));
+            CacheWrapper.setBranches(requestRepoInfo.toString(), branches);
           }
         });
 
@@ -322,8 +321,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
       public void call(Subscriber<? super List<Branch>> subscriber) {
         try {
           if (!subscriber.isUnsubscribed()) {
-            List<Branch> branches = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
-                .get(requestRepoInfo.toString() + "branches");
+            List<Branch> branches = CacheWrapper.getBranches(requestRepoInfo.toString());
             if (branches != null) {
               subscriber.onNext(branches);
             }

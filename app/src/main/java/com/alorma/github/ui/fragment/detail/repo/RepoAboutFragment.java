@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
-import com.alorma.github.cache.QnCacheProvider;
+import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
@@ -38,13 +38,9 @@ import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.clean.presenter.Presenter;
 import com.clean.presenter.RepositoryPresenter;
-import com.gh4a.utils.UiUtils;
-import com.github.mobile.util.HtmlUtils;
-import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -254,11 +250,9 @@ public class RepoAboutFragment extends Fragment
             loadArguments();
         }
 
-        boolean contains = QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
-                .contains(repoInfo.toString() + "_README");
-        if (contains) {
-            onReadmeLoaded(QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
-                    .<String>get(repoInfo.toString() + "_README"));
+        String cachedReadme = CacheWrapper.getReadme(repoInfo.toString());
+        if (cachedReadme != null) {
+            onReadmeLoaded(cachedReadme);
         }
         getReadme();
     }
@@ -310,8 +304,7 @@ public class RepoAboutFragment extends Fragment
 
             loadingHtml.setVisibility(View.GONE);
 
-            QnCacheProvider.getInstance(QnCacheProvider.TYPE.REPO)
-                    .set(repoInfo.toString() + "_README", htmlContent);
+            CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
         }
     }
 
