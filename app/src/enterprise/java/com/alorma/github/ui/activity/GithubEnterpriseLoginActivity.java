@@ -56,8 +56,17 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
     public void generateToken() {
         if (enterpriseUrl.length() > 0) {
             String url = enterpriseUrl.getText().toString() + "/settings/tokens";
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
+            if (!url.startsWith("http://")) {
+                url = "http://" + url;
+            }
+
+            Uri uri = Uri.parse(url);
+
+            if (!"https".equals(uri.getScheme())) {
+                uri = uri.buildUpon().scheme("https").build();
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(Intent.createChooser(intent, getString(R.string.select_browser)));
         }
     }
 
