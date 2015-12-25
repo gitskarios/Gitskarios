@@ -469,4 +469,5 @@
   <string name="invitation_deep_link">http://github.com/gitskarios/Gitskarios</string>
   <string name="invitation_cta">Invite</string>
   <string name="select_browser">Select a browser</string>
+  <string name="trash_content">Remove content</string>
 </resources>

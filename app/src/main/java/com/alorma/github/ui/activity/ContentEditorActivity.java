@@ -193,6 +193,12 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
             IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_check).actionBar().color(Color.WHITE);
             okItem.setIcon(iconicsDrawable);
         }
+        MenuItem trashItem = menu.findItem(R.id.action_trash);
+
+        if (okItem != null) {
+            IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE);
+            trashItem.setIcon(iconicsDrawable);
+        }
 
         return true;
     }
@@ -224,6 +230,10 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
 
                 setResult(RESULT_OK, intent);
                 finish();
+                break;
+            case R.id.action_trash:
+                editText.setText("");
+                CacheWrapper.clearIssueComment(issueInfo.toString());
                 break;
             case R.id.add_content_editor_emojis:
                 Intent intentEmojis = new Intent(this, EmojisActivity.class);
