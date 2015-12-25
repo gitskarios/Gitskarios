@@ -25,6 +25,14 @@ public class CreatedEventsListFragment extends EventsListFragment implements Tit
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+
+
+    getActivity().setTitle("");
+  }
+
+  @Override
   protected void executeRequest() {
     super.executeRequest();
     GetUserCreatedEventsClient client = new GetUserCreatedEventsClient(getActivity(), username);
