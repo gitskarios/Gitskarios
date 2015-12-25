@@ -199,24 +199,26 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                     }
                 }
             });
-            authorAvatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    if (profileEnabled) {
-                        User user = getItem(getAdapterPosition()).actor;
-                        if (user.type == UserType.Organization) {
-                            v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
-                        } else {
-                            final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
-                            if (authorAvatar.getTag() != null) {
-                                int color = (int) authorAvatar.getTag();
-                                intent.putExtra(ProfileActivity.EXTRA_COLOR, color);
+            if (authorAvatar != null) {
+                authorAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        if (profileEnabled) {
+                            User user = getItem(getAdapterPosition()).actor;
+                            if (user.type == UserType.Organization) {
+                                v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
+                            } else {
+                                final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
+                                if (authorAvatar.getTag() != null) {
+                                    int color = (int) authorAvatar.getTag();
+                                    intent.putExtra(ProfileActivity.EXTRA_COLOR, color);
+                                }
+                                v.getContext().startActivity(intent);
                             }
-                            v.getContext().startActivity(intent);
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }

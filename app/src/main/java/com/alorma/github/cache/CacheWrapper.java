@@ -12,6 +12,7 @@ public class CacheWrapper {
 
     private static final String REPO_KEY_PREFIX = "repo";
     private static final String README_KEY_PREFIX = "readme";
+    private static final String ISSUE_COMMENT_KEY_PREFIX = "issue";
 
     private static QNCache cache = new QNCacheBuilder().setDefaultKeepaliveInMillis(KEEPALIVE_IN_MILLIS).createQNCache();
 
@@ -42,4 +43,26 @@ public class CacheWrapper {
         return README_KEY_PREFIX + repoId;
     }
     //endregion
+
+    // region newissuecomment
+    public static String getIssueComment(String newIssueId) {
+        return cache.get(convertToEffectiveIssueCommentKey(newIssueId));
+    }
+
+    public static void setNewIssue(String newIssueId, String newIssueComment) {
+        cache.set(convertToEffectiveIssueCommentKey(newIssueId), newIssueComment);
+    }
+
+    public static void clearIssueComment(String newIssueId) {
+        cache.remove(convertToEffectiveIssueCommentKey(newIssueId));
+    }
+
+    private static String convertToEffectiveIssueCommentKey(String newIssueId) {
+        return ISSUE_COMMENT_KEY_PREFIX + newIssueId;
+    }
+    // endregion
+
+    public static void clear() {
+        cache.removeAll();
+    }
 }

@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CacheWrapperTest {
@@ -30,5 +31,26 @@ public class CacheWrapperTest {
         String cachedReadme = CacheWrapper.getReadme("id");
 
         assertThat(cachedReadme).isEqualTo(readme);
+    }
+
+    @Test
+    public void testQuitNowCacheNewIssueComment() {
+        String newIssueComment = "the banana comment";
+
+        CacheWrapper.setNewIssue("id", newIssueComment);
+        String cacheNewComment = CacheWrapper.getIssueComment("id");
+
+        assertThat(cacheNewComment).isEqualTo(newIssueComment);
+    }
+
+    @Test
+    public void testQuitNowCacheRemoveNewIssue() {
+        String newIssueComment = "the banana comment";
+
+        CacheWrapper.setNewIssue("id", newIssueComment);
+        CacheWrapper.clearIssueComment("id");
+        String cacheNewComment = CacheWrapper.getIssueComment("id");
+
+        assertEquals(cacheNewComment, null);
     }
 }
