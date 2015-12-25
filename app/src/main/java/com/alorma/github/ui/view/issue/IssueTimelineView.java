@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -93,7 +94,15 @@ public class IssueTimelineView extends LinearLayout {
     } else if (eventType.equals("merged") || eventType.equals("referenced")) {
       String text = null;
       String commitId = issueEvent.event.commit_id;
-      String milestone = "<b>" + commitId.substring(0, 8) + "</b>";
+
+      String commitContent;
+      if (!TextUtils.isEmpty(commitId)) {
+        commitContent = commitId.substring(0, 8);
+      } else {
+        commitContent = "********";
+      }
+
+      String milestone = "<b>" + commitContent + "</b>";
       if (eventType.equals("merged")) {
         text = getResources().getString(R.string.issue_merged, milestone);
       } else if (eventType.equals("referenced")) {
