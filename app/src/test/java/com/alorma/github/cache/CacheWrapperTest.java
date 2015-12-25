@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CacheWrapperTest {
@@ -51,6 +52,6 @@ public class CacheWrapperTest {
         CacheWrapper.clearIssueComment("id");
         String cacheNewComment = CacheWrapper.getIssueComment("id");
 
-        assertEquals(cacheNewComment, null);
+        assertNull(cacheNewComment, null);
     }
 }
