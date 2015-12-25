@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;

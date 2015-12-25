@@ -412,7 +412,8 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
   public void onAddComment() {
     String hint = getString(R.string.add_comment);
-    Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
+    Intent intent = ContentEditorActivity
+            .createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
     startActivityForResult(intent, NEW_COMMENT_REQUEST);
   }
 

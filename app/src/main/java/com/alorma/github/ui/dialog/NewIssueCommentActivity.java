@@ -31,6 +31,7 @@ public class NewIssueCommentActivity extends BackActivity implements Observer<Gi
 
   private static final String ISSUE_INFO = "ISSUE_INFO";
   private static final int EMOJI_CODE = 4524;
+  private static final String COMMENT = "COMMENT";
   private EditText edit;
   private IssueInfo issueInfo;
   private EmojiBitmapLoader emojiBitmapLoader;
@@ -141,7 +142,9 @@ public class NewIssueCommentActivity extends BackActivity implements Observer<Gi
   @Override
   public void onNext(GithubComment githubComment) {
     hideProgressDialog();
-    setResult(RESULT_OK);
+    Intent data = new Intent();
+    data.putExtra(COMMENT, githubComment);
+    setResult(RESULT_OK, data);
     finish();
   }
 
