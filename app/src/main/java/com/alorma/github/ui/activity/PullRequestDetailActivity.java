@@ -591,7 +591,8 @@ public class PullRequestDetailActivity extends BackActivity
     MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
     builder.title(R.string.merge_title);
     builder.content(head.label);
-    builder.input(R.string.merge_message, 0, false, new MaterialDialog.InputCallback() {
+    builder.input(getString(R.string.merge_message), pullRequestStory.pullRequest.title, false
+            , new MaterialDialog.InputCallback() {
       @Override
       public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
         merge(charSequence.toString(), head.sha, issueInfo);
