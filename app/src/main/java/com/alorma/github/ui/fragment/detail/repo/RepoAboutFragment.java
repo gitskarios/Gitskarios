@@ -274,7 +274,11 @@ public class RepoAboutFragment extends Fragment
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
+                            onReadmeLoaded(currentRepo.description);
+                        } else {
+                            loadingHtml.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override
@@ -296,7 +300,7 @@ public class RepoAboutFragment extends Fragment
                         startActivity(intent);
                         return true;
                     } else {
-                        return super.shouldOverrideUrlLoading(view, url);
+                        return false;
                     }
                 }
             });
