@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
@@ -53,17 +54,19 @@ public class NewIssueActivity extends BackActivity {
 
     private boolean creatingIssue = false;
     private RepoInfo repoInfo;
+
     private EditText editTitle;
     private TextView editBody;
-    private User issueAssignee;
     private TextView userTextView;
     private TextView milestoneTextView;
     private TextView labelsTextView;
-    private Milestone issueMilestone;
 
     private Integer[] positionsSelectedLabels;
-    private CharSequence[] selectedLabels;
+
     private boolean editBodyHasFocus;
+    private boolean issuePublished = false;
+
+    private IssueRequest issueRequest;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -86,8 +89,44 @@ public class NewIssueActivity extends BackActivity {
         if (getIntent().getExtras() != null) {
             repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
             findViews();
+
+            issueRequest = CacheWrapper.getIssueRequest(repoInfo.owner + "/" + repoInfo.name);
+            if (issueRequest != null) {
+                setupFromCache(issueRequest);
+            } else {
+                issueRequest = new IssueRequest();
+            }
         } else {
             finish();
+        }
+    }
+
+    private void setupFromCache(IssueRequest issueRequest) {
+        if (issueRequest != null) {
+            if (issueRequest.title != null) {
+                editTitle.setText(issueRequest.title);
+            }
+            if (issueRequest.body != null) {
+                editBody.setText(issueRequest.body);
+            }
+            if (issueRequest.labels != null) {
+                StringBuilder builder = new StringBuilder();
+                for (CharSequence label : issueRequest.labels) {
+                    builder.append(label);
+                    builder.append(",");
+                }
+                String s = builder.toString();
+                if (s.endsWith(",")) {
+                    s = s.substring(0, s.length() - 1);
+                }
+                labelsTextView.setText(s);
+            }
+            if (issueRequest.assignee != null) {
+                userTextView.setText(issueRequest.assignee);
+            }
+            if (issueRequest.milestone != null && issueRequest.milestoneName != null) {
+                milestoneTextView.setText(issueRequest.milestoneName);
+            }
         }
     }
 
@@ -109,6 +148,7 @@ public class NewIssueActivity extends BackActivity {
         if (repoInfo.permissions != null && !repoInfo.permissions.push) {
             findViewById(R.id.pushAccessLayout).setVisibility(View.GONE);
         } else {
+            userTextView = (TextView) findViewById(R.id.assignee);
             userTextView = (TextView) findViewById(R.id.assignee);
             milestoneTextView = (TextView) findViewById(R.id.milestone);
             labelsTextView = (TextView) findViewById(R.id.labels);
@@ -171,37 +211,22 @@ public class NewIssueActivity extends BackActivity {
         return true;
     }
 
-    private void checkDataAndCreateIssue() {
+    private IssueRequest checkDataAndCreateIssue() {
         if (editTitle.length() <= 0) {
             editTitle.setError(getString(R.string.issue_title_mandatory));
-            return;
+            return null;
         }
 
-        IssueRequest issue = new IssueRequest();
-        issue.title = editTitle.getText().toString();
-        issue.body = editBody.getText().toString();
-
-        if (repoInfo != null && repoInfo.permissions != null && repoInfo.permissions.push) {
-            if (issueAssignee != null) {
-                issue.assignee = issueAssignee.login;
-            }
-
-            if (selectedLabels != null) {
-                issue.labels = selectedLabels;
-            }
-
-            if (issueMilestone != null) {
-                issue.milestone = issueMilestone.number;
-            }
+        if (issueRequest == null) {
+            issueRequest = new IssueRequest();
         }
+
+        issueRequest.title = editTitle.getText().toString();
+        issueRequest.body = editBody.getText().toString();
 
         creatingIssue = true;
 
-        invalidateOptionsMenu();
-
-        createIssue(issue);
-
-        showProgressDialog(R.string.creating_issue);
+        return issueRequest;
     }
 
     @Override
@@ -228,7 +253,10 @@ public class NewIssueActivity extends BackActivity {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_send:
-                checkDataAndCreateIssue();
+                issueRequest = checkDataAndCreateIssue();
+                invalidateOptionsMenu();
+                createIssue(issueRequest);
+                showProgressDialog(R.string.creating_issue);
                 break;
             case R.id.action_add_emoji:
                 Intent intent = new Intent(this, EmojisActivity.class);
@@ -239,16 +267,28 @@ public class NewIssueActivity extends BackActivity {
     }
 
     @Override
+    protected void close(boolean navigateUp) {
+        super.close(navigateUp);
+        if (!issuePublished && issueRequest != null) {
+            issueRequest.title = editTitle.getText().toString();
+            CacheWrapper.setNewIssueRequest(repoInfo.owner + "/" + repoInfo.name, issueRequest);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null) {
             String content = data.getStringExtra(ContentEditorActivity.CONTENT);
+            issueRequest.body = content;
             editBody.setText(content);
         }
     }
 
     private void createIssue(IssueRequest issue) {
+        issuePublished = true;
+        issueRequest.milestoneName = null;
         PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, repoInfo, issue);
         postNewIssueClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
             @Override
@@ -275,6 +315,7 @@ public class NewIssueActivity extends BackActivity {
                     Intent launcherIntent = IssueDetailActivity.createLauncherIntent(NewIssueActivity.this, issueInfo);
                     startActivity(launcherIntent);
                     setResult(RESULT_OK);
+                    CacheWrapper.clearIssueRequest(repoInfo.owner + "/" + repoInfo.name);
                     finish();
                 }
             }
@@ -346,9 +387,9 @@ public class NewIssueActivity extends BackActivity {
     }
 
     private void setAssigneeUser(User user) {
-        this.issueAssignee = user;
         if (userTextView != null) {
             if (user != null) {
+                issueRequest.assignee = user.login;
                 userTextView.setText(user.login);
             } else {
                 userTextView.setText(null);
@@ -461,7 +502,8 @@ public class NewIssueActivity extends BackActivity {
     }
 
     private void addMilestone(Milestone milestone) {
-        this.issueMilestone = milestone;
+        issueRequest.milestone = milestone.number;
+        issueRequest.milestoneName = milestone.title;
         milestoneTextView.setText(milestone.title);
     }
 
@@ -506,7 +548,7 @@ public class NewIssueActivity extends BackActivity {
             builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {
                 @Override
                 public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
-                    selectedLabels = charSequences;
+                    issueRequest.labels = charSequences;
                     positionsSelectedLabels = integers;
                     return true;
                 }
@@ -519,13 +561,13 @@ public class NewIssueActivity extends BackActivity {
                 @Override
                 public void onPositive(MaterialDialog dialog) {
                     super.onPositive(dialog);
-                    setLabels(selectedLabels);
+                    setLabels(issueRequest.labels);
                 }
 
                 @Override
                 public void onNegative(MaterialDialog dialog) {
                     super.onNegative(dialog);
-                    selectedLabels = null;
+                    issueRequest.labels = null;
                     positionsSelectedLabels = null;
                     setLabels(null);
                 }

@@ -336,7 +336,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     private void saveCache() {
         if (!applied && issueInfo != null) {
             try {
-                CacheWrapper.setNewIssue(issueInfo.toString(), editText.getText().toString());
+                CacheWrapper.setNewIssueComment(issueInfo.toString(), editText.getText().toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }

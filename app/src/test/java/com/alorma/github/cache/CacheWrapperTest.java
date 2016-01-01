@@ -38,7 +38,7 @@ public class CacheWrapperTest {
     public void testQuitNowCacheNewIssueComment() {
         String newIssueComment = "the banana comment";
 
-        CacheWrapper.setNewIssue("id", newIssueComment);
+        CacheWrapper.setNewIssueComment("id", newIssueComment);
         String cacheNewComment = CacheWrapper.getIssueComment("id");
 
         assertThat(cacheNewComment).isEqualTo(newIssueComment);
@@ -48,7 +48,7 @@ public class CacheWrapperTest {
     public void testQuitNowCacheRemoveNewIssue() {
         String newIssueComment = "the banana comment";
 
-        CacheWrapper.setNewIssue("id", newIssueComment);
+        CacheWrapper.setNewIssueComment("id", newIssueComment);
         CacheWrapper.clearIssueComment("id");
         String cacheNewComment = CacheWrapper.getIssueComment("id");
 
