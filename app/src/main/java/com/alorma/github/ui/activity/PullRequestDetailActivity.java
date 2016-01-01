@@ -472,15 +472,6 @@ public class PullRequestDetailActivity extends BackActivity
     return true;
   }
 
-  private Intent getShareIntent() {
-    Intent intent = new Intent(Intent.ACTION_SEND);
-    intent.setType("text/plain");
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    intent.putExtra(Intent.EXTRA_SUBJECT, issueInfo.toString());
-    intent.putExtra(Intent.EXTRA_TEXT, pullRequestStory.pullRequest.html_url);
-    return intent;
-  }
-
   public void onAddComment() {
     String hint = getString(R.string.add_comment);
     Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);

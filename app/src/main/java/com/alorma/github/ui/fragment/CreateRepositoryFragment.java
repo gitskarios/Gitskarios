@@ -65,7 +65,8 @@ public class CreateRepositoryFragment extends PreferenceFragment {
     pref_repo_description.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
       @Override
       public boolean onPreferenceClick(Preference preference) {
-        Intent intent = ContentEditorActivity.createLauncherIntent(getActivity(), null, repoRequestDTO.description, true, true);
+        Intent intent = ContentEditorActivity.createLauncherIntent(getActivity()
+                , null, repoRequestDTO.description, true, true);
         startActivityForResult(intent, DESCRIPTION_EDIT);
         return false;
       }

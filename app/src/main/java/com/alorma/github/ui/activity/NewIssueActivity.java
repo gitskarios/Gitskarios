@@ -99,7 +99,8 @@ public class NewIssueActivity extends BackActivity {
             @Override
             public void onClick(View v) {
                 String hint = getString(R.string.add_issue_body);
-                Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, null, false, false);
+                Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0
+                        , hint, editBody.getText().toString(), false, false);
 
                 startActivityForResult(intent, NEW_ISSUE_REQUEST);
             }
