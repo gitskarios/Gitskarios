@@ -2,11 +2,15 @@ package com.alorma.github;
 
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
+
+import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import io.fabric.sdk.android.Fabric;
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -22,6 +26,10 @@ public class GitskariosApplication extends MultiDexApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+
+    CustomActivityOnCrash.install(this);
+    CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
+    CustomActivityOnCrash.setEnableAppRestart(true);
 
     if (!BuildConfig.DEBUG) {
       Fabric.with(this, new Crashlytics());

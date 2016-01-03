@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         checkInvites();
 
         AccountsManager accountsFragment = new AccountsManager();
