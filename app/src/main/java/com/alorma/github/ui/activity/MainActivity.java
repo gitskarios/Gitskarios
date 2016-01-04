@@ -104,7 +104,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         checkInvites();
 
         AccountsManager accountsFragment = new AccountsManager();
@@ -114,6 +113,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            checkShowEnterpriseAd();
         }
 
         donateFragment = new DonateFragment();
@@ -135,6 +136,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 }
             }).show();
         }
+    }
+
+    private void checkShowEnterpriseAd() {
+        CheckShowAd.showEnterpriseAd(this);
     }
 
     private void checkInvites() {
