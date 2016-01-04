@@ -1,11 +1,9 @@
 package com.alorma.github.ui.activity;
 
-import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.animation.ValueAnimatorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
@@ -16,8 +14,12 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.alorma.github.R;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 
 import java.util.concurrent.TimeUnit;
+
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -33,13 +35,19 @@ public class EnterpriseAdActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.enterprise_ad_activity);
 
+        if (Fabric.isInitialized()) {
+            Answers.getInstance().logContentView(new ContentViewEvent()
+                    .putContentName("Enterpise visited")
+                    .putContentId("enterprise_visited"));
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         setTitle("");
         ViewCompat.setElevation(toolbar, 0);
 
-        textTitle = findViewById(R.id.title_secondary);
+        textTitle = findViewById(R.id.view_new_app_layout);
         button = findViewById(R.id.button);
 
         if (getSupportActionBar() != null) {
@@ -96,6 +104,13 @@ public class EnterpriseAdActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
+
+        if (Fabric.isInitialized()) {
+            Answers.getInstance().logContentView(new ContentViewEvent()
+                    .putContentName("Enterpise click")
+                    .putContentId("enterprise_click"));
+        }
+
         final String appPackageName = "com.alorma.github_enterprise";
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
