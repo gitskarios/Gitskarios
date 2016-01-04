@@ -159,11 +159,13 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                             new ResultCallback<AppInviteInvitationResult>() {
                                 @Override
                                 public void onResult(@NonNull AppInviteInvitationResult result) {
-                                    if (Fabric.isInitialized()) {
-                                        Answers.getInstance()
-                                                .logCustom(new CustomEvent("invited")
-                                                        .putCustomAttribute("result"
-                                                                , String.valueOf(result.getStatus())));
+                                    if (result.getInvitationIntent() != null) {
+                                        if (Fabric.isInitialized()) {
+                                            Answers.getInstance()
+                                                    .logCustom(new CustomEvent("invited")
+                                                            .putCustomAttribute("result"
+                                                                    , result.getStatus().getStatusMessage()));
+                                        }
                                     }
                                 }
                             });
