@@ -304,7 +304,7 @@ public class RepoAboutFragment extends Fragment
                     }
                 }
             });
-            htmlContentView.loadData(htmlContent, "text/html; charset=UTF-8", "UTF-8");
+            htmlContentView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
 
             loadingHtml.setVisibility(View.GONE);
 
