@@ -38,7 +38,7 @@ public class MarkdownUtils {
 
     name = name.toLowerCase(US);
     for (String extension : MARKDOWN_EXTENSIONS)
-      if (name.endsWith(extension)) return true;
+      if (name.endsWith(extension) || name.equals("README")) return true;
 
     return false;
   }
