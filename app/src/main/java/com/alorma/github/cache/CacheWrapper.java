@@ -8,6 +8,7 @@ import com.fewlaps.quitnowcache.QNCache;
 import com.fewlaps.quitnowcache.QNCacheBuilder;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CacheWrapper {
 
@@ -20,19 +21,9 @@ public class CacheWrapper {
 
     private static QNCache cache = new QNCacheBuilder().setDefaultKeepaliveInMillis(KEEPALIVE_IN_MILLIS).createQNCache();
 
-    //region branches
-    public static List<Branch> getBranches(String repoId) {
-        return cache.get(convertToEffectiveRepoKey(repoId));
-    }
-
-    public static void setBranches(String repoId, List<Branch> branches) {
-        cache.set(convertToEffectiveRepoKey(repoId), branches);
-    }
-
     private static String convertToEffectiveRepoKey(String repoId) {
         return REPO_KEY_PREFIX + repoId;
     }
-    //endregion
 
     //region readmes
     public static String getReadme(String repoId) {
@@ -93,6 +84,6 @@ public class CacheWrapper {
     }
 
     public static void setRepository(Repo repo) {
-        cache.set(convertToEffectiveRepoKey(repo.owner + "/" + repo.name), repo);
+        cache.set(convertToEffectiveRepoKey(repo.owner + "/" + repo.name), repo, TimeUnit.MINUTES.toMillis(10));
     }
 }

@@ -4,14 +4,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.alorma.github.cache.CacheWrapper;
+import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func2;
 
 /**
  * Created by bernat.borras on 12/11/15.
@@ -43,7 +48,21 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
             }
         });
 
-        Observable<Repo> repoObservable = repoClient.observable().doOnNext(new Action1<Repo>() {
+        GetRepoBranchesClient branchesClient =  new GetRepoBranchesClient(context, repoInfo);
+
+        Observable<Repo> combinedWithBranches = Observable.combineLatest(repoClient.observable(), branchesClient.observable()
+                , new Func2<Repo, List<Branch>, Repo>() {
+                    @Override
+                    public Repo call(Repo repo, List<Branch> branches) {
+                        repo.branches = branches;
+                        if (branches.size() == 1) {
+                            repo.default_branch = branches.get(0).name;
+                        }
+                        return repo;
+                    }
+                });
+
+        Observable<Repo> repoObservable = combinedWithBranches.doOnNext(new Action1<Repo>() {
             @Override
             public void call(Repo repo) {
                 CacheWrapper.setRepository(repo);

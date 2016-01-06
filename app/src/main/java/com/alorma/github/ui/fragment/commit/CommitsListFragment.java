@@ -81,13 +81,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
-
-    setAdapter(null);
-  }
-
-  @Override
   protected void loadArguments() {
     if (getArguments() != null) {
       repoInfo = getArguments().getParcelable(REPO_INFO);
