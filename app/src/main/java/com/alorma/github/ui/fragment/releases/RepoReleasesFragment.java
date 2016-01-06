@@ -1,118 +1,127 @@
 package com.alorma.github.ui.fragment.releases;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.adapter.ReleasesAdapter;
-import com.alorma.github.ui.fragment.base.PaginatedListFragment;
-import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
+import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.List;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
-import retrofit.RetrofitError;
+public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> implements TitleProvider, Observer<List<Release>> {
 
-/**
- * Created by a557114 on 29/07/2015.
- */
-public class RepoReleasesFragment extends PaginatedListFragment<List<Release>, ReleasesAdapter>
-        implements TitleProvider, PermissionsManager {
+  private static final String REPO_INFO = "REPO_INFO";
+  private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
 
-    private static final String REPO_INFO = "REPO_INFO";
-    private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
+  private RepoInfo repoInfo;
 
-    private RepoInfo repoInfo;
-    private Permissions permissions;
+  public static RepoReleasesFragment newInstance(RepoInfo info) {
+    RepoReleasesFragment repoReleasesFragment = new RepoReleasesFragment();
 
-    public static RepoReleasesFragment newInstance(RepoInfo info, Permissions permissions) {
-        RepoReleasesFragment repoReleasesFragment = new RepoReleasesFragment();
+    Bundle args = new Bundle();
 
-        Bundle args = new Bundle();
+    args.putParcelable(REPO_INFO, info);
 
-        args.putParcelable(REPO_INFO, info);
-        args.putParcelable(REPO_PERMISSIONS, permissions);
+    repoReleasesFragment.setArguments(args);
 
-        repoReleasesFragment.setArguments(args);
+    return repoReleasesFragment;
+  }
 
-        return repoReleasesFragment;
+  @Override
+  protected void loadArguments() {
+    repoInfo = getArguments().getParcelable(REPO_INFO);
+  }
+
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
+
+    if (getAdapter() != null) {
+      getAdapter().clear();
     }
 
-    @Override
-    protected void loadArguments() {
-        repoInfo = getArguments().getParcelable(REPO_INFO);
-        permissions = getArguments().getParcelable(REPO_PERMISSIONS);
+    setAction(new GetRepoReleasesClient(getActivity(), repoInfo, 0));
+  }
+
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
+
+    setAction(new GetRepoReleasesClient(getActivity(), repoInfo, page));
+  }
+
+  private void setAction(GithubListClient<List<Release>> getRepoReleasesClient) {
+    getRepoReleasesClient.observable()
+        .observeOn(AndroidSchedulers.mainThread())
+        .map(new Func1<Pair<List<Release>, Integer>, List<Release>>() {
+              @Override
+              public List<Release> call(Pair<List<Release>, Integer> listIntegerPair) {
+                setPage(listIntegerPair.second);
+                return listIntegerPair.first;
+              }
+            })
+        .subscribe(this);
+  }
+
+  @Override
+  public void onNext(List<Release> releases) {
+    if (releases.size() > 0) {
+      hideEmpty();
+      if (refreshing || getAdapter() == null) {
+        ReleasesAdapter adapter = new ReleasesAdapter(LayoutInflater.from(getActivity()), repoInfo);
+        adapter.addAll(releases);
+        setAdapter(adapter);
+      } else {
+        getAdapter().addAll(releases);
+      }
+    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
+    } else {
+      getAdapter().clear();
+      setEmpty();
     }
+  }
 
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
+  @Override
+  public void onCompleted() {
+    stopRefresh();
+  }
 
-        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, 0);
-        client.setOnResultCallback(this);
-        client.execute();
+  @Override
+  public void onError(Throwable error) {
+    stopRefresh();
+    if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
     }
+  }
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
+  @Override
+  protected Octicons.Icon getNoDataIcon() {
+    return null;
+  }
 
-        GetRepoReleasesClient client = new GetRepoReleasesClient(getActivity(), repoInfo, 0);
-        client.setOnResultCallback(this);
-        client.execute();
-    }
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_releases;
+  }
 
-    @Override
-    protected void onResponse(List<Release> releases, boolean refreshing) {
-        if (releases.size() > 0) {
-            hideEmpty();
-            if (getAdapter() != null) {
-                getAdapter().addAll(releases);
-            } else {
-                ReleasesAdapter adapter = new ReleasesAdapter(LayoutInflater.from(getActivity()), repoInfo);
-                adapter.addAll(releases);
-                setAdapter(adapter);
-            }
-        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty(false);
-        }
-    }
+  @Override
+  public int getTitle() {
+    return R.string.releases;
+  }
 
-    @Override
-    public void onFail(RetrofitError error) {
-        super.onFail(error);
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            if (error != null && error.getResponse() != null) {
-                setEmpty(true, error.getResponse().getStatus());
-            }
-        }
-    }
-
-    @Override
-    protected Octicons.Icon getNoDataIcon() {
-        return null;
-    }
-
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_releases;
-    }
-
-    @Override
-    public void setPermissions(boolean admin, boolean push, boolean pull) {
-        this.permissions = new Permissions();
-        this.permissions.admin = admin;
-        this.permissions.push = push;
-        this.permissions.pull = pull;
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.releases;
-    }
+  @Override
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_tag;
+  }
 }

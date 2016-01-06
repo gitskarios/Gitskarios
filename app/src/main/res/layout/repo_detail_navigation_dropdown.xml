@@ -3,14 +3,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="?android:attr/listPreferredItemHeightSmall">
+              android:layout_height="?android:attr/listPreferredItemHeightSmall"
+    >
 
-    <TextView
-        android:id="@android:id/text1"
-        style="?android:attr/spinnerItemStyle"
-        android:singleLine="true"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:ellipsize="marquee"/>
+  <TextView
+      android:id="@android:id/text1"
+      style="?android:attr/spinnerItemStyle"
+      android:singleLine="true"
+      android:gravity="center_vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:ellipsize="marquee"
+      />
 </LinearLayout>

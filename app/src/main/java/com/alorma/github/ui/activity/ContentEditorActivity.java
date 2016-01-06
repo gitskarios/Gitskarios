@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,8 +14,10 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.emoji.Emoji;
 import com.alorma.github.emoji.EmojisActivity;
+import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.gh4a.utils.UiUtils;
@@ -30,14 +31,13 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  */
 public class ContentEditorActivity extends BackActivity implements Toolbar.OnMenuItemClickListener {
 
+    public static final String CONTENT = "CONTENT";
     private static final String HINT = "HINT";
     private static final String PREFILL = "PREFILL";
     private static final String REPO_INFO = "REPO_INFO";
     private static final String ISSUE_NUM = "ISSUE_NUM";
     private static final String ALLOW_EMPTY = "ALLOW_EMPTY";
     private static final String BACK_IS_OK = "BACK_IS_OK";
-
-    public static final String CONTENT = "CONTENT";
     private static final int EMOJI_REQUEST = 1515;
 
     private EditText editText;
@@ -45,8 +45,27 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
 
     private boolean allowEmpty;
     private boolean backIsOk;
+    private IssueInfo issueInfo;
+    private boolean applied = false;
 
-    public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum, String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
+    public static Intent createLauncherIntent(Context context, String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
+        Intent intent = new Intent(context, ContentEditorActivity.class);
+
+        if (hint != null) {
+            intent.putExtra(HINT, hint);
+        }
+        if (prefill != null) {
+            intent.putExtra(PREFILL, prefill);
+        }
+
+        intent.putExtra(ALLOW_EMPTY, allowEmpty);
+        intent.putExtra(BACK_IS_OK, backIsOk);
+
+        return intent;
+    }
+
+    public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum, String hint, String prefill,
+                                              boolean allowEmpty, boolean backIsOk) {
         Intent intent = new Intent(context, ContentEditorActivity.class);
 
         if (hint != null) {
@@ -87,20 +106,26 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
             }
 
             String content = getIntent().getExtras().getString(PREFILL);
+            if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(ISSUE_NUM)) {
 
-            if (!TextUtils.isEmpty(content)) {
                 RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
                 int issueNumber = getIntent().getExtras().getInt(ISSUE_NUM);
 
-                String htmlCode = HtmlUtils.format(content).toString();
-                HttpImageGetter imageGetter = new HttpImageGetter(this);
+                issueInfo = new IssueInfo();
+                issueInfo.repoInfo = repoInfo;
+                issueInfo.num = issueNumber;
 
-                imageGetter.repoInfo(repoInfo);
-                imageGetter.bind(editText, htmlCode, issueNumber);
 
-                editText.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-                editText.setSelection(editText.getText().length());
+                if (!TextUtils.isEmpty(content)) {
+                    String htmlCode = HtmlUtils.format(content).toString();
+                    HttpImageGetter imageGetter = new HttpImageGetter(this);
 
+                    imageGetter.repoInfo(repoInfo);
+                    imageGetter.bind(editText, htmlCode, issueNumber);
+
+                    editText.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+                    editText.setSelection(editText.getText().length());
+                }
             }
 
             allowEmpty = getIntent().getExtras().getBoolean(ALLOW_EMPTY, false);
@@ -146,7 +171,6 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
             });
 
             backIsOk = getIntent().getExtras().getBoolean(BACK_IS_OK, false);
-
         } else {
             finish();
         }
@@ -168,6 +192,12 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
         if (okItem != null) {
             IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_check).actionBar().color(Color.WHITE);
             okItem.setIcon(iconicsDrawable);
+        }
+        MenuItem trashItem = menu.findItem(R.id.action_trash);
+
+        if (okItem != null) {
+            IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE);
+            trashItem.setIcon(iconicsDrawable);
         }
 
         return true;
@@ -193,8 +223,17 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
                 Intent intent = new Intent();
                 intent.putExtra(CONTENT, editText.getText().toString());
 
+                if (issueInfo != null) {
+                    applied = true;
+                    CacheWrapper.clearIssueComment(issueInfo.toString());
+                }
+
                 setResult(RESULT_OK, intent);
                 finish();
+                break;
+            case R.id.action_trash:
+                editText.setText("");
+                CacheWrapper.clearIssueComment(issueInfo.toString());
                 break;
             case R.id.add_content_editor_emojis:
                 Intent intentEmojis = new Intent(this, EmojisActivity.class);
@@ -216,8 +255,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     }
 
     private void showAddPicture() {
-        new MaterialDialog.Builder(this)
-                .title(R.string.addPicture)
+        new MaterialDialog.Builder(this).title(R.string.addPicture)
                 .content(R.string.addPictureContent)
                 .input(R.string.addPictureHint, 0, false, new MaterialDialog.InputCallback() {
                     @Override
@@ -249,7 +287,8 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     }
 
     @Override
-    protected void close() {
+    protected void close(boolean navigateUp) {
+        saveCache();
         int result = RESULT_CANCELED;
         if (!allowEmpty) {
             finish();
@@ -274,5 +313,33 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     public boolean onMenuItemClick(MenuItem item) {
         onOptionsItemSelected(item);
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (issueInfo != null) {
+            String issueComment = CacheWrapper.getIssueComment(issueInfo.toString());
+            if (issueComment != null) {
+                editText.setText(issueComment);
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        saveCache();
+        super.onStop();
+    }
+
+    private void saveCache() {
+        if (!applied && issueInfo != null) {
+            try {
+                CacheWrapper.setNewIssueComment(issueInfo.toString(), editText.getText().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

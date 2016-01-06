@@ -1,72 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="contributors">
-        <item quantity="zero">&lt;b&gt;No&lt;/b&gt; contributors</item>
-        <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; contributor</item>
-        <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
-        <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
-        <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
-        <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
-    </plurals>
-    <plurals name="branches">
-        <item quantity="zero">&lt;b&gt;No&lt;/b&gt; branches</item>
-        <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; branch</item>
-        <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
-        <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
-        <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
-        <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
-    </plurals>
-    <plurals name="releases">
-        <item quantity="zero">&lt;b&gt;No&lt;/b&gt; releases</item>
-        <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; release</item>
-        <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
-        <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
-        <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
-        <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
-    </plurals>
-    <plurals name="issues">
-        <item quantity="zero">&lt;b&gt;No&lt;/b&gt; issues</item>
-        <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; issue</item>
-        <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
-        <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
-        <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
-        <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
-    </plurals>
-    <plurals name="repo_release_num_files">
-        <item quantity="zero">No assets</item>
-        <item quantity="one">%d asset</item>
-        <item quantity="other">%d assets</item>
-    </plurals>
-    <plurals name="years_ago">
-        <item quantity="one">%d year ago</item>
-        <item quantity="other">%d years ago</item>
-    </plurals>
-    <plurals name="months_ago">
-        <item quantity="one">%d month ago</item>
-        <item quantity="other">%d months ago</item>
-    </plurals>
-    <plurals name="days_ago">
-        <item quantity="one">%d day ago</item>
-        <item quantity="other">%d days ago</item>
-    </plurals>
-    <plurals name="hours_ago">
-        <item quantity="one">%d hour ago</item>
-        <item quantity="other">%d hours ago</item>
-    </plurals>
-    <plurals name="minutes_ago">
-        <item quantity="one">%d minute ago</item>
-        <item quantity="other">%d minutes ago</item>
-    </plurals>
-    <plurals name="seconds_ago">
-        <item quantity="one">%d second ago</item>
-        <item quantity="other">%d seconds ago</item>
-    </plurals>
-    <plurals name="time_just_now">
-        <item quantity="other">just now</item>
-    </plurals>
-    <plurals name="status_checks_num">
-        <item quantity="zero">@string/no_status_checks_num</item>
-        <item quantity="one">@string/one_status_checks_num</item>
-        <item quantity="other">@string/other_status_checks_num</item>
-    </plurals>
+  <plurals name="contributors">
+    <item quantity="zero">&lt;b&gt;No&lt;/b&gt; contributors</item>
+    <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; contributor</item>
+    <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
+    <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
+    <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
+    <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; contributors</item>
+  </plurals>
+  <plurals name="branches">
+    <item quantity="zero">&lt;b&gt;No&lt;/b&gt; branches</item>
+    <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; branch</item>
+    <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
+    <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
+    <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
+    <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; branches</item>
+  </plurals>
+  <plurals name="releases">
+    <item quantity="zero">&lt;b&gt;No&lt;/b&gt; releases</item>
+    <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; release</item>
+    <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
+    <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
+    <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
+    <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; releases</item>
+  </plurals>
+  <plurals name="issues">
+    <item quantity="zero">&lt;b&gt;No&lt;/b&gt; issues</item>
+    <item quantity="one">&lt;b&gt;%1$d&lt;/b&gt; issue</item>
+    <item quantity="two">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
+    <item quantity="few">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
+    <item quantity="many">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
+    <item quantity="other">&lt;b&gt;%1$d&lt;/b&gt; issues</item>
+  </plurals>
+  <plurals name="repo_release_num_files">
+    <item quantity="zero">No assets</item>
+    <item quantity="one">%d asset</item>
+    <item quantity="other">%d assets</item>
+  </plurals>
+  <plurals name="years_ago">
+    <item quantity="one">%d year ago</item>
+    <item quantity="other">%d years ago</item>
+  </plurals>
+  <plurals name="months_ago">
+    <item quantity="one">%d month ago</item>
+    <item quantity="other">%d months ago</item>
+  </plurals>
+  <plurals name="days_ago">
+    <item quantity="one">%d day ago</item>
+    <item quantity="other">%d days ago</item>
+  </plurals>
+  <plurals name="hours_ago">
+    <item quantity="one">%d hour ago</item>
+    <item quantity="other">%d hours ago</item>
+  </plurals>
+  <plurals name="minutes_ago">
+    <item quantity="one">%d minute ago</item>
+    <item quantity="other">%d minutes ago</item>
+  </plurals>
+  <plurals name="seconds_ago">
+    <item quantity="one">%d second ago</item>
+    <item quantity="other">%d seconds ago</item>
+  </plurals>
+  <plurals name="time_just_now">
+    <item quantity="other">just now</item>
+  </plurals>
+  <plurals name="status_checks_num">
+    <item quantity="zero">@string/no_status_checks_num</item>
+    <item quantity="one">@string/one_status_checks_num</item>
+    <item quantity="other">@string/other_status_checks_num</item>
+  </plurals>
 </resources>

@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.base;
 
-
 import android.support.v4.app.Fragment;
 
 /**

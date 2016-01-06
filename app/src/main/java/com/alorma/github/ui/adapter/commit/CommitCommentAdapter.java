@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -25,58 +25,50 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, CommitCommentAdapter.ViewHolder> {
 
-    private RepoInfo repoInfo;
+  private RepoInfo repoInfo;
 
-    public CommitCommentAdapter(LayoutInflater inflater, RepoInfo repoInfo) {
-        super(inflater);
-        this.repoInfo = repoInfo;
+  public CommitCommentAdapter(LayoutInflater inflater, RepoInfo repoInfo) {
+    super(inflater);
+    this.repoInfo = repoInfo;
+  }
+
+  @Override
+  public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    return new ViewHolder(getInflater().inflate(R.layout.commit_comment_row, parent, false));
+  }
+
+  @Override
+  protected void onBindViewHolder(ViewHolder holder, CommitComment commitComment) {
+    if (commitComment.user != null) {
+
+      holder.textAuthor.setText(commitComment.user.login);
+
+      UniversalImageLoaderUtils.loadUserAvatar(holder.imageAuthor, commitComment.user);
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(getInflater().inflate(R.layout.commit_comment_row, parent, false));
+    if (commitComment.body_html != null) {
+      String htmlCode = HtmlUtils.format(commitComment.body_html).toString();
+      HttpImageGetter imageGetter = new HttpImageGetter(holder.itemView.getContext());
+      imageGetter.repoInfo(repoInfo);
+      imageGetter.bind(holder.textContent, htmlCode, commitComment.hashCode());
+      holder.textContent.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
     }
 
-    @Override
-    protected void onBindViewHolder(ViewHolder holder, CommitComment commitComment) {
-        if (commitComment.user != null) {
+    holder.toolbar.setVisibility(View.INVISIBLE);
+  }
 
-            holder.textAuthor.setText(commitComment.user.login);
+  public class ViewHolder extends RecyclerView.ViewHolder {
+    private final TextView textContent;
+    private final TextView textAuthor;
+    private final ImageView imageAuthor;
+    private final Toolbar toolbar;
 
-            if (commitComment.user.avatar_url != null) {
-                ImageLoader.getInstance().displayImage(commitComment.user.avatar_url, holder.imageAuthor);
-            } else {
-                IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_octoface);
-                iconDrawable.color(AttributesUtils.getSecondaryTextColor(holder.itemView.getContext()));
-                iconDrawable.sizeDp(36);
-                iconDrawable.setAlpha(128);
-                holder.imageAuthor.setImageDrawable(iconDrawable);
-            }
-        }
-
-        if (commitComment.body_html != null) {
-            String htmlCode = HtmlUtils.format(commitComment.body_html).toString();
-            HttpImageGetter imageGetter = new HttpImageGetter(holder.itemView.getContext());
-            imageGetter.repoInfo(repoInfo);
-            imageGetter.bind(holder.textContent, htmlCode, commitComment.hashCode());
-            holder.textContent.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-        }
-
-        holder.toolbar.setVisibility(View.INVISIBLE);
+    public ViewHolder(View itemView) {
+      super(itemView);
+      textContent = (TextView) itemView.findViewById(R.id.textContent);
+      textAuthor = (TextView) itemView.findViewById(R.id.textAuthor);
+      imageAuthor = (ImageView) itemView.findViewById(R.id.avatarAuthor);
+      toolbar = (Toolbar) itemView.findViewById(R.id.toolbar);
     }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textContent;
-        private final TextView textAuthor;
-        private final ImageView imageAuthor;
-        private final Toolbar toolbar;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            textContent = (TextView) itemView.findViewById(R.id.textContent);
-            textAuthor = (TextView) itemView.findViewById(R.id.textAuthor);
-            imageAuthor = (ImageView) itemView.findViewById(R.id.avatarAuthor);
-            toolbar = (Toolbar) itemView.findViewById(R.id.toolbar);
-        }
-    }
+  }
 }

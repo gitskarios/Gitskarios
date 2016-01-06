@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.emoji.EmojisActivity;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
@@ -34,7 +35,6 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -43,10 +43,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
-public class NewIssueActivity extends BackActivity implements BaseClient.OnResultCallback<Issue> {
+public class NewIssueActivity extends BackActivity {
 
     public static final String REPO_INFO = "REPO_INFO";
     private static final int EMOJI_CODE = 1554;
@@ -54,17 +54,19 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private boolean creatingIssue = false;
     private RepoInfo repoInfo;
+
     private EditText editTitle;
     private TextView editBody;
-    private User issueAssignee;
     private TextView userTextView;
     private TextView milestoneTextView;
     private TextView labelsTextView;
-    private Milestone issueMilestone;
 
     private Integer[] positionsSelectedLabels;
-    private CharSequence[] selectedLabels;
+
     private boolean editBodyHasFocus;
+    private boolean issuePublished = false;
+
+    private IssueRequest issueRequest;
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
@@ -87,8 +89,44 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         if (getIntent().getExtras() != null) {
             repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
             findViews();
+
+            issueRequest = CacheWrapper.getIssueRequest(repoInfo.owner + "/" + repoInfo.name);
+            if (issueRequest != null) {
+                setupFromCache(issueRequest);
+            } else {
+                issueRequest = new IssueRequest();
+            }
         } else {
             finish();
+        }
+    }
+
+    private void setupFromCache(IssueRequest issueRequest) {
+        if (issueRequest != null) {
+            if (issueRequest.title != null) {
+                editTitle.setText(issueRequest.title);
+            }
+            if (issueRequest.body != null) {
+                editBody.setText(issueRequest.body);
+            }
+            if (issueRequest.labels != null) {
+                StringBuilder builder = new StringBuilder();
+                for (CharSequence label : issueRequest.labels) {
+                    builder.append(label);
+                    builder.append(",");
+                }
+                String s = builder.toString();
+                if (s.endsWith(",")) {
+                    s = s.substring(0, s.length() - 1);
+                }
+                labelsTextView.setText(s);
+            }
+            if (issueRequest.assignee != null) {
+                userTextView.setText(issueRequest.assignee);
+            }
+            if (issueRequest.milestone != null && issueRequest.milestoneName != null) {
+                milestoneTextView.setText(issueRequest.milestoneName);
+            }
         }
     }
 
@@ -100,7 +138,9 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             @Override
             public void onClick(View v) {
                 String hint = getString(R.string.add_issue_body);
-                Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, null, false, false);
+                Intent intent = ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0
+                        , hint, editBody.getText().toString(), false, false);
+
                 startActivityForResult(intent, NEW_ISSUE_REQUEST);
             }
         });
@@ -108,6 +148,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         if (repoInfo.permissions != null && !repoInfo.permissions.push) {
             findViewById(R.id.pushAccessLayout).setVisibility(View.GONE);
         } else {
+            userTextView = (TextView) findViewById(R.id.assignee);
             userTextView = (TextView) findViewById(R.id.assignee);
             milestoneTextView = (TextView) findViewById(R.id.milestone);
             labelsTextView = (TextView) findViewById(R.id.labels);
@@ -170,39 +211,23 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         return true;
     }
 
-    private void checkDataAndCreateIssue() {
+    private IssueRequest checkDataAndCreateIssue() {
         if (editTitle.length() <= 0) {
             editTitle.setError(getString(R.string.issue_title_mandatory));
-            return;
+            return null;
         }
 
-        IssueRequest issue = new IssueRequest();
-        issue.title = editTitle.getText().toString();
-        issue.body = editBody.getText().toString();
-
-        if (repoInfo != null && repoInfo.permissions != null && repoInfo.permissions.push) {
-            if (issueAssignee != null) {
-                issue.assignee = issueAssignee.login;
-            }
-
-            if (selectedLabels != null) {
-                issue.labels = selectedLabels;
-            }
-
-            if (issueMilestone != null) {
-                issue.milestone = issueMilestone.number;
-            }
+        if (issueRequest == null) {
+            issueRequest = new IssueRequest();
         }
+
+        issueRequest.title = editTitle.getText().toString();
+        issueRequest.body = editBody.getText().toString();
 
         creatingIssue = true;
 
-        invalidateOptionsMenu();
-
-        createIssue(issue);
-
-        showProgressDialog(R.style.SpotDialog_CreatingIssue);
+        return issueRequest;
     }
-
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -228,7 +253,10 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_send:
-                checkDataAndCreateIssue();
+                issueRequest = checkDataAndCreateIssue();
+                invalidateOptionsMenu();
+                createIssue(issueRequest);
+                showProgressDialog(R.string.creating_issue);
                 break;
             case R.id.action_add_emoji:
                 Intent intent = new Intent(this, EmojisActivity.class);
@@ -239,42 +267,59 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
     }
 
     @Override
+    protected void close(boolean navigateUp) {
+        super.close(navigateUp);
+        if (!issuePublished && issueRequest != null) {
+            issueRequest.title = editTitle.getText().toString();
+            CacheWrapper.setNewIssueRequest(repoInfo.owner + "/" + repoInfo.name, issueRequest);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null) {
             String content = data.getStringExtra(ContentEditorActivity.CONTENT);
+            issueRequest.body = content;
             editBody.setText(content);
         }
     }
 
     private void createIssue(IssueRequest issue) {
+        issuePublished = true;
+        issueRequest.milestoneName = null;
         PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, repoInfo, issue);
-        postNewIssueClient.setOnResultCallback(this);
-        postNewIssueClient.execute();
-    }
+        postNewIssueClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+            @Override
+            public void onCompleted() {
 
-    @Override
-    public void onResponseOk(Issue issue, Response r) {
-        hideProgressDialog();
-        if (issue != null) {
-            IssueInfo issueInfo = new IssueInfo();
-            issueInfo.repoInfo = repoInfo;
-            issueInfo.num = issue.number;
-            Intent launcherIntent = IssueDetailActivity.createLauncherIntent(this, issueInfo);
-            startActivity(launcherIntent);
-            setResult(RESULT_OK);
-            finish();
-        }
-    }
+            }
 
-    @Override
-    public void onFail(RetrofitError error) {
-        hideProgressDialog();
-        creatingIssue = false;
-        ErrorHandler.onError(this, "Creating issue", error);
-        invalidateOptionsMenu();
-        Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
+            @Override
+            public void onError(Throwable e) {
+                hideProgressDialog();
+                creatingIssue = false;
+                ErrorHandler.onError(NewIssueActivity.this, "Creating issue", e);
+                invalidateOptionsMenu();
+                Toast.makeText(NewIssueActivity.this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(Issue issue) {
+                hideProgressDialog();
+                if (issue != null) {
+                    IssueInfo issueInfo = new IssueInfo();
+                    issueInfo.repoInfo = repoInfo;
+                    issueInfo.num = issue.number;
+                    Intent launcherIntent = IssueDetailActivity.createLauncherIntent(NewIssueActivity.this, issueInfo);
+                    startActivity(launcherIntent);
+                    setResult(RESULT_OK);
+                    CacheWrapper.clearIssueRequest(repoInfo.owner + "/" + repoInfo.name);
+                    finish();
+                }
+            }
+        });
     }
 
     /**
@@ -283,62 +328,68 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
 
     private void openAssignee() {
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
-        contributorsClient.setOnResultCallback(new ContributorsCallback());
-        contributorsClient.execute();
+        contributorsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Contributor>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Contributor> contributors) {
+                onContributorsLoaded(contributors);
+            }
+        });
     }
 
-    private class ContributorsCallback implements BaseClient.OnResultCallback<List<Contributor>> {
-        @Override
-        public void onResponseOk(List<Contributor> contributors, Response r) {
-            final List<User> users = new ArrayList<>();
-            String owner = repoInfo.owner;
-            boolean exist = false;
-            if (contributors != null) {
-                for (Contributor contributor : contributors) {
-                    exist = contributor.author.login.equals(owner);
-                    users.add(contributor.author);
-                }
+    public void onContributorsLoaded(List<Contributor> contributors) {
+        final List<User> users = new ArrayList<>();
+        String owner = repoInfo.owner;
+        boolean exist = false;
+        if (contributors != null) {
+            for (Contributor contributor : contributors) {
+                exist = contributor.author.login.equals(owner);
+                users.add(contributor.author);
             }
-
-            if (!exist) {
-                User user = new User();
-                user.login = owner;
-                users.add(user);
-            }
-
-            Collections.reverse(users);
-            UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
-
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
-            builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
-                @Override
-                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                    User user = users.get(i);
-                    setAssigneeUser(user);
-                    materialDialog.dismiss();
-                }
-            });
-            builder.negativeText(R.string.no_assignee);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onNegative(MaterialDialog dialog) {
-                    super.onNegative(dialog);
-                    setAssigneeUser(null);
-                }
-            });
-            builder.show();
         }
 
-        @Override
-        public void onFail(RetrofitError error) {
-
+        if (!exist) {
+            User user = new User();
+            user.login = owner;
+            users.add(user);
         }
+
+        Collections.reverse(users);
+        UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
+        builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                User user = users.get(i);
+                setAssigneeUser(user);
+                materialDialog.dismiss();
+            }
+        });
+        builder.negativeText(R.string.no_assignee);
+        builder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                setAssigneeUser(null);
+            }
+        });
+        builder.show();
     }
 
     private void setAssigneeUser(User user) {
-        this.issueAssignee = user;
         if (userTextView != null) {
             if (user != null) {
+                issueRequest.assignee = user.login;
                 userTextView.setText(user.login);
             } else {
                 userTextView.setText(null);
@@ -351,61 +402,66 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
      */
 
     private void openMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open);
-        milestonesClient.setOnResultCallback(new MilestonesCallback());
-        milestonesClient.execute();
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open, true);
+        milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Milestone> milestones) {
+                onMilestonesLoaded(milestones);
+            }
+        });
     }
 
-    private class MilestonesCallback implements BaseClient.OnResultCallback<List<Milestone>> {
-        @Override
-        public void onResponseOk(final List<Milestone> milestones, Response r) {
-            if (milestones.size() == 0) {
-                showCreateMilestone();
-            } else {
-                String[] itemsMilestones = new String[milestones.size()];
+    public void onMilestonesLoaded(final List<Milestone> milestones) {
+        if (milestones.size() == 0) {
+            showCreateMilestone();
+        } else {
+            String[] itemsMilestones = new String[milestones.size()];
 
-                for (int i = 0; i < milestones.size(); i++) {
-                    itemsMilestones[i] = milestones.get(i).title;
+            for (int i = 0; i < milestones.size(); i++) {
+                itemsMilestones[i] = milestones.get(i).title;
+            }
+
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this).title(R.string.select_milestone)
+                    .items(itemsMilestones)
+                    .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence text) {
+
+                            addMilestone(milestones.get(i));
+
+                            return false;
+                        }
+                    })
+                    .forceStacking(true)
+                    .widgetColorRes(R.color.primary)
+                    .negativeText(R.string.add_milestone);
+
+            builder.callback(new MaterialDialog.ButtonCallback() {
+
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    super.onNegative(dialog);
+                    showCreateMilestone();
                 }
 
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this)
-                        .title(R.string.select_milestone)
-                        .items(itemsMilestones)
-                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence text) {
+                @Override
+                public void onNeutral(MaterialDialog dialog) {
+                    super.onNeutral(dialog);
+                    clearMilestone();
+                }
+            });
 
-                                addMilestone(milestones.get(i));
-
-                                return false;
-                            }
-                        })
-                        .forceStacking(true)
-                        .widgetColorRes(R.color.primary)
-                        .negativeText(R.string.add_milestone);
-
-                builder.callback(new MaterialDialog.ButtonCallback() {
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onNegative(dialog);
-                        showCreateMilestone();
-                    }
-
-                    @Override
-                    public void onNeutral(MaterialDialog dialog) {
-                        super.onNeutral(dialog);
-                        clearMilestone();
-                    }
-                });
-
-                builder.show();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-
+            builder.show();
         }
     }
 
@@ -418,8 +474,7 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
             public void onInput(MaterialDialog materialDialog, CharSequence milestoneName) {
                 createMilestone(milestoneName.toString());
             }
-        })
-                .negativeText(R.string.cancel);
+        }).negativeText(R.string.cancel);
 
         builder.show();
     }
@@ -428,22 +483,27 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
         CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, repoInfo, createMilestoneRequestDTO);
-        createMilestoneClient.setOnResultCallback(new BaseClient.OnResultCallback<Milestone>() {
+        createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
             @Override
-            public void onResponseOk(Milestone milestone, Response r) {
-                addMilestone(milestone);
+            public void onCompleted() {
+
             }
 
             @Override
-            public void onFail(RetrofitError error) {
+            public void onError(Throwable e) {
                 hideProgressDialog();
             }
+
+            @Override
+            public void onNext(Milestone milestone) {
+                addMilestone(milestone);
+            }
         });
-        createMilestoneClient.execute();
     }
 
     private void addMilestone(Milestone milestone) {
-        this.issueMilestone = milestone;
+        issueRequest.milestone = milestone.number;
+        issueRequest.milestoneName = milestone.title;
         milestoneTextView.setText(milestone.title);
     }
 
@@ -456,63 +516,63 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
      */
 
     private void openLabels() {
-        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo);
-        labelsClient.setOnResultCallback(new LabelsCallback());
-        labelsClient.execute();
+        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo, true);
+        labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Label>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Label> labels) {
+                onLabelsLoaded(labels);
+            }
+        });
     }
 
-    private class LabelsCallback implements BaseClient.OnResultCallback<List<Label>> {
+    public void onLabelsLoaded(List<Label> labels) {
+        if (labels != null) {
+            List<String> items = new ArrayList<>();
+            for (Label label : labels) {
+                items.add(label.name);
+            }
 
-        @Override
-        public void onResponseOk(List<Label> labels, Response r) {
-            if (labels != null) {
-                List<String> items = new ArrayList<>();
-                for (Label label : labels) {
-                    items.add(label.name);
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
+            builder.items(items.toArray(new String[items.size()]));
+            builder.alwaysCallMultiChoiceCallback();
+            builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {
+                @Override
+                public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
+                    issueRequest.labels = charSequences;
+                    positionsSelectedLabels = integers;
+                    return true;
+                }
+            });
+            builder.forceStacking(true);
+            builder.positiveText(R.string.ok);
+            //                builder.neutralText(R.string.add_new_label);
+            builder.negativeText(R.string.clear_labels);
+            builder.callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onPositive(MaterialDialog dialog) {
+                    super.onPositive(dialog);
+                    setLabels(issueRequest.labels);
                 }
 
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
-                builder.items(items.toArray(new String[items.size()]));
-                builder.alwaysCallMultiChoiceCallback();
-                builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
-                        selectedLabels = charSequences;
-                        positionsSelectedLabels = integers;
-                        return true;
-                    }
-                });
-                builder.forceStacking(true);
-                builder.positiveText(R.string.ok);
-//                builder.neutralText(R.string.add_new_label);
-                builder.negativeText(R.string.clear_labels);
-                builder.callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        setLabels(selectedLabels);
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onNegative(dialog);
-                        selectedLabels = null;
-                        positionsSelectedLabels = null;
-                        setLabels(null);
-                    }
-
-//                    @Override
-//                    public void onNeutral(MaterialDialog dialog) {
-//                        super.onNeutral(dialog);
-//                    }
-                });
-                builder.show();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    super.onNegative(dialog);
+                    issueRequest.labels = null;
+                    positionsSelectedLabels = null;
+                    setLabels(null);
+                }
+            });
+            builder.show();
         }
     }
 
@@ -530,7 +590,6 @@ public class NewIssueActivity extends BackActivity implements BaseClient.OnResul
                 labels = labels.substring(0, lastIndexOf);
                 labelsTextView.setText(labels);
             }
-
         } else {
             labelsTextView.setText(null);
         }

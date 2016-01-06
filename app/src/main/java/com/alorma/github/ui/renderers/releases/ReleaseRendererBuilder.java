@@ -7,8 +7,8 @@ import com.pedrogomez.renderers.RendererBuilder;
  * Created by a557114 on 30/07/2015.
  */
 public class ReleaseRendererBuilder extends RendererBuilder<Release> {
-    @Override
-    protected Class getPrototypeClass(Release release) {
-        return ReleaseRenderer.class;
-    }
+  @Override
+  protected Class getPrototypeClass(Release release) {
+    return ReleaseRenderer.class;
+  }
 }

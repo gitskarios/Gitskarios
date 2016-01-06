@@ -41,18 +41,15 @@ public class PaletteUtils {
         return null;
     }
 
-    public static Palette.Swatch getProfileSwatchDark(Palette palette) {
+    public static Palette.Swatch getProfileDarkSwatch(Palette palette) {
         if (palette != null) {
-            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
             Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
             Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
             Palette.Swatch item = null;
-            if (darkVibrantSwatch != null) {
+             if (darkVibrantSwatch != null) {
                 item = darkVibrantSwatch;
-            } else if (darkMutedSwatch != null) {
+            } if (darkMutedSwatch != null) {
                 item = darkMutedSwatch;
-            } else if (vibrantSwatch != null) {
-                item = vibrantSwatch;
             }
             return item;
         }
@@ -60,25 +57,58 @@ public class PaletteUtils {
         return null;
     }
 
-    public void loadImageAndPalette(String url, final PaletteUtilsListener listener) {
-        ImageLoader.getInstance().loadImage(url, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
-                super.onLoadingComplete(imageUri, view, loadedImage);
-                new Palette.Builder(loadedImage).generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        if (listener != null) {
-                            listener.onImageLoaded(loadedImage, palette);
-                        }
-                    }
-                });
+    public static Palette.Swatch getProfileLightSwatch(Palette palette) {
+        if (palette != null) {
+            Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+            Palette.Swatch lightMutedSwatch = palette.getLightMutedSwatch();
+            Palette.Swatch item = null;
+            if (lightMutedSwatch != null) {
+                item = lightMutedSwatch;
+            } else if (lightVibrantSwatch != null) {
+                item = lightVibrantSwatch;
             }
-        });
+            return item;
+        }
+
+        return null;
     }
 
-    public interface PaletteUtilsListener {
-        void onImageLoaded(Bitmap loadedImage, Palette palette);
+    public static Palette.Swatch getProfileMutedSwatch(Palette palette) {
+        if (palette != null) {
+            Palette.Swatch mutedSwatch = palette.getMutedSwatch();
+            Palette.Swatch lightMutedSwatch = palette.getLightMutedSwatch();
+            Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
+            Palette.Swatch item = null;
+            if (lightMutedSwatch != null) {
+                item = lightMutedSwatch;
+            } else if (darkMutedSwatch != null) {
+                item = darkMutedSwatch;
+            } else if (mutedSwatch != null) {
+                item = mutedSwatch;
+            }
+            return item;
+        }
+
+        return null;
+    }
+
+    public static Palette.Swatch getProfileVibrantSwatch(Palette palette) {
+        if (palette != null) {
+            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+            Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+            Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
+            Palette.Swatch item = null;
+            if (vibrantSwatch != null) {
+                item = vibrantSwatch;
+            } else if (darkVibrantSwatch != null) {
+                item = darkVibrantSwatch;
+            } else if (lightVibrantSwatch != null) {
+                item = lightVibrantSwatch;
+            }
+            return item;
+        }
+
+        return null;
     }
 
     public static int colorTextFromBackgroundColor(int color) {
@@ -94,5 +124,9 @@ public class PaletteUtils {
         } else {
             return Color.rgb(0, 0, 0);
         }
+    }
+
+    public interface PaletteUtilsListener {
+        void onImageLoaded(Bitmap loadedImage, Palette palette);
     }
 }

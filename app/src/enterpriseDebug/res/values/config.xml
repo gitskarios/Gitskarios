@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Octuirrel DEV</string>
+  <string name="enterprise_account_name">Github Enterprise account DEV</string>
+  <string name="enterprise_account_type">com.alorma.github_enterprise.debug.account</string>
+</resources>

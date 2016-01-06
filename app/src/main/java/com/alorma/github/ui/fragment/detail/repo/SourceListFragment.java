@@ -6,15 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearBreadcrumb;
 import android.widget.Toast;
 
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -28,6 +27,8 @@ import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.ui.view.LinearBreadcrumb;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
@@ -35,13 +36,14 @@ import java.util.Collections;
 import java.util.List;
 
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 20/07/2014.
  */
-public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> implements BaseClient.OnResultCallback<List<Content>>, TitleProvider, BranchManager
-        , LinearBreadcrumb.SelectionCallback, PermissionsManager, BackManager, RepoSourceAdapter.SourceAdapterListener {
+public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
+        implements TitleProvider, BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
     private static final String REPO_INFO = "REPO_INFO";
 
@@ -49,6 +51,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
     private LinearBreadcrumb breadCrumbs;
     private String currentPath;
+    private Observer<Pair<List<Content>, Integer>> subscriber;
 
     public static SourceListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
@@ -57,6 +60,35 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
         SourceListFragment f = new SourceListFragment();
         f.setArguments(bundle);
         return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        subscriber = new Observer<Pair<List<Content>, Integer>>() {
+            @Override
+            public void onCompleted() {
+                stopRefresh();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                stopRefresh();
+                if (getActivity() != null) {
+                    if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                        if (e != null && e instanceof RetrofitError && ((RetrofitError) e).getResponse() != null) {
+                            setEmpty(true, ((RetrofitError) e).getResponse().getStatus());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNext(Pair<List<Content>, Integer> listIntegerPair) {
+                onContentLoaded(listIntegerPair.first);
+            }
+        };
     }
 
     @Override
@@ -69,7 +101,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
         super.onViewCreated(view, savedInstanceState);
 
         view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-
 
         breadCrumbs = (LinearBreadcrumb) view.findViewById(R.id.breadCrumbs);
 
@@ -91,7 +122,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
                 for (String path : paths) {
                     builder.append(path);
                     builder.append("/");
-
                 }
                 String path = builder.toString();
                 getPathContent(path.substring(0, path.length() - 1));
@@ -120,8 +150,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
         breadCrumbs.initRootCrumb();
 
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
-        repoContentsClient.setOnResultCallback(this);
-        repoContentsClient.execute();
+        repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
     @Override
@@ -132,32 +161,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
     @Override
     protected int getNoDataText() {
         return R.string.no_content;
-    }
-
-    @Override
-    public void onResponseOk(List<Content> contents, Response r) {
-        if (getActivity() != null) {
-            if (contents != null && contents.size() > 0) {
-
-                Collections.sort(contents, Content.Comparators.TYPE);
-
-                displayContent(contents);
-            } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                setEmpty(false);
-            }
-        }
-    }
-
-    @Override
-    public void onFail(RetrofitError error) {
-        if (getActivity() != null) {
-            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                if (error != null && error.getResponse() != null) {
-                    setEmpty(true, error.getResponse().getStatus());
-                }
-            }
-            ErrorHandler.onError(getActivity(), "FilesTreeFragment", error);
-        }
     }
 
     private void displayContent(List<Content> contents) {
@@ -223,7 +226,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
         clipboard.setPrimaryClip(clip);
     }
 
-
     @Override
     public void setEmpty(boolean withError, int statusCode) {
         super.setEmpty(withError, statusCode);
@@ -236,6 +238,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
     @Override
     public void setCurrentBranch(String branch) {
+        loadArguments();
         repoInfo.branch = branch;
         getContent();
     }
@@ -243,14 +246,32 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
     private void getPathContent(String path) {
         currentPath = path;
         startRefresh();
+
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, path);
-        repoContentsClient.setOnResultCallback(this);
-        repoContentsClient.execute();
+        repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    private void onContentLoaded(List<Content> contents) {
+        if (getActivity() != null) {
+            if (contents != null && contents.size() > 0) {
+                hideEmpty();
+                Collections.sort(contents);
+
+                displayContent(contents);
+            } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+                setEmpty();
+            }
+        }
     }
 
     @Override
     public int getTitle() {
         return R.string.files_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_file_directory;
     }
 
     @Override
@@ -267,8 +288,9 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
     protected void fabClick() {
         super.fabClick();
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
-        repoBranchesClient.setOnResultCallback(new DownloadBranchesCallback(getActivity(), repoInfo));
-        repoBranchesClient.execute();
+        repoBranchesClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DownloadBranchesCallback(getActivity(), repoInfo));
     }
 
     @Override
@@ -291,13 +313,18 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
     }
 
     @Override
-    public void setPermissions(boolean admin, boolean push, boolean pull) {
+    public void loadMoreItems() {
 
     }
 
     @Override
-    public void loadMoreItems() {
-
+    public boolean onBackPressed() {
+        if (breadCrumbs != null && breadCrumbs.size() == 1) {
+            return true;
+        } else {
+            navigateUp();
+            return false;
+        }
     }
 
     private class DownloadBranchesCallback extends DialogBranchesCallback {
@@ -308,7 +335,11 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
 
         @Override
         protected void onNoBranches() {
-            Toast.makeText(getContext(), R.string.no_branches_download, Toast.LENGTH_SHORT).show();
+            RepoInfo repoInfo = new RepoInfo();
+            repoInfo.owner = getRepoInfo().owner;
+            repoInfo.name = getRepoInfo().name;
+            GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
+            getArchiveLinkService.observable().subscribe();
         }
 
         @Override
@@ -320,17 +351,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter> i
             repoInfo.name = getRepoInfo().name;
             repoInfo.branch = branch;
             GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
-            getArchiveLinkService.execute();
-        }
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        if (breadCrumbs != null && breadCrumbs.size() == 1) {
-            return true;
-        } else {
-            navigateUp();
-            return false;
+            getArchiveLinkService.observable().subscribe();
         }
     }
 }

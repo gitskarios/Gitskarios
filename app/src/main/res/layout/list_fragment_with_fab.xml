@@ -6,33 +6,19 @@
     android:layout_height="match_parent"
     android:background="@color/gray_github_light">
 
-    <FrameLayout
-        android:id="@+id/listContainer"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe"
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@id/recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"
-                android:paddingBottom="72dp"
-                android:clipToPadding="false"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </FrameLayout>
-
-    <include
-        layout="@layout/fab"
-        android:layout_width="@dimen/fab"
-        android:layout_height="@dimen/fab"
-        android:layout_gravity="bottom|right|end"
-        android:layout_margin="@dimen/gapLarge"
-        android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:drawSelectorOnTop="false"
+            android:paddingBottom="72dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
         android:id="@+id/error_view"
@@ -43,6 +29,14 @@
         errorview:ev_showRetryButton="true"
         errorview:ev_showSubtitle="true"
         errorview:ev_showTitle="true" />
+
+    <include
+        layout="@layout/fab"
+        android:layout_width="@dimen/fab"
+        android:layout_height="@dimen/fab"
+        android:layout_gravity="bottom|right|end"
+        android:layout_margin="@dimen/gapLarge"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/loading_view"

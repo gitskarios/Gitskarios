@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.events.payload.CreatedEventPayload;
@@ -17,72 +16,69 @@ import com.google.gson.Gson;
  * Created by Bernat on 04/10/2014.
  */
 public class CreatedEventView extends GithubEventView<CreatedEventPayload> {
-    public CreatedEventView(Context context) {
-        super(context);
+  public CreatedEventView(Context context) {
+    super(context);
+  }
+
+  public CreatedEventView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
+
+  public CreatedEventView(Context context, AttributeSet attrs, int defStyle) {
+    super(context, attrs, defStyle);
+  }
+
+  @Override
+  protected void inflate() {
+    inflate(getContext(), R.layout.payload_create, this);
+  }
+
+  @Override
+  protected void populateView(GithubEvent event) {
+
+    ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+
+    //load the profile image from url with optimal settings
+    handleImage(authorAvatar, event);
+
+    TextView authorName = (TextView) findViewById(R.id.authorName);
+
+    TextView textTitle = (TextView) findViewById(R.id.textTitle);
+
+    int textRes = 0;
+    if (eventPayload.ref_type.equalsIgnoreCase("branch")) {
+      textRes = R.string.event_created_branch_by;
+    } else if (eventPayload.ref_type.equalsIgnoreCase("tag")) {
+      textRes = R.string.event_created_tag_by;
+    } else if (eventPayload.ref_type.equalsIgnoreCase("repository")) {
+      String text = getContext().getResources().getString(R.string.event_created_repository_by, event.actor.login, event.repo.name);
+
+      authorName.setText(Html.fromHtml(text));
     }
 
-    public CreatedEventView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    String title = eventPayload.description;
+    if (title != null) {
+      textTitle.setText(title);
+      textTitle.setVisibility(View.VISIBLE);
+    } else {
+      textTitle.setVisibility(View.GONE);
     }
 
-    public CreatedEventView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    if (textRes != 0) {
+      String text = getContext().getResources().getString(textRes, event.actor.login, eventPayload.ref, event.repo.name);
+
+      authorName.setText(Html.fromHtml(text));
     }
 
-    @Override
-    protected void inflate() {
-        inflate(getContext(), R.layout.payload_create, this);
-    }
+    TextView textDate = (TextView) findViewById(R.id.textDate);
 
-    @Override
-    protected void populateView(GithubEvent event) {
+    String timeString = TimeUtils.getTimeAgoString(event.created_at);
 
-        ImageView authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+    textDate.setText(timeString);
+  }
 
-        //load the profile image from url with optimal settings
-        handleImage(authorAvatar, event);
-
-        TextView authorName = (TextView) findViewById(R.id.authorName);
-
-        TextView textTitle = (TextView) findViewById(R.id.textTitle);
-
-        int textRes = 0;
-        if (eventPayload.ref_type.equalsIgnoreCase("branch")) {
-            textRes = R.string.event_created_branch_by;
-        } else if (eventPayload.ref_type.equalsIgnoreCase("tag")) {
-            textRes = R.string.event_created_tag_by;
-        } else if (eventPayload.ref_type.equalsIgnoreCase("repository")) {
-            String text = getContext().getResources().getString(R.string.event_created_repository_by,
-                    event.actor.login, event.repo.name);
-
-            authorName.setText(Html.fromHtml(text));
-        }
-
-        String title = eventPayload.description;
-        if (title != null) {
-            textTitle.setText(title);
-            textTitle.setVisibility(View.VISIBLE);
-        } else {
-            textTitle.setVisibility(View.GONE);
-        }
-
-        if (textRes != 0) {
-            String text = getContext().getResources().getString(textRes,
-                    event.actor.login, eventPayload.ref, event.repo.name);
-
-            authorName.setText(Html.fromHtml(text));
-        }
-
-
-        TextView textDate = (TextView) findViewById(R.id.textDate);
-
-        String timeString = TimeUtils.getTimeAgoString(event.created_at);
-
-        textDate.setText(timeString);
-    }
-
-    @Override
-    protected CreatedEventPayload convert(Gson gson, String s) {
-        return gson.fromJson(s, CreatedEventPayload.class);
-    }
+  @Override
+  protected CreatedEventPayload convert(Gson gson, String s) {
+    return gson.fromJson(s, CreatedEventPayload.class);
+  }
 }

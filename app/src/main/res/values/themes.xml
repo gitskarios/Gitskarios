@@ -1,115 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="AppTheme.AppCompat.Default">
-        <item name="android:windowBackground">@color/white</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorControlNormal">@color/accent</item>
-        <item name="colorControlActivated">@color/accent_dark</item>
-        <item name="colorControlHighlight">@color/accent_dark</item>
-        <item name="gitskarios_divider">@color/divider</item>
-        <item name="gitskarios_primary_text">@color/primary_text</item>
-        <item name="gitskarios_secondary_text">@color/secondary_text</item>
-        <item name="gitskarios_primary_light">@color/primary_light</item>
-        <item name="gitskarios_icons">@color/icons</item>
-    </style>
+  <style name="AppTheme"
+         parent="Base.AppTheme"/>
+
+  <style name="AppTheme.RepoDetail"
+         parent="Base.AppTheme">
+    <item name="material_drawer_background">@color/material_drawer_dark_background</item>
+    <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>
+    <item name="material_drawer_primary_icon">@color/material_drawer_dark_primary_icon</item>
+    <item name="material_drawer_secondary_text">@color/material_drawer_dark_secondary_text
+    </item>
+    <item name="material_drawer_hint_text">@color/material_drawer_dark_hint_text</item>
+    <item name="material_drawer_hint_icon">@color/material_drawer_dark_hint_icon</item>
+    <item name="material_drawer_divider">@color/material_drawer_dark_divider</item>
+    <item name="material_drawer_selected">@color/material_drawer_dark_selected</item>
+    <item name="material_drawer_selected_text">@color/primary</item>
+    <item name="material_drawer_header_selection_text">
+      @color/material_drawer_header_selection_text
+    </item>
+  </style>
+
+  <style name="AppTheme.Search"
+         parent="Base.AppTheme.Search"/>
+
+  <style name="Base.AppTheme"
+         parent="AppTheme.AppCompat.Default">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="colorAccent">@color/accent</item>
+    <item name="colorControlNormal">@color/accent</item>
+    <item name="colorControlActivated">@color/accent_dark</item>
+    <item name="colorControlHighlight">@color/accent_dark</item>
+    <item name="gitskarios_divider">@color/divider</item>
+    <item name="gitskarios_primary_text">@color/primary_text</item>
+    <item name="gitskarios_secondary_text">@color/secondary_text</item>
+    <item name="gitskarios_primary_light">@color/primary_light</item>
+    <item name="gitskarios_icons">@color/icons</item>
+  </style>
 
 
-    <style name="AppThemeSearch" parent="AppTheme.AppCompat.Default">
-        <item name="windowActionModeOverlay">false</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/gray_github_dark</item>
-        <item name="colorAccent">@color/gray_github_dark</item>
-        <item name="colorControlNormal">@color/gray_github_medium</item>
-        <item name="colorControlActivated">@color/gray_github_dark</item>
-        <item name="colorControlHighlight">@color/gray_github_dark</item>
-        <item name="gitskarios_divider">@color/divider</item>
-        <item name="gitskarios_primary_text">@color/primary_text</item>
-        <item name="gitskarios_secondary_text">@color/secondary_text</item>
-        <item name="gitskarios_primary_light">@color/gray_github_light</item>
-        <item name="gitskarios_icons">@color/icons</item>
-    </style>
+  <style name="Base.AppTheme.Search"
+         parent="AppTheme.AppCompat.Default">
+    <item name="windowActionModeOverlay">false</item>
+    <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
+    <item name="colorPrimary">@color/white</item>
+    <item name="colorPrimaryDark">@color/gray_github_dark</item>
+    <item name="colorAccent">@color/gray_github_dark</item>
+    <item name="colorControlNormal">@color/gray_github_medium</item>
+    <item name="colorControlActivated">@color/gray_github_dark</item>
+    <item name="colorControlHighlight">@color/gray_github_dark</item>
+    <item name="gitskarios_divider">@color/divider</item>
+    <item name="gitskarios_primary_text">@color/primary_text</item>
+    <item name="gitskarios_secondary_text">@color/secondary_text</item>
+    <item name="gitskarios_primary_light">@color/gray_github_light</item>
+    <item name="gitskarios_icons">@color/icons</item>
+  </style>
 
-    <!-- Default application theme. -->
-    <style name="AppTheme.AppCompat.Default" parent="Theme.AppCompat.Light.NoActionBar">
+  <!-- Default application theme. -->
+  <style name="AppTheme.AppCompat.Default"
+         parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="windowActionModeOverlay">true</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
 
-    </style>
-
-
-    <style name="Toolbar.AppCompat.Default" parent="AppTheme.AppCompat.Default">
-
-
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
+  </style>
 
 
-    </style>
+  <style name="Toolbar.AppCompat.Default"
+         parent="AppTheme.AppCompat.Default">
 
 
-    <!-- Responsive application theme. -->
-    <style name="AppTheme.AppCompat.Responsive" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
 
 
-        <item name="windowActionModeOverlay">true</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+  </style>
 
 
-        <!-- Actionbar styles -->
-        <item name="actionBarStyle">@style/Custom.Widget.Actionbar</item>
+  <!-- Responsive application theme. -->
+  <style name="AppTheme.AppCompat.Responsive"
+         parent="Theme.AppCompat.Light.NoActionBar">
 
 
-        <!-- Action Mode styles -->
-        <item name="actionModeStyle">@style/Custom.Widget.ActionMode</item>
-        <item name="actionModeBackground">@color/primary_dark</item>
-        <item name="actionModeCloseButtonStyle">@style/Custom.Widget.ActionButton.CloseMode</item>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="colorAccent">@color/accent</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
 
 
-        <!-- Toolbar styles -->
-        <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
-        <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation
-        </item>
-        <item name="actionOverflowButtonStyle">@style/Custom.Widget.ActionButton.Overflow</item>
+    <!-- Actionbar styles -->
+    <item name="actionBarStyle">@style/Custom.Widget.Actionbar</item>
 
 
-    </style>
+    <!-- Action Mode styles -->
+    <item name="actionModeStyle">@style/Custom.Widget.ActionMode</item>
+    <item name="actionModeBackground">@color/primary_dark</item>
+    <item name="actionModeCloseButtonStyle">@style/Custom.Widget.ActionButton.CloseMode</item>
 
 
-    <style name="Toolbar.AppCompat.Responsive" parent="AppTheme.AppCompat.Responsive">
+    <!-- Toolbar styles -->
+    <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
+    <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation
+    </item>
+    <item name="actionOverflowButtonStyle">@style/Custom.Widget.ActionButton.Overflow</item>
 
 
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
+  </style>
 
 
-    </style>
+  <style name="Toolbar.AppCompat.Responsive"
+         parent="AppTheme.AppCompat.Responsive">
 
 
-    <style name="Toolbar.AppCompat.Light.Responsive" parent="AppTheme.AppCompat.Responsive">
-
-        <item name="android:background">@color/gray_github_light</item>
-        <item name="android:textColorPrimary">@color/gray_github_dark</item>
-        <item name="android:textColorSecondary">@color/gray_github_dark</item>
-        <item name="colorControlHighlight">@color/gray_github_medium</item>
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
 
 
-    </style>
+  </style>
+
+  <style name="Toolbar.AppCompat.Responsive.Transparent"
+         parent="AppTheme.AppCompat.Responsive">
 
 
-    <style name="Toolbar.Popup.AppCompat" parent="Theme.AppCompat.Light">
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
+    <item name="colorPrimary">@android:color/transparent</item>
 
 
-    </style>
+  </style>
+
+
+  <style name="Toolbar.AppCompat.Light.Responsive"
+         parent="AppTheme.AppCompat.Responsive">
+
+    <item name="android:background">@color/gray_github_light</item>
+    <item name="android:textColorPrimary">@color/gray_github_dark</item>
+    <item name="android:textColorSecondary">@color/gray_github_dark</item>
+    <item name="colorControlHighlight">@color/gray_github_medium</item>
+
+
+  </style>
+
+  <style name="Toolbar.Popup.AppCompat"
+         parent="Theme.AppCompat.Light"/>
+
+  <style name="AppTheme.Welcome"
+         parent="Base.AppTheme.Welcome"/>
+
+  <style name="Base.AppTheme.Welcome">
+    <item name="colorAccent">@color/md_grey_600</item>
+    <item name="colorControlNormal">@color/md_grey_600</item>
+    <item name="colorControlActivated">@color/md_grey_600</item>
+    <item name="colorControlHighlight">@color/md_grey_600</item>
+    <item name="colorButtonNormal">@color/accent</item>
+    <item name="android:windowBackground">@color/md_grey_300</item>
+  </style>
+
+  <style name="AppTheme.ColoredButton">
+    <item name="colorButtonNormal">?attr/colorPrimary</item>
+  </style>
 </resources>

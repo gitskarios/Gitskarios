@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/listContentFL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@id/listContentFL"
     android:background="@color/gray_github_light">
 
-    <FrameLayout
-        android:id="@+id/listContainer"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/swipe">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@id/recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </FrameLayout>
+            android:drawSelectorOnTop="false" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
         android:id="@+id/error_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        errorview:ev_showTitle="true"
-        errorview:ev_showSubtitle="true"
-        errorview:ev_showRetryButton="true"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        errorview:ev_showRetryButton="true"
+        errorview:ev_showSubtitle="true"
+        errorview:ev_showTitle="true" />
 
     <ProgressBar
         android:id="@+id/loading_view"
         style="?android:attr/progressBarStyleSmall"
+        tools:visibility="visible"
         android:layout_width="?attr/listPreferredItemHeight"
         android:layout_height="?attr/listPreferredItemHeight"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:visibility="gone" />
 </FrameLayout>

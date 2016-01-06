@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Diff</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Diff</title>
 </head>
 <body>
 <pre><code id="code" class="prettyprint"></code></pre>
@@ -16,23 +16,24 @@
 		var lines_modified = lines[i].match(/@@[ \-\+\d,]+@@/);
 		if (lines_modified != null) {
 			// range information (and optional section heading)
-			colored += "<span style=\"background-color: #DEB887;\">" + lines_modified[0] + "</span>" +
-				"<span style=\"background-color: #EED5B7;\">" + lines[i].substring(lines_modified[0].length) + "</span>\n";
+			colored += "<div style=\"background-color: #DEB887;\">" + lines_modified[0] + "</div>" +
+				"<div style=\"background-color: #EED5B7;\">" + lines[i].substring(lines_modified[0].length) + "</div>";
 		} else if (lines[i].startsWith("+")) {
 			// added line
-			colored += "<span style=\"background-color: #CCFFCC;\">" + lines[i] + "</span>\n";
+			colored += "<div style=\"background-color: #CCFFCC;\">" + lines[i] + "</div>";
 		} else if (lines[i].startsWith("-")) {
 			// deleted line
-			colored += "<span style=\"background-color: #FFDDDD;\">" + lines[i] + "</span>\n";
+			colored += "<div style=\"background-color: #FFDDDD;\">" + lines[i] + "</div>";
 		} else if (lines[i].startsWith(" ")) {
 			// nothing changed
 			colored += lines[i] + "\n";
 		} else {
 			// header information
-			colored += "<span style=\"color: #A0A0A0;\">" + lines[i] + "</span>\n";
+			colored += "<div style=\"color: #A0A0A0;\">" + lines[i] + "</div>";
 		}
 	}
 	document.getElementById("code").innerHTML = colored;
+
 
 </script>
 </body>

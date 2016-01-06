@@ -1,103 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="?selectableItemBackground">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="?selectableItemBackground"
+    >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:layout_marginLeft="@dimen/gapMedium"
+      android:layout_marginRight="@dimen/gapMedium"
+      android:layout_marginStart="@dimen/gapMedium"
+      android:layout_marginEnd="@dimen/gapMedium"
+      android:layout_marginTop="@dimen/gapMedium"
+      android:layout_marginBottom="@dimen/gapSmall"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:layout_marginLeft="@dimen/gapMedium"
-        android:layout_marginRight="@dimen/gapMedium"
-        android:layout_marginStart="@dimen/gapMedium"
-        android:layout_marginEnd="@dimen/gapMedium"
+        android:id="@+id/repoPrivate"
+        android:padding="@dimen/gapSmall"
+        android:textSize="@dimen/textSizeXMicro"
+        android:textColor="@color/privateRepo"
+        android:visibility="invisible"
+        tools:visibility="gone"
+        android:text="@string/row_private_repo"
+        android:gravity="center"
+        android:background="@drawable/private_label"
         android:layout_marginTop="@dimen/gapMedium"
-        android:layout_marginBottom="@dimen/gapSmall">
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/repoPrivate"
-            android:padding="@dimen/gapSmall"
-            android:textSize="@dimen/textSizeXMicro"
-            android:textColor="@color/privateRepo"
-            android:visibility="visible"
-            android:text="@string/row_private_repo"
-            android:gravity="center"
-            android:background="@drawable/private_label"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:layout_marginLeft="@dimen/gapMedium"
-            android:layout_marginStart="@dimen/gapMedium"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Repository name"
+        android:id="@+id/repoName"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textColor="?colorPrimaryDark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/infos"
+        android:layout_toStartOf="@+id/infos"
+        android:fontFamily="sans-serif"
+        android:lines="1"
+        android:ellipsize="end"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Large Text"
-            android:id="@+id/repoName"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?colorPrimaryDark"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/infos"
-            android:layout_toStartOf="@+id/infos"
-            android:fontFamily="sans-serif"
-            android:lines="1"
-            android:ellipsize="end" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:id="@+id/infos"
+        android:orientation="vertical"
+        android:gravity="center_vertical|right"
+        android:layout_below="@+id/repoPrivate"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Subhead"
-            android:id="@+id/infos"
-            android:orientation="vertical"
-            android:gravity="center_vertical|right"
-            android:layout_below="@+id/repoPrivate"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/gapMedium"
-            android:layout_marginStart="@dimen/gapMedium"
-            android:layout_marginTop="@dimen/gapMedium">
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TextAppearance.AppCompat.Caption"
+          tools:text="Starred"
+          android:id="@+id/textStarts"
+          android:gravity="center_vertical"
+          android:textSize="@dimen/textSizeSmall"
+          />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Caption"
-                tools:text="Starred"
-                android:id="@+id/textStarts"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/textSizeSmall"/>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TextAppearance.AppCompat.Caption"
+          tools:text="Watched"
+          android:id="@+id/textForks"
+          android:gravity="center_vertical"
+          android:textSize="@dimen/textSizeSmall"
+          />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Caption"
-                tools:text="Watched"
-                android:id="@+id/textForks"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/textSizeSmall" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Owner name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textOwnerName"
+        android:maxLines="1"
+        android:textColor="@color/md_grey_600"
+        android:layout_below="@+id/repoName"
+        android:layout_alignLeft="@+id/repoName"
+        android:layout_alignStart="@+id/repoName"
+        android:layout_toLeftOf="@+id/infos"
+        android:layout_toStartOf="@+id/infos"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapSmall"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Description"
-            android:id="@+id/descriptionText"
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:layout_below="@+id/repoName"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/infos"
-            android:layout_toStartOf="@+id/infos"
-            android:layout_marginTop="@dimen/gapMedium" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Description"
+        android:id="@+id/descriptionText"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textOwnerName"
+        android:layout_toLeftOf="@+id/infos"
+        android:layout_toStartOf="@+id/infos"
+        android:layout_marginLeft="@dimen/gapMedium"
+        />
 
-    </RelativeLayout>
+  </RelativeLayout>
 </LinearLayout>

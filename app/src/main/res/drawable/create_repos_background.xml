@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item android:state_enabled="false">
+    <color android:color="@color/md_grey_500"/>
+  </item>
+
+  <item android:drawable="@drawable/create_repos_background_enabled"/>
+
+</selector>

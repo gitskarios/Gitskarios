@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="app_name">GitSkarios Enterprise</string>
+  <string name="enterprise_account_name">Github Enterprise account</string>
+  <string name="enterprise_account_type">com.alorma.github_enterprise.account</string>
+
+</resources>

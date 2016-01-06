@@ -1,0 +1,99 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.GithubLoginActivity">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="?colorPrimary"
+        app:contentInsetStart="@dimen/second_keyline"
+        app:popupTheme="@style/Toolbar.Popup.AppCompat"
+        app:theme="@style/Toolbar.AppCompat.Responsive" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="@dimen/gapXLarge"
+        android:layout_marginRight="@dimen/gapXLarge"
+        android:layout_marginTop="24dp"
+        android:paddingBottom="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/second_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize" />
+
+        <FrameLayout
+            android:id="@+id/loginLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/gapXLarge">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/content_advanced_login" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/enterpriseUrl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/gapLarge"
+                            android:hint="@string/login_enterprise_url" />
+
+                        <EditText
+                            android:id="@+id/accessToken"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:hint="@string/login_personal_token" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/loginGithub"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="bottom|right"
+                android:text="@string/login_button" />
+
+            <Button
+                android:id="@+id/generateToken"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="bottom|left"
+                android:text="@string/generateToken" />
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

@@ -1,46 +1,46 @@
 package com.alorma.github;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
-import com.alorma.github.sdk.security.GithubDeveloperCredentials;
-import com.alorma.gitskarios.core.client.credentials.SimpleDeveloperCredentialsProvider;
+import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import io.fabric.sdk.android.Fabric;
+import net.danlew.android.joda.JodaTimeAndroid;
 
 /**
  * Created by Bernat on 08/07/2014.
  */
-public class GitskariosApplication extends Application {
+public class GitskariosApplication extends MultiDexApplication {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+  public static GitskariosApplication get(Context context) {
+    return (GitskariosApplication) context.getApplicationContext();
+  }
 
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
+  @Override
+  public void onCreate() {
+    super.onCreate();
 
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            Tracker tracker = analytics.newTracker(R.xml.global_tracker);
-            tracker.enableAdvertisingIdCollection(true);
-        }
+    CustomActivityOnCrash.install(this);
+    CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
+    CustomActivityOnCrash.setEnableAppRestart(true);
 
-        GithubDeveloperCredentials.init(new SimpleDeveloperCredentialsProvider(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_CALLBACK));
+    if (!BuildConfig.DEBUG) {
+      Fabric.with(this, new Crashlytics());
 
-        JodaTimeAndroid.init(this);
-
-        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+      Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+      tracker.enableAdvertisingIdCollection(true);
     }
 
-    public static GitskariosApplication get(Context context) {
-        return (GitskariosApplication) context.getApplicationContext();
-    }
+    JodaTimeAndroid.init(this);
 
+    ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+  }
 }

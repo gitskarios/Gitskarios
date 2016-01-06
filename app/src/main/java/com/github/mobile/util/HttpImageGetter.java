@@ -44,6 +44,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -54,63 +55,36 @@ import static android.view.View.VISIBLE;
  */
 public class HttpImageGetter implements ImageGetter {
 
-    private RepoInfo repoInfo;
-
-    private static class LoadingImageGetter implements ImageGetter {
-
-        private final Drawable image;
-
-        private LoadingImageGetter(final Context context, final int size) {
-            int imageSize = Math.round(context.getResources()
-                    .getDisplayMetrics().density * size + 0.5F);
-            image = new IconicsDrawable(context, Octicons.Icon.oct_file_media).sizePx(imageSize);
-        }
-
-        public Drawable getDrawable(String source) {
-            return image;
-        }
-    }
-
-    private static boolean containsImages(final String html) {
-        return html.contains("<img");
-    }
-
-    private LoadingImageGetter loading;
-
     private final Context context;
-
+    private final Map<Object, CharSequence> rawHtmlCache = new HashMap<>();
+    private final Map<Object, CharSequence> fullHtmlCache = new HashMap<>();
+    private RepoInfo repoInfo;
+    private LoadingImageGetter loading;
     private File dir;
 
     private int width;
-
-    private final Map<Object, CharSequence> rawHtmlCache = new HashMap<>();
-
-    private final Map<Object, CharSequence> fullHtmlCache = new HashMap<>();
-
+    private int height;
     private ArrayList<WeakReference<Bitmap>> loadedBitmaps;
-
     private boolean destroyed;
 
     /**
      * Create image getter for context
-     *
-     * @param context
      */
     public HttpImageGetter(Context context) {
         this.context = context;
         if (context != null) {
             dir = context.getCacheDir();
 
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            if (Build.VERSION.SDK_INT < 13) {
-                width = fetchDisplayWidthPreHoneycomb(wm);
-            } else {
-                width = fetchDisplayWidth(wm);
-            }
+            width = context.getResources().getDisplayMetrics().widthPixels / 2;
+            height = context.getResources().getDisplayMetrics().heightPixels / 2;
 
             loadedBitmaps = new ArrayList<>();
             loading = new LoadingImageGetter(context, 24);
         }
+    }
+
+    private static boolean containsImages(final String html) {
+        return html.contains("<img");
     }
 
     public void destroy() {
@@ -123,21 +97,8 @@ public class HttpImageGetter implements ImageGetter {
         destroyed = true;
     }
 
-    @SuppressWarnings("deprecation")
-    private int fetchDisplayWidthPreHoneycomb(WindowManager wm) {
-        return wm.getDefaultDisplay().getWidth();
-    }
-
-    @TargetApi(13)
-    private int fetchDisplayWidth(WindowManager wm) {
-        Point size = new Point();
-        wm.getDefaultDisplay().getSize(size);
-        return size.x;
-    }
-
     private HttpImageGetter show(final TextView view, final CharSequence html) {
-        if (TextUtils.isEmpty(html))
-            return hide(view);
+        if (TextUtils.isEmpty(html)) return hide(view);
 
         view.setText(html);
 
@@ -158,19 +119,16 @@ public class HttpImageGetter implements ImageGetter {
     /**
      * Encode given HTML string and map it to the given id
      *
-     * @param id
-     * @param html
      * @return this image getter
      */
     public void encode(final Object id, final String html) {
-        if (TextUtils.isEmpty(html))
-            return;
+        if (TextUtils.isEmpty(html)) return;
 
         CharSequence encoded = HtmlUtils.encode(html, loading);
         // Use default encoding if no img tags
-        if (containsImages(html))
+        if (containsImages(html)) {
             rawHtmlCache.put(id, encoded);
-        else {
+        } else {
             rawHtmlCache.remove(id);
             fullHtmlCache.put(id, encoded);
         }
@@ -179,66 +137,33 @@ public class HttpImageGetter implements ImageGetter {
     /**
      * Bind text view to HTML string
      *
-     * @param view
-     * @param html
-     * @param id
      * @return this image getter
      */
-    public HttpImageGetter bind(final TextView view, final String html,
-                                final Object id) {
-        if (TextUtils.isEmpty(html))
-            return hide(view);
+    public HttpImageGetter bind(final TextView view, final String html, final Object id) {
+        if (TextUtils.isEmpty(html)) return hide(view);
 
         CharSequence encoded = fullHtmlCache.get(id);
-        if (encoded != null)
-            return show(view, encoded);
+        if (encoded != null) return show(view, encoded);
 
         encoded = rawHtmlCache.get(id);
         if (encoded == null) {
             encoded = HtmlUtils.encode(html, loading);
-            if (containsImages(html))
+            if (containsImages(html)) {
                 rawHtmlCache.put(id, encoded);
-            else {
+            } else {
                 rawHtmlCache.remove(id);
                 fullHtmlCache.put(id, encoded);
                 return show(view, encoded);
             }
         }
 
-        if (TextUtils.isEmpty(encoded))
-            return hide(view);
+        if (TextUtils.isEmpty(encoded)) return hide(view);
 
         show(view, encoded);
         view.setTag(id);
         ImageGetterAsyncTask asyncTask = new ImageGetterAsyncTask();
         AsyncTaskCompat.executeParallel(asyncTask, html, id, view);
         return this;
-    }
-
-    public class ImageGetterAsyncTask extends AsyncTask<Object, Void, CharSequence> {
-
-        String html;
-        Object id;
-        TextView view;
-
-        @Override
-        protected CharSequence doInBackground(Object... params) {
-            html = (String) params[0];
-            id = params[1];
-            view = (TextView) params[2];
-            return HtmlUtils.encode(html, HttpImageGetter.this);
-        }
-
-        protected void onPostExecute(CharSequence result) {
-            if (result != null) {
-                rawHtmlCache.remove(id);
-                fullHtmlCache.put(id, result);
-
-                if (id.equals(view.getTag())) {
-                    show(view, result);
-                }
-            }
-        }
     }
 
     public void repoInfo(RepoInfo repoInfo) {
@@ -265,13 +190,31 @@ public class HttpImageGetter implements ImageGetter {
         return url.openStream();
     }
 
+    @Override
     public Drawable getDrawable(String source) {
+        /*
+        try {
+            Bitmap bitmap = ImageUtils.getBitmap(context, dir.getAbsolutePath(), width, height);
+
+            loadedBitmaps.add(new WeakReference<>(bitmap));
+
+            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+            drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            return drawable;
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+        */
+
         if (loading != null) {
             File output = null;
             if (destroyed) {
                 return loading.getDrawable(source);
             }
             try {
+
+
                 output = File.createTempFile("image", ".jpg", dir);
                 InputStream is = fetch(source);
                 if (is != null) {
@@ -282,8 +225,7 @@ public class HttpImageGetter implements ImageGetter {
                             return loading.getDrawable(source);
                         }
                         loadedBitmaps.add(new WeakReference<Bitmap>(bitmap));
-                        BitmapDrawable drawable = new BitmapDrawable(
-                                context.getResources(), bitmap);
+                        BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
                         drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
                         return drawable;
                     } else {
@@ -295,10 +237,49 @@ public class HttpImageGetter implements ImageGetter {
             } catch (IOException e) {
                 return loading.getDrawable(source);
             } finally {
-                if (output != null)
-                    output.delete();
+                if (output != null) output.delete();
             }
         }
         return null;
+    }
+
+    private static class LoadingImageGetter implements ImageGetter {
+
+        private final Drawable image;
+
+        private LoadingImageGetter(final Context context, final int size) {
+            int imageSize = Math.round(context.getResources().getDisplayMetrics().density * size + 0.5F);
+            image = new IconicsDrawable(context, Octicons.Icon.oct_file_media).sizePx(imageSize);
+        }
+
+        public Drawable getDrawable(String source) {
+            return image;
+        }
+    }
+
+    public class ImageGetterAsyncTask extends AsyncTask<Object, Void, CharSequence> {
+
+        String html;
+        Object id;
+        TextView view;
+
+        @Override
+        protected CharSequence doInBackground(Object... params) {
+            html = (String) params[0];
+            id = params[1];
+            view = (TextView) params[2];
+            return HtmlUtils.encode(html, HttpImageGetter.this);
+        }
+
+        protected void onPostExecute(CharSequence result) {
+            if (result != null) {
+                rawHtmlCache.remove(id);
+                fullHtmlCache.put(id, result);
+
+                if (id.equals(view.getTag())) {
+                    show(view, result);
+                }
+            }
+        }
     }
 }

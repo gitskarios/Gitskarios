@@ -2,79 +2,120 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.SearchManager;
-import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.login.AccountsHelper;
-import com.alorma.gitskarios.core.client.BaseClient;
-import com.alorma.gitskarios.core.client.StoreCredentials;
-import com.alorma.github.bean.ProfileItem;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.dto.response.UserType;
+import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.sdk.services.user.GithubUsersClient;
 import com.alorma.github.sdk.services.user.RequestUserClient;
 import com.alorma.github.sdk.services.user.follow.CheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.FollowUserClient;
-import com.alorma.github.sdk.services.user.follow.OnCheckFollowingUser;
 import com.alorma.github.sdk.services.user.follow.UnfollowUserClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.activity.gists.GistsMainActivity;
-import com.alorma.github.ui.adapter.ProfileItemsAdapter;
-import com.alorma.github.utils.TimeUtils;
-import com.mikepenz.octicons_typeface_library.Octicons;
-import com.musenkishi.atelier.Atelier;
-import com.musenkishi.atelier.ColorType;
-import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
+import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
+import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
+import com.alorma.github.ui.fragment.users.UserResumeFragment;
+import com.alorma.github.ui.utils.PaletteUtils;
+import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by Bernat on 15/07/2014.
  */
-public class ProfileActivity extends BackActivity implements BaseClient.OnResultCallback<User>,
-//        PaletteUtils.PaletteUtilsListener,
-        OnCheckFollowingUser {
+public class ProfileActivity extends BackActivity implements UserResumeFragment.UserResumeCallback {
 
+    public static final String EXTRA_COLOR = "EXTRA_COLOR";
+    public static final String URL_PROFILE = "URL_PROFILE";
     private static final String USER = "USER";
     private static final String ACCOUNT = "ACCOUNT";
     private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
-    public static final String URL_PROFILE = "URL_PROFILE";
-
-    private ImageView image;
 
     private User user;
+
     private boolean followingUser = false;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private ProfileItemsAdapter profileItemsAdapter;
     private boolean updateProfile = false;
     private Account selectedAccount;
+    private boolean colorApplied;
+    private int avatarColor;
+
+    @Bind(R.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
+
+    @Bind(R.id.appbarLayout)
+    AppBarLayout appBarLayout;
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
+    @Bind(R.id.ctlLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+    @Bind(R.id.userAvatar)
+    ImageView userAvatar;
+
+    @Bind(R.id.userLogin)
+    TextView userLogin;
+
+    @Bind(R.id.userName)
+    TextView userName;
+
+    @Bind(R.id.tabLayout)
+    TabLayout tabLayout;
+
+    @Bind(R.id.viewpager)
+    ViewPager viewPager;
+
+    private String userLoginName;
+
+    private UserResumeFragment userResumeFragment;
 
     public static Intent createLauncherIntent(Context context, Account selectedAccount) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -103,29 +144,76 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
 
-        image = (ImageView) findViewById(R.id.imgToolbar);
+        ButterKnife.bind(this);
 
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctlLayout);
+        setTitle("");
+        collapsingToolbarLayout.setTitle("");
+        collapsingToolbarLayout.setTitleEnabled(false);
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        recycler.setItemAnimator(new DefaultItemAnimator());
-        profileItemsAdapter = new ProfileItemsAdapter(this);
-        recycler.setAdapter(profileItemsAdapter);
+        if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
+            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, ContextCompat.getColor(this, R.color.primary));
+        }
+
+        if (getSupportFragmentManager() != null && getSupportFragmentManager().getFragments() != null) {
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                if (fragment instanceof UserResumeFragment) {
+                    userResumeFragment = (UserResumeFragment) fragment;
+                }
+            }
+        }
+
+        if (userResumeFragment == null) {
+            userResumeFragment = new UserResumeFragment();
+        }
+
+        userResumeFragment.setUserResumeCallback(this);
+
     }
 
     @Override
     protected void getContent() {
-        if (profileItemsAdapter == null || profileItemsAdapter.getItemCount() == 0) {
-            GithubUsersClient<User> requestClient;
-            user = null;
+        if (user == null) {
+            GithubClient<User> requestClient;
+            String avatar = null;
+            String login = null;
+            String name = null;
             if (getIntent().getExtras() != null) {
                 if (getIntent().getExtras().containsKey(ACCOUNT)) {
                     selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
+                    avatar = AccountsHelper.getUserAvatar(this, selectedAccount);
+                    login = selectedAccount.name;
+                    name = AccountsHelper.getUserName(this, selectedAccount);
                 }
                 if (getIntent().getExtras().containsKey(USER)) {
                     user = getIntent().getParcelableExtra(USER);
+                    avatar = user.avatar_url;
+                    login = user.login;
+                    name = user.name;
                 }
+            }
+
+            if (login != null) {
+                userLoginName = login;
+                userLogin.setText(login);
+
+                List<Fragment> fragments = new ArrayList<>();
+
+                fragments.add(userResumeFragment);
+                fragments.add(UsernameReposFragment.newInstance(login));
+                fragments.add(CreatedEventsListFragment.newInstance(login));
+
+                PagerAdapter adapter = new ProfilePagesAdapter(this, getSupportFragmentManager(), fragments);
+                viewPager.setAdapter(adapter);
+                viewPager.setOffscreenPageLimit(fragments.size());
+                tabLayout.setupWithViewPager(viewPager);
+            }
+
+            if (name != null) {
+                userName.setText(name);
+            }
+
+            if (avatar != null) {
+                loadAvatar(avatar);
             }
 
             StoreCredentials settings = new StoreCredentials(this);
@@ -134,10 +222,8 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
                 if (user.login.equalsIgnoreCase(settings.getUserName())) {
                     requestClient = new GetAuthUserClient(this);
                     updateProfile = true;
-                    collapsingToolbarLayout.setTitle(settings.getUserName());
                 } else {
                     requestClient = new RequestUserClient(this, user.login);
-                    collapsingToolbarLayout.setTitle(user.login);
                 }
             } else {
                 requestClient = new GetAuthUserClient(this);
@@ -146,29 +232,177 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
 
             invalidateOptionsMenu();
 
-            showProgressDialog(R.style.SpotDialog_LoadingUser);
+            Observable<Integer> organizations = new GetOrgsClient(this, login).observable()
+                    .map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
+                        @Override
+                        public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
+                            return listIntegerPair.first.size();
+                        }
+                    });
 
-            requestClient.setOnResultCallback(this);
-            requestClient.execute();
+            Observable.combineLatest(requestClient.observable(), organizations, new Func2<User, Integer, User>() {
+                @Override
+                public User call(User user, Integer organizations) {
+                    user.organizations = organizations;
+                    return user;
+                }
+            })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<User>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(User user) {
+                            onUserLoaded(user);
+                        }
+                    });
+
         }
+    }
+
+    private void loadAvatar(String avatar) {
+
+        int avatarSize = getResources().getDimensionPixelOffset(R.dimen.avatar_size);
+
+        TextDrawable fallback = TextDrawable.builder()
+                .beginConfig()
+                .width(avatarSize)
+                .height(avatarSize)
+                .endConfig()
+                .buildRound(userLoginName.substring(0, 1), ColorGenerator.MATERIAL.getColor(userLoginName.substring(0, 1)));
+
+        Glide.with(this)
+                .load(avatar)
+                .bitmapTransform(new CropCircleTransformation(this))
+                .error(fallback)
+                .into(userAvatar);
+
+        Glide.with(this)
+                .load(avatar)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                            @Override
+                            public void onGenerated(Palette palette) {
+                                Palette.Swatch profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
+                                if (profileSwatch == null) {
+                                    profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
+                                }
+                                if (profileSwatch == null) {
+                                    profileSwatch = PaletteUtils.getProfileSwatch(palette);
+                                }
+
+                                if (profileSwatch != null) {
+                                    applySwatchBackground(profileSwatch);
+                                    applySwatchTexts(profileSwatch);
+                                }
+                            }
+                        });
+                    }
+                });
+    }
+
+    private void applySwatchTexts(Palette.Swatch swatch) {
+        int rgb = swatch.getBodyTextColor();
+        generateAvatarBackground(rgb);
+        userLogin.setTextColor(rgb);
+        userName.setTextColor(rgb);
+
+        invalidateOptionsMenu();
+
+        if (getToolbar() != null) {
+            final Drawable upArrow = getToolbar().getNavigationIcon();
+            if (upArrow != null) {
+                upArrow.setColorFilter(rgb, PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        tabLayout.setTabTextColors(rgb, rgb);
+        tabLayout.setSelectedTabIndicatorColor(rgb);
+
+        userResumeFragment.setColor(rgb);
+
+        colorizeToolbar(getToolbar(), rgb);
+    }
+
+    public static void colorizeToolbar(Toolbar toolbarView, int toolbarIconsColor) {
+
+        for(int i = 0; i < toolbarView.getChildCount(); i++) {
+            final View v = toolbarView.getChildAt(i);
+
+
+            if(v instanceof ActionMenuView) {
+                for(int j = 0; j < ((ActionMenuView)v).getChildCount(); j++) {
+
+                    //Step 2: Changing the color of any ActionMenuViews - icons that
+                    //are not back button, nor text, nor overflow menu icon.
+                    final View innerView = ((ActionMenuView)v).getChildAt(j);
+
+                    if(innerView instanceof ActionMenuItemView) {
+                        int drawablesCount = ((ActionMenuItemView)innerView).getCompoundDrawables().length;
+
+                        ((ActionMenuItemView) innerView).setTextColor(toolbarIconsColor);
+                    }
+                }
+            }
+        }
+    }
+
+    private void generateAvatarBackground(int color) {
+        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
+        circle.getPaint().setColor(color);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            userAvatar.setBackground(circle);
+        } else {
+            userAvatar.setBackgroundDrawable(circle);
+        }
+    }
+
+    private void applySwatchBackground(Palette.Swatch swatch) {
+        int bkg = swatch.getRgb();
+
+        coordinatorLayout.setStatusBarBackgroundColor(bkg);
+        collapsingToolbarLayout.setContentScrimColor(bkg);
+        appBarLayout.setBackgroundColor(bkg);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(bkg);
+            getWindow().setNavigationBarColor(bkg);
+        }
+
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        menu.clear();
+        if (menu != null) {
 
-        StoreCredentials settings = new StoreCredentials(this);
+            menu.clear();
 
-        if (user != null && !settings.getUserName().equals(user.login)) {
-            if (followingUser) {
-                menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
-            } else {
-                menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
+            StoreCredentials settings = new StoreCredentials(this);
+
+            if (user != null && !settings.getUserName().equals(user.login)) {
+                MenuItem item ;
+                if (followingUser) {
+                    item = menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
+                } else {
+                    item = menu.add(0, R.id.action_menu_follow_user, 0, R.string.action_menu_follow_user);
+                }
+
+                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
-
-            menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
         return true;
@@ -178,17 +412,9 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_menu_follow_user) {
-            showProgressDialog(R.style.SpotDialog_LoadingUser);
-
-            FollowUserClient followUserClient = new FollowUserClient(this, user.login);
-            followUserClient.setOnCheckFollowingUser(this);
-            followUserClient.execute();
+            followUserAction(new FollowUserClient(this, user.login));
         } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
-            showProgressDialog(R.style.SpotDialog_LoadingUser);
-
-            UnfollowUserClient unfollowUserClient = new UnfollowUserClient(this, user.login);
-            unfollowUserClient.setOnCheckFollowingUser(this);
-            unfollowUserClient.execute();
+            followUserAction(new UnfollowUserClient(this, user.login));
         }
 
         item.setEnabled(false);
@@ -196,12 +422,35 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         return true;
     }
 
-    @Override
-    public void onResponseOk(final User user, Response r) {
-        this.user = user;
-        collapsingToolbarLayout.setTitle(user.login);
+    private void followUserAction(GithubClient<Boolean> githubClient) {
+        githubClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
 
-        hideProgressDialog();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        followingUser = aBoolean;
+                        invalidateOptionsMenu();
+                    }
+                });
+    }
+
+    public void onUserLoaded(final User user) {
+        this.user = user;
+        userLoginName = user.login;
+
+        loadAvatar(user.avatar_url);
+
+        userName.setText(user.name);
 
         StoreCredentials settings = new StoreCredentials(this);
 
@@ -215,189 +464,14 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
         }
 
         if (!user.login.equalsIgnoreCase(settings.getUserName())) {
-            CheckFollowingUser checkFollowingUser = new CheckFollowingUser(this, user.login);
-            checkFollowingUser.setOnCheckFollowingUser(this);
-            checkFollowingUser.execute();
+            followUserAction(new CheckFollowingUser(this, user.login));
         }
 
-        fillCardBio(user);
-
-        fillCardGithubData(user);
-
-        fillCardPlan(user);
-
-        if (getSupportActionBar() != null) {
-            ImageLoader.getInstance().displayImage(user.avatar_url, image, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    Atelier.with(ProfileActivity.this, user.avatar_url)
-                            .load(loadedImage)
-                            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                            .listener(new Atelier.OnPaletteRenderedListener() {
-                                @Override
-                                public void onRendered(Palette palette, int generatedColor) {
-                                    applyColors(generatedColor);
-                                    profileItemsAdapter.setAvatarColor(generatedColor);
-                                }
-                            })
-                            .into(image);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
-//            new PaletteUtils().loadImageAndPalette(user.avatar_url, this);
-        }
-    }
-
-//    @Override
-//    public void onImageLoaded(Bitmap loadedImage, Palette palette) {
-//
-//        Drawable drawable = new BitmapDrawable(getResources(), loadedImage);
-//
-//        image.setImageDrawable(drawable);
-//
-//        if (palette.getSwatches().size() > 0) {
-//            Palette.Swatch swatch = palette.getSwatches().get(0);
-//            applyColors(swatch.getRgb(), swatch.getBodyTextColor());
-//        } else {
-//            applyColors(getResources().getColor(R.color.primary), Color.WHITE);
-//        }
-//
-//        fillCardBio(user);
-//
-//        fillCardGithubData(user);
-//
-//        fillCardPlan(user);
-//
-//    }
-
-    private void applyColors(int rgb) {
-        collapsingToolbarLayout.setContentScrimColor(rgb);
-        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
-        collapsingToolbarLayout.setStatusBarScrimColor(rgb);
-        profileItemsAdapter.setAvatarColor(rgb);
-
-        try {
-            if (rgb != 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getWindow().setStatusBarColor(rgb);
-                    getWindow().setNavigationBarColor(rgb);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void fillCardBio(User user) {
-        if (!TextUtils.isEmpty(user.company)) {
-            Intent intent = new Intent(Intent.ACTION_SEARCH);
-            intent.putExtra(SearchManager.QUERY, user.company);
-            ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
-            profileItemsAdapter.add(profileUserOrganization);
-        }
-        if (!TextUtils.isEmpty(user.location)) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri geo = Uri.parse("geo:0,0?q=" + user.location);
-            intent.setData(geo);
-            ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
-            profileItemsAdapter.add(profileUserLocation);
-        }
-        if (!TextUtils.isEmpty(user.email)) {
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:"));
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{user.email});
-            ProfileItem profileUserEmail = new ProfileItem(Octicons.Icon.oct_mail, user.email, intent);
-            profileItemsAdapter.add(profileUserEmail);
-        }
-        if (user.created_at != null) {
-            ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(this, user.created_at, R.string.joined_at), null);
-            profileItemsAdapter.add(profileUserCreated);
-        }
-    }
-
-    private void fillCardGithubData(User user) {
-        if (user.public_repos > 0) {
-            String text = getString(R.string.repos_num, user.public_repos);
-            Intent intent = ReposActivity.launchIntent(this, user.login, user.type);
-            ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, intent);
-            profileItemsAdapter.add(profileItemRepos);
-        }
-        if (user.public_gists > 0) {
-            String text = getString(R.string.gists_num, user.public_gists);
-            Intent intent = GistsMainActivity.createLauncherIntent(this, user.login);
-            ProfileItem profileItemGists = new ProfileItem(Octicons.Icon.oct_gist, text, intent);
-            profileItemsAdapter.add(profileItemGists);
-        }
-
-        Intent intent = OrganizationsActivity.launchIntent(this, user.login);
-        final ProfileItem profileItemOrgs = new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
-        profileItemsAdapter.add(profileItemOrgs);
-
-        GetOrgsClient orgsClient = new GetOrgsClient(this, user.login);
-        orgsClient.setOnResultCallback(new BaseClient.OnResultCallback<List<Organization>>() {
-            @Override
-            public void onResponseOk(List<Organization> organizations, Response r) {
-                if (organizations != null && organizations.size() > 0) {
-                    profileItemOrgs.value = getString(R.string.orgs_num, organizations.size());
-                    profileItemsAdapter.notifyDataSetChanged();
-                } else {
-                    profileItemsAdapter.remove(profileItemOrgs);
-                }
-            }
-
-            @Override
-            public void onFail(RetrofitError error) {
-
-            }
-        });
-        orgsClient.execute();
-
-        if (user.type == UserType.User) {
-            Intent intentStarred = StarredReposActivity.launchIntent(this, user.login);
-            ProfileItem profileItemStar = new ProfileItem(Octicons.Icon.oct_star, getString(R.string.profile_starreds), intentStarred);
-            profileItemsAdapter.add(profileItemStar);
-
-            Intent intentWatched = WatchedReposActivity.launchIntent(this, user.login);
-            ProfileItem profileItemWatched = new ProfileItem(Octicons.Icon.oct_eye, getString(R.string.profile_watched), intentWatched);
-            profileItemsAdapter.add(profileItemWatched);
-        }
-    }
-
-    private void fillCardPlan(User user) {
-        if (user.plan != null) {
-
-        }
+        userResumeFragment.fill(user);
     }
 
     @Override
-    public void onFail(RetrofitError error) {
-        hideProgressDialog();
-    }
-
-    @Override
-    public void onCheckFollowUser(String username, boolean following) {
-        followingUser = following;
-        hideProgressDialog();
-        invalidateOptionsMenu();
-    }
-
-    @Override
-    protected void close() {
+    protected void close(boolean navigateUp) {
         if (user != null && updateProfile) {
             Intent intent = new Intent();
             Bundle extras = new Bundle();
@@ -405,6 +479,13 @@ public class ProfileActivity extends BackActivity implements BaseClient.OnResult
             intent.putExtras(extras);
             setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
         }
-        super.close();
+        super.close(navigateUp);
+    }
+
+    @Override
+    public void openRepos(String login) {
+        if (viewPager != null && viewPager.getAdapter() != null && viewPager.getAdapter().getCount() >= 1) {
+            viewPager.setCurrentItem(1);
+        }
     }
 }

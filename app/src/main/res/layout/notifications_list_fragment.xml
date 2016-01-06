@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@id/listContentFL"
-    android:background="@color/gray_github_light">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@id/listContentFL"
+             android:background="@color/gray_github_light"
+    >
 
-    <FrameLayout
-        android:id="@+id/listContainer"
+  <FrameLayout
+      android:id="@+id/listContainer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/swipe"
+        >
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/swipe">
+      <android.support.v7.widget.RecyclerView
+          android:id="@id/recycler"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:drawSelectorOnTop="false"
+          />
+    </android.support.v4.widget.SwipeRefreshLayout>
+  </FrameLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@id/recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawSelectorOnTop="false"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </FrameLayout>
-
-    <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/error_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        errorview:ev_showTitle="true"
-        errorview:ev_showSubtitle="true"
-        errorview:ev_showRetryButton="true"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
+  <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
+                              android:id="@+id/error_view"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              errorview:ev_showTitle="true"
+                              errorview:ev_showSubtitle="true"
+                              errorview:ev_showRetryButton="true"
+                              android:layout_gravity="center"
+                              android:visibility="gone"
+      />
 </FrameLayout>

@@ -7,8 +7,8 @@ import com.pedrogomez.renderers.RendererBuilder;
  * Created by a557114 on 30/07/2015.
  */
 public class UsersRendererBuilder extends RendererBuilder<User> {
-    @Override
-    protected Class getPrototypeClass(User user) {
-        return UserRender.class;
-    }
+  @Override
+  protected Class getPrototypeClass(User user) {
+    return UserRender.class;
+  }
 }

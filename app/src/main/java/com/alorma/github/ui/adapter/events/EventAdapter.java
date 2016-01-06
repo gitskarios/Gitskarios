@@ -1,10 +1,14 @@
 package com.alorma.github.ui.adapter.events;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,30 +17,23 @@ import android.widget.TextView;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.events.EventType;
+import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.dto.response.UserType;
+import com.alorma.github.ui.activity.OrganizationActivity;
+import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-import com.alorma.github.ui.adapter.events.views.CommitCommentEventView;
-import com.alorma.github.ui.adapter.events.views.CreatedEventView;
-import com.alorma.github.ui.adapter.events.views.DeleteEventView;
-import com.alorma.github.ui.adapter.events.views.ForkEventView;
-import com.alorma.github.ui.adapter.events.views.GenericFeedEventView;
-import com.alorma.github.ui.adapter.events.views.GithubEventView;
-import com.alorma.github.ui.adapter.events.views.IssueCommentEventView;
-import com.alorma.github.ui.adapter.events.views.IssueEventView;
-import com.alorma.github.ui.adapter.events.views.PullRequestEventView;
-import com.alorma.github.ui.adapter.events.views.PushEventView;
-import com.alorma.github.ui.adapter.events.views.ReleaseEventView;
-import com.alorma.github.ui.adapter.events.views.UnhandledEventView;
-import com.alorma.github.ui.adapter.events.views.WatchEventView;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
-import com.crashlytics.android.Crashlytics;
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.musenkishi.atelier.Atelier;
+import com.musenkishi.atelier.ColorType;
+import com.musenkishi.atelier.swatch.DarkVibrantSwatch;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
-import java.util.Collection;
-
-import io.fabric.sdk.android.Fabric;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 /**
  * Created by Bernat on 03/10/2014.
@@ -45,6 +42,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
 
     private final Resources resources;
     private EventAdapterListener eventAdapterListener;
+    private boolean profileEnabled = true;
 
     public EventAdapter(Context context, LayoutInflater inflater) {
         super(inflater);
@@ -58,10 +56,16 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
 
     @Override
     protected void onBindViewHolder(ViewHolder holder, GithubEvent githubEvent) {
-        handleImage(holder.authorAvatar, githubEvent);
+        if (profileEnabled) {
+            handleImage(holder.authorAvatar, githubEvent);
+        } else {
+            holder.authorAvatar.setVisibility(View.INVISIBLE);
+        }
         int textRes = R.string.event_generic_by;
 
-        holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, getTextForEvent(githubEvent))));
+        String textForEvent = getTextForEvent(githubEvent);
+
+        holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, textForEvent)));
 
         String timeString = TimeUtils.getTimeAgoString(githubEvent.created_at);
 
@@ -77,9 +81,13 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                 }
                 return textRes + " " + "<b>" + event.repo.name + "</b>";
             case CreateEvent:
-                return "created repository" + " " + "<b>" + event.repo.name + "</b>";
+                if (event.payload.ref != null) {
+                    return "created branch <b>" + event.payload.ref + "</b> on repository" + " " + "<b>" + event.repo.name + "</b>";
+                } else {
+                    return "created repository" + " " + "<b>" + event.repo.name + "</b>";
+                }
             case CommitCommentEvent:
-                return "";
+                return "commented on commit " + "<b>" + event.repo.name + "@" + event.payload.comment.commit_id.substring(0, 10) + "</b>";
             case DownloadEvent:
                 return "";
             case FollowEvent:
@@ -123,19 +131,33 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
             case TeamAddEvent:
                 return "";
             case DeleteEvent:
-                return "";
+                String deletedThing = "repository";
+                if (event.payload.ref != null) {
+                    deletedThing = "branch <b>" + event.payload.ref + "</b> at ";
+                }
+                return "deleted " + deletedThing + "<b>" + event.repo.name + "</b>";
             case ReleaseEvent:
-                return event.payload.action + " " + "<b>" + event.payload.release.tag_name + "</b>" + " " + "at" + " " + "<b>" + event.repo.name + "</b>";
+                return event.payload.action
+                        + " "
+                        + "<b>"
+                        + event.payload.release.tag_name
+                        + "</b>"
+                        + " "
+                        + "at"
+                        + " "
+                        + "<b>"
+                        + event.repo.name
+                        + "</b>";
         }
 
         return "";
-
     }
 
-    public void handleImage(ImageView imageView, GithubEvent event) {
-        ImageLoader.getInstance().cancelDisplayTask(imageView);
-        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2).bitmapConfig(Bitmap.Config.ALPHA_8).build();
-        ImageLoader.getInstance().displayImage(event.actor.avatar_url, imageView, displayImageOptions);
+    public void handleImage(final ImageView imageView, GithubEvent event) {
+
+        User actor = event.actor;
+
+        UniversalImageLoaderUtils.loadUserAvatar(imageView, actor);
     }
 
     @Override
@@ -145,6 +167,15 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
 
     public void setEventAdapterListener(EventAdapterListener eventAdapterListener) {
         this.eventAdapterListener = eventAdapterListener;
+    }
+
+    public void enableUserClick(boolean profileEnabled) {
+        this.profileEnabled = profileEnabled;
+        notifyDataSetChanged();
+    }
+
+    public interface EventAdapterListener {
+        void onItem(GithubEvent event);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -168,10 +199,26 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
                     }
                 }
             });
+            if (authorAvatar != null) {
+                authorAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        if (profileEnabled) {
+                            User user = getItem(getAdapterPosition()).actor;
+                            if (user.type == UserType.Organization) {
+                                v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
+                            } else {
+                                final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
+                                if (authorAvatar.getTag() != null) {
+                                    int color = (int) authorAvatar.getTag();
+                                    intent.putExtra(ProfileActivity.EXTRA_COLOR, color);
+                                }
+                                v.getContext().startActivity(intent);
+                            }
+                        }
+                    }
+                });
+            }
         }
-    }
-
-    public interface EventAdapterListener {
-        void onItem(GithubEvent event);
     }
 }

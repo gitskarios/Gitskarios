@@ -1,15 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.alorma.github.ui.activity.NewIssueActivity">
-    <item
-        android:id="@+id/action_send"
-        android:orderInCategory="100"
-        android:title="@string/action_send_issue"
-        app:showAsAction="always" />
-    <item
-        android:id="@id/action_add_emoji"
-        android:orderInCategory="200"
-        android:title="@string/add_emoji"
-        app:showAsAction="always" />
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.alorma.github.ui.activity.NewIssueActivity"
+    >
+  <item
+      android:id="@+id/action_send"
+      android:orderInCategory="100"
+      android:title="@string/action_send_issue"
+      app:showAsAction="always"
+      />
+  <item
+      android:id="@id/action_add_emoji"
+      android:orderInCategory="200"
+      android:title="@string/add_emoji"
+      app:showAsAction="always"
+      />
 </menu>

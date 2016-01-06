@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="EnterpriseTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/primary_enterprise_dark</item>
+        <item name="colorPrimary">@color/primary_enterprise_dark</item>
+        <item name="colorPrimaryDark">@color/primary_enterprise_dark</item>
+        <item name="colorAccent">@color/accent_enterprise</item>
+        <item name="android:navigationBarColor">@color/primary_enterprise_dark</item>
+        <item name="colorButtonNormal">@color/accent_enterprise</item>
+    </style>
+</resources>

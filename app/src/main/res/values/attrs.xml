@@ -1,85 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- CircularImageView for custom shape -->
-    <declare-styleable name="CircularImageView">
+  <!-- CircularImageView for custom shape -->
+  <declare-styleable name="CircularImageView">
 
-        <!-- Specifies whether or not to draw a circular border around the image. -->
-        <attr name="border" format="boolean" />
-        <!-- Specifies the color of the border draw around the image. (if enabled) -->
-        <attr name="border_color" format="color" />
-        <!-- Makes the border this pixels wide. (if enabled) -->
-        <attr name="border_width" format="dimension" />
-        <!-- Specifies whether or not to draw a selector on this view upon touch events. -->
-        <attr name="selector" format="boolean" />
-        <!-- Specifies the color of the selector draw on top of the image upon touch events. (if enabled) -->
-        <attr name="selector_color" format="color" />
-        <!-- Specifies the color of the selector stroke drawn around the image upon touch events. Be sure to provide some opacity. (if enabled) -->
-        <attr name="selector_stroke_color" format="color" />
-        <!-- Makes the selector stroke drawn around the image upon touch events this pixels wide. (if enabled) -->
-        <attr name="selector_stroke_width" format="dimension" />
-        <!-- Specifies whether or not to draw a shadow around your circular image. -->
-        <attr name="shadow" format="boolean" />
-    </declare-styleable>
+    <!-- Specifies whether or not to draw a circular border around the image. -->
+    <attr name="border"
+          format="boolean"/>
+    <!-- Specifies the color of the border draw around the image. (if enabled) -->
+    <attr name="border_color"
+          format="color"/>
+    <!-- Makes the border this pixels wide. (if enabled) -->
+    <attr name="border_width"
+          format="dimension"/>
+    <!-- Specifies whether or not to draw a selector on this view upon touch events. -->
+    <attr name="selector"
+          format="boolean"/>
+    <!-- Specifies the color of the selector draw on top of the image upon touch events. (if enabled) -->
+    <attr name="selector_color"
+          format="color"/>
+    <!-- Specifies the color of the selector stroke drawn around the image upon touch events. Be sure to provide some opacity. (if enabled) -->
+    <attr name="selector_stroke_color"
+          format="color"/>
+    <!-- Makes the selector stroke drawn around the image upon touch events this pixels wide. (if enabled) -->
+    <attr name="selector_stroke_width"
+          format="dimension"/>
+    <!-- Specifies whether or not to draw a shadow around your circular image. -->
+    <attr name="shadow"
+          format="boolean"/>
+  </declare-styleable>
 
-    <declare-styleable name="CustomCircularImageViewTheme">
-        <attr name="circularImageViewStyle" format="reference" />
-    </declare-styleable>
-    <declare-styleable name="FABCenterLayout">
-        <attr name="top_id" format="reference" />
-        <attr name="scrollable_id" format="reference" />
-        <attr name="folded_size" format="dimension" />
-        <attr name="unfolded_size" format="dimension" />
-    </declare-styleable>
+  <declare-styleable name="CustomCircularImageViewTheme">
+    <attr name="circularImageViewStyle"
+          format="reference"/>
+  </declare-styleable>
+  <declare-styleable name="FABCenterLayout">
+    <attr name="top_id"
+          format="reference"/>
+    <attr name="scrollable_id"
+          format="reference"/>
+    <attr name="folded_size"
+          format="dimension"/>
+    <attr name="unfolded_size"
+          format="dimension"/>
+  </declare-styleable>
 
-    <declare-styleable name="FloatingActionButton">
-        <attr name="colorPressed" format="color" />
-        <attr name="colorNormal" format="color" />
-        <attr name="float_icon" format="reference" />
-        <attr name="size" format="enum">
-            <enum name="normal" value="0" />
-            <enum name="mini" value="1" />
-        </attr>
-    </declare-styleable>
-    <declare-styleable name="AddFloatingActionButton">
-        <attr name="plusIconColor" format="color" />
-    </declare-styleable>
-    <declare-styleable name="FloatingActionsMenu">
-        <attr name="addButtonColorPressed" format="color" />
-        <attr name="addButtonColorNormal" format="color" />
-        <attr name="addButtonPlusIconColor" format="color" />
-    </declare-styleable>
+  <declare-styleable name="FloatingActionButton">
+    <attr name="colorPressed"
+          format="color"/>
+    <attr name="colorNormal"
+          format="color"/>
+    <attr name="float_icon"
+          format="reference"/>
+    <attr name="size"
+          format="enum">
+      <enum name="normal"
+            value="0"/>
+      <enum name="mini"
+            value="1"/>
+    </attr>
+  </declare-styleable>
+  <declare-styleable name="AddFloatingActionButton">
+    <attr name="plusIconColor"
+          format="color"/>
+  </declare-styleable>
+  <declare-styleable name="FloatingActionsMenu">
+    <attr name="addButtonColorPressed"
+          format="color"/>
+    <attr name="addButtonColorNormal"
+          format="color"/>
+    <attr name="addButtonPlusIconColor"
+          format="color"/>
+  </declare-styleable>
 
-    <declare-styleable name="colors">
-        <attr name="gitskarios_divider" format="color" />
-        <attr name="gitskarios_primary_light" format="color" />
-        <attr name="gitskarios_primary_text" format="color" />
-        <attr name="gitskarios_secondary_text" format="color" />
-        <attr name="gitskarios_icons" format="color" />
-    </declare-styleable>
+  <declare-styleable name="colors">
+    <attr name="gitskarios_divider"
+          format="color"/>
+    <attr name="gitskarios_primary_light"
+          format="color"/>
+    <attr name="gitskarios_primary_text"
+          format="color"/>
+    <attr name="gitskarios_secondary_text"
+          format="color"/>
+    <attr name="gitskarios_icons"
+          format="color"/>
+  </declare-styleable>
 
-    <declare-styleable name="TimelineView">
-        <attr name="tl_lineWidth" format="dimension" />
-        <attr name="tl_lineColor" format="color" />
+  <declare-styleable name="TimelineView">
+    <attr name="tl_lineWidth"
+          format="dimension"/>
+    <attr name="tl_lineColor"
+          format="color"/>
 
-        <attr name="tl_middleSize" format="float" />
-        <attr name="tl_middleColor" format="color" />
+    <attr name="tl_middleSize"
+          format="float"/>
+    <attr name="tl_middleColor"
+          format="color"/>
 
-        <attr name="tl_firstSize" format="float" />
-        <attr name="tl_firstColor" format="color" />
+    <attr name="tl_firstSize"
+          format="float"/>
+    <attr name="tl_firstColor"
+          format="color"/>
 
-        <attr name="tl_lastSize" format="float" />
-        <attr name="tl_lastColor" format="color" />
+    <attr name="tl_lastSize"
+          format="float"/>
+    <attr name="tl_lastColor"
+          format="color"/>
 
-        <attr name="tl_timeline_type" format="enum">
-            <enum name="start" value="-1" />
-            <enum name="middle" value="0" />
-            <enum name="line" value="1" />
-            <enum name="end" value="2" />
-        </attr>
-    </declare-styleable>
+    <attr name="tl_timeline_type"
+          format="enum">
+      <enum name="start"
+            value="-1"/>
+      <enum name="middle"
+            value="0"/>
+      <enum name="line"
+            value="1"/>
+      <enum name="end"
+            value="2"/>
+    </attr>
+  </declare-styleable>
 
-    <declare-styleable name="FabToolbar">
-        <attr name="ft_fabId" format="reference" />
-    </declare-styleable>
+  <declare-styleable name="FabToolbar">
+    <attr name="ft_fabId"
+          format="reference"/>
+  </declare-styleable>
 </resources>

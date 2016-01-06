@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,15 +9,19 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
-import com.alorma.gitskarios.core.client.BaseClient;
+import com.alorma.github.UrlsManager;
+import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
@@ -29,28 +34,38 @@ import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
-import com.gh4a.utils.UiUtils;
-import com.github.mobile.util.HtmlUtils;
-import com.github.mobile.util.HttpImageGetter;
+import com.clean.presenter.Presenter;
+import com.clean.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 
 /**
  * Created by Bernat on 01/01/2015.
  */
-public class RepoAboutFragment extends Fragment implements TitleProvider, BranchManager, BackManager, BaseClient.OnResultCallback<String> {
+public class RepoAboutFragment extends Fragment
+        implements TitleProvider, BranchManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
-    private static final String REPO = "REPO";
+    public static final int PLACEHOLDER_ICON_SIZE = 20;
+
+    private View author;
+    private Integer futureSubscribersCount;
+    private Integer futureStarredCount;
+
     private RepoInfo repoInfo;
     private Repo currentRepo;
-    private TextView htmlContentView;
+    private WebView htmlContentView;
     private ImageView profileIcon;
 
     private TextView starredPlaceholder;
@@ -61,14 +76,52 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     private View fork;
     private TextView forkOfTextView;
     private TextView createdAtTextView;
-    private Boolean repoStarred = null;
-    private Boolean repoWatched = null;
-    private View author;
 
-    public static RepoAboutFragment newInstance(Repo currentRepo, RepoInfo repoInfo) {
+    private View loadingHtml;
+
+    private Boolean repoStarred = null;
+    Observer<Boolean> startObserver = new Observer<Boolean>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            repoStarred = false;
+            changeStarView();
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            repoStarred = aBoolean;
+            changeStarView();
+        }
+    };
+
+    private Boolean repoWatched = null;
+    Observer<Boolean> watchObserver = new Observer<Boolean>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            repoWatched = false;
+            changeWatchView();
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            repoWatched = aBoolean;
+            changeWatchView();
+        }
+    };
+
+    public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(REPO_INFO, repoInfo);
-        bundle.putParcelable(REPO, currentRepo);
 
         RepoAboutFragment f = new RepoAboutFragment();
         f.setArguments(bundle);
@@ -77,7 +130,8 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         return inflater.inflate(R.layout.repo_overview_fragment, null, false);
@@ -90,8 +144,9 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         author = view.findViewById(R.id.author);
         profileIcon = (ImageView) author.findViewById(R.id.profileIcon);
         authorName = (TextView) author.findViewById(R.id.authorName);
+        loadingHtml = view.findViewById(R.id.htmlLoading);
 
-        htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
+        htmlContentView = (WebView) view.findViewById(R.id.htmlContentView);
 
         fork = view.findViewById(R.id.fork);
         forkOfTextView = (TextView) fork.findViewById(R.id.forkOf);
@@ -155,16 +210,15 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
                         Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
                         startActivity(intent);
                     } else if (currentRepo.owner.type == UserType.Organization) {
-                        Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
+                        Intent intent =
+                                OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
                         startActivity(intent);
                     }
                 }
             }
         });
 
-        loadArguments();
-        getContent();
-        setData();
+        getReadmeContent();
     }
 
     @Override
@@ -172,63 +226,142 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
         return R.string.overview_fragment_title;
     }
 
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_info;
+    }
+
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = getArguments().getParcelable(REPO_INFO);
-            currentRepo = getArguments().getParcelable(REPO);
         }
     }
 
-    private void getContent() {
+    public void setRepository(Repo repository) {
+        this.currentRepo = repository;
+        if (isAdded()) {
+            getReadme();
+            getStarWatchData();
+            setData();
+            getReadmeContent();
+        }
+    }
+
+    private void getReadmeContent() {
         if (repoInfo == null) {
             loadArguments();
         }
-        GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
-        repoMarkdownClient.setCallback(this);
-        repoMarkdownClient.execute();
 
-        getStarWatchData();
+        String cachedReadme = CacheWrapper.getReadme(repoInfo.toString());
+        if (cachedReadme != null) {
+            onReadmeLoaded(cachedReadme);
+        }
+        getReadme();
     }
 
-    @Override
-    public void onResponseOk(final String htmlContent, Response r) {
+    private void getReadme() {
+        loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
+    }
+
+    private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
+        repoMarkdownClient.observable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        if (currentRepo != null) {
+                            setData();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
+                            onReadmeLoaded(currentRepo.description);
+                        } else {
+                            loadingHtml.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(String htmlContent) {
+                        onReadmeLoaded(htmlContent);
+                    }
+                });
+    }
+
+    private void onReadmeLoaded(String htmlContent) {
         if (htmlContent != null && htmlContentView != null) {
-            String htmlCode = HtmlUtils.format(htmlContent).toString();
-            HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
 
-            imageGetter.repoInfo(repoInfo);
-            imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
+            htmlContentView.getSettings().setUseWideViewPort(false);
+            htmlContentView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Intent intent = new UrlsManager(getActivity()).checkUri(Uri.parse(url));
+                    if (intent != null) {
+                        startActivity(intent);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            htmlContentView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
 
-            htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+            loadingHtml.setVisibility(View.GONE);
+
+            CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
         }
     }
 
     private void setData() {
-        if (currentRepo != null) {
-            User owner = currentRepo.owner;
-            ImageLoader.getInstance().displayImage(owner.avatar_url, profileIcon);
-            authorName.setText(owner.login);
+        if (getActivity() != null) {
+            if (this.currentRepo != null) {
+                User owner = this.currentRepo.owner;
+                UniversalImageLoaderUtils.loadUserAvatar(profileIcon, owner);
+                authorName.setText(owner.login);
 
-            if (currentRepo.parent != null) {
-                fork.setVisibility(View.VISIBLE);
-                forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
-                forkOfTextView.setText(currentRepo.parent.owner.login + "/" + currentRepo.parent.name);
+                if (this.currentRepo.parent != null) {
+                    fork.setVisibility(View.VISIBLE);
+                    forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
+                    forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login,
+                            this.currentRepo.parent.name));
+                }
+
+                createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null,
+                        null);
+                createdAtTextView.setText(
+                        TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at,
+                                R.string.created_at));
+
+                changeStarView();
+                changeWatchView();
+
+                setStarsCount(currentRepo.stargazers_count);
+
+                setWatchersCount(currentRepo.subscribers_count);
+
+                forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
+
+                forkPlaceHolder.setCompoundDrawables(
+                        getIcon(Octicons.Icon.oct_repo_forked, PLACEHOLDER_ICON_SIZE), null, null, null);
             }
-
-            createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
-            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), currentRepo.created_at, R.string.created_at));
-
-            starredPlaceholder.setText(String.valueOf(currentRepo.stargazers_count));
-            watchedPlaceholder.setText(String.valueOf(currentRepo.subscribers_count));
-            forkPlaceHolder.setText(String.valueOf(currentRepo.forks_count));
-
-            forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
         }
     }
 
-    @Override
-    public void onFail(RetrofitError error) {
-        // TODO HTML readme cannot be shown
+    private void setStarsCount(int stargazers_count) {
+        starredPlaceholder.setText(
+                String.valueOf(placeHolderNum(stargazers_count)));
+    }
+
+    private void setWatchersCount(int subscribers_count) {
+        watchedPlaceholder.setText(
+                String.valueOf(placeHolderNum(subscribers_count)));
+    }
+
+    private String placeHolderNum(int value) {
+        NumberFormat decimalFormat = new DecimalFormat();
+        return decimalFormat.format(value);
     }
 
     private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
@@ -238,189 +371,85 @@ public class RepoAboutFragment extends Fragment implements TitleProvider, Branch
     @Override
     public void setCurrentBranch(String branch) {
         if (getActivity() != null) {
-            GetReadmeContentsClient repoMarkdownClient = new GetReadmeContentsClient(getActivity(), repoInfo);
-            repoMarkdownClient.setCallback(this);
-            repoMarkdownClient.execute();
+            repoInfo.branch = branch;
+            loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
         }
     }
-
 
     @Override
     public boolean onBackPressed() {
         return true;
     }
 
+    private void starAction(GithubClient<Boolean> starClient) {
+        starClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(startObserver);
+    }
+
+    private void watchAction(GithubClient<Boolean> starClient) {
+        starClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(watchObserver);
+    }
 
     protected void getStarWatchData() {
-        CheckRepoStarredClient repoStarredClient = new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-        repoStarredClient.setOnResultCallback(new StarredResult());
-        repoStarredClient.execute();
+        starAction(
+                new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name));
 
-        CheckRepoWatchedClient repoWatchedClient = new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-        repoWatchedClient.setOnResultCallback(new WatchedResult());
-        repoWatchedClient.execute();
+        watchAction(
+                new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name));
     }
 
     private void changeStarStatus() {
         if (repoStarred) {
-            UnstarRepoClient unstarRepoClient = new UnstarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            unstarRepoClient.setOnResultCallback(new UnstarActionResult());
-            unstarRepoClient.execute();
+            futureStarredCount = currentRepo.stargazers_count - 1;
+            starAction(new UnstarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         } else {
-            StarRepoClient starRepoClient = new StarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            starRepoClient.setOnResultCallback(new StarActionResult());
-            starRepoClient.execute();
+            futureStarredCount = currentRepo.stargazers_count + 1;
+            starAction(new StarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         }
     }
 
     private void changeWatchedStatus() {
         if (repoWatched) {
-            UnwatchRepoClient unwatchRepoClient = new UnwatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            unwatchRepoClient.setOnResultCallback(new UnwatchActionResult());
-            unwatchRepoClient.execute();
+            futureSubscribersCount = currentRepo.subscribers_count - 1;
+            watchAction(new UnwatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         } else {
-            WatchRepoClient watchRepoClient = new WatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name);
-            watchRepoClient.setOnResultCallback(new WatchActionResult());
-            watchRepoClient.execute();
-        }
-    }
-
-    /**
-     * Results for STAR
-     */
-    private class StarredResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = true;
-                changeStarView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            if (error != null) {
-                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-                    repoStarred = false;
-                    changeStarView();
-                }
-            }
-        }
-    }
-
-    private class UnstarActionResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = false;
-                changeStarView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeStarView();
-        }
-    }
-
-    private class StarActionResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoStarred = true;
-                changeStarView();
-            }
-
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeStarView();
+            futureSubscribersCount = currentRepo.subscribers_count + 1;
+            watchAction(new WatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
         }
     }
 
     private void changeStarView() {
         if (getActivity() != null) {
-            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(24);
+            IconicsDrawable drawable =
+                    new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
             if (repoStarred != null && repoStarred) {
                 drawable.colorRes(R.color.primary);
             } else {
                 drawable.colorRes(R.color.icons);
             }
             starredPlaceholder.setCompoundDrawables(drawable, null, null, null);
-        }
-    }
 
-    /**
-     * RESULTS FOR WATCH
-     */
-
-    private class WatchedResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = true;
-                changeWatchView();
+            if (futureStarredCount != null) {
+                setStarsCount(futureStarredCount);
+                currentRepo.stargazers_count = futureStarredCount;
             }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            if (error != null) {
-                if (error.getResponse() != null && error.getResponse().getStatus() == 404) {
-                    repoWatched = false;
-                    changeWatchView();
-                }
-            }
-        }
-    }
-
-    private class UnwatchActionResult implements BaseClient.OnResultCallback<Response> {
-
-        @Override
-        public void onResponseOk(Response o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = false;
-                changeWatchView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeWatchView();
-        }
-    }
-
-    private class WatchActionResult implements BaseClient.OnResultCallback<Object> {
-
-        @Override
-        public void onResponseOk(Object o, Response r) {
-            if (r != null && r.getStatus() == 204) {
-                repoWatched = true;
-                changeWatchView();
-            }
-        }
-
-        @Override
-        public void onFail(RetrofitError error) {
-            changeWatchView();
         }
     }
 
     private void changeWatchView() {
         if (getActivity() != null) {
-            IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(24);
+            IconicsDrawable drawable =
+                    new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
             if (repoWatched != null && repoWatched) {
                 drawable.colorRes(R.color.primary);
             } else {
                 drawable.colorRes(R.color.icons);
             }
             watchedPlaceholder.setCompoundDrawables(drawable, null, null, null);
+
+            if (futureSubscribersCount != null) {
+                setWatchersCount(futureSubscribersCount);
+                currentRepo.subscribers_count = futureSubscribersCount;
+            }
         }
     }
-
 }
