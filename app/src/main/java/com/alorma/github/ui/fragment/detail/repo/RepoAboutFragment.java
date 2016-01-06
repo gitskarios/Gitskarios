@@ -54,7 +54,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by Bernat on 01/01/2015.
  */
 public class RepoAboutFragment extends Fragment
-        implements TitleProvider, BranchManager, BackManager, Presenter.Callback<Repo> {
+        implements TitleProvider, BranchManager, BackManager {
 
     private static final String REPO_INFO = "REPO_INFO";
     public static final int PLACEHOLDER_ICON_SIZE = 20;
@@ -98,6 +98,7 @@ public class RepoAboutFragment extends Fragment
             changeStarView();
         }
     };
+
     private Boolean repoWatched = null;
     Observer<Boolean> watchObserver = new Observer<Boolean>() {
         @Override
@@ -221,15 +222,6 @@ public class RepoAboutFragment extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (repoInfo != null) {
-            RepositoryPresenter repositoryPresenter = new RepositoryPresenter(getActivity());
-            repositoryPresenter.load(repoInfo, this);
-        }
-    }
-
-    @Override
     public int getTitle() {
         return R.string.overview_fragment_title;
     }
@@ -242,6 +234,16 @@ public class RepoAboutFragment extends Fragment
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = getArguments().getParcelable(REPO_INFO);
+        }
+    }
+
+    public void setRepository(Repo repository) {
+        this.currentRepo = repository;
+        if (isAdded()) {
+            getReadme();
+            getStarWatchData();
+            setData();
+            getReadmeContent();
         }
     }
 
@@ -415,16 +417,6 @@ public class RepoAboutFragment extends Fragment
         }
     }
 
-    public void setRepository(Repo repository) {
-        this.currentRepo = repository;
-        if (isAdded()) {
-            getReadme();
-            getStarWatchData();
-            setData();
-            getReadmeContent();
-        }
-    }
-
     private void changeStarView() {
         if (getActivity() != null) {
             IconicsDrawable drawable =
@@ -459,22 +451,5 @@ public class RepoAboutFragment extends Fragment
                 currentRepo.subscribers_count = futureSubscribersCount;
             }
         }
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void onResponse(Repo repo) {
-        this.currentRepo = repo;
-        getStarWatchData();
-        setData();
-    }
-
-    @Override
-    public void hideLoading() {
-
     }
 }

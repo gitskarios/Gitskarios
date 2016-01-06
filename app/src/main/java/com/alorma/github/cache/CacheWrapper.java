@@ -2,6 +2,8 @@ package com.alorma.github.cache;
 
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Branch;
+import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.fewlaps.quitnowcache.QNCache;
 import com.fewlaps.quitnowcache.QNCacheBuilder;
 
@@ -83,5 +85,14 @@ public class CacheWrapper {
 
     public static void clear() {
         cache.removeAll();
+    }
+
+    // region Repository
+    public static Repo getRepository(RepoInfo repoInfo) {
+     return cache.get(convertToEffectiveRepoKey(repoInfo.owner + "/" + repoInfo.name));
+    }
+
+    public static void setRepository(Repo repo) {
+        cache.set(convertToEffectiveRepoKey(repo.owner + "/" + repo.name), repo);
     }
 }

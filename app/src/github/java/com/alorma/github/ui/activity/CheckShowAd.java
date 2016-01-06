@@ -13,7 +13,7 @@ public class CheckShowAd {
     public static void showEnterpriseAd(Context context) {
         GitskariosSettings settings = new GitskariosSettings(context);
         boolean showEnterprise = settings.getShowEnterprise();
-        if (showEnterprise || BuildConfig.DEBUG) {
+        if (showEnterprise) {
             settings.setShowEnterpriseVisited();
             Intent intent = new Intent(context, EnterpriseAdActivity.class);
             context.startActivity(intent);

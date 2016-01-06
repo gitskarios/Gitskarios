@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
@@ -45,9 +46,10 @@ import com.clean.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,6 +69,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private ViewPager viewPager;
+  private RepoAboutFragment repoAboutFragment;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -123,19 +126,15 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
         tabLayout.setupWithViewPager(viewPager);
 
         showTabsIcons(tabLayout);
+
+        if (requestRepoInfo != null) {
+          load();
+        }
       } else {
         finish();
       }
     } else {
       finish();
-    }
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    if (requestRepoInfo != null) {
-      load();
     }
   }
 
@@ -189,12 +188,17 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
       if (fragments != null) {
         Permissions permissions = repo.permissions;
+
+        if (repoAboutFragment != null) {
+          repoAboutFragment.setRepository(repo);
+        }
+
         for (Fragment fragment : fragments) {
           if (fragment.isAdded()) {
 
             if (fragment instanceof PermissionsManager) {
               ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push,
-                  permissions.pull);
+                      permissions.pull);
             }
             if (fragment instanceof BranchManager) {
               ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
@@ -211,14 +215,15 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
   }
 
   private void listFragments() {
-      fragments = new ArrayList<>();
-      fragments.add(RepoAboutFragment.newInstance(requestRepoInfo));
-      fragments.add(SourceListFragment.newInstance(requestRepoInfo));
-      fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
-      fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
-      fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
-      fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
-      fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
+    fragments = new ArrayList<>();
+    repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
+    fragments.add(repoAboutFragment);
+    fragments.add(SourceListFragment.newInstance(requestRepoInfo));
+    fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
+    fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
+    fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
+    fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
+    fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
   }
 
   @Override
@@ -306,15 +311,15 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
   private void changeBranch() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, requestRepoInfo);
     Observable<List<Branch>> apiObservable =
-        repoBranchesClient.observable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-        .doOnNext(new Action1<List<Branch>>() {
-          @Override
-          public void call(List<Branch> branches) {
-            CacheWrapper.setBranches(requestRepoInfo.toString(), branches);
-          }
-        });
+            repoBranchesClient.observable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<List<Branch>>() {
+                      @Override
+                      public void call(List<Branch> branches) {
+                        CacheWrapper.setBranches(requestRepoInfo.toString(), branches);
+                      }
+                    });
 
     Observable<List<Branch>> memCacheObservable = Observable.create(new Observable.OnSubscribe<List<Branch>>() {
       @Override
@@ -334,29 +339,29 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
     });
 
     Observable.concat(memCacheObservable, apiObservable)
-        .first()
-        .subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
-          @Override
-          protected void onNoBranches() {
+            .first()
+            .subscribe(new DialogBranchesCallback(this, requestRepoInfo) {
+              @Override
+              protected void onNoBranches() {
 
-          }
-
-          @Override
-          protected void onBranchSelected(String branch) {
-            requestRepoInfo.branch = branch;
-            if (currentRepo != null) {
-              currentRepo.default_branch = branch;
-            }
-            if (getSupportActionBar() != null) {
-              getSupportActionBar().setSubtitle(branch);
-            }
-            for (Fragment fragment : fragments) {
-              if (fragment instanceof BranchManager) {
-                ((BranchManager) fragment).setCurrentBranch(branch);
               }
-            }
-          }
-        });
+
+              @Override
+              protected void onBranchSelected(String branch) {
+                requestRepoInfo.branch = branch;
+                if (currentRepo != null) {
+                  currentRepo.default_branch = branch;
+                }
+                if (getSupportActionBar() != null) {
+                  getSupportActionBar().setSubtitle(branch);
+                }
+                for (Fragment fragment : fragments) {
+                  if (fragment instanceof BranchManager) {
+                    ((BranchManager) fragment).setCurrentBranch(branch);
+                  }
+                }
+              }
+            });
   }
 
   @Override
