@@ -302,6 +302,9 @@ public class RepoAboutFragment extends Fragment
                         startActivity(intent);
                         return true;
                     } else {
+                        Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                        intent1.setData(Uri.parse(url));
+                        startActivity(intent1);
                         return false;
                     }
                 }
