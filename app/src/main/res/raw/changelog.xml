@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="false">
+    <changelogversion changeDate="Jan 6,2016" versionName="2.7.7">
+        <changelogtext>Fix readmes not parsed if using reStructuredText</changelogtext>
+        <changelogtext>Fix bug with source list, no more reload content after open a file.</changelogtext>
+    </changelogversion>
     <changelogversion changeDate="Jan 1,2016" versionName="2.7.5">
         <changelogtext>Backup new issue content if you leave the screen. You will be able to
             navigate to other issues, users etc... and return to the new issue page
