@@ -25,7 +25,7 @@ import static java.util.Locale.US;
 public class MarkdownUtils {
 
   private static final String[] MARKDOWN_EXTENSIONS = {
-      ".md", ".mkdn", ".mdwn", ".mdown", ".markdown", ".mkd", ".mkdown", ".ron"
+      ".md", ".mkdn", ".mdwn", ".mdown", ".markdown", ".mkd", ".mkdown", ".ron", ".rst"
   };
 
   /**
