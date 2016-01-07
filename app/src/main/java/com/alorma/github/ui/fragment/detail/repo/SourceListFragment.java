@@ -1,11 +1,13 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,10 +19,11 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.content.Downloader;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
-import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.sdk.utils.GitskariosSettings;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
@@ -338,8 +341,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
             RepoInfo repoInfo = new RepoInfo();
             repoInfo.owner = getRepoInfo().owner;
             repoInfo.name = getRepoInfo().name;
-            GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
-            getArchiveLinkService.observable().subscribe();
+            download(repoInfo);
         }
 
         @Override
@@ -350,8 +352,40 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
             repoInfo.owner = getRepoInfo().owner;
             repoInfo.name = getRepoInfo().name;
             repoInfo.branch = branch;
-            GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo);
+            download(repoInfo);
+        }
+
+        private void download(RepoInfo repoInfo) {
+            GitskariosSettings settings = new GitskariosSettings(getActivity());
+            String zipBall = getActivity().getString(R.string.download_zip_value);
+            String fileType = settings.getDownloadFileType(zipBall);
+            GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo, fileType
+                    , new NativeDownloader());
             getArchiveLinkService.observable().subscribe();
+        }
+    }
+
+    class NativeDownloader implements Downloader {
+
+        public NativeDownloader() {
+        }
+
+        @Override
+        public void download(String path) {
+            DownloadManager dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(path));
+
+            GitskariosSettings settings = new GitskariosSettings(getActivity());
+
+            String zipBall = getActivity().getString(R.string.download_zip_value);
+            String fileType = settings.getDownloadFileType(zipBall);
+
+            String fileName = repoInfo.name + "_" + repoInfo.branch + "_" + "." + (fileType.equalsIgnoreCase(zipBall) ? "zip" : "tar");
+            request.setTitle(fileName);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "gitskarios/" + fileName);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.allowScanningByMediaScanner();
+            dm.enqueue(request);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment.repos;
 import android.os.Bundle;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.WatchedReposClient;
+import com.alorma.github.utils.RepoUtils;
 
 public class WatchedReposFragment extends BaseReposListFragment {
 
@@ -35,13 +36,13 @@ public class WatchedReposFragment extends BaseReposListFragment {
     super.executeRequest();
     loadArguments();
 
-    setAction(new WatchedReposClient(getActivity(), username));
+    setAction(new WatchedReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity())));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new WatchedReposClient(getActivity(), username, page));
+    setAction(new WatchedReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

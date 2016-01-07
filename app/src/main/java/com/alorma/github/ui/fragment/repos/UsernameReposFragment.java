@@ -7,6 +7,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.UserReposClient;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -48,7 +49,7 @@ public class UsernameReposFragment extends BaseReposListFragment implements Titl
     super.executeRequest();
 
     if (username != null) {
-      setAction(new UserReposClient(getActivity(), username));
+      setAction(new UserReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity())));
     }
   }
 
@@ -56,7 +57,7 @@ public class UsernameReposFragment extends BaseReposListFragment implements Titl
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
     if (username != null) {
-      setAction(new UserReposClient(getActivity(), username, page));
+      setAction(new UserReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity()), page));
     }
   }
 

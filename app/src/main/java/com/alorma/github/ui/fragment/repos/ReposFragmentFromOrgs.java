@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.repos;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.UserReposFromOrganizationClient;
+import com.alorma.github.utils.RepoUtils;
 
 public class ReposFragmentFromOrgs extends BaseReposListFragment {
 
@@ -24,7 +25,7 @@ public class ReposFragmentFromOrgs extends BaseReposListFragment {
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new UserReposFromOrganizationClient(getActivity(), page));
+    setAction(new UserReposFromOrganizationClient(getActivity(), null, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

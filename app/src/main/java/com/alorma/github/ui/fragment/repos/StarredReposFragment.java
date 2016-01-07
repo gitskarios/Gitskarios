@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment.repos;
 import android.os.Bundle;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.repos.StarredReposClient;
+import com.alorma.github.utils.RepoUtils;
 
 public class StarredReposFragment extends BaseReposListFragment {
 
@@ -35,13 +36,13 @@ public class StarredReposFragment extends BaseReposListFragment {
     super.executeRequest();
     loadArguments();
 
-    setAction(new StarredReposClient(getActivity(), username));
+    setAction(new StarredReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity())));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new StarredReposClient(getActivity(), username, page));
+    setAction(new StarredReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

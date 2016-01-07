@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.orgs.OrgsReposClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
+import com.alorma.github.utils.RepoUtils;
 
 public class OrgsReposFragment extends BaseReposListFragment {
 
@@ -41,13 +42,13 @@ public class OrgsReposFragment extends BaseReposListFragment {
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    setAction(new OrgsReposClient(getActivity(), org));
+    setAction(new OrgsReposClient(getActivity(), org, RepoUtils.sortOrder(getActivity())));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new OrgsReposClient(getActivity(), org, page));
+    setAction(new OrgsReposClient(getActivity(), org, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

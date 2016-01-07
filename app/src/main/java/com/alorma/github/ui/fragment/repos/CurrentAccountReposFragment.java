@@ -7,6 +7,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.UserReposClient;
 import com.alorma.github.ui.activity.CreateRepositoryActivity;
+import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new UserReposClient(getActivity(), page));
+    setAction(new UserReposClient(getActivity(), null, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override
