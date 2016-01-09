@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- * <p/>
+ * <p>
  * Copyright (c) [year] [fullname]
- * <p/>
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * <p/>
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * <p/>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,70 +33,71 @@ import android.graphics.Rect;
 import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.View;
+
 import com.alorma.github.R;
 
 public class LineView extends View {
 
-  private int mLineColor = Color.GRAY;
-  private float mLineWidth = 3f;
-  private Paint linePaint;
-  private Rect rect;
+    private int mLineColor = Color.GRAY;
+    private float mLineWidth = 3f;
+    private Paint linePaint;
+    private Rect rect;
 
-  public LineView(Context context) {
-    super(context);
-    init(context, null, 0);
-  }
-
-  public LineView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    init(context, attrs, 0);
-  }
-
-  public LineView(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
-    init(context, attrs, defStyle);
-  }
-
-  private void init(Context context, AttributeSet attrs, int defStyle) {
-    isInEditMode();
-    if (attrs != null) {
-      final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TimelineView, defStyle, 0);
-
-      if (a != null) {
-        mLineColor = a.getColor(R.styleable.TimelineView_tl_lineColor, mLineColor);
-
-        mLineWidth = a.getDimension(R.styleable.TimelineView_tl_lineWidth, mLineWidth);
-
-        a.recycle();
-      }
+    public LineView(Context context) {
+        super(context);
+        init(context, null, 0);
     }
 
-    createPaints();
+    public LineView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs, 0);
+    }
 
-    rect = new Rect();
-  }
+    public LineView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs, defStyle);
+    }
 
-  private void createPaints() {
-    linePaint = new Paint();
-    linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-    linePaint.setColor(mLineColor);
-  }
+    private void init(Context context, AttributeSet attrs, int defStyle) {
+        isInEditMode();
+        if (attrs != null) {
+            final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TimelineView, defStyle, 0);
 
-  public void setColorRes(@ColorRes int color) {
-    setColor(getResources().getColor(color));
-  }
+            if (a != null) {
+                mLineColor = a.getColor(R.styleable.TimelineView_tl_lineColor, mLineColor);
 
-  public void setColor(int color) {
-    mLineColor = color;
-    createPaints();
-    invalidate();
-  }
+                mLineWidth = a.getDimension(R.styleable.TimelineView_tl_lineWidth, mLineWidth);
 
-  @Override
-  protected void onDraw(Canvas canvas) {
-    super.onDraw(canvas);
-    canvas.getClipBounds(rect);
+                a.recycle();
+            }
+        }
 
-    canvas.drawLine(rect.centerX(), rect.top, rect.centerX(), rect.bottom, linePaint);
-  }
+        createPaints();
+
+        rect = new Rect();
+    }
+
+    private void createPaints() {
+        linePaint = new Paint();
+        linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        linePaint.setColor(mLineColor);
+    }
+
+    public void setColorRes(@ColorRes int color) {
+        setColor(getResources().getColor(color));
+    }
+
+    public void setColor(int color) {
+        mLineColor = color;
+        createPaints();
+        invalidate();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.getClipBounds(rect);
+
+        canvas.drawLine(rect.centerX(), rect.top, rect.centerX(), rect.bottom, linePaint);
+    }
 }

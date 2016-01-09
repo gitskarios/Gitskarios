@@ -6,30 +6,30 @@ import com.alorma.github.utils.RepoUtils;
 
 public class ReposFragmentFromOrgs extends BaseReposListFragment {
 
-  public static ReposFragmentFromOrgs newInstance() {
-    return new ReposFragmentFromOrgs();
-  }
+    public static ReposFragmentFromOrgs newInstance() {
+        return new ReposFragmentFromOrgs();
+    }
 
-  @Override
-  protected void loadArguments() {
+    @Override
+    protected void loadArguments() {
 
-  }
+    }
 
-  @Override
-  protected void executeRequest() {
-    super.executeRequest();
+    @Override
+    protected void executeRequest() {
+        super.executeRequest();
 
-    setAction(new UserReposFromOrganizationClient());
-  }
+        setAction(new UserReposFromOrganizationClient());
+    }
 
-  @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-    setAction(new UserReposFromOrganizationClient(null, RepoUtils.sortOrder(getActivity()), page));
-  }
+    @Override
+    protected void executePaginatedRequest(int page) {
+        super.executePaginatedRequest(page);
+        setAction(new UserReposFromOrganizationClient(null, RepoUtils.sortOrder(getActivity()), page));
+    }
 
-  @Override
-  protected int getNoDataText() {
-    return R.string.no_repositories;
-  }
+    @Override
+    protected int getNoDataText() {
+        return R.string.no_repositories;
+    }
 }

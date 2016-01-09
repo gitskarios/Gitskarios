@@ -25,15 +25,15 @@
         android:id="@+id/view_new_app_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gapXLarge"
         android:visibility="invisible"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/gapXLarge">
+        tools:visibility="visible">
 
         <ImageView
             android:layout_width="140dp"
             android:layout_height="140dp"
-            android:src="@drawable/ic_launcher_enterprise"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_launcher_enterprise" />
 
         <TextView
             android:layout_width="match_parent"

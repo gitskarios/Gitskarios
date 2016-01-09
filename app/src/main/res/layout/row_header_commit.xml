@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@android:id/text1"
-          style="@style/TextAppearance.AppCompat.Subhead"
-          android:layout_width="match_parent"
-          android:layout_height="56dp"
-          android:background="@color/gray_github_light_selected"
-          android:gravity="center_vertical"
-          android:orientation="vertical"
-          android:paddingLeft="24dp"
-          android:textColor="?attr/gitskarios_secondary_text"
-          android:textSize="@dimen/textSizeMedium"
-    />
+    android:id="@android:id/text1"
+    style="@style/TextAppearance.AppCompat.Subhead"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@color/gray_github_light_selected"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingLeft="24dp"
+    android:textColor="?attr/gitskarios_secondary_text"
+    android:textSize="@dimen/textSizeMedium" />

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2014 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,20 +14,18 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_enabled="false"
-        android:state_checked="true">
-    <bitmap android:src="@drawable/btn_check_to_on_mtrl_015"/>
-  </item>
-  <item android:state_enabled="false">
-    <bitmap android:src="@drawable/btn_check_to_on_mtrl_000"/>
-  </item>
-  <item android:state_checked="true"
-        android:id="@+id/on">
-    <bitmap android:src="@drawable/btn_check_to_on_mtrl_015"/>
-  </item>
-  <item android:id="@+id/off">
-    <bitmap android:src="@drawable/btn_check_to_on_mtrl_000"/>
-  </item>
+    <item android:state_checked="true" android:state_enabled="false">
+        <bitmap android:src="@drawable/btn_check_to_on_mtrl_015" />
+    </item>
+    <item android:state_enabled="false">
+        <bitmap android:src="@drawable/btn_check_to_on_mtrl_000" />
+    </item>
+    <item android:id="@+id/on" android:state_checked="true">
+        <bitmap android:src="@drawable/btn_check_to_on_mtrl_015" />
+    </item>
+    <item android:id="@+id/off">
+        <bitmap android:src="@drawable/btn_check_to_on_mtrl_000" />
+    </item>
 
 </selector>
 

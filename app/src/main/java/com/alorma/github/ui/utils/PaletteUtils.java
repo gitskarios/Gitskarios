@@ -3,10 +3,6 @@ package com.alorma.github.ui.utils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.graphics.Palette;
-import android.view.View;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 /**
  * Created by Bernat on 15/07/2014.
@@ -46,9 +42,10 @@ public class PaletteUtils {
             Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
             Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
             Palette.Swatch item = null;
-             if (darkVibrantSwatch != null) {
+            if (darkVibrantSwatch != null) {
                 item = darkVibrantSwatch;
-            } if (darkMutedSwatch != null) {
+            }
+            if (darkMutedSwatch != null) {
                 item = darkMutedSwatch;
             }
             return item;

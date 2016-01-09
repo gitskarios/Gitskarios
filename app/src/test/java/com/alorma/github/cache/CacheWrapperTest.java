@@ -1,13 +1,7 @@
 package com.alorma.github.cache;
 
-import com.alorma.github.sdk.bean.dto.response.Branch;
-
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
 

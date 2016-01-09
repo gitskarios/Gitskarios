@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <item
-      android:id="@+id/action_notification_unsubscribe"
-      android:title="@string/notifications_unsubscribe"
-      />
-  <item
-      android:id="@+id/action_notification_mark_read"
-      android:title="@string/notifications_read"
-      />
+    <item
+        android:id="@+id/action_notification_unsubscribe"
+        android:title="@string/notifications_unsubscribe" />
+    <item
+        android:id="@+id/action_notification_mark_read"
+        android:title="@string/notifications_read" />
 
 </menu>

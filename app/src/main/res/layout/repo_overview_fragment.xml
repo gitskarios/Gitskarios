@@ -1,32 +1,29 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical"
-      >
-
-    <include layout="@layout/repo_overview_numbers"/>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/htmlLoading"
-        android:layout_gravity="center_horizontal"/>
-
-    <WebView
-        android:id="@+id/htmlContentView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:padding="@dimen/gapMedium"
-        />
+        android:orientation="vertical">
 
-  </LinearLayout>
+        <include layout="@layout/repo_overview_numbers" />
+
+        <ProgressBar
+            android:id="@+id/htmlLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+
+        <WebView
+            android:id="@+id/htmlContentView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/gapMedium"
+            android:padding="@dimen/gapMedium" />
+
+    </LinearLayout>
 </ScrollView>

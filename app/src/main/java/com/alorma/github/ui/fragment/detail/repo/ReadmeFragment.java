@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
@@ -23,6 +24,7 @@ import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
 import retrofit.RetrofitError;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,144 +34,144 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class ReadmeFragment extends BaseFragment implements BranchManager, TitleProvider, PermissionsManager, BackManager {
 
-  private static final String REPO_INFO = "REPO_INFO";
-  private RepoInfo repoInfo;
+    private static final String REPO_INFO = "REPO_INFO";
+    private RepoInfo repoInfo;
 
-  private TextView htmlContentView;
+    private TextView htmlContentView;
 
-  private UpdateReceiver updateReceiver;
+    private UpdateReceiver updateReceiver;
 
-  public static ReadmeFragment newInstance(RepoInfo repoInfo) {
-    Bundle bundle = new Bundle();
-    bundle.putSerializable(REPO_INFO, repoInfo);
+    public static ReadmeFragment newInstance(RepoInfo repoInfo) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
-    ReadmeFragment f = new ReadmeFragment();
-    f.setArguments(bundle);
-    return f;
-  }
-
-  @Nullable
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View v = inflater.inflate(R.layout.readme_fragment, null);
-    return v;
-  }
-
-  @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
-    if (getArguments() != null) {
-      loadArguments();
-
-      htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
-
-      getContent();
+        ReadmeFragment f = new ReadmeFragment();
+        f.setArguments(bundle);
+        return f;
     }
-  }
 
-  protected void loadArguments() {
-    if (getArguments() != null) {
-      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.readme_fragment, null);
+        return v;
     }
-  }
-
-  private void getContent() {
-    loadReadme(new GetReadmeContentsClient(repoInfo));
-  }
-
-  private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
-    repoMarkdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
-      @Override
-      public void onCompleted() {
-
-      }
-
-      @Override
-      public void onError(Throwable e) {
-
-      }
-
-      @Override
-      public void onNext(String htmlContent) {
-        if (htmlContent != null) {
-          String htmlCode = HtmlUtils.format(htmlContent).toString();
-          HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
-
-          imageGetter.repoInfo(repoInfo);
-          imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
-
-          htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-        }
-      }
-    });
-  }
-
-  @Override
-  public void setCurrentBranch(String branch) {
-    if (getActivity() != null) {
-      repoInfo.branch = branch;
-      loadReadme(new GetReadmeContentsClient(repoInfo));
-    }
-  }
-
-  private void onError(String tag, RetrofitError error) {
-    ErrorHandler.onError(getActivity(), "MarkdownFragment: " + tag, error);
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.markdown_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_info;
-  }
-
-  public void reload() {
-    getContent();
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    updateReceiver = new UpdateReceiver();
-    IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-    getActivity().registerReceiver(updateReceiver, intentFilter);
-  }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-    getActivity().unregisterReceiver(updateReceiver);
-  }
-
-  @Override
-  public void setPermissions(boolean admin, boolean push, boolean pull) {
-
-  }
-
-  @Override
-  public boolean onBackPressed() {
-    return true;
-  }
-
-  public class UpdateReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-      if (isOnline(context)) {
-        reload();
-      }
+        if (getArguments() != null) {
+            loadArguments();
+
+            htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
+
+            getContent();
+        }
     }
 
-    public boolean isOnline(Context context) {
-      ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-      NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-      return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+    protected void loadArguments() {
+        if (getArguments() != null) {
+            repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+        }
     }
-  }
+
+    private void getContent() {
+        loadReadme(new GetReadmeContentsClient(repoInfo));
+    }
+
+    private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
+        repoMarkdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String htmlContent) {
+                if (htmlContent != null) {
+                    String htmlCode = HtmlUtils.format(htmlContent).toString();
+                    HttpImageGetter imageGetter = new HttpImageGetter(getActivity());
+
+                    imageGetter.repoInfo(repoInfo);
+                    imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
+
+                    htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setCurrentBranch(String branch) {
+        if (getActivity() != null) {
+            repoInfo.branch = branch;
+            loadReadme(new GetReadmeContentsClient(repoInfo));
+        }
+    }
+
+    private void onError(String tag, RetrofitError error) {
+        ErrorHandler.onError(getActivity(), "MarkdownFragment: " + tag, error);
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.markdown_fragment_title;
+    }
+
+    @Override
+    public IIcon getTitleIcon() {
+        return Octicons.Icon.oct_info;
+    }
+
+    public void reload() {
+        getContent();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateReceiver = new UpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        getActivity().registerReceiver(updateReceiver, intentFilter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(updateReceiver);
+    }
+
+    @Override
+    public void setPermissions(boolean admin, boolean push, boolean pull) {
+
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
+    }
+
+    public class UpdateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (isOnline(context)) {
+                reload();
+            }
+        }
+
+        public boolean isOnline(Context context) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
+        }
+    }
 }

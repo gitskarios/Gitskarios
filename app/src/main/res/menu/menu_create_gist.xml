@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <item
-      android:title="@string/publish_gist"
-      android:id="@+id/action_publish_gist"
-      app:showAsAction="always"
-      />
+    <item
+        android:id="@+id/action_publish_gist"
+        android:title="@string/publish_gist"
+        app:showAsAction="always" />
 
 </menu>

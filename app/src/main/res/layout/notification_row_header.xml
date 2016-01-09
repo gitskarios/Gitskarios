@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="?attr/selectableItemBackground"
-                android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
-  <TextView
-      android:id="@+id/text"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/header_height"
-      android:layout_toLeftOf="@+id/clearNotifications"
-      android:layout_toStartOf="@+id/clearNotifications"
-      android:gravity="center_vertical"
-      android:orientation="vertical"
-      android:paddingLeft="24dp"
-      android:textColor="?attr/gitskarios_secondary_text"
-      android:textSize="@dimen/textSizeSmall"
-      android:textStyle="bold"
-      />
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:layout_toLeftOf="@+id/clearNotifications"
+        android:layout_toStartOf="@+id/clearNotifications"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:textColor="?attr/gitskarios_secondary_text"
+        android:textSize="@dimen/textSizeSmall"
+        android:textStyle="bold" />
 
-  <ImageView
-      android:id="@+id/clearNotifications"
-      style="?android:borderlessButtonStyle"
-      android:layout_width="56dp"
-      android:layout_height="56dp"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentTop="true"
-      android:clickable="true"
-      android:padding="@dimen/gapLarge"
-      />
+    <ImageView
+        android:id="@+id/clearNotifications"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:padding="@dimen/gapLarge" />
 </RelativeLayout>

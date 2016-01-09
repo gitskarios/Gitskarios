@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alorma.github.R;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.StoreCredentials;
+import com.alorma.github.utils.AttributesUtils;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.mikepenz.iconics.IconicsDrawable;

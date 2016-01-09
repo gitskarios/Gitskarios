@@ -2,6 +2,7 @@ package com.alorma.github.ui.adapter.base;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,76 +12,76 @@ import java.util.List;
  */
 public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<ViewHolder> {
 
-  public List<ItemType> items;
-  private ItemType type;
-  private LayoutInflater inflater;
-  private RecyclerAdapterContentListener recyclerAdapterContentListener;
+    public List<ItemType> items;
+    private ItemType type;
+    private LayoutInflater inflater;
+    private RecyclerAdapterContentListener recyclerAdapterContentListener;
 
-  public RecyclerArrayAdapter(LayoutInflater inflater) {
-    this.inflater = inflater;
-    items = new ArrayList<>();
-  }
-
-  @Override
-  public int getItemCount() {
-    return items.size();
-  }
-
-  public ItemType getItem(int position) {
-    return items.get(position);
-  }
-
-  public void add(ItemType itemType) {
-    items.add(itemType);
-    notifyDataSetChanged();
-  }
-
-  public void addAll(Collection<? extends ItemType> items) {
-    this.items.addAll(items);
-    notifyDataSetChanged();
-  }
-
-  public void clear() {
-    items.clear();
-    notifyDataSetChanged();
-  }
-
-  @Override
-  public void onBindViewHolder(final ViewHolder holder, int position) {
-    onBindViewHolder(holder, getItem(position));
-    if (recyclerAdapterContentListener != null && position + lazyLoadCount() >= getItemCount()) {
-      recyclerAdapterContentListener.loadMoreItems();
+    public RecyclerArrayAdapter(LayoutInflater inflater) {
+        this.inflater = inflater;
+        items = new ArrayList<>();
     }
-  }
 
-  protected abstract void onBindViewHolder(ViewHolder holder, ItemType type);
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
 
-  protected int lazyLoadCount() {
-    return 1;
-  }
+    public ItemType getItem(int position) {
+        return items.get(position);
+    }
 
-  public LayoutInflater getInflater() {
-    return inflater;
-  }
+    public void add(ItemType itemType) {
+        items.add(itemType);
+        notifyDataSetChanged();
+    }
 
-  public void setInflater(LayoutInflater inflater) {
-    this.inflater = inflater;
-  }
+    public void addAll(Collection<? extends ItemType> items) {
+        this.items.addAll(items);
+        notifyDataSetChanged();
+    }
 
-  public void remove(ItemType itemType) {
-    items.remove(itemType);
-    notifyDataSetChanged();
-  }
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
 
-  public List<ItemType> getItems() {
-    return items;
-  }
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        onBindViewHolder(holder, getItem(position));
+        if (recyclerAdapterContentListener != null && position + lazyLoadCount() >= getItemCount()) {
+            recyclerAdapterContentListener.loadMoreItems();
+        }
+    }
 
-  public void setRecyclerAdapterContentListener(RecyclerAdapterContentListener recyclerAdapterContentListener) {
-    this.recyclerAdapterContentListener = recyclerAdapterContentListener;
-  }
+    protected abstract void onBindViewHolder(ViewHolder holder, ItemType type);
 
-  public interface RecyclerAdapterContentListener {
-    void loadMoreItems();
-  }
+    protected int lazyLoadCount() {
+        return 1;
+    }
+
+    public LayoutInflater getInflater() {
+        return inflater;
+    }
+
+    public void setInflater(LayoutInflater inflater) {
+        this.inflater = inflater;
+    }
+
+    public void remove(ItemType itemType) {
+        items.remove(itemType);
+        notifyDataSetChanged();
+    }
+
+    public List<ItemType> getItems() {
+        return items;
+    }
+
+    public void setRecyclerAdapterContentListener(RecyclerAdapterContentListener recyclerAdapterContentListener) {
+        this.recyclerAdapterContentListener = recyclerAdapterContentListener;
+    }
+
+    public interface RecyclerAdapterContentListener {
+        void loadMoreItems();
+    }
 }

@@ -31,6 +31,7 @@
 
             <TextView
                 android:id="@+id/authorName"
+                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -38,8 +39,7 @@
                 android:layout_marginLeft="@dimen/gapMedium"
                 android:layout_marginStart="@dimen/gapMedium"
                 android:layout_toEndOf="@id/authorAvatar"
-                android:layout_toRightOf="@id/authorAvatar"
-                style="@style/TextAppearance.AppCompat.Body1"/>
+                android:layout_toRightOf="@id/authorAvatar" />
 
             <TextView
                 android:id="@+id/textDate"

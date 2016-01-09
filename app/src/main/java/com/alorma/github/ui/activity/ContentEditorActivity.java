@@ -108,7 +108,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
             String content = getIntent().getExtras().getString(PREFILL);
             if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(ISSUE_NUM)) {
 
-                RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
+                RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
                 int issueNumber = getIntent().getExtras().getInt(ISSUE_NUM);
 
                 issueInfo = new IssueInfo();
@@ -279,7 +279,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
         if (resultCode == RESULT_OK && data != null) {
             switch (requestCode) {
                 case EMOJI_REQUEST:
-                    Emoji emoji = (Emoji) data.getSerializableExtra(EmojisActivity.EMOJI);
+                    Emoji emoji = (Emoji) data.getParcelableExtra(EmojisActivity.EMOJI);
                     editText.append(" :" + emoji.getKey() + ": ");
                     break;
             }

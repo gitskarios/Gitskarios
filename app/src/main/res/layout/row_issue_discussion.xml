@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/gapMedium"
-                android:layout_margin="@dimen/gapMedium"
-                android:layout_marginTop="@dimen/gapSmall"
-                android:layout_marginBottom="@dimen/gapSmall"
-                android:orientation="vertical"
-      >
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/webContainer"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/gapMedium"
+        android:layout_marginBottom="@dimen/gapSmall"
+        android:layout_marginTop="@dimen/gapSmall"
         android:orientation="vertical"
-        />
+        android:padding="@dimen/gapMedium">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        <LinearLayout
+            android:id="@+id/webContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
 
-      <ImageView
-          android:layout_width="24dp"
-          android:layout_height="24dp"
-          android:id="@id/avatarAuthor"
-          />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="24dp"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:id="@+id/textAuthor"
-          android:gravity="center_vertical"
-          android:layout_marginLeft="@dimen/gapMedium"
-          android:layout_marginStart="@dimen/gapMedium"
-          />
+            <ImageView
+                android:id="@id/avatarAuthor"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+
+            <TextView
+                android:id="@+id/textAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/gapMedium"
+                android:layout_marginStart="@dimen/gapMedium"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
 </LinearLayout>

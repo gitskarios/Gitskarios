@@ -39,7 +39,7 @@
 
         <activity
             android:name=".ui.activity.EnterpriseAdActivity"
-            android:theme="@style/EnterpriseTheme"
-            android:label=""/>
+            android:label=""
+            android:theme="@style/EnterpriseTheme" />
     </application>
 </manifest>

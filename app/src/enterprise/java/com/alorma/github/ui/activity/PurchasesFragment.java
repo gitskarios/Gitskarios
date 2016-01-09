@@ -8,23 +8,23 @@ import android.content.Intent;
  */
 public class PurchasesFragment extends Fragment {
 
-  public void checkSku(PurchasesCallback callback) {
-    if (callback != null) {
-      callback.onMultiAccountPurchaseResult(true);
+    public void checkSku(PurchasesCallback callback) {
+        if (callback != null) {
+            callback.onMultiAccountPurchaseResult(true);
+        }
     }
-  }
 
-  public void showDialogBuyMultiAccount() {
+    public void showDialogBuyMultiAccount() {
 
-  }
-
-  public void finishPurchase(int requestCode, int resultCode, Intent data, PurchasesCallback callback) {
-    if (callback != null) {
-      callback.onMultiAccountPurchaseResult(true);
     }
-  }
 
-  public interface PurchasesCallback {
-    void onMultiAccountPurchaseResult(boolean bool);
-  }
+    public void finishPurchase(int requestCode, int resultCode, Intent data, PurchasesCallback callback) {
+        if (callback != null) {
+            callback.onMultiAccountPurchaseResult(true);
+        }
+    }
+
+    public interface PurchasesCallback {
+        void onMultiAccountPurchaseResult(boolean bool);
+    }
 }

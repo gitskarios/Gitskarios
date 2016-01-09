@@ -1,76 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:orientation="vertical">
 
-  <ImageView
-      android:id="@+id/imageState"
-      android:layout_width="24dp"
-      android:layout_height="24dp"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentTop="true"
-      android:layout_margin="@dimen/gapMedium"
-      />
+    <ImageView
+        android:id="@+id/imageState"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/gapMedium" />
 
-  <TextView
-      android:id="@+id/textTitle"
-      style="@style/TextAppearance.AppCompat.Subhead"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      android:layout_marginBottom="@dimen/gapMedium"
-      android:layout_marginTop="@dimen/gapMedium"
-      android:layout_toLeftOf="@+id/numComments"
-      android:layout_toRightOf="@+id/imageState"
-      android:layout_toStartOf="@+id/numComments"
-      android:ellipsize="end"
-      android:maxLines="2"
-      android:textSize="@dimen/textSizeMedium"
-      />
+    <TextView
+        android:id="@+id/textTitle"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:layout_toLeftOf="@+id/numComments"
+        android:layout_toRightOf="@+id/imageState"
+        android:layout_toStartOf="@+id/numComments"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="@dimen/textSizeMedium" />
 
-  <com.wefika.flowlayout.FlowLayout
-      android:id="@+id/labelsLayout"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/textTitle"
-      android:layout_toLeftOf="@+id/numComments"
-      android:layout_toRightOf="@+id/imageState"
-      android:layout_toStartOf="@+id/numComments"
-      android:gravity="start|top"
-      android:minHeight="?attr/actionBarSize"
-      />
+    <com.wefika.flowlayout.FlowLayout
+        android:id="@+id/labelsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTitle"
+        android:layout_toLeftOf="@+id/numComments"
+        android:layout_toRightOf="@+id/imageState"
+        android:layout_toStartOf="@+id/numComments"
+        android:gravity="start|top"
+        android:minHeight="?attr/actionBarSize" />
 
-  <TextView
-      android:id="@+id/textInfo"
-      style="@style/TextAppearance.AppCompat.Caption"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignEnd="@+id/textTitle"
-      android:layout_alignRight="@+id/textTitle"
-      android:layout_below="@+id/labelsLayout"
-      android:layout_marginBottom="@dimen/gapMedium"
-      android:layout_toRightOf="@+id/imageState"
-      android:textSize="@dimen/textSizeSmall"
-      />
+    <TextView
+        android:id="@+id/textInfo"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textTitle"
+        android:layout_alignRight="@+id/textTitle"
+        android:layout_below="@+id/labelsLayout"
+        android:layout_marginBottom="@dimen/gapMedium"
+        android:layout_toRightOf="@+id/imageState"
+        android:textSize="@dimen/textSizeSmall" />
 
-  <TextView
-      android:id="@+id/numComments"
-      style="@style/TextAppearance.AppCompat.Caption"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentTop="true"
-      android:layout_margin="@dimen/gapMedium"
-      android:gravity="center_vertical"
-      android:minHeight="24dp"
-      android:minWidth="24dp"
-      android:textSize="@dimen/textSizeSmall"
-      />
+    <TextView
+        android:id="@+id/numComments"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/gapMedium"
+        android:gravity="center_vertical"
+        android:minHeight="24dp"
+        android:minWidth="24dp"
+        android:textSize="@dimen/textSizeSmall" />
 
 </RelativeLayout>

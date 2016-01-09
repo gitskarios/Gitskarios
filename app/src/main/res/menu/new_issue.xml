@@ -1,12 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      tools:context="com.alorma.github.ui.activity.NewIssueActivity"
-    >
-  <item
-      android:id="@+id/action_send"
-      android:title="@string/action_send_issue"
-      android:orderInCategory="100"
-      app:showAsAction="always"
-      />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.alorma.github.ui.activity.NewIssueActivity">
+    <item
+        android:id="@+id/action_send"
+        android:orderInCategory="100"
+        android:title="@string/action_send_issue"
+        app:showAsAction="always" />
 </menu>

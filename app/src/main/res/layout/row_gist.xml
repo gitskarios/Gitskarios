@@ -1,67 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="?selectableItemBackground"
-              android:padding="@dimen/gapLarge"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="@dimen/gapLarge">
 
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textFileName"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/gapSmall"
+            android:layout_toLeftOf="@+id/gistPrivate"
+            android:layout_toStartOf="@+id/gistPrivate"
+            android:textColor="?colorPrimary"
+            tools:text="MyFile.java" />
+
+        <TextView
+            android:id="@+id/gistPrivate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/gapMedium"
+            android:layout_marginRight="@dimen/gapMedium"
+            android:background="@drawable/private_label"
+            android:gravity="center"
+            android:padding="@dimen/gapSmall"
+            android:text="@string/row_private_gist"
+            android:textColor="@color/privateGist"
+            android:textSize="@dimen/textSizeXMicro"
+            android:visibility="visible" />
+
+    </RelativeLayout>
 
     <TextView
+        android:id="@+id/textDescription"
+        style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textFileName"
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:textColor="?colorPrimary"
-        tools:text="MyFile.java"
-        android:layout_toLeftOf="@+id/gistPrivate"
-        android:layout_toStartOf="@+id/gistPrivate"
-        android:layout_marginRight="@dimen/gapSmall"
-        />
+        android:textColor="@color/secondary_text"
+        tools:text="MyFile.java" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gistPrivate"
-        android:padding="@dimen/gapSmall"
-        android:textSize="@dimen/textSizeXMicro"
-        android:textColor="@color/privateGist"
-        android:visibility="visible"
-        android:text="@string/row_private_gist"
-        android:gravity="center"
-        android:background="@drawable/private_label"
-        android:layout_marginRight="@dimen/gapMedium"
-        android:layout_marginEnd="@dimen/gapMedium"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        />
-
-  </RelativeLayout>
-
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/textDescription"
-      style="@style/TextAppearance.AppCompat.Subhead"
-      android:textColor="@color/secondary_text"
-      tools:text="MyFile.java"
-      />
-
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:id="@+id/textNumFiles"
-      style="@style/TextAppearance.AppCompat.Caption"
-      android:textColor="@color/secondary_text"
-      android:textSize="@dimen/textSizeSmall"
-      android:layout_marginTop="@dimen/gapMedium"
-      />
+        android:id="@+id/textNumFiles"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/textSizeSmall" />
 
 </LinearLayout>

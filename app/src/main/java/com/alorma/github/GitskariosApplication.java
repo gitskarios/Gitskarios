@@ -28,61 +28,61 @@ import io.fabric.sdk.android.Fabric;
  */
 public class GitskariosApplication extends MultiDexApplication {
 
-  public static GitskariosApplication get(Context context) {
-    return (GitskariosApplication) context.getApplicationContext();
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-
-    CustomActivityOnCrash.install(this);
-    CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
-    CustomActivityOnCrash.setEnableAppRestart(true);
-
-    if (!BuildConfig.DEBUG) {
-      Fabric.with(this, new Crashlytics());
-
-      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-      Tracker tracker = analytics.newTracker(R.xml.global_tracker);
-      tracker.enableAdvertisingIdCollection(true);
+    public static GitskariosApplication get(Context context) {
+        return (GitskariosApplication) context.getApplicationContext();
     }
 
-    ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-    TokenProvider.setTokenProviderInstance(new TokenProviderInterface() {
-      @Override
-      public String getToken() {
-        return getStoreCredentials().token();
-      }
-    });
+        CustomActivityOnCrash.install(this);
+        CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
+        CustomActivityOnCrash.setEnableAppRestart(true);
 
-    UrlProvider.setUrlProviderInstance(new UrlProviderInterface() {
-      @Override
-      public String getUrl() {
-        return getStoreCredentials().getUrl();
-      }
-    });
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
 
-    UsernameProvider.setUsernameProviderInterface(new UsernameProviderInterface() {
-      @Override
-      public String getUsername() {
-        return getStoreCredentials().getUserName();
-      }
-    });
-
-    LogProvider.setTokenProviderInstance(new LogProviderInterface() {
-      @Override
-      public void log(String message) {
-        if (BuildConfig.DEBUG) {
-          Log.v("RETROFIT_LOG", message);
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+            tracker.enableAdvertisingIdCollection(true);
         }
-      }
-    });
-  }
 
-  @NonNull
-  private StoreCredentials getStoreCredentials() {
-    return new StoreCredentials(GitskariosApplication.this);
-  }
+        ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
+
+        TokenProvider.setTokenProviderInstance(new TokenProviderInterface() {
+            @Override
+            public String getToken() {
+                return getStoreCredentials().token();
+            }
+        });
+
+        UrlProvider.setUrlProviderInstance(new UrlProviderInterface() {
+            @Override
+            public String getUrl() {
+                return getStoreCredentials().getUrl();
+            }
+        });
+
+        UsernameProvider.setUsernameProviderInterface(new UsernameProviderInterface() {
+            @Override
+            public String getUsername() {
+                return getStoreCredentials().getUserName();
+            }
+        });
+
+        LogProvider.setTokenProviderInstance(new LogProviderInterface() {
+            @Override
+            public void log(String message) {
+                if (BuildConfig.DEBUG) {
+                    Log.v("RETROFIT_LOG", message);
+                }
+            }
+        });
+    }
+
+    @NonNull
+    private StoreCredentials getStoreCredentials() {
+        return new StoreCredentials(GitskariosApplication.this);
+    }
 }

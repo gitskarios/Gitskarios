@@ -7,19 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import io.fabric.sdk.android.Fabric;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
@@ -28,6 +17,13 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Bernat on 20/10/2015.

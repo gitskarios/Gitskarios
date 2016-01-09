@@ -1,15 +1,15 @@
 package com.alorma.github.ui.fragment.menu;
 
 public interface OnMenuItemSelectedListener {
-  boolean onProfileSelected();
+    boolean onProfileSelected();
 
-  boolean onReposSelected();
+    boolean onReposSelected();
 
-  boolean onPeopleSelected();
+    boolean onPeopleSelected();
 
-  boolean onUserEventsSelected();
+    boolean onUserEventsSelected();
 
-  boolean onSettingsSelected();
+    boolean onSettingsSelected();
 
-  boolean onAboutSelected();
+    boolean onAboutSelected();
 }

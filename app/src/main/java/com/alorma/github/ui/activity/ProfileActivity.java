@@ -23,17 +23,17 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import com.alorma.gitskarios.core.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
+import com.alorma.github.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.AccountsHelper;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
@@ -46,7 +46,7 @@ import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.users.UserResumeFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.github.StoreCredentials;
+import com.alorma.gitskarios.core.Pair;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
@@ -76,42 +76,30 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     private static final String USER = "USER";
     private static final String ACCOUNT = "ACCOUNT";
     private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
-
+    @Bind(R.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
+    @Bind(R.id.appbarLayout)
+    AppBarLayout appBarLayout;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.ctlLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.userAvatar)
+    ImageView userAvatar;
+    @Bind(R.id.userLogin)
+    TextView userLogin;
+    @Bind(R.id.userName)
+    TextView userName;
+    @Bind(R.id.tabLayout)
+    TabLayout tabLayout;
+    @Bind(R.id.viewpager)
+    ViewPager viewPager;
     private User user;
-
     private boolean followingUser = false;
     private boolean updateProfile = false;
     private Account selectedAccount;
     private boolean colorApplied;
     private int avatarColor;
-
-    @Bind(R.id.coordinator)
-    CoordinatorLayout coordinatorLayout;
-
-    @Bind(R.id.appbarLayout)
-    AppBarLayout appBarLayout;
-
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.ctlLayout)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @Bind(R.id.userAvatar)
-    ImageView userAvatar;
-
-    @Bind(R.id.userLogin)
-    TextView userLogin;
-
-    @Bind(R.id.userName)
-    TextView userName;
-
-    @Bind(R.id.tabLayout)
-    TabLayout tabLayout;
-
-    @Bind(R.id.viewpager)
-    ViewPager viewPager;
-
     private String userLoginName;
 
     private UserResumeFragment userResumeFragment;
@@ -128,7 +116,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     public static Intent createLauncherIntent(Context context, User user) {
         Bundle extras = new Bundle();
         if (user != null) {
-            extras.putSerializable(USER, user);
+            extras.putParcelable(USER, user);
 
             StoreCredentials settings = new StoreCredentials(context);
             extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
@@ -136,6 +124,29 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtras(extras);
         return intent;
+    }
+
+    public static void colorizeToolbar(Toolbar toolbarView, int toolbarIconsColor) {
+
+        for (int i = 0; i < toolbarView.getChildCount(); i++) {
+            final View v = toolbarView.getChildAt(i);
+
+
+            if (v instanceof ActionMenuView) {
+                for (int j = 0; j < ((ActionMenuView) v).getChildCount(); j++) {
+
+                    //Step 2: Changing the color of any ActionMenuViews - icons that
+                    //are not back button, nor text, nor overflow menu icon.
+                    final View innerView = ((ActionMenuView) v).getChildAt(j);
+
+                    if (innerView instanceof ActionMenuItemView) {
+                        int drawablesCount = ((ActionMenuItemView) innerView).getCompoundDrawables().length;
+
+                        ((ActionMenuItemView) innerView).setTextColor(toolbarIconsColor);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -184,7 +195,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
                     name = AccountsHelper.getUserName(this, selectedAccount);
                 }
                 if (getIntent().getExtras().containsKey(USER)) {
-                    user = (User) getIntent().getSerializableExtra(USER);
+                    user = (User) getIntent().getParcelableExtra(USER);
                     avatar = user.avatar_url;
                     login = user.login;
                     name = user.name;
@@ -334,29 +345,6 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         colorizeToolbar(getToolbar(), rgb);
     }
 
-    public static void colorizeToolbar(Toolbar toolbarView, int toolbarIconsColor) {
-
-        for(int i = 0; i < toolbarView.getChildCount(); i++) {
-            final View v = toolbarView.getChildAt(i);
-
-
-            if(v instanceof ActionMenuView) {
-                for(int j = 0; j < ((ActionMenuView)v).getChildCount(); j++) {
-
-                    //Step 2: Changing the color of any ActionMenuViews - icons that
-                    //are not back button, nor text, nor overflow menu icon.
-                    final View innerView = ((ActionMenuView)v).getChildAt(j);
-
-                    if(innerView instanceof ActionMenuItemView) {
-                        int drawablesCount = ((ActionMenuItemView)innerView).getCompoundDrawables().length;
-
-                        ((ActionMenuItemView) innerView).setTextColor(toolbarIconsColor);
-                    }
-                }
-            }
-        }
-    }
-
     private void generateAvatarBackground(int color) {
         ShapeDrawable circle = new ShapeDrawable(new OvalShape());
         circle.getPaint().setColor(color);
@@ -393,7 +381,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
             StoreCredentials settings = new StoreCredentials(this);
 
             if (user != null && !settings.getUserName().equals(user.login)) {
-                MenuItem item ;
+                MenuItem item;
                 if (followingUser) {
                     item = menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
                 } else {

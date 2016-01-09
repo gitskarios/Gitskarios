@@ -3,6 +3,7 @@ package com.alorma.github.ui.renderers.releases.assets;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.pedrogomez.renderers.Renderer;
 import com.pedrogomez.renderers.RendererBuilder;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,23 +13,23 @@ import java.util.List;
  */
 public class ReleaseAssetRendererBuilder extends RendererBuilder<ReleaseAsset> {
 
-  public ReleaseAssetRendererBuilder(ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
-    setPrototypes(generatePrototypes(onReleaseAssetClicked));
-  }
+    public ReleaseAssetRendererBuilder(ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
+        setPrototypes(generatePrototypes(onReleaseAssetClicked));
+    }
 
-  private Collection<Renderer<ReleaseAsset>> generatePrototypes(ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
-    List<Renderer<ReleaseAsset>> list = new ArrayList<>();
+    private Collection<Renderer<ReleaseAsset>> generatePrototypes(ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
+        List<Renderer<ReleaseAsset>> list = new ArrayList<>();
 
-    ReleaseAssetsRenderer renderer = new ReleaseAssetsRenderer();
-    renderer.setOnReleaseAssetClicked(onReleaseAssetClicked);
+        ReleaseAssetsRenderer renderer = new ReleaseAssetsRenderer();
+        renderer.setOnReleaseAssetClicked(onReleaseAssetClicked);
 
-    list.add(renderer);
+        list.add(renderer);
 
-    return list;
-  }
+        return list;
+    }
 
-  @Override
-  protected Class getPrototypeClass(ReleaseAsset releaseAsset) {
-    return ReleaseAssetsRenderer.class;
-  }
+    @Override
+    protected Class getPrototypeClass(ReleaseAsset releaseAsset) {
+        return ReleaseAssetsRenderer.class;
+    }
 }

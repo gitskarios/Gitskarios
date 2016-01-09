@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="oval"
-    >
+    android:shape="oval">
 
-  <padding
-      android:bottom="@dimen/gapMedium"
-      android:left="@dimen/gapMedium"
-      android:right="@dimen/gapMedium"
-      android:top="@dimen/gapMedium"
-      />
+    <padding
+        android:bottom="@dimen/gapMedium"
+        android:left="@dimen/gapMedium"
+        android:right="@dimen/gapMedium"
+        android:top="@dimen/gapMedium" />
 
-  <solid android:color="@color/github_status_green"/>
+    <solid android:color="@color/github_status_green" />
 
 </shape>

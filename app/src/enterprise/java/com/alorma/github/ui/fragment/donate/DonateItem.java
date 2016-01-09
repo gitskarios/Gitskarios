@@ -7,26 +7,26 @@ import java.text.DecimalFormat;
  */
 public class DonateItem {
 
-  private String sku;
-  private double quantity;
+    private String sku;
+    private double quantity;
 
-  public DonateItem(String sku, double quantity) {
-    this.sku = sku;
-    this.quantity = quantity;
-  }
+    public DonateItem(String sku, double quantity) {
+        this.sku = sku;
+        this.quantity = quantity;
+    }
 
-  public String getSku() {
-    return sku;
-  }
+    public String getSku() {
+        return sku;
+    }
 
-  public double getQuantity() {
-    return quantity;
-  }
+    public double getQuantity() {
+        return quantity;
+    }
 
-  @Override
-  public String toString() {
-    String euro = "\u20ac";
-    DecimalFormat df = new DecimalFormat("#.00");
-    return euro + " " + df.format(quantity);
-  }
+    @Override
+    public String toString() {
+        String euro = "\u20ac";
+        DecimalFormat df = new DecimalFormat("#.00");
+        return euro + " " + df.format(quantity);
+    }
 }

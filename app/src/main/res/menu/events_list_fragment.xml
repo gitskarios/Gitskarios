@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <item
-      android:title="@string/event_list_filter"
-      android:id="@+id/events_list_filter"
-      app:showAsAction="always"
-      android:orderInCategory="150"
-      />
+    <item
+        android:id="@+id/events_list_filter"
+        android:orderInCategory="150"
+        android:title="@string/event_list_filter"
+        app:showAsAction="always" />
 
 </menu>

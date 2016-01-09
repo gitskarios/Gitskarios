@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <item
-      android:title="@string/gist_file_created_removed"
-      android:id="@+id/gist_file_created_removed"
-      app:showAsAction="never"
-      />
+    <item
+        android:id="@+id/gist_file_created_removed"
+        android:title="@string/gist_file_created_removed"
+        app:showAsAction="never" />
 
 </menu>

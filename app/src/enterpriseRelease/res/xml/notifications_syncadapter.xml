@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sync-adapter
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:contentAuthority="com.alorma.github_enterprise"
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="@string/account_type"
-    android:userVisible="true"
-    android:supportsUploading="false"
-    android:allowParallelSyncs="false"
-    android:isAlwaysSyncable="true"
-    />
+    android:allowParallelSyncs="false" android:contentAuthority="com.alorma.github_enterprise"
+    android:isAlwaysSyncable="true" android:supportsUploading="false"
+    android:userVisible="true" />

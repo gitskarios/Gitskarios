@@ -31,10 +31,10 @@
     <ProgressBar
         android:id="@+id/loading_view"
         style="?android:attr/progressBarStyleSmall"
-        tools:visibility="visible"
         android:layout_width="?attr/listPreferredItemHeight"
         android:layout_height="?attr/listPreferredItemHeight"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 </FrameLayout>

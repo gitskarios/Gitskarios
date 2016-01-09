@@ -15,19 +15,15 @@
  */
 package com.github.mobile.util;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v4.os.AsyncTaskCompat;
 import android.text.Html.ImageGetter;
 import android.text.TextUtils;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.alorma.github.emoji.EmojiBitmapLoader;
@@ -44,7 +40,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;

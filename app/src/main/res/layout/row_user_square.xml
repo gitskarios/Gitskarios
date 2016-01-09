@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="180dp"
-             android:foreground="?selectableItemBackground"
-             android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:foreground="?selectableItemBackground"
+    android:orientation="vertical">
 
-  <ImageView
-      android:id="@+id/avatarAuthorImage"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:scaleType="centerCrop"
-      android:transitionName="avatar"
-      />
+    <ImageView
+        android:id="@+id/avatarAuthorImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:transitionName="avatar" />
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:id="@+id/textRootView"
-      android:background="@color/gray_github_medium"
-      >
-
-    <TextView
-        android:id="@+id/textAuthorLogin"
-        style="@style/user_row_item"
+    <LinearLayout
+        android:id="@+id/textRootView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:padding="@dimen/gapMedium"
-        />
-  </LinearLayout>
+        android:background="@color/gray_github_medium">
+
+        <TextView
+            android:id="@+id/textAuthorLogin"
+            style="@style/user_row_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="@dimen/gapMedium" />
+    </LinearLayout>
 </FrameLayout>

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/md_grey_200">
+    android:background="@color/md_grey_200"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,11 +42,12 @@
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/gapMedium"
             android:layout_marginBottom="@dimen/gapXLarge"
+            android:layout_marginTop="@dimen/gapMedium"
             card_view:cardElevation="4dp"
             tools:layout_height="120dp">
 

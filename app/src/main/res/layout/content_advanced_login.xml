@@ -1,89 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              tools:showIn="@layout/activity_github_login"
-              android:paddingTop="20dp"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    tools:showIn="@layout/activity_github_login">
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="16sp"
-      android:text="Gitskarios needs following scopes to work:"
-      android:layout_marginBottom="@dimen/gapMedium"
-      />
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="horizontal"
-      >
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        >
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="repo"
-          android:checked="true"
-          />
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="gists"
-          android:checked="true"
-          />
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="repo:status "
-          android:checked="true"
-          />
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="user"
-          android:checked="true"
-          />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/gapMedium"
+        android:text="Gitskarios needs following scopes to work:"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        >
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="delete_repo*"
-          android:checked="true"
-          />
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="notifications"
-          android:checked="true"
-          />
-      <CheckBox
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="user:follow"
-          android:checked="true"
-          />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="repo" />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="gists" />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="repo:status " />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="user" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="delete_repo*" />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="notifications" />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="user:follow" />
+        </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textColor="@color/md_grey_400"
-      android:text="Checkboxes are only informative"
-      android:layout_marginTop="@dimen/gapMedium"
-      />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:text="Checkboxes are only informative"
+        android:textColor="@color/md_grey_400" />
 </LinearLayout>

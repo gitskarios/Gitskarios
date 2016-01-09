@@ -20,14 +20,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
+import com.alorma.github.sdk.bean.dto.response.GistFilesMap;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.GistCreatedDetailFilesAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -110,7 +108,7 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
         super.onActivityResult(requestCode, resultCode, data);
 
         if (data != null && resultCode == RESULT_OK) {
-            GistFile file = (GistFile) data.getSerializableExtra(GistEditorActivity.EXTRA_FILE);
+            GistFile file = (GistFile) data.getParcelableExtra(GistEditorActivity.EXTRA_FILE);
             if (file != null) {
                 switch (requestCode) {
                     case GIST_FILE_CREATOR:
@@ -193,7 +191,7 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
             Gist gist = new Gist();
             gist.isPublic = !gistPrivate.isChecked();
             gist.description = gistDescription.getText().toString();
-            Map<String, GistFile> files = new HashMap<>();
+            GistFilesMap files = new GistFilesMap();
             for (GistFile gistFile : adapter.getItems()) {
                 if (!TextUtils.isEmpty(gistFile.filename) && !TextUtils.isEmpty(gistFile.content)) {
                     files.put(gistFile.filename, gistFile);

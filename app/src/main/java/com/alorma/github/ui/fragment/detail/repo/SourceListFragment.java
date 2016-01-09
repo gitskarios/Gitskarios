@@ -8,13 +8,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
@@ -23,7 +23,6 @@ import com.alorma.github.sdk.services.content.Downloader;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
-import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
@@ -31,6 +30,7 @@ import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.LinearBreadcrumb;
+import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -58,7 +58,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
     public static SourceListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(REPO_INFO, repoInfo);
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
         SourceListFragment f = new SourceListFragment();
         f.setArguments(bundle);
@@ -137,7 +137,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     @Override
     protected void loadArguments() {
         if (getArguments() != null) {
-            repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
+            repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
         }
     }
 

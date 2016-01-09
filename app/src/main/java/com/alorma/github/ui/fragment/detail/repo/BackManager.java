@@ -5,8 +5,8 @@ package com.alorma.github.ui.fragment.detail.repo;
  */
 public interface BackManager {
 
-  /**
-   * @return true to for allow activity to handle onBack, false Otherwise
-   */
-  boolean onBackPressed();
+    /**
+     * @return true to for allow activity to handle onBack, false Otherwise
+     */
+    boolean onBackPressed();
 }

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <item
-      android:title="@string/reply"
-      android:id="@+id/action_reply"
-      app:showAsAction="always"
-      />
+    <item
+        android:id="@+id/action_reply"
+        android:title="@string/reply"
+        app:showAsAction="always" />
 
 </menu>

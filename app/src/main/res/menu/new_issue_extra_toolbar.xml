@@ -1,26 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      tools:context="com.alorma.github.ui.activity.NewIssueActivity"
-    >
-  <item
-      android:id="@+id/action_add_assignee"
-      android:title="@string/action_add_assignee"
-      android:orderInCategory="100"
-      app:showAsAction="always"
-      />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.alorma.github.ui.activity.NewIssueActivity">
+    <item
+        android:id="@+id/action_add_assignee"
+        android:orderInCategory="100"
+        android:title="@string/action_add_assignee"
+        app:showAsAction="always" />
 
-  <item
-      android:id="@+id/action_add_labels"
-      android:title="@string/action_add_labels"
-      android:orderInCategory="200"
-      app:showAsAction="always"
-      />
+    <item
+        android:id="@+id/action_add_labels"
+        android:orderInCategory="200"
+        android:title="@string/action_add_labels"
+        app:showAsAction="always" />
 
-  <item
-      android:id="@+id/action_add_milestones"
-      android:title="@string/action_add_milestone"
-      android:orderInCategory="300"
-      app:showAsAction="always"
-      />
+    <item
+        android:id="@+id/action_add_milestones"
+        android:orderInCategory="300"
+        android:title="@string/action_add_milestone"
+        app:showAsAction="always" />
 </menu>

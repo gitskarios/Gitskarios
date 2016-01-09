@@ -2,10 +2,11 @@ package com.alorma.github.ui.adapter.issues;
 
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -13,35 +14,35 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  * Created by Bernat on 22/08/2014.
  */
 public class PullRequestsAdapter extends IssuesAdapter {
-  public PullRequestsAdapter(LayoutInflater inflater) {
-    super(inflater);
-  }
-
-  @Override
-  protected int getColorState(Issue issue) {
-    int colorState = R.color.pullrequest_state_close;
-    if (IssueState.open == issue.state) {
-      colorState = R.color.pullrequest_state_open;
-    } else if ((issue instanceof PullRequest) && ((PullRequest) issue).merged) {
-      colorState = R.color.pullrequest_state_merged;
-    }
-    return colorState;
-  }
-
-  @NonNull
-  @Override
-  protected IIcon getIconStateDrawable(Issue issue) {
-    IIcon iconDrawable;
-    if (issue.state == IssueState.closed) {
-      iconDrawable = Octicons.Icon.oct_issue_closed;
-    } else if ((issue instanceof PullRequest) && ((PullRequest) issue).merged) {
-      iconDrawable = Octicons.Icon.oct_git_merge;
-    } else {
-      iconDrawable = Octicons.Icon.oct_issue_opened;
+    public PullRequestsAdapter(LayoutInflater inflater) {
+        super(inflater);
     }
 
-    return iconDrawable;
-  }
+    @Override
+    protected int getColorState(Issue issue) {
+        int colorState = R.color.pullrequest_state_close;
+        if (IssueState.open == issue.state) {
+            colorState = R.color.pullrequest_state_open;
+        } else if ((issue instanceof PullRequest) && ((PullRequest) issue).merged) {
+            colorState = R.color.pullrequest_state_merged;
+        }
+        return colorState;
+    }
+
+    @NonNull
+    @Override
+    protected IIcon getIconStateDrawable(Issue issue) {
+        IIcon iconDrawable;
+        if (issue.state == IssueState.closed) {
+            iconDrawable = Octicons.Icon.oct_issue_closed;
+        } else if ((issue instanceof PullRequest) && ((PullRequest) issue).merged) {
+            iconDrawable = Octicons.Icon.oct_git_merge;
+        } else {
+            iconDrawable = Octicons.Icon.oct_issue_opened;
+        }
+
+        return iconDrawable;
+    }
 
 /*
     private IssuesAdapterListener issuesAdapterListener;

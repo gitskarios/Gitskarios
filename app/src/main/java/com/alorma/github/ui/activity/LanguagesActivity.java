@@ -15,9 +15,6 @@ import com.alorma.github.ui.adapter.LanguagesAdapter;
 import java.util.Arrays;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-
 public class LanguagesActivity extends BackActivity implements LanguagesAdapter.LanguageSelectedListener {
 
     public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";

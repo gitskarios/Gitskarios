@@ -1,145 +1,138 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".ui.activity.GithubLoginActivity"
-    >
-  <android.support.v7.widget.Toolbar
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:id="@id/toolbar"
-      android:layout_height="120dp"
-      android:layout_width="match_parent"
-      android:background="?colorPrimary"
-      app:contentInsetStart="@dimen/second_keyline"
-      app:theme="@style/Toolbar.AppCompat.Responsive"
-      app:popupTheme="@style/Toolbar.Popup.AppCompat"
-      />
-  <android.support.v7.widget.CardView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginTop="24dp"
-      android:layout_marginLeft="@dimen/gapXLarge"
-      android:layout_marginRight="@dimen/gapXLarge"
-      android:layout_marginBottom="32dp"
-      android:paddingBottom="0dp"
-      >
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:id="@+id/second_toolbar"
-        />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.GithubLoginActivity">
 
-    <FrameLayout
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="?colorPrimary"
+        app:contentInsetStart="@dimen/second_keyline"
+        app:popupTheme="@style/Toolbar.Popup.AppCompat"
+        app:theme="@style/Toolbar.AppCompat.Responsive" />
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/enterLayout"
-        tools:visibility="gone"
-        >
-      <LinearLayout
-          android:layout_width="360dp"
-          android:layout_gravity="center"
-          android:layout_height="match_parent"
-          android:id="@+id/loginStart"
-          android:padding="@dimen/gapXLarge"
-          android:orientation="vertical"
-          >
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="@dimen/gapXLarge"
+        android:layout_marginRight="@dimen/gapXLarge"
+        android:layout_marginTop="24dp"
+        android:paddingBottom="0dp">
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_launcher_web"
-            />
-
-        <Button
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/second_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapXXLarge"
-            android:text="@string/login_button"
-            android:id="@+id/openLogin"
-            />
+            android:layout_height="?actionBarSize" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login_button_advanced"
-            android:textSize="10sp"
-            android:id="@+id/openLoginAdvanced"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            />
-      </LinearLayout>
-
-        <!--
-      <TextView
-          android:layout_width="match_parent"
-          android:layout_height="36dp"
-          android:layout_gravity="bottom"
-          android:clickable="false"
-          android:gravity="center"
-          android:textColor="@color/md_grey_500"
-          android:text="about gitskarios"
-          android:id="@+id/textAboutGitskarios"
-          />
-          -->
-    </FrameLayout>
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:id="@+id/loginLayout"
-        >
         <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:padding="@dimen/gapXLarge"
-          android:orientation="vertical"
-          android:gravity="center"
-          >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <include layout="@layout/content_advanced_login"/>
+            android:id="@+id/enterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="gone">
 
-                <EditText
+            <LinearLayout
+                android:id="@+id/loginStart"
+                android:layout_width="360dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/gapXLarge">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_launcher_web" />
+
+                <Button
+                    android:id="@+id/openLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_personal_token"
-                    android:id="@+id/accessToken"
-                    android:layout_marginLeft="8dp"
-                    android:layout_gravity="center_vertical"
-                    />
-            </LinearLayout>
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
-            android:visibility="invisible"
-            />
-        </FrameLayout>
-      <Button
-          android:layout_width="wrap_content"
-          android:layout_height="?actionBarSize"
-          android:layout_gravity="bottom|right"
-          android:text="@string/login_button"
-          android:id="@+id/loginGithub"
-          style="@style/Widget.AppCompat.Button.Borderless"
-          />
+                    android:layout_marginTop="@dimen/gapXXLarge"
+                    android:text="@string/login_button" />
 
-      <Button
-          android:layout_width="wrap_content"
-          android:layout_height="?actionBarSize"
-          android:layout_gravity="bottom|left"
-          android:text="@string/generateToken"
-          android:id="@+id/generateToken"
-          style="@style/Widget.AppCompat.Button.Borderless"
-          />
-    </FrameLayout>
-  </android.support.v7.widget.CardView>
+                <Button
+                    android:id="@+id/openLoginAdvanced"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_button_advanced"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <!--
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="36dp"
+              android:layout_gravity="bottom"
+              android:clickable="false"
+              android:gravity="center"
+              android:textColor="@color/md_grey_500"
+              android:text="about gitskarios"
+              android:id="@+id/textAboutGitskarios"
+              />
+              -->
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/loginLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/gapXLarge">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/content_advanced_login" />
+
+                    <EditText
+                        android:id="@+id/accessToken"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:hint="@string/login_personal_token" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/loginGithub"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="bottom|right"
+                android:text="@string/login_button" />
+
+            <Button
+                android:id="@+id/generateToken"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="bottom|left"
+                android:text="@string/generateToken" />
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
 
 </FrameLayout>

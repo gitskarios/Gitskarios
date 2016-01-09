@@ -40,7 +40,7 @@ public class TestFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(DummyAdapterHolder holder, int position) {
-                holder.textView.setText("Item " + position);
+            holder.textView.setText("Item " + position);
         }
 
         @Override
@@ -51,6 +51,7 @@ public class TestFragment extends Fragment {
         public class DummyAdapterHolder extends RecyclerView.ViewHolder {
 
             TextView textView;
+
             public DummyAdapterHolder(View itemView) {
                 super(itemView);
                 textView = (TextView) itemView;

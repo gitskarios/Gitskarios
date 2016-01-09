@@ -70,7 +70,7 @@ public class NewIssueActivity extends BackActivity {
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(REPO_INFO, info);
+        bundle.putParcelable(REPO_INFO, info);
         Intent intent = new Intent(context, NewIssueActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -87,7 +87,7 @@ public class NewIssueActivity extends BackActivity {
         setContentView(R.layout.activity_new_issue);
 
         if (getIntent().getExtras() != null) {
-            repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
+            repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
             findViews();
 
             issueRequest = CacheWrapper.getIssueRequest(repoInfo.owner + "/" + repoInfo.name);
@@ -548,7 +548,11 @@ public class NewIssueActivity extends BackActivity {
             builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {
                 @Override
                 public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
-                    issueRequest.labels = charSequences;
+                    List<String> labels = new ArrayList<>();
+                    for (CharSequence charSequence : charSequences) {
+                        labels.add(charSequence.toString());
+                    }
+                    issueRequest.labels = labels.toArray(new String[labels.size()]);
                     positionsSelectedLabels = integers;
                     return true;
                 }

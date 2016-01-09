@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="primary">@color/md_pink_700</color>
-  <color name="primary_dark">@color/md_pink_900</color>
-  <color name="primary_alpha">@color/md_pink_700</color>
-  <color name="primary_dark_alpha">@color/md_pink_900</color>
+    <color name="primary">@color/md_pink_700</color>
+    <color name="primary_dark">@color/md_pink_900</color>
+    <color name="primary_alpha">@color/md_pink_700</color>
+    <color name="primary_dark_alpha">@color/md_pink_900</color>
 
-  <color name="primary_light">@color/md_pink_400</color>
-  <color name="accent">@color/md_amber_400</color>
-  <color name="accent_welcome">@color/md_pink_100</color>
-  <color name="accent_dark">@color/md_amber_600</color>
-  <color name="primary_text">#212121</color>
-  <color name="secondary_text">#727272</color>
-  <color name="icons">#B6B6B6</color>
-  <color name="divider">#B6B6B6</color>
+    <color name="primary_light">@color/md_pink_400</color>
+    <color name="accent">@color/md_amber_400</color>
+    <color name="accent_welcome">@color/md_pink_100</color>
+    <color name="accent_dark">@color/md_amber_600</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="icons">#B6B6B6</color>
+    <color name="divider">#B6B6B6</color>
 
-  <color name="commit_stats_bg">#96ff8cb9</color>
-  <color name="commit_stats_stroke">#a8e75c69</color>
+    <color name="commit_stats_bg">#96ff8cb9</color>
+    <color name="commit_stats_stroke">#a8e75c69</color>
 
-  <color name="primary_enterprise">@color/md_brown_500</color>
-  <color name="primary_enterprise_dark">@color/md_brown_700</color>
-  <color name="accent_enterprise">@color/md_light_green_A400</color>
+    <color name="primary_enterprise">@color/md_brown_500</color>
+    <color name="primary_enterprise_dark">@color/md_brown_700</color>
+    <color name="accent_enterprise">@color/md_light_green_A400</color>
 
 </resources>

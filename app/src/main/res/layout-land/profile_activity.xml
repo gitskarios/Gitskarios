@@ -24,12 +24,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="64dp"
+                android:layout_marginRight="64dp"
                 android:layout_marginTop="@dimen/gapXLarge"
                 android:fitsSystemWindows="true"
                 android:orientation="horizontal"
-                app:layout_collapseMode="parallax"
-                android:layout_marginLeft="64dp"
-                android:layout_marginRight="64dp">
+                app:layout_collapseMode="parallax">
 
                 <ImageView
                     android:id="@+id/userAvatar"

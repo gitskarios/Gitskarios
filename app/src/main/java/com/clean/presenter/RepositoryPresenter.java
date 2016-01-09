@@ -48,7 +48,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
             }
         });
 
-        GetRepoBranchesClient branchesClient =  new GetRepoBranchesClient(repoInfo);
+        GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(repoInfo);
 
         Observable<Repo> combinedWithBranches = Observable.combineLatest(repoClient.observable(), branchesClient.observable()
                 , new Func2<Repo, List<Branch>, Repo>() {

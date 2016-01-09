@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <item
-      android:id="@+id/action_notifications"
-      android:title="@string/action_notifications"
-      app:actionLayout="@layout/menu_badge"
-      app:showAsAction="always"
-      android:orderInCategory="100"
-      />
-  <item
-      android:id="@+id/action_search"
-      android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-      android:title="@string/action_search"
-      app:showAsAction="always"
-      android:orderInCategory="200"
-      />
+    <item
+        android:id="@+id/action_notifications"
+        android:orderInCategory="100"
+        android:title="@string/action_notifications"
+        app:actionLayout="@layout/menu_badge"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:orderInCategory="200"
+        android:title="@string/action_search"
+        app:showAsAction="always" />
 
 </menu>

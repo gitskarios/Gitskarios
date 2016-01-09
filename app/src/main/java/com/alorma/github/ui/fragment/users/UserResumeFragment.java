@@ -8,18 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.bean.ProfileItem;
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.ui.activity.OrganizationsActivity;
-import com.alorma.github.ui.activity.ReposActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -30,18 +26,14 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-
 /**
  * Created by bernat.borras on 13/12/15.
  */
 public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
-    private List<ProfileItem> profileItems = new ArrayList<>();
     ViewGroup cardAbout;
     ViewGroup cardGithub;
+    private List<ProfileItem> profileItems = new ArrayList<>();
     private int color = Color.BLACK;
     private UserResumeCallback userResumeCallback;
     private User user;

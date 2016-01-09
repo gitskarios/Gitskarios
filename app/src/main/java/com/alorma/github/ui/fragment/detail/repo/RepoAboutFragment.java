@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
@@ -34,7 +33,6 @@ import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -55,9 +53,8 @@ import rx.android.schedulers.AndroidSchedulers;
 public class RepoAboutFragment extends Fragment
         implements TitleProvider, BranchManager, BackManager {
 
-    private static final String REPO_INFO = "REPO_INFO";
     public static final int PLACEHOLDER_ICON_SIZE = 20;
-
+    private static final String REPO_INFO = "REPO_INFO";
     private View author;
     private Integer futureSubscribersCount;
     private Integer futureStarredCount;
@@ -120,7 +117,7 @@ public class RepoAboutFragment extends Fragment
 
     public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(REPO_INFO, repoInfo);
+        bundle.putParcelable(REPO_INFO, repoInfo);
 
         RepoAboutFragment f = new RepoAboutFragment();
         f.setArguments(bundle);
@@ -232,7 +229,7 @@ public class RepoAboutFragment extends Fragment
 
     protected void loadArguments() {
         if (getArguments() != null) {
-            repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
+            repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
         }
     }
 

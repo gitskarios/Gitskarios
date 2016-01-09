@@ -1,70 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:card_view="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="@dimen/gapMedium"
-              android:paddingTop="0dp"
-    >
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/gapMedium"
+    android:paddingTop="0dp">
 
-  <android.support.v7.widget.CardView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:minHeight="120dp"
-      card_view:cardUseCompatPadding="true"
-      card_view:cardElevation="4dp"
-      card_view:cardCornerRadius="3dp"
-      android:id="@+id/cardView"
-      android:foreground="?selectableItemBackground"
-      >
-
-    <LinearLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:foreground="?selectableItemBackground"
+        android:minHeight="120dp"
+        card_view:cardCornerRadius="3dp"
+        card_view:cardElevation="4dp"
+        card_view:cardUseCompatPadding="true">
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical"
-          android:padding="@dimen/gapMedium"
-          >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textFileName"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?colorControlNormal"
-            tools:text="MyFile.java"
-            />
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/textContent"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/textSizeSmall"
-            android:layout_marginTop="@dimen/gapMedium"
-            />
-      </LinearLayout>
+            android:orientation="vertical">
 
-      <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-                                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                                         android:id="@id/toolbar"
-                                         android:layout_height="wrap_content"
-                                         android:layout_width="match_parent"
-                                         android:minHeight="?actionBarSize"
-                                         android:background="@color/gray_github_light_selected"
-                                         app:theme="@style/GistFileRowToolbar"
-                                         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-          />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/gapMedium">
 
-    </LinearLayout>
-  </android.support.v7.widget.CardView>
+                <TextView
+                    android:id="@+id/textFileName"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?colorControlNormal"
+                    tools:text="MyFile.java" />
+
+                <TextView
+                    android:id="@+id/textContent"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/gapMedium"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="@dimen/textSizeSmall" />
+            </LinearLayout>
+
+            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray_github_light_selected"
+                android:minHeight="?actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:theme="@style/GistFileRowToolbar" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
