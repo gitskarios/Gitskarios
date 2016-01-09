@@ -7,7 +7,7 @@
               android:orientation="horizontal"
     >
 
-  <com.alorma.github.ui.view.CircularImageView
+  <com.alorma.github.ui.view.UserAvatarView
       android:id="@id/avatarAuthor"
       android:layout_width="36dp"
       android:layout_height="36dp"

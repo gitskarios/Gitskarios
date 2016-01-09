@@ -14,6 +14,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
 import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
@@ -26,7 +27,7 @@ import org.joda.time.format.DateTimeFormatter;
 public class IssueStoryLabelDetailView extends LinearLayout {
 
   private TextView userText;
-  private ImageView profileIcon;
+  private UserAvatarView profileIcon;
   private IssueStoryLabelsView labelsView;
   private TextView createdAt;
 
@@ -55,7 +56,7 @@ public class IssueStoryLabelDetailView extends LinearLayout {
     inflate(getContext(), R.layout.issue_detail_labels, this);
 
     userText = (TextView) findViewById(R.id.userLogin);
-    profileIcon = (ImageView) findViewById(R.id.profileIcon);
+    profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
     createdAt = (TextView) findViewById(R.id.createdAt);
     labelsView = (IssueStoryLabelsView) findViewById(R.id.labelsView);
 
@@ -73,7 +74,7 @@ public class IssueStoryLabelDetailView extends LinearLayout {
   private void printLabelsEvent(boolean added, long created_at, User user, List<Label> labels) {
     userText.setText(user.login);
 
-    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, user);
+    profileIcon.setUser(user);
     labelsView.setLabels(labels);
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String date = TimeUtils.getTimeAgoString(formatter.print(created_at));

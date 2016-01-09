@@ -21,6 +21,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -40,7 +41,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
   private static final String RELEASE = "RELEASE";
   private static final String REPO_INFO = "REPO_INFO";
   private View author;
-  private ImageView profileIcon;
+  private UserAvatarView profileIcon;
   private TextView authorName;
   private TextView htmlContentView;
   private TextView createdAtTextView;
@@ -70,7 +71,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
     super.onViewCreated(view, savedInstanceState);
 
     author = view.findViewById(R.id.author);
-    profileIcon = (ImageView) author.findViewById(R.id.profileIcon);
+    profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
     authorName = (TextView) author.findViewById(R.id.authorName);
 
     createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
@@ -83,7 +84,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
 
     if (release != null) {
       User owner = release.author;
-      UniversalImageLoaderUtils.loadUserAvatar(profileIcon, owner);
+      profileIcon.setUser(owner);
       authorName.setText(owner.login);
 
       createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());

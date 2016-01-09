@@ -12,6 +12,7 @@ import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.AttributesUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -43,7 +44,7 @@ public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, Co
 
       holder.textAuthor.setText(commitComment.user.login);
 
-      UniversalImageLoaderUtils.loadUserAvatar(holder.imageAuthor, commitComment.user);
+      holder.imageAuthor.setUser(commitComment.user);
     }
 
     if (commitComment.body_html != null) {
@@ -60,14 +61,14 @@ public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, Co
   public class ViewHolder extends RecyclerView.ViewHolder {
     private final TextView textContent;
     private final TextView textAuthor;
-    private final ImageView imageAuthor;
+    private final UserAvatarView imageAuthor;
     private final Toolbar toolbar;
 
     public ViewHolder(View itemView) {
       super(itemView);
       textContent = (TextView) itemView.findViewById(R.id.textContent);
       textAuthor = (TextView) itemView.findViewById(R.id.textAuthor);
-      imageAuthor = (ImageView) itemView.findViewById(R.id.avatarAuthor);
+      imageAuthor = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
       toolbar = (Toolbar) itemView.findViewById(R.id.toolbar);
     }
   }

@@ -6,7 +6,7 @@
               android:orientation="horizontal"
     >
 
-  <com.mikepenz.materialdrawer.view.BezelImageView
+  <com.alorma.github.ui.view.UserAvatarView
       android:id="@+id/profileIcon"
       android:layout_width="32dp"
       android:layout_height="32dp"
@@ -18,9 +18,6 @@
       android:layout_marginLeft="@dimen/material_drawer_item_profile_icon_padding"
       android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
       android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-      android:clickable="false"
-      android:elevation="1dp"
-      app:biv_maskDrawable="@drawable/material_drawer_circle_mask"
       />
 
   <LinearLayout

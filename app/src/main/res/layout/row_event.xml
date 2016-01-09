@@ -21,14 +21,12 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
-            <com.alorma.github.ui.view.CircularImageView
+            <com.alorma.github.ui.view.UserAvatarView
                 android:id="@+id/authorAvatar"
                 android:layout_width="@dimen/avatar_size_list"
                 android:layout_height="@dimen/avatar_size_list"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:ellipsize="end"
-                android:maxLines="2"
                 android:padding="@dimen/gapMedium" />
 
             <TextView

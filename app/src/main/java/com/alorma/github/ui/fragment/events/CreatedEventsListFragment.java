@@ -56,10 +56,4 @@ public class CreatedEventsListFragment extends EventsListFragment implements Tit
     return Octicons.Icon.oct_calendar;
   }
 
-  @Override
-  protected EventAdapter addNewAdapter() {
-    EventAdapter eventAdapter = super.addNewAdapter();
-    eventAdapter.enableUserClick(false);
-    return eventAdapter;
-  }
 }

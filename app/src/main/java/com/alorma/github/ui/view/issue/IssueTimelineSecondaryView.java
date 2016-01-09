@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -23,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class IssueTimelineSecondaryView extends LinearLayout {
 
-  private ImageView profileIcon;
+  private UserAvatarView profileIcon;
   private TextView shaContent;
 
   public IssueTimelineSecondaryView(Context context) {
@@ -49,13 +50,13 @@ public class IssueTimelineSecondaryView extends LinearLayout {
 
   private void init() {
     inflate(getContext(), R.layout.issue_detail_issue_timeline_secondary_view, this);
-    profileIcon = (ImageView) findViewById(R.id.profileIcon);
+    profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
     shaContent = (TextView) findViewById(R.id.shaContent);
   }
 
   public void setCommit(PullRequestStoryCommit issueStoryDetail) {
     shaContent.setText(Html.fromHtml("<b>" + issueStoryDetail.commit.shortSha() + "</b> " + issueStoryDetail.commit.commit.shortMessage()));
 
-    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, issueStoryDetail.user());
+    profileIcon.setUser(issueStoryDetail.user());
   }
 }

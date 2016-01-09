@@ -17,15 +17,12 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TextUtils;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -50,7 +47,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
   @Override
   public CommitsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    return new ViewHolder(getInflater().inflate(R.layout.commit_row, parent, false));
+    return new ViewHolder(getInflater().inflate(R.layout.row_commit, parent, false));
   }
 
   @Override
@@ -67,8 +64,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     }
 
     if (author != null) {
-
-      UniversalImageLoaderUtils.loadUserAvatar(holder.avatar, author);
+      holder.avatar.setUser(author);
 
       if (author.login != null) {
         holder.user.setText(author.login);
@@ -141,7 +137,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
   @Override
   public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-    return new HeaderViewHolder(getInflater().inflate(R.layout.commit_row_header, viewGroup, false));
+    return new HeaderViewHolder(getInflater().inflate(R.layout.row_header_commit, viewGroup, false));
   }
 
   @Override
@@ -176,7 +172,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     private final TextView textNums;
     private final TextView numFiles;
     private final TextView comments_count;
-    private final ImageView avatar;
+    private final UserAvatarView avatar;
 
     public ViewHolder(final View itemView) {
       super(itemView);
@@ -187,7 +183,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
       textNums = (TextView) itemView.findViewById(R.id.textNums);
       numFiles = (TextView) itemView.findViewById(R.id.numFiles);
       comments_count = (TextView) itemView.findViewById(R.id.comments_count);
-      avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
+      avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
 
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override

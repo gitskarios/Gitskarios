@@ -35,6 +35,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -64,7 +65,7 @@ public class RepoAboutFragment extends Fragment
     private RepoInfo repoInfo;
     private Repo currentRepo;
     private WebView htmlContentView;
-    private ImageView profileIcon;
+    private UserAvatarView profileIcon;
 
     private TextView starredPlaceholder;
     private TextView watchedPlaceholder;
@@ -140,7 +141,7 @@ public class RepoAboutFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         author = view.findViewById(R.id.author);
-        profileIcon = (ImageView) author.findViewById(R.id.profileIcon);
+        profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
         authorName = (TextView) author.findViewById(R.id.authorName);
         loadingHtml = view.findViewById(R.id.htmlLoading);
 
@@ -319,7 +320,7 @@ public class RepoAboutFragment extends Fragment
         if (getActivity() != null) {
             if (this.currentRepo != null) {
                 User owner = this.currentRepo.owner;
-                UniversalImageLoaderUtils.loadUserAvatar(profileIcon, owner);
+                profileIcon.setUser(owner);
                 authorName.setText(owner.login);
 
                 if (this.currentRepo.parent != null) {

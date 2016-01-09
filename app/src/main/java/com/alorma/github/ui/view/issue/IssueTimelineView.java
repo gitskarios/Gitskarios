@@ -15,6 +15,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommitsList;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.joda.time.format.DateTimeFormat;
@@ -27,7 +28,7 @@ public class IssueTimelineView extends LinearLayout {
 
   private TextView textView;
   private TextView userText;
-  private ImageView profileIcon;
+  private UserAvatarView profileIcon;
   private TextView createdAt;
 
   public IssueTimelineView(Context context) {
@@ -56,7 +57,7 @@ public class IssueTimelineView extends LinearLayout {
     textView = (TextView) findViewById(R.id.text);
 
     userText = (TextView) findViewById(R.id.userLogin);
-    profileIcon = (ImageView) findViewById(R.id.profileIcon);
+    profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
     createdAt = (TextView) findViewById(R.id.createdAt);
   }
 
@@ -120,7 +121,7 @@ public class IssueTimelineView extends LinearLayout {
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
     userText.setText(storyEvent.user().login);
-    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, storyEvent.user());
+    profileIcon.setUser(storyEvent.user());
     setTime(storyEvent.createdAt());
   }
 
@@ -130,11 +131,4 @@ public class IssueTimelineView extends LinearLayout {
     createdAt.setText(date);
   }
 
-  public void setPullRequestCommitData(PullRequestStoryCommitsList issueStoryDetail) {
-    applyGenericIssueStory(issueStoryDetail);
-    String date = createdAt.getText().toString();
-    date = getContext().getResources().getString(R.string.pushed) + " " + date;
-    createdAt.setText(date);
-    textView.setVisibility(View.GONE);
-  }
 }

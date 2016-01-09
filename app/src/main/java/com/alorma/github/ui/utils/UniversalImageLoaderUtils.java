@@ -114,7 +114,6 @@ public class UniversalImageLoaderUtils {
       public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
         Context context = imageView.getContext();
 
-
         //Set color tag to imageView
         Atelier.with(context, imageUri)
                 .load(loadedImage)

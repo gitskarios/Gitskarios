@@ -7,18 +7,19 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by Bernat on 14/07/2014.
  */
 public class UsersHolder {
-  public final ImageView authorAvatar;
+  public final UserAvatarView authorAvatar;
   public final TextView authorLogin;
   public final TextView authorEmail;
 
   public UsersHolder(View v) {
-    this.authorAvatar = (ImageView) v.findViewById(R.id.profileIcon);
+    this.authorAvatar = (UserAvatarView) v.findViewById(R.id.profileIcon);
     this.authorLogin = (TextView) v.findViewById(R.id.name);
     this.authorEmail = (TextView) v.findViewById(R.id.email);
   }
@@ -26,8 +27,7 @@ public class UsersHolder {
   public void fill(User user) {
     if (authorAvatar != null) {
       this.authorAvatar.setVisibility(View.VISIBLE);
-
-      UniversalImageLoaderUtils.loadUserAvatar(authorAvatar, user);
+      authorAvatar.setUser(user);
     }
 
     if (authorLogin != null) {

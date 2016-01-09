@@ -23,15 +23,13 @@ import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.ui.view.issue.ReviewCommentView;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Bernat on 07/09/2014.
@@ -55,7 +53,7 @@ public class PullRequestCommitsReviewCommentsAdapter
   @Override
   public PullRequestCommitsReviewCommentsAdapter.Holder onCreateViewHolder(ViewGroup parent, int viewType) {
     if (viewType == VIEW_COMMIT) {
-      return new CommitViewHolder(getInflater().inflate(R.layout.commit_row, parent, false));
+      return new CommitViewHolder(getInflater().inflate(R.layout.row_commit, parent, false));
     } else if (viewType == VIEW_REVIEW) {
       return new ReviewCommentHolder(getInflater().inflate(R.layout.timeline_review_comment, parent, false));
     } else {
@@ -86,7 +84,8 @@ public class PullRequestCommitsReviewCommentsAdapter
     }
 
     if (author != null) {
-      UniversalImageLoaderUtils.loadUserAvatar(holder.avatar, author);
+
+      holder.avatar.setUser(author);
 
       if (author.login != null) {
         holder.user.setText(author.login);
@@ -185,7 +184,7 @@ public class PullRequestCommitsReviewCommentsAdapter
     private final TextView sha;
     private final TextView textNums;
     private final TextView numFiles;
-    private final ImageView avatar;
+    private final UserAvatarView avatar;
     private final TextView comments_count;
 
     public CommitViewHolder(final View itemView) {
@@ -197,7 +196,7 @@ public class PullRequestCommitsReviewCommentsAdapter
       textNums = (TextView) itemView.findViewById(R.id.textNums);
       numFiles = (TextView) itemView.findViewById(R.id.numFiles);
       comments_count = (TextView) itemView.findViewById(R.id.comments_count);
-      avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
+      avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
 
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override

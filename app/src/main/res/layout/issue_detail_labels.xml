@@ -19,7 +19,7 @@
         app:tl_lineWidth="1dp"
         />
 
-    <com.mikepenz.materialdrawer.view.BezelImageView
+    <com.alorma.github.ui.view.UserAvatarView
         android:id="@+id/profileIcon"
         android:layout_width="32dp"
         android:layout_height="32dp"

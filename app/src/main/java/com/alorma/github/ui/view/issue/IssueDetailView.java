@@ -25,6 +25,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.LabelView;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.alorma.github.StoreCredentials;
 import com.gh4a.utils.UiUtils;
@@ -45,7 +46,7 @@ public class IssueDetailView extends LinearLayout {
   private TextView title;
   private TextView body;
   private ViewGroup labelsLayout;
-  private ImageView profileIcon;
+  private UserAvatarView profileIcon;
   private TextView profileName;
   private TextView profileEmail;
   private TextView textMilestone;
@@ -81,7 +82,7 @@ public class IssueDetailView extends LinearLayout {
     body = (TextView) findViewById(R.id.textBody);
     labelsLayout = (ViewGroup) findViewById(R.id.labelsLayout);
     View authorView = findViewById(R.id.author);
-    profileIcon = (ImageView) authorView.findViewById(R.id.profileIcon);
+    profileIcon = (UserAvatarView) authorView.findViewById(R.id.profileIcon);
     profileName = (TextView) authorView.findViewById(R.id.name);
     profileEmail = (TextView) authorView.findViewById(R.id.email);
     textMilestone = (TextView) findViewById(R.id.textMilestone);
@@ -98,7 +99,7 @@ public class IssueDetailView extends LinearLayout {
         profileName.setText(issue.user.login);
         profileEmail.setText(TimeUtils.getTimeAgoString(issue.created_at));
 
-        UniversalImageLoaderUtils.loadUserAvatar(profileIcon, issue.user);
+        profileIcon.setUser(issue.user);
         OnClickListener issueUserClick = new OnClickListener() {
           @Override
           public void onClick(View v) {

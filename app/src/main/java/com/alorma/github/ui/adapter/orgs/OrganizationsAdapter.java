@@ -40,21 +40,18 @@ public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, Org
 
   @Override
   protected void onBindViewHolder(final ViewHolder holder, Organization organization) {
-
-    UniversalImageLoaderUtils.loadUserAvatar(holder.avatar, organization);
+    UniversalImageLoaderUtils.loadUserAvatarSquare(holder.avatar, organization);
     holder.text.setText(organization.login);
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
     private final ImageView avatar;
     private final TextView text;
-    private final View textRootView;
 
     public ViewHolder(View itemView) {
       super(itemView);
       avatar = (ImageView) itemView.findViewById(R.id.avatarAuthorImage);
       text = (TextView) itemView.findViewById(R.id.textAuthorLogin);
-      textRootView = itemView.findViewById(R.id.textRootView);
 
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override

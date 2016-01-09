@@ -13,6 +13,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -26,7 +27,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class ReviewCommentView extends LinearLayout {
 
-  private ImageView profileIcon;
+  private UserAvatarView profileIcon;
   private TextView userLogin;
   private TextView createdAt;
   private TextView bodyText;
@@ -55,7 +56,7 @@ public class ReviewCommentView extends LinearLayout {
 
   private void init() {
     inflate(getContext(), R.layout.issue_detail_issue_timeline_review_secondary_view, this);
-    profileIcon = (ImageView) findViewById(R.id.profileIcon);
+    profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
     userLogin = (TextView) findViewById(R.id.userLogin);
     createdAt = (TextView) findViewById(R.id.createdAt);
     bodyText = (TextView) findViewById(R.id.bodyText);
@@ -76,7 +77,7 @@ public class ReviewCommentView extends LinearLayout {
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
     userLogin.setText(storyEvent.user().login);
-    UniversalImageLoaderUtils.loadUserAvatar(profileIcon, storyEvent.user());
+    profileIcon.setUser(storyEvent.user());
     setTime(storyEvent.createdAt());
   }
 

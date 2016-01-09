@@ -38,6 +38,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.gitskarios.core.Pair;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
@@ -460,7 +461,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-      View view = mInflater.inflate(R.layout.commit_row, parent, false);
+      View view = mInflater.inflate(R.layout.row_commit, parent, false);
 
       ViewHolder holder = new ViewHolder(view);
 
@@ -478,7 +479,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
 
       if (author != null) {
 
-        UniversalImageLoaderUtils.loadUserAvatar(holder.avatar, author);
+        holder.avatar.setUser(author);
 
         if (author.login != null) {
           holder.user.setText(author.login);
@@ -542,7 +543,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
       private final TextView sha;
       private final TextView textNums;
       private final TextView numFiles;
-      private final ImageView avatar;
+      private final UserAvatarView avatar;
       private View itemView;
 
       public ViewHolder(final View itemView) {
@@ -552,7 +553,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
         sha = (TextView) itemView.findViewById(R.id.sha);
         textNums = (TextView) itemView.findViewById(R.id.textNums);
         numFiles = (TextView) itemView.findViewById(R.id.numFiles);
-        avatar = (ImageView) itemView.findViewById(R.id.avatarAuthor);
+        avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
       }
     }
   }
