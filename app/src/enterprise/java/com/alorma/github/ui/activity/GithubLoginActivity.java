@@ -16,10 +16,11 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
 import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
@@ -132,7 +133,7 @@ public class GithubLoginActivity extends AccountAuthenticatorActivity implements
               .putSuccess(true));
     }
 
-    GetAuthUserClient authUserClient = new GetAuthUserClient(this, accessToken);
+    GetAuthUserClient authUserClient = new GetAuthUserClient(accessToken);
     authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
       @Override
       public void onCompleted() {

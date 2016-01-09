@@ -21,12 +21,11 @@ import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
+import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
+import com.alorma.github.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.login.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 
@@ -83,10 +82,6 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
             }
             StoreCredentials storeCredentials = new StoreCredentials(this);
 
-            if (!url.startsWith("http://")) {
-                url = "http://" + url;
-            }
-
             Uri uri = Uri.parse(url);
 
             if (!"https".equals(uri.getScheme())) {
@@ -94,7 +89,7 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
             }
             storeCredentials.storeUrl(uri.toString());
 
-            GetAuthUserClient authUserClient = new GetAuthUserClient(this, token);
+            GetAuthUserClient authUserClient = new GetAuthUserClient(token);
             final String finalUrl = url;
             authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
                 @Override
