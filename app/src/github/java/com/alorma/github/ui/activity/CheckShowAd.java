@@ -3,8 +3,7 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.alorma.github.BuildConfig;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 
 /**
  * Created by bernat.borras on 4/1/16.

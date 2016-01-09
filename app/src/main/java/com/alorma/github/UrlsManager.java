@@ -22,7 +22,6 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.gitskarios.core.client.StoreCredentials;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
@@ -287,9 +286,7 @@ public class UrlsManager {
     }
 
     private Intent manageReleasesWithId(Uri uri) {
-        ReleaseInfo info = new ReleaseInfo();
-
-        info.repoInfo = extractRepo(uri);
+        ReleaseInfo info = new ReleaseInfo(extractRepo(uri));
 
         info.num = Integer.valueOf(uri.getLastPathSegment());
 

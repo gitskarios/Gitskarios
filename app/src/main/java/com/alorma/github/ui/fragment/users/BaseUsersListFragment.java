@@ -2,7 +2,7 @@ package com.alorma.github.ui.fragment.users;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;

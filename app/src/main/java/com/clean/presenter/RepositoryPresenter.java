@@ -32,7 +32,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
     @Override
     public void load(@NonNull final RepoInfo repoInfo, @NonNull final Callback<Repo> repoCallback) {
 
-        GetRepoClient repoClient = new GetRepoClient(context, repoInfo);
+        GetRepoClient repoClient = new GetRepoClient(repoInfo);
 
         Observable<Repo> memory = Observable.create(new Observable.OnSubscribe<Repo>() {
             @Override
@@ -48,7 +48,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
             }
         });
 
-        GetRepoBranchesClient branchesClient =  new GetRepoBranchesClient(context, repoInfo);
+        GetRepoBranchesClient branchesClient =  new GetRepoBranchesClient(repoInfo);
 
         Observable<Repo> combinedWithBranches = Observable.combineLatest(repoClient.observable(), branchesClient.observable()
                 , new Func2<Repo, List<Branch>, Repo>() {

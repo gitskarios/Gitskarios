@@ -17,7 +17,7 @@ import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
 import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
@@ -62,7 +62,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
       token = getArguments().getString(BaseActivity.EXTRA_WITH_TOKEN);
     }
 
-    GetNotificationsClient client = new GetNotificationsClient(getActivity(), token);
+    GetNotificationsClient client = new GetNotificationsClient(token);
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<Notification>>() {
       @Override
       public void onCompleted() {
@@ -179,7 +179,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     if (getAdapter() != null) {
       getAdapter().clear();
     }
-    setAction(new MarkNotificationAsRead(getActivity(), notification));
+    setAction(new MarkNotificationAsRead(notification));
   }
 
   @Override
@@ -201,7 +201,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     RepoInfo repoInfo = new RepoInfo();
     repoInfo.owner = item.repo.owner.login;
     repoInfo.name = item.repo.name;
-    setAction(new MarkRepoNotificationsRead(getActivity(), repoInfo));
+    setAction(new MarkRepoNotificationsRead(repoInfo));
   }
 
   private void setAction(GithubClient<Boolean> booleanGithubClient) {
@@ -226,6 +226,6 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   @Override
   public void unsubscribeThreadNotification(Notification notification) {
     startRefresh();
-    setAction(new UnsubscribeThread(getActivity(), notification));
+    setAction(new UnsubscribeThread(notification));
   }
 }

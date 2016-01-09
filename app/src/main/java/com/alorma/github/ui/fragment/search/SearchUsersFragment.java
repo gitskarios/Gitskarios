@@ -3,10 +3,9 @@ package com.alorma.github.ui.fragment.search;
 import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.View;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
@@ -64,7 +63,7 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
     if (getActivity() != null) {
       if (query != null) {
         super.executeRequest();
-        UsersSearchClient client = new UsersSearchClient(getActivity(), query);
+        UsersSearchClient client = new UsersSearchClient(query);
         client.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -82,7 +81,7 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
     if (getActivity() != null) {
       if (query != null) {
         super.executePaginatedRequest(page);
-        UsersSearchClient client = new UsersSearchClient(getActivity(), query, page);
+        UsersSearchClient client = new UsersSearchClient(query, page);
         client.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

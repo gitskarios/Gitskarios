@@ -42,7 +42,7 @@ public class SearchIssuesActivity extends BackActivity
     setTitle("");
 
     if (getIntent().getExtras() != null) {
-      repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
 
       issuesListFragment = IssuesListFragment.newInstance(repoInfo, true);
       issuesListFragment.setSearchClientRequest(this);

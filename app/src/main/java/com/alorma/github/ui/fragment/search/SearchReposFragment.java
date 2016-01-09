@@ -3,7 +3,7 @@ package com.alorma.github.ui.fragment.search;
 import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -68,7 +68,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
     if (getActivity() != null) {
       if (query != null) {
         super.executeRequest();
-        RepoSearchClient client = new RepoSearchClient(getActivity(), query);
+        RepoSearchClient client = new RepoSearchClient(query);
         client.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -96,7 +96,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
     if (getActivity() != null) {
       if (query != null) {
         super.executePaginatedRequest(page);
-        RepoSearchClient client = new RepoSearchClient(getActivity(), query, page);
+        RepoSearchClient client = new RepoSearchClient(query, page);
         client.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

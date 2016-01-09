@@ -162,8 +162,7 @@ def getGHCallback(pro) {
 }
 
 dependencies {
-    debugCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'debug')
-    releaseCompile project(path: ':sdks:GithubAndroidSdk', configuration: 'release')
+    compile project(':sdks:GithubAndroidSdk')
     // Submodules
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;

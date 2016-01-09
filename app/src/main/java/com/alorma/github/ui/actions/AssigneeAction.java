@@ -43,7 +43,7 @@ public class AssigneeAction extends Action<Boolean> {
   }
 
   private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO) {
-    EditIssueClient client = new EditIssueClient(context, issueInfo, editIssueRequestDTO);
+    EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
       @Override
       public void onCompleted() {

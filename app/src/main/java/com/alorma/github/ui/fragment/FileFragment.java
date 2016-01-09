@@ -55,7 +55,7 @@ public class FileFragment extends BaseFragment {
   public static FileFragment getInstance(FileInfo info, boolean fromUrl) {
     FileFragment fragment = new FileFragment();
     Bundle args = new Bundle();
-    args.putParcelable(FILE_INFO, info);
+    args.putSerializable(FILE_INFO, info);
     args.putBoolean(FROM_URL, fromUrl);
     fragment.setArguments(args);
     return fragment;
@@ -87,7 +87,7 @@ public class FileFragment extends BaseFragment {
 
     if (getArguments() != null) {
 
-      fileInfo = getArguments().getParcelable(FILE_INFO);
+      fileInfo = (FileInfo) getArguments().getSerializable(FILE_INFO);
       fromUrl = getArguments().getBoolean(FROM_URL);
 
       webView.clearCache(true);
@@ -121,7 +121,7 @@ public class FileFragment extends BaseFragment {
     if (fileInfo.repoInfo != null) {
       showProgressDialog();
 
-      GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(getActivity(), fileInfo.repoInfo);
+      GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(fileInfo.repoInfo);
       branchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new ParseBranchesCallback(fileInfo.path));
     }
   }
@@ -129,7 +129,7 @@ public class FileFragment extends BaseFragment {
   protected void getContent() {
     if (fileInfo.repoInfo != null) {
       showProgressDialog();
-      GetFileContentClient fileContentClient = new GetFileContentClient(getActivity(), fileInfo);
+      GetFileContentClient fileContentClient = new GetFileContentClient(fileInfo);
       fileContentClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
         @Override
         public void onCompleted() {
@@ -157,7 +157,7 @@ public class FileFragment extends BaseFragment {
     if (MarkdownUtils.isMarkdown(content.name)) {
       RequestMarkdownDTO request = new RequestMarkdownDTO();
       request.text = decodeContent();
-      GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), request);
+      GetMarkdownClient markdownClient = new GetMarkdownClient(request);
       markdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
         @Override
         public void onCompleted() {

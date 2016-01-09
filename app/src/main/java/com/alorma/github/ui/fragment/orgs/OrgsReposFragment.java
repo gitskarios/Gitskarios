@@ -42,13 +42,13 @@ public class OrgsReposFragment extends BaseReposListFragment {
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    setAction(new OrgsReposClient(getActivity(), org, RepoUtils.sortOrder(getActivity())));
+    setAction(new OrgsReposClient(org, RepoUtils.sortOrder(getActivity())));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new OrgsReposClient(getActivity(), org, RepoUtils.sortOrder(getActivity()), page));
+    setAction(new OrgsReposClient(org, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

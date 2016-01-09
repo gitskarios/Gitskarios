@@ -65,7 +65,7 @@ public class GistDetailFragment extends Fragment implements Observer<Gist>, Gist
     if (getArguments() != null) {
       String id = getArguments().getString(GIST_ID);
 
-      GetGistDetailClient detailClient = new GetGistDetailClient(getActivity(), id);
+      GetGistDetailClient detailClient = new GetGistDetailClient(id);
       detailClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
   }

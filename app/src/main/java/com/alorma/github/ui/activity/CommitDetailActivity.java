@@ -36,7 +36,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
 
   public static Intent launchIntent(Context context, CommitInfo commitInfo) {
     Bundle b = new Bundle();
-    b.putParcelable(CommitFilesFragment.INFO, commitInfo);
+    b.putSerializable(CommitFilesFragment.INFO, commitInfo);
 
     Intent intent = new Intent(context, CommitDetailActivity.class);
     intent.putExtras(b);
@@ -50,7 +50,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
     setContentView(R.layout.commit_activity);
 
     if (getIntent().getExtras() != null) {
-      info = getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
+      info = (CommitInfo) getIntent().getExtras().getSerializable(CommitFilesFragment.INFO);
 
       if (info != null && info.repoInfo != null) {
 
@@ -84,7 +84,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
   @Override
   protected void getContent() {
     super.getContent();
-    GetSingleCommitClient client = new GetSingleCommitClient(this, info);
+    GetSingleCommitClient client = new GetSingleCommitClient(info);
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Commit>() {
       @Override
       public void onCompleted() {

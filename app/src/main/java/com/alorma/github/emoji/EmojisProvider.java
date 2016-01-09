@@ -56,7 +56,7 @@ public class EmojisProvider {
         emojisCallback.onEmojisLoaded(result);
       }
     } else {
-      EmojisClient emojisClient = new EmojisClient(context);
+      EmojisClient emojisClient = new EmojisClient();
       emojisClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<HashMap<String, String>>() {
 
         List<Emoji> emojisList = new ArrayList<>();

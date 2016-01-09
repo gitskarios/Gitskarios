@@ -38,7 +38,7 @@ public class ReleaseDetailActivity extends BackActivity implements Observer<Rele
     Intent intent = new Intent(context, ReleaseDetailActivity.class);
 
     Bundle extras = new Bundle();
-    extras.putParcelable(RELEASE_INFO, releaseInfo);
+    extras.putSerializable(RELEASE_INFO, releaseInfo);
 
     intent.putExtras(extras);
 
@@ -49,8 +49,8 @@ public class ReleaseDetailActivity extends BackActivity implements Observer<Rele
     Intent intent = new Intent(context, ReleaseDetailActivity.class);
 
     Bundle extras = new Bundle();
-    extras.putParcelable(RELEASE, release);
-    extras.putParcelable(REPO_INFO, repoInfo);
+    extras.putSerializable(RELEASE, release);
+    extras.putSerializable(REPO_INFO, repoInfo);
 
     intent.putExtras(extras);
 
@@ -68,12 +68,12 @@ public class ReleaseDetailActivity extends BackActivity implements Observer<Rele
       viewPager = (ViewPager) findViewById(R.id.pager);
 
       if (getIntent().getExtras().containsKey(RELEASE)) {
-        Release release = getIntent().getExtras().getParcelable(RELEASE);
-        RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+        Release release = (Release) getIntent().getExtras().getSerializable(RELEASE);
+        RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
         showRelease(release, repoInfo);
       } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
-        releaseInfo = getIntent().getExtras().getParcelable(RELEASE_INFO);
-        GetReleaseClient releaseClient = new GetReleaseClient(this, releaseInfo);
+        releaseInfo = (ReleaseInfo) getIntent().getExtras().getSerializable(RELEASE_INFO);
+        GetReleaseClient releaseClient = new GetReleaseClient(releaseInfo);
         releaseClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
       }
     }

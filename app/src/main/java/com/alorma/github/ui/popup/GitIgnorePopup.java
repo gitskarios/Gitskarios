@@ -58,7 +58,7 @@ public class GitIgnorePopup extends ListPopupWindow
   }
 
   private void loadData() {
-    GitIgnoreClient client = new GitIgnoreClient(context);
+    GitIgnoreClient client = new GitIgnoreClient();
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
   }
 

@@ -41,8 +41,8 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     RepositoryManagerFragment fragment = new RepositoryManagerFragment();
 
     Bundle args = new Bundle();
-    args.putParcelable(REPO_INFO, repoInfo);
-    args.putParcelable(REQUEST_DTO, repoRequestDTO);
+    args.putSerializable(REPO_INFO, repoInfo);
+    args.putSerializable(REQUEST_DTO, repoRequestDTO);
     fragment.setArguments(args);
 
     return fragment;
@@ -54,8 +54,8 @@ public class RepositoryManagerFragment extends PreferenceFragment {
 
     addPreferencesFromResource(R.xml.repository_manager_prefs);
 
-    repoInfo = getArguments().getParcelable(REPO_INFO);
-    repoRequestDTO = getArguments().getParcelable(REQUEST_DTO);
+    repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
+    repoRequestDTO = (RepoRequestDTO) getArguments().getSerializable(REQUEST_DTO);
 
     final EditTextPreference pref_repo_name = (EditTextPreference) findPreference("pref_repo_name");
     pref_repo_name.setTitle(repoRequestDTO.name);
@@ -175,7 +175,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     builder.progress(true, 0);
     builder.content(R.string.deleting_repository);
     deleteRepoDialog = builder.show();
-    DeleteRepoClient deleteRepoClient = new DeleteRepoClient(getActivity(), repoInfo);
+    DeleteRepoClient deleteRepoClient = new DeleteRepoClient(repoInfo);
     deleteRepoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Response>() {
       @Override
       public void onCompleted() {
@@ -201,7 +201,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
   }
 
   private void getBranches() {
-    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
     repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new BranchesCallback(repoInfo) {
 
       @Override

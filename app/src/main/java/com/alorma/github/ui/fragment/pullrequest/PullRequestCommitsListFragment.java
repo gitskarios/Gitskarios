@@ -1,7 +1,7 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.alorma.github.R;
@@ -37,7 +37,7 @@ public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequ
 
   public static PullRequestCommitsListFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(ISSUE_INFO, issueInfo);
+    bundle.putSerializable(ISSUE_INFO, issueInfo);
 
     PullRequestCommitsListFragment fragment = new PullRequestCommitsListFragment();
     fragment.setArguments(bundle);
@@ -184,13 +184,13 @@ public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequ
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    setAction(new GetPullRequestCommits(getActivity(), issueInfo));
+    setAction(new GetPullRequestCommits(issueInfo));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new GetPullRequestCommits(getActivity(), issueInfo, page));
+    setAction(new GetPullRequestCommits(issueInfo, page));
   }
 
   private void setAction(GithubListClient<List<Commit>> client) {
@@ -206,7 +206,7 @@ public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequ
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      issueInfo = getArguments().getParcelable(ISSUE_INFO);
+      issueInfo = (IssueInfo) getArguments().getSerializable(ISSUE_INFO);
     }
   }
 

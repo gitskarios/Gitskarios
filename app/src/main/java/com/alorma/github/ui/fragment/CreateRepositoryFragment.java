@@ -137,7 +137,7 @@ public class CreateRepositoryFragment extends PreferenceFragment {
       }
     });
 
-    GitIgnoreClient gitIgnoreClient = new GitIgnoreClient(getActivity());
+    GitIgnoreClient gitIgnoreClient = new GitIgnoreClient();
     gitIgnoreClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GitIgnoreTemplates>() {
       @Override
       public void onCompleted() {

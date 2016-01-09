@@ -3,14 +3,13 @@ package com.alorma.github.ui.fragment.orgs;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.ui.adapter.orgs.OrganizationsAdapter;
-import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
@@ -42,13 +41,13 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    setAction(new GetOrgsClient(getActivity(), username));
+    setAction(new GetOrgsClient(username));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new GetOrgsClient(getActivity(), username, page));
+    setAction(new GetOrgsClient(username, page));
   }
 
   private void setAction(GithubListClient<List<Organization>> getOrgsClient) {

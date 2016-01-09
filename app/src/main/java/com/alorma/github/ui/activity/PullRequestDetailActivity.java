@@ -13,7 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +21,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ProgressBar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.sdk.Head;
-import com.alorma.github.sdk.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.Head;
+import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
@@ -50,7 +50,7 @@ import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.GetShaCombinedStatus;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
@@ -63,7 +63,7 @@ import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.ShortcutUtils;
-import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.alorma.github.StoreCredentials;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
@@ -71,7 +71,6 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -119,7 +118,7 @@ public class PullRequestDetailActivity extends BackActivity
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
 
-    bundle.putParcelable(ISSUE_INFO, issueInfo);
+    bundle.putSerializable(ISSUE_INFO, issueInfo);
 
     Intent intent = new Intent(context, PullRequestDetailActivity.class);
     intent.putExtras(bundle);
@@ -145,7 +144,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     if (getIntent().getExtras() != null) {
 
-      issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+      issueInfo = (IssueInfo) getIntent().getExtras().getSerializable(ISSUE_INFO);
 
       if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
         String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
@@ -214,7 +213,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     loadingView.setVisibility(View.VISIBLE);
     if (checkPermissions(issueInfo)) {
-      GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
+      GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
       repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
         @Override
         public void onCompleted() {
@@ -244,7 +243,7 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void loadPullRequest() {
-    PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(PullRequestDetailActivity.this, issueInfo);
+    PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(issueInfo);
     pullRequestStoryLoader.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<PullRequestStory>() {
       @Override
       public void onCompleted() {
@@ -295,7 +294,7 @@ public class PullRequestDetailActivity extends BackActivity
     swipe.setRefreshing(false);
     swipe.setOnRefreshListener(this);
 
-    GetShaCombinedStatus status = new GetShaCombinedStatus(this, issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
+    GetShaCombinedStatus status = new GetShaCombinedStatus(issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
     status.observable()
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
@@ -522,7 +521,7 @@ public class PullRequestDetailActivity extends BackActivity
         }
         break;
       case R.id.action_add_shortcut:
-        ShortcutUtils.addShortcut(this, issueInfo);
+        ShortcutUtils.addPrShortcut(this, issueInfo);
         break;
     }
 
@@ -530,7 +529,7 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void editMilestone() {
-    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open, true);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
     milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
       @Override
       public void onCompleted() {
@@ -598,7 +597,7 @@ public class PullRequestDetailActivity extends BackActivity
     MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
     mergeButtonRequest.commit_message = message;
     mergeButtonRequest.sha = sha;
-    MergePullRequestClient mergePullRequestClient = new MergePullRequestClient(this, issueInfo, mergeButtonRequest);
+    MergePullRequestClient mergePullRequestClient = new MergePullRequestClient(issueInfo, mergeButtonRequest);
     mergePullRequestClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<MergeButtonResponse>() {
       @Override
       public void onCompleted() {
@@ -697,7 +696,7 @@ public class PullRequestDetailActivity extends BackActivity
   private void createMilestone(String milestoneName) {
     CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-    CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repoInfo, createMilestoneRequestDTO);
+    CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(issueInfo.repoInfo, createMilestoneRequestDTO);
     createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
       @Override
       public void onCompleted() {
@@ -731,7 +730,7 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
-    EditIssueClient client = new EditIssueClient(PullRequestDetailActivity.this, issueInfo, editIssueRequestDTO);
+    EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
       @Override
       public void onCompleted() {
@@ -761,7 +760,7 @@ public class PullRequestDetailActivity extends BackActivity
    */
 
   private void openLabels() {
-    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo, true);
+    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(issueInfo.repoInfo, true);
     labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
   }
 

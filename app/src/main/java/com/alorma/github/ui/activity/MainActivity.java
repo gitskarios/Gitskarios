@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,9 +26,9 @@ import com.alorma.github.R;
 import com.alorma.github.account.BaseAccountsManager;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.AccountsHelper;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
@@ -42,7 +41,7 @@ import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
 import com.alorma.github.ui.view.SecondarySwitchDrawerItem;
-import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.alorma.github.StoreCredentials;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 import com.crashlytics.android.answers.InviteEvent;
@@ -509,7 +508,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     }
 
     private void checkNotifications() {
-        GetNotificationsClient client = new GetNotificationsClient(this);
+        GetNotificationsClient client = new GetNotificationsClient();
         client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Notification>>() {
             @Override
             public void onCompleted() {

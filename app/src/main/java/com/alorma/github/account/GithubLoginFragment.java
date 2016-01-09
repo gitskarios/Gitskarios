@@ -14,7 +14,7 @@ import com.alorma.github.sdk.bean.dto.response.Token;
 import com.alorma.github.sdk.services.login.RequestTokenClient;
 import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.activity.PurchasesFragment;
-import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.alorma.github.StoreCredentials;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class GithubLoginFragment extends Fragment {
 
     new StoreCredentials(getActivity()).clear();
     if (requestTokenClient == null) {
-      requestTokenClient = new RequestTokenClient(getActivity(), code,
+      requestTokenClient = new RequestTokenClient(code,
           BuildConfig.CLIENT_ID,
           BuildConfig.CLIENT_SECRET,
           BuildConfig.CLIENT_CALLBACK);

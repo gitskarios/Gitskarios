@@ -2,12 +2,12 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.GithubListClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.adapter.repos.ReposAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;

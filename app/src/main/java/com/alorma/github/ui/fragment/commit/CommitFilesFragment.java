@@ -34,7 +34,7 @@ public class CommitFilesFragment extends BaseFragment {
   public static CommitFilesFragment newInstance(CommitInfo info) {
     CommitFilesFragment f = new CommitFilesFragment();
     Bundle b = new Bundle();
-    b.putParcelable(INFO, info);
+    b.putSerializable(INFO, info);
     f.setArguments(b);
     return f;
   }
@@ -49,7 +49,7 @@ public class CommitFilesFragment extends BaseFragment {
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     if (getArguments() != null) {
-      info = getArguments().getParcelable(INFO);
+      info = (CommitInfo) getArguments().getSerializable(INFO);
 
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

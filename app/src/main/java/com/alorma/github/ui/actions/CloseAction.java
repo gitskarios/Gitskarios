@@ -52,7 +52,7 @@ public class CloseAction extends Action<Issue> {
 
     dialog = new MaterialDialog.Builder(context).content(dialogString).progress(true, 0).theme(Theme.DARK).show();
 
-    ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(context, issueInfo, state);
+    ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(issueInfo, state);
     changeIssueStateClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
   }
 

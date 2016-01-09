@@ -1,7 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -49,7 +49,7 @@ public class UsernameReposFragment extends BaseReposListFragment implements Titl
     super.executeRequest();
 
     if (username != null) {
-      setAction(new UserReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity())));
+      setAction(new UserReposClient(username, RepoUtils.sortOrder(getActivity())));
     }
   }
 
@@ -57,7 +57,7 @@ public class UsernameReposFragment extends BaseReposListFragment implements Titl
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
     if (username != null) {
-      setAction(new UserReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity()), page));
+      setAction(new UserReposClient(username, RepoUtils.sortOrder(getActivity()), page));
     }
   }
 

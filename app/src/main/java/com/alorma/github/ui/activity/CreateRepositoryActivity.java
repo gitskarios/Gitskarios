@@ -57,7 +57,7 @@ public class CreateRepositoryActivity extends BackActivity
 
   @Override
   public void onClick(View v) {
-    CreateRepositoryClient client = new CreateRepositoryClient(this, dto);
+    CreateRepositoryClient client = new CreateRepositoryClient(dto);
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
       @Override
       public void onCompleted() {

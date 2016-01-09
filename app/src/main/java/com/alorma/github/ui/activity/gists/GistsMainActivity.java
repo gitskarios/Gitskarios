@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
@@ -77,7 +77,7 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
       }
 
       if (gistId != null && gistUser == null) {
-        GetGistDetailClient gistDetailClient = new GetGistDetailClient(this, gistId);
+        GetGistDetailClient gistDetailClient = new GetGistDetailClient(gistId);
         gistDetailClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
           @Override
           public void onCompleted() {
@@ -107,7 +107,7 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
   }
 
   private void loadGists() {
-    UserGistsClient userGistsClient = new UserGistsClient(GistsMainActivity.this, gistId);
+    UserGistsClient userGistsClient = new UserGistsClient(gistId);
     userGistsClient.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
       @Override
       public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {

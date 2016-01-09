@@ -27,7 +27,7 @@ public class AddIssueCommentAction extends Action<GithubComment> {
 
   @Override
   public Action<GithubComment> execute() {
-    NewIssueCommentClient client = new NewIssueCommentClient(context, issueInfo, body);
+    NewIssueCommentClient client = new NewIssueCommentClient(issueInfo, body);
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     return this;
   }

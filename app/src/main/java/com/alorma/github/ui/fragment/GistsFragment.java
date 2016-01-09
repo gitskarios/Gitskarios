@@ -3,7 +3,7 @@ package com.alorma.github.ui.fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.alorma.github.R;
@@ -65,14 +65,14 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter> implements 
   protected void executeRequest() {
     super.executeRequest();
 
-    setAction(new UserGistsClient(getActivity(), username));
+    setAction(new UserGistsClient(username));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
 
-    setAction(new UserGistsClient(getActivity(), username, page));
+    setAction(new UserGistsClient(username, page));
   }
 
   private void setAction(GithubListClient<List<Gist>> userGistsClient) {

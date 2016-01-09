@@ -41,7 +41,7 @@ public class ReadmeFragment extends BaseFragment implements BranchManager, Title
 
   public static ReadmeFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
 
     ReadmeFragment f = new ReadmeFragment();
     f.setArguments(bundle);
@@ -70,12 +70,12 @@ public class ReadmeFragment extends BaseFragment implements BranchManager, Title
 
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
     }
   }
 
   private void getContent() {
-    loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
+    loadReadme(new GetReadmeContentsClient(repoInfo));
   }
 
   private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
@@ -109,7 +109,7 @@ public class ReadmeFragment extends BaseFragment implements BranchManager, Title
   public void setCurrentBranch(String branch) {
     if (getActivity() != null) {
       repoInfo.branch = branch;
-      loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
+      loadReadme(new GetReadmeContentsClient(repoInfo));
     }
   }
 

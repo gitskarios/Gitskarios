@@ -73,7 +73,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
     public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(REPO_INFO, repoInfo);
+        bundle.putSerializable(REPO_INFO, repoInfo);
 
         Intent intent = new Intent(context, RepoDetailActivity.class);
         intent.putExtras(bundle);
@@ -96,7 +96,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_repo_detail);
 
         if (getIntent().getExtras() != null) {
-            requestRepoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+            requestRepoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
 
             if (requestRepoInfo == null) {
                 if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras().containsKey(REPO_INFO_OWNER)) {
@@ -314,7 +314,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
     }
 
     private void changeBranch() {
-        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(this, requestRepoInfo);
+        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(requestRepoInfo);
         Observable<List<Branch>> apiObservable =
                 repoBranchesClient.observable()
                         .subscribeOn(Schedulers.io())
@@ -387,9 +387,9 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
         if (requestCode == EDIT_REPO) {
             if (resultCode == RESULT_OK && data != null) {
-                RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+                RepoRequestDTO repoRequestDTO = (RepoRequestDTO) data.getSerializableExtra(ManageRepositoryActivity.CONTENT);
                 showProgressDialog(R.string.edit_repo_loading);
-                EditRepoClient editRepositoryClient = new EditRepoClient(this, requestRepoInfo, repoRequestDTO);
+                EditRepoClient editRepositoryClient = new EditRepoClient(requestRepoInfo, repoRequestDTO);
                 editRepositoryClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
                     @Override
                     public void onCompleted() {

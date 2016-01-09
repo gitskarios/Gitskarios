@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
-import com.alorma.github.sdk.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
@@ -29,7 +29,7 @@ public class PullRequestCommitsActivity extends BackActivity {
     setContentView(R.layout.generic_toolbar);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
-      IssueInfo info = getIntent().getParcelableExtra(ISSUE_INFO);
+      IssueInfo info = (IssueInfo) getIntent().getSerializableExtra(ISSUE_INFO);
 
       setTitle(info.toString());
 

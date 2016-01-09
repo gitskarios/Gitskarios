@@ -39,8 +39,8 @@ public class ManageRepositoryActivity extends BackActivity {
     if (getIntent() != null && getIntent().getExtras() != null) {
       if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(REQUEST_DTO)) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
-        RepoRequestDTO dto = getIntent().getExtras().getParcelable(REQUEST_DTO);
+        RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
+        RepoRequestDTO dto = (RepoRequestDTO) getIntent().getExtras().getSerializable(REQUEST_DTO);
         repositoryManagerFragment = RepositoryManagerFragment.newInstance(repoInfo, dto);
         ft.replace(R.id.content, repositoryManagerFragment);
         ft.commit();

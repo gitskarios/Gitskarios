@@ -19,13 +19,13 @@ public class ReposFragmentFromOrgs extends BaseReposListFragment {
   protected void executeRequest() {
     super.executeRequest();
 
-    setAction(new UserReposFromOrganizationClient(getActivity()));
+    setAction(new UserReposFromOrganizationClient());
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new UserReposFromOrganizationClient(getActivity(), null, RepoUtils.sortOrder(getActivity()), page));
+    setAction(new UserReposFromOrganizationClient(null, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

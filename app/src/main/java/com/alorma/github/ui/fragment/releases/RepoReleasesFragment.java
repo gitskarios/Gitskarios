@@ -1,7 +1,7 @@
 package com.alorma.github.ui.fragment.releases;
 
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Release;
@@ -30,7 +30,7 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
 
     Bundle args = new Bundle();
 
-    args.putParcelable(REPO_INFO, info);
+    args.putSerializable(REPO_INFO, info);
 
     repoReleasesFragment.setArguments(args);
 
@@ -39,7 +39,7 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
 
   @Override
   protected void loadArguments() {
-    repoInfo = getArguments().getParcelable(REPO_INFO);
+    repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
   }
 
   @Override
@@ -50,14 +50,14 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
       getAdapter().clear();
     }
 
-    setAction(new GetRepoReleasesClient(getActivity(), repoInfo, 0));
+    setAction(new GetRepoReleasesClient(repoInfo, 0));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
 
-    setAction(new GetRepoReleasesClient(getActivity(), repoInfo, page));
+    setAction(new GetRepoReleasesClient(repoInfo, page));
   }
 
   private void setAction(GithubListClient<List<Release>> getRepoReleasesClient) {

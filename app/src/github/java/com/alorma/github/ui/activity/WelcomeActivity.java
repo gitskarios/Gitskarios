@@ -3,7 +3,6 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,14 +19,13 @@ import butterknife.OnClick;
 import com.alorma.github.R;
 import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.AccountsHelper;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
-import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.IIcon;
+
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -134,7 +132,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
           .putSuccess(true));
     }
 
-    GetAuthUserClient authUserClient = new GetAuthUserClient(this, accessToken);
+    GetAuthUserClient authUserClient = new GetAuthUserClient(accessToken);
     authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
       @Override
       public void onCompleted() {

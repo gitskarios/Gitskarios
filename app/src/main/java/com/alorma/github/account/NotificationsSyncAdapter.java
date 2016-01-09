@@ -55,7 +55,7 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
       final NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
       notificationManager.cancel(token.hashCode());
 
-      GetNotificationsClient notificationsClient = new GetNotificationsClient(getContext(), token);
+      GetNotificationsClient notificationsClient = new GetNotificationsClient(token);
       notificationsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new NotificationsSubscriber(account, token));
     }
   }

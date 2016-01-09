@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +63,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
   public static CommitsListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
 
     CommitsListFragment fragment = new CommitsListFragment();
     fragment.setArguments(bundle);
@@ -72,7 +72,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
   public static CommitsListFragment newInstance(RepoInfo repoInfo, String path) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
     bundle.putString(PATH, path);
 
     CommitsListFragment fragment = new CommitsListFragment();
@@ -83,7 +83,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
       path = getArguments().getString(PATH);
     }
   }
@@ -94,7 +94,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     CommitInfo commitInfo = new CommitInfo();
     commitInfo.repoInfo = repoInfo;
     commitInfo.sha = repoInfo.branch;
-    setAction(new ListCommitsClient(getActivity(), commitInfo, path, 0));
+    setAction(new ListCommitsClient(commitInfo, path, 0));
   }
 
   private void setAction(final GithubListClient<List<Commit>> listCommitsClient) {
@@ -113,7 +113,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     CommitInfo commitInfo = new CommitInfo();
     commitInfo.repoInfo = repoInfo;
 
-    setAction(new ListCommitsClient(getActivity(), commitInfo, path, page));
+    setAction(new ListCommitsClient(commitInfo, path, page));
   }
 
   @Override
@@ -348,7 +348,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   }
 
   private void changeBranch() {
-    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
     repoBranchesClient.observable()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new DialogBranchesCallback(getActivity(), repoInfo) {

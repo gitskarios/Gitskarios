@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Html;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,17 +38,16 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.alorma.github.utils.AttributesUtils;
+import com.alorma.gitskarios.core.Pair;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.gson.Gson;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.nostra13.universalimageloader.core.ImageLoader;
+
 import io.fabric.sdk.android.Fabric;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -287,7 +285,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username);
+    GetUserEventsClient eventsClient = new GetUserEventsClient(username);
     executeClient(eventsClient);
   }
 
@@ -295,7 +293,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
 
-    GetUserEventsClient eventsClient = new GetUserEventsClient(getActivity(), username, page);
+    GetUserEventsClient eventsClient = new GetUserEventsClient(username, page);
     executeClient(eventsClient);
   }
 

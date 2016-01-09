@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.alorma.github.R;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.alorma.github.StoreCredentials;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.mikepenz.iconics.IconicsDrawable;

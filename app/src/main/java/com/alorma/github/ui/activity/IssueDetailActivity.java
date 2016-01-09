@@ -42,7 +42,7 @@ import com.alorma.github.sdk.services.issues.GetMilestonesClient;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.story.IssueStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ActionCallback;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
@@ -54,7 +54,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.utils.ShortcutUtils;
-import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.alorma.github.StoreCredentials;
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -95,7 +95,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
 
-    bundle.putParcelable(ISSUE_INFO, issueInfo);
+    bundle.putSerializable(ISSUE_INFO, issueInfo);
 
     Intent intent = new Intent(context, IssueDetailActivity.class);
     intent.putExtras(bundle);
@@ -121,7 +121,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
     if (getIntent().getExtras() != null) {
 
-      issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+      issueInfo = (IssueInfo) getIntent().getExtras().getSerializable(ISSUE_INFO);
 
       if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
         String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
@@ -189,7 +189,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     loadingView.setVisibility(View.VISIBLE);
 
     if (checkPermissions(issueInfo)) {
-      GetRepoClient repoClient = new GetRepoClient(this, issueInfo.repoInfo);
+      GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
       repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
         @Override
         public void onCompleted() {
@@ -214,7 +214,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   }
 
   private void loadIssue() {
-    IssueStoryLoader issueStoryLoader = new IssueStoryLoader(this, issueInfo);
+    IssueStoryLoader issueStoryLoader = new IssueStoryLoader(issueInfo);
     issueStoryLoader.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<IssueStory>() {
       @Override
       public void onCompleted() {
@@ -471,7 +471,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   }
 
   private void editMilestone() {
-    GetMilestonesClient milestonesClient = new GetMilestonesClient(this, issueInfo.repoInfo, MilestoneState.open, true);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
     milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new MilestonesCallback());
 
     showProgressDialog(R.string.loading_milestones);
@@ -520,7 +520,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   private void createMilestone(String milestoneName) {
     CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-    CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, issueInfo.repoInfo, createMilestoneRequestDTO);
+    CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(issueInfo.repoInfo, createMilestoneRequestDTO);
     createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Milestone>() {
       @Override
       public void onCompleted() {
@@ -554,7 +554,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
   }
 
   private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
-    EditIssueClient client = new EditIssueClient(IssueDetailActivity.this, issueInfo, editIssueRequestDTO);
+    EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
 
     client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Issue>() {
       @Override
@@ -583,7 +583,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
    */
 
   private void openLabels() {
-    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, issueInfo.repoInfo, true);
+    GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(issueInfo.repoInfo, true);
     labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
   }
 

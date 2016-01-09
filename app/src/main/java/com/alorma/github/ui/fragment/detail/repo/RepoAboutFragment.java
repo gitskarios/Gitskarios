@@ -36,8 +36,6 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.utils.TimeUtils;
-import com.clean.presenter.Presenter;
-import com.clean.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -121,7 +119,7 @@ public class RepoAboutFragment extends Fragment
 
     public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(REPO_INFO, repoInfo);
+        bundle.putSerializable(REPO_INFO, repoInfo);
 
         RepoAboutFragment f = new RepoAboutFragment();
         f.setArguments(bundle);
@@ -233,7 +231,7 @@ public class RepoAboutFragment extends Fragment
 
     protected void loadArguments() {
         if (getArguments() != null) {
-            repoInfo = getArguments().getParcelable(REPO_INFO);
+            repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
         }
     }
 
@@ -260,7 +258,7 @@ public class RepoAboutFragment extends Fragment
     }
 
     private void getReadme() {
-        loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
+        loadReadme(new GetReadmeContentsClient(repoInfo));
     }
 
     private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
@@ -375,7 +373,7 @@ public class RepoAboutFragment extends Fragment
     public void setCurrentBranch(String branch) {
         if (getActivity() != null) {
             repoInfo.branch = branch;
-            loadReadme(new GetReadmeContentsClient(getActivity(), repoInfo));
+            loadReadme(new GetReadmeContentsClient(repoInfo));
         }
     }
 
@@ -394,29 +392,29 @@ public class RepoAboutFragment extends Fragment
 
     protected void getStarWatchData() {
         starAction(
-                new CheckRepoStarredClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+                new CheckRepoStarredClient(currentRepo.owner.login, currentRepo.name));
 
         watchAction(
-                new CheckRepoWatchedClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+                new CheckRepoWatchedClient(currentRepo.owner.login, currentRepo.name));
     }
 
     private void changeStarStatus() {
         if (repoStarred) {
             futureStarredCount = currentRepo.stargazers_count - 1;
-            starAction(new UnstarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+            starAction(new UnstarRepoClient(currentRepo.owner.login, currentRepo.name));
         } else {
             futureStarredCount = currentRepo.stargazers_count + 1;
-            starAction(new StarRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+            starAction(new StarRepoClient(currentRepo.owner.login, currentRepo.name));
         }
     }
 
     private void changeWatchedStatus() {
         if (repoWatched) {
             futureSubscribersCount = currentRepo.subscribers_count - 1;
-            watchAction(new UnwatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+            watchAction(new UnwatchRepoClient(currentRepo.owner.login, currentRepo.name));
         } else {
             futureSubscribersCount = currentRepo.subscribers_count + 1;
-            watchAction(new WatchRepoClient(getActivity(), currentRepo.owner.login, currentRepo.name));
+            watchAction(new WatchRepoClient(currentRepo.owner.login, currentRepo.name));
         }
     }
 

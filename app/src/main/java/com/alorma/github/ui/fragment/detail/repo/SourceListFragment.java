@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +23,7 @@ import com.alorma.github.sdk.services.content.Downloader;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
@@ -58,7 +58,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
     public static SourceListFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(REPO_INFO, repoInfo);
+        bundle.putSerializable(REPO_INFO, repoInfo);
 
         SourceListFragment f = new SourceListFragment();
         f.setArguments(bundle);
@@ -137,7 +137,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     @Override
     protected void loadArguments() {
         if (getArguments() != null) {
-            repoInfo = getArguments().getParcelable(REPO_INFO);
+            repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
         }
     }
 
@@ -152,7 +152,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
         breadCrumbs.initRootCrumb();
 
-        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo);
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(repoInfo);
         repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
@@ -250,7 +250,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         currentPath = path;
         startRefresh();
 
-        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(getActivity(), repoInfo, path);
+        GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(repoInfo, path);
         repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
@@ -290,7 +290,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     @Override
     protected void fabClick() {
         super.fabClick();
-        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(getActivity(), repoInfo);
+        GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
         repoBranchesClient.observable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DownloadBranchesCallback(getActivity(), repoInfo));
@@ -359,7 +359,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
             GitskariosSettings settings = new GitskariosSettings(getActivity());
             String zipBall = getActivity().getString(R.string.download_zip_value);
             String fileType = settings.getDownloadFileType(zipBall);
-            GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(getContext(), repoInfo, fileType
+            GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(repoInfo, fileType
                     , new NativeDownloader());
             getArchiveLinkService.observable().subscribe();
         }

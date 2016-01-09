@@ -1,7 +1,7 @@
 package com.alorma.github.ui.fragment.commit;
 
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
@@ -27,7 +27,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
   public static CommitCommentsFragment newInstance(CommitInfo info) {
     CommitCommentsFragment f = new CommitCommentsFragment();
     Bundle b = new Bundle();
-    b.putParcelable(INFO, info);
+    b.putSerializable(INFO, info);
     f.setArguments(b);
     return f;
   }
@@ -36,7 +36,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
   protected void executeRequest() {
     super.executeRequest();
     if (info != null) {
-      setAction(new GetCommitCommentsClient(getActivity(), info));
+      setAction(new GetCommitCommentsClient(info));
     }
   }
 
@@ -44,7 +44,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
     if (info != null) {
-      setAction(new GetCommitCommentsClient(getActivity(), info, page));
+      setAction(new GetCommitCommentsClient(info, page));
     }
   }
 
@@ -85,7 +85,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
 
   @Override
   protected void loadArguments() {
-    info = getArguments().getParcelable(INFO);
+    info = (CommitInfo) getArguments().getSerializable(INFO);
   }
 
   @Override

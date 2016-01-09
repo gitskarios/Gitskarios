@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import com.alorma.github.sdk.services.pullrequest.GetPullRequestFiles;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.gitskarios.core.Pair;
+
 import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,7 +35,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
   public static PullRequestFilesListFragment newInstance(IssueInfo info) {
     PullRequestFilesListFragment f = new PullRequestFilesListFragment();
     Bundle b = new Bundle();
-    b.putParcelable(INFO, info);
+    b.putSerializable(INFO, info);
     f.setArguments(b);
     return f;
   }
@@ -52,7 +53,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
 
       adapter = new CommitFilesAdapter(LayoutInflater.from(getActivity()));
 
-      info = getArguments().getParcelable(INFO);
+      info = (IssueInfo) getArguments().getSerializable(INFO);
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
       getContent();
@@ -60,7 +61,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
   }
 
   private void getContent() {
-    GetPullRequestFiles getPullRequestFiles = new GetPullRequestFiles(getActivity(), info);
+    GetPullRequestFiles getPullRequestFiles = new GetPullRequestFiles(info);
     getPullRequestFiles.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Pair<List<CommitFile>, Integer>>() {
       @Override
       public void onCompleted() {

@@ -27,12 +27,12 @@ public class FollowingFragment extends BaseUsersListFragment {
 
   @Override
   protected void executeRequest() {
-    setAction(new UserFollowingClient(getActivity(), username));
+    setAction(new UserFollowingClient(username));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
-    setAction(new UserFollowingClient(getActivity(), username, page));
+    setAction(new UserFollowingClient(username, page));
   }
 
   @Override

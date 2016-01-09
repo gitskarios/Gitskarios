@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +66,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
   public static IssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
     bundle.putBoolean(FROM_SEARCH, fromSearch);
 
     IssuesListFragment fragment = new IssuesListFragment();
@@ -143,7 +143,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
       fromSearch = getArguments().getBoolean(FROM_SEARCH, false);
     }
   }
@@ -153,18 +153,20 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
     if (repoInfo != null) {
       if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
         if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo(repoInfo);
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
           if (currentFilter == 0) {
             issueInfo.state = IssueState.open;
           } else if (currentFilter == 1) {
             issueInfo.state = IssueState.closed;
           }
 
-          setAction(new IssuesSearchClient(getActivity(), searchClientRequest.request()));
+          setAction(new IssuesSearchClient(searchClientRequest.request()));
         }
       } else {
         if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo(repoInfo);
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
           if (currentFilter == 0) {
             issueInfo.state = IssueState.open;
           } else if (currentFilter == 1) {
@@ -173,7 +175,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
           HashMap<String, String> map = new HashMap<>();
           map.put("state", issueInfo.state.name());
 
-          setAction(new GetIssuesClient(getActivity(), issueInfo, map));
+          setAction(new GetIssuesClient(issueInfo, map));
         }
       }
     }
@@ -222,18 +224,20 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
     if (repoInfo != null) {
       if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
         if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo(repoInfo);
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
           if (currentFilter == 0) {
             issueInfo.state = IssueState.open;
           } else if (currentFilter == 1) {
             issueInfo.state = IssueState.closed;
           }
 
-          setAction(new IssuesSearchClient(getActivity(), searchClientRequest.request(), page));
+          setAction(new IssuesSearchClient(searchClientRequest.request(), page));
         }
       } else {
         if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo(repoInfo);
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
           if (currentFilter == 0) {
             issueInfo.state = IssueState.open;
           } else if (currentFilter == 1) {
@@ -242,7 +246,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
           HashMap<String, String> map = new HashMap<>();
           map.put("state", issueInfo.state.name());
 
-          setAction(new GetIssuesClient(getActivity(), issueInfo, map, page));
+          setAction(new GetIssuesClient(issueInfo, map, page));
         }
       }
     }

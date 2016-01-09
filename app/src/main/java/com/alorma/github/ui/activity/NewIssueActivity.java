@@ -70,7 +70,7 @@ public class NewIssueActivity extends BackActivity {
 
     public static Intent createLauncherIntent(Context context, RepoInfo info) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(REPO_INFO, info);
+        bundle.putSerializable(REPO_INFO, info);
         Intent intent = new Intent(context, NewIssueActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -87,7 +87,7 @@ public class NewIssueActivity extends BackActivity {
         setContentView(R.layout.activity_new_issue);
 
         if (getIntent().getExtras() != null) {
-            repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+            repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
             findViews();
 
             issueRequest = CacheWrapper.getIssueRequest(repoInfo.owner + "/" + repoInfo.name);
@@ -289,7 +289,7 @@ public class NewIssueActivity extends BackActivity {
     private void createIssue(IssueRequest issue) {
         issuePublished = true;
         issueRequest.milestoneName = null;
-        PostNewIssueClient postNewIssueClient = new PostNewIssueClient(this, repoInfo, issue);
+        PostNewIssueClient postNewIssueClient = new PostNewIssueClient(repoInfo, issue);
         postNewIssueClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
             @Override
             public void onCompleted() {
@@ -327,7 +327,7 @@ public class NewIssueActivity extends BackActivity {
      */
 
     private void openAssignee() {
-        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(getApplicationContext(), repoInfo);
+        GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(repoInfo);
         contributorsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Contributor>>() {
             @Override
             public void onCompleted() {
@@ -402,7 +402,7 @@ public class NewIssueActivity extends BackActivity {
      */
 
     private void openMilestone() {
-        GetMilestonesClient milestonesClient = new GetMilestonesClient(this, repoInfo, MilestoneState.open, true);
+        GetMilestonesClient milestonesClient = new GetMilestonesClient(repoInfo, MilestoneState.open, true);
         milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
             @Override
             public void onCompleted() {
@@ -482,7 +482,7 @@ public class NewIssueActivity extends BackActivity {
     private void createMilestone(String milestoneName) {
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(this, repoInfo, createMilestoneRequestDTO);
+        CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(repoInfo, createMilestoneRequestDTO);
         createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
             @Override
             public void onCompleted() {
@@ -516,7 +516,7 @@ public class NewIssueActivity extends BackActivity {
      */
 
     private void openLabels() {
-        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(this, repoInfo, true);
+        GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(repoInfo, true);
         labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Label>>() {
             @Override
             public void onCompleted() {

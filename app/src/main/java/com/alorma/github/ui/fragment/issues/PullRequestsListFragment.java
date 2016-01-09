@@ -3,7 +3,7 @@ package com.alorma.github.ui.fragment.issues;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import com.alorma.github.R;
-import com.alorma.github.sdk.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
@@ -52,7 +52,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
 
   public static PullRequestsListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
 
     PullRequestsListFragment fragment = new PullRequestsListFragment();
     fragment.setArguments(bundle);
@@ -94,7 +94,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
     }
   }
 
@@ -102,13 +102,14 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
     super.executeRequest();
     if (repoInfo != null) {
       if (currentFilter == 0 || currentFilter == 1) {
-        IssueInfo issueInfo = new IssueInfo(repoInfo);
+        IssueInfo issueInfo = new IssueInfo();
+        issueInfo.repoInfo = repoInfo;
         if (currentFilter == 0) {
           issueInfo.state = IssueState.open;
         } else if (currentFilter == 1) {
           issueInfo.state = IssueState.closed;
         }
-        setAction(new GetPullsClient(getActivity(), issueInfo));
+        setAction(new GetPullsClient(issueInfo));
       }
     }
   }
@@ -135,7 +136,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
         } else if (currentFilter == 1) {
           issueInfo.state = IssueState.closed;
         }
-        setAction(new GetPullsClient(getActivity(), issueInfo, page));
+        setAction(new GetPullsClient(issueInfo, page));
       }
     }
   }

@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -24,7 +23,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +33,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.login.AccountsHelper;
+import com.alorma.github.AccountsHelper;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
@@ -47,7 +46,7 @@ import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.users.UserResumeFragment;
 import com.alorma.github.ui.utils.PaletteUtils;
-import com.alorma.gitskarios.core.client.StoreCredentials;
+import com.alorma.github.StoreCredentials;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
@@ -129,7 +128,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     public static Intent createLauncherIntent(Context context, User user) {
         Bundle extras = new Bundle();
         if (user != null) {
-            extras.putParcelable(USER, user);
+            extras.putSerializable(USER, user);
 
             StoreCredentials settings = new StoreCredentials(context);
             extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
@@ -185,7 +184,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
                     name = AccountsHelper.getUserName(this, selectedAccount);
                 }
                 if (getIntent().getExtras().containsKey(USER)) {
-                    user = getIntent().getParcelableExtra(USER);
+                    user = (User) getIntent().getSerializableExtra(USER);
                     avatar = user.avatar_url;
                     login = user.login;
                     name = user.name;
@@ -220,19 +219,19 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
 
             if (user != null) {
                 if (user.login.equalsIgnoreCase(settings.getUserName())) {
-                    requestClient = new GetAuthUserClient(this);
+                    requestClient = new GetAuthUserClient();
                     updateProfile = true;
                 } else {
-                    requestClient = new RequestUserClient(this, user.login);
+                    requestClient = new RequestUserClient(user.login);
                 }
             } else {
-                requestClient = new GetAuthUserClient(this);
+                requestClient = new GetAuthUserClient();
                 updateProfile = true;
             }
 
             invalidateOptionsMenu();
 
-            Observable<Integer> organizations = new GetOrgsClient(this, login).observable()
+            Observable<Integer> organizations = new GetOrgsClient(login).observable()
                     .map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
                         @Override
                         public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
@@ -412,9 +411,9 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_menu_follow_user) {
-            followUserAction(new FollowUserClient(this, user.login));
+            followUserAction(new FollowUserClient(user.login));
         } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
-            followUserAction(new UnfollowUserClient(this, user.login));
+            followUserAction(new UnfollowUserClient(user.login));
         }
 
         item.setEnabled(false);
@@ -464,7 +463,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         }
 
         if (!user.login.equalsIgnoreCase(settings.getUserName())) {
-            followUserAction(new CheckFollowingUser(this, user.login));
+            followUserAction(new CheckFollowingUser(user.login));
         }
 
         userResumeFragment.fill(user);

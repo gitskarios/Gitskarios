@@ -1,7 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -20,7 +20,7 @@ public class ListForksFragment extends BaseReposListFragment {
     ListForksFragment reposFragment = new ListForksFragment();
     if (repoInfo != null) {
       Bundle bundle = new Bundle();
-      bundle.putParcelable(REPO_INFO, repoInfo);
+      bundle.putSerializable(REPO_INFO, repoInfo);
 
       reposFragment.setArguments(bundle);
     }
@@ -33,11 +33,11 @@ public class ListForksFragment extends BaseReposListFragment {
     GetForksClient client;
 
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
     }
 
     if (repoInfo != null) {
-      client = new GetForksClient(getActivity(), repoInfo);
+      client = new GetForksClient(repoInfo);
       client.setSort(GetForksClient.STARGAZERS);
       setAction(client);
     }
@@ -46,7 +46,7 @@ public class ListForksFragment extends BaseReposListFragment {
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    GetForksClient client = new GetForksClient(getActivity(), repoInfo, page);
+    GetForksClient client = new GetForksClient(repoInfo, page);
     client.setSort(GetForksClient.STARGAZERS);
     setAction(client);
   }
@@ -67,7 +67,7 @@ public class ListForksFragment extends BaseReposListFragment {
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(USERNAME);
+      repoInfo = (RepoInfo) getArguments().getSerializable(USERNAME);
     }
   }
 

@@ -50,13 +50,13 @@ public class CompareRepositoryCommitsActivity extends BackActivity {
     setContentView(R.layout.activity_compare_commits);
 
     if (getIntent().getExtras() != null) {
-      RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+      RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
       String base = getIntent().getExtras().getString(BASE);
       String head = getIntent().getExtras().getString(HEAD);
 
       setTitle(base + " ... " + head);
 
-      CompareCommitsClient compareCommitsClient = new CompareCommitsClient(this, repoInfo, base, head);
+      CompareCommitsClient compareCommitsClient = new CompareCommitsClient(repoInfo, base, head);
       compareCommitsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CompareCommit>() {
         @Override
         public void onCompleted() {

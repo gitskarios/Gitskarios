@@ -1,6 +1,5 @@
 package com.alorma.github.ui.activity.gists;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -111,7 +110,7 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
         super.onActivityResult(requestCode, resultCode, data);
 
         if (data != null && resultCode == RESULT_OK) {
-            GistFile file = data.getParcelableExtra(GistEditorActivity.EXTRA_FILE);
+            GistFile file = (GistFile) data.getSerializableExtra(GistEditorActivity.EXTRA_FILE);
             if (file != null) {
                 switch (requestCode) {
                     case GIST_FILE_CREATOR:
@@ -204,7 +203,7 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
 
             showProgressDialog(R.string.publishing_gist);
 
-            PublishGistClient publishGistClient = new PublishGistClient(this, gist);
+            PublishGistClient publishGistClient = new PublishGistClient(gist);
             publishGistClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
                 @Override
                 public void onCompleted() {

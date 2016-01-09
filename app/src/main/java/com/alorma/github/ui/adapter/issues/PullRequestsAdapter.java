@@ -3,7 +3,7 @@ package com.alorma.github.ui.adapter.issues;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
-import com.alorma.github.sdk.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.mikepenz.iconics.typeface.IIcon;

@@ -33,7 +33,7 @@ public class CollaboratorsPickerAction extends Action<User> {
   public Action<User> execute() {
     dialog = new MaterialDialog.Builder(context).content(R.string.loading_collaborators).progress(true, 0).theme(Theme.DARK).show();
 
-    GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(context, issueInfo.repoInfo);
+    GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(issueInfo.repoInfo);
     contributorsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<User>>() {
       @Override
       public void onCompleted() {

@@ -31,7 +31,7 @@ public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAda
 
   public static CompareFilesListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
 
     CompareFilesListFragment fragment = new CompareFilesListFragment();
     fragment.setArguments(bundle);
@@ -63,7 +63,7 @@ public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAda
 
   @Override
   protected void loadArguments() {
-    repoInfo = getArguments().getParcelable(REPO_INFO);
+    repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
   }
 
   @Override

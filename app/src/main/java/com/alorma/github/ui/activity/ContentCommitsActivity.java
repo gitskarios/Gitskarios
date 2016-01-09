@@ -23,7 +23,7 @@ public class ContentCommitsActivity extends BackActivity {
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String path, String name) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
     bundle.putString(PATH, path);
     bundle.putString(NAME, name);
 
@@ -39,7 +39,7 @@ public class ContentCommitsActivity extends BackActivity {
     setContentView(R.layout.content_commits_activity);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
-      RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+      RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getSerializable(REPO_INFO);
       String path = getIntent().getExtras().getString(PATH);
       String name = getIntent().getExtras().getString(NAME);
 

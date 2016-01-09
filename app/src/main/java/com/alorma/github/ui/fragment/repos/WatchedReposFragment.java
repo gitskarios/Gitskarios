@@ -36,13 +36,13 @@ public class WatchedReposFragment extends BaseReposListFragment {
     super.executeRequest();
     loadArguments();
 
-    setAction(new WatchedReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity())));
+    setAction(new WatchedReposClient(username, RepoUtils.sortOrder(getActivity())));
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new WatchedReposClient(getActivity(), username, RepoUtils.sortOrder(getActivity()), page));
+    setAction(new WatchedReposClient(username, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

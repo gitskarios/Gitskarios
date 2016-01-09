@@ -31,8 +31,8 @@ public class StatusActivity extends BackActivity {
     setContentView(R.layout.generic_toolbar);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
-      IssueInfo issueInfo = getIntent().getParcelableExtra(ISSUE_INFO);
-      CommitInfo info = getIntent().getParcelableExtra(COMMIT_INFO);
+      IssueInfo issueInfo = (IssueInfo) getIntent().getSerializableExtra(ISSUE_INFO);
+      CommitInfo info = (CommitInfo) getIntent().getSerializableExtra(COMMIT_INFO);
 
       setTitle(getString(R.string.status_screen_title, issueInfo.toString()));
 

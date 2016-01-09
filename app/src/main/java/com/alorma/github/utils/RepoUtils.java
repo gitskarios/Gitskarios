@@ -2,7 +2,7 @@ package com.alorma.github.utils;
 
 import android.content.Context;
 
-import com.alorma.github.sdk.utils.GitskariosSettings;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 
 /**

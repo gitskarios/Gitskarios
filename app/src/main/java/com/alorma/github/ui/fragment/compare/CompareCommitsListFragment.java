@@ -34,7 +34,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
 
   public static CompareCommitsListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
 
     CompareCommitsListFragment fragment = new CompareCommitsListFragment();
     fragment.setArguments(bundle);
@@ -87,7 +87,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
 
   @Override
   protected void loadArguments() {
-    repoInfo = getArguments().getParcelable(REPO_INFO);
+    repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
   }
 
   @Override

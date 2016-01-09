@@ -20,7 +20,7 @@ public class FileActivity extends BackActivity {
 
   public static Intent createLauncherIntent(Context context, FileInfo fileInfo, boolean fromUrl) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(FileFragment.FILE_INFO, fileInfo);
+    bundle.putSerializable(FileFragment.FILE_INFO, fileInfo);
     bundle.putBoolean(FileFragment.FROM_URL, fromUrl);
 
     Intent intent = new Intent(context, FileActivity.class);
@@ -33,7 +33,7 @@ public class FileActivity extends BackActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_toolbar);
 
-    info = getIntent().getExtras().<FileInfo>getParcelable(FileFragment.FILE_INFO);
+    info = (FileInfo) getIntent().getExtras().getSerializable(FileFragment.FILE_INFO);
     fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
 
     FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);

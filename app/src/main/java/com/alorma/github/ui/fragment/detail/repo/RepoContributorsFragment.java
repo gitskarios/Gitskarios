@@ -17,12 +17,10 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import retrofit.RetrofitError;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> implements TitleProvider {
@@ -32,7 +30,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   public static RepoContributorsFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putSerializable(REPO_INFO, repoInfo);
 
     RepoContributorsFragment fragment = new RepoContributorsFragment();
     fragment.setArguments(bundle);
@@ -40,11 +38,11 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
   }
 
   protected void executeRequest() {
-    setAction(new GetRepoContributorsClient(getActivity(), repoInfo));
+    setAction(new GetRepoContributorsClient(repoInfo));
   }
 
   protected void executePaginatedRequest(int page) {
-    setAction(new GetRepoContributorsClient(getActivity(), repoInfo, page));
+    setAction(new GetRepoContributorsClient(repoInfo, page));
   }
 
   private void setAction(GithubClient<List<Contributor>> client) {
@@ -119,7 +117,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
+      repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
     }
   }
 

@@ -51,8 +51,8 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
     ReleaseAboutFragment releaseAboutFragment = new ReleaseAboutFragment();
 
     Bundle args = new Bundle();
-    args.putParcelable(RELEASE, release);
-    args.putParcelable(REPO_INFO, repoInfo);
+    args.putSerializable(RELEASE, release);
+    args.putSerializable(REPO_INFO, repoInfo);
 
     releaseAboutFragment.setArguments(args);
 
@@ -79,7 +79,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
     progressBar = view.findViewById(R.id.progressBar);
     htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
 
-    final Release release = getArguments().getParcelable(RELEASE);
+    final Release release = (Release) getArguments().getSerializable(RELEASE);
 
     if (release != null) {
       User owner = release.author;
@@ -89,13 +89,13 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
       createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
       createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
 
-      final RepoInfo repoInfo = getArguments().getParcelable(REPO_INFO);
+      final RepoInfo repoInfo = (RepoInfo) getArguments().getSerializable(REPO_INFO);
 
       if (repoInfo != null && release.body != null && htmlContentView != null) {
 
         RequestMarkdownDTO requestMarkdownDTO = new RequestMarkdownDTO();
         requestMarkdownDTO.text = release.body;
-        GetMarkdownClient markdownClient = new GetMarkdownClient(getActivity(), requestMarkdownDTO);
+        GetMarkdownClient markdownClient = new GetMarkdownClient(requestMarkdownDTO);
         markdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
           @Override
           public void onCompleted() {

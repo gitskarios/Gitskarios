@@ -1,8 +1,8 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Pair;
+
+import com.alorma.gitskarios.core.Pair;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repos.UserReposClient;
@@ -32,13 +32,13 @@ public class CurrentAccountReposFragment extends BaseReposListFragment {
   protected void executeRequest() {
     super.executeRequest();
 
-    setAction(new UserReposClient(getActivity()));
+    setAction(new UserReposClient());
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new UserReposClient(getActivity(), null, RepoUtils.sortOrder(getActivity()), page));
+    setAction(new UserReposClient(null, RepoUtils.sortOrder(getActivity()), page));
   }
 
   @Override

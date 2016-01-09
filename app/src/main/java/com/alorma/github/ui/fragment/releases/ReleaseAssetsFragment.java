@@ -36,7 +36,7 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
     ReleaseAssetsFragment releaseAssetsFragment = new ReleaseAssetsFragment();
 
     Bundle args = new Bundle();
-    args.putParcelableArrayList(RELEASE_ASSETS, new ArrayList<>(releaseAssets));
+    args.putSerializable(RELEASE_ASSETS, new ArrayList<>(releaseAssets));
 
     releaseAssetsFragment.setArguments(args);
 
@@ -56,7 +56,7 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
     RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-    ArrayList<ReleaseAsset> assets = getArguments().getParcelableArrayList(RELEASE_ASSETS);
+    ArrayList<ReleaseAsset> assets = (ArrayList<ReleaseAsset>) getArguments().getSerializable(RELEASE_ASSETS);
 
     if (assets != null) {
       RVRendererAdapter<ReleaseAsset> adapter =

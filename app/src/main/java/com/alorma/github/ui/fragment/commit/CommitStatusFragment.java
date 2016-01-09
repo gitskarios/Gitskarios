@@ -1,7 +1,7 @@
 package com.alorma.github.ui.fragment.commit;
 
 import android.os.Bundle;
-import android.util.Pair;
+import com.alorma.gitskarios.core.Pair;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubStatus;
@@ -29,7 +29,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
 
     Bundle args = new Bundle();
 
-    args.putParcelable(COMMIT_INFO, commitInfo);
+    args.putSerializable(COMMIT_INFO, commitInfo);
 
     fragment.setArguments(args);
 
@@ -39,7 +39,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(getActivity(), commitInfo.repoInfo, commitInfo.sha);
+    GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha);
     getShaCombinedStatus.observable()
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
@@ -54,7 +54,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(getActivity(), commitInfo.repoInfo, commitInfo.sha, page);
+    GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha, page);
     getShaCombinedStatus.observable()
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
@@ -69,7 +69,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      commitInfo = getArguments().getParcelable(COMMIT_INFO);
+      commitInfo = (CommitInfo) getArguments().getSerializable(COMMIT_INFO);
     }
   }
 
