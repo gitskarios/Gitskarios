@@ -12,6 +12,10 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by bernat.borras on 9/1/16.
@@ -56,6 +60,11 @@ public class UserAvatarView extends CircularImageView implements View.OnClickLis
 
     @Override
     public void onClick(final View v) {
+
+        if (Fabric.isInitialized()) {
+            Answers.getInstance().logContentView(new ContentViewEvent().putContentName("UserAvatarViewClick"));
+        }
+
         if (user.type == UserType.Organization) {
             v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
         } else {
