@@ -316,7 +316,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
     private void changeBranch() {
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(requestRepoInfo);
         Observable<List<Branch>> apiObservable =
-                repoBranchesClient.observable()
+                repoBranchesClient.observable().subscribeOn(Schedulers.io())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<List<Branch>>() {
@@ -390,7 +390,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
                 RepoRequestDTO repoRequestDTO = (RepoRequestDTO) data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
                 showProgressDialog(R.string.edit_repo_loading);
                 EditRepoClient editRepositoryClient = new EditRepoClient(requestRepoInfo, repoRequestDTO);
-                editRepositoryClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+                editRepositoryClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
                     @Override
                     public void onCompleted() {
 

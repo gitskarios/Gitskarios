@@ -18,6 +18,7 @@ import java.util.List;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 17/07/2014.
@@ -84,7 +85,7 @@ public abstract class BaseReposListFragment extends LoadingListFragment<ReposAda
 
     protected void setAction(GithubListClient<List<Repo>> reposClient) {
         startRefresh();
-        reposClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        reposClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
 
     @Override

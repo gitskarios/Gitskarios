@@ -45,6 +45,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class NewIssueActivity extends BackActivity {
 
@@ -290,7 +291,7 @@ public class NewIssueActivity extends BackActivity {
         issuePublished = true;
         issueRequest.milestoneName = null;
         PostNewIssueClient postNewIssueClient = new PostNewIssueClient(repoInfo, issue);
-        postNewIssueClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+        postNewIssueClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
             @Override
             public void onCompleted() {
 
@@ -328,7 +329,7 @@ public class NewIssueActivity extends BackActivity {
 
     private void openAssignee() {
         GetRepoContributorsClient contributorsClient = new GetRepoContributorsClient(repoInfo);
-        contributorsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Contributor>>() {
+        contributorsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Contributor>>() {
             @Override
             public void onCompleted() {
 
@@ -403,7 +404,7 @@ public class NewIssueActivity extends BackActivity {
 
     private void openMilestone() {
         GetMilestonesClient milestonesClient = new GetMilestonesClient(repoInfo, MilestoneState.open, true);
-        milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
+        milestonesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
             @Override
             public void onCompleted() {
 
@@ -483,7 +484,7 @@ public class NewIssueActivity extends BackActivity {
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
         CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(repoInfo, createMilestoneRequestDTO);
-        createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
+        createMilestoneClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
             @Override
             public void onCompleted() {
 
@@ -517,7 +518,7 @@ public class NewIssueActivity extends BackActivity {
 
     private void openLabels() {
         GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(repoInfo, true);
-        labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Label>>() {
+        labelsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Label>>() {
             @Override
             public void onCompleted() {
 

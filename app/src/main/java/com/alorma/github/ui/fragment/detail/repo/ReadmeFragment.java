@@ -28,6 +28,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import retrofit.RetrofitError;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 22/07/2014.
@@ -81,7 +82,7 @@ public class ReadmeFragment extends BaseFragment implements BranchManager, Title
     }
 
     private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
-        repoMarkdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
+        repoMarkdownClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
 

@@ -18,6 +18,7 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by a557114 on 06/09/2015.
@@ -43,7 +44,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
     protected void executeRequest() {
         super.executeRequest();
         GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha);
-        getShaCombinedStatus.observable()
+        getShaCombinedStatus.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
                     @Override
@@ -58,7 +59,7 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
     protected void executePaginatedRequest(int page) {
         super.executePaginatedRequest(page);
         GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha, page);
-        getShaCombinedStatus.observable()
+        getShaCombinedStatus.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
                     @Override

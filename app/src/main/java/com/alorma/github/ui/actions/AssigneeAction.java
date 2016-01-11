@@ -14,6 +14,7 @@ import com.alorma.github.sdk.services.issues.EditIssueClient;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 12/10/2015.
@@ -46,7 +47,7 @@ public class AssigneeAction extends Action<Boolean> {
 
     private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO) {
         EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
             @Override
             public void onCompleted() {
 

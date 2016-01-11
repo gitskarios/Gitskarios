@@ -38,6 +38,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 20/07/2014.
@@ -125,7 +126,7 @@ public class FileFragment extends BaseFragment {
             showProgressDialog();
 
             GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(fileInfo.repoInfo);
-            branchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new ParseBranchesCallback(fileInfo.path));
+            branchesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new ParseBranchesCallback(fileInfo.path));
         }
     }
 
@@ -133,7 +134,7 @@ public class FileFragment extends BaseFragment {
         if (fileInfo.repoInfo != null) {
             showProgressDialog();
             GetFileContentClient fileContentClient = new GetFileContentClient(fileInfo);
-            fileContentClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
+            fileContentClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
                 @Override
                 public void onCompleted() {
 
@@ -161,7 +162,7 @@ public class FileFragment extends BaseFragment {
             RequestMarkdownDTO request = new RequestMarkdownDTO();
             request.text = decodeContent();
             GetMarkdownClient markdownClient = new GetMarkdownClient(request);
-            markdownClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
+            markdownClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
                 @Override
                 public void onCompleted() {
 

@@ -17,6 +17,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 12/10/2015.
@@ -37,7 +38,7 @@ public class CollaboratorsPickerAction extends Action<User> {
         dialog = new MaterialDialog.Builder(context).content(R.string.loading_collaborators).progress(true, 0).theme(Theme.DARK).show();
 
         GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(issueInfo.repoInfo);
-        contributorsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<User>>() {
+        contributorsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<User>>() {
             @Override
             public void onCompleted() {
 

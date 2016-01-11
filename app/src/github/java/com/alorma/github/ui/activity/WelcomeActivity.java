@@ -30,6 +30,7 @@ import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity implements GithubLoginFragment.LoginCallback {
 
@@ -135,7 +136,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Git
         }
 
         GetAuthUserClient authUserClient = new GetAuthUserClient(accessToken);
-        authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+        authUserClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
             @Override
             public void onCompleted() {
 

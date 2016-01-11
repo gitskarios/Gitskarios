@@ -36,6 +36,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 22/08/2014.
@@ -118,7 +119,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
     }
 
     private void setAction(GithubListClient<List<PullRequest>> client) {
-        client.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<PullRequest>, Integer>, List<PullRequest>>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<PullRequest>, Integer>, List<PullRequest>>() {
             @Override
             public List<PullRequest> call(Pair<List<PullRequest>, Integer> listIntegerPair) {
                 setPage(listIntegerPair.second);

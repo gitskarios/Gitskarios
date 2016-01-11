@@ -22,6 +22,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class GithubLoginFragment extends Fragment {
 
@@ -110,7 +111,7 @@ public class GithubLoginFragment extends Fragment {
                     BuildConfig.CLIENT_SECRET,
                     BuildConfig.CLIENT_CALLBACK);
 
-            requestTokenClient.observable()
+            requestTokenClient.observable().subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<Token>() {
                         @Override

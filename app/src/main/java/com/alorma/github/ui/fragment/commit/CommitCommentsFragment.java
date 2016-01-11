@@ -18,6 +18,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 23/06/2015.
@@ -52,7 +53,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
     }
 
     private void setAction(GithubListClient<List<CommitComment>> client) {
-        client.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<CommitComment>, Integer>, List<CommitComment>>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<CommitComment>, Integer>, List<CommitComment>>() {
             @Override
             public List<CommitComment> call(Pair<List<CommitComment>, Integer> listIntegerPair) {
                 setPage(listIntegerPair.second);

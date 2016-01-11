@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 02/04/2015.
@@ -69,7 +70,7 @@ public class GistDetailFragment extends Fragment implements Observer<Gist>, Gist
             String id = getArguments().getString(GIST_ID);
 
             GetGistDetailClient detailClient = new GetGistDetailClient(id);
-            detailClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+            detailClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
         }
     }
 

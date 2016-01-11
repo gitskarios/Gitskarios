@@ -21,6 +21,7 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class GistsFragment extends LoadingListFragment<GistsAdapter> implements GistsAdapter.GistsAdapterListener {
 
@@ -79,7 +80,7 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter> implements 
     }
 
     private void setAction(GithubListClient<List<Gist>> userGistsClient) {
-        userGistsClient.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
+        userGistsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
             @Override
             public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
                 setPage(listIntegerPair.second);

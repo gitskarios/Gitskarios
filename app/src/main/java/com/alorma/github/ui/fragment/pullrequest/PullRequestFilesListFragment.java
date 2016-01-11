@@ -23,6 +23,7 @@ import java.util.List;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 07/09/2014.
@@ -64,7 +65,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
 
     private void getContent() {
         GetPullRequestFiles getPullRequestFiles = new GetPullRequestFiles(info);
-        getPullRequestFiles.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Pair<List<CommitFile>, Integer>>() {
+        getPullRequestFiles.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Pair<List<CommitFile>, Integer>>() {
             @Override
             public void onCompleted() {
 

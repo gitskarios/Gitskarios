@@ -33,6 +33,7 @@ import java.util.Map;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 07/06/2015.
@@ -59,7 +60,7 @@ public class NotificationsSyncAdapter extends AbstractThreadedSyncAdapter {
             notificationManager.cancel(token.hashCode());
 
             GetNotificationsClient notificationsClient = new GetNotificationsClient(token);
-            notificationsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new NotificationsSubscriber(account, token));
+            notificationsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new NotificationsSubscriber(account, token));
         }
     }
 

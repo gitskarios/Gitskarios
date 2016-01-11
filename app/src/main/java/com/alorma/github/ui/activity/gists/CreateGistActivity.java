@@ -29,6 +29,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 02/04/2015.
@@ -202,7 +203,7 @@ public class CreateGistActivity extends BackActivity implements GistCreatedDetai
             showProgressDialog(R.string.publishing_gist);
 
             PublishGistClient publishGistClient = new PublishGistClient(gist);
-            publishGistClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
+            publishGistClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
                 @Override
                 public void onCompleted() {
 

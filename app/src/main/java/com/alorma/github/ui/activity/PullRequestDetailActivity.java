@@ -78,6 +78,7 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class PullRequestDetailActivity extends BackActivity
@@ -217,7 +218,7 @@ public class PullRequestDetailActivity extends BackActivity
         loadingView.setVisibility(View.VISIBLE);
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-            repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+            repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
                 @Override
                 public void onCompleted() {
 
@@ -247,7 +248,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     private void loadPullRequest() {
         PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(issueInfo);
-        pullRequestStoryLoader.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<PullRequestStory>() {
+        pullRequestStoryLoader.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<PullRequestStory>() {
             @Override
             public void onCompleted() {
 
@@ -298,7 +299,7 @@ public class PullRequestDetailActivity extends BackActivity
         swipe.setOnRefreshListener(this);
 
         GetShaCombinedStatus status = new GetShaCombinedStatus(issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
-        status.observable()
+        status.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
                     @Override
@@ -533,7 +534,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     private void editMilestone() {
         GetMilestonesClient milestonesClient = new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
-        milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
+        milestonesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Milestone>>() {
             @Override
             public void onCompleted() {
 
@@ -601,7 +602,7 @@ public class PullRequestDetailActivity extends BackActivity
         mergeButtonRequest.commit_message = message;
         mergeButtonRequest.sha = sha;
         MergePullRequestClient mergePullRequestClient = new MergePullRequestClient(issueInfo, mergeButtonRequest);
-        mergePullRequestClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<MergeButtonResponse>() {
+        mergePullRequestClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<MergeButtonResponse>() {
             @Override
             public void onCompleted() {
 
@@ -700,7 +701,7 @@ public class PullRequestDetailActivity extends BackActivity
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
         CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(issueInfo.repoInfo, createMilestoneRequestDTO);
-        createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
+        createMilestoneClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Milestone>() {
             @Override
             public void onCompleted() {
 
@@ -734,7 +735,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
         EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
             @Override
             public void onCompleted() {
 
@@ -764,7 +765,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     private void openLabels() {
         GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(issueInfo.repoInfo, true);
-        labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
+        labelsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
     }
 
     private void setLabels(CharSequence[] selectedLabels) {

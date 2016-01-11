@@ -26,6 +26,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 22/12/2014.
@@ -88,7 +89,7 @@ public class CommitDetailActivity extends BackActivity implements CommitFilesAda
     protected void getContent() {
         super.getContent();
         GetSingleCommitClient client = new GetSingleCommitClient(info);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Commit>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Commit>() {
             @Override
             public void onCompleted() {
 

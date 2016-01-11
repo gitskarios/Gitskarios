@@ -79,6 +79,7 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener, AccountHeader.OnAccountHeaderListener {
 
@@ -511,7 +512,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     private void checkNotifications() {
         GetNotificationsClient client = new GetNotificationsClient();
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Notification>>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Notification>>() {
             @Override
             public void onCompleted() {
 

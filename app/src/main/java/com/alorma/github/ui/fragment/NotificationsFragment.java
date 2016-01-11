@@ -33,6 +33,7 @@ import java.util.Map;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 19/02/2015.
@@ -66,7 +67,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
         }
 
         GetNotificationsClient client = new GetNotificationsClient(token);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<Notification>>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<Notification>>() {
             @Override
             public void onCompleted() {
                 stopRefresh();
@@ -208,7 +209,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     }
 
     private void setAction(GithubClient<Boolean> booleanGithubClient) {
-        booleanGithubClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
+        booleanGithubClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

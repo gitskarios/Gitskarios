@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 20/10/2015.
@@ -87,7 +88,7 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
 
             GetAuthUserClient authUserClient = new GetAuthUserClient(token);
             final String finalUrl = url;
-            authUserClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+            authUserClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
                 @Override
                 public void onCompleted() {
 

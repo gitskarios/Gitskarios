@@ -24,6 +24,7 @@ import com.alorma.github.ui.activity.ContentEditorActivity;
 import retrofit.client.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by a557114 on 01/08/2015.
@@ -178,7 +179,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
         builder.content(R.string.deleting_repository);
         deleteRepoDialog = builder.show();
         DeleteRepoClient deleteRepoClient = new DeleteRepoClient(repoInfo);
-        deleteRepoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Response>() {
+        deleteRepoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Response>() {
             @Override
             public void onCompleted() {
 
@@ -204,7 +205,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
 
     private void getBranches() {
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
-        repoBranchesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new BranchesCallback(repoInfo) {
+        repoBranchesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BranchesCallback(repoInfo) {
 
             @Override
             protected void showBranches(String[] branches, int defaultBranchPosition) {

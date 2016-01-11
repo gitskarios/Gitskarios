@@ -20,6 +20,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> implements TitleProvider, Observer<List<Release>> {
 
@@ -64,7 +65,7 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
     }
 
     private void setAction(GithubListClient<List<Release>> getRepoReleasesClient) {
-        getRepoReleasesClient.observable()
+        getRepoReleasesClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Pair<List<Release>, Integer>, List<Release>>() {
                     @Override

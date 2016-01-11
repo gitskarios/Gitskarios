@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by bernat.borras on 10/11/15.
@@ -141,7 +142,7 @@ public class CreateRepositoryFragment extends PreferenceFragment {
         });
 
         GitIgnoreClient gitIgnoreClient = new GitIgnoreClient();
-        gitIgnoreClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GitIgnoreTemplates>() {
+        gitIgnoreClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GitIgnoreTemplates>() {
             @Override
             public void onCompleted() {
             }

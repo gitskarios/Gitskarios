@@ -72,7 +72,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
             if (query != null) {
                 super.executeRequest();
                 RepoSearchClient client = new RepoSearchClient(query);
-                client.observable()
+                client.observable().subscribeOn(Schedulers.io())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<Pair<List<Repo>, Integer>>() {
@@ -100,7 +100,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
             if (query != null) {
                 super.executePaginatedRequest(page);
                 RepoSearchClient client = new RepoSearchClient(query, page);
-                client.observable()
+                client.observable().subscribeOn(Schedulers.io())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this);

@@ -16,6 +16,7 @@ import java.util.List;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 13/07/2014.
@@ -56,7 +57,7 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
 
     protected void setAction(GithubListClient<List<User>> userFollowersClient) {
         startRefresh();
-        userFollowersClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        userFollowersClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
 
     @Override

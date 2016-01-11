@@ -29,6 +29,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequestCommitsReviewCommentsAdapter>
         implements PermissionsManager, BackManager, Observer<List<Commit>> {
@@ -198,7 +199,7 @@ public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequ
     }
 
     private void setAction(GithubListClient<List<Commit>> client) {
-        client.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
             @Override
             public List<Commit> call(Pair<List<Commit>, Integer> listIntegerPair) {
                 setPage(listIntegerPair.second);

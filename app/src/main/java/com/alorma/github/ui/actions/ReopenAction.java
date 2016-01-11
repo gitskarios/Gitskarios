@@ -11,6 +11,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 12/10/2015.
@@ -55,7 +56,7 @@ public class ReopenAction extends Action<Issue> {
         dialog = new MaterialDialog.Builder(context).content(dialogString).progress(true, 0).theme(Theme.DARK).show();
 
         ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(issueInfo, state);
-        changeIssueStateClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        changeIssueStateClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
 
     @Override

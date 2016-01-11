@@ -19,6 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by bernat.borras on 10/11/15.
@@ -61,7 +62,7 @@ public class CreateRepositoryActivity extends BackActivity
     @Override
     public void onClick(View v) {
         CreateRepositoryClient client = new CreateRepositoryClient(dto);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
             @Override
             public void onCompleted() {
                 openRepo(repo);

@@ -47,6 +47,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 07/09/2014.
@@ -102,7 +103,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     }
 
     private void setAction(final GithubListClient<List<Commit>> listCommitsClient) {
-        listCommitsClient.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
+        listCommitsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
             @Override
             public List<Commit> call(Pair<List<Commit>, Integer> listIntegerPair) {
                 setPage(listIntegerPair.second);
@@ -353,7 +354,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
     private void changeBranch() {
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
-        repoBranchesClient.observable()
+        repoBranchesClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogBranchesCallback(getActivity(), repoInfo) {
                     @Override

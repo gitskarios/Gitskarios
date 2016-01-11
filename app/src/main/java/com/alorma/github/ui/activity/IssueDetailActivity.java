@@ -70,6 +70,7 @@ import io.fabric.sdk.android.Fabric;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class IssueDetailActivity extends BackActivity implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
@@ -190,7 +191,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
         if (checkPermissions(issueInfo)) {
             GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-            repoClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+            repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
                 @Override
                 public void onCompleted() {
 
@@ -215,7 +216,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
     private void loadIssue() {
         IssueStoryLoader issueStoryLoader = new IssueStoryLoader(issueInfo);
-        issueStoryLoader.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<IssueStory>() {
+        issueStoryLoader.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<IssueStory>() {
             @Override
             public void onCompleted() {
 
@@ -472,7 +473,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
     private void editMilestone() {
         GetMilestonesClient milestonesClient = new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
-        milestonesClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new MilestonesCallback());
+        milestonesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new MilestonesCallback());
 
         showProgressDialog(R.string.loading_milestones);
     }
@@ -521,7 +522,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
         CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
         CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(issueInfo.repoInfo, createMilestoneRequestDTO);
-        createMilestoneClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Milestone>() {
+        createMilestoneClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Milestone>() {
             @Override
             public void onCompleted() {
 
@@ -556,7 +557,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
     private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
         EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
 
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Issue>() {
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Issue>() {
             @Override
             public void onCompleted() {
 
@@ -584,7 +585,7 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
 
     private void openLabels() {
         GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(issueInfo.repoInfo, true);
-        labelsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
+        labelsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
     }
 
     private void setLabels(CharSequence[] selectedLabels) {

@@ -10,6 +10,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class AddIssueCommentAction extends Action<GithubComment> {
 
@@ -30,7 +31,7 @@ public class AddIssueCommentAction extends Action<GithubComment> {
     @Override
     public Action<GithubComment> execute() {
         NewIssueCommentClient client = new NewIssueCommentClient(issueInfo, body);
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
         return this;
     }
 

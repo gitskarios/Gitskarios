@@ -97,7 +97,6 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
 
             toolbarExtra.inflateMenu(R.menu.content_editor_extra);
             toolbarExtra.setOnMenuItemClickListener(this);
-            toolbarExtra.setTitle(R.string.add_content_extra);
 
             final String hint = getIntent().getExtras().getString(HINT);
 

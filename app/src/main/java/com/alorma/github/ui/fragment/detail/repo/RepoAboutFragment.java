@@ -45,6 +45,7 @@ import java.text.NumberFormat;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -260,7 +261,7 @@ public class RepoAboutFragment extends Fragment
     }
 
     private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
-        repoMarkdownClient.observable()
+        repoMarkdownClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
@@ -381,11 +382,11 @@ public class RepoAboutFragment extends Fragment
     }
 
     private void starAction(GithubClient<Boolean> starClient) {
-        starClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(startObserver);
+        starClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(startObserver);
     }
 
     private void watchAction(GithubClient<Boolean> starClient) {
-        starClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(watchObserver);
+        starClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(watchObserver);
     }
 
     protected void getStarWatchData() {

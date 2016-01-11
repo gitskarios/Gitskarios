@@ -41,6 +41,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 20/07/2014.
@@ -153,7 +154,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         breadCrumbs.initRootCrumb();
 
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(repoInfo);
-        repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+        repoContentsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
     @Override
@@ -251,7 +252,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         startRefresh();
 
         GetRepoContentsClient repoContentsClient = new GetRepoContentsClient(repoInfo, path);
-        repoContentsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+        repoContentsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
     private void onContentLoaded(List<Content> contents) {
@@ -291,7 +292,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     protected void fabClick() {
         super.fabClick();
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
-        repoBranchesClient.observable()
+        repoBranchesClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DownloadBranchesCallback(getActivity(), repoInfo));
     }
@@ -361,7 +362,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
             String fileType = settings.getDownloadFileType(zipBall);
             GetArchiveLinkService getArchiveLinkService = new GetArchiveLinkService(repoInfo, fileType
                     , new NativeDownloader());
-            getArchiveLinkService.observable().subscribe();
+            getArchiveLinkService.observable().subscribeOn(Schedulers.io()).subscribe();
         }
     }
 

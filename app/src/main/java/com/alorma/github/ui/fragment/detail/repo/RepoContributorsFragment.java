@@ -49,7 +49,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
     private void setAction(GithubClient<List<Contributor>> client) {
         startRefresh();
-        client.observable()
+        client.observable().subscribeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<List<Contributor>, List<User>>() {

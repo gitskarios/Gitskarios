@@ -65,6 +65,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 15/07/2014.
@@ -242,7 +243,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
 
             invalidateOptionsMenu();
 
-            Observable<Integer> organizations = new GetOrgsClient(login).observable()
+            Observable<Integer> organizations = new GetOrgsClient(login).observable().subscribeOn(Schedulers.io())
                     .map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
                         @Override
                         public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
@@ -250,7 +251,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
                         }
                     });
 
-            Observable.combineLatest(requestClient.observable(), organizations, new Func2<User, Integer, User>() {
+            Observable.combineLatest(requestClient.observable().subscribeOn(Schedulers.io()), organizations, new Func2<User, Integer, User>() {
                 @Override
                 public User call(User user, Integer organizations) {
                     user.organizations = organizations;
@@ -410,7 +411,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     }
 
     private void followUserAction(GithubClient<Boolean> githubClient) {
-        githubClient.observable()
+        githubClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override

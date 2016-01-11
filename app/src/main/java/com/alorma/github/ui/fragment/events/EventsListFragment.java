@@ -55,6 +55,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 03/10/2014.
@@ -298,7 +299,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     }
 
     protected void executeClient(GithubListClient<List<GithubEvent>> eventsClient) {
-        eventsClient.observable()
+        eventsClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Pair<List<GithubEvent>, Integer>, List<GithubEvent>>() {
                     @Override

@@ -24,6 +24,7 @@ import java.util.List;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 22/02/2015.
@@ -77,7 +78,7 @@ public class ReleaseDetailActivity extends BackActivity implements Observer<Rele
             } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
                 releaseInfo = (ReleaseInfo) getIntent().getExtras().getParcelable(RELEASE_INFO);
                 GetReleaseClient releaseClient = new GetReleaseClient(releaseInfo);
-                releaseClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+                releaseClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
             }
         }
     }

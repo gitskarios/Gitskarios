@@ -24,6 +24,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by a557114 on 31/07/2015.
@@ -60,7 +61,7 @@ public class CompareRepositoryCommitsActivity extends BackActivity {
             setTitle(base + " ... " + head);
 
             CompareCommitsClient compareCommitsClient = new CompareCommitsClient(repoInfo, base, head);
-            compareCommitsClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CompareCommit>() {
+            compareCommitsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CompareCommit>() {
                 @Override
                 public void onCompleted() {
 

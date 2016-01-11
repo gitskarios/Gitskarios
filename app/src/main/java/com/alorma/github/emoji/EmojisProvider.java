@@ -13,6 +13,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 08/07/2015.
@@ -60,7 +61,7 @@ public class EmojisProvider {
             }
         } else {
             EmojisClient emojisClient = new EmojisClient();
-            emojisClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<HashMap<String, String>>() {
+            emojisClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<HashMap<String, String>>() {
 
                 List<Emoji> emojisList = new ArrayList<>();
 

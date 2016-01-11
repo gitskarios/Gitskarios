@@ -19,6 +19,7 @@ import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 13/07/2014.
@@ -55,7 +56,7 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
 
     private void setAction(GithubListClient<List<Organization>> getOrgsClient) {
         startRefresh();
-        getOrgsClient.observable()
+        getOrgsClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Pair<List<Organization>, Integer>, List<Organization>>() {
                     @Override

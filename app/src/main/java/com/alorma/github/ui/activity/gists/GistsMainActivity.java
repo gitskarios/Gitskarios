@@ -21,6 +21,7 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class GistsMainActivity extends BackActivity implements GistsFragment.GistsFragmentListener {
 
@@ -81,7 +82,7 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
 
             if (gistId != null && gistUser == null) {
                 GetGistDetailClient gistDetailClient = new GetGistDetailClient(gistId);
-                gistDetailClient.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
+                gistDetailClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Gist>() {
                     @Override
                     public void onCompleted() {
 
@@ -111,7 +112,7 @@ public class GistsMainActivity extends BackActivity implements GistsFragment.Gis
 
     private void loadGists() {
         UserGistsClient userGistsClient = new UserGistsClient(gistId);
-        userGistsClient.observable().observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
+        userGistsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
             @Override
             public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
                 return listIntegerPair.first;

@@ -67,7 +67,7 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
             if (query != null) {
                 super.executeRequest();
                 UsersSearchClient client = new UsersSearchClient(query);
-                client.observable()
+                client.observable().subscribeOn(Schedulers.io())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this);
@@ -85,7 +85,7 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
             if (query != null) {
                 super.executePaginatedRequest(page);
                 UsersSearchClient client = new UsersSearchClient(query, page);
-                client.observable()
+                client.observable().subscribeOn(Schedulers.io())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<Pair<List<User>, Integer>>() {

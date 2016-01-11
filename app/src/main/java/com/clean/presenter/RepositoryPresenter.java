@@ -17,6 +17,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by bernat.borras on 12/11/15.
@@ -50,7 +51,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
         GetRepoBranchesClient branchesClient = new GetRepoBranchesClient(repoInfo);
 
-        Observable<Repo> combinedWithBranches = Observable.combineLatest(repoClient.observable(), branchesClient.observable()
+        Observable<Repo> combinedWithBranches = Observable.combineLatest(repoClient.observable().subscribeOn(Schedulers.io()), branchesClient.observable().subscribeOn(Schedulers.io())
                 , new Func2<Repo, List<Branch>, Repo>() {
                     @Override
                     public Repo call(Repo repo, List<Branch> branches) {

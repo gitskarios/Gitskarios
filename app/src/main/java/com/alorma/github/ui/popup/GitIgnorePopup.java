@@ -14,6 +14,7 @@ import com.alorma.github.sdk.services.gtignore.GitIgnoreClient;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Bernat on 13/10/2014.
@@ -61,7 +62,7 @@ public class GitIgnorePopup extends ListPopupWindow
 
     private void loadData() {
         GitIgnoreClient client = new GitIgnoreClient();
-        client.observable().observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
 
     @Override
