@@ -18,14 +18,12 @@ import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Content;
-import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.Downloader;
 import com.alorma.github.sdk.services.content.GetArchiveLinkService;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
-import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.callbacks.DialogBranchesCallback;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
@@ -37,6 +35,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -139,7 +138,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     @Override
     protected void loadArguments() {
         if (getArguments() != null) {
-            repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+            repoInfo = getArguments().getParcelable(REPO_INFO);
         }
     }
 
@@ -257,6 +256,8 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
             if (contents != null && contents.size() > 0) {
                 hideEmpty();
                 Collections.sort(contents);
+
+                Collections.reverse(contents);
 
                 displayContent(contents);
             } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
