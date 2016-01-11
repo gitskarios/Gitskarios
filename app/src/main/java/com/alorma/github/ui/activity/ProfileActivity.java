@@ -95,13 +95,11 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     TabLayout tabLayout;
     @Bind(R.id.viewpager)
     ViewPager viewPager;
+
     private User user;
     private boolean followingUser = false;
     private boolean updateProfile = false;
     private Account selectedAccount;
-    private boolean colorApplied;
-    private int avatarColor;
-    private String userLoginName;
 
     private UserResumeFragment userResumeFragment;
 
@@ -162,7 +160,6 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         collapsingToolbarLayout.setTitleEnabled(false);
 
         if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
-            avatarColor = getIntent().getIntExtra(EXTRA_COLOR, ContextCompat.getColor(this, R.color.primary));
         }
 
         if (getSupportFragmentManager() != null && getSupportFragmentManager().getFragments() != null) {
@@ -196,7 +193,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
                     name = AccountsHelper.getUserName(this, selectedAccount);
                 }
                 if (getIntent().getExtras().containsKey(USER)) {
-                    user = (User) getIntent().getParcelableExtra(USER);
+                    user = getIntent().getParcelableExtra(USER);
                     avatar = user.avatar_url;
                     login = user.login;
                     name = user.name;
@@ -204,7 +201,6 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
             }
 
             if (login != null) {
-                userLoginName = login;
                 userLogin.setText(login);
 
                 List<Fragment> fragments = new ArrayList<>();
@@ -224,13 +220,14 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
             }
 
             if (avatar != null) {
-                loadAvatar(avatar);
+                loadAvatar(login, avatar);
             }
 
             StoreCredentials settings = new StoreCredentials(this);
 
             if (user != null) {
-                if (user.login.equalsIgnoreCase(settings.getUserName())) {
+                if (user.login != null && settings.getUserName() != null &&
+                        user.login.equalsIgnoreCase(settings.getUserName())) {
                     requestClient = new GetAuthUserClient();
                     updateProfile = true;
                 } else {
@@ -279,7 +276,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         }
     }
 
-    private void loadAvatar(String avatar) {
+    private void loadAvatar(String login, String avatar) {
 
         int avatarSize = getResources().getDimensionPixelOffset(R.dimen.avatar_size);
 
@@ -288,7 +285,8 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
                 .width(avatarSize)
                 .height(avatarSize)
                 .endConfig()
-                .buildRound(userLoginName.substring(0, 1), ColorGenerator.MATERIAL.getColor(userLoginName.substring(0, 1)));
+                .buildRound(login.substring(0, 1)
+                        , ColorGenerator.MATERIAL.getColor(login.substring(0, 1)));
 
         Glide.with(this)
                 .load(avatar)
@@ -434,9 +432,8 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
 
     public void onUserLoaded(final User user) {
         this.user = user;
-        userLoginName = user.login;
 
-        loadAvatar(user.avatar_url);
+        loadAvatar(user.login, user.avatar_url);
 
         userName.setText(user.name);
 

@@ -10,7 +10,7 @@
         layout="@layout/toolbar"
         android:transitionName="editor" />
 
-    <EditText
+    <com.linkedin.android.spyglass.ui.RichEditorView
         android:id="@+id/edit"
         style="@android:style/Widget.Holo.Light.EditText"
         android:layout_width="match_parent"
@@ -19,9 +19,7 @@
         android:layout_below="@+id/toolbar"
         android:background="@null"
         android:gravity="top"
-        android:hint="@string/edit_hint"
-        android:padding="@dimen/gapMedium"
-        android:textColor="@android:color/black" />
+        android:padding="@dimen/gapMedium" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarExtra"
