@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/gapMedium"
     android:padding="@dimen/gapMedium"
-    app:cardCornerRadius="0dp">
+    app:cardCornerRadius="0dp"
+    app:cardBackgroundColor="?attr/gitskarios_card_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,12 +28,9 @@
                 android:layout_toLeftOf="@+id/clear_all_repo"
                 android:layout_toStartOf="@+id/clear_all_repo"
                 android:background="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
                 android:paddingLeft="24dp"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/textSizeSmall"
-                android:textStyle="bold" />
+                style="@style/Notifications.Title"
+                tools:text="repo name"/>
 
             <ImageView
                 android:id="@+id/clear_all_repo"

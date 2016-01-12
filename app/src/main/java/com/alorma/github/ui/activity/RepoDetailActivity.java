@@ -96,7 +96,7 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_repo_detail);
 
         if (getIntent().getExtras() != null) {
-            requestRepoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
+            requestRepoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
             if (requestRepoInfo == null) {
                 if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras().containsKey(REPO_INFO_OWNER)) {

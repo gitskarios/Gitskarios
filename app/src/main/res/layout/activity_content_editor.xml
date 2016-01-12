@@ -26,7 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/gray_github_light"
         android:minHeight="?actionBarSize"
         app:contentInsetStart="@dimen/second_keyline"
         app:popupTheme="@style/Toolbar.Popup.AppCompat"

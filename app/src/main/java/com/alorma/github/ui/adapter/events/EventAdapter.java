@@ -36,17 +36,21 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
     @Override
     protected void onBindViewHolder(ViewHolder holder, GithubEvent githubEvent) {
 
-        holder.authorAvatar.setUser(githubEvent.actor);
+        if (holder != null) {
+            if (holder.authorAvatar != null) {
+                holder.authorAvatar.setUser(githubEvent.actor);
+            }
 
-        int textRes = R.string.event_generic_by;
+            int textRes = R.string.event_generic_by;
 
-        String textForEvent = getTextForEvent(githubEvent);
+            String textForEvent = getTextForEvent(githubEvent);
 
-        holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, textForEvent)));
+            holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, textForEvent)));
 
-        String timeString = TimeUtils.getTimeAgoString(githubEvent.created_at);
+            String timeString = TimeUtils.getTimeAgoString(githubEvent.created_at);
 
-        holder.textDate.setText(timeString);
+            holder.textDate.setText(timeString);
+        }
     }
 
     public String getTextForEvent(GithubEvent event) {

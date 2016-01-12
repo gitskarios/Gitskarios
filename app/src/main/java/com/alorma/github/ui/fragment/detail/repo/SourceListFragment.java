@@ -104,8 +104,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-
         breadCrumbs = (LinearBreadcrumb) view.findViewById(R.id.breadCrumbs);
 
         breadCrumbs.setCallback(this);

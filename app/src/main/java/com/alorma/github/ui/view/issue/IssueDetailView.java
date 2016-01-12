@@ -26,6 +26,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.ui.view.UserAvatarView;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -34,6 +35,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
+
+import org.w3c.dom.Attr;
 
 /**
  * Created by Bernat on 08/04/2015.
@@ -121,7 +124,7 @@ public class IssueDetailView extends LinearLayout {
                 body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
             } else {
                 body.setText(Html.fromHtml("<i>" + getResources().getString(R.string.no_description_provided) + "</i>"));
-                body.setTextColor(getResources().getColor(R.color.gray_github_medium));
+                body.setTextColor(AttributesUtils.getIconsColor(getContext()));
             }
 
             if (issue.labels != null && issue.labels.size() > 0) {

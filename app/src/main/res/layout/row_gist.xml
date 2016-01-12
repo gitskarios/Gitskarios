@@ -13,13 +13,12 @@
 
         <TextView
             android:id="@+id/textFileName"
-            style="@style/TextAppearance.AppCompat.Headline"
+            style="@style/Gists.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/gapSmall"
             android:layout_toLeftOf="@+id/gistPrivate"
             android:layout_toStartOf="@+id/gistPrivate"
-            android:textColor="?colorPrimary"
             tools:text="MyFile.java" />
 
         <TextView
@@ -43,10 +42,9 @@
 
     <TextView
         android:id="@+id/textDescription"
-        style="@style/TextAppearance.AppCompat.Subhead"
+        style="@style/Gists.NumFiles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/secondary_text"
         tools:text="MyFile.java" />
 
     <TextView

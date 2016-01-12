@@ -50,14 +50,6 @@
         <attr name="addButtonPlusIconColor" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="colors">
-        <attr name="gitskarios_divider" format="color" />
-        <attr name="gitskarios_primary_light" format="color" />
-        <attr name="gitskarios_primary_text" format="color" />
-        <attr name="gitskarios_secondary_text" format="color" />
-        <attr name="gitskarios_icons" format="color" />
-    </declare-styleable>
-
     <declare-styleable name="TimelineView">
         <attr name="tl_lineWidth" format="dimension" />
         <attr name="tl_lineColor" format="color" />
@@ -82,4 +74,14 @@
     <declare-styleable name="FabToolbar">
         <attr name="ft_fabId" format="reference" />
     </declare-styleable>
+
+
+    <attr name="gitskarios_divider" format="color" />
+    <attr name="gitskarios_primary_light" format="color" />
+    <attr name="gitskarios_primary_text" format="color" />
+    <attr name="gitskarios_secondary_text" format="color" />
+    <attr name="gitskarios_icons" format="color" />
+    <attr name="gitskarios_title" format="color" />
+    <attr name="gitskarios_card_background" format="color" />
+    <attr name="gitskarios_webview" format="color" />
 </resources>

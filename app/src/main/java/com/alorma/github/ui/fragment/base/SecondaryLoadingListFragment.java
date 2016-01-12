@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alorma.github.R;
+import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -150,7 +151,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment
             if (emptyText != null && emptyIcon != null) {
                 if (getNoDataIcon() != null && getNoDataText() > 0) {
                     IconicsDrawable iconDrawable = new IconicsDrawable(getActivity(), getNoDataIcon());
-                    iconDrawable.colorRes(R.color.gray_github_medium);
+                    iconDrawable.color(AttributesUtils.getIconsColor(getActivity()));
                     emptyIcon.setImageDrawable(iconDrawable);
 
                     emptyText.setText(getNoDataText());

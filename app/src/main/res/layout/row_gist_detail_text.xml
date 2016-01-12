@@ -55,7 +55,7 @@
                 android:background="@color/gray_github_light_selected"
                 android:minHeight="?actionBarSize"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/GistFileRowToolbar" />
+                app:theme="@style/Gists.FileRowToolbar" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

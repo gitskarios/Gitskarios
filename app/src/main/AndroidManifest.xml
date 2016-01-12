@@ -28,7 +28,7 @@
         android:launchMode="singleInstance"
         android:sharedUserId="GITSKARIOS"
         android:sharedUserLabel="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Dark">
 
         <activity android:name=".ui.activity.MainActivity">
 
@@ -42,8 +42,7 @@
         <activity android:name=".ui.activity.CommitDetailActivity" />
         <activity
             android:name=".ui.activity.RepoDetailActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.RepoDetail" />
+            android:exported="true"/>
         <activity
             android:name=".ui.activity.SearchActivity"
             android:theme="@style/AppTheme.Search" />

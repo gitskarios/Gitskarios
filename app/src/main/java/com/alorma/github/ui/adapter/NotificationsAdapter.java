@@ -1,9 +1,13 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +36,8 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsPare
 
         iconDrawable = new IconicsDrawable(context, Octicons.Icon.oct_check);
         iconDrawable.sizeDp(14);
-        iconDrawable.color(AttributesUtils.getSecondaryTextColor(context));
+
+        iconDrawable.color(AttributesUtils.getIconsColor(context));
     }
 
     @Override

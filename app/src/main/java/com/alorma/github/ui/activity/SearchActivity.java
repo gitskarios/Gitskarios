@@ -19,6 +19,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.search.SearchReposFragment;
 import com.alorma.github.ui.fragment.search.SearchUsersFragment;
+import com.alorma.github.utils.AttributesUtils;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -136,7 +137,7 @@ public class SearchActivity extends BackActivity {
 
             IconicsDrawable searchIcon =
                     new IconicsDrawable(getApplicationContext(), Octicons.Icon.oct_search)
-                            .actionBar().colorRes(R.color.gray_github_medium);
+                            .actionBar().color(AttributesUtils.getIconsColor(this));
 
             searchItem.setIcon(searchIcon);
         }

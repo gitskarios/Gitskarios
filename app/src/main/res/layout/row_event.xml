@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +32,6 @@
 
             <TextView
                 android:id="@+id/authorName"
-                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -39,7 +39,9 @@
                 android:layout_marginLeft="@dimen/gapMedium"
                 android:layout_marginStart="@dimen/gapMedium"
                 android:layout_toEndOf="@id/authorAvatar"
-                android:layout_toRightOf="@id/authorAvatar" />
+                android:layout_toRightOf="@id/authorAvatar"
+                style="@style/Event.Title"
+                tools:text="Event title text"/>
 
             <TextView
                 android:id="@+id/textDate"
@@ -51,7 +53,9 @@
                 android:layout_alignStart="@+id/authorName"
                 android:layout_below="@+id/authorName"
                 android:layout_marginTop="@dimen/gapMedium"
-                android:textSize="@dimen/textSizeMicro" />
+                android:textSize="@dimen/textSizeMicro"
+                style="@style/Event.Date"
+                tools:text="31/12/2016"/>
 
         </RelativeLayout>
 

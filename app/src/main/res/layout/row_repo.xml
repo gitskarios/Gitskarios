@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/repoName"
-            style="@style/TextAppearance.AppCompat.Headline"
+            style="@style/Repos.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -46,10 +46,6 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/infos"
             android:layout_toStartOf="@+id/infos"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:lines="1"
-            android:textColor="?colorPrimaryDark"
             tools:text="Repository name" />
 
         <LinearLayout
@@ -67,27 +63,23 @@
 
             <TextView
                 android:id="@+id/textStarts"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/Repos.Info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/textSizeSmall"
                 tools:text="Starred" />
 
             <TextView
                 android:id="@+id/textForks"
-                style="@style/TextAppearance.AppCompat.Caption"
+                style="@style/Repos.Info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/textSizeSmall"
                 tools:text="Watched" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/textOwnerName"
-            style="@style/TextAppearance.AppCompat.Body1"
+            style="@style/Repos.Owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/repoName"
@@ -97,13 +89,11 @@
             android:layout_marginTop="@dimen/gapSmall"
             android:layout_toLeftOf="@+id/infos"
             android:layout_toStartOf="@+id/infos"
-            android:maxLines="1"
-            android:textColor="@color/md_grey_600"
             tools:text="Owner name" />
 
         <TextView
             android:id="@+id/descriptionText"
-            style="@style/TextAppearance.AppCompat.Body1"
+            style="@style/Repos.Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -112,8 +102,6 @@
             android:layout_marginLeft="@dimen/gapMedium"
             android:layout_toLeftOf="@+id/infos"
             android:layout_toStartOf="@+id/infos"
-            android:ellipsize="end"
-            android:maxLines="2"
             tools:text="Description" />
 
     </RelativeLayout>

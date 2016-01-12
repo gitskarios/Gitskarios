@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.UserAvatarView;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -46,7 +48,6 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
 
 /**
  * Created by Bernat on 01/01/2015.
@@ -75,6 +76,7 @@ public class RepoAboutFragment extends Fragment
     private TextView createdAtTextView;
 
     private View loadingHtml;
+    private View webContainer;
 
     private Boolean repoStarred = null;
     Observer<Boolean> startObserver = new Observer<Boolean>() {
@@ -116,6 +118,7 @@ public class RepoAboutFragment extends Fragment
         }
     };
 
+
     public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(REPO_INFO, repoInfo);
@@ -142,6 +145,7 @@ public class RepoAboutFragment extends Fragment
         profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
         authorName = (TextView) author.findViewById(R.id.authorName);
         loadingHtml = view.findViewById(R.id.htmlLoading);
+        webContainer = view.findViewById(R.id.webContainer);
 
         htmlContentView = (WebView) view.findViewById(R.id.htmlContentView);
 
@@ -365,7 +369,7 @@ public class RepoAboutFragment extends Fragment
     }
 
     private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
-        return new IconicsDrawable(getActivity(), icon).colorRes(R.color.primary).sizeDp(sizeDp);
+        return new IconicsDrawable(getActivity(), icon).color(AttributesUtils.getIconsColor(getActivity())).sizeDp(sizeDp);
     }
 
     @Override
@@ -422,7 +426,7 @@ public class RepoAboutFragment extends Fragment
             IconicsDrawable drawable =
                     new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
             if (repoStarred != null && repoStarred) {
-                drawable.colorRes(R.color.primary);
+                drawable.color(AttributesUtils.getIconsColor(getActivity()));
             } else {
                 drawable.colorRes(R.color.icons);
             }
@@ -440,7 +444,7 @@ public class RepoAboutFragment extends Fragment
             IconicsDrawable drawable =
                     new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
             if (repoWatched != null && repoWatched) {
-                drawable.colorRes(R.color.primary);
+                drawable.color(AttributesUtils.getIconsColor(getActivity()));
             } else {
                 drawable.colorRes(R.color.icons);
             }
