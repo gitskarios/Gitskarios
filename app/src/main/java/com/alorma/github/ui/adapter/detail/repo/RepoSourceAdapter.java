@@ -24,9 +24,11 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceAdapter.ViewHolder> {
 
     private SourceAdapterListener sourceAdapterListener;
+    private Context context;
 
     public RepoSourceAdapter(Context context, LayoutInflater inflater) {
         super(inflater);
+        this.context = context;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
         }
 
         if (iconDrawable != null) {
-            iconDrawable.color(AttributesUtils.getTitleColor(holder.itemView.getContext()));
+            iconDrawable.color(AttributesUtils.getTitleColor(context));
 
             holder.image.setImageDrawable(iconDrawable);
         }
