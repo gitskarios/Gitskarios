@@ -50,7 +50,7 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
         }
 
         if (iconDrawable != null) {
-            iconDrawable.color(AttributesUtils.getTitleColor(context));
+            iconDrawable.color(AttributesUtils.getAccentColor(context));
 
             holder.image.setImageDrawable(iconDrawable);
         }

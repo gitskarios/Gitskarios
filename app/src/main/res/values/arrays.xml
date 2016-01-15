@@ -61,6 +61,18 @@
         <item>Closed &amp; Merged pull request</item>
     </string-array>
 
+    <string-array name="themes">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+
+    <string-array name="themes_values">
+        <item>@id/theme_light</item>
+        <item>@id/theme_dark</item>
+    </string-array>
+
+
+
     <string name="sort_created">Created</string>
     <string name="sort_updated">Updated</string>
     <string name="sort_pushed">Pushed</string>
@@ -76,6 +88,9 @@
 
     <string name="download_zip_value">zipball</string>
     <string name="download_tar_value">tarball</string>
+
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 
     <array name="default_languages">
         <item>"C"</item>
@@ -382,4 +397,6 @@
         <item>"Zephir"</item>
         <item>"Zimpl"</item>
     </array>
+    <item name="theme_light" type="id">theme_light</item>
+    <item name="theme_dark" type="id">theme_dark</item>
 </resources>

@@ -473,4 +473,5 @@
     <string name="enterprise_ad_gitskarios">GITSKARIOS</string>
     <string name="enterprise_ad_for_ngithub_enteprise">FOR\nGITHUB ENTEPRISE</string>
     <string name="enterprise_ad_try_it_now">Try it now</string>
+    <string name="app_theme_pref_title">App theme</string>
 </resources>

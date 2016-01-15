@@ -43,7 +43,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/accent</item>
         <item name="colorControlNormal">@color/gray_github_medium</item>
         <item name="colorControlActivated">@color/accent_dark</item>
         <item name="colorControlHighlight">@color/accent_dark</item>
@@ -69,7 +69,6 @@
 
     </style>
 
-
     <style name="Base.AppTheme.Search" parent="AppTheme.AppCompat.Default">
         <item name="windowActionModeOverlay">false</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
@@ -86,7 +85,6 @@
         <item name="gitskarios_primary_light">@color/gray_github_light</item>
         <item name="gitskarios_icons">@color/icons</item>
     </style>
-
 
     <style name="Base.AppTheme.Dark.Search" parent="AppTheme.AppCompat.Dark.Default">
         <item name="windowActionModeOverlay">false</item>

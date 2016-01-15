@@ -24,6 +24,14 @@
         android:key="pref_mark_as_read"
         android:summary="@string/pref_mark_as_read_summary"
         android:title="@string/pref_mark_as_read" />
+
+    <ListPreference
+        android:key="pref_theme"
+        android:title="@string/app_theme_pref_title"
+        android:entryValues="@array/themes_values"
+        android:entries="@array/themes"
+        android:defaultValue="@id/theme_light"/>
+
     <PreferenceCategory android:title="@string/app_settings_about">
         <Preference
             android:key="gitskarios"

@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.preference;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.content.Intent;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -22,6 +23,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
     public static final String CHANGELOG = "changelog";
     private static final String PREF_INTERCEPT = "pref_intercept";
     private static final String PREF_MARK_AS_READ = "pref_mark_as_read";
+    private static final String PREF_THEME = "pref_theme";
     private StoreCredentials credentials;
     private ChangelogDialog dialog;
 
@@ -44,6 +46,10 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
         gitskarios.setOnPreferenceClickListener(this);
         Preference changelog = findPreference(CHANGELOG);
         changelog.setOnPreferenceClickListener(this);
+
+
+        Preference theme = findPreference("pref_theme");
+        theme.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -69,6 +75,11 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
             GitskariosSettings settings = new GitskariosSettings(getActivity());
             Boolean value = (Boolean) newValue;
             settings.saveMarkAsRead(value);
+        } else if (preference.getKey().equals(PREF_THEME)) {
+            preference.getEditor().putString(PREF_THEME, String.valueOf(newValue)).apply();;
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("rebirth", true);
+            ProcessPhoenix.triggerRebirth(getActivity(), intent);
         }
         return true;
     }

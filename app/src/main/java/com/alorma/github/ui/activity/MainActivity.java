@@ -108,6 +108,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
         checkInvites();
 
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("rebirth", false)) {
+            onSettingsSelected();
+        }
+
         AccountsManager accountsFragment = new AccountsManager();
         List<Account> accounts = accountsFragment.getAccounts(this);
 

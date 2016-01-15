@@ -369,7 +369,7 @@ public class RepoAboutFragment extends Fragment
     }
 
     private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
-        return new IconicsDrawable(getActivity(), icon).color(AttributesUtils.getIconsColor(getActivity())).sizeDp(sizeDp);
+        return new IconicsDrawable(getActivity(), icon).color(AttributesUtils.getAccentColor(getActivity())).sizeDp(sizeDp);
     }
 
     @Override
@@ -426,7 +426,7 @@ public class RepoAboutFragment extends Fragment
             IconicsDrawable drawable =
                     new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
             if (repoStarred != null && repoStarred) {
-                drawable.color(AttributesUtils.getIconsColor(getActivity()));
+                drawable.color(AttributesUtils.getAccentColor(getActivity()));
             } else {
                 drawable.colorRes(R.color.icons);
             }
@@ -444,7 +444,7 @@ public class RepoAboutFragment extends Fragment
             IconicsDrawable drawable =
                     new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
             if (repoWatched != null && repoWatched) {
-                drawable.color(AttributesUtils.getIconsColor(getActivity()));
+                drawable.color(AttributesUtils.getAccentColor(getActivity()));
             } else {
                 drawable.colorRes(R.color.icons);
             }

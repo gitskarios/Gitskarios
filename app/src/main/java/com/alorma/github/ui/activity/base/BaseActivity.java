@@ -6,9 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +26,7 @@ import java.util.List;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    public static final String EXTRA_WITH_TOKEN = "ETXRA_WOTH_TOKEN";
+    public static final String EXTRA_WITH_TOKEN = "EXTRA_WITH_TOKEN";
 
     private UpdateReceiver updateReceiver;
 
@@ -34,8 +36,17 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        configureTheme();
         super.onCreate(savedInstanceState);
         accountsManager = new AccountsManager();
+    }
+
+    private void configureTheme() {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+            setTheme(R.style.AppTheme_Dark);
+        }
     }
 
     @Override

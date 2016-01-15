@@ -28,7 +28,7 @@
         android:launchMode="singleInstance"
         android:sharedUserId="GITSKARIOS"
         android:sharedUserLabel="@string/app_name"
-        android:theme="@style/AppTheme.Dark">
+        android:theme="@style/AppTheme">
 
         <activity android:name=".ui.activity.MainActivity">
 
@@ -36,6 +36,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.ProfileActivity" />
