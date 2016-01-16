@@ -66,11 +66,6 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
-
-    @Override
     protected Octicons.Icon getNoDataIcon() {
         return Octicons.Icon.oct_octoface;
     }

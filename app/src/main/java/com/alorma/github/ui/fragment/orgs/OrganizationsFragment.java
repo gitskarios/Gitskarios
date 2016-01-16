@@ -103,11 +103,6 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
-
-    @Override
     protected void loadArguments() {
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);

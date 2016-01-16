@@ -143,11 +143,6 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
-
-    @Override
     public void onNotificationClick(Notification notification) {
 
         GitskariosSettings settings = new GitskariosSettings(getActivity());

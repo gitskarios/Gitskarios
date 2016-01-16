@@ -21,6 +21,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.UserAvatarView;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
@@ -40,12 +41,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
 
     private static final String RELEASE = "RELEASE";
     private static final String REPO_INFO = "REPO_INFO";
-    private View author;
-    private UserAvatarView profileIcon;
-    private TextView authorName;
     private TextView htmlContentView;
-    private TextView createdAtTextView;
-    private ImageView createdIcon;
     private View progressBar;
 
     public static ReleaseAboutFragment newInstance(Release release, RepoInfo repoInfo) {
@@ -70,27 +66,30 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        author = view.findViewById(R.id.author);
-        profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
-        authorName = (TextView) author.findViewById(R.id.authorName);
+        View author = view.findViewById(R.id.author);
+        UserAvatarView profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
+        TextView authorName = (TextView) author.findViewById(R.id.authorName);
 
-        createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
-        createdIcon = (ImageView) view.findViewById(R.id.createdIcon);
+        TextView createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
+        ImageView createdIcon = (ImageView) view.findViewById(R.id.createdIcon);
 
         progressBar = view.findViewById(R.id.progressBar);
         htmlContentView = (TextView) view.findViewById(R.id.htmlContentView);
 
-        final Release release = (Release) getArguments().getParcelable(RELEASE);
+        final Release release = getArguments().getParcelable(RELEASE);
 
         if (release != null) {
             User owner = release.author;
             profileIcon.setUser(owner);
             authorName.setText(owner.login);
 
-            createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).colorRes(R.color.primary).actionBar());
-            createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
+            createdIcon.setImageDrawable(new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock)
+                    .color(AttributesUtils.getAccentColor(getActivity())).actionBar());
+            if (release.created_at != null) {
+                createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
+            }
 
-            final RepoInfo repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+            final RepoInfo repoInfo = getArguments().getParcelable(REPO_INFO);
 
             if (repoInfo != null && release.body != null && htmlContentView != null) {
 

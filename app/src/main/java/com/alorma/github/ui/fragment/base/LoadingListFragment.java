@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.alorma.github.R;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-import com.alorma.github.ui.utils.DividerItemDecoration;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -68,9 +67,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         if (recyclerView != null) {
             recyclerView.setLayoutManager(getLayoutManager());
             recyclerView.setItemAnimator(getItemAnimator());
-            if (getItemDecoration() != null) {
-                recyclerView.addItemDecoration(getItemDecoration());
-            }
         }
 
         error_view = (ErrorView) view.findViewById(R.id.error_view);
@@ -143,10 +139,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
             executePaginatedRequest(page);
             page = null;
         }
-    }
-
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getActivity(), DividerItemDecoration.LIST_VERTICAL);
     }
 
     protected void executeRequest() {
@@ -227,9 +219,6 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
         if (recyclerView != null) {
             recyclerView.setLayoutManager(getLayoutManager());
             recyclerView.setItemAnimator(getItemAnimator());
-            if (getItemDecoration() != null) {
-                recyclerView.addItemDecoration(getItemDecoration());
-            }
         }
     }
 

@@ -112,11 +112,6 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
         return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
     }
 
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
-
     protected void loadArguments() {
         if (getArguments() != null) {
             repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
