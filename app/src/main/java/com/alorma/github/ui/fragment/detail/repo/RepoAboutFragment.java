@@ -50,6 +50,7 @@ import java.text.NumberFormat;
 
 import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -120,6 +121,7 @@ public class RepoAboutFragment extends Fragment
             changeWatchView();
         }
     };
+    private Subscription readmeSubscriber;
 
 
     public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
@@ -267,7 +269,7 @@ public class RepoAboutFragment extends Fragment
     }
 
     private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
-        repoMarkdownClient.observable().subscribeOn(Schedulers.io())
+         readmeSubscriber = repoMarkdownClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
@@ -279,10 +281,12 @@ public class RepoAboutFragment extends Fragment
 
                     @Override
                     public void onError(Throwable e) {
-                        if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
-                            onReadmeLoaded(configureHtml(currentRepo.description));
-                        } else {
-                            loadingHtml.setVisibility(View.GONE);
+                        if (getActivity() != null) {
+                            if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
+                                onReadmeLoaded(configureHtml(currentRepo.description));
+                            } else {
+                                loadingHtml.setVisibility(View.GONE);
+                            }
                         }
                     }
 
@@ -325,17 +329,21 @@ public class RepoAboutFragment extends Fragment
     }
 
     private String configureHtml(String htmlContent) {
-        String fileName = "source_pre.html";
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-            fileName = "source_pre_dark.html";
+        if (getActivity() != null) {
+            String fileName = "source_pre.html";
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+            String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+            if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+                fileName = "source_pre_dark.html";
+            }
+
+            String head = getAssetFileContent(fileName);
+            String end = getAssetFileContent("source_post.html");
+
+            return head + "\n" + htmlContent + "\n" + end;
+        } else {
+            return htmlContent;
         }
-
-        String head = getAssetFileContent(fileName);
-        String end = getAssetFileContent("source_post.html");
-
-        return head + "\n" + htmlContent + "\n" + end;
     }
 
     public String getAssetFileContent(String filename) {
@@ -495,5 +503,13 @@ public class RepoAboutFragment extends Fragment
                 currentRepo.subscribers_count = futureSubscribersCount;
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        if (readmeSubscriber != null) {
+            readmeSubscriber.unsubscribe();
+        }
+        super.onStop();
     }
 }
