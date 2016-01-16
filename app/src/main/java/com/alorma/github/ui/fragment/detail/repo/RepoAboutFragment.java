@@ -1,9 +1,10 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -41,6 +42,9 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -76,7 +80,6 @@ public class RepoAboutFragment extends Fragment
     private TextView createdAtTextView;
 
     private View loadingHtml;
-    private View webContainer;
 
     private Boolean repoStarred = null;
     Observer<Boolean> startObserver = new Observer<Boolean>() {
@@ -145,7 +148,6 @@ public class RepoAboutFragment extends Fragment
         profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
         authorName = (TextView) author.findViewById(R.id.authorName);
         loadingHtml = view.findViewById(R.id.htmlLoading);
-        webContainer = view.findViewById(R.id.webContainer);
 
         htmlContentView = (WebView) view.findViewById(R.id.htmlContentView);
 
@@ -278,7 +280,7 @@ public class RepoAboutFragment extends Fragment
                     @Override
                     public void onError(Throwable e) {
                         if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
-                            onReadmeLoaded(currentRepo.description);
+                            onReadmeLoaded(configureHtml(currentRepo.description));
                         } else {
                             loadingHtml.setVisibility(View.GONE);
                         }
@@ -286,7 +288,7 @@ public class RepoAboutFragment extends Fragment
 
                     @Override
                     public void onNext(String htmlContent) {
-                        onReadmeLoaded(htmlContent);
+                        onReadmeLoaded(configureHtml(htmlContent));
                     }
                 });
     }
@@ -310,12 +312,49 @@ public class RepoAboutFragment extends Fragment
                     }
                 }
             });
+
+            int webviewColor = AttributesUtils.getWebviewColor(getActivity());
+            htmlContentView.setBackgroundColor(webviewColor);
+
             htmlContentView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
 
             loadingHtml.setVisibility(View.GONE);
 
             CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
         }
+    }
+
+    private String configureHtml(String htmlContent) {
+        String fileName = "source_pre.html";
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+            fileName = "source_pre_dark.html";
+        }
+
+        String head = getAssetFileContent(fileName);
+        String end = getAssetFileContent("source_post.html");
+
+        return head + "\n" + htmlContent + "\n" + end;
+    }
+
+    public String getAssetFileContent(String filename) {
+        StringBuilder buf = new StringBuilder();
+        try {
+            InputStream json = getActivity().getAssets().open(filename);
+            BufferedReader in =
+                    new BufferedReader(new InputStreamReader(json, "UTF-8"));
+            String str;
+
+            while ((str = in.readLine()) != null) {
+                buf.append(str);
+            }
+
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return buf.toString();
     }
 
     private void setData() {
@@ -417,6 +456,7 @@ public class RepoAboutFragment extends Fragment
             watchAction(new UnwatchRepoClient(currentRepo.owner.login, currentRepo.name));
         } else {
             futureSubscribersCount = currentRepo.subscribers_count + 1;
+            watchAction(new WatchRepoClient(currentRepo.owner.login, currentRepo.name));
             watchAction(new WatchRepoClient(currentRepo.owner.login, currentRepo.name));
         }
     }

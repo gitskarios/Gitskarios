@@ -1,7 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  padding: 8px;
+  padding-top: 8px;
+  color: #fff;
 }
 .CodeMirror {
   height: auto;
@@ -11,6 +12,6 @@ body {
   overflow-x: auto;
 }
 pre {
-	color: #222;
-	background-color: #DDD;
+	color: #AAAAAA;
+	background-color: #222;
 }

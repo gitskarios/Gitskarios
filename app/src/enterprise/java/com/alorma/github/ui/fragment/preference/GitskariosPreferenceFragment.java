@@ -11,7 +11,9 @@ import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
 import com.alorma.github.UrlsManager;
+import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.fragment.ChangelogDialog;
+import com.jakewharton.processphoenix.ProcessPhoenix;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
