@@ -84,13 +84,15 @@
         <item name="gitskarios_secondary_text">@color/secondary_text</item>
         <item name="gitskarios_primary_light">@color/gray_github_light</item>
         <item name="gitskarios_icons">@color/icons</item>
+        <item name="gitskarios_title">@color/accent</item>
+        <item name="gitskarios_webview">@color/gray_github_dark</item>
     </style>
 
     <style name="Base.AppTheme.Dark.Search" parent="AppTheme.AppCompat.Dark.Default">
         <item name="windowActionModeOverlay">false</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/gray_github_dark</item>
+        <item name="colorPrimary">@color/md_grey_900</item>
+        <item name="colorPrimaryDark">@color/md_grey_700</item>
         <item name="colorAccent">@color/gray_github_dark</item>
         <item name="colorControlNormal">@color/gray_github_medium</item>
         <item name="colorControlActivated">@color/gray_github_dark</item>
@@ -101,6 +103,9 @@
         <item name="gitskarios_secondary_text">@color/secondary_text</item>
         <item name="gitskarios_primary_light">@color/gray_github_light</item>
         <item name="gitskarios_icons">@color/icons</item>
+        <item name="gitskarios_title">@color/accent</item>
+        <item name="gitskarios_webview">@color/gray_github_dark</item>
+        <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
     </style>
 
     <!-- Default application theme. -->

@@ -41,7 +41,7 @@ public class BaseActivity extends AppCompatActivity {
         accountsManager = new AccountsManager();
     }
 
-    private void configureTheme() {
+    protected void configureTheme() {
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
         if ("theme_dark".equalsIgnoreCase(pref_theme)) {

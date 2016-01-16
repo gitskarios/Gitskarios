@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="AppTheme" parent="Base.AppTheme">
-        <item name="android:windowContentTransitions">true</item>
-    </style>
-
-    <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
-
     <style name="AppTheme.Welcome" parent="Base.AppTheme.Welcome">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
-
 </resources>

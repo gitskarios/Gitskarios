@@ -41,8 +41,6 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.setBackgroundColor(Color.WHITE);
-
         String query = getArguments().getString(SearchManager.QUERY, null);
         if (query != null) {
             setQuery(query);
