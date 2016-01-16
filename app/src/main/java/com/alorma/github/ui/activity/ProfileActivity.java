@@ -139,8 +139,6 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
                     final View innerView = ((ActionMenuView) v).getChildAt(j);
 
                     if (innerView instanceof ActionMenuItemView) {
-                        int drawablesCount = ((ActionMenuItemView) innerView).getCompoundDrawables().length;
-
                         ((ActionMenuItemView) innerView).setTextColor(toolbarIconsColor);
                     }
                 }

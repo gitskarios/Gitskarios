@@ -12,7 +12,6 @@ import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
 import com.alorma.github.UrlsManager;
 import com.alorma.github.ui.activity.MainActivity;
-import com.alorma.github.ui.fragment.ChangelogDialog;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment
@@ -26,8 +25,6 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
     private static final String PREF_INTERCEPT = "pref_intercept";
     private static final String PREF_MARK_AS_READ = "pref_mark_as_read";
     private static final String PREF_THEME = "pref_theme";
-    private StoreCredentials credentials;
-    private ChangelogDialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,8 +56,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
         if (preference.getKey().equals(GITSKARIOS)) {
             startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse("https://github.com/gitskarios/Gitskarios")));
         } else if (preference.getKey().equals(CHANGELOG)) {
-            dialog = ChangelogDialog.create();
-            dialog.show(getFragmentManager(), "changelog");
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
         }
         return true;
     }
@@ -84,15 +80,5 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
             ProcessPhoenix.triggerRebirth(getActivity(), intent);
         }
         return true;
-    }
-
-    @Override
-    public void onStop() {
-        try {
-            dialog.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        super.onStop();
     }
 }

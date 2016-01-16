@@ -29,7 +29,7 @@ public class CommitFilesAdapter extends RecyclerArrayAdapter<CommitFile, CommitF
 
     @Override
     public FileVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FileVH(getInflater().inflate(R.layout.commit_file_row, parent, false));
+        return new FileVH(getInflater().inflate(R.layout.row_commit_file, parent, false));
     }
 
     @Override

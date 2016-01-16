@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -28,14 +30,12 @@ import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
 import com.alorma.github.account.BaseAccountsManager;
-import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
-import com.alorma.github.ui.fragment.ChangelogDialogSupport;
 import com.alorma.github.ui.fragment.GeneralPeopleFragment;
 import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
@@ -91,7 +91,6 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     private Account selectedAccount;
     private Fragment lastUsedFragment;
     private Drawer resultDrawer;
-    private ChangelogDialogSupport dialog;
     private int notificationsSizeCount = 0;
     private DonateFragment donateFragment;
     private SecondarySwitchDrawerItem notificationsDrawerItem;
@@ -137,8 +136,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             Snackbar.make(view, R.string.app_updated, Snackbar.LENGTH_LONG).setAction("Changelog", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog = ChangelogDialogSupport.create();
-                    dialog.show(getSupportFragmentManager(), "changelog");
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
                 }
             }).show();
         }
@@ -644,12 +642,20 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
     @Override
     public boolean onAboutSelected() {
+        Libs.ActivityStyle activityStyle = Libs.ActivityStyle.LIGHT_DARK_TOOLBAR;
+        int theme = R.style.AppTheme;
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+            activityStyle = Libs.ActivityStyle.DARK;
+            theme = R.style.AppTheme_Dark;
+        }
         new LibsBuilder()
                 //Pass the fields of your application to the lib so it can find all external lib information
                 .withFields(R.string.class.getFields())
                 .withActivityTitle(getString(R.string.app_name))
-                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-                .withActivityTheme(R.style.AppTheme)
+                .withActivityStyle(activityStyle)
+                .withActivityTheme(theme)
                 .start(this);
         return false;
     }
@@ -668,17 +674,5 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
                 onUserEventsSelected();
             }
         }
-    }
-
-    @Override
-    public void onStop() {
-        try {
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        super.onStop();
     }
 }
