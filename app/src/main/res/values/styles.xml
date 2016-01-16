@@ -196,7 +196,4 @@
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
     </style>
-    <style name="Gists.FileRowToolbar" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:textColorSecondary">@color/accent</item>
-    </style>
 </resources>

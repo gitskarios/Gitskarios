@@ -14,4 +14,8 @@ body {
 pre {
 	color: #AAAAAA;
 	background-color: #222;
+	display: inline-block;
+}
+a {
+  color: #CCC;
 }

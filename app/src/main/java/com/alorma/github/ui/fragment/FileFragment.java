@@ -4,10 +4,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,8 +33,12 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.ui.view.CopyWebView;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ImageUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -87,6 +93,9 @@ public class FileFragment extends BaseFragment {
                 clipboard.setPrimaryClip(clip);
             }
         });
+
+        webView.setBackgroundColor(AttributesUtils.getWebviewColor(getActivity()));
+
         imageView = (ImageView) view.findViewById(R.id.imageView);
 
         if (getArguments() != null) {
@@ -99,7 +108,6 @@ public class FileFragment extends BaseFragment {
             webView.clearHistory();
             webView.clearMatches();
             webView.clearSslPreferences();
-            webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
             webView.setVisibility(View.VISIBLE);
             WebSettings settings = webView.getSettings();
             settings.setBuiltInZoomControls(true);
@@ -115,10 +123,49 @@ public class FileFragment extends BaseFragment {
                     getContent();
                 }
             } else {
-                webView.loadUrl("file:///android_asset/diff.html");
+                SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+                if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+                    webView.loadUrl("file:///android_asset/diff_dark.html");
+                } else {
+                    webView.loadUrl("file:///android_asset/diff.html");
+                }
                 loadingView.setVisibility(View.GONE);
             }
         }
+    }
+
+    private String configureHtml(String htmlContent) {
+        String fileName = "source_pre.html";
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+            fileName = "source_pre_dark.html";
+        }
+
+        String head = getAssetFileContent(fileName);
+        String end = getAssetFileContent("source_post.html");
+
+        return head + "\n" + htmlContent + "\n" + end;
+    }
+
+    public String getAssetFileContent(String filename) {
+        StringBuilder buf = new StringBuilder();
+        try {
+            InputStream json = getActivity().getAssets().open(filename);
+            BufferedReader in =
+                    new BufferedReader(new InputStreamReader(json, "UTF-8"));
+            String str;
+
+            while ((str = in.readLine()) != null) {
+                buf.append(str);
+            }
+
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return buf.toString();
     }
 
     private void getBranches() {
@@ -182,8 +229,7 @@ public class FileFragment extends BaseFragment {
                         webView.clearMatches();
                         webView.clearSslPreferences();
                         webView.getSettings().setUseWideViewPort(false);
-                        webView.setBackgroundColor(getResources().getColor(R.color.gray_github_light));
-                        webView.loadDataWithBaseURL("http://github.com", s, "text/html; charset=UTF-8", null, null);
+                        webView.loadDataWithBaseURL("http://github.com", configureHtml(s), "text/html; charset=UTF-8", null, null);
                     }
                 }
             });
@@ -211,7 +257,14 @@ public class FileFragment extends BaseFragment {
             }
         } else {
             if (getActivity() != null && isAdded()) {
-                webView.loadUrl("file:///android_asset/source.html");
+                SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+
+                if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+                    webView.loadUrl("file:///android_asset/source_dark.html");
+                } else {
+                    webView.loadUrl("file:///android_asset/source.html");
+                }
             }
         }
     }

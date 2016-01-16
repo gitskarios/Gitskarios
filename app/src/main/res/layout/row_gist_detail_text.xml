@@ -36,7 +36,7 @@
                     style="@style/TextAppearance.AppCompat.Headline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="?colorControlNormal"
+                    android:textColor="?attr/colorAccent"
                     tools:text="MyFile.java" />
 
                 <TextView
@@ -45,19 +45,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/gapMedium"
-                    android:textColor="@color/secondary_text"
                     android:textSize="@dimen/textSizeSmall" />
             </LinearLayout>
 
-            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            <android.support.v7.widget.Toolbar
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_github_light_selected"
-                android:minHeight="?actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/Gists.FileRowToolbar" />
+                android:minHeight="?actionBarSize" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
