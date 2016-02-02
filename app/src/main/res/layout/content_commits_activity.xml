@@ -16,12 +16,13 @@
             android:layout_height="?actionBarSize" />
     </FrameLayout>
 
-    <LinearBreadcrumb
+    <com.alorma.github.ui.view.LinearBreadcrumb
         android:id="@+id/breadCrumbs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorPrimary"
-        android:paddingLeft="@dimen/gapLarge" />
+        android:paddingLeft="@dimen/gapLarge"
+        android:paddingStart="@dimen/gapLarge" />
 
     <FrameLayout
         android:id="@+id/content"

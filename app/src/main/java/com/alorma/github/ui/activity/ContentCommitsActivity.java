@@ -41,7 +41,7 @@ public class ContentCommitsActivity extends BackActivity {
         setContentView(R.layout.content_commits_activity);
 
         if (getIntent() != null && getIntent().getExtras() != null) {
-            RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
+            RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
             String path = getIntent().getExtras().getString(PATH);
             String name = getIntent().getExtras().getString(NAME);
 
