@@ -157,9 +157,6 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         collapsingToolbarLayout.setTitle("");
         collapsingToolbarLayout.setTitleEnabled(false);
 
-        if (getIntent().getExtras().containsKey(EXTRA_COLOR)) {
-        }
-
         if (getSupportFragmentManager() != null && getSupportFragmentManager().getFragments() != null) {
             for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                 if (fragment instanceof UserResumeFragment) {
@@ -172,8 +169,24 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
             userResumeFragment = new UserResumeFragment();
         }
 
-        userResumeFragment.setUserResumeCallback(this);
+        getContent();
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (userResumeFragment != null) {
+            userResumeFragment.setUserResumeCallback(this);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if (userResumeFragment != null) {
+            userResumeFragment.setUserResumeCallback(null);
+        }
+        super.onStop();
     }
 
     @Override

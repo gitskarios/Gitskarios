@@ -28,8 +28,6 @@ public class BaseActivity extends AppCompatActivity {
 
     public static final String EXTRA_WITH_TOKEN = "EXTRA_WITH_TOKEN";
 
-    private UpdateReceiver updateReceiver;
-
     private Toolbar toolbar;
     private AccountsManager accountsManager;
     private ProgressDialog progressDialog;
@@ -112,20 +110,6 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateReceiver = new UpdateReceiver();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(updateReceiver, intentFilter);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        unregisterReceiver(updateReceiver);
-    }
-
     protected void showProgressDialog(@StringRes int text) {
         if (progressDialog == null) {
             try {
@@ -144,24 +128,6 @@ public class BaseActivity extends AppCompatActivity {
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
-        }
-    }
-
-    public class UpdateReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (isOnline(context)) {
-                reload();
-            }
-        }
-
-        public boolean isOnline(Context context) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
         }
     }
 }

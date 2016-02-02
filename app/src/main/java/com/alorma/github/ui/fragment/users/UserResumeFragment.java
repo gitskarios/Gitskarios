@@ -37,6 +37,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     private int color = Color.BLACK;
     private UserResumeCallback userResumeCallback;
     private User user;
+    private boolean cardsFilled = false;
 
     @Nullable
     @Override
@@ -57,7 +58,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     public void onStart() {
         super.onStart();
 
-        if (user != null) {
+        if (user != null && !cardsFilled) {
             fill(user);
         }
     }
@@ -67,6 +68,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
         if (getActivity() != null && isAdded()) {
             fillCardBio(user);
             fillCardGithubData(user);
+            cardsFilled = true;
         }
     }
 
@@ -119,6 +121,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
             View view = profileItem.getView(getActivity(), parent);
             profileItems.add(profileItem);
             if (view != null) {
+                view.setTag("item");
                 parent.addView(view);
             }
         }
