@@ -10,7 +10,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
-        classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.5.+"
+        classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.5.0"
     }
 }
 
