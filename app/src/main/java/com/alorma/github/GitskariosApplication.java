@@ -23,9 +23,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by Bernat on 08/07/2014.
- */
 public class GitskariosApplication extends MultiDexApplication {
 
     public static GitskariosApplication get(Context context) {

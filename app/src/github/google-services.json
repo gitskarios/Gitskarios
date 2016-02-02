@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_id": "gitskarios-6c46c",
+    "project_number": "922276335491",
+    "name": "Gitskarios"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922276335491:android:31947b2c23553733",
+        "client_id": "android:com.alorma.github.debug",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.alorma.github.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922276335491-bp4ch054igbvg9gcugjptimpvuu8kdgb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alorma.github.debug",
+            "certificate_hash": "21BA6FA2EAB8A1BA9C403BC31A025C486E6E80C5"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-39368100-4"
+          }
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922276335491:android:3de557bff988a5e6",
+        "client_id": "android:com.alorma.github",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.alorma.github"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922276335491-82ri3fdcm3fhe7tkd2jpuencsvdkg4l7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alorma.github",
+            "certificate_hash": "4748E073DC183E82A51FA7CA18457C3B96ABCAA3"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-39368100-4"
+          }
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
