@@ -39,7 +39,6 @@ buildtimetracker {
     }
 }
 
-
 apply plugin: 'io.fabric'
 //gradle dependencyUpdates -Drevision=release
 
