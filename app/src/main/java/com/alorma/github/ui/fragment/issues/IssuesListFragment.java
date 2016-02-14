@@ -186,7 +186,10 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
     }
 
     private void setAction(GithubListClient<List<Issue>> client) {
-        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext(new Action1<Pair<List<Issue>, Integer>>() {
+        client.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext(new Action1<Pair<List<Issue>, Integer>>() {
             @Override
             public void call(Pair<List<Issue>, Integer> listIntegerPair) {
                 setPage(listIntegerPair.second);

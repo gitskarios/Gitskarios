@@ -43,7 +43,7 @@ public class SearchIssuesActivity extends BackActivity
         setTitle("");
 
         if (getIntent().getExtras() != null) {
-            repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
+            repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
             issuesListFragment = IssuesListFragment.newInstance(repoInfo, true);
             issuesListFragment.setSearchClientRequest(this);
@@ -124,7 +124,7 @@ public class SearchIssuesActivity extends BackActivity
             query = "";
         }
 
-        query += "+repoInfo:" + repoInfo.owner + "/" + repoInfo.name;
+        query += "+repo:" + repoInfo.owner + "/" + repoInfo.name;
 
         issuesListFragment.setRefreshing();
         issuesListFragment.clear();
