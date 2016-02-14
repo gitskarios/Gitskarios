@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,10 +8,12 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.text.TextUtils;
 
 import com.afollestad.materialdialogs.prefs.MaterialListPreference;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
+import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.GitIgnoreTemplates;
 import com.alorma.github.sdk.services.gtignore.GitIgnoreClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
@@ -171,15 +174,34 @@ public class CreateRepositoryFragment extends PreferenceFragment {
     private void checkState() {
         if (createInterface != null) {
             if (repoRequestDTO.isValid()) {
-                createInterface.onRepositoryReady(repoRequestDTO);
+                createInterface.onRepositoryReady();
             } else {
                 createInterface.onRepositoryNotReady();
             }
         }
     }
 
+    public RepoRequestDTO getRequest() {
+        return repoRequestDTO;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == DESCRIPTION_EDIT) {
+            if (data != null && data.getExtras() != null
+                && data.getExtras().containsKey(ContentEditorActivity.CONTENT)) {
+                String content = data.getExtras().getString(ContentEditorActivity.CONTENT);
+                if (!TextUtils.isEmpty(content)) {
+                    repoRequestDTO.description = content;
+                    checkState();
+                }
+            }
+        }
+    }
+
     public interface CreateRepositoryInterface {
-        void onRepositoryReady(RepoRequestDTO dto);
+        void onRepositoryReady();
 
         void onRepositoryNotReady();
     }
@@ -187,7 +209,7 @@ public class CreateRepositoryFragment extends PreferenceFragment {
     private class NullInterface implements CreateRepositoryInterface {
 
         @Override
-        public void onRepositoryReady(RepoRequestDTO dto) {
+        public void onRepositoryReady() {
 
         }
 

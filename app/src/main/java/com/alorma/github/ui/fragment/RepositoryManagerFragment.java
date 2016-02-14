@@ -10,6 +10,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -222,10 +223,13 @@ public class RepositoryManagerFragment extends PreferenceFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == DESCRIPTION_EDIT && data != null) {
-                repoRequestDTO.description = data.getStringExtra(ContentEditorActivity.CONTENT);
+        if (resultCode == Activity.RESULT_OK && requestCode == DESCRIPTION_EDIT) {
+            if (data != null && data.getExtras() != null
+                && data.getExtras().containsKey(ContentEditorActivity.CONTENT)) {
+                String content = data.getExtras().getString(ContentEditorActivity.CONTENT);
+                if (!TextUtils.isEmpty(content)) {
+                    repoRequestDTO.description = content;
+                }
             }
         }
     }

@@ -9,7 +9,6 @@ import android.widget.Button;
 
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
 import com.alorma.github.ui.activity.base.BackActivity;
@@ -25,69 +24,73 @@ import rx.schedulers.Schedulers;
  * Created by bernat.borras on 10/11/15.
  */
 public class CreateRepositoryActivity extends BackActivity
-        implements CreateRepositoryFragment.CreateRepositoryInterface, View.OnClickListener {
+    implements CreateRepositoryFragment.CreateRepositoryInterface, View.OnClickListener {
 
-    @Bind(R.id.create)
-    Button create;
-    private RepoRequestDTO dto;
-    private Repo repo;
+  @Bind(R.id.create)
+  Button create;
+  private Repo repo;
+  private CreateRepositoryFragment fragment;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_repository_activity);
-        ButterKnife.bind(this);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.create_repository_activity);
+    ButterKnife.bind(this);
 
-        setTitle(R.string.create_repository_activity);
+    setTitle(R.string.create_repository_activity);
 
-        CreateRepositoryFragment fragment = new CreateRepositoryFragment();
+    fragment = new CreateRepositoryFragment();
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content, fragment);
-        ft.commit();
-    }
+    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    ft.replace(R.id.content, fragment);
+    ft.commit();
+  }
 
-    @Override
-    public void onRepositoryReady(RepoRequestDTO dto) {
-        this.dto = dto;
-        create.setEnabled(true);
-        create.setOnClickListener(this);
-    }
+  @Override
+  public void onRepositoryReady() {
+    create.setEnabled(true);
+    create.setOnClickListener(this);
+  }
 
-    @Override
-    public void onRepositoryNotReady() {
-        create.setEnabled(false);
-    }
+  @Override
+  public void onRepositoryNotReady() {
+    create.setEnabled(false);
+  }
 
-    @Override
-    public void onClick(View v) {
-        CreateRepositoryClient client = new CreateRepositoryClient(dto);
-        client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+  @Override
+  public void onClick(View v) {
+    if (fragment != null) {
+      CreateRepositoryClient client = new CreateRepositoryClient(fragment.getRequest());
+      client.observable()
+          .subscribeOn(Schedulers.newThread())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Subscriber<Repo>() {
             @Override
             public void onCompleted() {
-                openRepo(repo);
+              openRepo(repo);
             }
 
             @Override
             public void onError(Throwable e) {
-                if (BuildConfig.DEBUG) {
-                    Snackbar.make(create, "Error creating repository: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                } else {
-                    Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT).show();
-                }
+              if (BuildConfig.DEBUG) {
+                Snackbar.make(create, "Error creating repository: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                e.printStackTrace();
+              } else {
+                Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT).show();
+              }
             }
 
             @Override
             public void onNext(Repo repo) {
-                CreateRepositoryActivity.this.repo = repo;
+              CreateRepositoryActivity.this.repo = repo;
             }
-        });
+          });
     }
+  }
 
-    private void openRepo(Repo repo) {
-        Intent intent = RepoDetailActivity.createLauncherIntent(this, repo.toInfo());
-        startActivity(intent);
-        finish();
-    }
+  private void openRepo(Repo repo) {
+    Intent intent = RepoDetailActivity.createLauncherIntent(this, repo.toInfo());
+    startActivity(intent);
+    finish();
+  }
 }
