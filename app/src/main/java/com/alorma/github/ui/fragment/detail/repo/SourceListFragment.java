@@ -25,7 +25,7 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
-import com.alorma.github.ui.callbacks.DialogBranchesCallback;
+import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.LinearBreadcrumb;
@@ -35,7 +35,6 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -290,7 +289,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
         repoBranchesClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DownloadBranchesCallback(getActivity(), repoInfo));
+                .subscribe(new DownloadBranchesSubscriber(getActivity(), repoInfo));
     }
 
     @Override
@@ -327,9 +326,9 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         }
     }
 
-    private class DownloadBranchesCallback extends DialogBranchesCallback {
+    private class DownloadBranchesSubscriber extends DialogBranchesSubscriber {
 
-        public DownloadBranchesCallback(Context context, RepoInfo repoInfo) {
+        public DownloadBranchesSubscriber(Context context, RepoInfo repoInfo) {
             super(context, repoInfo);
         }
 

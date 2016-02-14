@@ -5,13 +5,13 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.BranchesCallback;
+import com.alorma.github.sdk.services.repo.BranchesSubscriber;
 
-public abstract class DialogBranchesCallback extends BranchesCallback implements MaterialDialog.ListCallbackSingleChoice {
+public abstract class DialogBranchesSubscriber extends BranchesSubscriber implements MaterialDialog.ListCallbackSingleChoice {
 
     private Context context;
 
-    public DialogBranchesCallback(Context context, RepoInfo repoInfo) {
+    public DialogBranchesSubscriber(Context context, RepoInfo repoInfo) {
         super(repoInfo);
         this.context = context;
     }

@@ -24,7 +24,7 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.CompareRepositoryCommitsActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
-import com.alorma.github.ui.callbacks.DialogBranchesCallback;
+import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
@@ -356,7 +356,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
         repoBranchesClient.observable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogBranchesCallback(getActivity(), repoInfo) {
+                .subscribe(new DialogBranchesSubscriber(getActivity(), repoInfo) {
                     @Override
                     protected void onBranchSelected(String branch) {
                         setCurrentBranch(branch);

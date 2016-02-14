@@ -17,7 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.BranchesCallback;
+import com.alorma.github.sdk.services.repo.BranchesSubscriber;
 import com.alorma.github.sdk.services.repo.DeleteRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.ContentEditorActivity;
@@ -206,7 +206,7 @@ public class RepositoryManagerFragment extends PreferenceFragment {
 
     private void getBranches() {
         GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
-        repoBranchesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BranchesCallback(repoInfo) {
+        repoBranchesClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BranchesSubscriber(repoInfo) {
 
             @Override
             protected void showBranches(String[] branches, int defaultBranchPosition) {
