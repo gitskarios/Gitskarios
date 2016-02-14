@@ -12,6 +12,7 @@
     <dimen name="avatar_size_list">48dp</dimen>
     <dimen name="shape_size">56dp</dimen>
     <dimen name="shape_half">23dp</dimen>
+    <dimen name="user_avatar">16dp</dimen>
     <dimen name="shape_half_inv">-23dp</dimen>
     <dimen name="button_press">2dp</dimen>
     <dimen name="button_press_elevation">4dp</dimen>
@@ -26,6 +27,8 @@
     <dimen name="gapXLarge">32dp</dimen>
     <dimen name="gapXXLarge">64dp</dimen>
     <dimen name="gapXXXLarge">128dp</dimen>
+
+
 
     <!-- http://developer.android.com/design/style/typography.html -->
     <dimen name="textSizeXMicro">10sp</dimen>

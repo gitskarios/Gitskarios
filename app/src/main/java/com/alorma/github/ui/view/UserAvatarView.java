@@ -1,15 +1,22 @@
 package com.alorma.github.ui.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.timeline.RoundTimelineView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.crashlytics.android.answers.Answers;
@@ -17,28 +24,29 @@ import com.crashlytics.android.answers.ContentViewEvent;
 
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by bernat.borras on 9/1/16.
- */
-public class UserAvatarView extends CircularImageView implements View.OnClickListener {
+public class UserAvatarView extends RoundTimelineView implements View.OnClickListener {
     private User user;
 
     public UserAvatarView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public UserAvatarView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public UserAvatarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(context, attrs, defStyle);
     }
 
-    private void init() {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public UserAvatarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs, defStyleAttr);
+    }
+
+    private void init(Context context, AttributeSet attrs, int defStyle) {
         if (isInEditMode()) {
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
@@ -49,6 +57,22 @@ public class UserAvatarView extends CircularImageView implements View.OnClickLis
 
             setImageDrawable(drawable);
         }
+
+        final TypedArray typedArray =
+            context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserAvatarView, defStyle, 0);
+
+        boolean showLine = typedArray.getBoolean(R.styleable.UserAvatarView_uav_show_timeline, false);
+
+        if (showLine) {
+            setTimelineType(TYPE_MIDDLE);
+            setLineColor(Color.GRAY);
+        } else {
+            setTimelineType(TYPE_HIDDEN);
+        }
+        setIndicatorSize(getResources().getDimensionPixelOffset(R.dimen.user_avatar));
+        setIndicatorColor(Color.TRANSPARENT);
+        setLineWidth(1.5f);
+        setTimelineAlignment(ALIGNMENT_START);
     }
 
     public void setUser(User user) {

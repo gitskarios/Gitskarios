@@ -143,6 +143,8 @@ public class IssueDetailActivity extends BackActivity implements View.OnClickLis
             primaryDark = ContextCompat.getColor(this, R.color.primary_dark_alpha);
 
             findViews();
+
+            getContent();
         }
     }
 

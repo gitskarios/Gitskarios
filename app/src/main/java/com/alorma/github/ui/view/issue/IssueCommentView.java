@@ -14,6 +14,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
+import com.alorma.timeline.TimelineView;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
@@ -21,9 +22,6 @@ import com.github.mobile.util.HttpImageGetter;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Created by Bernat on 10/04/2015.
- */
 public class IssueCommentView extends LinearLayout {
 
     private TextView body;

@@ -75,6 +75,9 @@
         <attr name="ft_fabId" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="UserAvatarView">
+        <attr name="uav_show_timeline" format="boolean" />
+    </declare-styleable>
 
     <attr name="gitskarios_divider" format="color" />
     <attr name="gitskarios_primary_light" format="color" />

@@ -26,6 +26,10 @@
         <item name="gitskarios_webview">@android:color/transparent</item>
         <item name="gitskarios_card_background">@color/white</item>
 
+        <item name="diff_addition_text_color">@color/black</item>
+        <item name="diff_deletion_text_color">@color/black</item>
+        <item name="diff_info_text_color">@color/black</item>
+
         <item name="material_drawer_background">@color/material_drawer_background</item>
         <item name="material_drawer_primary_text">@color/material_drawer_primary_text</item>
         <item name="material_drawer_primary_icon">@color/material_drawer_primary_icon</item>
@@ -56,6 +60,10 @@
         <item name="gitskarios_title">@color/accent</item>
         <item name="gitskarios_webview">@color/gray_github_dark</item>
         <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
+
+        <item name="diff_addition_text_color">@color/black</item>
+        <item name="diff_deletion_text_color">@color/black</item>
+        <item name="diff_info_text_color">@color/black</item>
 
         <item name="material_drawer_background">@color/material_drawer_dark_background</item>
         <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>

@@ -15,15 +15,13 @@ import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
 import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
+import com.alorma.timeline.TimelineView;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
-/**
- * Created by Bernat on 18/07/2015.
- */
 public class IssueStoryLabelDetailView extends LinearLayout {
 
     private TextView userText;
@@ -59,8 +57,6 @@ public class IssueStoryLabelDetailView extends LinearLayout {
         profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
         createdAt = (TextView) findViewById(R.id.createdAt);
         labelsView = (IssueStoryLabelsView) findViewById(R.id.labelsView);
-
-        ViewCompat.setElevation(profileIcon, 2);
     }
 
     public void setLabelsEvent(IssueStoryLabelList labelsEvent) {

@@ -17,20 +17,20 @@
 		var lines_modified = lines[i].match(/@@[ \-\+\d,]+@@/);
 		if (lines_modified != null) {
 			// range information (and optional section heading)
-			colored += "<div style=\"background-color: #DEB887;\">" + lines_modified[0] + "</div>" +
-				"<div style=\"background-color: #EED5B7;\">" + lines[i].substring(lines_modified[0].length) + "</div>";
+			colored += "<div style=\"background-color: #DEB887; color: #000000;\">" + lines_modified[0] + "</div>" +
+				"<div style=\"background-color: #EED5B7; color: #000000;\">" + lines[i].substring(lines_modified[0].length) + "</div>";
 		} else if (lines[i].startsWith("+")) {
 			// added line
-			colored += "<div style=\"background-color: #CCFFCC;\">" + lines[i] + "</div>";
+			colored += "<div style=\"background-color: #CCFFCC; color: #000000;\">" + lines[i] + "</div>";
 		} else if (lines[i].startsWith("-")) {
 			// deleted line
-			colored += "<div style=\"background-color: #FFDDDD;\">" + lines[i] + "</div>";
+			colored += "<div style=\"background-color: #FFDDDD; color: #000000;\">" + lines[i] + "</div>";
 		} else if (lines[i].startsWith(" ")) {
 			// nothing changed
 			colored += lines[i] + "\n";
 		} else {
 			// header information
-			colored += "<div style=\"color: #A0A0A0;\">" + lines[i] + "</div>";
+			colored += "<div style=\"color: #000000;\">" + lines[i] + "</div>";
 		}
 	}
 	document.getElementById("code").innerHTML = colored;
