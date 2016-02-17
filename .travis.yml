@@ -1,8 +1,6 @@
 language: android
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 android:
   components:
   - tools
@@ -13,19 +11,19 @@ android:
   - extra-google-m2repository
   licenses:
   - android-sdk-license-.+
-
 before_script:
 - git submodule update --init --recursive
-
 script: ./gradlew clean build check
-
 deploy:
   provider: releases
   api_key:
     secure: e8vh46Ei3Xf1KUk/+8UP0wXcIgqtuPLj2cZY3PdUCCo8C8Kc6xmtMRH6yAiNG0b02GmJf/yLn2MXJvC9spVf+vsGDtl+cqB4qBdaF9Ei5ekf1X+X3cjW9t6NR3acj85mxC4EjeIodO81PCcrJ+BZBHzEbi4Zy0HADfHuxTOHxwE=
   file_glob: true
   file:
-    - app/build/outputs/apk/app*.apk
+  - app/build/outputs/apk/app*.apk
   on:
     tags: true
     all_branches: true
+notifications:
+  slack:
+    secure: KQU8mdeInl/nc6yQa2ir5nqZcZnoqH06RKDd2nhfIsn8FKvKlVD4b2FUip9EcT0gn5iGzrKXBEBMs8KByiMWMEEF2nI01DwJuhrP/j4PJMyXeYs8TlplEbRXyirJI9drZz1EMfS7AHXuLlQgN8USrRG2THxt6EOP4D4qdJ3tvuc=
