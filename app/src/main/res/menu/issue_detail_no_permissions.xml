@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <item
-        android:id="@+id/share_issue"
-        android:orderInCategory="1"
-        android:title="@string/action_share_issue"
-        app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/share_issue"
+      android:orderInCategory="1"
+      android:title="@string/action_share_issue"
+      app:showAsAction="ifRoom"
+      />
 
-    <item
-        android:id="@+id/action_add_shortcut"
-        android:orderInCategory="3"
-        android:title="@string/action_add_shortcut"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/action_add_shortcut"
+      android:orderInCategory="3"
+      android:title="@string/action_add_shortcut"
+      app:showAsAction="never"
+      />
 </menu>

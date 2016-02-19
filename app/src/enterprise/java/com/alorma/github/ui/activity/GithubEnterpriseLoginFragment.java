@@ -5,24 +5,24 @@ import android.os.Bundle;
 
 public class GithubEnterpriseLoginFragment extends Fragment {
 
-    private LoginCallback loginCallback;
-    private AccountsManager accountsFragment;
-    private boolean advanced;
+  private LoginCallback loginCallback;
+  private AccountsManager accountsFragment;
+  private boolean advanced;
 
-    public GithubEnterpriseLoginFragment() {
-    }
+  public GithubEnterpriseLoginFragment() {
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        accountsFragment = new AccountsManager();
-    }
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    accountsFragment = new AccountsManager();
+  }
 
-    public interface LoginCallback {
-        void onError(Throwable error);
+  public interface LoginCallback {
+    void onError(Throwable error);
 
-        void loginNotAvailable();
+    void loginNotAvailable();
 
-        void endAccess(String access_token);
-    }
+    void endAccess(String access_token);
+  }
 }

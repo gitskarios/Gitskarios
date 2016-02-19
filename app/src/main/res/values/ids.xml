@@ -1,93 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="toolbar" type="id">toolbar
-    </item>
-    <item name="fabButton" type="id">fabButton
-    </item>
-    <item name="listContentFL" type="id">listContentFL
-    </item>
+  <item name="toolbar"
+        type="id">toolbar
+  </item>
+  <item name="fabButton"
+        type="id">fabButton
+  </item>
+  <item name="listContentFL"
+        type="id">listContentFL
+  </item>
 
-    <item name="action_donate" type="id">action_done
-    </item>
-    <item name="avatarAuthor" type="id">avatarAuthor
-    </item>
-    <item name="pager" type="id">pager
-    </item>
-    <item name="smoothBar" type="id">smoothBar
-    </item>
-    <item name="top" type="id">top
-    </item>
-    <item name="coloredLayout" type="id">coloredLayout
-    </item>
-    <item name="issueDetailInfo" type="id">issueDetailInfo
-    </item>
+  <item name="action_donate"
+        type="id">action_done
+  </item>
+  <item name="avatarAuthor"
+        type="id">avatarAuthor
+  </item>
+  <item name="pager"
+        type="id">pager
+  </item>
+  <item name="smoothBar"
+        type="id">smoothBar
+  </item>
+  <item name="top"
+        type="id">top
+  </item>
+  <item name="coloredLayout"
+        type="id">coloredLayout
+  </item>
+  <item name="issueDetailInfo"
+        type="id">issueDetailInfo
+  </item>
 
-    <item name="action_add_comment" type="id">action_add_comment
-    </item>
-    <item name="action_close_issue" type="id">action_close_issue
-    </item>
-    <item name="action_reopen_issue" type="id">action_reopen_issue
-    </item>
-    <item name="action_repo_watch" type="id">action_repo_watch
-    </item>
-    <item name="action_user_star" type="id">action_user_star
-    </item>
-    <item name="action_repo_star" type="id">action_repo_star
-    </item>
+  <item name="action_add_comment"
+        type="id">action_add_comment
+  </item>
+  <item name="action_close_issue"
+        type="id">action_close_issue
+  </item>
+  <item name="action_reopen_issue"
+        type="id">action_reopen_issue
+  </item>
+  <item name="action_repo_watch"
+        type="id">action_repo_watch
+  </item>
+  <item name="action_user_star"
+        type="id">action_user_star
+  </item>
+  <item name="action_repo_star"
+        type="id">action_repo_star
+  </item>
 
-    <item name="fab_expand_menu_button" type="id" />
-    <item name="scrollable" type="id">scroll
-    </item>
-    <item name="fabLayout" type="id">fabLayout
-    </item>
-    <item name="cardsContainerScroll" type="id">cardsContainerScroll
-    </item>
-    <item name="nav_drawer_notifications" type="id">nav_drawer_notifications
-    </item>
-    <item name="nav_drawer_events" type="id">nav_drawer_events
-    </item>
-    <item name="nav_drawer_repositories" type="id">nav_drawer_repositories
-    </item>
-    <item name="nav_drawer_starred_repositories" type="id">nav_drawer_starred_repositories
-    </item>
-    <item name="nav_drawer_watched_repositories" type="id">nav_drawer_watched_repositories
-    </item>
-    <item name="nav_drawer_people" type="id">nav_drawer_people
-    </item>
-    <item name="nav_drawer_gists" type="id">nav_drawer_gists
-    </item>
-    <item name="nav_drawer_settings" type="id">nav_drawer_settings
-    </item>
-    <item name="nav_drawer_about" type="id">nav_drawer_about
-    </item>
-    <item name="nav_drawer_sign_out" type="id">nav_drawer_sign_out
-    </item>
-    <item name="nav_drawer_support_development" type="id">nav_drawer_support_development
-    </item>
-    <item name="action_repo_change_branch" type="id">action_repo_change_branch
-    </item>
-    <item name="action_menu_follow_user" type="id">action_menu_follow_user
-    </item>
-    <item name="action_menu_unfollow_user" type="id">action_menu_unfollow_user
-    </item>
-    <item name="action_add_emoji" type="id">action_add_emoji
-    </item>
-    <item name="repo_detail_nav_fragment_info" type="id">repo_detail_nav_fragment_info
-    </item>
-    <item name="repo_detail_nav_fragment_source" type="id">repo_detail_nav_fragment_source
-    </item>
-    <item name="repo_detail_nav_fragment_commmits" type="id">repo_detail_nav_fragment_commmits
-    </item>
-    <item name="repo_detail_nav_fragment_issues" type="id">repo_detail_nav_fragment_issues
-    </item>
-    <item name="repo_detail_nav_fragment_pull_request" type="id">
-        repo_detail_nav_fragment_pull_request
-    </item>
-    <item name="repo_detail_nav_fragment_releases" type="id">
-        repo_detail_nav_fragment_releases
-    </item>
-    <item name="repo_detail_nav_fragment_members" type="id">repo_detail_nav_fragment_members
-    </item>
-    <item name="nav_drawer_invite" type="id" />
+  <item name="fab_expand_menu_button"
+        type="id"/>
+  <item name="scrollable"
+        type="id">scroll
+  </item>
+  <item name="fabLayout"
+        type="id">fabLayout
+  </item>
+  <item name="cardsContainerScroll"
+        type="id">cardsContainerScroll
+  </item>
+  <item name="nav_drawer_notifications"
+        type="id">nav_drawer_notifications
+  </item>
+  <item name="nav_drawer_events"
+        type="id">nav_drawer_events
+  </item>
+  <item name="nav_drawer_repositories"
+        type="id">nav_drawer_repositories
+  </item>
+  <item name="nav_drawer_starred_repositories"
+        type="id">nav_drawer_starred_repositories
+  </item>
+  <item name="nav_drawer_watched_repositories"
+        type="id">nav_drawer_watched_repositories
+  </item>
+  <item name="nav_drawer_people"
+        type="id">nav_drawer_people
+  </item>
+  <item name="nav_drawer_gists"
+        type="id">nav_drawer_gists
+  </item>
+  <item name="nav_drawer_settings"
+        type="id">nav_drawer_settings
+  </item>
+  <item name="nav_drawer_about"
+        type="id">nav_drawer_about
+  </item>
+  <item name="nav_drawer_sign_out"
+        type="id">nav_drawer_sign_out
+  </item>
+  <item name="nav_drawer_support_development"
+        type="id">nav_drawer_support_development
+  </item>
+  <item name="action_repo_change_branch"
+        type="id">action_repo_change_branch
+  </item>
+  <item name="action_menu_follow_user"
+        type="id">action_menu_follow_user
+  </item>
+  <item name="action_menu_unfollow_user"
+        type="id">action_menu_unfollow_user
+  </item>
+  <item name="action_add_emoji"
+        type="id">action_add_emoji
+  </item>
+  <item name="repo_detail_nav_fragment_info"
+        type="id">repo_detail_nav_fragment_info
+  </item>
+  <item name="repo_detail_nav_fragment_source"
+        type="id">repo_detail_nav_fragment_source
+  </item>
+  <item name="repo_detail_nav_fragment_commmits"
+        type="id">repo_detail_nav_fragment_commmits
+  </item>
+  <item name="repo_detail_nav_fragment_issues"
+        type="id">repo_detail_nav_fragment_issues
+  </item>
+  <item name="repo_detail_nav_fragment_pull_request"
+        type="id">
+    repo_detail_nav_fragment_pull_request
+  </item>
+  <item name="repo_detail_nav_fragment_releases"
+        type="id">
+    repo_detail_nav_fragment_releases
+  </item>
+  <item name="repo_detail_nav_fragment_members"
+        type="id">repo_detail_nav_fragment_members
+  </item>
+  <item name="nav_drawer_invite"
+        type="id"/>
 
 </resources>

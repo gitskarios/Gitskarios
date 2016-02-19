@@ -2,46 +2,54 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
-        android:key="pref_repo_name"
-        android:summary="@string/pref_repo_manage_title_summary"
-        android:title="@string/pref_repo_manage_title" />
+  <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+      android:key="pref_repo_name"
+      android:summary="@string/pref_repo_manage_title_summary"
+      android:title="@string/pref_repo_manage_title"
+      />
 
-    <Preference
-        android:key="pref_repo_description"
-        android:summary="@string/pref_repo_manage_description_summary"
-        android:title="@string/pref_repo_manage_description" />
+  <Preference
+      android:key="pref_repo_description"
+      android:summary="@string/pref_repo_manage_description_summary"
+      android:title="@string/pref_repo_manage_description"
+      />
 
-    <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
-        android:key="pref_repo_url"
-        android:summary="@string/pref_repo_manage_homepage_summary"
-        android:title="@string/pref_repo_manage_homepage" />
+  <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+      android:key="pref_repo_url"
+      android:summary="@string/pref_repo_manage_homepage_summary"
+      android:title="@string/pref_repo_manage_homepage"
+      />
 
-    <CheckBoxPreference
-        android:key="pref_repo_auto_init"
-        android:title="@string/pref_repo_auto_init" />
+  <CheckBoxPreference
+      android:key="pref_repo_auto_init"
+      android:title="@string/pref_repo_auto_init"
+      />
 
-    <CheckBoxPreference
-        android:key="pref_repo_has_issues"
-        android:title="@string/pref_repo_has_issues" />
+  <CheckBoxPreference
+      android:key="pref_repo_has_issues"
+      android:title="@string/pref_repo_has_issues"
+      />
 
-    <CheckBoxPreference
-        android:key="pref_repo_has_wiki"
-        android:title="@string/pref_repo_has_wiki" />
+  <CheckBoxPreference
+      android:key="pref_repo_has_wiki"
+      android:title="@string/pref_repo_has_wiki"
+      />
 
-    <CheckBoxPreference
-        android:key="pref_repo_has_downloads"
-        android:title="@string/pref_repo_has_downloads" />
+  <CheckBoxPreference
+      android:key="pref_repo_has_downloads"
+      android:title="@string/pref_repo_has_downloads"
+      />
 
-    <com.afollestad.materialdialogs.prefs.MaterialListPreference
-        android:key="pref_repo_gitignore"
-        android:title="@string/pref_repo_manage_gitignore" />
+  <com.afollestad.materialdialogs.prefs.MaterialListPreference
+      android:key="pref_repo_gitignore"
+      android:title="@string/pref_repo_manage_gitignore"
+      />
 
-    <!--
-    <com.afollestad.materialdialogs.prefs.MaterialListPreference
-        android:key="pref_repo_license"
-        android:title="@string/pref_repo_manage_license"
-        />
-    -->
+  <!--
+  <com.afollestad.materialdialogs.prefs.MaterialListPreference
+      android:key="pref_repo_license"
+      android:title="@string/pref_repo_manage_license"
+      />
+  -->
 
 </PreferenceScreen>

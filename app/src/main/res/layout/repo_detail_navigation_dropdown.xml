@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeightSmall"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/listPreferredItemHeightSmall"
+              android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@android:id/text1"
-        style="?android:attr/spinnerItemStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:ellipsize="marquee"
-        android:gravity="center_vertical"
-        android:singleLine="true" />
+  <TextView
+      android:id="@android:id/text1"
+      style="?android:attr/spinnerItemStyle"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:ellipsize="marquee"
+      android:gravity="center_vertical"
+      android:singleLine="true"
+      />
 </LinearLayout>

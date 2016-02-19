@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+    >
 
-    <LinearLayout
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/gapSmall"
+      android:layout_marginEnd="@dimen/gapMedium"
+      android:layout_marginLeft="@dimen/gapMedium"
+      android:layout_marginRight="@dimen/gapMedium"
+      android:layout_marginStart="@dimen/gapMedium"
+      android:layout_marginTop="@dimen/gapMedium"
+      android:orientation="vertical"
+      >
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gapSmall"
-        android:layout_marginEnd="@dimen/gapMedium"
-        android:layout_marginLeft="@dimen/gapMedium"
-        android:layout_marginRight="@dimen/gapMedium"
-        android:layout_marginStart="@dimen/gapMedium"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:orientation="vertical">
+        android:padding="8dp"
+        >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
-
-            <com.alorma.github.ui.view.CircularImageView
-                android:id="@+id/authorAvatar"
-                android:layout_width="@dimen/avatar_size_list"
-                android:layout_height="@dimen/avatar_size_list"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="@dimen/gapMedium"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:padding="@dimen/gapMedium" />
+      <com.alorma.github.ui.view.CircularImageView
+          android:id="@+id/authorAvatar"
+          android:layout_width="@dimen/avatar_size_list"
+          android:layout_height="@dimen/avatar_size_list"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:layout_marginBottom="@dimen/gapMedium"
+          android:ellipsize="end"
+          android:maxLines="2"
+          android:padding="@dimen/gapMedium"
+          />
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-    </LinearLayout>
+  </LinearLayout>
 </LinearLayout>

@@ -1,66 +1,75 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activity.GithubLoginActivity">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.activity.GithubLoginActivity"
+    >
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@id/toolbar"
+  <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                     android:id="@id/toolbar"
+                                     android:layout_width="match_parent"
+                                     android:layout_height="240dp"
+                                     android:background="?colorPrimary"
+                                     app:contentInsetStart="@dimen/second_keyline"
+                                     app:popupTheme="@style/Toolbar.Popup.AppCompat"
+                                     app:theme="@style/Toolbar.AppCompat.Responsive"
+      />
+
+  <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginBottom="80dp"
+      android:layout_marginLeft="@dimen/gapXLarge"
+      android:layout_marginRight="@dimen/gapXLarge"
+      android:layout_marginTop="100dp"
+      android:paddingBottom="0dp"
+      >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/second_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:background="?colorPrimary"
-        app:contentInsetStart="@dimen/second_keyline"
-        app:popupTheme="@style/Toolbar.Popup.AppCompat"
-        app:theme="@style/Toolbar.AppCompat.Responsive" />
+        android:layout_height="?actionBarSize"
+        />
 
-    <android.support.v7.widget.CardView
+    <FrameLayout
+        android:id="@+id/enterLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="80dp"
-        android:layout_marginLeft="@dimen/gapXLarge"
-        android:layout_marginRight="@dimen/gapXLarge"
-        android:layout_marginTop="100dp"
-        android:paddingBottom="0dp">
+        >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/second_toolbar"
+      <LinearLayout
+          android:id="@+id/loginStart"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginTop="?actionBarSize"
+          android:orientation="vertical"
+          android:padding="@dimen/gapXLarge"
+          >
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_launcher_web"
+            />
+
+        <Button
+            android:id="@+id/openLoginGithub"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gapXXLarge"
+            android:text="@string/github_account"
+            />
 
-        <FrameLayout
-            android:id="@+id/enterLayout"
+        <Button
+            android:id="@+id/openLoginGithubEnterprise"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/loginStart"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="?actionBarSize"
-                android:orientation="vertical"
-                android:padding="@dimen/gapXLarge">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_launcher_web" />
-
-                <Button
-                    android:id="@+id/openLoginGithub"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/gapXXLarge"
-                    android:text="@string/github_account" />
-
-                <Button
-                    android:id="@+id/openLoginGithubEnterprise"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/github_enterprise_account" />
-            </LinearLayout>
-        </FrameLayout>
-    </android.support.v7.widget.CardView>
+            android:layout_height="wrap_content"
+            android:text="@string/github_enterprise_account"
+            />
+      </LinearLayout>
+    </FrameLayout>
+  </android.support.v7.widget.CardView>
 
 </FrameLayout>

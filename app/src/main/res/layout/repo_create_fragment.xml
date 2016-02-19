@@ -1,88 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
 
-    <ScrollView
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin"
+        >
 
-        <LinearLayout
+      <EditText
+          android:id="@+id/editTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/edit_text_material_dark"
+          android:hint="@string/title"
+          android:textSize="@dimen/textSizeMedium"
+          />
+
+      <EditText
+          android:id="@+id/editBody"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/gapLarge"
+          android:background="@drawable/edit_text_material_dark"
+          android:gravity="top"
+          android:hint="@string/description"
+          android:lines="2"
+          android:textSize="@dimen/textSizeSmall"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="?android:attr/listPreferredItemHeight"
+          android:orientation="horizontal"
+          >
+
+        <Button
+            android:id="@+id/add_gitignore"
+            style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/add_gitignore"
+            />
 
-            <EditText
-                android:id="@+id/editTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_material_dark"
-                android:hint="@string/title"
-                android:textSize="@dimen/textSizeMedium" />
+        <Button
+            android:id="@+id/add_license"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/add_license"
+            />
+      </LinearLayout>
 
-            <EditText
-                android:id="@+id/editBody"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gapLarge"
-                android:background="@drawable/edit_text_material_dark"
-                android:gravity="top"
-                android:hint="@string/description"
-                android:lines="2"
-                android:textSize="@dimen/textSizeSmall" />
+      <CheckedTextView
+          android:id="@+id/repoPrivateCheck"
+          android:layout_width="match_parent"
+          android:layout_height="?android:listPreferredItemHeight"
+          android:gravity="center_vertical"
+          android:text="@string/repo_check_private"
+          />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/listPreferredItemHeight"
-                android:orientation="horizontal">
+      <CheckedTextView
+          android:id="@+id/repoIssuesCheck"
+          android:layout_width="match_parent"
+          android:layout_height="?android:listPreferredItemHeight"
+          android:gravity="center_vertical"
+          android:text="@string/repo_check_issue"
+          />
 
-                <Button
-                    android:id="@+id/add_gitignore"
-                    style="?android:borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/add_gitignore" />
+      <CheckedTextView
+          android:id="@+id/repoWikiCheck"
+          android:layout_width="match_parent"
+          android:layout_height="?android:listPreferredItemHeight"
+          android:gravity="center_vertical"
+          android:text="@string/repo_check_wiki"
+          />
 
-                <Button
-                    android:id="@+id/add_license"
-                    style="?android:borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/add_license" />
-            </LinearLayout>
-
-            <CheckedTextView
-                android:id="@+id/repoPrivateCheck"
-                android:layout_width="match_parent"
-                android:layout_height="?android:listPreferredItemHeight"
-                android:gravity="center_vertical"
-                android:text="@string/repo_check_private" />
-
-            <CheckedTextView
-                android:id="@+id/repoIssuesCheck"
-                android:layout_width="match_parent"
-                android:layout_height="?android:listPreferredItemHeight"
-                android:gravity="center_vertical"
-                android:text="@string/repo_check_issue" />
-
-            <CheckedTextView
-                android:id="@+id/repoWikiCheck"
-                android:layout_width="match_parent"
-                android:layout_height="?android:listPreferredItemHeight"
-                android:gravity="center_vertical"
-                android:text="@string/repo_check_wiki" />
-
-            <CheckedTextView
-                android:id="@+id/repoDownloadsCheck"
-                android:layout_width="match_parent"
-                android:layout_height="?android:listPreferredItemHeight"
-                android:gravity="center_vertical"
-                android:text="@string/repo_check_downloads" />
-        </LinearLayout>
-    </ScrollView>
+      <CheckedTextView
+          android:id="@+id/repoDownloadsCheck"
+          android:layout_width="match_parent"
+          android:layout_height="?android:listPreferredItemHeight"
+          android:gravity="center_vertical"
+          android:text="@string/repo_check_downloads"
+          />
+    </LinearLayout>
+  </ScrollView>
 </LinearLayout>

@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
@@ -46,17 +45,16 @@ import com.clean.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class RepoDetailActivity extends BackActivity implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
+public class RepoDetailActivity extends BackActivity
+    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -99,7 +97,8 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
       requestRepoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
       if (requestRepoInfo == null) {
-        if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras().containsKey(REPO_INFO_OWNER)) {
+        if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras()
+            .containsKey(REPO_INFO_OWNER)) {
           String name = getIntent().getExtras().getString(REPO_INFO_NAME);
           String owner = getIntent().getExtras().getString(REPO_INFO_OWNER);
 
@@ -256,12 +255,13 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
       MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
 
-
       if (menuChangeBranch != null) {
-        if (currentRepo != null && currentRepo.branches != null
+        if (currentRepo != null
+            && currentRepo.branches != null
             && currentRepo.branches.size() > 1) {
-          Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch)
-              .actionBar().colorRes(R.color.white);
+          Drawable changeBranch =
+              new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar()
+                  .colorRes(R.color.white);
 
           menuChangeBranch.setIcon(changeBranch);
         } else {
@@ -290,7 +290,8 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
       changeBranch();
     } else if (item.getItemId() == R.id.action_manage_repo) {
       if (currentRepo != null) {
-        Intent intent = ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
+        Intent intent =
+            ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
         startActivityForResult(intent, EDIT_REPO);
       }
     } else if (item.getItemId() == R.id.action_add_shortcut) {
@@ -317,39 +318,40 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
   private void changeBranch() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(requestRepoInfo);
-    Observable<List<Branch>> apiObservable =
-        repoBranchesClient.observable().subscribeOn(Schedulers.io())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext(new Action1<List<Branch>>() {
-              @Override
-              public void call(List<Branch> branches) {
-                if (currentRepo != null) {
-                  if (currentRepo.branches != null) {
-                    currentRepo.branches.addAll(branches);
-                  } else {
-                    currentRepo.branches = branches;
-                  }
-                  CacheWrapper.setRepository(currentRepo);
-                }
+    Observable<List<Branch>> apiObservable = repoBranchesClient.observable()
+        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext(new Action1<List<Branch>>() {
+          @Override
+          public void call(List<Branch> branches) {
+            if (currentRepo != null) {
+              if (currentRepo.branches != null) {
+                currentRepo.branches.addAll(branches);
+              } else {
+                currentRepo.branches = branches;
               }
-            });
-
-    Observable<List<Branch>> memCacheObservable = Observable.create(new Observable.OnSubscribe<List<Branch>>() {
-      @Override
-      public void call(Subscriber<? super List<Branch>> subscriber) {
-        try {
-          if (!subscriber.isUnsubscribed()) {
-            if (currentRepo != null && currentRepo.branches != null) {
-              subscriber.onNext(currentRepo.branches);
+              CacheWrapper.setRepository(currentRepo);
             }
           }
-          subscriber.onCompleted();
-        } catch (Exception e) {
-          subscriber.onError(e);
-        }
-      }
-    });
+        });
+
+    Observable<List<Branch>> memCacheObservable =
+        Observable.create(new Observable.OnSubscribe<List<Branch>>() {
+          @Override
+          public void call(Subscriber<? super List<Branch>> subscriber) {
+            try {
+              if (!subscriber.isUnsubscribed()) {
+                if (currentRepo != null && currentRepo.branches != null) {
+                  subscriber.onNext(currentRepo.branches);
+                }
+              }
+              subscriber.onCompleted();
+            } catch (Exception e) {
+              subscriber.onError(e);
+            }
+          }
+        });
 
     Observable.concat(memCacheObservable, apiObservable)
         .first()
@@ -393,25 +395,29 @@ public class RepoDetailActivity extends BackActivity implements AdapterView.OnIt
 
     if (requestCode == EDIT_REPO) {
       if (resultCode == RESULT_OK && data != null) {
-        RepoRequestDTO repoRequestDTO = (RepoRequestDTO) data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+        RepoRequestDTO repoRequestDTO =
+            (RepoRequestDTO) data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
         showProgressDialog(R.string.edit_repo_loading);
         EditRepoClient editRepositoryClient = new EditRepoClient(requestRepoInfo, repoRequestDTO);
-        editRepositoryClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
-          @Override
-          public void onCompleted() {
+        editRepositoryClient.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Repo>() {
+              @Override
+              public void onCompleted() {
 
-          }
+              }
 
-          @Override
-          public void onError(Throwable e) {
+              @Override
+              public void onError(Throwable e) {
 
-          }
+              }
 
-          @Override
-          public void onNext(Repo repo) {
-            onResponse(repo);
-          }
-        });
+              @Override
+              public void onNext(Repo repo) {
+                onResponse(repo);
+              }
+            });
       } else if (resultCode == RESULT_CANCELED) {
         finish();
       }

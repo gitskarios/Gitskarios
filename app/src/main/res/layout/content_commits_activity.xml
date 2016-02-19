@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
 
-    <FrameLayout
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <include layout="@layout/toolbar"/>
+
+    <ViewStub
+        android:id="@+id/cab_stub"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?actionBarSize"
+        />
+  </FrameLayout>
 
-        <include layout="@layout/toolbar" />
+  <com.alorma.github.ui.view.LinearBreadcrumb
+      android:id="@+id/breadCrumbs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?colorPrimary"
+      android:paddingLeft="@dimen/gapLarge"
+      android:paddingStart="@dimen/gapLarge"
+      />
 
-        <ViewStub
-            android:id="@+id/cab_stub"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize" />
-    </FrameLayout>
-
-    <com.alorma.github.ui.view.LinearBreadcrumb
-        android:id="@+id/breadCrumbs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorPrimary"
-        android:paddingLeft="@dimen/gapLarge"
-        android:paddingStart="@dimen/gapLarge" />
-
-    <FrameLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
+  <FrameLayout
+      android:id="@+id/content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      />
 </LinearLayout>

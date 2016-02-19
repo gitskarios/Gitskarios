@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+    >
 
-    <com.alorma.github.ui.view.UserAvatarView
-        android:id="@+id/profileIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-        android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-        android:layout_marginLeft="@dimen/material_drawer_item_profile_icon_padding"
-        android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-        android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding" />
+  <com.alorma.github.ui.view.UserAvatarView
+      android:id="@+id/profileIcon"
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:layout_gravity="center_horizontal|top"
+      android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+      android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+      android:layout_marginLeft="@dimen/material_drawer_item_profile_icon_padding"
+      android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+      android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+      />
 
-    <LinearLayout
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="@dimen/gapMedium"
+      >
+
+    <TextView
+        android:id="@+id/userLogin"
+        style="@style/Base.TextAppearance.AppCompat.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/gapMedium">
+        android:gravity="center_vertical"
+        android:textSize="@dimen/textSizeSmall"
+        android:textStyle="bold"
+        />
 
-        <TextView
-            android:id="@+id/userLogin"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/createdAt"
+        style="@style/Base.TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gapSmall"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/textSizeSmall"
+        />
 
-        <TextView
-            android:id="@+id/createdAt"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapSmall"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/textSizeSmall" />
+    <com.alorma.diff.lib.DiffTextView
+        android:id="@+id/textDiff"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/textSizeSmall"
+        />
 
-        <com.alorma.diff.lib.DiffTextView
-            android:id="@+id/textDiff"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/textSizeSmall" />
+    <TextView
+        android:id="@+id/bodyText"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gapMedium"
+        />
 
-        <TextView
-            android:id="@+id/bodyText"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapMedium" />
-
-    </LinearLayout>
+  </LinearLayout>
 
 </LinearLayout>

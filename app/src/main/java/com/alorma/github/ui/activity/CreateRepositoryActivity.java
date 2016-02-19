@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.CreateRepositoryFragment;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -26,8 +24,7 @@ import rx.schedulers.Schedulers;
 public class CreateRepositoryActivity extends BackActivity
     implements CreateRepositoryFragment.CreateRepositoryInterface, View.OnClickListener {
 
-  @Bind(R.id.create)
-  Button create;
+  @Bind(R.id.create) Button create;
   private Repo repo;
   private CreateRepositoryFragment fragment;
 
@@ -73,7 +70,8 @@ public class CreateRepositoryActivity extends BackActivity
             @Override
             public void onError(Throwable e) {
               if (BuildConfig.DEBUG) {
-                Snackbar.make(create, "Error creating repository: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(create, "Error creating repository: " + e.getMessage(),
+                    Snackbar.LENGTH_SHORT).show();
                 e.printStackTrace();
               } else {
                 Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT).show();

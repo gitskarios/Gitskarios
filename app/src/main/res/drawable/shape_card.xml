@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:top="@dimen/gapMicro">
-        <shape android:shape="rectangle">
-            <solid android:color="#CCC" />
-            <corners
-                android:bottomLeftRadius="@dimen/gapMicro"
-                android:bottomRightRadius="@dimen/gapMicro" />
-        </shape>
-    </item>
-    <item android:bottom="2dp">
-        <shape android:shape="rectangle">
-            <solid android:color="#FFF" />
-            <corners
-                android:topLeftRadius="@dimen/gapMicro"
-                android:topRightRadius="@dimen/gapMicro" />
-        </shape>
-    </item>
+  <item android:top="@dimen/gapMicro">
+    <shape android:shape="rectangle">
+      <solid android:color="#CCC"/>
+      <corners
+          android:bottomLeftRadius="@dimen/gapMicro"
+          android:bottomRightRadius="@dimen/gapMicro"
+          />
+    </shape>
+  </item>
+  <item android:bottom="2dp">
+    <shape android:shape="rectangle">
+      <solid android:color="#FFF"/>
+      <corners
+          android:topLeftRadius="@dimen/gapMicro"
+          android:topRightRadius="@dimen/gapMicro"
+          />
+    </shape>
+  </item>
 </layer-list>

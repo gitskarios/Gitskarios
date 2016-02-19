@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/action_content_share"
-        android:title="@string/Share" />
+  <item
+      android:id="@+id/action_content_share"
+      android:title="@string/Share"
+      />
 
-    <item
-        android:id="@+id/action_content_open"
-        android:title="@string/open_in_intent" />
+  <item
+      android:id="@+id/action_content_open"
+      android:title="@string/open_in_intent"
+      />
 
-    <item
-        android:id="@+id/action_content_history"
-        android:title="@string/history" />
+  <item
+      android:id="@+id/action_content_history"
+      android:title="@string/history"
+      />
 
-    <item
-        android:id="@+id/action_copy_content_url"
-        android:title="@string/copy_content_url" />
+  <item
+      android:id="@+id/action_copy_content_url"
+      android:title="@string/copy_content_url"
+      />
 
 </menu>

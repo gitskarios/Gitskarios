@@ -2,17 +2,14 @@ package com.clean.presenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -50,9 +47,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
       }
     });
 
-
-    Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo)
-        .observable()
+    Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo).observable()
         .subscribeOn(Schedulers.newThread())
         .startWith(new ArrayList<Branch>())
         .reduce(new Func2<List<Branch>, List<Branch>, List<Branch>>() {
@@ -66,21 +61,18 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
           }
         });
 
-    Observable<Repo> combinedWithBranches = Observable.combineLatest(
-        repoClient.observable()
-            .subscribeOn(Schedulers.newThread()),
-        branchesClient,
-        new Func2<Repo, List<Branch>, Repo>() {
-          @Override
-          public Repo call(Repo repo, List<Branch> branches) {
-            repo.branches = branches;
-            if (branches.size() == 1) {
-              repo.default_branch = branches.get(0).name;
-            }
-            return repo;
-          }
-        }
-    );
+    Observable<Repo> combinedWithBranches =
+        Observable.combineLatest(repoClient.observable().subscribeOn(Schedulers.newThread()),
+            branchesClient, new Func2<Repo, List<Branch>, Repo>() {
+              @Override
+              public Repo call(Repo repo, List<Branch> branches) {
+                repo.branches = branches;
+                if (branches.size() == 1) {
+                  repo.default_branch = branches.get(0).name;
+                }
+                return repo;
+              }
+            });
 
     Observable<Repo> repoObservable = combinedWithBranches.doOnNext(new Action1<Repo>() {
       @Override
@@ -89,8 +81,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
       }
     });
 
-    Observable
-        .concat(memory, repoObservable)
+    Observable.concat(memory, repoObservable)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<Repo>() {
 

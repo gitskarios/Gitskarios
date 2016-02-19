@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="gray_github_light">#f3f3f3</color>
-    <color name="gray_github_medium">#ffb9b9b9</color>
-    <color name="gray_github_dark">#ff979797</color>
-    <color name="gray_github_light_selected">#ffdedede</color>
+  <color name="gray_github_light">#f3f3f3</color>
+  <color name="gray_github_medium">#ffb9b9b9</color>
+  <color name="gray_github_dark">#ff979797</color>
+  <color name="gray_github_light_selected">#ffdedede</color>
 
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="issue_state_open">#ff54A141</color>
-    <color name="issue_state_close">#ffd67a4c</color>
-    <color name="pullrequest_state_open">#ff54A141</color>
-    <color name="pullrequest_state_close">#ffd67a4c</color>
-    <color name="pullrequest_state_merged">#ff9a4cd6</color>
-    <color name="issue_state_open_dark">#ff3d7b3d</color>
-    <color name="issue_state_close_dark">#ffa2553d</color>
-    <color name="pullrequest_state_open_dark">#ff3d7b3d</color>
-    <color name="pullrequest_state_close_dark">#ffa2553d</color>
-    <color name="pullrequest_state_merged_dark">#ff753da2</color>
+  <color name="white">#FFFFFF</color>
+  <color name="black">#000000</color>
+  <color name="issue_state_open">#ff54A141</color>
+  <color name="issue_state_close">#ffd67a4c</color>
+  <color name="pullrequest_state_open">#ff54A141</color>
+  <color name="pullrequest_state_close">#ffd67a4c</color>
+  <color name="pullrequest_state_merged">#ff9a4cd6</color>
+  <color name="issue_state_open_dark">#ff3d7b3d</color>
+  <color name="issue_state_close_dark">#ffa2553d</color>
+  <color name="pullrequest_state_open_dark">#ff3d7b3d</color>
+  <color name="pullrequest_state_close_dark">#ffa2553d</color>
+  <color name="pullrequest_state_merged_dark">#ff753da2</color>
 
-    <color name="defaultEnchancedColor">#00ff0000</color>
+  <color name="defaultEnchancedColor">#00ff0000</color>
 
-    <color name="privateRepo">#a1882b</color>
+  <color name="privateRepo">#a1882b</color>
 
-    <color name="privateRepoBackground">#f8eeca</color>
+  <color name="privateRepoBackground">#f8eeca</color>
 
-    <color name="redError">#ffff1a29</color>
+  <color name="redError">#ffff1a29</color>
 
-    <string name="lDialogPositive">#ffffffff</string>
-    <string name="lDialogNegative">#ff808080</string>
+  <string name="lDialogPositive">#ffffffff</string>
+  <string name="lDialogNegative">#ff808080</string>
 
-    <color name="gist_primary">#607D8B</color>
-    <color name="gist_primary_dark">#455A64</color>
-    <color name="gist_primary_light">#CFD8DC</color>
-    <color name="gist_accent">#FF5252</color>
-    <color name="gist_accent_dark">#ffd74545</color>
-    <color name="gist_primary_text">#212121</color>
-    <color name="gist_secondary_text">#727272</color>
-    <color name="gist_third_text">#B6B6B6</color>
-    <color name="gist_icons">#FFFFFF</color>
-    <color name="gist_divider">#B6B6B6</color>
+  <color name="gist_primary">#607D8B</color>
+  <color name="gist_primary_dark">#455A64</color>
+  <color name="gist_primary_light">#CFD8DC</color>
+  <color name="gist_accent">#FF5252</color>
+  <color name="gist_accent_dark">#ffd74545</color>
+  <color name="gist_primary_text">#212121</color>
+  <color name="gist_secondary_text">#727272</color>
+  <color name="gist_third_text">#B6B6B6</color>
+  <color name="gist_icons">#FFFFFF</color>
+  <color name="gist_divider">#B6B6B6</color>
 
-    <color name="privateGist">#a1882b</color>
-    <color name="privateGistBackground">#f8eeca</color>
-    <color name="black_semi_transparent">#B2000000</color>
-    <color name="commit_additions">#ff009d00</color>
-    <color name="commit_deletions">#9aff0000</color>
-    <color name="release_prerelease">#9aff0000</color>
-    <color name="release_version">#ff009d00</color>
+  <color name="privateGist">#a1882b</color>
+  <color name="privateGistBackground">#f8eeca</color>
+  <color name="black_semi_transparent">#B2000000</color>
+  <color name="commit_additions">#ff009d00</color>
+  <color name="commit_deletions">#9aff0000</color>
+  <color name="release_prerelease">#9aff0000</color>
+  <color name="release_version">#ff009d00</color>
 
-    <color name="github_status_green">#13b413</color>
-    <color name="github_status_yellow">#e9c645</color>
-    <color name="github_status_red">#b5ff0000</color>
-    <color name="crumb_active">#fff</color>
-    <color name="crumb_inactive">#73ffffff</color>
+  <color name="github_status_green">#13b413</color>
+  <color name="github_status_yellow">#e9c645</color>
+  <color name="github_status_red">#b5ff0000</color>
+  <color name="crumb_active">#fff</color>
+  <color name="crumb_inactive">#73ffffff</color>
 </resources>

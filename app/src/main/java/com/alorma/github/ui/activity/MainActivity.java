@@ -22,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosSettings;
@@ -72,15 +71,14 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
-import java.util.List;
-
 import io.fabric.sdk.android.Fabric;
+import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements OnMenuItemSelectedListener, AccountHeader.OnAccountHeaderListener {
+public class MainActivity extends BaseActivity
+    implements OnMenuItemSelectedListener, AccountHeader.OnAccountHeaderListener {
 
   private static final int PROFILE_REQUEST_CODE = 555;
   private static final int REQUEST_INVITE = 121;
@@ -130,12 +128,15 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     boolean changeLog = checkChangeLog();
     if (changeLog) {
       View view = findViewById(R.id.content);
-      Snackbar.make(view, R.string.app_updated, Snackbar.LENGTH_LONG).setAction("Changelog", new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
-        }
-      }).show();
+      Snackbar.make(view, R.string.app_updated, Snackbar.LENGTH_LONG)
+          .setAction("Changelog", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              startActivity(
+                  new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
+            }
+          })
+          .show();
     }
   }
 
@@ -145,8 +146,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
   private void checkInvites() {
     try {
-      GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-          .addApi(AppInvite.API)
+      GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(AppInvite.API)
           .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -156,20 +156,18 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
           .build();
 
       AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, this, false)
-          .setResultCallback(
-              new ResultCallback<AppInviteInvitationResult>() {
-                @Override
-                public void onResult(@NonNull AppInviteInvitationResult result) {
-                  if (result.getInvitationIntent() != null) {
-                    if (Fabric.isInitialized()) {
-                      Answers.getInstance()
-                          .logCustom(new CustomEvent("invited")
-                              .putCustomAttribute("result"
-                                  , result.getStatus().getStatusMessage()));
-                    }
-                  }
+          .setResultCallback(new ResultCallback<AppInviteInvitationResult>() {
+            @Override
+            public void onResult(@NonNull AppInviteInvitationResult result) {
+              if (result.getInvitationIntent() != null) {
+                if (Fabric.isInitialized()) {
+                  Answers.getInstance()
+                      .logCustom(new CustomEvent("invited").putCustomAttribute("result",
+                          result.getStatus().getStatusMessage()));
                 }
-              });
+              }
+            }
+          });
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -229,36 +227,41 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     drawer.withAccountHeader(accountHeader);
     OnCheckedChangeListener notificationsCheckedListener = new OnCheckedChangeListener() {
       @Override
-      public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
+      public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton,
+          boolean b) {
         if (iDrawerItem != null && iDrawerItem.getIdentifier() == R.id.nav_drawer_notifications) {
           changeNotificationState(selectedAccount, b);
         }
 
         if (!b) {
-          NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+          NotificationManager notificationManager =
+              (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
           notificationManager.cancelAll();
         }
       }
     };
-    notificationsDrawerItem = new SecondarySwitchDrawerItem()
-        .withName(R.string.menu_enable_notifications)
-        .withDescription(R.string.menu_enable_notifications_description)
-        .withIdentifier(R.id.nav_drawer_notifications)
-        .withCheckable(false)
-        .withOnCheckedChangeListener(notificationsCheckedListener)
-        .withSelectable(false)
-        .withIcon(Octicons.Icon.oct_bell)
-        .withIconColor(iconColor);
+    notificationsDrawerItem =
+        new SecondarySwitchDrawerItem().withName(R.string.menu_enable_notifications)
+            .withDescription(R.string.menu_enable_notifications_description)
+            .withIdentifier(R.id.nav_drawer_notifications)
+            .withCheckable(false)
+            .withOnCheckedChangeListener(notificationsCheckedListener)
+            .withSelectable(false)
+            .withIcon(Octicons.Icon.oct_bell)
+            .withIconColor(iconColor);
     drawer.addDrawerItems(new PrimaryDrawerItem().withName(R.string.menu_events)
             .withIcon(Octicons.Icon.oct_calendar)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_events), new PrimaryDrawerItem().withName(R.string.navigation_general_repositories)
+            .withIdentifier(R.id.nav_drawer_events),
+        new PrimaryDrawerItem().withName(R.string.navigation_general_repositories)
             .withIcon(Octicons.Icon.oct_repo)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_repositories), new PrimaryDrawerItem().withName(R.string.navigation_people)
+            .withIdentifier(R.id.nav_drawer_repositories),
+        new PrimaryDrawerItem().withName(R.string.navigation_people)
             .withIcon(Octicons.Icon.oct_person)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_people), new PrimaryDrawerItem().withName(R.string.navigation_gists)
+            .withIdentifier(R.id.nav_drawer_people),
+        new PrimaryDrawerItem().withName(R.string.navigation_gists)
             .withIcon(Octicons.Icon.oct_gist)
             .withIconColor(iconColor)
             .withIdentifier(R.id.nav_drawer_gists)
@@ -270,31 +273,29 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
             .withSelectable(false), new DividerDrawerItem());
 
     if (donateFragment.enabled()) {
-      SecondaryDrawerItem donateItem = new SecondaryDrawerItem().withName(R.string.support_development)
-          .withIcon(Octicons.Icon.oct_heart)
-          .withIconColor(iconColor)
-          .withIdentifier(R.id.nav_drawer_support_development)
-          .withSelectable(false);
+      SecondaryDrawerItem donateItem =
+          new SecondaryDrawerItem().withName(R.string.support_development)
+              .withIcon(Octicons.Icon.oct_heart)
+              .withIconColor(iconColor)
+              .withIdentifier(R.id.nav_drawer_support_development)
+              .withSelectable(false);
 
       drawer.addDrawerItems(donateItem);
     }
 
-    drawer.addDrawerItems(
-        new SecondaryDrawerItem().withName(R.string.navigation_invite)
-            .withIcon(Octicons.Icon.oct_organization)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_invite)
-            .withSelectable(false)
-        , new SecondaryDrawerItem().withName(R.string.navigation_about)
-            .withIcon(Octicons.Icon.oct_octoface)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_about)
-            .withSelectable(false)
-        , new SecondaryDrawerItem().withName(R.string.navigation_sign_out)
-            .withIcon(Octicons.Icon.oct_sign_out)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_sign_out)
-            .withSelectable(false));
+    drawer.addDrawerItems(new SecondaryDrawerItem().withName(R.string.navigation_invite)
+        .withIcon(Octicons.Icon.oct_organization)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_invite)
+        .withSelectable(false), new SecondaryDrawerItem().withName(R.string.navigation_about)
+        .withIcon(Octicons.Icon.oct_octoface)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_about)
+        .withSelectable(false), new SecondaryDrawerItem().withName(R.string.navigation_sign_out)
+        .withIcon(Octicons.Icon.oct_sign_out)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_sign_out)
+        .withSelectable(false));
 
     drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
       @Override
@@ -345,12 +346,13 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
   }
 
   private void onInviteClicked() {
-    Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-        .setMessage(getString(R.string.invitation_message))
-        .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-        .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-        .setCallToActionText(getString(R.string.invitation_cta))
-        .build();
+    Intent intent =
+        new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title)).setMessage(
+            getString(R.string.invitation_message))
+            .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+            .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+            .setCallToActionText(getString(R.string.invitation_cta))
+            .build();
     startActivityForResult(intent, REQUEST_INVITE);
   }
 
@@ -363,14 +365,13 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
         String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
 
         if (Fabric.isInitialized()) {
-          Answers.getInstance().logInvite(new InviteEvent()
-              .putMethod("play-services")
-              .putCustomAttribute("number", String.valueOf(ids.length)));
+          Answers.getInstance()
+              .logInvite(new InviteEvent().putMethod("play-services")
+                  .putCustomAttribute("number", String.valueOf(ids.length)));
         }
       }
     }
   }
-
 
   private AccountHeader buildHeader() {
 
@@ -379,8 +380,7 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     DrawerImageLoader.init(new DrawerImage());
 
     AccountHeaderBuilder headerBuilder =
-        new AccountHeaderBuilder().withActivity(this)
-            .withHeaderBackground(R.color.accent_welcome);
+        new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.accent_welcome);
 
     headerBuilder.withOnAccountHeaderListener(this);
 
@@ -388,9 +388,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
     if (accountList != null) {
       for (Account account : accountList) {
         String userAvatar = AccountsHelper.getUserAvatar(this, account);
-        ProfileDrawerItem profileDrawerItem = new GitskariosProfileDrawerItem().withName(account.name)
-            .withEmail(getUserExtraName(account))
-            .withIdentifier(account.hashCode());
+        ProfileDrawerItem profileDrawerItem =
+            new GitskariosProfileDrawerItem().withName(account.name)
+                .withEmail(getUserExtraName(account))
+                .withIdentifier(account.hashCode());
         if (!TextUtils.isEmpty(userAvatar)) {
           profileDrawerItem.withIcon(userAvatar);
         }
@@ -400,11 +401,13 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
       }
     }
 
-    ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_account))
-        .withDescription(getString(R.string.add_account_description))
-        .withIcon(
-            new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBar().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
-        .withIdentifier(1101);
+    ProfileSettingDrawerItem itemAdd =
+        new ProfileSettingDrawerItem().withName(getString(R.string.add_account))
+            .withDescription(getString(R.string.add_account_description))
+            .withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBar()
+                .paddingDp(5)
+                .colorRes(R.color.material_drawer_primary_text))
+            .withIdentifier(1101);
 
     headerBuilder.addProfiles(itemAdd);
 
@@ -417,7 +420,8 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
       if (current) {
         User user = new User();
         user.login = iProfile.getName().getText();
-        Intent launcherIntent = ProfileActivity.createLauncherIntent(MainActivity.this, selectedAccount);
+        Intent launcherIntent =
+            ProfileActivity.createLauncherIntent(MainActivity.this, selectedAccount);
         startActivityForResult(launcherIntent, PROFILE_REQUEST_CODE);
       } else {
         String accountName = iProfile.getName().getText();
@@ -489,11 +493,12 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     if (notificationsSizeCount > 0) {
-      BadgeStyle badgeStyle =
-          new BadgeStyle(BadgeStyle.Style.DEFAULT, R.layout.menu_badge, getResources().getColor(R.color.accent), R.color.accent_dark,
-              Color.WHITE, getResources().getDimensionPixelOffset(R.dimen.gapMicro));
+      BadgeStyle badgeStyle = new BadgeStyle(BadgeStyle.Style.DEFAULT, R.layout.menu_badge,
+          getResources().getColor(R.color.accent), R.color.accent_dark, Color.WHITE,
+          getResources().getDimensionPixelOffset(R.dimen.gapMicro));
 
-      ActionItemBadge.update(this, menu.findItem(R.id.action_notifications), Octicons.Icon.oct_bell, badgeStyle, notificationsSizeCount);
+      ActionItemBadge.update(this, menu.findItem(R.id.action_notifications), Octicons.Icon.oct_bell,
+          badgeStyle, notificationsSizeCount);
     } else {
       ActionItemBadge.hide(menu.findItem(R.id.action_notifications));
     }
@@ -508,23 +513,26 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
 
   private void checkNotifications() {
     GetNotificationsClient client = new GetNotificationsClient();
-    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Notification>>() {
-      @Override
-      public void onCompleted() {
+    client.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<List<Notification>>() {
+          @Override
+          public void onCompleted() {
 
-      }
+          }
 
-      @Override
-      public void onError(Throwable e) {
+          @Override
+          public void onError(Throwable e) {
 
-      }
+          }
 
-      @Override
-      public void onNext(List<Notification> notifications) {
-        notificationsSizeCount = notifications.size();
-        invalidateOptionsMenu();
-      }
-    });
+          @Override
+          public void onNext(List<Notification> notifications) {
+            notificationsSizeCount = notifications.size();
+            invalidateOptionsMenu();
+          }
+        });
   }
 
   @Override
@@ -630,8 +638,10 @@ public class MainActivity extends BaseActivity implements OnMenuItemSelectedList
   public boolean onAboutSelected() {
     Libs.ActivityStyle activityStyle = Libs.ActivityStyle.LIGHT_DARK_TOOLBAR;
     int theme = R.style.AppTheme;
-    SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+    SharedPreferences defaultSharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    String pref_theme =
+        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
     if ("theme_dark".equalsIgnoreCase(pref_theme)) {
       activityStyle = Libs.ActivityStyle.DARK;
       theme = R.style.AppTheme_Dark;

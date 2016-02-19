@@ -1,91 +1,102 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
 
-    <include layout="@layout/toolbar" />
+  <include layout="@layout/toolbar"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/activity_vertical_margin"
+      android:paddingLeft="@dimen/activity_horizontal_margin"
+      android:paddingRight="@dimen/activity_horizontal_margin"
+      android:paddingTop="@dimen/activity_vertical_margin"
+      >
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/title"
+        android:maxLines="2"
+        android:textSize="@dimen/textSizeMedium"
+        />
 
     <LinearLayout
+        android:id="@+id/pushAccessLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:padding="@dimen/gapMedium"
+        >
 
-        <EditText
-            android:id="@+id/editTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title"
-            android:maxLines="2"
-            android:textSize="@dimen/textSizeMedium" />
-
-        <LinearLayout
-            android:id="@+id/pushAccessLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/gapMedium">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:animateLayoutChanges="true"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/assignee"
-                    style="@style/new_issue_push_access_row"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:hint="@string/new_issue_hint_assignee" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/milestone"
-                    style="@style/new_issue_push_access_row"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:hint="@string/new_issue_hint_milestone" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/labels"
-                    style="@style/new_issue_push_access_row"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:hint="@string/new_issue_hint_labels"
-                    android:lines="3"
-                    android:maxLines="3"
-                    android:singleLine="false" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="?actionBarSize"
+          android:animateLayoutChanges="true"
+          android:orientation="horizontal"
+          >
 
         <TextView
-            android:id="@+id/editBody"
+            android:id="@+id/assignee"
+            style="@style/new_issue_push_access_row"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/gapLarge"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="@string/leave_a_comment"
-            android:textSize="@dimen/textSizeSmall" />
+            android:layout_height="?actionBarSize"
+            android:hint="@string/new_issue_hint_assignee"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="?actionBarSize"
+          android:orientation="horizontal"
+          >
+
+        <TextView
+            android:id="@+id/milestone"
+            style="@style/new_issue_push_access_row"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:hint="@string/new_issue_hint_milestone"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="?actionBarSize"
+          android:orientation="horizontal"
+          >
+
+        <TextView
+            android:id="@+id/labels"
+            style="@style/new_issue_push_access_row"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:hint="@string/new_issue_hint_labels"
+            android:lines="3"
+            android:maxLines="3"
+            android:singleLine="false"
+            />
+
+      </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/editBody"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/gapLarge"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="@string/leave_a_comment"
+        android:textSize="@dimen/textSizeSmall"
+        />
+
+  </LinearLayout>
 </LinearLayout>

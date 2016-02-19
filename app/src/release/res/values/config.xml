@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="account_name">Github account</string>
-    <string name="oauth_scheme">gitskarios</string>
-    <string name="account_type">com.alorma.github.account</string>
+  <string name="account_name">Github account</string>
+  <string name="oauth_scheme">gitskarios</string>
+  <string name="account_type">com.alorma.github.account</string>
 </resources>

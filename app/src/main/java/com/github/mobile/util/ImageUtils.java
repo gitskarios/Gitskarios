@@ -21,9 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.util.Log;
-
 import com.bumptech.glide.Glide;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -34,106 +32,104 @@ import java.util.concurrent.ExecutionException;
  */
 public class ImageUtils {
 
-    private static final String TAG = "ImageUtils";
+  private static final String TAG = "ImageUtils";
 
-    /**
-     * Get a bitmap from the image path
-     *
-     * @return bitmap or null if read fails
-     */
-    public static Bitmap getBitmap(final String imagePath, int sampleSize) {
-        final Options options = new Options();
-        options.inDither = false;
-        options.inSampleSize = sampleSize;
+  /**
+   * Get a bitmap from the image path
+   *
+   * @return bitmap or null if read fails
+   */
+  public static Bitmap getBitmap(final String imagePath, int sampleSize) {
+    final Options options = new Options();
+    options.inDither = false;
+    options.inSampleSize = sampleSize;
 
-        RandomAccessFile file = null;
+    RandomAccessFile file = null;
+    try {
+      file = new RandomAccessFile(imagePath, "r");
+      return BitmapFactory.decodeFileDescriptor(file.getFD(), null, options);
+    } catch (IOException e) {
+      Log.d(TAG, e.getMessage(), e);
+      return null;
+    } finally {
+      if (file != null) {
         try {
-            file = new RandomAccessFile(imagePath, "r");
-            return BitmapFactory.decodeFileDescriptor(file.getFD(), null, options);
+          file.close();
         } catch (IOException e) {
-            Log.d(TAG, e.getMessage(), e);
-            return null;
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    Log.d(TAG, e.getMessage(), e);
-                }
-            }
+          Log.d(TAG, e.getMessage(), e);
         }
+      }
     }
+  }
 
-    /**
-     * Get size of image
-     *
-     * @return size
-     */
-    public static Point getSize(final String imagePath) {
-        final Options options = new Options();
-        options.inJustDecodeBounds = true;
+  /**
+   * Get size of image
+   *
+   * @return size
+   */
+  public static Point getSize(final String imagePath) {
+    final Options options = new Options();
+    options.inJustDecodeBounds = true;
 
-        RandomAccessFile file = null;
+    RandomAccessFile file = null;
+    try {
+      file = new RandomAccessFile(imagePath, "r");
+      BitmapFactory.decodeFileDescriptor(file.getFD(), null, options);
+      return new Point(options.outWidth, options.outHeight);
+    } catch (IOException e) {
+      Log.d(TAG, e.getMessage(), e);
+      return null;
+    } finally {
+      if (file != null) {
         try {
-            file = new RandomAccessFile(imagePath, "r");
-            BitmapFactory.decodeFileDescriptor(file.getFD(), null, options);
-            return new Point(options.outWidth, options.outHeight);
+          file.close();
         } catch (IOException e) {
-            Log.d(TAG, e.getMessage(), e);
-            return null;
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    Log.d(TAG, e.getMessage(), e);
-                }
-            }
+          Log.d(TAG, e.getMessage(), e);
         }
+      }
+    }
+  }
+
+  /**
+   * Get bitmap with maximum height or width
+   *
+   * @return image
+   */
+  public static Bitmap getBitmap(final String imagePath, int width, int height) {
+    Point size = getSize(imagePath);
+    if (size == null) {
+      return null;
     }
 
-    /**
-     * Get bitmap with maximum height or width
-     *
-     * @return image
-     */
-    public static Bitmap getBitmap(final String imagePath, int width, int height) {
-        Point size = getSize(imagePath);
-        if (size == null) {
-            return null;
-        }
+    int currWidth = size.x;
+    int currHeight = size.y;
 
-        int currWidth = size.x;
-        int currHeight = size.y;
-
-        int scale = 1;
-        while (currWidth >= width || currHeight >= height) {
-            currWidth /= 2;
-            currHeight /= 2;
-            scale *= 2;
-        }
-
-        return getBitmap(imagePath, scale);
+    int scale = 1;
+    while (currWidth >= width || currHeight >= height) {
+      currWidth /= 2;
+      currHeight /= 2;
+      scale *= 2;
     }
 
-    /**
-     * Get bitmap with maximum height or width
-     *
-     * @return image
-     */
-    public static Bitmap getBitmap(Context context, final String imagePath, int width, int height) throws ExecutionException, InterruptedException {
-        return Glide.with(context)
-                .load(imagePath)
-                .asBitmap()
-                .into(width, height).get();
-    }
+    return getBitmap(imagePath, scale);
+  }
 
-    /**
-     * Get bitmap with maximum height or width
-     *
-     * @return image
-     */
-    public static Bitmap getBitmap(final File image, int width, int height) {
-        return getBitmap(image.getAbsolutePath(), width, height);
-    }
+  /**
+   * Get bitmap with maximum height or width
+   *
+   * @return image
+   */
+  public static Bitmap getBitmap(Context context, final String imagePath, int width, int height)
+      throws ExecutionException, InterruptedException {
+    return Glide.with(context).load(imagePath).asBitmap().into(width, height).get();
+  }
+
+  /**
+   * Get bitmap with maximum height or width
+   *
+   * @return image
+   */
+  public static Bitmap getBitmap(final File image, int width, int height) {
+    return getBitmap(image.getAbsolutePath(), width, height);
+  }
 }

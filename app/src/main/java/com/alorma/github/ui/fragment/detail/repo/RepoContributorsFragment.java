@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -16,16 +15,15 @@ import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> implements TitleProvider {
+public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter>
+    implements TitleProvider {
 
   private static final String REPO_INFO = "REPO_INFO";
   private RepoInfo repoInfo;
@@ -49,7 +47,8 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   private void setAction(GithubClient<List<Contributor>> client) {
     startRefresh();
-    client.observable().subscribeOn(Schedulers.io())
+    client.observable()
+        .subscribeOn(Schedulers.io())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<List<Contributor>, List<User>>() {
@@ -111,7 +110,8 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   @Override
   protected RecyclerView.LayoutManager getLayoutManager() {
-    return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
+    return new GridLayoutManager(getActivity(),
+        getResources().getInteger(R.integer.grid_layout_columns));
   }
 
   protected void loadArguments() {

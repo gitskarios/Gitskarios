@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="invitation_custom_image">https://raw.githubusercontent.com/gitskarios/Gitskarios/develop/media/icon/release/icon.png</string>
+  <string name="invitation_custom_image">https://raw.githubusercontent.com/gitskarios/Gitskarios/develop/media/icon/release/icon.png</string>
 </resources>

@@ -1,108 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="?selectableItemBackground"
+              android:orientation="vertical"
+    >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/gapSmall"
+      android:layout_marginEnd="@dimen/gapMedium"
+      android:layout_marginLeft="@dimen/gapMedium"
+      android:layout_marginRight="@dimen/gapMedium"
+      android:layout_marginStart="@dimen/gapMedium"
+      android:layout_marginTop="@dimen/gapMedium"
+      android:padding="8dp"
+      >
+
+    <TextView
+        android:id="@+id/repoPrivate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gapSmall"
-        android:layout_marginEnd="@dimen/gapMedium"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="@dimen/gapMedium"
-        android:layout_marginRight="@dimen/gapMedium"
         android:layout_marginStart="@dimen/gapMedium"
         android:layout_marginTop="@dimen/gapMedium"
-        android:padding="8dp">
+        android:background="@drawable/private_label"
+        android:gravity="center"
+        android:padding="@dimen/gapSmall"
+        android:text="@string/row_private_repo"
+        android:textColor="@color/privateRepo"
+        android:textSize="@dimen/textSizeXMicro"
+        android:visibility="invisible"
+        tools:visibility="gone"
+        />
 
-        <TextView
-            android:id="@+id/repoPrivate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="@dimen/gapMedium"
-            android:layout_marginStart="@dimen/gapMedium"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:background="@drawable/private_label"
-            android:gravity="center"
-            android:padding="@dimen/gapSmall"
-            android:text="@string/row_private_repo"
-            android:textColor="@color/privateRepo"
-            android:textSize="@dimen/textSizeXMicro"
-            android:visibility="invisible"
-            tools:visibility="gone" />
+    <TextView
+        android:id="@+id/repoName"
+        style="@style/Repos.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/infos"
+        android:layout_toStartOf="@+id/infos"
+        tools:text="Repository name"
+        />
 
-        <TextView
-            android:id="@+id/repoName"
-            style="@style/Repos.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/infos"
-            android:layout_toStartOf="@+id/infos"
-            tools:text="Repository name" />
+    <LinearLayout
+        android:id="@+id/infos"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/repoPrivate"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginStart="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:gravity="center_vertical|right"
+        android:orientation="vertical"
+        >
 
-        <LinearLayout
-            android:id="@+id/infos"
-            style="@style/TextAppearance.AppCompat.Subhead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/repoPrivate"
-            android:layout_marginLeft="@dimen/gapMedium"
-            android:layout_marginStart="@dimen/gapMedium"
-            android:layout_marginTop="@dimen/gapMedium"
-            android:gravity="center_vertical|right"
-            android:orientation="vertical">
+      <TextView
+          android:id="@+id/textStarts"
+          style="@style/Repos.Info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Starred"
+          />
 
-            <TextView
-                android:id="@+id/textStarts"
-                style="@style/Repos.Info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Starred" />
+      <TextView
+          android:id="@+id/textForks"
+          style="@style/Repos.Info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Watched"
+          />
 
-            <TextView
-                android:id="@+id/textForks"
-                style="@style/Repos.Info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Watched" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <TextView
+        android:id="@+id/textOwnerName"
+        style="@style/Repos.Owner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/repoName"
+        android:layout_alignStart="@+id/repoName"
+        android:layout_below="@+id/repoName"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_marginTop="@dimen/gapSmall"
+        android:layout_toLeftOf="@+id/infos"
+        android:layout_toStartOf="@+id/infos"
+        tools:text="Owner name"
+        />
 
-        <TextView
-            android:id="@+id/textOwnerName"
-            style="@style/Repos.Owner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/repoName"
-            android:layout_alignStart="@+id/repoName"
-            android:layout_below="@+id/repoName"
-            android:layout_marginLeft="@dimen/gapMedium"
-            android:layout_marginTop="@dimen/gapSmall"
-            android:layout_toLeftOf="@+id/infos"
-            android:layout_toStartOf="@+id/infos"
-            tools:text="Owner name" />
+    <TextView
+        android:id="@+id/descriptionText"
+        style="@style/Repos.Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textOwnerName"
+        android:layout_marginLeft="@dimen/gapMedium"
+        android:layout_toLeftOf="@+id/infos"
+        android:layout_toStartOf="@+id/infos"
+        tools:text="Description"
+        />
 
-        <TextView
-            android:id="@+id/descriptionText"
-            style="@style/Repos.Description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textOwnerName"
-            android:layout_marginLeft="@dimen/gapMedium"
-            android:layout_toLeftOf="@+id/infos"
-            android:layout_toStartOf="@+id/infos"
-            tools:text="Description" />
-
-    </RelativeLayout>
+  </RelativeLayout>
 </LinearLayout>

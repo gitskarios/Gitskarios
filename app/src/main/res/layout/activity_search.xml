@@ -1,54 +1,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
 
-    <android.support.design.widget.AppBarLayout
+  <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/colorPrimary"
+      android:fitsSystemWindows="true"
+      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+      >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:minHeight="?actionBarSize"
+        app:contentInsetStart="@dimen/second_keyline"
+        >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?actionBarSize"
-            app:contentInsetStart="@dimen/second_keyline">
+      <EditText
+          android:id="@+id/searchView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="@null"
+          android:hint="@string/search"
+          android:imeActionLabel="@string/search"
+          android:maxLines="1"
+          android:singleLine="true"
+          />
 
-            <EditText
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:hint="@string/search"
-                android:imeActionLabel="@string/search"
-                android:maxLines="1"
-                android:singleLine="true" />
+    </android.support.v7.widget.Toolbar>
 
-        </android.support.v7.widget.Toolbar>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabStrip"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="50dp"
-            android:paddingStart="50dp"
-            android:scrollbars="horizontal"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:tabGravity="fill"
-            app:tabMode="scrollable"
-            tools:ignore="NewApi,RtlSymmetry" />
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabStrip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:paddingLeft="50dp"
+        android:paddingStart="50dp"
+        android:scrollbars="horizontal"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:tabGravity="fill"
+        app:tabMode="scrollable"
+        tools:ignore="NewApi,RtlSymmetry"
+        />
+  </android.support.design.widget.AppBarLayout>
+
+  <android.support.v4.view.ViewPager
+      android:id="@+id/pager"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      />
 
 </LinearLayout>

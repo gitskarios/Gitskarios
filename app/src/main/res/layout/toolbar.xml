@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?colorPrimary"
-    android:minHeight="?actionBarSize"
-    app:contentInsetStart="@dimen/second_keyline"
-    app:popupTheme="@style/Toolbar.Popup.AppCompat"
-    app:theme="@style/Toolbar.AppCompat.Responsive" />
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:id="@id/toolbar"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:background="?colorPrimary"
+                                   android:minHeight="?actionBarSize"
+                                   app:contentInsetStart="@dimen/second_keyline"
+                                   app:popupTheme="@style/Toolbar.Popup.AppCompat"
+                                   app:theme="@style/Toolbar.AppCompat.Responsive"
+    />

@@ -1,83 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                                            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical"
+    >
 
-    <LinearLayout
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/gapMedium"
+        card_view:cardElevation="4dp"
+        tools:layout_height="120dp"
+        app:cardBackgroundColor="?attr/gitskarios_card_background"
+        >
 
-        <android.support.v7.widget.CardView
+      <LinearLayout
+          android:id="@+id/cardAbout"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/gapMedium"
-            card_view:cardElevation="4dp"
-            tools:layout_height="120dp"
-            app:cardBackgroundColor="?attr/gitskarios_card_background">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="?attr/colorAccent"
+            android:padding="@dimen/gapMedium"
+            android:text="@string/user_resume_about"
+            android:textSize="24sp"
+            />
 
-            <LinearLayout
-                android:id="@+id/cardAbout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="?attr/colorAccent"
-                    android:padding="@dimen/gapMedium"
-                    android:text="@string/user_resume_about"
-                    android:textSize="24sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?attr/colorAccent" />
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/gapXLarge"
-            android:layout_marginTop="@dimen/gapMedium"
-            card_view:cardElevation="4dp"
-            tools:layout_height="120dp"
-            app:cardBackgroundColor="?attr/gitskarios_card_background">
+            android:layout_height="1dp"
+            android:background="?attr/colorAccent"
+            />
+      </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/cardGithub"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    </android.support.v7.widget.CardView>
 
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:padding="@dimen/gapMedium"
-                    android:text="@string/user_resume_github"
-                    android:textSize="24sp"
-                    android:textColor="?attr/colorAccent" />
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/gapXLarge"
+        android:layout_marginTop="@dimen/gapMedium"
+        card_view:cardElevation="4dp"
+        tools:layout_height="120dp"
+        app:cardBackgroundColor="?attr/gitskarios_card_background"
+        >
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?attr/colorAccent" />
-            </LinearLayout>
+      <LinearLayout
+          android:id="@+id/cardGithub"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          >
 
-        </android.support.v7.widget.CardView>
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:fontFamily="sans-serif-light"
+            android:padding="@dimen/gapMedium"
+            android:text="@string/user_resume_github"
+            android:textSize="24sp"
+            android:textColor="?attr/colorAccent"
+            />
 
-    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorAccent"
+            />
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+  </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
