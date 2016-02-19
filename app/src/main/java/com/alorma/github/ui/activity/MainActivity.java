@@ -113,8 +113,6 @@ public class MainActivity extends BaseActivity
       Intent intent = new Intent(this, WelcomeActivity.class);
       startActivity(intent);
       finish();
-    } else {
-      checkShowEnterpriseAd();
     }
 
     donateFragment = new DonateFragment();

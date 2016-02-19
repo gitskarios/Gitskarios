@@ -139,8 +139,7 @@ public class ContentEditorActivity extends BackActivity
         issueInfo.num = issueNumber;
 
         if (!TextUtils.isEmpty(content)) {
-          String htmlCode = HtmlUtils.format(content).toString();
-          editText.setText(htmlCode);
+          editText.setText(HtmlUtils.format(content));
         }
       }
 
