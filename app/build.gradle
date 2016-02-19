@@ -19,6 +19,8 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: "build-time-tracker"
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'io.fabric'
+apply plugin: 'android-cq'
 
 buildtimetracker {
   reporters {
@@ -39,9 +41,6 @@ buildtimetracker {
     }
   }
 }
-
-apply plugin: 'io.fabric'
-apply plugin: 'android-cq'
 //gradle dependencyUpdates -Drevision=release
 
 android {
