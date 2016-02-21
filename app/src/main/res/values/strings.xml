@@ -478,4 +478,6 @@
   <string name="write_otp_code">Write the code received from SMS</string>
   <string name="write_otp_code_title">2fa Code</string>
   <string name="write_otp_code_hint">code</string>
+  <string name="external_storage_permission_request">Write permission is requested to download</string>
+  <string name="external_storage_permission_request_action">Settings</string>
 </resources>

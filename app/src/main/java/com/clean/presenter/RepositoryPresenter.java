@@ -48,18 +48,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
     });
 
     Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo).observable()
-        .subscribeOn(Schedulers.newThread())
-        .startWith(new ArrayList<Branch>())
-        .reduce(new Func2<List<Branch>, List<Branch>, List<Branch>>() {
-          @Override
-          public List<Branch> call(List<Branch> accumulated, List<Branch> branches2) {
-            if (accumulated == null) {
-              accumulated = new ArrayList<>();
-            }
-            accumulated.addAll(branches2);
-            return accumulated;
-          }
-        });
+        .subscribeOn(Schedulers.newThread());
 
     Observable<Repo> combinedWithBranches =
         Observable.combineLatest(repoClient.observable().subscribeOn(Schedulers.newThread()),

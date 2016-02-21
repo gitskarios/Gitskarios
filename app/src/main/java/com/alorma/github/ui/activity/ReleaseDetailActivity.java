@@ -17,16 +17,15 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.releases.ReleaseAboutFragment;
 import com.alorma.github.ui.fragment.releases.ReleaseAssetsFragment;
+import com.alorma.github.utils.GitskariosDownloadManager;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 22/02/2015.
- */
-public class ReleaseDetailActivity extends BackActivity implements Observer<Release> {
+public class ReleaseDetailActivity extends BackActivity
+    implements Observer<Release>, ReleaseAssetsFragment.ReleaseAssetCallback {
 
   private static final String RELEASE_INFO = "RELEASE_INFO";
   private static final String RELEASE = "RELEASE";
@@ -108,7 +107,11 @@ public class ReleaseDetailActivity extends BackActivity implements Observer<Rele
       tarAsset.browser_download_url = release.tarball_url;
       assets.add(tarAsset);
 
-      listFragments.add(ReleaseAssetsFragment.newInstance(assets));
+      ReleaseAssetsFragment releaseAssetsFragment = ReleaseAssetsFragment.newInstance(assets);
+
+      releaseAssetsFragment.setReleaseAssetCallback(this);
+
+      listFragments.add(releaseAssetsFragment);
 
       if (viewPager != null) {
         viewPager.setAdapter(
@@ -133,5 +136,11 @@ public class ReleaseDetailActivity extends BackActivity implements Observer<Rele
   @Override
   public void onCompleted() {
 
+  }
+
+  @Override
+  public void onReleaseDownloadRequest(final ReleaseAsset asset) {
+    new GitskariosDownloadManager().download(this, asset.browser_download_url, asset.name,
+        viewPager);
   }
 }

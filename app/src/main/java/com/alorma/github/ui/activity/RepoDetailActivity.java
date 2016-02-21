@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
@@ -39,6 +40,7 @@ import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.clean.presenter.Presenter;
 import com.clean.presenter.RepositoryPresenter;
@@ -54,7 +56,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class RepoDetailActivity extends BackActivity
-    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo> {
+    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo>,
+    SourceListFragment.SourceCallback {
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -217,7 +220,9 @@ public class RepoDetailActivity extends BackActivity
     fragments = new ArrayList<>();
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
     fragments.add(repoAboutFragment);
-    fragments.add(SourceListFragment.newInstance(requestRepoInfo));
+    SourceListFragment sourceListFragment = SourceListFragment.newInstance(requestRepoInfo);
+    sourceListFragment.setSourceCallback(this);
+    fragments.add(sourceListFragment);
     fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
     fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
     fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
@@ -443,6 +448,29 @@ public class RepoDetailActivity extends BackActivity
     } else {
       finish();
     }
+  }
+
+  @Override
+  public void onSourceDownload() {
+    String archive_url = currentRepo.archive_url;
+    GitskariosSettings settings = new GitskariosSettings(this);
+    String zipBall = getString(R.string.download_zip_value);
+    String fileType = settings.getDownloadFileType(zipBall);
+
+    archive_url = archive_url.replace("{archive_format}", fileType);
+    archive_url = archive_url.replace("{/ref}", "/" + currentRepo.default_branch);
+
+    new GitskariosDownloadManager().download(this, archive_url,
+        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(fileType), viewPager);
+  }
+
+  private String getExtensionFromFileType(String fileType) {
+    if ("zipball".equals(fileType)) {
+      return "zip";
+    } else if ("tarball".equals(fileType)) {
+      return "tar.gz";
+    }
+    return null;
   }
 
   private class NavigationAdapter extends FragmentPagerAdapter {

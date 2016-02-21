@@ -32,6 +32,7 @@ import java.util.List;
 public class ReleaseAssetsFragment extends BaseFragment
     implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
 
+  private ReleaseAssetCallback releaseAssetCallback;
   private static final String RELEASE_ASSETS = "RELEASE_ASSETS";
 
   public static ReleaseAssetsFragment newInstance(List<ReleaseAsset> releaseAssets) {
@@ -72,24 +73,9 @@ public class ReleaseAssetsFragment extends BaseFragment
 
   @Override
   public void onReleaseAssetCLicked(ReleaseAsset asset) {
-    downloadFile(getActivity(), asset);
-  }
-
-  private void downloadFile(Context context, ReleaseAsset asset) {
-    DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-    DownloadManager.Request request =
-        new DownloadManager.Request(Uri.parse(asset.browser_download_url));
-
-    String fileName = asset.name;
-    request.setTitle(fileName);
-    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-        "gitskarios/" + fileName);
-    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-    request.allowScanningByMediaScanner();
-    dm.enqueue(request);
-
-    Toast.makeText(context, "Download started in gitskarios/" + fileName, Toast.LENGTH_SHORT)
-        .show();
+    if (releaseAssetCallback != null) {
+      releaseAssetCallback.onReleaseDownloadRequest(asset);
+    }
   }
 
   @Override
@@ -100,5 +86,13 @@ public class ReleaseAssetsFragment extends BaseFragment
   @Override
   public IIcon getTitleIcon() {
     return Octicons.Icon.oct_package;
+  }
+
+  public void setReleaseAssetCallback(ReleaseAssetCallback releaseAssetCallback) {
+    this.releaseAssetCallback = releaseAssetCallback;
+  }
+
+  public interface ReleaseAssetCallback {
+    void onReleaseDownloadRequest(ReleaseAsset asset);
   }
 }

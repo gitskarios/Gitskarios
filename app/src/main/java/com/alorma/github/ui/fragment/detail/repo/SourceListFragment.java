@@ -1,30 +1,23 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
-import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.alorma.github.GitskariosSettings;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.content.Downloader;
-import com.alorma.github.sdk.services.content.GetArchiveLinkService;
-import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
-import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.LinearBreadcrumb;
@@ -39,9 +32,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     implements TitleProvider, BranchManager, LinearBreadcrumb.SelectionCallback, BackManager,
     RepoSourceAdapter.SourceAdapterListener {
@@ -49,6 +39,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   private static final String REPO_INFO = "REPO_INFO";
 
   private RepoInfo repoInfo;
+  private SourceCallback sourceCallback;
 
   private LinearBreadcrumb breadCrumbs;
   private String currentPath;
@@ -298,11 +289,9 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   @Override
   protected void fabClick() {
     super.fabClick();
-    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
-    repoBranchesClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new DownloadBranchesSubscriber(getActivity(), repoInfo));
+    if (sourceCallback != null) {
+      sourceCallback.onSourceDownload();
+    }
   }
 
   @Override
@@ -340,67 +329,11 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     }
   }
 
-  private class DownloadBranchesSubscriber extends DialogBranchesSubscriber {
-
-    public DownloadBranchesSubscriber(Context context, RepoInfo repoInfo) {
-      super(context, repoInfo);
-    }
-
-    @Override
-    protected void onNoBranches() {
-      RepoInfo repoInfo = new RepoInfo();
-      repoInfo.owner = getRepoInfo().owner;
-      repoInfo.name = getRepoInfo().name;
-      download(repoInfo);
-    }
-
-    @Override
-    protected void onBranchSelected(String branch) {
-      Toast.makeText(getContext(), R.string.code_download, Toast.LENGTH_LONG).show();
-
-      RepoInfo repoInfo = new RepoInfo();
-      repoInfo.owner = getRepoInfo().owner;
-      repoInfo.name = getRepoInfo().name;
-      repoInfo.branch = branch;
-      download(repoInfo);
-    }
-
-    private void download(RepoInfo repoInfo) {
-      GitskariosSettings settings = new GitskariosSettings(getActivity());
-      String zipBall = getActivity().getString(R.string.download_zip_value);
-      String fileType = settings.getDownloadFileType(zipBall);
-      GetArchiveLinkService getArchiveLinkService =
-          new GetArchiveLinkService(repoInfo, fileType, new NativeDownloader());
-      getArchiveLinkService.observable().subscribeOn(Schedulers.io()).subscribe();
-    }
+  public void setSourceCallback(SourceCallback sourceCallback) {
+    this.sourceCallback = sourceCallback;
   }
 
-  class NativeDownloader implements Downloader {
-
-    public NativeDownloader() {
-    }
-
-    @Override
-    public void download(String path) {
-      DownloadManager dm =
-          (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-      DownloadManager.Request request = new DownloadManager.Request(Uri.parse(path));
-
-      GitskariosSettings settings = new GitskariosSettings(getActivity());
-
-      String zipBall = getActivity().getString(R.string.download_zip_value);
-      String fileType = settings.getDownloadFileType(zipBall);
-
-      String fileName =
-          repoInfo.name + "_" + repoInfo.branch + "_" + "." + (fileType.equalsIgnoreCase(zipBall)
-              ? "zip" : "tar");
-      request.setTitle(fileName);
-      request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-          "gitskarios/" + fileName);
-      request.setNotificationVisibility(
-          DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-      request.allowScanningByMediaScanner();
-      dm.enqueue(request);
-    }
+  public interface SourceCallback {
+    void onSourceDownload();
   }
 }

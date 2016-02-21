@@ -18,6 +18,7 @@ import com.alorma.gitskarios.core.client.UsernameProviderInterface;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
 
@@ -30,6 +31,8 @@ public class GitskariosApplication extends MultiDexApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+
+    Dexter.initialize(this);
 
     CustomActivityOnCrash.install(this);
     CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
