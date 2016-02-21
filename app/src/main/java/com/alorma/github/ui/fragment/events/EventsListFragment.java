@@ -17,8 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -349,7 +349,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       IssueCommentEventPayload payload = gson.fromJson(s, IssueCommentEventPayload.class);
       Issue issue = payload.issue;
       if (issue != null) {
-        startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(issue.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(issue.html_url)));
       }
     } else if (type == EventType.PushEvent) {
       String payload = gson.toJson(item.payload);
@@ -357,7 +357,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       if (pushEventPayload != null && pushEventPayload.commits != null) {
         if (pushEventPayload.commits.size() == 1) {
           Commit commit = pushEventPayload.commits.get(0);
-          startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(commit.url)));
+          startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(commit.url)));
         } else if (pushEventPayload.commits.size() > 1) {
           showCommitsDialog(pushEventPayload.commits);
         }
@@ -367,14 +367,14 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       IssueEventPayload issueEventPayload = gson.fromJson(payload, IssueEventPayload.class);
       if (issueEventPayload != null) {
         startActivity(
-            new UrlsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
+            new IntentsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
       }
     } else if (type == EventType.PullRequestEvent) {
       String payload = gson.toJson(item.payload);
       PullRequestEventPayload pullRequestEventPayload =
           gson.fromJson(payload, PullRequestEventPayload.class);
       if (pullRequestEventPayload != null) {
-        startActivity(new UrlsManager(getActivity()).checkUri(
+        startActivity(new IntentsManager(getActivity()).checkUri(
             Uri.parse(pullRequestEventPayload.pull_request.html_url)));
       }
     } else if (type == EventType.ForkEvent) {
@@ -391,7 +391,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       ReleaseEventPayload releaseEventPayload = gson.fromJson(payload, ReleaseEventPayload.class);
       if (releaseEventPayload != null) {
         Intent intent =
-            new UrlsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
+            new IntentsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
 
         if (intent != null) {
           startActivity(intent);
@@ -400,7 +400,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     } else {
       // TODO manage TAGs
       if (item.repo.url != null) {
-        startActivity(new UrlsManager(getActivity()).manageRepos(Uri.parse(item.repo.url)));
+        startActivity(new IntentsManager(getActivity()).manageRepos(Uri.parse(item.repo.url)));
       }
     }
   }
@@ -415,7 +415,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
           CharSequence charSequence) {
         Commit item = adapter.getItem(i);
 
-        startActivity(new UrlsManager(getActivity()).checkUri(Uri.parse(item.url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url)));
       }
     });
     builder.show();

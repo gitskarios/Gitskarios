@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.alorma.github.Base64;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
@@ -113,7 +113,7 @@ public class FileFragment extends BaseFragment {
       settings.setJavaScriptEnabled(true);
       webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 
-      new UrlsManager(getActivity()).manageUrls(webView);
+      new IntentsManager(getActivity()).manageUrls(webView);
 
       if (fileInfo.content == null) {
         if (fromUrl) {
@@ -261,7 +261,7 @@ public class FileFragment extends BaseFragment {
       }
     } else if (content.isSubmodule()) {
       if (getActivity() != null && isAdded()) {
-        Intent intent = new UrlsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
+        Intent intent = new IntentsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
         if (intent != null) {
           startActivity(intent);
           getActivity().finish();

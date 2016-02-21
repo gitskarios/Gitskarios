@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -101,7 +101,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
           if (item != null) {
             v.getContext()
                 .startActivity(
-                    new UrlsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
+                    new IntentsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
           }
         }
       });

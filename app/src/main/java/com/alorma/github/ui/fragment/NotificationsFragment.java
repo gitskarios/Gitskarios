@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -163,7 +163,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     } else {
       uri = Uri.parse(notification.repository.html_url);
     }
-    Intent intent = new UrlsManager(getActivity()).checkUri(uri);
+    Intent intent = new IntentsManager(getActivity()).checkUri(uri);
     if (intent != null) {
       startActivity(intent);
     }

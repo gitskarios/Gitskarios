@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -301,7 +301,7 @@ public class RepoAboutFragment extends Fragment
       htmlContentView.setWebViewClient(new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-          Intent intent = new UrlsManager(getActivity()).checkUri(Uri.parse(url));
+          Intent intent = new IntentsManager(getActivity()).checkUri(Uri.parse(url));
           if (intent != null) {
             startActivity(intent);
             return true;

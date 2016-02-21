@@ -11,7 +11,7 @@ import android.preference.PreferenceFragment;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.ui.activity.MainActivity;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 
@@ -63,7 +63,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
   @Override
   public boolean onPreferenceClick(Preference preference) {
     if (preference.getKey().equals(GITSKARIOS)) {
-      startActivity(new UrlsManager(getActivity()).manageRepos(
+      startActivity(new IntentsManager(getActivity()).manageRepos(
           Uri.parse("https://github.com/gitskarios/Gitskarios")));
     } else if (preference.getKey().equals(CHANGELOG)) {
       startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));

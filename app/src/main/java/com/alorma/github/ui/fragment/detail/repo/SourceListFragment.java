@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.alorma.github.GitskariosSettings;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.UrlsManager;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.Downloader;
@@ -189,7 +189,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     if (item.isDir()) {
       getPathContent(item.path);
     } else if (item.isFile()) {
-      Intent intent = new UrlsManager(getActivity()).checkUri(Uri.parse(item._links.html));
+      Intent intent = new IntentsManager(getActivity()).checkUri(Uri.parse(item._links.html));
       startActivity(intent);
     }
   }

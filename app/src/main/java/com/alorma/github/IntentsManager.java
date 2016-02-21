@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.UriMatcher;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,10 +25,7 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by Bernat on 27/04/2015.
- */
-public class UrlsManager {
+public class IntentsManager {
 
   private static final int URI_BASE = 0;
   private static final int URI_USER = 1;
@@ -52,7 +50,7 @@ public class UrlsManager {
   private final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   private Context context;
 
-  public UrlsManager(Context context) {
+  public IntentsManager(Context context) {
     this.context = context;
     int i = 1000;
 
@@ -213,14 +211,15 @@ public class UrlsManager {
   public Intent manageRepos(Uri uri) {
 
     uri = normalizeUri(uri);
-    RepoInfo repoInfo = extractRepo(uri);
+    RepoInfo repoInfo = getRepoInfo(uri);
     if (Fabric.isInitialized()) {
       Crashlytics.log(uri.toString());
     }
     return RepoDetailActivity.createLauncherIntent(context, repoInfo);
   }
 
-  private RepoInfo extractRepo(Uri uri) {
+  @NonNull
+  private RepoInfo getRepoInfo(Uri uri) {
     RepoInfo repoInfo = new RepoInfo();
 
     repoInfo.owner = uri.getPathSegments().get(0);
@@ -235,30 +234,48 @@ public class UrlsManager {
     }
 
     repoInfo.permissions = null;
-
     return repoInfo;
   }
 
   public Intent manageUsers(Uri uri) {
-    User user = new User();
-    user.login = uri.getLastPathSegment();
+    User user = getUser(uri);
     return ProfileActivity.createLauncherIntent(context, user);
   }
 
+  @NonNull
+  private User getUser(Uri uri) {
+    User user = new User();
+    user.login = uri.getLastPathSegment();
+    return user;
+  }
+
   private Intent manageCommit(Uri uri) {
-    CommitInfo info = new CommitInfo();
-
-    info.repoInfo = extractRepo(uri);
-
-    info.sha = uri.getLastPathSegment();
+    CommitInfo info = getCommitInfo(uri);
 
     return CommitDetailActivity.launchIntent(context, info);
   }
 
+  @NonNull
+  private CommitInfo getCommitInfo(Uri uri) {
+    CommitInfo info = new CommitInfo();
+
+    info.repoInfo = getRepoInfo(uri);
+
+    info.sha = uri.getLastPathSegment();
+    return info;
+  }
+
   private Intent manageIssue(Uri uri) {
+    IssueInfo info = getIssueCommentInfo(uri);
+
+    return IssueDetailActivity.createLauncherIntent(context, info);
+  }
+
+  @NonNull
+  private IssueInfo getIssueCommentInfo(Uri uri) {
     IssueInfo info = new IssueInfo();
 
-    info.repoInfo = extractRepo(uri);
+    info.repoInfo = getRepoInfo(uri);
 
     String lastPathSegment = uri.getLastPathSegment();
 
@@ -267,41 +284,58 @@ public class UrlsManager {
       info.commentNum = Integer.parseInt(commentNum);
     }
     info.num = Integer.parseInt(lastPathSegment);
-
-    return IssueDetailActivity.createLauncherIntent(context, info);
+    return info;
   }
 
   private Intent manageIssuePullRequest(Uri uri) {
-    IssueInfo info = new IssueInfo();
-
-    info.repoInfo = extractRepo(uri);
-
-    String lastPathSegment = uri.getLastPathSegment();
-
-    info.num = Integer.parseInt(lastPathSegment);
+    IssueInfo info = getIssueInfo(uri);
 
     return PullRequestDetailActivity.createLauncherIntent(context, info);
   }
 
-  private Intent manageReleasesWithId(Uri uri) {
-    ReleaseInfo info = new ReleaseInfo(extractRepo(uri));
+  @NonNull
+  private IssueInfo getIssueInfo(Uri uri) {
+    IssueInfo info = new IssueInfo();
 
-    info.num = Integer.valueOf(uri.getLastPathSegment());
+    info.repoInfo = getRepoInfo(uri);
+
+    String lastPathSegment = uri.getLastPathSegment();
+
+    info.num = Integer.parseInt(lastPathSegment);
+    return info;
+  }
+
+  private Intent manageReleasesWithId(Uri uri) {
+    ReleaseInfo info = getReleaseInfo(uri);
 
     return ReleaseDetailActivity.launchIntent(context, info);
   }
 
+  @NonNull
+  private ReleaseInfo getReleaseInfo(Uri uri) {
+    ReleaseInfo info = new ReleaseInfo(getRepoInfo(uri));
+
+    info.num = Integer.valueOf(uri.getLastPathSegment());
+    return info;
+  }
+
   private Intent manageFile(Uri uri) {
 
+    FileInfo info = getFileInfo(uri);
+
+    return FileActivity.createLauncherIntent(context, info, true);
+  }
+
+  @NonNull
+  private FileInfo getFileInfo(Uri uri) {
     FileInfo info = new FileInfo();
 
-    info.repoInfo = extractRepo(uri);
+    info.repoInfo = getRepoInfo(uri);
     info.path = uri.getPath();
     if (info.path.contains(info.repoInfo.toString())) {
       info.path = info.path.replace("/" + info.repoInfo.toString() + "/blob/", "");
     }
     info.name = uri.getLastPathSegment();
-
-    return FileActivity.createLauncherIntent(context, info, true);
+    return info;
   }
 }

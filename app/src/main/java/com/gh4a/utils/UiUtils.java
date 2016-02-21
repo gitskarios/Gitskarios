@@ -12,7 +12,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
-import com.alorma.github.UrlsManager;
+import com.alorma.github.IntentsManager;
 import java.util.List;
 
 public class UiUtils {
@@ -52,7 +52,7 @@ public class UiUtils {
           String url = link[0].getURL();
 
           if (url != null) {
-            Intent intent = new UrlsManager(widget.getContext()).checkUri(Uri.parse(url));
+            Intent intent = new IntentsManager(widget.getContext()).checkUri(Uri.parse(url));
 
             if (intent != null) {
               widget.getContext().startActivity(intent);

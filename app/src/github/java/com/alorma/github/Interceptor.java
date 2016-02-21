@@ -28,7 +28,7 @@ public class Interceptor extends Activity {
       Uri uri = getIntent().getData();
 
       if (uri != null) {
-        Intent intent = new UrlsManager(this).checkUri(uri);
+        Intent intent = new IntentsManager(this).checkUri(uri);
         if (intent != null) {
           startActivity(intent);
           finish();
