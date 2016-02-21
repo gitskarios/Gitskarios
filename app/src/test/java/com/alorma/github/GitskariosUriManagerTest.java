@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class GitskariosUriManagerTest {
@@ -41,6 +42,29 @@ public class GitskariosUriManagerTest {
 
     //then
     assertEquals(user.login, "alorma");
+  }
+  @Test
+  public void shouldGiveRepositoryNull_whenParsingGitskariosNotificationsUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/site";
+
+    // when
+    RepoInfo repoInfo = urisManager.getRepoInfo(uri);
+
+    //then
+    assertNull(repoInfo);
+  }
+
+  @Test
+  public void shouldGiveUserNull_whenParsingGitskariosUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/notifications";
+
+    // when
+    User user = urisManager.getUser(uri);
+
+    //then
+    assertNull(user);
   }
 
   @Test

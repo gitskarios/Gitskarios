@@ -25,8 +25,10 @@ public class GitskariosUriManager {
     return Arrays.asList(RESERVED_KEYS).contains(url.path());
   }
 
-  @NonNull
   public RepoInfo getRepoInfo(String url) throws GalimatiasParseException {
+    if (isReserved(url)) {
+      return null;
+    }
     RepoInfo repoInfo = new RepoInfo();
 
     URL parsedUrl = URL.parse(url);
@@ -44,8 +46,10 @@ public class GitskariosUriManager {
     }
   }
 
-  @NonNull
   public User getUser(String url) throws GalimatiasParseException {
+    if (isReserved(url)) {
+      return null;
+    }
     User user = new User();
     URL parsedUrl = URL.parse(url);
     user.login = parsedUrl.pathSegments().get(0);
