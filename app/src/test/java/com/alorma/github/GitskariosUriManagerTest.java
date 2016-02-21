@@ -19,7 +19,7 @@ public class GitskariosUriManagerTest {
   }
 
   @Test
-  public void extractRepoInfoTest() {
+  public void shouldGiveGitskariosValues_whenParsingGitskariosUrl() {
     // given
     String uri = "https://github.com/gitskarios/Gitskarios";
 
