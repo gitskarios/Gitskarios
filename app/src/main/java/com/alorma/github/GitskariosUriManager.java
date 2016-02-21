@@ -9,28 +9,29 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 
+import io.mola.galimatias.GalimatiasParseException;
+import io.mola.galimatias.URL;
+
 public class GitskariosUriManager {
 
   @NonNull
-  public RepoInfo getRepoInfo(Uri uri) {
+  public RepoInfo getRepoInfo(String url) throws GalimatiasParseException {
     RepoInfo repoInfo = new RepoInfo();
 
-    repoInfo.owner = uri.getPathSegments().get(0);
-    repoInfo.name = uri.getPathSegments().get(1);
+    URL parsedUrl = URL.parse(url);
+    repoInfo.owner = parsedUrl.pathSegments().get(0);
+    repoInfo.name = parsedUrl.pathSegments().get(1);
 
-    /*
-    // TODO Branches
-    if (uriMatcher.match(uri) == URI_REPO_BRANCH) {
-      repoInfo.branch = uri.getLastPathSegment();
-    } else if (uriMatcher.match(uri) == URI_REPO_BRANCH_FEATURE
-        || uriMatcher.match(uri) == URI_REPO_BRANCH_RELEASE
-        || uriMatcher.match(uri) == URI_REPO_BRANCH_HOTFIX) {
-      repoInfo.branch = uri.getPathSegments().get(3) + "/" + uri.getPathSegments().get(4);
-    }
-    */
-
-    repoInfo.permissions = null;
     return repoInfo;
+  }
+
+  @NonNull
+  public RepoInfo getRepoInfo(Uri uri) {
+      try {
+          return getRepoInfo(uri.toString());
+      } catch (GalimatiasParseException e) {
+          return null;
+      }
   }
 
   @NonNull
