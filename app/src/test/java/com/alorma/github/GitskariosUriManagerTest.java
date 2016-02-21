@@ -1,4 +1,4 @@
-package com.alorma.github.cache;
+package com.alorma.github;
 
 import android.net.Uri;
 import com.alorma.github.GitskariosUriManager;
