@@ -7,6 +7,8 @@
 > Git build hash from settings:
 >
 > Device
+>
+> Device android version
 
 
 *Steps to reproduce:*
