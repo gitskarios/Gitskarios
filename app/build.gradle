@@ -239,6 +239,7 @@ dependencies {
   compile 'com.github.florent37:glidepalette:1.0.4@aar'
 
   compile 'cat.ereza:customactivityoncrash:1.4.0'
+  compile 'io.mola.galimatias:galimatias:0.2.0'
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.assertj:assertj-core:1.7.0'
