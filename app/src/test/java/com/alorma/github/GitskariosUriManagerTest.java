@@ -1,15 +1,13 @@
 package com.alorma.github;
 
-import android.net.Uri;
-import com.alorma.github.GitskariosUriManager;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import io.mola.galimatias.GalimatiasParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.mola.galimatias.GalimatiasParseException;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class GitskariosUriManagerTest {
 
@@ -21,7 +19,7 @@ public class GitskariosUriManagerTest {
   }
 
   @Test
-  public void shouldGiveGitskariosValues_whenParsingGitskariosUrl() throws GalimatiasParseException {
+  public void shouldGiveGitskariosRepositoryValues_whenParsingGitskariosUrl() throws GalimatiasParseException {
     // given
     String uri = "https://github.com/gitskarios/Gitskarios";
 
@@ -31,5 +29,148 @@ public class GitskariosUriManagerTest {
     //then
     assertEquals(repoInfo.owner, "gitskarios");
     assertEquals(repoInfo.name, "Gitskarios");
+  }
+
+  @Test
+  public void shouldGiveGitskariosUser_whenParsingGitskariosUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/alorma";
+
+    // when
+    User user = urisManager.getUser(uri);
+
+    //then
+    assertEquals(user.login, "alorma");
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubNotifiactionsUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/notifications";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubSettingsUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/settings";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubBlogUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/blog";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubExploreUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/explore";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubRepositoriesUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/dashboard";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubEmptyUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubSiteUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/site";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubSecurityUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/security";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubContactUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/contact";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+
+  @Test
+  public void shouldGiveTrue_whenParsingGithubAboutUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/about";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
+  }
+  @Test
+  public void shouldGiveTrue_whenParsingGithubOrgsUrl() throws GalimatiasParseException {
+    // given
+    String uri = "https://github.com/orgs";
+
+    // when
+    boolean isProtected = urisManager.isReserved(uri);
+
+    //then
+    assertTrue(isProtected);
   }
 }

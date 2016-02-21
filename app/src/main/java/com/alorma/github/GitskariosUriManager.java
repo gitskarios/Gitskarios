@@ -8,11 +8,22 @@ import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-
 import io.mola.galimatias.GalimatiasParseException;
 import io.mola.galimatias.URL;
+import java.util.Arrays;
 
 public class GitskariosUriManager {
+
+  public static final String[] RESERVED_KEYS = new String[] {
+      "/notifications", "/settings", "/blog", "/explore", "/dashboard", "/repositories",
+      "/site", "/security", "/contact", "/about", "/orgs", "/"
+  };
+
+  public boolean isReserved(String uri) throws GalimatiasParseException {
+    URL url = URL.parse(uri);
+
+    return Arrays.asList(RESERVED_KEYS).contains(url.path());
+  }
 
   @NonNull
   public RepoInfo getRepoInfo(String url) throws GalimatiasParseException {
@@ -25,20 +36,28 @@ public class GitskariosUriManager {
     return repoInfo;
   }
 
-  @NonNull
   public RepoInfo getRepoInfo(Uri uri) {
-      try {
-          return getRepoInfo(uri.toString());
-      } catch (GalimatiasParseException e) {
-          return null;
-      }
+    try {
+      return getRepoInfo(uri.toString());
+    } catch (GalimatiasParseException e) {
+      return null;
+    }
   }
 
   @NonNull
-  public User getUser(Uri uri) {
+  public User getUser(String url) throws GalimatiasParseException {
     User user = new User();
-    user.login = uri.getLastPathSegment();
+    URL parsedUrl = URL.parse(url);
+    user.login = parsedUrl.pathSegments().get(0);
     return user;
+  }
+
+  public User getUser(Uri uri) {
+    try {
+      return getUser(uri.toString());
+    } catch (GalimatiasParseException e) {
+      return null;
+    }
   }
 
   @NonNull
