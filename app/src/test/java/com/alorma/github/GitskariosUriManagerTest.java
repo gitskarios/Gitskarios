@@ -6,6 +6,8 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mola.galimatias.GalimatiasParseException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -19,12 +21,12 @@ public class GitskariosUriManagerTest {
   }
 
   @Test
-  public void shouldGiveGitskariosValues_whenParsingGitskariosUrl() {
+  public void shouldGiveGitskariosValues_whenParsingGitskariosUrl() throws GalimatiasParseException {
     // given
     String uri = "https://github.com/gitskarios/Gitskarios";
 
     // when
-    RepoInfo repoInfo = urisManager.getRepoInfo(Uri.parse(uri));
+    RepoInfo repoInfo = urisManager.getRepoInfo(uri);
 
     //then
     assertEquals(repoInfo.owner, "gitskarios");
