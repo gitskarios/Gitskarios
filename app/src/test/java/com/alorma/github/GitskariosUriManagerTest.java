@@ -27,7 +27,6 @@ public class GitskariosUriManagerTest {
     RepoInfo repoInfo = urisManager.getRepoInfo(Uri.parse(uri));
 
     //then
-    assertNotNull(repoInfo);
     assertEquals(repoInfo.owner, "gitskarios");
     assertEquals(repoInfo.name, "Gitskarios");
   }
