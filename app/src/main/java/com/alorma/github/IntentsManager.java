@@ -48,6 +48,7 @@ public class IntentsManager {
   private static final int URI_ISSUE_COMMENT = 15;
 
   private final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+  private final GitskariosUriManager gitsakriosUriManager = new GitskariosUriManager();
   private Context context;
 
   public IntentsManager(Context context) {
@@ -211,131 +212,46 @@ public class IntentsManager {
   public Intent manageRepos(Uri uri) {
 
     uri = normalizeUri(uri);
-    RepoInfo repoInfo = getRepoInfo(uri);
+    RepoInfo repoInfo = gitsakriosUriManager.getRepoInfo(uri);
     if (Fabric.isInitialized()) {
       Crashlytics.log(uri.toString());
     }
     return RepoDetailActivity.createLauncherIntent(context, repoInfo);
   }
 
-  @NonNull
-  private RepoInfo getRepoInfo(Uri uri) {
-    RepoInfo repoInfo = new RepoInfo();
-
-    repoInfo.owner = uri.getPathSegments().get(0);
-    repoInfo.name = uri.getPathSegments().get(1);
-
-    if (uriMatcher.match(uri) == URI_REPO_BRANCH) {
-      repoInfo.branch = uri.getLastPathSegment();
-    } else if (uriMatcher.match(uri) == URI_REPO_BRANCH_FEATURE
-        || uriMatcher.match(uri) == URI_REPO_BRANCH_RELEASE
-        || uriMatcher.match(uri) == URI_REPO_BRANCH_HOTFIX) {
-      repoInfo.branch = uri.getPathSegments().get(3) + "/" + uri.getPathSegments().get(4);
-    }
-
-    repoInfo.permissions = null;
-    return repoInfo;
-  }
 
   public Intent manageUsers(Uri uri) {
-    User user = getUser(uri);
+    User user = gitsakriosUriManager.getUser(uri);
     return ProfileActivity.createLauncherIntent(context, user);
   }
 
-  @NonNull
-  private User getUser(Uri uri) {
-    User user = new User();
-    user.login = uri.getLastPathSegment();
-    return user;
-  }
-
   private Intent manageCommit(Uri uri) {
-    CommitInfo info = getCommitInfo(uri);
+    CommitInfo info = gitsakriosUriManager.getCommitInfo(uri);
 
     return CommitDetailActivity.launchIntent(context, info);
   }
 
-  @NonNull
-  private CommitInfo getCommitInfo(Uri uri) {
-    CommitInfo info = new CommitInfo();
-
-    info.repoInfo = getRepoInfo(uri);
-
-    info.sha = uri.getLastPathSegment();
-    return info;
-  }
-
   private Intent manageIssue(Uri uri) {
-    IssueInfo info = getIssueCommentInfo(uri);
+    IssueInfo info = gitsakriosUriManager.getIssueCommentInfo(uri);
 
     return IssueDetailActivity.createLauncherIntent(context, info);
   }
-
-  @NonNull
-  private IssueInfo getIssueCommentInfo(Uri uri) {
-    IssueInfo info = new IssueInfo();
-
-    info.repoInfo = getRepoInfo(uri);
-
-    String lastPathSegment = uri.getLastPathSegment();
-
-    if (uri.getFragment() != null && uri.getFragment().contains("issuecomment-")) {
-      String commentNum = uri.getFragment().replace("issuecomment-", "");
-      info.commentNum = Integer.parseInt(commentNum);
-    }
-    info.num = Integer.parseInt(lastPathSegment);
-    return info;
-  }
-
   private Intent manageIssuePullRequest(Uri uri) {
-    IssueInfo info = getIssueInfo(uri);
+    IssueInfo info = gitsakriosUriManager.getIssueInfo(uri);
 
     return PullRequestDetailActivity.createLauncherIntent(context, info);
   }
 
-  @NonNull
-  private IssueInfo getIssueInfo(Uri uri) {
-    IssueInfo info = new IssueInfo();
-
-    info.repoInfo = getRepoInfo(uri);
-
-    String lastPathSegment = uri.getLastPathSegment();
-
-    info.num = Integer.parseInt(lastPathSegment);
-    return info;
-  }
-
   private Intent manageReleasesWithId(Uri uri) {
-    ReleaseInfo info = getReleaseInfo(uri);
+    ReleaseInfo info = gitsakriosUriManager.getReleaseInfo(uri);
 
     return ReleaseDetailActivity.launchIntent(context, info);
   }
 
-  @NonNull
-  private ReleaseInfo getReleaseInfo(Uri uri) {
-    ReleaseInfo info = new ReleaseInfo(getRepoInfo(uri));
-
-    info.num = Integer.valueOf(uri.getLastPathSegment());
-    return info;
-  }
-
   private Intent manageFile(Uri uri) {
 
-    FileInfo info = getFileInfo(uri);
+    FileInfo info = gitsakriosUriManager.getFileInfo(uri);
 
     return FileActivity.createLauncherIntent(context, info, true);
-  }
-
-  @NonNull
-  private FileInfo getFileInfo(Uri uri) {
-    FileInfo info = new FileInfo();
-
-    info.repoInfo = getRepoInfo(uri);
-    info.path = uri.getPath();
-    if (info.path.contains(info.repoInfo.toString())) {
-      info.path = info.path.replace("/" + info.repoInfo.toString() + "/blob/", "");
-    }
-    info.name = uri.getLastPathSegment();
-    return info;
   }
 }
