@@ -15,7 +15,7 @@ cache:
     - $HOME/.gradle/caches/2.10
 
 jdk:
-- oraclejdk8
+  - oraclejdk8
 
 android:
   components:
