@@ -1,6 +1,22 @@
 language: android
+
+branches:
+  only:
+    - develop
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.gradle/native
+    - $HOME/.gradle/daemon
+    - $HOME/.gradle/caches/jars-1
+    - $HOME/.gradle/caches/2.10
+
 jdk:
 - oraclejdk8
+
 android:
   components:
   - tools
@@ -11,9 +27,18 @@ android:
   - extra-google-m2repository
   licenses:
   - android-sdk-license-.+
+
+env:
+  matrix:
+    - COMPILE_METHOD=check -PdisablePreDex
+    - COMPILE_METHOD=assembleGithub -PdisablePreDex
+    - COMPILE_METHOD=assembleEnterprise -PdisablePreDex
+
 before_script:
-- git submodule update --init
-script: ./gradlew clean build check
+  - git submodule update --init
+
+script: ./gradlew $COMPILE_METHOD
+
 deploy:
   provider: releases
   api_key:
@@ -24,6 +49,7 @@ deploy:
   on:
     tags: true
     all_branches: true
+
 notifications:
   slack:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
