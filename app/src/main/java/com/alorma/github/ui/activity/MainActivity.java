@@ -197,7 +197,6 @@ public class MainActivity extends BaseActivity
         selectedAccount = accountList.get(0);
         createDrawer();
         selectAccount(selectedAccount);
-        onUserEventsSelected();
       }
     }
   }
@@ -469,13 +468,6 @@ public class MainActivity extends BaseActivity
 
     if (changingUser) {
       lastUsedFragment = null;
-      clearFragments();
-    }
-  }
-
-  private void clearFragments() {
-    if (getSupportFragmentManager() != null) {
-      getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
   }
 
@@ -582,7 +574,6 @@ public class MainActivity extends BaseActivity
 
   @Override
   public boolean onReposSelected() {
-    clearFragments();
     setFragment(GeneralReposFragment.newInstance(), false);
     return true;
   }
@@ -603,7 +594,7 @@ public class MainActivity extends BaseActivity
   public boolean onUserEventsSelected() {
     String user = new StoreCredentials(this).getUserName();
     if (user != null) {
-      setFragment(EventsListFragment.newInstance(user));
+      setFragment(EventsListFragment.newInstance(user), false);
     }
     return true;
   }
@@ -664,8 +655,6 @@ public class MainActivity extends BaseActivity
       } else if (resultDrawer != null && (lastUsedFragment instanceof GeneralReposFragment
           || lastUsedFragment instanceof GeneralPeopleFragment)) {
         resultDrawer.setSelection(R.id.nav_drawer_events);
-        clearFragments();
-        onUserEventsSelected();
       }
     }
   }
