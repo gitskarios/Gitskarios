@@ -30,14 +30,14 @@ android:
 
 env:
   matrix:
-    - COMPILE_METHOD=check -PdisablePreDex
-    - COMPILE_METHOD=assembleGithub -PdisablePreDex
-    - COMPILE_METHOD=assembleEnterprise -PdisablePreDex
+    - COMPILE_METHOD=check
+    - COMPILE_METHOD=assembleGithub
+    - COMPILE_METHOD=assembleEnterprise
 
 before_script:
   - git submodule update --init
 
-script: ./gradlew $COMPILE_METHOD
+script: ./gradlew $COMPILE_METHOD -PdisablePreDex
 
 deploy:
   provider: releases
