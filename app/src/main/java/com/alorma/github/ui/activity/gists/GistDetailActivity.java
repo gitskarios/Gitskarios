@@ -11,7 +11,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.GistDetailFragment;
+import com.alorma.github.ui.fragment.gists.GistDetailFragment;
 import java.util.TreeMap;
 
 /**

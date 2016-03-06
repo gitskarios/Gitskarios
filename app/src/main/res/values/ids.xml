@@ -132,5 +132,8 @@
   </item>
   <item name="nav_drawer_invite"
         type="id"/>
+  <item name="nav_drawer_gists_starred"
+        type="id">nav_drawer_gists_starred
+  </item>
 
 </resources>

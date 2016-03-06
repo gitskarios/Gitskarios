@@ -1,6 +1,5 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.gists;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,9 +8,10 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
-import com.alorma.github.ui.activity.gists.CreateGistActivity;
+import com.alorma.github.ui.activity.gists.GistDetailActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
+import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
@@ -21,10 +21,9 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class GistsFragment extends LoadingListFragment<GistsAdapter>
-    implements GistsAdapter.GistsAdapterListener {
+    implements GistsAdapter.GistsAdapterListener, BackManager {
 
   private static final String USERNAME = "USERNAME";
-  public GistsFragmentListener gistsFragmentListener;
   private String username;
 
   public static GistsFragment newInstance(String username) {
@@ -42,6 +41,13 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter>
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    getActivity().setTitle(getString(R.string.username_gists, username));
   }
 
   @Override
@@ -67,14 +73,17 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter>
   protected void executeRequest() {
     super.executeRequest();
 
-    setAction(new UserGistsClient(username));
+    if (username != null) {
+      setAction(new UserGistsClient(username));
+    }
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-
-    setAction(new UserGistsClient(username, page));
+    if (username != null) {
+      setAction(new UserGistsClient(username, page));
+    }
   }
 
   private void setAction(GithubListClient<List<Gist>> userGistsClient) {
@@ -110,37 +119,13 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter>
   }
 
   @Override
-  protected Octicons.Icon getFABGithubIcon() {
-    return Octicons.Icon.oct_plus;
-  }
-
-  @Override
-  protected boolean useFAB() {
-    return username == null;
-  }
-
-  public void setGistsFragmentListener(GistsFragmentListener gistsFragmentListener) {
-    this.gistsFragmentListener = gistsFragmentListener;
-  }
-
-  @Override
   public void onGistSelected(Gist gist) {
-    if (gistsFragmentListener != null) {
-      gistsFragmentListener.onGistsRequest(gist);
-    }
+    Intent launcherIntent = GistDetailActivity.createLauncherIntent(getActivity(), gist.id);
+    startActivity(launcherIntent);
   }
 
   @Override
-  protected void fabClick() {
-    try {
-      Intent intent = CreateGistActivity.createLauncherIntent(getActivity());
-      startActivity(intent);
-    } catch (ActivityNotFoundException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public interface GistsFragmentListener {
-    void onGistsRequest(Gist gist);
+  public boolean onBackPressed() {
+    return false;
   }
 }

@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.gists;
 
 import android.app.Fragment;
 import android.content.SharedPreferences;

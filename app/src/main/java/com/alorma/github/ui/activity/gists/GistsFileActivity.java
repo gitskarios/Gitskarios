@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.fragment.GistFileFragment;
+import com.alorma.github.ui.fragment.gists.GistFileFragment;
 
 /**
  * Created by Bernat on 20/07/2014.

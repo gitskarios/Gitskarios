@@ -14,7 +14,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -33,10 +32,10 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
-import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.GeneralPeopleFragment;
 import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
+import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
@@ -254,13 +253,16 @@ public class MainActivity extends BaseActivity
         new PrimaryDrawerItem().withName(R.string.navigation_people)
             .withIcon(Octicons.Icon.oct_person)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_people),
+            .withIdentifier(R.id.nav_drawer_people), new DividerDrawerItem(),
         new PrimaryDrawerItem().withName(R.string.navigation_gists)
             .withIcon(Octicons.Icon.oct_gist)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_gists)
-            .withSelectable(false), new DividerDrawerItem(), notificationsDrawerItem,
-        new SecondaryDrawerItem().withName(R.string.navigation_settings)
+            .withIdentifier(R.id.nav_drawer_gists),
+        new PrimaryDrawerItem().withName(R.string.navigation_gists_starred)
+            .withIcon(Octicons.Icon.oct_star)
+            .withIconColor(iconColor)
+            .withIdentifier(R.id.nav_drawer_gists_starred), new DividerDrawerItem(),
+        notificationsDrawerItem, new SecondaryDrawerItem().withName(R.string.navigation_settings)
             .withIcon(Octicons.Icon.oct_gear)
             .withIconColor(iconColor)
             .withIdentifier(R.id.nav_drawer_settings)
@@ -308,6 +310,9 @@ public class MainActivity extends BaseActivity
               break;
             case R.id.nav_drawer_gists:
               onGistsSelected();
+              break;
+            case R.id.nav_drawer_gists_starred:
+              onStarredGistsSelected();
               break;
             case R.id.nav_drawer_notifications:
               openNotifications();
@@ -582,8 +587,13 @@ public class MainActivity extends BaseActivity
   }
 
   public boolean onGistsSelected() {
-    Intent intent = GistsMainActivity.createLauncherIntent(this);
-    startActivity(intent);
+    AuthUserGistsFragment gistsFragment = AuthUserGistsFragment.newInstance();
+    setFragment(gistsFragment);
+    return false;
+  }
+
+  public boolean onStarredGistsSelected() {
+    // TODO Load starred gists
     return false;
   }
 
