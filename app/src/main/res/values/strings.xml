@@ -482,4 +482,5 @@
   <string name="write_otp_code_hint">code</string>
   <string name="external_storage_permission_request">Write permission is requested to download</string>
   <string name="external_storage_permission_request_action">Settings</string>
+  <string name="navigation_issues">Assigned issues</string>
 </resources>

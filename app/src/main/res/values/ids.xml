@@ -135,5 +135,8 @@
   <item name="nav_drawer_gists_starred"
         type="id">nav_drawer_gists_starred
   </item>
+  <item name="nav_drawer_issues"
+        type="id">nav_drawer_issues
+  </item>
 
 </resources>

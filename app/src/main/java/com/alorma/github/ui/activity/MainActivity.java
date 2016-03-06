@@ -37,7 +37,7 @@ import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserStarredGistsFragment;
-import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
+import com.alorma.github.ui.fragment.issues.GenericIssuesListFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
@@ -78,7 +78,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity
-    implements OnMenuItemSelectedListener, AccountHeader.OnAccountHeaderListener {
+    implements AccountHeader.OnAccountHeaderListener {
 
   private static final int PROFILE_REQUEST_CODE = 555;
   private static final int REQUEST_INVITE = 121;
@@ -254,7 +254,12 @@ public class MainActivity extends BaseActivity
         new PrimaryDrawerItem().withName(R.string.navigation_people)
             .withIcon(Octicons.Icon.oct_person)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_people), new DividerDrawerItem(),
+            .withIdentifier(R.id.nav_drawer_people),
+        new PrimaryDrawerItem().withName(R.string.navigation_issues)
+            .withIcon(Octicons.Icon.oct_issue_opened)
+            .withIconColor(iconColor)
+            .withIdentifier(R.id.nav_drawer_issues),
+        new DividerDrawerItem(),
         new PrimaryDrawerItem().withName(R.string.navigation_gists)
             .withIcon(Octicons.Icon.oct_gist)
             .withIconColor(iconColor)
@@ -308,6 +313,9 @@ public class MainActivity extends BaseActivity
               break;
             case R.id.nav_drawer_people:
               onPeopleSelected();
+              break;
+            case R.id.nav_drawer_issues:
+              onIssuesSelected();
               break;
             case R.id.nav_drawer_gists:
               onGistsSelected();
@@ -568,22 +576,18 @@ public class MainActivity extends BaseActivity
     }
   }
 
-  @Override
-  public boolean onProfileSelected() {
-    Intent launcherIntent = ProfileActivity.createLauncherIntent(this, selectedAccount);
-    startActivityForResult(launcherIntent, PROFILE_REQUEST_CODE);
-    return false;
-  }
-
-  @Override
   public boolean onReposSelected() {
     setFragment(GeneralReposFragment.newInstance(), false);
     return true;
   }
 
-  @Override
   public boolean onPeopleSelected() {
     setFragment(GeneralPeopleFragment.newInstance(), false);
+    return false;
+  }
+
+  public boolean onIssuesSelected() {
+    setFragment(GenericIssuesListFragment.newInstance(), false);
     return false;
   }
 
@@ -599,7 +603,6 @@ public class MainActivity extends BaseActivity
     return false;
   }
 
-  @Override
   public boolean onUserEventsSelected() {
     String user = new StoreCredentials(this).getUserName();
     if (user != null) {
@@ -608,7 +611,6 @@ public class MainActivity extends BaseActivity
     return true;
   }
 
-  @Override
   public boolean onSettingsSelected() {
     Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
@@ -632,7 +634,6 @@ public class MainActivity extends BaseActivity
     }
   }
 
-  @Override
   public boolean onAboutSelected() {
     Libs.ActivityStyle activityStyle = Libs.ActivityStyle.LIGHT_DARK_TOOLBAR;
     int theme = R.style.AppTheme;
