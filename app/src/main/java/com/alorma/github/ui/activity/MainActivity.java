@@ -661,8 +661,7 @@ public class MainActivity extends BaseActivity
     } else {
       if (lastUsedFragment instanceof EventsListFragment) {
         finish();
-      } else if (resultDrawer != null && (lastUsedFragment instanceof GeneralReposFragment
-          || lastUsedFragment instanceof GeneralPeopleFragment)) {
+      } else if (resultDrawer != null) {
         resultDrawer.setSelection(R.id.nav_drawer_events);
       }
     }

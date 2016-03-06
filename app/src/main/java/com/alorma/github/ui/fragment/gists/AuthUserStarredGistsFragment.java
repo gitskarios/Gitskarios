@@ -39,7 +39,7 @@ public class AuthUserStarredGistsFragment extends LoadingListFragment<GistsAdapt
   public void onResume() {
     super.onResume();
 
-    getActivity().setTitle(R.string.navigation_gists);
+    getActivity().setTitle(R.string.navigation_gists_starred);
   }
 
   @Override
@@ -108,29 +108,9 @@ public class AuthUserStarredGistsFragment extends LoadingListFragment<GistsAdapt
   }
 
   @Override
-  protected Octicons.Icon getFABGithubIcon() {
-    return Octicons.Icon.oct_plus;
-  }
-
-  @Override
-  protected boolean useFAB() {
-    return true;
-  }
-
-  @Override
   public void onGistSelected(Gist gist) {
     Intent launcherIntent = GistDetailActivity.createLauncherIntent(getActivity(), gist.id);
     startActivity(launcherIntent);
-  }
-
-  @Override
-  protected void fabClick() {
-    try {
-      Intent intent = CreateGistActivity.createLauncherIntent(getActivity());
-      startActivity(intent);
-    } catch (ActivityNotFoundException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
