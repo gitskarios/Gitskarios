@@ -1,10 +1,12 @@
 package com.alorma.github;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
+import com.alorma.github.gcm.GitskariosInstanceIDListenerService;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.gitskarios.core.client.LogProvider;
@@ -77,6 +79,9 @@ public class GitskariosApplication extends MultiDexApplication {
         }
       }
     });
+
+    Intent intent = new Intent(this, GitskariosInstanceIDListenerService.class);
+    startService(intent);
   }
 
   @NonNull

@@ -12,6 +12,7 @@ public class GitskariosSettings extends PreferencesHelper {
   public static final String KEY_VERSION = "KEY_VERSION";
   public static final String KEY_DOWNLOAD_FILE_TYPE = "KEY_DOWNLOAD_FILE_TYPE";
   private static final String KEY_SHOW_ENTERPRISE = "KEY_SHOW_ENTERPRISE";
+  private static final String GCM_TOKEN = "GCM_TOKEN";
 
   public GitskariosSettings(Context context) {
     super(context);
@@ -63,5 +64,13 @@ public class GitskariosSettings extends PreferencesHelper {
 
   public void setShowEnterpriseVisited() {
     saveBooleanSetting(KEY_SHOW_ENTERPRISE, false);
+  }
+
+  public void saveGCMToken(String token) {
+    saveStringSetting(GCM_TOKEN, token);
+  }
+
+  public String getGCMToken() {
+    return getStringSetting(GCM_TOKEN, null);
   }
 }
