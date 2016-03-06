@@ -41,6 +41,7 @@ import com.alorma.gitskarios.core.Pair;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.gson.Gson;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -127,7 +128,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       MenuItem item = menu.findItem(R.id.events_list_filter);
       if (item != null) {
         item.setIcon(
-            new IconicsDrawable(getActivity(), GoogleMaterial.Icon.gmd_filter_list).colorRes(
+            new IconicsDrawable(getActivity(), CommunityMaterial.Icon.cmd_filter_outline).colorRes(
                 R.color.white).actionBar());
       }
     }
