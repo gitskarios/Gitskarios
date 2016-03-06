@@ -11,7 +11,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -88,7 +87,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   public void finishAccess(final User user) {
-    Toast.makeText(this, user.login, Toast.LENGTH_SHORT).show();
     setResult(Activity.RESULT_OK);
 
     MainActivity.startActivity(this);

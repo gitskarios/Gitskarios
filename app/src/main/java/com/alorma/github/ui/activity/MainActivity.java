@@ -138,10 +138,6 @@ public class MainActivity extends BaseActivity
     }
   }
 
-  private void checkShowEnterpriseAd() {
-    CheckShowAd.showEnterpriseAd(this);
-  }
-
   private void checkInvites() {
     try {
       GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(AppInvite.API)
@@ -197,6 +193,7 @@ public class MainActivity extends BaseActivity
         selectedAccount = accountList.get(0);
         createDrawer();
         selectAccount(selectedAccount);
+        onUserEventsSelected();
       }
     }
   }
