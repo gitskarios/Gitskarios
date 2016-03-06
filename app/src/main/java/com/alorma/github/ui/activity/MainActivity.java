@@ -36,6 +36,7 @@ import com.alorma.github.ui.fragment.GeneralPeopleFragment;
 import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
+import com.alorma.github.ui.fragment.gists.AuthUserStarredGistsFragment;
 import com.alorma.github.ui.fragment.menu.OnMenuItemSelectedListener;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
@@ -593,7 +594,8 @@ public class MainActivity extends BaseActivity
   }
 
   public boolean onStarredGistsSelected() {
-    // TODO Load starred gists
+    AuthUserStarredGistsFragment gistsFragment = AuthUserStarredGistsFragment.newInstance();
+    setFragment(gistsFragment);
     return false;
   }
 
