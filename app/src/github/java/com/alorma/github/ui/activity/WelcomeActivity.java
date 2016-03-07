@@ -2,6 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,8 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,6 +26,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Bind(R.id.openLogin) View buttonLogin;
   @Bind(R.id.login_username) TextInputLayout loginUsername;
   @Bind(R.id.login_password) TextInputLayout loginPassword;
+  @Bind(R.id.progressBar) View progressBar;
   private WelcomePresenter welcomePresenter;
 
   @Override
@@ -61,8 +65,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   }
 
   @Override
-  public void onErrorUnauthorized() {
+  public void willLogin() {
+    progressBar.setVisibility(View.VISIBLE);
+    buttonLogin.setEnabled(false);
+  }
 
+  @Override
+  public void onErrorUnauthorized() {
+    loginPassword.setError(getString(R.string.unauthorized_login));
   }
 
   @Override
@@ -82,7 +92,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   public void onGenericError() {
-
+    Toast.makeText(this, "Error login", Toast.LENGTH_SHORT).show();
   }
 
   @Override
@@ -91,6 +101,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
     MainActivity.startActivity(this);
     finish();
+  }
+
+  @Override
+  public void didLogin() {
+    progressBar.setVisibility(View.GONE);
+    buttonLogin.setEnabled(true);
+    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(buttonLogin.getWindowToken(), 0);
   }
 
   private class ButtonEnablerTextWatcher implements TextWatcher {

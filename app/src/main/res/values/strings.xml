@@ -484,4 +484,5 @@
   <string name="external_storage_permission_request_action">Settings</string>
   <string name="navigation_issues">Assigned issues</string>
   <string name="action_push">Enable push</string>
+  <string name="unauthorized_login">Bad credentials</string>
 </resources>

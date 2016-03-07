@@ -11,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -178,7 +179,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
   @Override
   protected void getContent() {
     if (user == null) {
-      GithubClient<User> requestClient;
+      Observable<User> requestClient;
       String avatar = null;
       String login = null;
       String name = null;
@@ -226,13 +227,13 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
       if (user != null) {
         if (user.login != null && settings.getUserName() != null &&
             user.login.equalsIgnoreCase(settings.getUserName())) {
-          requestClient = new GetAuthUserClient();
+          requestClient = getGetAuthUserClient();
           updateProfile = true;
         } else {
-          requestClient = new RequestUserClient(user.login);
+          requestClient = new RequestUserClient(user.login).observable();
         }
       } else {
-        requestClient = new GetAuthUserClient();
+        requestClient = getGetAuthUserClient();
         updateProfile = true;
       }
 
@@ -247,7 +248,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
             }
           });
 
-      Observable.combineLatest(requestClient.observable().subscribeOn(Schedulers.io()),
+      Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()),
           organizations, new Func2<User, Integer, User>() {
             @Override
             public User call(User user, Integer organizations) {
@@ -271,6 +272,16 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
         }
       });
     }
+  }
+
+  @NonNull
+  private Observable<User> getGetAuthUserClient() {
+    return new GetAuthUserClient().observable().map(new Func1<Pair<User,String>, User>() {
+      @Override
+      public User call(Pair<User, String> userStringPair) {
+        return userStringPair.first;
+      }
+    });
   }
 
   private void loadAvatar(String login, String avatar) {

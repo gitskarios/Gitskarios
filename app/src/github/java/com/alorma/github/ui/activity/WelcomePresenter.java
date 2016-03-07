@@ -3,7 +3,6 @@ package com.alorma.github.ui.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.content.Context;
 import android.os.Bundle;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.BuildConfig;
@@ -15,11 +14,13 @@ import com.alorma.github.sdk.services.login.CreateAuthorizationClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.TwoFactorAuthException;
 import com.alorma.github.sdk.services.user.UnauthorizedException;
-import com.alorma.gitskarios.core.client.TokenProvider;
+import com.alorma.gitskarios.core.Pair;
 import java.lang.ref.WeakReference;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class WelcomePresenter {
@@ -29,10 +30,8 @@ public class WelcomePresenter {
   private WelcomePresenterViewInterface welcomePresenterViewInterface =
       welcomePresenterViewInterfaceNull;
 
-  private Subscription subscribtion;
   private String username;
   private String password;
-  private String token;
   private WeakReference<AccountAuthenticatorActivity> accountAuthenticatorActivity;
 
   public WelcomePresenter(AccountAuthenticatorActivity accountAuthenticatorActivity) {
@@ -42,60 +41,14 @@ public class WelcomePresenter {
   public void login(String username, String password) {
     this.username = username;
     this.password = password;
-    GetAuthUserClient client = new GetAuthUserClient(username, password);
-    executeUserAuth(client);
-  }
-
-  private void executeUserAuth(GetAuthUserClient client) {
-    Observable<User> observable = client.observable();
-
-    subscribtion = observable.subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new UserSubscription());
+    createAuthorization(null);
   }
 
   public void setOtpCode(String otpCode) {
-    onErrorTwoFactorException(otpCode);
+    createAuthorization(otpCode);
   }
 
-  private class UserSubscription extends rx.Subscriber<User> {
-    @Override
-    public void onCompleted() {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      checkError(e);
-    }
-
-    @Override
-    public void onNext(User user) {
-      addAccount(user, token);
-    }
-  }
-
-  private void checkError(Throwable e) {
-    if (e instanceof UnauthorizedException) {
-      onErrorUnauthorized();
-    } else if (e instanceof TwoFactorAuthException) {
-      onErrorTwoFactorException(null);
-    } else {
-      onGenericError();
-    }
-  }
-
-  private void checkErrorFromAuthorization(Throwable e) {
-    if (e instanceof TwoFactorAuthException) {
-      welcomePresenterViewInterface.onErrorTwoFactorException();
-    }
-  }
-
-  private void onErrorUnauthorized() {
-    welcomePresenterViewInterface.onErrorUnauthorized();
-  }
-
-  private void onErrorTwoFactorException(String otpCode) {
+  private void createAuthorization(String otpCode) {
     CreateAuthorization createRequest = new CreateAuthorization();
     createRequest.note = "gitskarios";
     createRequest.scopes = new String[] {
@@ -115,7 +68,72 @@ public class WelcomePresenter {
     Observable<GithubAuthorization> observable = createAuthorizationClient.observable();
     observable.subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new CredentialsSubscription());
+        .doOnSubscribe(new Action0() {
+          @Override
+          public void call() {
+            welcomePresenterViewInterface.willLogin();
+          }
+        })
+        .doOnError(new Action1<Throwable>() {
+          @Override
+          public void call(Throwable throwable) {
+            checkErrorFromAuthorization(throwable);
+          }
+        })
+        .flatMap(new Func1<GithubAuthorization, Observable<Pair<User, String>>>() {
+          @Override
+          public Observable<Pair<User, String>> call(GithubAuthorization githubAuthorization) {
+            return new GetAuthUserClient(githubAuthorization.token).observable();
+          }
+        })
+        .doOnError(new Action1<Throwable>() {
+          @Override
+          public void call(Throwable throwable) {
+            welcomePresenterViewInterface.didLogin();
+          }
+        })
+        .doOnCompleted(new Action0() {
+          @Override
+          public void call() {
+            welcomePresenterViewInterface.didLogin();
+          }
+        })
+        .subscribe(new UserSubscription());
+  }
+
+  private class UserSubscription extends rx.Subscriber<Pair<User, String>> {
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      checkError(e);
+    }
+
+    @Override
+    public void onNext(Pair<User, String> userStringPair) {
+      addAccount(userStringPair.first, userStringPair.second);
+    }
+  }
+
+  private void checkError(Throwable e) {
+    if (e instanceof UnauthorizedException) {
+      onErrorUnauthorized();
+    } else {
+      onGenericError();
+    }
+  }
+
+  private void checkErrorFromAuthorization(Throwable e) {
+    if (e instanceof TwoFactorAuthException) {
+      welcomePresenterViewInterface.onErrorTwoFactorException();
+    }
+  }
+
+  private void onErrorUnauthorized() {
+    welcomePresenterViewInterface.onErrorUnauthorized();
   }
 
   private void onGenericError() {
@@ -127,24 +145,22 @@ public class WelcomePresenter {
   }
 
   public void stop() {
-    if (subscribtion != null) {
-      subscribtion.unsubscribe();
-    }
     this.welcomePresenterViewInterface = welcomePresenterViewInterfaceNull;
   }
 
   private void addAccount(User user, String accessToken) {
-    if (token != null
+    if (accessToken != null
         && accountAuthenticatorActivity != null
         && accountAuthenticatorActivity.get() != null) {
-      Account account = new Account(user.login, accountAuthenticatorActivity.get().getString(R.string.account_type));
+      Account account = new Account(user.login,
+          accountAuthenticatorActivity.get().getString(R.string.account_type));
       Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url);
       userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
-      AccountManager accountManager =
-          AccountManager.get(accountAuthenticatorActivity.get());
+      AccountManager accountManager = AccountManager.get(accountAuthenticatorActivity.get());
       accountManager.addAccountExplicitly(account, null, userData);
-      accountManager.setAuthToken(account, accountAuthenticatorActivity.get().getString(R.string.account_type), accessToken);
+      accountManager.setAuthToken(account,
+          accountAuthenticatorActivity.get().getString(R.string.account_type), accessToken);
 
       Bundle result = new Bundle();
       result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
@@ -153,27 +169,5 @@ public class WelcomePresenter {
       accountAuthenticatorActivity.get().setAccountAuthenticatorResult(result);
       welcomePresenterViewInterface.finishAccess(user);
     }
-  }
-
-  private class CredentialsSubscription extends rx.Subscriber<GithubAuthorization> {
-    @Override
-    public void onCompleted() {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      checkErrorFromAuthorization(e);
-    }
-
-    @Override
-    public void onNext(GithubAuthorization githubAuthorization) {
-      onAuthorizationWork(githubAuthorization.token);
-    }
-  }
-
-  private void onAuthorizationWork(String token) {
-    this.token = token;
-    executeUserAuth(new GetAuthUserClient(token));
   }
 }
