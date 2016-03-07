@@ -118,6 +118,8 @@ public class RepoAboutFragment extends Fragment
       repoWatched = aBoolean;
       if (aBoolean) {
         GcmTopicsHelper.registerInTopic(getActivity(), repoInfo);
+      } else {
+        GcmTopicsHelper.unregisterInTopic(getActivity(), repoInfo);
       }
       changeWatchView();
     }
