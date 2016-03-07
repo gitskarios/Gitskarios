@@ -22,4 +22,20 @@ public class GcmTopicsHelper {
       }
     }).start();
   }
+
+  public static void unregisterInTopic(final Context context, final RepoInfo repoInfo) {
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          String gcmToken = new GitskariosSettings(context).getGCMToken();
+          GcmPubSub pubSub = GcmPubSub.getInstance(context);
+
+          pubSub.unsubscribe(gcmToken, "/topics/" + repoInfo.owner + "-" + repoInfo.name);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }).start();
+  }
 }

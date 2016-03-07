@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
-import com.alorma.github.gcm.GitskariosInstanceIDListenerService;
+import com.alorma.github.gcm.GitskariosRegistrationService;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.gitskarios.core.client.LogProvider;
@@ -80,8 +80,8 @@ public class GitskariosApplication extends MultiDexApplication {
       }
     });
 
-    if (new GitskariosSettings(this).getGCMToken() != null) {
-      Intent intent = new Intent(this, GitskariosInstanceIDListenerService.class);
+    if (new GitskariosSettings(this).getGCMToken() == null) {
+      Intent intent = new Intent(this, GitskariosRegistrationService.class);
       startService(intent);
     }
   }
