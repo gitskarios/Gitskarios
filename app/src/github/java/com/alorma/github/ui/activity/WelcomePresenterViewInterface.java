@@ -4,6 +4,8 @@ import com.alorma.github.sdk.bean.dto.response.User;
 
 public interface WelcomePresenterViewInterface {
 
+  void willLogin();
+
   void onErrorUnauthorized();
 
   void onErrorTwoFactorException();
@@ -12,7 +14,14 @@ public interface WelcomePresenterViewInterface {
 
   void finishAccess(User user);
 
+  void didLogin();
+
   class NullView implements WelcomePresenterViewInterface {
+
+    @Override
+    public void willLogin() {
+
+    }
 
     @Override
     public void onErrorUnauthorized() {
@@ -31,6 +40,11 @@ public interface WelcomePresenterViewInterface {
 
     @Override
     public void finishAccess(User user) {
+
+    }
+
+    @Override
+    public void didLogin() {
 
     }
   }
