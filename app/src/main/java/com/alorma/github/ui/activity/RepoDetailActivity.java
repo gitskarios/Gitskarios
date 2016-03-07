@@ -19,13 +19,18 @@ import android.widget.AdapterView;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
+import com.alorma.github.gcm.GcmTopicsHelper;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
+import com.alorma.github.sdk.bean.dto.request.WebHookRequest;
+import com.alorma.github.sdk.bean.dto.request.WebHookResponse;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
+import com.alorma.github.sdk.services.webhooks.AddWebHookClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
@@ -242,10 +247,13 @@ public class RepoDetailActivity extends BackActivity
     super.onPrepareOptionsMenu(menu);
 
     if (menu != null) {
-      if (menu.findItem(R.id.action_manage_repo) == null) {
-        if (currentRepo != null && currentRepo.permissions != null) {
-          if (currentRepo.permissions.admin) {
+      if (currentRepo != null && currentRepo.permissions != null) {
+        if (currentRepo.permissions.admin) {
+          if (menu.findItem(R.id.action_manage_repo) == null) {
             getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+          }
+          if (menu.findItem(R.id.action_subscribe_push) == null) {
+            getMenuInflater().inflate(R.menu.repo_detail_activity_push, menu);
           }
         }
       }
@@ -301,6 +309,31 @@ public class RepoDetailActivity extends BackActivity
       }
     } else if (item.getItemId() == R.id.action_add_shortcut) {
       ShortcutUtils.addShortcut(this, requestRepoInfo);
+    } else if (item.getItemId() == R.id.action_subscribe_push) {
+      WebHookRequest webhook = new WebHookRequest();
+      webhook.name = "web";
+      webhook.active = true;
+      webhook.events = new String[] {
+          "issues"
+      };
+      webhook.config = new WebHookConfigRequest();
+      webhook.config.content_type = "json";
+      webhook.config.url = "https://cryptic-ravine-97684.herokuapp.com/message";
+
+      new AddWebHookClient(requestRepoInfo.owner, requestRepoInfo.name, webhook).observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Action1<WebHookResponse>() {
+            @Override
+            public void call(WebHookResponse webHookResponse) {
+              GcmTopicsHelper.registerInTopic(RepoDetailActivity.this, requestRepoInfo);
+            }
+          }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+
+            }
+          });
     }
 
     return false;
@@ -461,7 +494,8 @@ public class RepoDetailActivity extends BackActivity
     archive_url = archive_url.replace("{/ref}", "/" + currentRepo.default_branch);
 
     new GitskariosDownloadManager().download(this, archive_url,
-        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(fileType), viewPager);
+        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(
+            fileType), viewPager);
   }
 
   private String getExtensionFromFileType(String fileType) {

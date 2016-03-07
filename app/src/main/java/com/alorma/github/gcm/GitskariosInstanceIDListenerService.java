@@ -26,11 +26,6 @@ public class GitskariosInstanceIDListenerService extends IntentService {
       String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
           GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
       new GitskariosSettings(this).saveGCMToken(token);
-
-      GcmPubSub pubSub = GcmPubSub.getInstance(this);
-      pubSub.subscribe(token, "/topics/" + "alorma-test_push", null);
-
-      Log.i("GCM", token);
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
+import com.alorma.github.gcm.GcmTopicsHelper;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
@@ -115,6 +116,9 @@ public class RepoAboutFragment extends Fragment
     @Override
     public void onNext(Boolean aBoolean) {
       repoWatched = aBoolean;
+      if (aBoolean) {
+        GcmTopicsHelper.registerInTopic(getActivity(), repoInfo);
+      }
       changeWatchView();
     }
   };

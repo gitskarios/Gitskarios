@@ -229,8 +229,10 @@
       <intent-filter>
         <action android:name="com.google.android.gms.iid.InstanceID" />
       </intent-filter>
+
     </service>
 
+    <service android:name=".account.GetNotificationsService"/>
 
 
   </application>

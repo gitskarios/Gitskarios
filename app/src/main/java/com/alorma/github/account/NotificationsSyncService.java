@@ -4,9 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-/**
- * Created by Bernat on 07/06/2015.
- */
 public class NotificationsSyncService extends Service {
   // Object to use as a thread-safe lock
   private static final Object sSyncAdapterLock = new Object();

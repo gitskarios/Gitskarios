@@ -80,8 +80,10 @@ public class GitskariosApplication extends MultiDexApplication {
       }
     });
 
-    Intent intent = new Intent(this, GitskariosInstanceIDListenerService.class);
-    startService(intent);
+    if (new GitskariosSettings(this).getGCMToken() != null) {
+      Intent intent = new Intent(this, GitskariosInstanceIDListenerService.class);
+      startService(intent);
+    }
   }
 
   @NonNull
