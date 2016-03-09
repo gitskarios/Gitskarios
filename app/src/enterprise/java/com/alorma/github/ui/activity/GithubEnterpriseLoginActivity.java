@@ -17,6 +17,7 @@ import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.gitskarios.core.Pair;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import io.fabric.sdk.android.Fabric;
@@ -86,7 +87,7 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
       authUserClient.observable()
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<User>() {
+          .subscribe(new Subscriber<Pair<User, String>>() {
             @Override
             public void onCompleted() {
 
@@ -98,8 +99,8 @@ public class GithubEnterpriseLoginActivity extends AccountAuthenticatorActivity 
             }
 
             @Override
-            public void onNext(User user) {
-              addAccount(user, finalUrl, token);
+            public void onNext(Pair<User, String> user) {
+              addAccount(user.first, finalUrl, user.second);
               MainActivity.startActivity(GithubEnterpriseLoginActivity.this);
               finish();
             }

@@ -21,6 +21,7 @@ import com.alorma.github.R;
 import com.alorma.github.account.GithubLoginFragment;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.gitskarios.core.Pair;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -138,7 +139,7 @@ public class GithubLoginActivity extends AccountAuthenticatorActivity
     authUserClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<User>() {
+        .subscribe(new Subscriber<Pair<User, String>>() {
           @Override
           public void onCompleted() {
 
@@ -150,8 +151,8 @@ public class GithubLoginActivity extends AccountAuthenticatorActivity
           }
 
           @Override
-          public void onNext(User user) {
-            addAccount(user);
+          public void onNext(Pair<User, String> user) {
+            addAccount(user.first);
             MainActivity.startActivity(GithubLoginActivity.this);
             finish();
           }
