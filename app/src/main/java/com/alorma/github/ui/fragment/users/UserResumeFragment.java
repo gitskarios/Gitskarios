@@ -107,6 +107,9 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     }
     if (!TextUtils.isEmpty(user.blog)) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
+      if (!user.blog.startsWith("http://") || !user.blog.startsWith("https://")) {
+        user.blog = "http://" + user.blog;
+      }
       intent.setData(Uri.parse(user.blog));
       ProfileItem profileUserBlog = new ProfileItem(Octicons.Icon.oct_link, user.blog, intent);
       addItem(profileUserBlog, cardAbout);
