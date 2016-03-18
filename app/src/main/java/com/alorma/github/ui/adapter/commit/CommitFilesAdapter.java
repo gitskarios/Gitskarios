@@ -14,9 +14,6 @@ import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.TextUtils;
 import java.io.IOException;
 
-/**
- * Created by Bernat on 22/12/2014.
- */
 public class CommitFilesAdapter
     extends RecyclerArrayAdapter<CommitFile, CommitFilesAdapter.FileVH> {
 

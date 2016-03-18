@@ -5,6 +5,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical"
+             android:fitsSystemWindows="true"
     >
 
   <include layout="@layout/toolbar"/>
@@ -14,7 +15,6 @@
       android:layout_height="match_parent"
       android:clipToPadding="false"
       android:paddingTop="?attr/actionBarSize"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
       >
 
     <android.support.v4.widget.SwipeRefreshLayout

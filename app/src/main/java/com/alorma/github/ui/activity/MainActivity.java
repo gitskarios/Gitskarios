@@ -40,8 +40,6 @@ import com.alorma.github.ui.fragment.gists.AuthUserStarredGistsFragment;
 import com.alorma.github.ui.fragment.issues.GenericIssuesListFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
-import com.alorma.github.ui.view.GitskariosProfileDrawerItem;
-import com.alorma.github.ui.view.SecondarySwitchDrawerItem;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 import com.crashlytics.android.answers.InviteEvent;
@@ -67,6 +65,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
@@ -303,8 +302,8 @@ public class MainActivity extends BaseActivity
       @Override
       public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
         if (drawerItem != null) {
-          int identifier = drawerItem.getIdentifier();
-          switch (identifier) {
+          long identifier = drawerItem.getIdentifier();
+          switch ((int) identifier) {
             case R.id.nav_drawer_events:
               onUserEventsSelected();
               break;
@@ -397,7 +396,7 @@ public class MainActivity extends BaseActivity
       for (Account account : accountList) {
         String userAvatar = AccountsHelper.getUserAvatar(this, account);
         ProfileDrawerItem profileDrawerItem =
-            new GitskariosProfileDrawerItem().withName(account.name)
+            new ProfileDrawerItem().withName(account.name)
                 .withEmail(getUserExtraName(account))
                 .withIdentifier(account.hashCode());
         if (!TextUtils.isEmpty(userAvatar)) {

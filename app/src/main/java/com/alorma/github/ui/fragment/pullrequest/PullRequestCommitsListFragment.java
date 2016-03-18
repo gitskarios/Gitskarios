@@ -69,6 +69,7 @@ public class PullRequestCommitsListFragment
 
         commitsAdapter.addAll(issueStoryDetails);
         setAdapter(commitsAdapter);
+        stopRefresh();
       } else {
         getAdapter().addAll(issueStoryDetails);
       }

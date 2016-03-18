@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,7 +31,6 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -61,16 +61,21 @@ import com.alorma.github.ui.actions.ReopenAction;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
+import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
+import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.ShortcutUtils;
 import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarFragment;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
@@ -89,22 +94,6 @@ public class PullRequestDetailActivity extends BackActivity
 
   private static final int NEW_COMMENT_REQUEST = 1243;
   private static final int ISSUE_BODY_EDIT = 4252;
-  Subscriber<GithubComment> githubCommentSubscriber = new Subscriber<GithubComment>() {
-    @Override
-    public void onCompleted() {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-
-    }
-
-    @Override
-    public void onNext(GithubComment githubComment) {
-
-    }
-  };
   private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
   private RecyclerView recyclerView;
@@ -116,6 +105,7 @@ public class PullRequestDetailActivity extends BackActivity
   private Repo repository;
   private PullRequestDetailAdapter adapter;
   private SwipeRefreshLayout swipe;
+  private BottomBar mBottomBar;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -142,7 +132,7 @@ public class PullRequestDetailActivity extends BackActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_pullrequest_detail);
+    setContentView(R.layout.generic_toolbar);
 
     if (getIntent().getExtras() != null) {
 
@@ -166,10 +156,43 @@ public class PullRequestDetailActivity extends BackActivity
       primary = ContextCompat.getColor(this, R.color.primary);
       primaryDark = ContextCompat.getColor(this, R.color.primary_dark_alpha);
 
-      findViews();
-
-      getContent();
+      //findViews();
+      createBottom(savedInstanceState);
+      //getContent();
     }
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    mBottomBar.onSaveInstanceState(outState);
+  }
+
+  private void createBottom(Bundle savedInstanceState) {
+    mBottomBar = BottomBar.attach(this, savedInstanceState);
+
+    mBottomBar.useOnlyStatusBarTopOffset();
+
+    BottomBarFragment conversationFragment =
+        new BottomBarFragment(new ListFragment(), getBottomTabIcon(Octicons.Icon.oct_info),
+            "Conversation");
+    BottomBarFragment filesFragment =
+        new BottomBarFragment(PullRequestFilesListFragment.newInstance(issueInfo),
+            getBottomTabIcon(Octicons.Icon.oct_file_code), "Files");
+    BottomBarFragment commitsFragment =
+        new BottomBarFragment(PullRequestCommitsListFragment.newInstance(issueInfo),
+            getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits");
+
+    mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.content, conversationFragment,
+        filesFragment, commitsFragment);
+
+    mBottomBar.mapColorForTab(0, Color.RED);
+    mBottomBar.mapColorForTab(1, Color.GREEN);
+    mBottomBar.mapColorForTab(2, Color.BLUE);
+  }
+
+  private IconicsDrawable getBottomTabIcon(IIcon icon) {
+    return new IconicsDrawable(this).icon(icon).sizeDp(24);
   }
 
   private void checkEditTitle() {
@@ -201,7 +224,9 @@ public class PullRequestDetailActivity extends BackActivity
     fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
     swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
-    swipe.setColorSchemeResources(R.color.accent);
+    if (swipe != null) {
+      swipe.setColorSchemeResources(R.color.accent);
+    }
 
     loadingView = (ProgressBar) findViewById(R.id.loading_view);
 

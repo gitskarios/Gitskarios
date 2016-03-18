@@ -22,9 +22,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class PullRequestFilesListFragment extends BaseFragment
     implements CommitFilesAdapter.OnFileRequestListener {
 
