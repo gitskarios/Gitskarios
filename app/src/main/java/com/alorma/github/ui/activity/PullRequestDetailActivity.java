@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -62,6 +61,7 @@ import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
+import com.alorma.github.ui.fragment.pullrequest.PullRequestDetailOverviewFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
@@ -132,7 +132,7 @@ public class PullRequestDetailActivity extends BackActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_coordinator);
 
     if (getIntent().getExtras() != null) {
 
@@ -171,11 +171,9 @@ public class PullRequestDetailActivity extends BackActivity
   private void createBottom(Bundle savedInstanceState) {
     mBottomBar = BottomBar.attach(this, savedInstanceState);
 
-    mBottomBar.useOnlyStatusBarTopOffset();
-
     BottomBarFragment conversationFragment =
-        new BottomBarFragment(new ListFragment(), getBottomTabIcon(Octicons.Icon.oct_info),
-            "Conversation");
+        new BottomBarFragment(PullRequestDetailOverviewFragment.newInstance(issueInfo),
+            getBottomTabIcon(Octicons.Icon.oct_info), "Conversation");
     BottomBarFragment filesFragment =
         new BottomBarFragment(PullRequestFilesListFragment.newInstance(issueInfo),
             getBottomTabIcon(Octicons.Icon.oct_file_code), "Files");
