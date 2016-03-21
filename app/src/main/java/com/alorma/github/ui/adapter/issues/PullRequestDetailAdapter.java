@@ -20,9 +20,6 @@ import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 
-/**
- * Created by Bernat on 08/04/2015.
- */
 public class PullRequestDetailAdapter
     extends RecyclerView.Adapter<PullRequestDetailAdapter.Holder> {
 
@@ -79,7 +76,7 @@ public class PullRequestDetailAdapter
 
     if (position == 0) {
       ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo,
-          pullRequestStory.pullRequest, pullRequestStory.statusResponse, permissions);
+          pullRequestStory.pullRequest, permissions);
       ((PullRequestHolder) holder).pullRequestDetailView.setIssueDetailRequestListener(
           issueDetailRequestListener);
       ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(

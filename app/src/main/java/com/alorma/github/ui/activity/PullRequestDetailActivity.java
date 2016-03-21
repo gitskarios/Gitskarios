@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -170,10 +171,14 @@ public class PullRequestDetailActivity extends BackActivity
 
   private void createBottom(Bundle savedInstanceState) {
     mBottomBar = BottomBar.attach(this, savedInstanceState);
+    mBottomBar.useOnlyStatusBarTopOffset();
 
     BottomBarFragment conversationFragment =
         new BottomBarFragment(PullRequestDetailOverviewFragment.newInstance(issueInfo),
-            getBottomTabIcon(Octicons.Icon.oct_info), "Conversation");
+            getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation");
+
+    BottomBarFragment infoFragment =
+        new BottomBarFragment(new ListFragment(), getBottomTabIcon(Octicons.Icon.oct_info), "Info");
     BottomBarFragment filesFragment =
         new BottomBarFragment(PullRequestFilesListFragment.newInstance(issueInfo),
             getBottomTabIcon(Octicons.Icon.oct_file_code), "Files");
@@ -182,15 +187,11 @@ public class PullRequestDetailActivity extends BackActivity
             getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits");
 
     mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.content, conversationFragment,
-        filesFragment, commitsFragment);
-
-    mBottomBar.mapColorForTab(0, Color.RED);
-    mBottomBar.mapColorForTab(1, Color.GREEN);
-    mBottomBar.mapColorForTab(2, Color.BLUE);
+        infoFragment, filesFragment, commitsFragment);
   }
 
   private IconicsDrawable getBottomTabIcon(IIcon icon) {
-    return new IconicsDrawable(this).icon(icon).sizeDp(24);
+    return new IconicsDrawable(this).icon(icon).sizeDp(20);
   }
 
   private void checkEditTitle() {
