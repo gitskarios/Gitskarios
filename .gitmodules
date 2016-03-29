@@ -1,3 +1,7 @@
 [submodule "sdks/GithubAndroidSdk"]
 	path = sdks/GithubAndroidSdk
 	url = https://github.com/gitskarios/GithubAndroidSdk
+[submodule "GithubAndroidSdk_reborn"]
+	path = GithubAndroidSdk_reborn
+[submodule "GithubAndroidSdk_reborn"]
+	url = git@github.com:gitskarios/GithubAndroidSdk_reborn.git
