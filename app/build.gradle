@@ -183,8 +183,8 @@ def getGHCallback(pro) {
 
 dependencies {
   compile project(':sdks:GithubAndroidSdk')
-  compile project(':sdks:GithubAndroidSdk_reborn')
-  // Submodules
+  compile project(':sdks:GithubReborn')
+
   compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
     transitive = true;
   }
@@ -253,6 +253,9 @@ dependencies {
   compile 'com.jakewharton:process-phoenix:1.0.2'
 
   compile 'com.github.alorma:timelineview:2.2.1'
+
+  compile 'com.squareup.retrofit2:retrofit:2.0.0'
+  compile 'com.squareup.retrofit2:converter-gson:2.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

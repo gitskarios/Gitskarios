@@ -1,4 +1,4 @@
-package com.clean.presenter;
+package com.alorma.github.presenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,7 +8,6 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.Subscriber;

@@ -7,13 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.GitskariosSettings;
-import com.alorma.github.R;
 import com.alorma.github.IntentsManager;
+import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsParent;
+import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.notifications.NotificationsPresenter;
+import com.alorma.github.presenter.notifications.NotificationsRequest;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubClient;
-import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
 import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
@@ -21,21 +23,19 @@ import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
+import com.alorma.gitskarios.core.client.TokenProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 19/02/2015.
- */
 public class NotificationsFragment extends LoadingListFragment<NotificationsAdapter>
-    implements NotificationsAdapter.NotificationsAdapterListener {
+    implements NotificationsAdapter.NotificationsAdapterListener,
+    Presenter.Callback<List<Notification>> {
 
   public static NotificationsFragment newInstance() {
     return new NotificationsFragment();
@@ -58,65 +58,21 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   protected void executeRequest() {
     super.executeRequest();
 
-    String token = null;
+    String token =
+        TokenProvider.getInstance() != null ? TokenProvider.getInstance().getToken() : null;
     if (getArguments() != null && getArguments().containsKey(BaseActivity.EXTRA_WITH_TOKEN)) {
       token = getArguments().getString(BaseActivity.EXTRA_WITH_TOKEN);
     }
 
-    GetNotificationsClient client = new GetNotificationsClient(token);
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<List<Notification>>() {
-          @Override
-          public void onCompleted() {
-            stopRefresh();
-          }
+    if (token != null) {
+      NotificationsPresenter presenter = new NotificationsPresenter();
 
-          @Override
-          public void onError(Throwable e) {
-            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-              setEmpty();
-            }
-          }
+      NotificationsRequest request = new NotificationsRequest();
+      request.setToken(token);
+      request.setAllNotifications(true);
+      request.setParticipatingNotifications(false);
 
-          @Override
-          public void onNext(List<Notification> notifications) {
-            onNotificationsReceived(notifications);
-          }
-        });
-  }
-
-  private void onNotificationsReceived(List<Notification> notifications) {
-    if (notifications != null && notifications.size() > 0) {
-      if (notifications.size() > 0) {
-        if (getAdapter() != null && getAdapter().getItemCount() > 0) {
-          hideEmpty();
-        }
-
-        Map<Long, NotificationsParent> parents = new HashMap<>();
-
-        for (Notification notification : notifications) {
-          if (parents.get(notification.repository.id) == null) {
-            NotificationsParent notificationsParent = new NotificationsParent();
-            parents.put(notification.repository.id, notificationsParent);
-            notificationsParent.repo = notification.repository;
-            notificationsParent.notifications = new ArrayList<>();
-          }
-          parents.get(notification.repository.id).notifications.add(notification);
-        }
-
-        NotificationsAdapter notificationsAdapter =
-            new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
-        notificationsAdapter.addAll(parents.values());
-        notificationsAdapter.setNotificationsAdapterListener(this);
-
-        setAdapter(notificationsAdapter);
-      } else {
-        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-          setEmpty();
-        }
-      }
+      presenter.load(request, this);
     }
   }
 
@@ -232,5 +188,49 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   public void unsubscribeThreadNotification(Notification notification) {
     startRefresh();
     setAction(new UnsubscribeThread(notification));
+  }
+
+  @Override
+  public void showLoading() {
+    startRefresh();
+  }
+
+  @Override
+  public void onResponse(List<Notification> notifications) {
+    if (notifications != null && notifications.size() > 0) {
+      if (notifications.size() > 0) {
+        if (getAdapter() != null && getAdapter().getItemCount() > 0) {
+          hideEmpty();
+        }
+
+        Map<Long, NotificationsParent> parents = new HashMap<>();
+
+        for (Notification notification : notifications) {
+          if (parents.get(notification.repository.id) == null) {
+            NotificationsParent notificationsParent = new NotificationsParent();
+            parents.put(notification.repository.id, notificationsParent);
+            notificationsParent.repo = notification.repository;
+            notificationsParent.notifications = new ArrayList<>();
+          }
+          parents.get(notification.repository.id).notifications.add(notification);
+        }
+
+        NotificationsAdapter notificationsAdapter =
+            new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
+        notificationsAdapter.addAll(parents.values());
+        notificationsAdapter.setNotificationsAdapterListener(this);
+
+        setAdapter(notificationsAdapter);
+      } else {
+        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+          setEmpty();
+        }
+      }
+    }
+  }
+
+  @Override
+  public void hideLoading() {
+    stopRefresh();
   }
 }

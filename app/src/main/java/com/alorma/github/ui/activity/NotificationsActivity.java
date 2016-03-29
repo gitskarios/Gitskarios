@@ -10,9 +10,6 @@ import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 
-/**
- * Created by a557114 on 23/04/2015.
- */
 public class NotificationsActivity extends BackActivity {
 
   public static Intent launchIntent(Context context) {

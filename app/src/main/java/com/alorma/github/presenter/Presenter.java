@@ -1,8 +1,5 @@
-package com.clean.presenter;
+package com.alorma.github.presenter;
 
-/**
- * Created by bernat.borras on 12/11/15.
- */
 public abstract class Presenter<Request, Response> {
 
   public abstract void load(Request request, Callback<Response> responseCallback);
