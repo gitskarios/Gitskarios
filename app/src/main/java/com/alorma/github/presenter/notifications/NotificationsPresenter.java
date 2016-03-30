@@ -56,13 +56,13 @@ public class NotificationsPresenter extends Presenter<NotificationsRequest, List
             Map<Long, NotificationsParent> parents = new HashMap<>();
 
             for (Notification notification : notifications) {
-              if (parents.get(notification.repository.id) == null) {
+              if (parents.get(notification.repository.getId()) == null) {
                 NotificationsParent notificationsParent = new NotificationsParent();
-                parents.put(notification.repository.id, notificationsParent);
+                parents.put(notification.repository.getId(), notificationsParent);
                 notificationsParent.repo = notification.repository;
                 notificationsParent.notifications = new ArrayList<>();
               }
-              parents.get(notification.repository.id).notifications.add(notification);
+              parents.get(notification.repository.getId()).notifications.add(notification);
             }
 
             Collection<NotificationsParent> values = parents.values();

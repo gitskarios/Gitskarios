@@ -113,7 +113,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
         || type.equalsIgnoreCase("Release")) {
       uri = Uri.parse(notification.subject.url);
     } else {
-      uri = Uri.parse(notification.repository.html_url);
+      uri = Uri.parse(notification.repository.htmlUrl);
     }
     Intent intent = new IntentsManager(getActivity()).checkUri(uri);
     if (intent != null) {
@@ -139,8 +139,8 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   @Override
   public void requestRepo(NotificationsParent item) {
     RepoInfo repoInfo = new RepoInfo();
-    repoInfo.owner = item.repo.owner.login;
-    repoInfo.name = item.repo.name;
+    repoInfo.owner = item.repo.getOwner().getLogin();
+    repoInfo.name = item.repo.getName();
 
     Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
     startActivity(intent);
@@ -153,8 +153,8 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
       getAdapter().clear();
     }
     RepoInfo repoInfo = new RepoInfo();
-    repoInfo.owner = item.repo.owner.login;
-    repoInfo.name = item.repo.name;
+    repoInfo.owner = item.repo.getOwner().getLogin();
+    repoInfo.name = item.repo.getName();
     setAction(new MarkRepoNotificationsRead(repoInfo));
   }
 

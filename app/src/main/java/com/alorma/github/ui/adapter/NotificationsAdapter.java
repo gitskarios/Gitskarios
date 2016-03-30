@@ -41,7 +41,7 @@ public class NotificationsAdapter
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, NotificationsParent notification) {
-    holder.text_repo.setText(notification.repo.full_name);
+    holder.text_repo.setText(notification.repo.getFullName());
     holder.clear_all_repo.setImageDrawable(iconDrawable);
 
     for (Notification noti : notification.notifications) {
@@ -78,7 +78,8 @@ public class NotificationsAdapter
       @Override
       public void onClick(View v) {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        popupMenu.inflate(R.menu.notifications_row_menu);
+        popupMenu.inflate(noti.unread ? R.menu.notifications_row_menu_unread
+            : R.menu.notifications_row_menu_read);
         popupMenu.setOnMenuItemClickListener(new MenuListener(noti));
         popupMenu.show();
       }
