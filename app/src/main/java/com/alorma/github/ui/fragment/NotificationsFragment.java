@@ -12,9 +12,9 @@ import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.notifications.NotificationsPresenter;
-import com.alorma.github.presenter.notifications.NotificationsRequest;
-import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.core.notifications.Notification;
+import com.alorma.github.sdk.core.notifications.NotificationsRequest;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
@@ -70,7 +70,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
       NotificationsRequest request = new NotificationsRequest();
       request.setToken(token);
       request.setAllNotifications(true);
-      request.setParticipatingNotifications(false);
+      request.setParticipatingNotifications(true);
 
       presenter.load(request, this);
     }
@@ -137,7 +137,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     if (getAdapter() != null) {
       getAdapter().clear();
     }
-    setAction(new MarkNotificationAsRead(notification));
+    setAction(new MarkNotificationAsRead(notification.id));
   }
 
   @Override
@@ -187,7 +187,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   @Override
   public void unsubscribeThreadNotification(Notification notification) {
     startRefresh();
-    setAction(new UnsubscribeThread(notification));
+    setAction(new UnsubscribeThread(notification.id));
   }
 
   @Override

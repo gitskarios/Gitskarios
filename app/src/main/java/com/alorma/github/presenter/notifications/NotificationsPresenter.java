@@ -1,10 +1,13 @@
 package com.alorma.github.presenter.notifications;
 
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
+import com.alorma.github.sdk.core.notifications.CloudNotificationsDataSource;
+import com.alorma.github.sdk.core.notifications.Notification;
+import com.alorma.github.sdk.core.notifications.NotificationsRequest;
+import com.alorma.github.sdk.core.notifications.NotificationsRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
 import com.alorma.github.sdk.core.usecase.GenericUseCase;
 import java.util.List;

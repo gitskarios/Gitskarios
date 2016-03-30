@@ -12,15 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsParent;
-import com.alorma.github.sdk.bean.dto.response.Notification;
+import com.alorma.github.sdk.core.notifications.Notification;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-/**
- * Created by Bernat on 19/02/2015.
- */
 public class NotificationsAdapter
     extends RecyclerArrayAdapter<NotificationsParent, NotificationsAdapter.ViewHolder> {
 
