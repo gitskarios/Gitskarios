@@ -25,17 +25,14 @@ import com.alorma.github.ui.adapter.NotificationsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.gitskarios.core.client.TokenProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NotificationsFragment extends LoadingListFragment<NotificationsAdapter>
     implements NotificationsAdapter.NotificationsAdapterListener,
-    Presenter.Callback<List<Notification>> {
+    Presenter.Callback<List<NotificationsParent>> {
 
   public static NotificationsFragment newInstance() {
     return new NotificationsFragment();
@@ -70,7 +67,6 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
       NotificationsRequest request = new NotificationsRequest();
       request.setToken(token);
       request.setAllNotifications(true);
-      request.setParticipatingNotifications(true);
 
       presenter.load(request, this);
     }
@@ -196,28 +192,16 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   }
 
   @Override
-  public void onResponse(List<Notification> notifications) {
+  public void onResponse(List<NotificationsParent> notifications) {
     if (notifications != null && notifications.size() > 0) {
       if (notifications.size() > 0) {
         if (getAdapter() != null && getAdapter().getItemCount() > 0) {
           hideEmpty();
         }
 
-        Map<Long, NotificationsParent> parents = new HashMap<>();
-
-        for (Notification notification : notifications) {
-          if (parents.get(notification.repository.id) == null) {
-            NotificationsParent notificationsParent = new NotificationsParent();
-            parents.put(notification.repository.id, notificationsParent);
-            notificationsParent.repo = notification.repository;
-            notificationsParent.notifications = new ArrayList<>();
-          }
-          parents.get(notification.repository.id).notifications.add(notification);
-        }
-
         NotificationsAdapter notificationsAdapter =
             new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
-        notificationsAdapter.addAll(parents.values());
+        notificationsAdapter.addAll(notifications);
         notificationsAdapter.setNotificationsAdapterListener(this);
 
         setAdapter(notificationsAdapter);

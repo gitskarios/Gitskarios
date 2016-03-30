@@ -1,6 +1,7 @@
 package com.alorma.github.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -58,6 +59,10 @@ public class NotificationsAdapter
     StringBuilder msgBuilder = new StringBuilder();
     msgBuilder.append("<b>").append("[").append(type).append("] ").append("</b>").append(title);
     name.setText(Html.fromHtml(msgBuilder.toString()));
+
+    if (!noti.unread) {
+      name.setTextColor(Color.GRAY);
+    }
 
     name.setOnClickListener(new View.OnClickListener() {
       @Override
