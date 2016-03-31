@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.afollestad.materialdialogs.DialogAction;
@@ -29,6 +33,8 @@ import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.gitskarios.core.Pair;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -47,6 +53,15 @@ public class PullRequestDetailOverviewFragment extends Fragment
   private static final int ISSUE_BODY_EDIT = 4252;
   private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
+
+  private OverviewCallback overviewCallbackNull = new OverviewCallback() {
+    @Override
+    public void onAddComment() {
+
+    }
+  };
+
+  private OverviewCallback overviewCallback = overviewCallbackNull;
 
   private SwipeRefreshLayout swipe;
   private RecyclerView recyclerView;
@@ -105,6 +120,30 @@ public class PullRequestDetailOverviewFragment extends Fragment
 
     findViews(view);
     getContent();
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+
+    inflater.inflate(R.menu.pullrequest_detail_overview, menu);
+
+    MenuItem item = menu.findItem(R.id.action_pull_request_add_comment);
+
+    if (item != null) {
+      item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_comment_add)
+          .actionBar()
+          .color(Color.WHITE));
+    }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.action_pull_request_add_comment) {
+      overviewCallback.onAddComment();
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 
   private void checkEditTitle() {
@@ -302,5 +341,13 @@ public class PullRequestDetailOverviewFragment extends Fragment
   @Override
   public void mergeRequest(Head head, Head base) {
 
+  }
+
+  public void setOverviewCallback(OverviewCallback overviewCallback) {
+    this.overviewCallback = overviewCallback;
+  }
+
+  public interface OverviewCallback {
+    void onAddComment();
   }
 }

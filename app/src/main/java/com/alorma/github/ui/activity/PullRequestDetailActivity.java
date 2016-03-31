@@ -2,12 +2,10 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -89,8 +87,9 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class PullRequestDetailActivity extends BackActivity
-    implements View.OnClickListener, PullRequestDetailView.PullRequestActionsListener,
-    IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
+    implements PullRequestDetailView.PullRequestActionsListener,
+    IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener,
+    PullRequestDetailOverviewFragment.OverviewCallback {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -102,7 +101,6 @@ public class PullRequestDetailActivity extends BackActivity
   private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
   private RecyclerView recyclerView;
-  private FloatingActionButton fab;
   private PullRequestStory pullRequestStory;
   private int primary;
   private int primaryDark;
@@ -111,6 +109,7 @@ public class PullRequestDetailActivity extends BackActivity
   private PullRequestDetailAdapter adapter;
   private SwipeRefreshLayout swipe;
   private BottomBar mBottomBar;
+  private Fragment currentFragment;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -179,7 +178,11 @@ public class PullRequestDetailActivity extends BackActivity
     mBottomBar.useOnlyStatusBarTopOffset();
 
     final List<Fragment> fragments = new ArrayList<>();
-    fragments.add(PullRequestDetailOverviewFragment.newInstance(issueInfo));
+    PullRequestDetailOverviewFragment overviewFragment =
+        PullRequestDetailOverviewFragment.newInstance(issueInfo);
+    overviewFragment.setOverviewCallback(this);
+    fragments.add(overviewFragment);
+
     fragments.add(new ListFragment());
     fragments.add(PullRequestFilesListFragment.newInstance(issueInfo));
     fragments.add(PullRequestCommitsListFragment.newInstance(issueInfo));
@@ -205,8 +208,12 @@ public class PullRequestDetailActivity extends BackActivity
 
   private void selectFragment(Fragment fragment) {
     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    ft.replace(R.id.content, fragment);
+    if (currentFragment != null) {
+      ft.remove(currentFragment);
+    }
+    ft.add(R.id.content, fragment);
     ft.commit();
+    currentFragment = fragment;
   }
 
   private IconicsDrawable getBottomTabIcon(IIcon icon) {
@@ -239,7 +246,6 @@ public class PullRequestDetailActivity extends BackActivity
   private void findViews() {
     recyclerView = (RecyclerView) findViewById(R.id.recycler);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
     swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
     if (swipe != null) {
@@ -247,12 +253,6 @@ public class PullRequestDetailActivity extends BackActivity
     }
 
     loadingView = (ProgressBar) findViewById(R.id.loading_view);
-
-    IconicsDrawable drawable =
-        new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE)
-            .sizeDp(24);
-
-    fab.setImageDrawable(drawable);
 
     ViewCompat.setElevation(getToolbar(), getResources().getDimensionPixelOffset(R.dimen.gapSmall));
   }
@@ -391,9 +391,6 @@ public class PullRequestDetailActivity extends BackActivity
     checkEditTitle();
     changeColor(pullRequestStory.pullRequest);
 
-    fab.setVisibility(pullRequestStory.pullRequest.locked ? View.GONE : View.VISIBLE);
-    fab.setOnClickListener(pullRequestStory.pullRequest.locked ? null : this);
-
     String status = getString(R.string.issue_status_open);
     if (IssueState.closed == pullRequestStory.pullRequest.state) {
       status = getString(R.string.issue_status_close);
@@ -482,15 +479,6 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   @Override
-  public void onClick(View view) {
-    if (view.getId() == fab.getId()) {
-      if (!pullRequestStory.pullRequest.locked) {
-        onAddComment();
-      }
-    }
-  }
-
-  @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     if (this.pullRequestStory != null) {
       if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
@@ -537,6 +525,7 @@ public class PullRequestDetailActivity extends BackActivity
     return true;
   }
 
+  @Override
   public void onAddComment() {
     String hint = getString(R.string.add_comment);
     Intent intent =
@@ -556,23 +545,11 @@ public class PullRequestDetailActivity extends BackActivity
         break;
       case R.id.action_close_issue:
         new CloseAction(this, issueInfo, R.string.closePullRequest).setCallback(
-            new ActionCallback<Issue>() {
-              @Override
-              public void onResult(Issue issue) {
-                getContent();
-                Snackbar.make(fab, R.string.pullrequest_change, Snackbar.LENGTH_SHORT).show();
-              }
-            }).execute();
+            issue -> getContent()).execute();
         break;
       case R.id.action_reopen_issue:
         new ReopenAction(this, issueInfo, R.string.reopenPullrequst).setCallback(
-            new ActionCallback<Issue>() {
-              @Override
-              public void onResult(Issue issue) {
-                getContent();
-                Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
-              }
-            }).execute();
+            issue -> getContent()).execute();
         break;
       case R.id.issue_edit_milestone:
         editMilestone();
@@ -596,7 +573,7 @@ public class PullRequestDetailActivity extends BackActivity
         break;
     }
 
-    return true;
+    return false;
   }
 
   private void editMilestone() {
@@ -659,11 +636,8 @@ public class PullRequestDetailActivity extends BackActivity
     builder.title(R.string.merge_title);
     builder.content(head.label);
     builder.input(getString(R.string.merge_message), pullRequestStory.pullRequest.title, false,
-        new MaterialDialog.InputCallback() {
-          @Override
-          public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
-            merge(charSequence.toString(), head.sha, issueInfo);
-          }
+        (materialDialog, charSequence) -> {
+          merge(charSequence.toString(), head.sha, issueInfo);
         });
     builder.inputType(InputType.TYPE_CLASS_TEXT);
     builder.show();
@@ -688,13 +662,11 @@ public class PullRequestDetailActivity extends BackActivity
           @Override
           public void onError(Throwable e) {
             hideProgressDialog();
-            Snackbar.make(fab, R.string.pull_requests_merged_failed, Snackbar.LENGTH_SHORT).show();
           }
 
           @Override
           public void onNext(MergeButtonResponse mergeButtonResponse) {
             hideProgressDialog();
-            Snackbar.make(fab, R.string.pull_requests_merged, Snackbar.LENGTH_SHORT).show();
             reload();
           }
         });
@@ -727,17 +699,12 @@ public class PullRequestDetailActivity extends BackActivity
           new MaterialDialog.Builder(PullRequestDetailActivity.this).title(
               R.string.select_milestone)
               .items(itemsMilestones)
-              .itemsCallbackSingleChoice(selectedMilestone,
-                  new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-                        CharSequence text) {
+              .itemsCallbackSingleChoice(selectedMilestone, (materialDialog, view, i, text) -> {
 
-                      addMilestone(milestones.get(i));
+                addMilestone(milestones.get(i));
 
-                      return false;
-                    }
-                  })
+                return false;
+              })
               .forceStacking(true)
               .widgetColorRes(R.color.primary)
               .negativeText(R.string.add_milestone);
@@ -769,11 +736,8 @@ public class PullRequestDetailActivity extends BackActivity
     MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
     builder.title(R.string.add_milestone);
     builder.content(R.string.add_milestone_description);
-    builder.input(R.string.add_milestone_hint, 0, new MaterialDialog.InputCallback() {
-      @Override
-      public void onInput(MaterialDialog materialDialog, CharSequence milestoneName) {
-        createMilestone(milestoneName.toString());
-      }
+    builder.input(R.string.add_milestone_hint, 0, (materialDialog, milestoneName) -> {
+      createMilestone(milestoneName.toString());
     }).negativeText(R.string.cancel);
 
     builder.show();
@@ -843,8 +807,6 @@ public class PullRequestDetailActivity extends BackActivity
             hideProgressDialog();
 
             getContent();
-
-            Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
           }
         });
   }
@@ -912,7 +874,7 @@ public class PullRequestDetailActivity extends BackActivity
 
   @NonNull
   private AddIssueCommentAction getAddIssueCommentAction(String body) {
-    return new AddIssueCommentAction(this, issueInfo, body, fab);
+    return new AddIssueCommentAction(issueInfo, body);
   }
 
   @Override
@@ -1004,7 +966,7 @@ public class PullRequestDetailActivity extends BackActivity
 
     @Override
     public void onCommentAdded() {
-      Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT)
+      Snackbar.make(findViewById(R.id.content), R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT)
           .setAction(R.string.retry, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1026,11 +988,6 @@ public class PullRequestDetailActivity extends BackActivity
   private class AssigneActionCallback implements ActionCallback<Boolean> {
     @Override
     public void onResult(Boolean result) {
-      if (result) {
-        Snackbar.make(fab, "Assignee changed", Snackbar.LENGTH_SHORT).show();
-      } else {
-        Snackbar.make(fab, "Assignee change failed", Snackbar.LENGTH_SHORT).show();
-      }
       getContent();
     }
   }

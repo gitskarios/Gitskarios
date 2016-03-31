@@ -678,7 +678,7 @@ public class IssueDetailActivity extends BackActivity
 
   @NonNull
   private AddIssueCommentAction getAddIssueCommentAction(String body) {
-    return new AddIssueCommentAction(this, issueInfo, body, fab);
+    return new AddIssueCommentAction(issueInfo, body);
   }
 
   @Override

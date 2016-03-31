@@ -487,4 +487,5 @@
   <string name="unauthorized_login">Bad credentials</string>
   <string name="notifications_all">ALL</string>
   <string name="notifications_new">NEW</string>
+  <string name="action_pull_request_add_comment">Add coment</string>
 </resources>
