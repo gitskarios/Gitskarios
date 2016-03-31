@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.GitskariosSettings;
@@ -34,8 +36,16 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     implements NotificationsAdapter.NotificationsAdapterListener,
     Presenter.Callback<List<NotificationsParent>> {
 
+  private boolean isShowingAllNotifications = false;
+
   public static NotificationsFragment newInstance() {
     return new NotificationsFragment();
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
   }
 
   @Override
@@ -66,10 +76,31 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
 
       NotificationsRequest request = new NotificationsRequest();
       request.setToken(token);
-      request.setAllNotifications(true);
+      request.setAllNotifications(isShowingAllNotifications);
 
       presenter.load(request, this);
     }
+  }
+
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+    menu.clear();
+    if (isShowingAllNotifications) {
+      getActivity().getMenuInflater().inflate(R.menu.action_notifications_new, menu);
+    } else {
+      getActivity().getMenuInflater().inflate(R.menu.action_notifications_all, menu);
+    }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+
+    isShowingAllNotifications = item.getItemId() == R.id.action_notifications_all;
+    getActivity().invalidateOptionsMenu();
+    executeRequest();
+
+    return super.onOptionsItemSelected(item);
   }
 
   @Override

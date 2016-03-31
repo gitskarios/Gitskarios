@@ -44,11 +44,14 @@ public class NotificationsAdapter
     holder.text_repo.setText(notification.repo.getFullName());
     holder.clear_all_repo.setImageDrawable(iconDrawable);
 
-    for (Notification noti : notification.notifications) {
-      View view =
-          getInflater().inflate(R.layout.notification_row, holder.notificationsPlaceHolder, false);
-      bindNotificationView(view, noti);
-      holder.notificationsPlaceHolder.addView(view);
+    if (holder.notificationsPlaceHolder.getChildCount() == 0) {
+      for (Notification noti : notification.notifications) {
+        View view =
+            getInflater().inflate(R.layout.notification_row, holder.notificationsPlaceHolder,
+                false);
+        bindNotificationView(view, noti);
+        holder.notificationsPlaceHolder.addView(view);
+      }
     }
   }
 

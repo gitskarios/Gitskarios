@@ -138,5 +138,11 @@
   <item name="nav_drawer_issues"
         type="id">nav_drawer_issues
   </item>
+  <item name="action_notifications_all"
+        type="id">action_notifications_all
+  </item>
+  <item name="action_notifications_new"
+        type="id">action_notifications_new
+  </item>
 
 </resources>

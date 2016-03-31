@@ -256,6 +256,8 @@ dependencies {
 
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+
+  compile 'nl.littlerobots.rxlint:rxlint:1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
