@@ -18,4 +18,5 @@ public class PullRequestInfoFragment extends Fragment {
     return fragment;
   }
 
+
 }

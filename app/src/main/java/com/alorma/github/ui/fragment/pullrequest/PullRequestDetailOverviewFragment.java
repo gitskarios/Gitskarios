@@ -64,7 +64,6 @@ public class PullRequestDetailOverviewFragment extends Fragment
 
   private static final int NEW_COMMENT_REQUEST = 1243;
   private static final int ISSUE_BODY_EDIT = 4252;
-  private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
 
   private SwipeRefreshLayout swipe;
@@ -403,7 +402,6 @@ public class PullRequestDetailOverviewFragment extends Fragment
 
           @Override
           public void onNext(Issue issue) {
-            shouldRefreshOnBack = true;
             getContent();
           }
         });

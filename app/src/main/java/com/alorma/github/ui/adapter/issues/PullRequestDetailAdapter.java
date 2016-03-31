@@ -76,7 +76,7 @@ public class PullRequestDetailAdapter
 
     if (position == 0) {
       ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo,
-          pullRequestStory.pullRequest, permissions);
+          pullRequestStory.pullRequest, pullRequestStory.statusResponse, permissions);
       ((PullRequestHolder) holder).pullRequestDetailView.setIssueDetailRequestListener(
           issueDetailRequestListener);
       ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(

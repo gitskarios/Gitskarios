@@ -194,32 +194,28 @@ public class IssueDetailActivity extends BackActivity
 
     loadingView.setVisibility(View.VISIBLE);
 
-    if (checkPermissions(issueInfo)) {
-      GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-      repoClient.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<Repo>() {
-            @Override
-            public void onCompleted() {
+    GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
+    repoClient.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Repo>() {
+          @Override
+          public void onCompleted() {
 
-            }
+          }
 
-            @Override
-            public void onError(Throwable e) {
+          @Override
+          public void onError(Throwable e) {
 
-            }
+          }
 
-            @Override
-            public void onNext(Repo repo) {
-              issueInfo.repoInfo.permissions = repo.permissions;
-              repository = repo;
-              getContent();
-            }
-          });
-    } else {
-      loadIssue();
-    }
+          @Override
+          public void onNext(Repo repo) {
+            issueInfo.repoInfo.permissions = repo.permissions;
+            repository = repo;
+            getContent();
+          }
+        });
   }
 
   private void loadIssue() {
@@ -297,28 +293,20 @@ public class IssueDetailActivity extends BackActivity
     swipe.setColorSchemeColors(colorState);
 
     ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primary, colorState);
-    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-      @Override
-      public void onAnimationUpdate(ValueAnimator animator) {
-        int color = (Integer) animator.getAnimatedValue();
-        if (getToolbar() != null) {
-          getToolbar().setBackgroundColor(color);
-        }
+    colorAnimation.addUpdateListener(animator -> {
+      int color = (Integer) animator.getAnimatedValue();
+      if (getToolbar() != null) {
+        getToolbar().setBackgroundColor(color);
       }
     });
 
     ValueAnimator colorAnimationStatus =
         ValueAnimator.ofObject(new ArgbEvaluator(), primaryDark, colorStateDark);
-    colorAnimationStatus.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    colorAnimationStatus.addUpdateListener(animator -> {
+      int color = (Integer) animator.getAnimatedValue();
 
-      @Override
-      public void onAnimationUpdate(ValueAnimator animator) {
-        int color = (Integer) animator.getAnimatedValue();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          getWindow().setStatusBarColor(color);
-        }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        getWindow().setStatusBarColor(color);
       }
     });
 

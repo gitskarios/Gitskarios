@@ -2,9 +2,6 @@ package com.alorma.github.ui.activity.base;
 
 import android.view.MenuItem;
 
-/**
- * Created by Bernat on 17/07/2014.
- */
 public class BackActivity extends BaseActivity {
 
   @Override
