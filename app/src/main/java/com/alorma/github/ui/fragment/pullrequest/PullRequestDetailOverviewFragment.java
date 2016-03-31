@@ -35,8 +35,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class PullRequestDetailOverviewFragment extends Fragment
-    implements PullRequestDetailView.PullRequestActionsListener,
-    IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
+    implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -108,16 +108,18 @@ public class PullRequestDetailOverviewFragment extends Fragment
   }
 
   private void checkEditTitle() {
-    if (issueInfo != null && pullRequestStory != null && pullRequestStory.pullRequest != null) {
+    if (getActivity() != null) {
+      if (issueInfo != null && pullRequestStory != null && pullRequestStory.pullRequest != null) {
 
-      StoreCredentials credentials = new StoreCredentials(getActivity());
+        StoreCredentials credentials = new StoreCredentials(getActivity());
 
-      GitskariosSettings settings = new GitskariosSettings(getActivity());
-      if (settings.shouldShowDialogEditIssue()) {
-        if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
-          showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
-        } else if (pullRequestStory.pullRequest.user.login.equals(credentials.getUserName())) {
-          showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
+        GitskariosSettings settings = new GitskariosSettings(getActivity());
+        if (settings.shouldShowDialogEditIssue()) {
+          if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
+            showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
+          } else if (pullRequestStory.pullRequest.user.login.equals(credentials.getUserName())) {
+            showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
+          }
         }
       }
     }
@@ -138,7 +140,6 @@ public class PullRequestDetailOverviewFragment extends Fragment
     if (swipe != null) {
       swipe.setColorSchemeResources(R.color.accent);
     }
-
   }
 
   private void getContent() {
@@ -222,43 +223,45 @@ public class PullRequestDetailOverviewFragment extends Fragment
   }
 
   public void onResponseOk(final PullRequestStory pullRequestStory) {
-    this.pullRequestStory = pullRequestStory;
-    this.pullRequestStory.pullRequest.repository = repository;
+    if (getActivity() != null) {
+      this.pullRequestStory = pullRequestStory;
+      this.pullRequestStory.pullRequest.repository = repository;
 
-    swipe.setRefreshing(false);
-    swipe.setOnRefreshListener(this);
+      swipe.setRefreshing(false);
+      swipe.setOnRefreshListener(this);
 
-    GetShaCombinedStatus status =
-        new GetShaCombinedStatus(issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
-    status.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
-          @Override
-          public GithubStatusResponse call(
-              Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
-            return githubStatusResponseIntegerPair.first;
-          }
-        })
-        .subscribe(new Subscriber<GithubStatusResponse>() {
-          @Override
-          public void onCompleted() {
+      GetShaCombinedStatus status =
+          new GetShaCombinedStatus(issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
+      status.observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
+            @Override
+            public GithubStatusResponse call(
+                Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
+              return githubStatusResponseIntegerPair.first;
+            }
+          })
+          .subscribe(new Subscriber<GithubStatusResponse>() {
+            @Override
+            public void onCompleted() {
 
-          }
+            }
 
-          @Override
-          public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-          }
+            }
 
-          @Override
-          public void onNext(GithubStatusResponse githubStatusResponse) {
-            pullRequestStory.statusResponse = githubStatusResponse;
-            adapter.notifyDataSetChanged();
-          }
-        });
+            @Override
+            public void onNext(GithubStatusResponse githubStatusResponse) {
+              pullRequestStory.statusResponse = githubStatusResponse;
+              adapter.notifyDataSetChanged();
+            }
+          });
 
-    applyIssue();
+      applyIssue();
+    }
   }
 
   private void applyIssue() {

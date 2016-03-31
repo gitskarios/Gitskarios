@@ -6,8 +6,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -76,7 +79,8 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarFragment;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabClickListener;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
@@ -170,24 +174,39 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   private void createBottom(Bundle savedInstanceState) {
-    mBottomBar = BottomBar.attach(this, savedInstanceState);
+    mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinator),
+        findViewById(R.id.content), savedInstanceState);
     mBottomBar.useOnlyStatusBarTopOffset();
 
-    BottomBarFragment conversationFragment =
-        new BottomBarFragment(PullRequestDetailOverviewFragment.newInstance(issueInfo),
-            getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation");
+    final List<Fragment> fragments = new ArrayList<>();
+    fragments.add(PullRequestDetailOverviewFragment.newInstance(issueInfo));
+    fragments.add(new ListFragment());
+    fragments.add(PullRequestFilesListFragment.newInstance(issueInfo));
+    fragments.add(PullRequestCommitsListFragment.newInstance(issueInfo));
 
-    BottomBarFragment infoFragment =
-        new BottomBarFragment(new ListFragment(), getBottomTabIcon(Octicons.Icon.oct_info), "Info");
-    BottomBarFragment filesFragment =
-        new BottomBarFragment(PullRequestFilesListFragment.newInstance(issueInfo),
-            getBottomTabIcon(Octicons.Icon.oct_file_code), "Files");
-    BottomBarFragment commitsFragment =
-        new BottomBarFragment(PullRequestCommitsListFragment.newInstance(issueInfo),
-            getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits");
+    mBottomBar.setItems(
+        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation"),
+        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_info), "Info"),
+        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_file_code), "Files"),
+        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
 
-    mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.content, conversationFragment,
-        infoFragment, filesFragment, commitsFragment);
+    mBottomBar.setOnTabClickListener(new OnTabClickListener() {
+      @Override
+      public void onTabSelected(int position) {
+        selectFragment(fragments.get(position));
+      }
+
+      @Override
+      public void onTabReSelected(int position) {
+        selectFragment(fragments.get(position));
+      }
+    });
+  }
+
+  private void selectFragment(Fragment fragment) {
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ft.replace(R.id.content, fragment);
+    ft.commit();
   }
 
   private IconicsDrawable getBottomTabIcon(IIcon icon) {

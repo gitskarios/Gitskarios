@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * Created by Bernat on 08/07/2014.
- */
 public class StoreCredentials {
 
   public static final String KEY_URL = "KEY_URL";
