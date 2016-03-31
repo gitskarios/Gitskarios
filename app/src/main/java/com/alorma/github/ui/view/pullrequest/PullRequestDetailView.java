@@ -84,14 +84,12 @@ public class PullRequestDetailView extends LinearLayout {
 
         profileIcon.setUser(pullRequest.user);
 
-        OnClickListener issueUserClick = new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            Intent launcherIntent =
-                ProfileActivity.createLauncherIntent(v.getContext(), pullRequest.user);
-            v.getContext().startActivity(launcherIntent);
-          }
+        OnClickListener issueUserClick = v -> {
+          Intent launcherIntent =
+              ProfileActivity.createLauncherIntent(v.getContext(), pullRequest.user);
+          v.getContext().startActivity(launcherIntent);
         };
+
         profileName.setOnClickListener(issueUserClick);
         profileEmail.setOnClickListener(issueUserClick);
         profileIcon.setOnClickListener(issueUserClick);
@@ -136,15 +134,12 @@ public class PullRequestDetailView extends LinearLayout {
       StoreCredentials credentials = new StoreCredentials(getContext());
       if (repoInfo.permissions != null && repoInfo.permissions.push
           || pullRequest.user.login.equals(credentials.getUserName())) {
-        OnClickListener editClickListener = new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            if (issueDetailRequestListener != null) {
-              if (v.getId() == R.id.textTitle) {
-                issueDetailRequestListener.onTitleEditRequest();
-              } else if (v.getId() == R.id.textBody) {
-                issueDetailRequestListener.onContentEditRequest();
-              }
+        OnClickListener editClickListener = v -> {
+          if (issueDetailRequestListener != null) {
+            if (v.getId() == R.id.textTitle) {
+              issueDetailRequestListener.onTitleEditRequest();
+            } else if (v.getId() == R.id.textBody) {
+              issueDetailRequestListener.onContentEditRequest();
             }
           }
         };
@@ -153,10 +148,6 @@ public class PullRequestDetailView extends LinearLayout {
         body.setOnClickListener(editClickListener);
       }
     }
-  }
-
-  private IconicsDrawable getIcon(IIcon icon) {
-    return new IconicsDrawable(getContext(), icon).actionBar().colorRes(getColorIcons());
   }
 
   public int getColorIcons() {

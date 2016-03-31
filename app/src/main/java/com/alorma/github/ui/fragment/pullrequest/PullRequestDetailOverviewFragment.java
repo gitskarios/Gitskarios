@@ -1,5 +1,7 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,27 +10,38 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
+import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.dto.response.Head;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
+import com.alorma.github.sdk.services.issues.EditIssueClient;
+import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.sdk.services.repo.GetShaCombinedStatus;
+import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.actions.AddIssueCommentAction;
+import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
@@ -53,15 +66,6 @@ public class PullRequestDetailOverviewFragment extends Fragment
   private static final int ISSUE_BODY_EDIT = 4252;
   private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
-
-  private OverviewCallback overviewCallbackNull = new OverviewCallback() {
-    @Override
-    public void onAddComment() {
-
-    }
-  };
-
-  private OverviewCallback overviewCallback = overviewCallbackNull;
 
   private SwipeRefreshLayout swipe;
   private RecyclerView recyclerView;
@@ -140,10 +144,58 @@ public class PullRequestDetailOverviewFragment extends Fragment
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.action_pull_request_add_comment) {
-      overviewCallback.onAddComment();
+      onAddComment();
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  private void onAddComment() {
+    String hint = getString(R.string.add_comment);
+    Intent intent =
+        ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
+            hint, null, false, false);
+    startActivityForResult(intent, NEW_COMMENT_REQUEST);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == Activity.RESULT_OK && data != null) {
+      if (requestCode == NEW_COMMENT_REQUEST) {
+        final String body = data.getStringExtra(ContentEditorActivity.CONTENT);
+        AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);
+        addIssueCommentAction.setAddCommentCallback(new CommentCallback());
+        addIssueCommentAction.execute();
+      }
+      if (requestCode == ISSUE_BODY_EDIT) {
+        EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
+        bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
+
+        executeEditIssue(bodyRequestDTO);
+      }
+    }
+  }
+
+  private class CommentCallback implements AddIssueCommentAction.AddCommentCallback {
+
+    private CommentCallback() {
+    }
+
+    @Override
+    public void onCommentAdded() {
+      getContent();
+    }
+
+    @Override
+    public void onCommentError() {
+
+    }
+  }
+
+  @NonNull
+  private AddIssueCommentAction getAddIssueCommentAction(String body) {
+    return new AddIssueCommentAction(issueInfo, body);
   }
 
   private void checkEditTitle() {
@@ -182,39 +234,29 @@ public class PullRequestDetailOverviewFragment extends Fragment
   }
 
   private void getContent() {
-    if (checkPermissions(issueInfo)) {
-      GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-      repoClient.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<Repo>() {
-            @Override
-            public void onCompleted() {
+    GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
+    repoClient.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Repo>() {
+          @Override
+          public void onCompleted() {
 
-            }
+          }
 
-            @Override
-            public void onError(Throwable e) {
+          @Override
+          public void onError(Throwable e) {
 
-            }
+          }
 
-            @Override
-            public void onNext(Repo repo) {
-              issueInfo.repoInfo.permissions = repo.permissions;
-              repository = repo;
+          @Override
+          public void onNext(Repo repo) {
+            issueInfo.repoInfo.permissions = repo.permissions;
+            repository = repo;
 
-              loadPullRequest();
-            }
-          });
-    } else {
-      loadPullRequest();
-    }
-  }
-
-  private boolean checkPermissions(IssueInfo issueInfo) {
-    return issueInfo != null
-        && issueInfo.repoInfo != null
-        && issueInfo.repoInfo.permissions == null;
+            loadPullRequest();
+          }
+        });
   }
 
   private void loadPullRequest() {
@@ -246,18 +288,8 @@ public class PullRequestDetailOverviewFragment extends Fragment
     builder.content(getString(R.string.issue_detail_error, issueInfo.toString()));
     builder.positiveText(R.string.retry);
     builder.negativeText(R.string.accept);
-    builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-      @Override
-      public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-        getContent();
-      }
-    });
-    builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-      @Override
-      public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-        getActivity().finish();
-      }
-    });
+    builder.onPositive((dialog, which) -> getContent());
+    builder.onNegative((dialog, which) -> getActivity().finish());
     builder.show();
   }
 
@@ -330,24 +362,90 @@ public class PullRequestDetailOverviewFragment extends Fragment
 
   @Override
   public void onTitleEditRequest() {
+    new MaterialDialog.Builder(getActivity()).title(R.string.edit_issue_title)
+        .input(null, pullRequestStory.pullRequest.title, false, (materialDialog, charSequence) -> {
 
+          EditIssueTitleRequestDTO editIssueTitleRequestDTO = new EditIssueTitleRequestDTO();
+          editIssueTitleRequestDTO.title = charSequence.toString();
+          executeEditIssue(editIssueTitleRequestDTO);
+        })
+        .positiveText(R.string.edit_issue_button_ok)
+        .neutralText(R.string.edit_issue_button_neutral)
+        .show();
   }
 
   @Override
   public void onContentEditRequest() {
+    String body =
+        pullRequestStory.pullRequest.body != null ? pullRequestStory.pullRequest.body.replace("\n",
+            "<br />") : "";
+    Intent launcherIntent =
+        ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
+            getString(R.string.edit_issue_body_hint), body, true, false);
+    startActivityForResult(launcherIntent, ISSUE_BODY_EDIT);
+  }
 
+  private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
+    EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
+    client.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Issue>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            ErrorHandler.onError(getActivity(), "Issue detail", e);
+          }
+
+          @Override
+          public void onNext(Issue issue) {
+            shouldRefreshOnBack = true;
+            getContent();
+          }
+        });
   }
 
   @Override
   public void mergeRequest(Head head, Head base) {
-
+    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+    builder.title(R.string.merge_title);
+    builder.content(head.label);
+    builder.input(getString(R.string.merge_message), pullRequestStory.pullRequest.title, false,
+        (materialDialog, charSequence) -> {
+          merge(charSequence.toString(), head.sha, issueInfo);
+        });
+    builder.inputType(InputType.TYPE_CLASS_TEXT);
+    builder.show();
   }
 
-  public void setOverviewCallback(OverviewCallback overviewCallback) {
-    this.overviewCallback = overviewCallback;
-  }
+  private void merge(String message, String sha, IssueInfo issueInfo) {
+    MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
+    mergeButtonRequest.commit_message = message;
+    mergeButtonRequest.sha = sha;
+    MergePullRequestClient mergePullRequestClient =
+        new MergePullRequestClient(issueInfo, mergeButtonRequest);
+    mergePullRequestClient.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<MergeButtonResponse>() {
+          @Override
+          public void onCompleted() {
 
-  public interface OverviewCallback {
-    void onAddComment();
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onNext(MergeButtonResponse mergeButtonResponse) {
+            getContent();
+          }
+        });
   }
 }
