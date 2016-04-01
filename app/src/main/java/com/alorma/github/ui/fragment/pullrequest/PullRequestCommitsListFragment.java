@@ -47,6 +47,15 @@ public class PullRequestCommitsListFragment
   }
 
   @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    if (getAdapter() != null) {
+      getAdapter().clear();
+    }
+    this.commits = null;
+  }
+
+  @Override
   public void onNext(final List<Commit> commits) {
     if (this.commits == null || refreshing) {
       this.commits = new ArrayList<>();

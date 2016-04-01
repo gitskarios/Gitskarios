@@ -8,7 +8,6 @@ import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
@@ -22,14 +21,9 @@ import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.info.CommitInfo;
-import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ProfileActivity;
-import com.alorma.github.ui.activity.PullRequestCommitsActivity;
-import com.alorma.github.ui.activity.PullRequestFilesActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
-import com.alorma.github.ui.activity.StatusActivity;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.ui.view.UserAvatarView;
@@ -57,14 +51,8 @@ public class PullRequestDetailView extends LinearLayout {
   private TextView profileEmail;
   private TextView textMilestone;
   private TextView textAssignee;
-  private TextView textCommits;
-  private TextView textFiles;
   private TextView mergeButton;
   private TextView textRepository;
-  private ImageView icon_status;
-  private TextView name_status;
-  private TextView description_status;
-  private View status_ly;
 
   private IssueDetailRequestListener issueDetailRequestListener;
   private PullRequestActionsListener pullRequestActionsListener;
@@ -104,12 +92,6 @@ public class PullRequestDetailView extends LinearLayout {
     profileEmail = (TextView) authorView.findViewById(R.id.email);
     textMilestone = (TextView) findViewById(R.id.textMilestone);
     textAssignee = (TextView) findViewById(R.id.textAssignee);
-    textCommits = (TextView) findViewById(R.id.textCommits);
-    status_ly = findViewById(R.id.status_ly);
-    icon_status = (ImageView) findViewById(R.id.icon_status);
-    name_status = (TextView) findViewById(R.id.name_status);
-    description_status = (TextView) findViewById(R.id.description_status);
-    textFiles = (TextView) findViewById(R.id.textFiles);
     textRepository = (TextView) findViewById(R.id.textRepository);
     textBranch = (TextView) findViewById(R.id.textBranch);
     mergeButton = (TextView) findViewById(R.id.mergeButton);
@@ -225,99 +207,6 @@ public class PullRequestDetailView extends LinearLayout {
         }
       }
 
-      if (textCommits != null) {
-        if (pullRequest.commits > 0) {
-          textCommits.setCompoundDrawables(getIcon(Octicons.Icon.oct_git_commit), null, null, null);
-          textCommits.setText(
-              getResources().getString(R.string.num_of_commits, pullRequest.commits));
-          textCommits.setVisibility(View.VISIBLE);
-          textCommits.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              IssueInfo info = new IssueInfo();
-              info.repoInfo = repoInfo;
-              info.num = pullRequest.number;
-              Intent intent =
-                  PullRequestCommitsActivity.launchIntent(getContext(), pullRequest, info);
-              getContext().startActivity(intent);
-            }
-          });
-        } else {
-          textCommits.setVisibility(View.GONE);
-        }
-      }
-
-      if (status_ly != null) {
-        if (statusResponse != null && statusResponse.total_count > 0) {
-          IIcon icon = Octicons.Icon.oct_check;
-          int background = R.drawable.github_status_circle_green;
-          int text = R.string.status_checks_success;
-          if (statusResponse.state.equals("pending")) {
-            icon = Octicons.Icon.oct_clock;
-            text = R.string.status_checks_pending;
-            background = R.drawable.github_status_circle_yellow;
-          } else if (statusResponse.state.equals("failure")) {
-            icon = Octicons.Icon.oct_x;
-            background = R.drawable.github_status_circle_red;
-            text = R.string.status_checks_failure;
-          }
-
-          IconicsDrawable drawable =
-              new IconicsDrawable(icon_status.getContext(), icon).colorRes(R.color.white)
-                  .sizeRes(R.dimen.material_drawer_item_primary)
-                  .paddingRes(R.dimen.gapMedium);
-          icon_status.setImageDrawable(drawable);
-
-          icon_status.setBackgroundResource(background);
-
-          name_status.setText(text);
-          description_status.setText(getContext().getResources()
-              .getQuantityString(R.plurals.status_checks_num, statusResponse.total_count,
-                  statusResponse.total_count));
-
-          status_ly.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              CommitInfo commitInfo = new CommitInfo();
-              IssueInfo issueInfo = new IssueInfo();
-
-              commitInfo.repoInfo = repoInfo;
-              commitInfo.sha = pullRequest.head.ref;
-
-              issueInfo.repoInfo = repoInfo;
-              issueInfo.num = pullRequest.number;
-
-              Intent intent = StatusActivity.launchIntent(v.getContext(), issueInfo, commitInfo);
-              v.getContext().startActivity(intent);
-            }
-          });
-        } else {
-          status_ly.setVisibility(View.GONE);
-        }
-      }
-
-      if (textFiles != null) {
-        if (pullRequest.changed_files > 0) {
-          textFiles.setCompoundDrawables(getIcon(Octicons.Icon.oct_file_binary), null, null, null);
-          textFiles.setText(
-              getResources().getString(R.string.num_of_files, pullRequest.changed_files));
-          textFiles.setVisibility(View.VISIBLE);
-          textFiles.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              IssueInfo info = new IssueInfo();
-              info.repoInfo = repoInfo;
-              info.num = pullRequest.number;
-              Intent intent =
-                  PullRequestFilesActivity.launchIntent(getContext(), pullRequest, info);
-              getContext().startActivity(intent);
-            }
-          });
-        } else {
-          textFiles.setVisibility(View.GONE);
-        }
-      }
-
       if (mergeButton != null) {
         if (pullRequest.state == IssueState.closed
             || pullRequest.merged
@@ -329,12 +218,9 @@ public class PullRequestDetailView extends LinearLayout {
           mergeButton.setVisibility(View.VISIBLE);
           mergeButton.setText(R.string.pullrequest_merge_action_valid);
           mergeButton.setBackgroundResource(R.drawable.pull_request_merge_valid);
-          mergeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              if (pullRequestActionsListener != null) {
-                pullRequestActionsListener.mergeRequest(pullRequest.head, pullRequest.base);
-              }
+          mergeButton.setOnClickListener(v -> {
+            if (pullRequestActionsListener != null) {
+              pullRequestActionsListener.mergeRequest(pullRequest.head, pullRequest.base);
             }
           });
         } else {
@@ -347,15 +233,12 @@ public class PullRequestDetailView extends LinearLayout {
       StoreCredentials credentials = new StoreCredentials(getContext());
       if (repoInfo.permissions != null && repoInfo.permissions.push
           || pullRequest.user.login.equals(credentials.getUserName())) {
-        OnClickListener editClickListener = new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            if (issueDetailRequestListener != null) {
-              if (v.getId() == R.id.textTitle) {
-                issueDetailRequestListener.onTitleEditRequest();
-              } else if (v.getId() == R.id.textBody) {
-                issueDetailRequestListener.onContentEditRequest();
-              }
+        OnClickListener editClickListener = v -> {
+          if (issueDetailRequestListener != null) {
+            if (v.getId() == R.id.textTitle) {
+              issueDetailRequestListener.onTitleEditRequest();
+            } else if (v.getId() == R.id.textBody) {
+              issueDetailRequestListener.onContentEditRequest();
             }
           }
         };

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestDetailOverviewFragment;
@@ -20,12 +21,14 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PullRequestDetailActivity extends BackActivity {
+public class PullRequestDetailActivity extends BackActivity
+    implements PullRequestDetailOverviewFragment.PullRequestStoryLoaderInterface {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -34,7 +37,8 @@ public class PullRequestDetailActivity extends BackActivity {
 
   private IssueInfo issueInfo;
   private BottomBar mBottomBar;
-  private Fragment currentFragment;
+  private BottomBarBadge badgeFiles;
+  private BottomBarBadge badgeCommits;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -92,14 +96,17 @@ public class PullRequestDetailActivity extends BackActivity {
     mBottomBar.useOnlyStatusBarTopOffset();
 
     final List<Fragment> fragments = new ArrayList<>();
-    fragments.add(PullRequestDetailOverviewFragment.newInstance(issueInfo));
-    //fragments.add(PullRequestInfoFragment.newInstance(issueInfo));
+
+    PullRequestDetailOverviewFragment overviewFragment =
+        PullRequestDetailOverviewFragment.newInstance(issueInfo);
+    overviewFragment.setPullRequestStoryLoaderInterface(this);
+
+    fragments.add(overviewFragment);
     fragments.add(PullRequestFilesListFragment.newInstance(issueInfo));
     fragments.add(PullRequestCommitsListFragment.newInstance(issueInfo));
 
     mBottomBar.setItems(
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation"),
-        //new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_info), "Info"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_file_code), "Files"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
 
@@ -131,12 +138,14 @@ public class PullRequestDetailActivity extends BackActivity {
 
   private void selectFragment(Fragment fragment) {
     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    if (currentFragment != null) {
-      ft.remove(currentFragment);
+    Fragment fragmentByTag =
+        getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName());
+    if (fragmentByTag != null) {
+      ft.replace(R.id.content, fragmentByTag, fragmentByTag.getClass().getSimpleName());
+    } else {
+      ft.replace(R.id.content, fragment, fragment.getClass().getSimpleName());
     }
-    ft.add(R.id.content, fragment);
     ft.commit();
-    currentFragment = fragment;
   }
 
   private IconicsDrawable getBottomTabIcon(IIcon icon) {
@@ -147,5 +156,24 @@ public class PullRequestDetailActivity extends BackActivity {
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     mBottomBar.onSaveInstanceState(outState);
+  }
+
+  @Override
+  public void onStoryLoaded(PullRequestStory story) {
+    if (mBottomBar != null && story != null) {
+      if (badgeFiles == null) {
+        badgeFiles = mBottomBar.makeBadgeForTabAt(1, AttributesUtils.getAccentColor(this),
+            story.pullRequest.changed_files);
+      }
+      badgeFiles.setText(String.valueOf(story.pullRequest.changed_files));
+      badgeFiles.setAutoShowAfterUnSelection(true);
+
+      if (badgeCommits == null) {
+        badgeCommits = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
+            story.pullRequest.commits);
+      }
+      badgeCommits.setText(String.valueOf(story.pullRequest.commits));
+      badgeCommits.setAutoShowAfterUnSelection(true);
+    }
   }
 }

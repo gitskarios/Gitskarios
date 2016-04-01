@@ -25,7 +25,6 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
-import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -38,19 +37,16 @@ import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import com.alorma.github.sdk.services.repo.GetShaCombinedStatus;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
 import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
-import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class PullRequestDetailOverviewFragment extends Fragment
@@ -64,6 +60,7 @@ public class PullRequestDetailOverviewFragment extends Fragment
 
   private static final int NEW_COMMENT_REQUEST = 1243;
   private static final int ISSUE_BODY_EDIT = 4252;
+  private static final String PULL_REQUEST = "PULL_REQUEST";
   private IssueInfo issueInfo;
 
   private SwipeRefreshLayout swipe;
@@ -72,7 +69,10 @@ public class PullRequestDetailOverviewFragment extends Fragment
   private PullRequestStory pullRequestStory;
   private Repo repository;
 
-  private PullRequestDetailAdapter adapter;
+  private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterfaceNull = story -> {
+  };
+  private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface =
+      pullRequestStoryLoaderInterfaceNull;
 
   public static PullRequestDetailOverviewFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -84,11 +84,23 @@ public class PullRequestDetailOverviewFragment extends Fragment
     return fragment;
   }
 
+  @Nullable
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    if (getArguments() != null) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.pullrequest_detail_fragment, null, false);
+  }
 
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    findViews(view);
+
+    if (savedInstanceState != null) {
+      pullRequestStory = savedInstanceState.getParcelable(PULL_REQUEST);
+      onResponseOk(pullRequestStory);
+    } else if (getArguments() != null) {
       issueInfo = getArguments().getParcelable(ISSUE_INFO);
 
       if (issueInfo == null && getArguments().containsKey(ISSUE_INFO_NUMBER)) {
@@ -107,22 +119,8 @@ public class PullRequestDetailOverviewFragment extends Fragment
       }
 
       setHasOptionsMenu(true);
+      getContent();
     }
-  }
-
-  @Nullable
-  @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.pullrequest_detail_fragment, null, false);
-  }
-
-  @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
-    findViews(view);
-    getContent();
   }
 
   @Override
@@ -174,6 +172,11 @@ public class PullRequestDetailOverviewFragment extends Fragment
         executeEditIssue(bodyRequestDTO);
       }
     }
+  }
+
+  public void setPullRequestStoryLoaderInterface(
+      PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface) {
+    this.pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterface;
   }
 
   private class CommentCallback implements AddIssueCommentAction.AddCommentCallback {
@@ -233,29 +236,33 @@ public class PullRequestDetailOverviewFragment extends Fragment
   }
 
   private void getContent() {
-    GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-    repoClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Repo>() {
-          @Override
-          public void onCompleted() {
+    if (pullRequestStory == null) {
+      GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
+      repoClient.observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Subscriber<Repo>() {
+            @Override
+            public void onCompleted() {
 
-          }
+            }
 
-          @Override
-          public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-          }
+            }
 
-          @Override
-          public void onNext(Repo repo) {
-            issueInfo.repoInfo.permissions = repo.permissions;
-            repository = repo;
+            @Override
+            public void onNext(Repo repo) {
+              issueInfo.repoInfo.permissions = repo.permissions;
+              repository = repo;
 
-            loadPullRequest();
-          }
-        });
+              loadPullRequest();
+            }
+          });
+    } else {
+      onResponseOk(pullRequestStory);
+    }
   }
 
   private void loadPullRequest() {
@@ -281,6 +288,10 @@ public class PullRequestDetailOverviewFragment extends Fragment
         });
   }
 
+  public interface PullRequestStoryLoaderInterface {
+    void onStoryLoaded(PullRequestStory story);
+  }
+
   private void showError() {
     MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
     builder.title(R.string.ups);
@@ -297,38 +308,12 @@ public class PullRequestDetailOverviewFragment extends Fragment
       this.pullRequestStory = pullRequestStory;
       this.pullRequestStory.pullRequest.repository = repository;
 
+      if (pullRequestStoryLoaderInterface != null) {
+        pullRequestStoryLoaderInterface.onStoryLoaded(pullRequestStory);
+      }
+
       swipe.setRefreshing(false);
       swipe.setOnRefreshListener(this);
-
-      GetShaCombinedStatus status =
-          new GetShaCombinedStatus(issueInfo.repoInfo, pullRequestStory.pullRequest.head.ref);
-      status.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
-            @Override
-            public GithubStatusResponse call(
-                Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
-              return githubStatusResponseIntegerPair.first;
-            }
-          })
-          .subscribe(new Subscriber<GithubStatusResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GithubStatusResponse githubStatusResponse) {
-              pullRequestStory.statusResponse = githubStatusResponse;
-              adapter.notifyDataSetChanged();
-            }
-          });
 
       applyIssue();
     }
@@ -345,8 +330,9 @@ public class PullRequestDetailOverviewFragment extends Fragment
       status = getString(R.string.pullrequest_status_merged);
     }
     getActivity().setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
-    adapter = new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(),
-        pullRequestStory, issueInfo.repoInfo, issueInfo.repoInfo.permissions, this);
+    PullRequestDetailAdapter adapter =
+        new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(),
+            pullRequestStory, issueInfo.repoInfo, issueInfo.repoInfo.permissions, this);
     adapter.setIssueDetailRequestListener(this);
     recyclerView.setAdapter(adapter);
 
@@ -445,5 +431,11 @@ public class PullRequestDetailOverviewFragment extends Fragment
             getContent();
           }
         });
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(PULL_REQUEST, pullRequestStory);
   }
 }

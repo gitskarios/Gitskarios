@@ -213,7 +213,7 @@ public class IssueDetailActivity extends BackActivity
           public void onNext(Repo repo) {
             issueInfo.repoInfo.permissions = repo.permissions;
             repository = repo;
-            getContent();
+            loadIssue();
           }
         });
   }
