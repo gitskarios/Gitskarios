@@ -143,7 +143,7 @@ public class PullRequestInfoFragment extends Fragment {
   private void showLabels(PullRequest pullRequest) {
     if (pullRequest.labels != null) {
       labelsView.setVisibility(View.VISIBLE);
-      int marginHorizontal = getResources().getDimensionPixelOffset(R.dimen.gapMedium);
+      int marginHorizontal = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
       for (Label label : pullRequest.labels) {
         LabelView labelView = new LabelView(getContext());
         labelView.setLabel(label);

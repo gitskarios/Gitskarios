@@ -1,12 +1,8 @@
 package com.alorma.github.ui.utils;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.graphics.Palette;
 
-/**
- * Created by Bernat on 15/07/2014.
- */
 public class PaletteUtils {
 
   public static Palette.Swatch getProfileSwatch(Palette palette) {
@@ -108,7 +104,7 @@ public class PaletteUtils {
     return null;
   }
 
-  public static int colorTextFromBackgroundColor(int color) {
+  public static int foregroundColorFromBackgroundColor(int color) {
     int r = (color >> 16) & 0xFF;
     int g = (color >> 8) & 0xFF;
     int b = (color) & 0xFF;
@@ -121,9 +117,5 @@ public class PaletteUtils {
     } else {
       return Color.rgb(0, 0, 0);
     }
-  }
-
-  public interface PaletteUtilsListener {
-    void onImageLoaded(Bitmap loadedImage, Palette palette);
   }
 }
