@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:orientation="vertical"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+    >
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+      >
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/toolbar_branches"
+        style="@style/PullRequestInfo"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/gapMedium"
+        android:textColor="@color/md_grey_600"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="18sp"
+        android:id="@+id/branch_base"
+        tools:text="alorma:master"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/gapMedium"
+        android:textColor="@color/md_grey_600"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="18sp"
+        android:id="@+id/branch_head"
+        tools:text="alorma:patch-1"
+        />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/toolbar_labels_title"
+        style="@style/PullRequestInfo"
+        />
+
+    <com.wefika.flowlayout.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/labels"
+        android:orientation="vertical"
+        />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/toolbar_milestone"
+        style="@style/PullRequestInfo"
+        />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressMilestone"
+        android:layout_marginLeft="@dimen/gapSmall"
+        android:layout_marginRight="@dimen/gapSmall"
+        style="?android:attr/progressBarStyleHorizontal"
+        tools:progress="5"
+        tools:max="7"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/gapMedium"
+        android:textColor="@color/md_grey_600"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="18sp"
+        tools:text="Milestion 5.0"
+        android:id="@+id/milestone"
+        android:background="?selectableItemBackground"
+        />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/toolbar_assignee"
+        style="@style/PullRequestInfo"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/gapMedium"
+        android:textColor="@color/md_grey_600"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="18sp"
+        android:id="@+id/assignee"
+        tools:text="Alorma"
+        android:background="?selectableItemBackground"
+        />
+  </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

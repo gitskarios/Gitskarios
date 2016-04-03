@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,13 +42,14 @@ import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
+import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PullRequestDetailOverviewFragment extends Fragment
+public class PullRequestConversationFragment extends Fragment
     implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener,
     SwipeRefreshLayout.OnRefreshListener {
 
@@ -74,12 +74,12 @@ public class PullRequestDetailOverviewFragment extends Fragment
   private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface =
       pullRequestStoryLoaderInterfaceNull;
 
-  public static PullRequestDetailOverviewFragment newInstance(IssueInfo issueInfo) {
+  public static PullRequestConversationFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
 
     bundle.putParcelable(ISSUE_INFO, issueInfo);
 
-    PullRequestDetailOverviewFragment fragment = new PullRequestDetailOverviewFragment();
+    PullRequestConversationFragment fragment = new PullRequestConversationFragment();
     fragment.setArguments(bundle);
     return fragment;
   }
@@ -124,17 +124,20 @@ public class PullRequestDetailOverviewFragment extends Fragment
   }
 
   @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    super.onCreateOptionsMenu(menu, inflater);
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
 
-    inflater.inflate(R.menu.pullrequest_detail_overview, menu);
+    if (pullRequestStory != null && new IssueUtils().canComment(pullRequestStory.pullRequest)) {
+      getActivity().getMenuInflater().inflate(R.menu.pullrequest_detail_overview, menu);
 
-    MenuItem item = menu.findItem(R.id.action_pull_request_add_comment);
-
-    if (item != null) {
-      item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_comment_add)
-          .actionBar()
-          .color(Color.WHITE));
+      MenuItem item = menu.findItem(R.id.action_pull_request_add_comment);
+      if (item != null) {
+        item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_comment_add)
+            .actionBar()
+            .color(Color.WHITE));
+      }
+    } else {
+      menu.removeItem(R.id.action_pull_request_add_comment);
     }
   }
 
@@ -305,6 +308,7 @@ public class PullRequestDetailOverviewFragment extends Fragment
 
   public void onResponseOk(final PullRequestStory pullRequestStory) {
     if (getActivity() != null) {
+      getActivity().invalidateOptionsMenu();
       this.pullRequestStory = pullRequestStory;
       this.pullRequestStory.pullRequest.repository = repository;
 

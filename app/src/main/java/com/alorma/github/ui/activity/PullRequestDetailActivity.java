@@ -14,8 +14,9 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
-import com.alorma.github.ui.fragment.pullrequest.PullRequestDetailOverviewFragment;
+import com.alorma.github.ui.fragment.pullrequest.PullRequestConversationFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
+import com.alorma.github.ui.fragment.pullrequest.PullRequestInfoFragment;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PullRequestDetailActivity extends BackActivity
-    implements PullRequestDetailOverviewFragment.PullRequestStoryLoaderInterface {
+    implements PullRequestConversationFragment.PullRequestStoryLoaderInterface {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -39,6 +40,7 @@ public class PullRequestDetailActivity extends BackActivity
   private BottomBar mBottomBar;
   private BottomBarBadge badgeFiles;
   private BottomBarBadge badgeCommits;
+  private PullRequestInfoFragment infoFragment;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -97,16 +99,21 @@ public class PullRequestDetailActivity extends BackActivity
 
     final List<Fragment> fragments = new ArrayList<>();
 
-    PullRequestDetailOverviewFragment overviewFragment =
-        PullRequestDetailOverviewFragment.newInstance(issueInfo);
+    PullRequestConversationFragment overviewFragment =
+        PullRequestConversationFragment.newInstance(issueInfo);
     overviewFragment.setPullRequestStoryLoaderInterface(this);
 
     fragments.add(overviewFragment);
+
+    infoFragment = PullRequestInfoFragment.newInstance(issueInfo);
+    fragments.add(infoFragment);
+
     fragments.add(PullRequestFilesListFragment.newInstance(issueInfo));
     fragments.add(PullRequestCommitsListFragment.newInstance(issueInfo));
 
     mBottomBar.setItems(
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation"),
+        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_info), "Info"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_file_code), "Files"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
 
@@ -162,18 +169,23 @@ public class PullRequestDetailActivity extends BackActivity
   public void onStoryLoaded(PullRequestStory story) {
     if (mBottomBar != null && story != null) {
       if (badgeFiles == null) {
-        badgeFiles = mBottomBar.makeBadgeForTabAt(1, AttributesUtils.getAccentColor(this),
+        badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
             story.pullRequest.changed_files);
       }
       badgeFiles.setText(String.valueOf(story.pullRequest.changed_files));
       badgeFiles.setAutoShowAfterUnSelection(true);
 
       if (badgeCommits == null) {
-        badgeCommits = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
+        badgeCommits = mBottomBar.makeBadgeForTabAt(3, AttributesUtils.getAccentColor(this),
             story.pullRequest.commits);
       }
       badgeCommits.setText(String.valueOf(story.pullRequest.commits));
       badgeCommits.setAutoShowAfterUnSelection(true);
+
+      if (infoFragment != null) {
+        infoFragment.setArguments(
+            PullRequestInfoFragment.newArguments(issueInfo, story.pullRequest));
+      }
     }
   }
 }

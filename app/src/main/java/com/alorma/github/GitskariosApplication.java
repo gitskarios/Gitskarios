@@ -36,9 +36,11 @@ public class GitskariosApplication extends MultiDexApplication {
 
     Dexter.initialize(this);
 
-    CustomActivityOnCrash.install(this);
-    CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
-    CustomActivityOnCrash.setEnableAppRestart(true);
+    if (!BuildConfig.DEBUG) {
+      CustomActivityOnCrash.install(this);
+      CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
+      CustomActivityOnCrash.setEnableAppRestart(true);
+    }
 
     if (!BuildConfig.DEBUG) {
       Fabric.with(this, new Crashlytics());

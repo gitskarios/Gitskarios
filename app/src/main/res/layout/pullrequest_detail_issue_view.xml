@@ -92,47 +92,11 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/textAssignee"
-            style="@style/new_issue_push_access_row"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_marginLeft="@dimen/gapLarge"
-            />
-
-        <TextView
             android:id="@+id/textRepository"
             style="@style/new_issue_push_access_row"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_marginLeft="@dimen/gapLarge"
-            />
-
-        <TextView
-            android:id="@+id/textMilestone"
-            style="@style/new_issue_push_access_row"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_marginLeft="@dimen/gapLarge"
-            />
-
-        <com.wefika.flowlayout.FlowLayout
-            android:id="@+id/labelsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/gapMedium"
-            android:layout_marginLeft="@dimen/gapLarge"
-            android:gravity="start|top"
-            />
-
-        <TextView
-            android:id="@+id/textBranch"
-            style="@style/new_issue_push_access_row"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_marginLeft="@dimen/gapLarge"
-            android:background="?selectableItemBackground"
-            android:maxLines="2"
-            android:singleLine="false"
             />
 
       </LinearLayout>

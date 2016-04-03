@@ -253,7 +253,7 @@ dependencies {
   compile 'com.jakewharton:process-phoenix:1.0.2'
 
   compile 'com.github.alorma:timelineview:2.2.1'
-  compile 'com.roughike:bottom-bar:1.+'
+  compile 'com.roughike:bottom-bar:1.2.6'
 
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'

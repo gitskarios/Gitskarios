@@ -43,7 +43,7 @@ public class LabelView extends TextView {
     int padding = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
     setPadding(padding, padding, padding, padding);
 
-    ViewCompat.setElevation(this, 4);
+    ViewCompat.setElevation(this, padding);
   }
 
   public void setLabel(Label label) {

@@ -205,15 +205,12 @@ public class IssueDetailView extends LinearLayout {
     StoreCredentials credentials = new StoreCredentials(getContext());
     if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user.login.equals(
         credentials.getUserName())) {
-      OnClickListener editClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (issueDetailRequestListener != null) {
-            if (v.getId() == R.id.textTitle) {
-              issueDetailRequestListener.onTitleEditRequest();
-            } else if (v.getId() == R.id.textBody) {
-              issueDetailRequestListener.onContentEditRequest();
-            }
+      OnClickListener editClickListener = v -> {
+        if (issueDetailRequestListener != null) {
+          if (v.getId() == R.id.textTitle) {
+            issueDetailRequestListener.onTitleEditRequest();
+          } else if (v.getId() == R.id.textBody) {
+            issueDetailRequestListener.onContentEditRequest();
           }
         }
       };

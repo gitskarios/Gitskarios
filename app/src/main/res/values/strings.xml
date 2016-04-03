@@ -67,6 +67,7 @@
   <string name="leave_a_comment">Leave a comment</string>
   <string name="milestone">Milestone</string>
   <string name="assignee">Assignee</string>
+  <string name="labels_title">Labels</string>
   <string name="labels">Labels, separated with comma</string>
   <string name="issue_title_mandatory">Title is mandatory</string>
   <string name="action_send_issue">Send issue</string>
@@ -488,4 +489,5 @@
   <string name="notifications_all">ALL</string>
   <string name="notifications_new">NEW</string>
   <string name="action_pull_request_add_comment">Add coment</string>
+  <string name="action_pull_request_edit">Edit</string>
 </resources>

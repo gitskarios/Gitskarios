@@ -12,6 +12,12 @@
     <item name="color">@color/gray_github_medium</item>
   </style>
 
+  <style name="PullRequestInfo"
+         parent="Theme.AppCompat.NoActionBar">
+    <item name="android:background">@color/md_grey_200</item>
+    <item name="android:textColorPrimary">@color/md_grey_500</item>
+    <item name="android:textColorSecondary">@color/md_grey_500</item>
+  </style>
 
   <style name="FileRowToolbar"
          parent="Theme.AppCompat.NoActionBar">
