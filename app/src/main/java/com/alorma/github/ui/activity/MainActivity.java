@@ -76,8 +76,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity
-    implements AccountHeader.OnAccountHeaderListener {
+public class MainActivity extends BaseActivity implements AccountHeader.OnAccountHeaderListener {
 
   private static final int PROFILE_REQUEST_CODE = 555;
   private static final int REQUEST_INVITE = 121;
@@ -257,8 +256,7 @@ public class MainActivity extends BaseActivity
         new PrimaryDrawerItem().withName(R.string.navigation_issues)
             .withIcon(Octicons.Icon.oct_issue_opened)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_issues),
-        new DividerDrawerItem(),
+            .withIdentifier(R.id.nav_drawer_issues), new DividerDrawerItem(),
         new PrimaryDrawerItem().withName(R.string.navigation_gists)
             .withIcon(Octicons.Icon.oct_gist)
             .withIconColor(iconColor)
@@ -395,10 +393,9 @@ public class MainActivity extends BaseActivity
     if (accountList != null) {
       for (Account account : accountList) {
         String userAvatar = AccountsHelper.getUserAvatar(this, account);
-        ProfileDrawerItem profileDrawerItem =
-            new ProfileDrawerItem().withName(account.name)
-                .withEmail(getUserExtraName(account))
-                .withIdentifier(account.hashCode());
+        ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(account.name)
+            .withEmail(getUserExtraName(account))
+            .withIdentifier(account.hashCode());
         if (!TextUtils.isEmpty(userAvatar)) {
           profileDrawerItem.withIcon(userAvatar);
         }
@@ -496,12 +493,12 @@ public class MainActivity extends BaseActivity
       BadgeStyle badgeStyle = new BadgeStyle(BadgeStyle.Style.DEFAULT, R.layout.menu_badge,
           getResources().getColor(R.color.accent), R.color.accent_dark, Color.WHITE,
           getResources().getDimensionPixelOffset(R.dimen.gapMicro));
-
       ActionItemBadge.update(this, menu.findItem(R.id.action_notifications), Octicons.Icon.oct_bell,
           badgeStyle, notificationsSizeCount);
     } else {
       ActionItemBadge.hide(menu.findItem(R.id.action_notifications));
     }
+
     return super.onPrepareOptionsMenu(menu);
   }
 

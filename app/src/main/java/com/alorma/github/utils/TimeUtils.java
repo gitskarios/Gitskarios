@@ -16,9 +16,6 @@ import org.ocpsoft.prettytime.units.Month;
 import org.ocpsoft.prettytime.units.Week;
 import org.ocpsoft.prettytime.units.Year;
 
-/**
- * Created by Bernat on 10/04/2015.
- */
 public class TimeUtils {
 
   public static String getDateToText(Context context, Date date, int resId) {

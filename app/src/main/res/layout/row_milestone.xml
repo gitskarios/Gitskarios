@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/gapMedium"
+              android:background="?selectableItemBackground"
+    >
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+      tools:text="Milestone"
+      android:id="@+id/milestoneTitle"
+      />
+
+  <ProgressBar
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/milestoneProgress"
+      android:layout_marginLeft="@dimen/gapSmall"
+      android:layout_marginRight="@dimen/gapSmall"
+      style="?android:attr/progressBarStyleHorizontal"
+      tools:progress="5"
+      tools:max="7"
+      />
+
+  <TextView
+      android:layout_marginTop="@dimen/gapSmall"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/gapSmall"
+      android:layout_marginRight="@dimen/gapSmall"
+      android:id="@+id/milestoneUpdated"
+      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+      tools:text="3h ago"
+      />
+</LinearLayout>

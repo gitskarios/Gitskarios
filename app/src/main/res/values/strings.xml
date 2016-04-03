@@ -66,6 +66,7 @@
   <string name="title">Title</string>
   <string name="leave_a_comment">Leave a comment</string>
   <string name="milestone">Milestone</string>
+  <string name="milestones">Milestones</string>
   <string name="assignee">Assignee</string>
   <string name="labels_title">Labels</string>
   <string name="labels">Labels, separated with comma</string>

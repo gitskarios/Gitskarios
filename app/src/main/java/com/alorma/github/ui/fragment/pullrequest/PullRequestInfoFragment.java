@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,20 +18,32 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
+import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
+import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.services.issues.EditIssueClient;
+import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.activity.issue.IssueMilestoneActivity;
 import com.alorma.github.ui.view.LabelView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.wefika.flowlayout.FlowLayout;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PullRequestInfoFragment extends Fragment {
 
   private static final String EXTRA_PULL_REQUEST = "EXTRA_PULL_REQUEST";
   private static final String ISSUE_INFO = "ISSUE_INFO";
+
+  private static final int MILESTONE_EDIT = 1234;
 
   @Bind(R.id.labels) ViewGroup labelsView;
   @Bind(R.id.milestone) TextView milestoneView;
@@ -42,6 +55,8 @@ public class PullRequestInfoFragment extends Fragment {
   @Bind(R.id.toolbar_milestone) Toolbar toolbarMilestone;
   @Bind(R.id.toolbar_assignee) Toolbar toolbarAssignee;
   @Bind(R.id.toolbar_branches) Toolbar toolbarBranches;
+
+  private IssueInfo issueInfo;
 
   public static PullRequestInfoFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -80,6 +95,7 @@ public class PullRequestInfoFragment extends Fragment {
     toolbarBranches.setTitle(R.string.branches);
 
     if (getArguments() != null) {
+      issueInfo = getArguments().getParcelable(ISSUE_INFO);
       PullRequest pr = getArguments().getParcelable(EXTRA_PULL_REQUEST);
       showPullRequest(pr);
     }
@@ -92,21 +108,21 @@ public class PullRequestInfoFragment extends Fragment {
   private void showPullRequest(PullRequest pullRequest) {
     if (getActivity() != null && pullRequest != null) {
       showAssignee(pullRequest);
-      showMilestone(pullRequest);
+      showMilestone(pullRequest.milestone);
       showLabels(pullRequest);
       showBranches(pullRequest);
     }
   }
 
   private void configToolbar(Toolbar toolbar, Toolbar.OnMenuItemClickListener itemClickListener) {
-    toolbar.inflateMenu(R.menu.pullrequest_detail_info_toolbars);
     Menu menu = toolbar.getMenu();
-    if (menu != null) {
-      MenuItem item = menu.findItem(R.id.action_pull_request_edit);
-      item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_gear)
-          .actionBar()
-          .colorRes(R.color.md_grey_500));
-    }
+    menu.clear();
+
+    toolbar.inflateMenu(R.menu.pullrequest_detail_info_toolbars);
+    MenuItem item = menu.findItem(R.id.action_pull_request_edit);
+    item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_gear)
+        .actionBar()
+        .colorRes(R.color.md_grey_500));
     if (itemClickListener != null) {
       toolbar.setOnMenuItemClickListener(itemClickListener);
     }
@@ -170,14 +186,13 @@ public class PullRequestInfoFragment extends Fragment {
     });
   }
 
-  private void showMilestone(PullRequest pullRequest) {
-    if (pullRequest.milestone != null) {
+  private void showMilestone(Milestone milestone) {
+    if (milestone != null) {
       progressMilestone.setVisibility(View.VISIBLE);
       milestoneView.setVisibility(View.VISIBLE);
-      milestoneView.setText(pullRequest.milestone.title);
-      progressMilestone.setMax(
-          pullRequest.milestone.closedIssues + pullRequest.milestone.openIssues);
-      ValueAnimator animator = ValueAnimator.ofInt(0, pullRequest.milestone.closedIssues);
+      milestoneView.setText(milestone.title);
+      progressMilestone.setMax(milestone.closedIssues + milestone.openIssues);
+      ValueAnimator animator = ValueAnimator.ofInt(0, milestone.closedIssues);
       animator.addUpdateListener(
           animation -> progressMilestone.setProgress((int) animation.getAnimatedValue()));
       animator.setDuration(300);
@@ -188,8 +203,49 @@ public class PullRequestInfoFragment extends Fragment {
       milestoneView.setVisibility(View.GONE);
     }
     configToolbar(toolbarMilestone, item -> {
-      Toast.makeText(getActivity(), "Milestone", Toast.LENGTH_SHORT).show();
+      Intent intent = IssueMilestoneActivity.createLauncher(getActivity(), issueInfo, true);
+      startActivityForResult(intent, MILESTONE_EDIT);
       return true;
     });
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == MILESTONE_EDIT && data != null) {
+        Milestone milestone = data.getParcelableExtra(Milestone.class.getSimpleName());
+        showMilestone(milestone);
+
+        EditIssueMilestoneRequestDTO dto = new EditIssueMilestoneRequestDTO();
+        dto.milestone = milestone.number;
+        executeEditIssue(dto);
+      }
+    }
+  }
+
+  private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
+    EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
+    client.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Issue>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            ErrorHandler.onError(getActivity(), "PR detail", e);
+          }
+
+          @Override
+          public void onNext(Issue issue) {
+            Toast.makeText(getActivity(), R.string.issue_change_add_milestone, Toast.LENGTH_SHORT)
+                .show();
+          }
+        });
   }
 }
