@@ -18,6 +18,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
@@ -25,10 +26,12 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.activity.issue.IssueAssigneesActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.IssueMilestoneActivity;
 import com.alorma.github.ui.view.LabelView;
@@ -48,6 +51,7 @@ public class PullRequestInfoFragment extends Fragment {
 
   private static final int MILESTONE_EDIT = 1234;
   private static final int LABELS_EDIT = 1235;
+  private static final int ASSIGNEE_EDIT = 1236;
 
   @Bind(R.id.labels) ViewGroup labelsView;
   @Bind(R.id.milestone) TextView milestoneView;
@@ -111,7 +115,7 @@ public class PullRequestInfoFragment extends Fragment {
 
   private void showPullRequest(PullRequest pullRequest) {
     if (getActivity() != null && pullRequest != null) {
-      showAssignee(pullRequest);
+      showAssignee(pullRequest.assignee);
       showMilestone(pullRequest.milestone);
       showLabels(pullRequest.labels);
       showBranches(pullRequest);
@@ -141,13 +145,12 @@ public class PullRequestInfoFragment extends Fragment {
     }
   }
 
-  private void showAssignee(PullRequest pullRequest) {
-    if (pullRequest.assignee != null) {
+  private void showAssignee(User assignee) {
+    if (assignee != null) {
       assigneeView.setVisibility(View.VISIBLE);
-      assigneeView.setText(pullRequest.assignee.login);
+      assigneeView.setText(assignee.login);
       assigneeView.setOnClickListener(v -> {
-        Intent launcherIntent =
-            ProfileActivity.createLauncherIntent(getActivity(), pullRequest.assignee);
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), assignee);
         startActivity(launcherIntent);
       });
     } else {
@@ -155,7 +158,8 @@ public class PullRequestInfoFragment extends Fragment {
     }
 
     configToolbar(toolbarAssignee, item -> {
-      Toast.makeText(getActivity(), "Assignee", Toast.LENGTH_SHORT).show();
+      Intent intent = IssueAssigneesActivity.createLauncher(getActivity(), issueInfo, true);
+      startActivityForResult(intent, ASSIGNEE_EDIT);
       return true;
     });
   }
@@ -234,6 +238,14 @@ public class PullRequestInfoFragment extends Fragment {
         EditIssueLabelsRequestDTO dto = new EditIssueLabelsRequestDTO();
         dto.labels = labels.toArray(new String[labels.size()]);
         executeEditIssue(dto);
+      } else if (requestCode == ASSIGNEE_EDIT && data != null) {
+        User user = data.getParcelableExtra(User.class.getSimpleName());
+
+        showAssignee(user);
+
+        EditIssueAssigneeRequestDTO dto = new EditIssueAssigneeRequestDTO();
+        dto.assignee = user.login;
+        executeEditIssue(dto);
       }
     }
   }
@@ -257,6 +269,7 @@ public class PullRequestInfoFragment extends Fragment {
           @Override
           public void onNext(Issue issue) {
             showLabels(issue.labels);
+            Toast.makeText(getActivity(), R.string.md_done_label, Toast.LENGTH_SHORT).show();
           }
         });
   }

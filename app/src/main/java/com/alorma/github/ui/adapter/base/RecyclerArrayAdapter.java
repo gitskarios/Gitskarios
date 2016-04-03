@@ -16,11 +16,11 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
     extends RecyclerView.Adapter<ViewHolder> {
 
   public List<ItemType> items;
-  private ItemType type;
   private LayoutInflater inflater;
   private TimeFormatter timeFormatter;
   private RecyclerAdapterContentListener recyclerAdapterContentListener;
   private ItemCallback<ItemType> callback;
+  private boolean returnResult;
 
   public RecyclerArrayAdapter(LayoutInflater inflater) {
     this.inflater = inflater;
@@ -124,6 +124,18 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
 
   public void setCallback(ItemCallback<ItemType> callback) {
     this.callback = callback;
+  }
+
+  public void setReturn(boolean aReturn) {
+    this.returnResult = aReturn;
+  }
+
+  public boolean isReturnResult() {
+    return returnResult;
+  }
+
+  public void setReturnResult(boolean returnResult) {
+    this.returnResult = returnResult;
   }
 
   public interface RecyclerAdapterContentListener {

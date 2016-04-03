@@ -15,9 +15,6 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 
-/**
- * Created by Bernat on 14/07/2014.
- */
 public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHolder> {
 
   public UsersAdapter(LayoutInflater inflater) {
@@ -52,10 +49,11 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
       text = (TextView) itemView.findViewById(R.id.textAuthorLogin);
       textRootView = itemView.findViewById(R.id.textRootView);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-          User user = getItem(getAdapterPosition());
+      itemView.setOnClickListener(v -> {
+        User user = getItem(getAdapterPosition());
+        if (isReturnResult()) {
+          getCallback().onItemSelected(user);
+        } else {
           if (user.type == UserType.Organization) {
             v.getContext()
                 .startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));

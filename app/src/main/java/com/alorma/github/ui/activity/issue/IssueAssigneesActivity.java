@@ -9,30 +9,27 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.sdk.bean.dto.response.Label;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.utils.NaturalTimeFormatter;
-import java.util.ArrayList;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.adapter.users.UsersAdapter;
 import java.util.List;
-import java.util.Set;
 
-public class IssueLabelsActivity extends BackActivity implements Presenter.Callback<List<Label>> {
+public class IssueAssigneesActivity extends BackActivity
+    implements Presenter.Callback<List<User>>, RecyclerArrayAdapter.ItemCallback<User> {
 
   private static final String ISSUE_INFO = "ISSUE_INFO";
-  private static final String LABELS = "LABELS";
   private static final String RETURN = "RETURN";
 
   @Bind(R.id.recycler) RecyclerView recyclerView;
-  private LabelsAdapter adapter;
+  private UsersAdapter adapter;
   private boolean returnResult;
 
-  public static Intent createLauncher(Context context, IssueInfo issueInfo, List<Label> labels,
-      boolean returnResult) {
-    Intent intent = new Intent(context, IssueLabelsActivity.class);
+  public static Intent createLauncher(Context context, IssueInfo issueInfo, boolean returnResult) {
+    Intent intent = new Intent(context, IssueAssigneesActivity.class);
     Bundle args = new Bundle();
     args.putParcelable(ISSUE_INFO, issueInfo);
-    args.putParcelableArrayList(LABELS, new ArrayList<>(labels));
     args.putBoolean(RETURN, returnResult);
     intent.putExtras(args);
     return intent;
@@ -44,24 +41,18 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
     setContentView(R.layout.generic_recyclerview);
     ButterKnife.bind(this);
 
-    setTitle(R.string.labels_title);
+    setTitle(R.string.collaborators_fragment_title);
 
     IssueInfo issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
-    List<Label> preSelectedLabels = getIntent().getParcelableArrayListExtra(LABELS);
-    List<String> selectedLabels = new ArrayList<>(preSelectedLabels.size());
-
-    for (Label preSelectedLabel : preSelectedLabels) {
-      selectedLabels.add(preSelectedLabel.name);
-    }
-
     returnResult = getIntent().getExtras().getBoolean(RETURN, false);
 
-    adapter = new LabelsAdapter(getLayoutInflater(), selectedLabels);
+    adapter = new UsersAdapter(getLayoutInflater());
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    adapter.setTimeFormatter(new NaturalTimeFormatter(this));
+    adapter.setCallback(this);
+    adapter.setReturn(returnResult);
     recyclerView.setAdapter(adapter);
 
-    IssueLabelsPresenter presenter = new IssueLabelsPresenter();
+    IssueAssigneesPresenter presenter = new IssueAssigneesPresenter();
     presenter.load(issueInfo, this);
   }
 
@@ -71,14 +62,8 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
   }
 
   @Override
-  public void onResponse(List<Label> labels) {
-    List<LabelUiModel> labelUiModels = new ArrayList<>(labels.size());
-
-    for (Label label : labels) {
-      labelUiModels.add(new LabelUiModel(label));
-    }
-
-    adapter.addAll(labelUiModels);
+  public void onResponse(List<User> organizations) {
+    adapter.addAll(organizations);
   }
 
   @Override
@@ -87,15 +72,12 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
   }
 
   @Override
-  protected void close(boolean navigateUp) {
+  public void onItemSelected(User item) {
     if (returnResult) {
-      Set<String> selectedLabels = adapter.getSelectedLabels();
       Intent intent = new Intent();
-      intent.putExtra(Label.class.getSimpleName(), new ArrayList<>(selectedLabels));
+      intent.putExtra(User.class.getSimpleName(), item);
       setResult(RESULT_OK, intent);
       finish();
-    } else {
-      super.close(navigateUp);
     }
   }
 }
