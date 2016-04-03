@@ -18,6 +18,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Issue;
@@ -28,12 +29,14 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.IssueMilestoneActivity;
 import com.alorma.github.ui.view.LabelView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.wefika.flowlayout.FlowLayout;
+import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,6 +47,7 @@ public class PullRequestInfoFragment extends Fragment {
   private static final String ISSUE_INFO = "ISSUE_INFO";
 
   private static final int MILESTONE_EDIT = 1234;
+  private static final int LABELS_EDIT = 1235;
 
   @Bind(R.id.labels) ViewGroup labelsView;
   @Bind(R.id.milestone) TextView milestoneView;
@@ -109,7 +113,7 @@ public class PullRequestInfoFragment extends Fragment {
     if (getActivity() != null && pullRequest != null) {
       showAssignee(pullRequest);
       showMilestone(pullRequest.milestone);
-      showLabels(pullRequest);
+      showLabels(pullRequest.labels);
       showBranches(pullRequest);
     }
   }
@@ -156,11 +160,13 @@ public class PullRequestInfoFragment extends Fragment {
     });
   }
 
-  private void showLabels(PullRequest pullRequest) {
-    if (pullRequest.labels != null) {
+  private void showLabels(List<Label> labels) {
+    labelsView.removeAllViews();
+    if (labels != null) {
       labelsView.setVisibility(View.VISIBLE);
+
       int marginHorizontal = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
-      for (Label label : pullRequest.labels) {
+      for (Label label : labels) {
         LabelView labelView = new LabelView(getContext());
         labelView.setLabel(label);
         labelsView.addView(labelView);
@@ -181,7 +187,8 @@ public class PullRequestInfoFragment extends Fragment {
     }
 
     configToolbar(toolbarLabels, item -> {
-      Toast.makeText(getActivity(), "Labels", Toast.LENGTH_SHORT).show();
+      Intent intent = IssueLabelsActivity.createLauncher(getActivity(), issueInfo, labels, true);
+      startActivityForResult(intent, LABELS_EDIT);
       return true;
     });
   }
@@ -221,6 +228,12 @@ public class PullRequestInfoFragment extends Fragment {
         EditIssueMilestoneRequestDTO dto = new EditIssueMilestoneRequestDTO();
         dto.milestone = milestone.number;
         executeEditIssue(dto);
+      } else if (requestCode == LABELS_EDIT && data != null) {
+        List<String> labels = data.getStringArrayListExtra(Label.class.getSimpleName());
+
+        EditIssueLabelsRequestDTO dto = new EditIssueLabelsRequestDTO();
+        dto.labels = labels.toArray(new String[labels.size()]);
+        executeEditIssue(dto);
       }
     }
   }
@@ -243,8 +256,7 @@ public class PullRequestInfoFragment extends Fragment {
 
           @Override
           public void onNext(Issue issue) {
-            Toast.makeText(getActivity(), R.string.issue_change_add_milestone, Toast.LENGTH_SHORT)
-                .show();
+            showLabels(issue.labels);
           }
         });
   }
