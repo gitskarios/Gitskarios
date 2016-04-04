@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:id="@+id/toolbar_branches"
-        style="@style/PullRequestInfo"
         />
 
     <TextView
@@ -47,7 +46,6 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:id="@+id/toolbar_labels_title"
-        style="@style/PullRequestInfo"
         />
 
     <com.wefika.flowlayout.FlowLayout
@@ -61,7 +59,6 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:id="@+id/toolbar_milestone"
-        style="@style/PullRequestInfo"
         />
 
     <ProgressBar
@@ -92,7 +89,6 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:id="@+id/toolbar_assignee"
-        style="@style/PullRequestInfo"
         />
 
     <TextView
