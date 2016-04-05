@@ -117,7 +117,7 @@ public class PullRequestDetailActivity extends BackActivity
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_file_code), "Files"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
 
-    mBottomBar.selectTabAtPosition(0, false);
+    mBottomBar.setDefaultTabPosition(0);
     mBottomBar.setActiveTabColor(AttributesUtils.getPrimaryColor(this));
 
     mBottomBar.setOnTabClickListener(new OnTabClickListener() {

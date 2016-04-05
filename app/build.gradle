@@ -48,7 +48,7 @@ android {
     minSdkVersion 15
     targetSdkVersion 23
     versionName "2.10.1"
-    versionCode 210100
+    versionCode 210101
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -253,7 +253,7 @@ dependencies {
   compile 'com.jakewharton:process-phoenix:1.0.2'
 
   compile 'com.github.alorma:timelineview:2.2.1'
-  compile 'com.roughike:bottom-bar:1.2.6'
+  compile 'com.roughike:bottom-bar:1.3.1'
 
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
