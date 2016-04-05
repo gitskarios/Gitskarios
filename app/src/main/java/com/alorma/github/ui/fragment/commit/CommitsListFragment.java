@@ -45,9 +45,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     implements TitleProvider, BranchManager, PermissionsManager, BackManager,
     CommitsAdapter.CommitsAdapterListener, MaterialCab.Callback, Observer<List<Commit>> {
@@ -84,7 +81,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+      repoInfo = getArguments().getParcelable(REPO_INFO);
       path = getArguments().getString(PATH);
     }
   }
@@ -164,25 +161,22 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   }
 
   private Func1<List<Commit>, List<Commit>> orderCommits() {
-    return new Func1<List<Commit>, List<Commit>>() {
-      @Override
-      public List<Commit> call(List<Commit> commits) {
-        List<Commit> newCommits = new ArrayList<>();
-        for (Commit commit : commits) {
-          if (commit.commit.author.date != null) {
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
+    return commits -> {
+      List<Commit> newCommits = new ArrayList<>();
+      for (Commit commit : commits) {
+        if (commit.commit.author.date != null) {
+          DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+          DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
 
-            Days days = Days.daysBetween(dt.withTimeAtStartOfDay(),
-                new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+          Days days = Days.daysBetween(dt.withTimeAtStartOfDay(),
+              new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
-            commit.days = days.getDays();
+          commit.days = days.getDays();
 
-            newCommits.add(commit);
-          }
+          newCommits.add(commit);
         }
-        return newCommits;
       }
+      return newCommits;
     };
   }
 

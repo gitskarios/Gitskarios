@@ -491,4 +491,6 @@
   <string name="notifications_new">NEW</string>
   <string name="action_pull_request_add_comment">Add coment</string>
   <string name="action_pull_request_edit">Edit</string>
+  <string name="issue_renamed_from"><b>Renamed from:</b><br/>%s</string>
+  <string name="issue_renamed_to"><b>to:</b><br/>%s</string>
 </resources>

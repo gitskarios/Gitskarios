@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -118,7 +119,6 @@ public class PullRequestDetailActivity extends BackActivity
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
 
     mBottomBar.setDefaultTabPosition(0);
-    mBottomBar.setActiveTabColor(AttributesUtils.getPrimaryColor(this));
 
     mBottomBar.setOnTabClickListener(new OnTabClickListener() {
       @Override

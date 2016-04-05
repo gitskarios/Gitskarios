@@ -12,14 +12,13 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
+import com.alorma.github.sdk.bean.issue.Rename;
+import com.alorma.github.sdk.core.ShaUtils;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Created by Bernat on 10/04/2015.
- */
 public class IssueTimelineView extends LinearLayout {
 
   private TextView textView;
@@ -63,54 +62,76 @@ public class IssueTimelineView extends LinearLayout {
     textView.setText("");
 
     String eventType = issueEvent.event.event;
-    if (eventType.equals("closed") || eventType.equals("reopened")) {
-      String text = issueEvent.event.actor.login + " " + eventType;
-      textView.setText(text);
-    } else if (eventType.equals("assigned") || eventType.equals("unassigned")) {
-      String text = null;
-      String user = "<b>" + issueEvent.event.assignee.login + "</b>";
-      if (eventType.equals("assigned")) {
-        text = getResources().getString(R.string.issue_assigned, user);
-      } else if (eventType.equals("unassigned")) {
-        text = getResources().getString(R.string.issue_unassigned, user);
+    switch (eventType) {
+      case "closed":
+      case "reopened": {
+        String text = issueEvent.event.actor.login + " " + eventType;
+        textView.setText(text);
+        break;
       }
-      if (text != null) {
-        textView.setText(Html.fromHtml(text));
+      case "assigned":
+      case "unassigned": {
+        String text = null;
+        String user = "<b>" + issueEvent.event.assignee.login + "</b>";
+        if (eventType.equals("assigned")) {
+          text = getResources().getString(R.string.issue_assigned, user);
+        } else if (eventType.equals("unassigned")) {
+          text = getResources().getString(R.string.issue_unassigned, user);
+        }
+        if (text != null) {
+          textView.setText(Html.fromHtml(text));
+        }
+        break;
       }
-    } else if (eventType.equals("milestoned") || eventType.equals("demilestoned")) {
-      String text = null;
-      String milestone = "<b>" + issueEvent.event.milestone.title + "</b>";
-      if (eventType.equals("milestoned")) {
-        text = getResources().getString(R.string.issue_milestoned, milestone);
-      } else if (eventType.equals("demilestoned")) {
-        text = getResources().getString(R.string.issue_demilestoned, milestone);
+      case "milestoned":
+      case "demilestoned": {
+        String text = null;
+        String milestone = "<b>" + issueEvent.event.milestone.title + "</b>";
+        if (eventType.equals("milestoned")) {
+          text = getResources().getString(R.string.issue_milestoned, milestone);
+        } else if (eventType.equals("demilestoned")) {
+          text = getResources().getString(R.string.issue_demilestoned, milestone);
+        }
+        if (text != null) {
+          textView.setText(Html.fromHtml(text));
+        }
+        break;
       }
-      if (text != null) {
-        textView.setText(Html.fromHtml(text));
-      }
-    } else if (eventType.equals("merged") || eventType.equals("referenced")) {
-      String text = null;
-      String commitId = issueEvent.event.commit_id;
+      case "merged":
+      case "referenced": {
+        String text = null;
+        String commitId = issueEvent.event.commit_id;
 
-      String commitContent;
-      if (!TextUtils.isEmpty(commitId)) {
-        commitContent = commitId.substring(0, 8);
-      } else {
-        commitContent = "********";
-      }
+        String commitContent;
+        if (!TextUtils.isEmpty(commitId)) {
+          commitContent = ShaUtils.shortSha(commitId);
+        } else {
+          commitContent = "********";
+        }
 
-      String milestone = "<b>" + commitContent + "</b>";
-      if (eventType.equals("merged")) {
-        text = getResources().getString(R.string.issue_merged, milestone);
-      } else if (eventType.equals("referenced")) {
-        text = getResources().getString(R.string.issue_referenced, milestone);
+        String commitContentStrong = "<b>" + commitContent + "</b>";
+        if (eventType.equals("merged")) {
+          text = getResources().getString(R.string.issue_merged, commitContentStrong);
+        } else if (eventType.equals("referenced")) {
+          text = getResources().getString(R.string.issue_referenced, commitContentStrong);
+        }
+        if (text != null) {
+          textView.setText(Html.fromHtml(text));
+        }
+        break;
       }
-      if (text != null) {
-        textView.setText(Html.fromHtml(text));
+      case "renamed": {
+        Rename rename = issueEvent.event.rename;
+        String from = getResources().getString(R.string.issue_renamed_from, rename.from);
+        String to = getResources().getString(R.string.issue_renamed_to, rename.to);
+        textView.setText(Html.fromHtml(from + "<br/>" + to));
+        break;
       }
-    } else {
-      String text = issueEvent.event.actor.login + " " + eventType;
-      textView.setText(text);
+      default: {
+        String text = issueEvent.event.actor.login + " " + eventType;
+        textView.setText(text);
+        break;
+      }
     }
     textView.setVisibility(View.VISIBLE);
   }

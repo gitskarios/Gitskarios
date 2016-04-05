@@ -24,9 +24,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.ViewHolder>
     implements StickyRecyclerHeadersAdapter<CommitsAdapter.HeaderViewHolder> {
 

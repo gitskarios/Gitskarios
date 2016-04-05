@@ -7,6 +7,8 @@
           android:gravity="center_vertical"
           android:orientation="vertical"
           android:paddingLeft="24dp"
+          android:paddingRight="24dp"
           android:textColor="?attr/colorAccent"
+          android:background="?gitskarios_card_background"
           android:textSize="@dimen/textSizeMedium"
     />

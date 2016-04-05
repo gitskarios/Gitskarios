@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -44,9 +45,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 11/07/2015.
- */
 public class ContentEditorActivity extends BackActivity
     implements Toolbar.OnMenuItemClickListener, QueryTokenReceiver {
 
@@ -139,7 +137,7 @@ public class ContentEditorActivity extends BackActivity
         issueInfo.num = issueNumber;
 
         if (!TextUtils.isEmpty(content)) {
-          editText.setText(HtmlUtils.format(content));
+          editText.setText(Html.fromHtml(HtmlUtils.format(content).toString()));
         }
       }
 
@@ -339,7 +337,7 @@ public class ContentEditorActivity extends BackActivity
     if (issueInfo != null) {
       String issueComment = CacheWrapper.getIssueComment(issueInfo.toString());
       if (issueComment != null) {
-        editText.setText(issueComment);
+        editText.setText(Html.fromHtml(issueComment));
       }
     }
   }
