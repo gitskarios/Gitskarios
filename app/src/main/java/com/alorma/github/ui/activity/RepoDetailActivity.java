@@ -32,6 +32,7 @@ import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.webhooks.AddWebHookClient;
 import com.alorma.github.ui.actions.ShareAction;
+import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
@@ -298,6 +299,10 @@ public class RepoDetailActivity extends BackActivity
         String url = currentRepo.svn_url;
 
         new ShareAction(this, title, url).execute();
+      }
+    }else if (item.getItemId() == R.id.action_open_in_browser){
+      if (currentRepo != null) {
+        new ViewInAction(this, currentRepo.html_url).execute();
       }
     } else if (item.getItemId() == R.id.action_repo_change_branch) {
       changeBranch();
