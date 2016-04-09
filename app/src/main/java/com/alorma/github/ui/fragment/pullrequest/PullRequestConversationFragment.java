@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.pullrequest;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -167,8 +168,7 @@ public class PullRequestConversationFragment extends Fragment
         AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);
         addIssueCommentAction.setAddCommentCallback(new CommentCallback());
         addIssueCommentAction.execute();
-      }
-      if (requestCode == ISSUE_BODY_EDIT) {
+      } else if (requestCode == ISSUE_BODY_EDIT) {
         EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
         bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
 
@@ -184,17 +184,33 @@ public class PullRequestConversationFragment extends Fragment
 
   private class CommentCallback implements AddIssueCommentAction.AddCommentCallback {
 
+    private ProgressDialog progressDialog;
+
     private CommentCallback() {
     }
 
     @Override
     public void onCommentAdded() {
+      if (progressDialog != null) {
+        progressDialog.dismiss();
+      }
+      pullRequestStory = null;
       getContent();
     }
 
     @Override
     public void onCommentError() {
+      if (progressDialog != null) {
+        progressDialog.dismiss();
+      }
+    }
 
+    @Override
+    public void onCommentAddStarted() {
+      progressDialog = new ProgressDialog(getActivity());
+      progressDialog.setMessage(getString(R.string.adding_comment));
+      progressDialog.setCancelable(true);
+      progressDialog.show();
     }
   }
 

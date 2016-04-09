@@ -858,6 +858,11 @@ public class IssueDetailActivity extends BackActivity
     public void onCommentError() {
 
     }
+
+    @Override
+    public void onCommentAddStarted() {
+
+    }
   }
 
   private class AssigneActionCallback implements ActionCallback<Boolean> {

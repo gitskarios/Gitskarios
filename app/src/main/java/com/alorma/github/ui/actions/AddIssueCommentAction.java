@@ -20,6 +20,9 @@ public class AddIssueCommentAction extends Action<GithubComment> {
 
   @Override
   public Action<GithubComment> execute() {
+    if (addCommentCallback != null) {
+      addCommentCallback.onCommentAddStarted();
+    }
     NewIssueCommentClient client = new NewIssueCommentClient(issueInfo, body);
     client.observable()
         .subscribeOn(Schedulers.io())
@@ -47,8 +50,10 @@ public class AddIssueCommentAction extends Action<GithubComment> {
   }
 
   public interface AddCommentCallback {
-    public void onCommentAdded();
+    void onCommentAdded();
 
-    public void onCommentError();
+    void onCommentError();
+
+    void onCommentAddStarted();
   }
 }
