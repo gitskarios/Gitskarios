@@ -7,9 +7,6 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ShareEvent;
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by Bernat on 12/10/2015.
- */
 public class ShareAction extends Action<Void> {
 
   private final Context context;

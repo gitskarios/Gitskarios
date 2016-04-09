@@ -1,6 +1,8 @@
 package com.alorma.github.ui.actions;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
@@ -11,10 +13,7 @@ import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 12/10/2015.
- */
-public class ReopenAction extends Action<Issue> {
+public class ReopenAction extends Action<Issue> implements MaterialDialog.SingleButtonCallback{
 
   private Context context;
   private IssueInfo issueInfo;
@@ -36,13 +35,7 @@ public class ReopenAction extends Action<Issue> {
     MaterialDialog dialog = new MaterialDialog.Builder(context).title(title)
         .positiveText(accept)
         .negativeText(cancel)
-        .callback(new MaterialDialog.ButtonCallback() {
-          @Override
-          public void onPositive(MaterialDialog materialDialog) {
-            super.onPositive(materialDialog);
-            changeIssueState(IssueState.open);
-          }
-        })
+        .onPositive(this)
         .build();
 
     dialog.show();
@@ -50,7 +43,6 @@ public class ReopenAction extends Action<Issue> {
   }
 
   private void changeIssueState(IssueState state) {
-
     dialog = new MaterialDialog.Builder(context).content(dialogString)
         .progress(true, 0)
         .theme(Theme.DARK)
@@ -73,5 +65,10 @@ public class ReopenAction extends Action<Issue> {
         getCallback().onResult(issue);
       }
     }
+  }
+
+  @Override
+  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+    changeIssueState(IssueState.open);
   }
 }

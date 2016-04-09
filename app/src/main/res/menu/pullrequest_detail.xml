@@ -5,25 +5,16 @@
     >
 
   <item
-      android:id="@+id/issue_edit_milestone"
-      android:title="@string/issue_edit_milestone"
-      app:showAsAction="never"
-      />
-  <item
-      android:id="@+id/issue_edit_assignee"
-      android:title="@string/issue_edit_assignee"
-      app:showAsAction="never"
-      />
-  <item
-      android:id="@+id/issue_edit_labels"
-      android:title="@string/issue_edit_labels"
-      app:showAsAction="never"
-      />
-  <item
       android:id="@+id/share_issue"
       android:orderInCategory="1"
       android:title="@string/action_share_issue"
       app:showAsAction="ifRoom"
+      />
+  <item
+      android:id="@+id/open_issue"
+      android:orderInCategory="1"
+      android:title="@string/action_open_in_browser"
+      app:showAsAction="never"
       />
 
   <item

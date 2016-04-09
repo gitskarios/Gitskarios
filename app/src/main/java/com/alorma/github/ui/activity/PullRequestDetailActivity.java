@@ -3,22 +3,27 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
+import com.alorma.github.ui.actions.ShareAction;
+import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestConversationFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestInfoFragment;
 import com.alorma.github.utils.AttributesUtils;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -42,6 +47,7 @@ public class PullRequestDetailActivity extends BackActivity
   private BottomBarBadge badgeFiles;
   private BottomBarBadge badgeCommits;
   private PullRequestInfoFragment infoFragment;
+  private PullRequestStory story;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -162,6 +168,35 @@ public class PullRequestDetailActivity extends BackActivity
   }
 
   @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    menu.clear();
+    getMenuInflater().inflate(R.menu.pullrequest_detail, menu);
+    MenuItem item = menu.findItem(R.id.share_issue);
+    if (item != null) {
+      IconicsDrawable drawable = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_share)
+          .actionBar()
+          .color(Color.WHITE);
+      item.setIcon(drawable);
+    }
+    return super.onPrepareOptionsMenu(menu);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (story != null) {
+    switch (item.getItemId()) {
+      case R.id.share_issue:
+        new ShareAction(this, story.pullRequest.title, story.pullRequest.html_url).execute();
+        break;
+      case R.id.open_issue:
+        new ViewInAction(this, story.pullRequest.html_url).execute();
+        break;
+    }
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  @Override
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     mBottomBar.onSaveInstanceState(outState);
@@ -169,6 +204,8 @@ public class PullRequestDetailActivity extends BackActivity
 
   @Override
   public void onStoryLoaded(PullRequestStory story) {
+    this.story = story;
+    invalidateOptionsMenu();
     if (mBottomBar != null && story != null) {
       if (badgeFiles == null) {
         badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
