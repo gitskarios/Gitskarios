@@ -65,7 +65,7 @@ public class ShortcutUtils {
               Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_launcher));
       context.sendBroadcast(addIntent);
 
-      Toast.makeText(context, R.string.repo_add_to_homescreen, Toast.LENGTH_SHORT).show();
+      Toast.makeText(context, R.string.pullrequest_add_to_homescreen, Toast.LENGTH_SHORT).show();
     }
   }
 }

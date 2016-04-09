@@ -23,6 +23,7 @@ import com.alorma.github.ui.fragment.pullrequest.PullRequestConversationFragment
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestInfoFragment;
 import com.alorma.github.utils.AttributesUtils;
+import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -190,6 +191,9 @@ public class PullRequestDetailActivity extends BackActivity
         break;
       case R.id.open_issue:
         new ViewInAction(this, story.pullRequest.html_url).execute();
+        break;
+      case R.id.action_add_shortcut:
+        ShortcutUtils.addPrShortcut(this, issueInfo);
         break;
     }
     }

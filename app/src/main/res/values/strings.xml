@@ -406,6 +406,7 @@
   <string name="navigation_from_orgs">From organizations</string>
   <string name="action_add_shortcut">Add desktop shortcut</string>
   <string name="repo_add_to_homescreen">Repository shortcut created</string>
+  <string name="pullrequest_add_to_homescreen">Pull request shortcut created</string>
   <string name="issue_add_to_homescreen">Issue shortcut created</string>
   <string name="menu_enable_notifications">Notifications</string>
   <string name="menu_enable_notifications_description">Enable android notifications</string>
