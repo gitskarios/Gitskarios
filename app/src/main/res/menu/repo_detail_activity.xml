@@ -25,4 +25,10 @@
       app:showAsAction="never"
       />
 
+  <item
+      android:id="@+id/action_open_in_browser"
+      android:orderInCategory="4"
+      android:title="@string/action_open_in_browser"
+      app:showAsAction="never"
+    />
 </menu>
