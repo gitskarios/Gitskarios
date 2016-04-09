@@ -215,12 +215,17 @@
   <string name="navigate_up">Up</string>
   <string name="no_content">No files</string>
 
-  <string name="issue_assigned">Assigned to %1$s</string>
-  <string name="issue_unassigned">Removed %s assignment</string>
-  <string name="issue_milestoned">Added to %s milestone</string>
-  <string name="issue_demilestoned">Removed %s milestone</string>
-  <string name="issue_merged">Merged into %s</string>
-  <string name="issue_referenced">Referenced in %s</string>
+  <string name="issue_assigned">%1$s Assigned to <b>%2$s</b></string>
+  <string name="issue_unassigned">%1$s Removed <b>%2$s</b> assignment</string>
+  <string name="issue_milestoned">%1$s Added to <b>%2$s</b> milestone</string>
+  <string name="issue_demilestoned">%1$s Removed <b>%2$s</b> milestone</string>
+  <string name="issue_merged">Merged into <b>%1$s</b></string>
+  <string name="issue_referenced">Referenced in <b>%1$s</b></string>
+  <string name="issue_renamed_from"><b>Renamed from:</b><br/>%s</string>
+  <string name="issue_renamed_to"><b>to:</b><br/>%s</string>
+  <string name="issue_self_assigned">%1$s self assigned</string>
+  <string name="issue_self_unassigned">%1$s removed their assignment</string>
+
   <string name="no_collaborators">No collaborators</string>
   <string name="collaborators_fragment_title">Collaborators</string>
   <string name="owner">Owner</string>
@@ -493,6 +498,4 @@
   <string name="action_pull_request_add_comment">Add coment</string>
   <string name="action_pull_request_edit">Edit</string>
   <string name="action_open_in_browser">Open in browser</string>
-  <string name="issue_renamed_from"><b>Renamed from:</b><br/>%s</string>
-  <string name="issue_renamed_to"><b>to:</b><br/>%s</string>
 </resources>

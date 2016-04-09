@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
@@ -56,11 +57,15 @@ public class IssueStoryLabelDetailView extends LinearLayout {
   }
 
   public void setLabelsEvent(IssueStoryLabelList labelsEvent) {
+    long milis = System.currentTimeMillis();
     printLabelsEvent(true, labelsEvent.created_at, labelsEvent.user(), labelsEvent);
+    Log.i("PR_time_labels", (System.currentTimeMillis() - milis) + "ms");
   }
 
   public void setLabelsEvent(IssueStoryUnlabelList labelsEvent) {
+    long milis = System.currentTimeMillis();
     printLabelsEvent(false, labelsEvent.created_at, labelsEvent.user(), labelsEvent);
+    Log.i("PR_time_unlabels", (System.currentTimeMillis() - milis) + "ms");
   }
 
   private void printLabelsEvent(boolean added, long created_at, User user, List<Label> labels) {

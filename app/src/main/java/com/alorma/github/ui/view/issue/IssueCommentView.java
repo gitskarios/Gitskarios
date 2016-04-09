@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
@@ -58,6 +59,7 @@ public class IssueCommentView extends LinearLayout {
   }
 
   public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
+    long milis = System.currentTimeMillis();
     GithubComment githubComment = issueStoryDetail.comment;
 
     applyGenericIssueStory(issueStoryDetail);
@@ -73,6 +75,7 @@ public class IssueCommentView extends LinearLayout {
       imageGetter.bind(body, htmlCode, githubComment.hashCode());
       body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
     }
+    Log.i("PR_time_comment", (System.currentTimeMillis() - milis) + "ms");
   }
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {

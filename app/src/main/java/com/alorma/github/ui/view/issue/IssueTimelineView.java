@@ -2,29 +2,30 @@ package com.alorma.github.ui.view.issue;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.LinearLayout;
+import android.util.Log;
+import android.view.Gravity;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.Rename;
 import com.alorma.github.sdk.core.ShaUtils;
-import com.alorma.github.ui.view.UserAvatarView;
-import com.alorma.github.utils.TimeUtils;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.materialize.color.Material;
+import com.mikepenz.octicons_typeface_library.Octicons;
+import tk.zielony.naturaldateformat.NaturalDateFormat;
+import tk.zielony.naturaldateformat.RelativeDateFormat;
 
-public class IssueTimelineView extends LinearLayout {
+public class IssueTimelineView extends TextView {
 
-  private TextView textView;
-  private TextView userText;
-  private UserAvatarView profileIcon;
-  private TextView createdAt;
+  private static final int ICON_ROUNDED_CORNER_DP = 16;
+  private static final int ICON_SIZE = 30;
+  private static final int ICON_PADDING = 6;
 
   public IssueTimelineView(Context context) {
     super(context);
@@ -48,103 +49,101 @@ public class IssueTimelineView extends LinearLayout {
   }
 
   private void init() {
-    inflate(getContext(), R.layout.issue_detail_issue_timeline_view, this);
-    textView = (TextView) findViewById(R.id.text);
-
-    userText = (TextView) findViewById(R.id.userLogin);
-    profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
-    createdAt = (TextView) findViewById(R.id.createdAt);
+    int padding = getResources().getDimensionPixelOffset(R.dimen.materialize_baseline_grid);
+    setPadding(padding * 2, padding, padding, padding);
+    setCompoundDrawablePadding(padding);
+    setGravity(Gravity.CENTER_VERTICAL);
   }
 
   public void setIssueEvent(IssueStoryEvent issueEvent) {
-    applyGenericIssueStory(issueEvent);
+    long milis = System.currentTimeMillis();
+    //applyGenericIssueStory(issueEvent);
 
-    textView.setText("");
+    setText("");
+
+    String actor = issueEvent.user().login;
 
     String eventType = issueEvent.event.event;
-    switch (eventType) {
-      case "closed":
-      case "reopened": {
-        String text = issueEvent.event.actor.login + " " + eventType;
-        textView.setText(text);
-        break;
+    if (eventType.equals("assigned")) {
+      setIcon(Octicons.Icon.oct_person);
+      if (actor.equalsIgnoreCase(issueEvent.event.assignee.login)) {
+        setText(getResources().getString(R.string.issue_self_assigned, actor));
+      } else {
+        setText(getResources().getString(R.string.issue_assigned, actor,
+            issueEvent.event.assignee.login));
       }
-      case "assigned":
-      case "unassigned": {
-        String text = null;
-        String user = "<b>" + issueEvent.event.assignee.login + "</b>";
-        if (eventType.equals("assigned")) {
-          text = getResources().getString(R.string.issue_assigned, user);
-        } else if (eventType.equals("unassigned")) {
-          text = getResources().getString(R.string.issue_unassigned, user);
-        }
-        if (text != null) {
-          textView.setText(Html.fromHtml(text));
-        }
-        break;
+    } else if (eventType.equals("unassigned")) {
+      setIcon(Octicons.Icon.oct_person);
+      if (actor.equalsIgnoreCase(issueEvent.event.assignee.login)) {
+        setText(getResources().getString(R.string.issue_self_unassigned, actor));
+      } else {
+        setText(getResources().getString(R.string.issue_unassigned, actor,
+            issueEvent.event.assignee.login));
       }
-      case "milestoned":
-      case "demilestoned": {
-        String text = null;
-        String milestone = "<b>" + issueEvent.event.milestone.title + "</b>";
-        if (eventType.equals("milestoned")) {
-          text = getResources().getString(R.string.issue_milestoned, milestone);
-        } else if (eventType.equals("demilestoned")) {
-          text = getResources().getString(R.string.issue_demilestoned, milestone);
-        }
-        if (text != null) {
-          textView.setText(Html.fromHtml(text));
-        }
-        break;
+    } else if (eventType.equals("milestoned")) {
+      setIcon(Octicons.Icon.oct_milestone);
+      String text = getResources().getString(R.string.issue_milestoned, actor,
+          issueEvent.event.milestone.title);
+      setText(text);
+    } else if (eventType.equals("demilestoned")) {
+      setIcon(Octicons.Icon.oct_milestone);
+      String text = getResources().getString(R.string.issue_demilestoned, actor,
+          issueEvent.event.milestone.title);
+      setText(text);
+    } else if (eventType.equals("merged") || eventType.equals("referenced")) {
+      String text = null;
+      String commitId = issueEvent.event.commit_id;
+      String commitContent;
+      if (!TextUtils.isEmpty(commitId)) {
+        commitContent = ShaUtils.shortSha(commitId);
+      } else {
+        commitContent = "********";
       }
-      case "merged":
-      case "referenced": {
-        String text = null;
-        String commitId = issueEvent.event.commit_id;
-
-        String commitContent;
-        if (!TextUtils.isEmpty(commitId)) {
-          commitContent = ShaUtils.shortSha(commitId);
-        } else {
-          commitContent = "********";
-        }
-
-        String commitContentStrong = "<b>" + commitContent + "</b>";
-        if (eventType.equals("merged")) {
-          text = getResources().getString(R.string.issue_merged, commitContentStrong);
-        } else if (eventType.equals("referenced")) {
-          text = getResources().getString(R.string.issue_referenced, commitContentStrong);
-        }
-        if (text != null) {
-          textView.setText(Html.fromHtml(text));
-        }
-        break;
+      if (eventType.equals("merged")) {
+        IconicsDrawable drawable = new IconicsDrawable(getContext());
+        drawable.backgroundColorRes(R.color.pullrequest_state_merged_dark);
+        drawable.color(Color.WHITE);
+        drawable.roundedCornersDp(ICON_ROUNDED_CORNER_DP);
+        drawable.sizeDp(ICON_SIZE);
+        drawable.paddingDp(ICON_PADDING);
+        setCompoundDrawables(drawable.icon(Octicons.Icon.oct_git_merge), null, null, null);
+        text = getResources().getString(R.string.issue_merged, commitContent);
+      } else if (eventType.equals("referenced")) {
+        setIcon(Octicons.Icon.oct_git_commit);
+        text = getResources().getString(R.string.issue_referenced, commitContent);
       }
-      case "renamed": {
-        Rename rename = issueEvent.event.rename;
-        String from = getResources().getString(R.string.issue_renamed_from, rename.from);
-        String to = getResources().getString(R.string.issue_renamed_to, rename.to);
-        textView.setText(Html.fromHtml(from + "<br/>" + to));
-        break;
+      if (text != null) {
+        setText(String.format("%s %s", actor, text));
       }
-      default: {
-        String text = issueEvent.event.actor.login + " " + eventType;
-        textView.setText(text);
-        break;
-      }
+    } else if (eventType.equals("renamed")) {
+      setIcon(Octicons.Icon.oct_pencil);
+      Rename rename = issueEvent.event.rename;
+      String from = getResources().getString(R.string.issue_renamed_from, rename.from);
+      String to = getResources().getString(R.string.issue_renamed_to, rename.to);
+      setText(Html.fromHtml(actor + " " + from + "<br/>" + to));
+    } else {
+      setIcon(Octicons.Icon.oct_octoface);
+      String text = issueEvent.event.actor.login + " " + eventType + " ";
+      setText(text);
     }
-    textView.setVisibility(View.VISIBLE);
+
+    setText(String.format("%s %s", getText(), getTime(issueEvent.created_at)));
+
+    Log.i("PR_time_event", eventType + ": " + (System.currentTimeMillis() - milis) + "ms");
   }
 
-  private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
-    userText.setText(storyEvent.user().login);
-    profileIcon.setUser(storyEvent.user());
-    setTime(storyEvent.createdAt());
+  private void setIcon(IIcon icon) {
+    IconicsDrawable drawable = new IconicsDrawable(getContext());
+    drawable.backgroundColor(Material.Grey._300.getAsColor());
+    drawable.color(Material.Grey._700.getAsColor());
+    drawable.roundedCornersDp(ICON_ROUNDED_CORNER_DP);
+    drawable.sizeDp(ICON_SIZE);
+    drawable.paddingDp(ICON_PADDING);
+    setCompoundDrawables(drawable.icon(icon), null, null, null);
   }
 
-  private void setTime(long time) {
-    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    String date = TimeUtils.getTimeAgoString(formatter.print(time));
-    createdAt.setText(date);
+  private String getTime(long time) {
+    RelativeDateFormat relFormat = new RelativeDateFormat(getContext(), NaturalDateFormat.DATE);
+    return relFormat.format(time);
   }
 }

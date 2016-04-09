@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -86,6 +87,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest,
       GithubStatusResponse statusResponse, Permissions permissions) {
+    long milis = System.currentTimeMillis();
     if (this.pullRequest == null) {
       this.pullRequest = pullRequest;
       title.setText(pullRequest.title);
@@ -174,8 +176,8 @@ public class PullRequestDetailView extends LinearLayout {
         title.setOnClickListener(editClickListener);
         body.setOnClickListener(editClickListener);
       }
-
     }
+    Log.i("PR_time_detail", (System.currentTimeMillis() - milis) + "ms");
   }
 
   private IconicsDrawable getIcon(IIcon icon) {

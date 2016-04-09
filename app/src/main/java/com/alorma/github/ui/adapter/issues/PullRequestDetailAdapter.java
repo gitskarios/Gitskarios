@@ -2,6 +2,7 @@ package com.alorma.github.ui.adapter.issues;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,11 @@ public class PullRequestDetailAdapter
   public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
     switch (viewType) {
       case VIEW_ISSUE:
-        return new PullRequestHolder(new PullRequestDetailView(context));
+        PullRequestDetailView detailView = new PullRequestDetailView(context);
+        detailView.setIssueDetailRequestListener(issueDetailRequestListener);
+        detailView.setPullRequestActionsListener(pullRequestActionsListener);
+        return new PullRequestHolder(detailView);
+
       case VIEW_COMMENT:
         IssueCommentView itemViewComment = new IssueCommentView(context);
         return new CommentHolder(itemViewComment);
@@ -74,13 +79,11 @@ public class PullRequestDetailAdapter
   public void onBindViewHolder(Holder holder, int position) {
     int viewType = getItemViewType(position);
 
+    long milis = System.currentTimeMillis();
+
     if (position == 0) {
       ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo,
           pullRequestStory.pullRequest, pullRequestStory.statusResponse, permissions);
-      ((PullRequestHolder) holder).pullRequestDetailView.setIssueDetailRequestListener(
-          issueDetailRequestListener);
-      ((PullRequestHolder) holder).pullRequestDetailView.setPullRequestActionsListener(
-          pullRequestActionsListener);
     } else {
       IssueStoryDetail issueStoryDetail = pullRequestStory.details.get(position - 1);
       if (viewType == VIEW_LABELED_LIST) {
@@ -97,6 +100,8 @@ public class PullRequestDetailAdapter
             ((IssueStoryEvent) issueStoryDetail));
       }
     }
+
+    Log.i("PR_time", (System.currentTimeMillis() - milis) + "ms");
   }
 
   @Override
