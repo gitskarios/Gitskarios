@@ -140,7 +140,9 @@ public class PullRequestDetailActivity extends BackActivity
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     String pref_theme =
         defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    mBottomBar.useDarkTheme("theme_dark".equalsIgnoreCase(pref_theme));
+    if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+      mBottomBar.useDarkTheme();
+    }
   }
 
   private void selectFragment(Fragment fragment) {
@@ -172,14 +174,14 @@ public class PullRequestDetailActivity extends BackActivity
         badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
             story.pullRequest.changed_files);
       }
-      badgeFiles.setText(String.valueOf(story.pullRequest.changed_files));
+      badgeFiles.setCount(story.pullRequest.changed_files);
       badgeFiles.setAutoShowAfterUnSelection(true);
 
       if (badgeCommits == null) {
         badgeCommits = mBottomBar.makeBadgeForTabAt(3, AttributesUtils.getAccentColor(this),
             story.pullRequest.commits);
       }
-      badgeCommits.setText(String.valueOf(story.pullRequest.commits));
+      badgeCommits.setCount(story.pullRequest.commits);
       badgeCommits.setAutoShowAfterUnSelection(true);
 
       if (infoFragment != null) {
