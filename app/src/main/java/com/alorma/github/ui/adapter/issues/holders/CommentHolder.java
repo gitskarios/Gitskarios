@@ -6,7 +6,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 
-public class CommentHolder extends Holder {
+public class CommentHolder extends Holder<Issue> {
   private final IssueCommentView issueCommentView;
   private RepoInfo repoInfo;
 

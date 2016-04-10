@@ -6,7 +6,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 
-public class TimelineHolder extends Holder {
+public class TimelineHolder extends Holder<Issue> {
   private final IssueTimelineView issueTimelineView;
 
   public TimelineHolder(IssueTimelineView itemView) {

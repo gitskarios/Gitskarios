@@ -147,7 +147,7 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void checkEditTitle() {
-    if (issueInfo != null && issueStory != null && issueStory.issue != null) {
+    if (issueInfo != null && issueStory != null && issueStory.item != null) {
 
       StoreCredentials credentials = new StoreCredentials(this);
 
@@ -155,7 +155,7 @@ public class IssueDetailActivity extends BackActivity
       if (settings.shouldShowDialogEditIssue()) {
         if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
           showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
-        } else if (issueStory.issue.user.login.equals(credentials.getUserName())) {
+        } else if (issueStory.item.user.login.equals(credentials.getUserName())) {
           showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
         }
       }
@@ -245,15 +245,9 @@ public class IssueDetailActivity extends BackActivity
         });
   }
 
-  private boolean checkPermissions(IssueInfo issueInfo) {
-    return issueInfo != null
-        && issueInfo.repoInfo != null
-        && issueInfo.repoInfo.permissions == null;
-  }
-
   public void onResponseOk(IssueStory issueStory) {
     this.issueStory = issueStory;
-    this.issueStory.issue.repository = repository;
+    this.issueStory.item.repository = repository;
 
     swipe.setRefreshing(false);
     swipe.setOnRefreshListener(this);
@@ -264,19 +258,18 @@ public class IssueDetailActivity extends BackActivity
 
   private void applyIssue() {
     loadingView.setVisibility(View.GONE);
-    changeColor(issueStory.issue);
+    changeColor(issueStory.item);
 
-    fab.setVisibility(issueStory.issue.locked ? View.GONE : View.VISIBLE);
-    fab.setOnClickListener(issueStory.issue.locked ? null : this);
+    fab.setVisibility(issueStory.item.locked ? View.GONE : View.VISIBLE);
+    fab.setOnClickListener(issueStory.item.locked ? null : this);
 
     String status = getString(R.string.issue_status_open);
-    if (IssueState.closed == issueStory.issue.state) {
+    if (IssueState.closed == issueStory.item.state) {
       status = getString(R.string.issue_status_close);
     }
-    setTitle("#" + issueStory.issue.number + " " + status);
+    setTitle("#" + issueStory.item.number + " " + status);
     IssueDetailAdapter adapter =
-        new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo);
-    adapter.setIssueDetailRequestListener(this);
+        new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();
@@ -367,7 +360,7 @@ public class IssueDetailActivity extends BackActivity
   @Override
   public void onClick(View view) {
     if (view.getId() == fab.getId()) {
-      if (!issueStory.issue.locked) {
+      if (!issueStory.item.locked) {
         onAddComment();
       }
     }
@@ -400,7 +393,7 @@ public class IssueDetailActivity extends BackActivity
         if (menu.findItem(R.id.action_reopen_issue) != null) {
           menu.removeItem(R.id.action_reopen_issue);
         }
-        if (issueStory.issue.state == IssueState.closed) {
+        if (issueStory.item.state == IssueState.closed) {
           MenuItem menuItem =
               menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
           menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -464,10 +457,10 @@ public class IssueDetailActivity extends BackActivity
         openLabels();
         break;
       case R.id.share_issue:
-        if (issueStory != null && issueStory.issue != null) {
+        if (issueStory != null && issueStory.item != null) {
 
           String title = issueInfo.toString();
-          String url = issueStory.issue.html_url;
+          String url = issueStory.item.html_url;
 
           new ShareAction(this, title, url).execute();
         }
@@ -494,7 +487,7 @@ public class IssueDetailActivity extends BackActivity
   @Override
   public void onTitleEditRequest() {
     new MaterialDialog.Builder(this).title(R.string.edit_issue_title)
-        .input(null, issueStory.issue.title, false, new MaterialDialog.InputCallback() {
+        .input(null, issueStory.item.title, false, new MaterialDialog.InputCallback() {
           @Override
           public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
 
@@ -510,8 +503,7 @@ public class IssueDetailActivity extends BackActivity
 
   @Override
   public void onContentEditRequest() {
-    String body =
-        issueStory.issue.body != null ? issueStory.issue.body.replace("\n", "<br />") : "";
+    String body = issueStory.item.body != null ? issueStory.item.body.replace("\n", "<br />") : "";
     Intent launcherIntent =
         ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num,
             getString(R.string.edit_issue_body_hint), body, true, false);
@@ -690,8 +682,8 @@ public class IssueDetailActivity extends BackActivity
 
         int selectedMilestone = -1;
         for (int i = 0; i < milestones.size(); i++) {
-          if (IssueDetailActivity.this.issueStory.issue.milestone != null) {
-            String currentMilestone = IssueDetailActivity.this.issueStory.issue.milestone.title;
+          if (IssueDetailActivity.this.issueStory.item.milestone != null) {
+            String currentMilestone = IssueDetailActivity.this.issueStory.item.milestone.title;
             if (currentMilestone != null && currentMilestone.equals(milestones.get(i).title)) {
               selectedMilestone = i;
               break;
@@ -763,7 +755,7 @@ public class IssueDetailActivity extends BackActivity
         List<Integer> positionsSelectedLabels = new ArrayList<>();
 
         List<String> currentLabels = new ArrayList<>();
-        for (Label label : issueStory.issue.labels) {
+        for (Label label : issueStory.item.labels) {
           currentLabels.add(label.name);
         }
 

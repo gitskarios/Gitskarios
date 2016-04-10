@@ -32,9 +32,6 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-/**
- * Created by Bernat on 08/04/2015.
- */
 public class PullRequestDetailView extends LinearLayout {
 
   private PullRequest pullRequest;
@@ -47,7 +44,6 @@ public class PullRequestDetailView extends LinearLayout {
   private TextView mergeButton;
   private TextView textRepository;
 
-  private IssueDetailRequestListener issueDetailRequestListener;
   private PullRequestActionsListener pullRequestActionsListener;
 
   public PullRequestDetailView(Context context) {
@@ -164,11 +160,11 @@ public class PullRequestDetailView extends LinearLayout {
       if (repoInfo.permissions != null && repoInfo.permissions.push
           || pullRequest.user.login.equals(credentials.getUserName())) {
         OnClickListener editClickListener = v -> {
-          if (issueDetailRequestListener != null) {
+          if (pullRequestActionsListener != null) {
             if (v.getId() == R.id.textTitle) {
-              issueDetailRequestListener.onTitleEditRequest();
+              pullRequestActionsListener.onTitleEditRequest();
             } else if (v.getId() == R.id.textBody) {
-              issueDetailRequestListener.onContentEditRequest();
+              pullRequestActionsListener.onContentEditRequest();
             }
           }
         };
@@ -198,11 +194,7 @@ public class PullRequestDetailView extends LinearLayout {
     this.pullRequestActionsListener = pullRequestActionsListener;
   }
 
-  public void setIssueDetailRequestListener(IssueDetailRequestListener issueDetailRequestListener) {
-    this.issueDetailRequestListener = issueDetailRequestListener;
-  }
-
-  public interface PullRequestActionsListener {
+  public interface PullRequestActionsListener extends IssueDetailRequestListener {
     void mergeRequest(Head head, Head base);
   }
 }

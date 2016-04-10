@@ -187,10 +187,10 @@ public class PullRequestDetailActivity extends BackActivity
     if (story != null) {
     switch (item.getItemId()) {
       case R.id.share_issue:
-        new ShareAction(this, story.pullRequest.title, story.pullRequest.html_url).execute();
+        new ShareAction(this, story.item.title, story.item.html_url).execute();
         break;
       case R.id.open_issue:
-        new ViewInAction(this, story.pullRequest.html_url).execute();
+        new ViewInAction(this, story.item.html_url).execute();
         break;
       case R.id.action_add_shortcut:
         ShortcutUtils.addPrShortcut(this, issueInfo);
@@ -213,21 +213,21 @@ public class PullRequestDetailActivity extends BackActivity
     if (mBottomBar != null && story != null) {
       if (badgeFiles == null) {
         badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
-            story.pullRequest.changed_files);
+            story.item.changed_files);
       }
-      badgeFiles.setCount(story.pullRequest.changed_files);
+      badgeFiles.setCount(story.item.changed_files);
       badgeFiles.setAutoShowAfterUnSelection(true);
 
       if (badgeCommits == null) {
         badgeCommits = mBottomBar.makeBadgeForTabAt(3, AttributesUtils.getAccentColor(this),
-            story.pullRequest.commits);
+            story.item.commits);
       }
-      badgeCommits.setCount(story.pullRequest.commits);
+      badgeCommits.setCount(story.item.commits);
       badgeCommits.setAutoShowAfterUnSelection(true);
 
       if (infoFragment != null) {
         infoFragment.setArguments(
-            PullRequestInfoFragment.newArguments(issueInfo, story.pullRequest));
+            PullRequestInfoFragment.newArguments(issueInfo, story.item));
       }
     }
   }

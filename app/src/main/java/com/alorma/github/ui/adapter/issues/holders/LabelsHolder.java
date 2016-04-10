@@ -7,7 +7,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
 import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 
-public class LabelsHolder extends Holder {
+public class LabelsHolder extends Holder<Issue> {
   private final IssueStoryLabelDetailView itemView;
 
   public LabelsHolder(IssueStoryLabelDetailView itemView) {

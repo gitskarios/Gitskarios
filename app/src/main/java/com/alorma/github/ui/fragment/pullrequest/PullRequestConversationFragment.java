@@ -61,7 +61,7 @@ public class PullRequestConversationFragment extends Fragment
 
   private static final int NEW_COMMENT_REQUEST = 1243;
   private static final int ISSUE_BODY_EDIT = 4252;
-  private static final String PULL_REQUEST = "PULL_REQUEST";
+
   private IssueInfo issueInfo;
 
   private SwipeRefreshLayout swipe;
@@ -98,10 +98,7 @@ public class PullRequestConversationFragment extends Fragment
 
     findViews(view);
 
-    if (savedInstanceState != null) {
-      pullRequestStory = savedInstanceState.getParcelable(PULL_REQUEST);
-      onResponseOk(pullRequestStory);
-    } else if (getArguments() != null) {
+    if (getArguments() != null) {
       issueInfo = getArguments().getParcelable(ISSUE_INFO);
 
       if (issueInfo == null && getArguments().containsKey(ISSUE_INFO_NUMBER)) {
@@ -128,7 +125,7 @@ public class PullRequestConversationFragment extends Fragment
   public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
 
-    if (pullRequestStory != null && new IssueUtils().canComment(pullRequestStory.pullRequest)) {
+    if (pullRequestStory != null && new IssueUtils().canComment(pullRequestStory.item)) {
       getActivity().getMenuInflater().inflate(R.menu.pullrequest_detail_overview, menu);
 
       MenuItem item = menu.findItem(R.id.action_pull_request_add_comment);
@@ -221,7 +218,7 @@ public class PullRequestConversationFragment extends Fragment
 
   private void checkEditTitle() {
     if (getActivity() != null) {
-      if (issueInfo != null && pullRequestStory != null && pullRequestStory.pullRequest != null) {
+      if (issueInfo != null && pullRequestStory != null && pullRequestStory.item != null) {
 
         StoreCredentials credentials = new StoreCredentials(getActivity());
 
@@ -229,7 +226,7 @@ public class PullRequestConversationFragment extends Fragment
         if (settings.shouldShowDialogEditIssue()) {
           if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
             showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
-          } else if (pullRequestStory.pullRequest.user.login.equals(credentials.getUserName())) {
+          } else if (pullRequestStory.item.user.login.equals(credentials.getUserName())) {
             showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
           }
         }
@@ -326,7 +323,7 @@ public class PullRequestConversationFragment extends Fragment
     if (getActivity() != null) {
       getActivity().invalidateOptionsMenu();
       this.pullRequestStory = pullRequestStory;
-      this.pullRequestStory.pullRequest.repository = repository;
+      this.pullRequestStory.item.repository = repository;
 
       if (pullRequestStoryLoaderInterface != null) {
         pullRequestStoryLoaderInterface.onStoryLoaded(pullRequestStory);
@@ -341,19 +338,18 @@ public class PullRequestConversationFragment extends Fragment
 
   private void applyIssue() {
     checkEditTitle();
-    // TODO changeColor(pullRequestStory.pullRequest);
+    // TODO changeColor(pullRequestStory.item);
 
     String status = getString(R.string.issue_status_open);
-    if (IssueState.closed == pullRequestStory.pullRequest.state) {
+    if (IssueState.closed == pullRequestStory.item.state) {
       status = getString(R.string.issue_status_close);
-    } else if (pullRequestStory.pullRequest.merged) {
+    } else if (pullRequestStory.item.merged) {
       status = getString(R.string.pullrequest_status_merged);
     }
-    getActivity().setTitle("#" + pullRequestStory.pullRequest.number + " " + status);
+    getActivity().setTitle("#" + pullRequestStory.item.number + " " + status);
     PullRequestDetailAdapter adapter =
         new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(),
-            pullRequestStory, issueInfo.repoInfo, issueInfo.repoInfo.permissions, this);
-    adapter.setIssueDetailRequestListener(this);
+            pullRequestStory, issueInfo.repoInfo, this);
     recyclerView.setAdapter(adapter);
 
     getActivity().invalidateOptionsMenu();
@@ -368,7 +364,7 @@ public class PullRequestConversationFragment extends Fragment
   @Override
   public void onTitleEditRequest() {
     new MaterialDialog.Builder(getActivity()).title(R.string.edit_issue_title)
-        .input(null, pullRequestStory.pullRequest.title, false, (materialDialog, charSequence) -> {
+        .input(null, pullRequestStory.item.title, false, (materialDialog, charSequence) -> {
 
           EditIssueTitleRequestDTO editIssueTitleRequestDTO = new EditIssueTitleRequestDTO();
           editIssueTitleRequestDTO.title = charSequence.toString();
@@ -382,7 +378,7 @@ public class PullRequestConversationFragment extends Fragment
   @Override
   public void onContentEditRequest() {
     String body =
-        pullRequestStory.pullRequest.body != null ? pullRequestStory.pullRequest.body.replace("\n",
+        pullRequestStory.item.body != null ? pullRequestStory.item.body.replace("\n",
             "<br />") : "";
     Intent launcherIntent =
         ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
@@ -418,7 +414,7 @@ public class PullRequestConversationFragment extends Fragment
     MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
     builder.title(R.string.merge_title);
     builder.content(head.label);
-    builder.input(getString(R.string.merge_message), pullRequestStory.pullRequest.title, false,
+    builder.input(getString(R.string.merge_message), pullRequestStory.item.title, false,
         (materialDialog, charSequence) -> {
           merge(charSequence.toString(), head.sha, issueInfo);
         });
@@ -451,11 +447,5 @@ public class PullRequestConversationFragment extends Fragment
             getContent();
           }
         });
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putParcelable(PULL_REQUEST, pullRequestStory);
   }
 }

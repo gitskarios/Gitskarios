@@ -6,7 +6,7 @@ import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 
-public class IssueHolder extends Holder {
+public class IssueHolder extends Holder<Issue> {
 
   private IssueDetailRequestListener issueDetailRequestListener;
   private final IssueDetailView issueDetailView;
