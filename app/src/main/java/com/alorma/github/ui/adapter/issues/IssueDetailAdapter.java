@@ -3,26 +3,23 @@ package com.alorma.github.ui.adapter.issues;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
-import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
-import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
-import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
-import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
+import com.alorma.github.ui.adapter.issues.holders.CommentHolder;
+import com.alorma.github.ui.adapter.issues.holders.Holder;
+import com.alorma.github.ui.adapter.issues.holders.IssueHolder;
+import com.alorma.github.ui.adapter.issues.holders.LabelsHolder;
+import com.alorma.github.ui.adapter.issues.holders.TimelineHolder;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 
-/**
- * Created by Bernat on 08/04/2015.
- */
-public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.Holder> {
+public class IssueDetailAdapter extends RecyclerView.Adapter<Holder> {
 
   private static final int VIEW_ISSUE = 0;
   private static final int VIEW_COMMENT = 1;
@@ -51,7 +48,7 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
   public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
     switch (viewType) {
       case VIEW_ISSUE:
-        return new IssueHolder(new IssueDetailView(context));
+        return new IssueHolder(new IssueDetailView(context), issueDetailRequestListener);
       case VIEW_COMMENT:
         return new CommentHolder(new IssueCommentView(context));
       case VIEW_EVENT:
@@ -59,34 +56,27 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
       case VIEW_LABELED_LIST:
         return new LabelsHolder(new IssueStoryLabelDetailView(context));
       default:
-        return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false));
+        return new Holder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false)) {
+
+          @Override
+          public void setIssue(RepoInfo repoInfo, Issue issue) {
+
+          }
+
+          @Override
+          public void setDetail(IssueStoryDetail detail) {
+
+          }
+        };
     }
   }
 
   @Override
   public void onBindViewHolder(Holder holder, int position) {
-    if (position == 0) {
-      ((IssueHolder) holder).issueDetailView.setIssue(repoInfo, issueStory.issue);
-      ((IssueHolder) holder).issueDetailView.setIssueDetailRequestListener(
-          issueDetailRequestListener);
-    } else {
+    holder.setIssue(repoInfo, issueStory.issue);
+    if (position > 0) {
       IssueStoryDetail issueStoryDetail = issueStory.details.get(position - 1);
-
-      int viewType = getItemViewType(position);
-
-      if (viewType == VIEW_LABELED_LIST) {
-        if (issueStoryDetail instanceof IssueStoryLabelList) {
-          ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryLabelList) issueStoryDetail);
-        } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
-          ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryUnlabelList) issueStoryDetail);
-        }
-      } else if (viewType == VIEW_COMMENT) {
-        ((CommentHolder) holder).issueCommentView.setComment(repoInfo,
-            (IssueStoryComment) issueStoryDetail);
-      } else if (viewType == VIEW_EVENT) {
-        ((TimelineHolder) holder).issueTimelineView.setIssueEvent(
-            ((IssueStoryEvent) issueStoryDetail));
-      }
+      holder.setDetail(issueStoryDetail);
     }
   }
 
@@ -110,51 +100,6 @@ public class IssueDetailAdapter extends RecyclerView.Adapter<IssueDetailAdapter.
         return VIEW_LABELED_LIST;
       }
       return VIEW_EVENT;
-    }
-  }
-
-  private class IssueHolder extends Holder {
-    private final IssueDetailView issueDetailView;
-
-    public IssueHolder(IssueDetailView issueDetailView) {
-      super(issueDetailView);
-      this.issueDetailView = issueDetailView;
-    }
-  }
-
-  private class CommentHolder extends Holder {
-    private final IssueCommentView issueCommentView;
-
-    public CommentHolder(IssueCommentView itemView) {
-      super(itemView);
-      issueCommentView = itemView;
-    }
-  }
-
-  private class TimelineHolder extends Holder {
-    private final IssueTimelineView issueTimelineView;
-
-    public TimelineHolder(IssueTimelineView itemView) {
-      super(itemView);
-      issueTimelineView = itemView;
-    }
-  }
-
-  private class LabelsHolder extends Holder {
-    private final IssueStoryLabelDetailView itemView;
-
-    public LabelsHolder(IssueStoryLabelDetailView itemView) {
-      super(itemView);
-      this.itemView = itemView;
-    }
-  }
-
-  public class Holder extends RecyclerView.ViewHolder {
-    private final TextView text;
-
-    public Holder(View itemView) {
-      super(itemView);
-      text = (TextView) itemView.findViewById(android.R.id.text1);
     }
   }
 }

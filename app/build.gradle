@@ -48,7 +48,7 @@ android {
     minSdkVersion 15
     targetSdkVersion 23
     versionName "2.10.1"
-    versionCode 210101
+    versionCode 210102
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true

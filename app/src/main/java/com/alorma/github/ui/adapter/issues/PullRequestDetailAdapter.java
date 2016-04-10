@@ -2,29 +2,26 @@ package com.alorma.github.ui.adapter.issues;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
-import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
-import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
-import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
+import com.alorma.github.ui.adapter.issues.holders.CommentHolder;
+import com.alorma.github.ui.adapter.issues.holders.Holder;
+import com.alorma.github.ui.adapter.issues.holders.LabelsHolder;
+import com.alorma.github.ui.adapter.issues.holders.PullRequestHolder;
+import com.alorma.github.ui.adapter.issues.holders.TimelineHolder;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 
-public class PullRequestDetailAdapter
-    extends RecyclerView.Adapter<PullRequestDetailAdapter.Holder> {
+public class PullRequestDetailAdapter extends RecyclerView.Adapter<Holder> {
 
-  private static final int VIEW_INVALID = -1;
   private static final int VIEW_ISSUE = 0;
   private static final int VIEW_COMMENT = 1;
   private static final int VIEW_EVENT = 2;
@@ -59,49 +56,36 @@ public class PullRequestDetailAdapter
     switch (viewType) {
       case VIEW_ISSUE:
         PullRequestDetailView detailView = new PullRequestDetailView(context);
-        detailView.setIssueDetailRequestListener(issueDetailRequestListener);
-        detailView.setPullRequestActionsListener(pullRequestActionsListener);
-        return new PullRequestHolder(detailView);
-
+        return new PullRequestHolder(detailView, pullRequestStory, permissions,
+            issueDetailRequestListener, pullRequestActionsListener);
       case VIEW_COMMENT:
-        IssueCommentView itemViewComment = new IssueCommentView(context);
-        return new CommentHolder(itemViewComment);
+        return new CommentHolder(new IssueCommentView(context));
       case VIEW_EVENT:
-        return new TimelineHolder(mInflater.inflate(R.layout.timeline_simple_view, parent, false));
+        return new TimelineHolder(new IssueTimelineView(context));
       case VIEW_LABELED_LIST:
         return new LabelsHolder(new IssueStoryLabelDetailView(context));
       default:
-        return new Holder(mInflater.inflate(android.R.layout.simple_list_item_1, parent, false));
+        return new Holder(mInflater.inflate(android.R.layout.simple_list_item_1, parent, false)) {
+          @Override
+          public void setIssue(RepoInfo repoInfo, Issue issue) {
+
+          }
+
+          @Override
+          public void setDetail(IssueStoryDetail detail) {
+
+          }
+        };
     }
   }
 
   @Override
   public void onBindViewHolder(Holder holder, int position) {
-    int viewType = getItemViewType(position);
-
-    long milis = System.currentTimeMillis();
-
-    if (position == 0) {
-      ((PullRequestHolder) holder).pullRequestDetailView.setPullRequest(repoInfo,
-          pullRequestStory.pullRequest, pullRequestStory.statusResponse, permissions);
-    } else {
+    holder.setIssue(repoInfo, pullRequestStory.pullRequest);
+    if (position > 0) {
       IssueStoryDetail issueStoryDetail = pullRequestStory.details.get(position - 1);
-      if (viewType == VIEW_LABELED_LIST) {
-        if (issueStoryDetail instanceof IssueStoryLabelList) {
-          ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryLabelList) issueStoryDetail);
-        } else if (issueStoryDetail instanceof IssueStoryUnlabelList) {
-          ((LabelsHolder) holder).itemView.setLabelsEvent((IssueStoryUnlabelList) issueStoryDetail);
-        }
-      } else if (viewType == VIEW_COMMENT) {
-        ((CommentHolder) holder).issueCommentView.setComment(repoInfo,
-            (IssueStoryComment) issueStoryDetail);
-      } else if (viewType == VIEW_EVENT) {
-        ((TimelineHolder) holder).issueTimelineView.setIssueEvent(
-            ((IssueStoryEvent) issueStoryDetail));
-      }
+      holder.setDetail(issueStoryDetail);
     }
-
-    Log.i("PR_time", (System.currentTimeMillis() - milis) + "ms");
   }
 
   @Override
@@ -126,48 +110,6 @@ public class PullRequestDetailAdapter
       }
 
       return VIEW_EVENT;
-    }
-  }
-
-  private class PullRequestHolder extends Holder {
-    private final PullRequestDetailView pullRequestDetailView;
-
-    public PullRequestHolder(PullRequestDetailView pullRequestDetailView) {
-      super(pullRequestDetailView);
-      this.pullRequestDetailView = pullRequestDetailView;
-    }
-  }
-
-  private class CommentHolder extends Holder {
-    private final IssueCommentView issueCommentView;
-
-    public CommentHolder(IssueCommentView itemView) {
-      super(itemView);
-      issueCommentView = itemView;
-    }
-  }
-
-  private class TimelineHolder extends Holder {
-    private final IssueTimelineView issueTimelineView;
-
-    public TimelineHolder(View itemView) {
-      super(itemView);
-      issueTimelineView = (IssueTimelineView) itemView.findViewById(R.id.timeline);
-    }
-  }
-
-  private class LabelsHolder extends Holder {
-    private final IssueStoryLabelDetailView itemView;
-
-    public LabelsHolder(IssueStoryLabelDetailView itemView) {
-      super(itemView);
-      this.itemView = itemView;
-    }
-  }
-
-  public class Holder extends RecyclerView.ViewHolder {
-    public Holder(View itemView) {
-      super(itemView);
     }
   }
 }

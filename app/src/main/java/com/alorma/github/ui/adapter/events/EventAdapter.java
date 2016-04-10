@@ -14,9 +14,6 @@ import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 
-/**
- * Created by Bernat on 03/10/2014.
- */
 public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter.ViewHolder> {
 
   private final Resources resources;
