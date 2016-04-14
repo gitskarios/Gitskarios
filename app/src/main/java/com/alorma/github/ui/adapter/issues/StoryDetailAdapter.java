@@ -4,10 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
-import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.Story;
@@ -29,6 +27,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
   private static final int VIEW_EVENT = 2;
   private static final int VIEW_LABELED_LIST = 3;
   private static final int VIEW_REVIEW_COMMENT = 4;
+  private static final int VIEW_REVIEW_COMMENTS = 5;
 
   private final LayoutInflater mInflater;
 
@@ -48,17 +47,29 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
 
   @Override
   public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+    ViewGroup.LayoutParams params =
+        new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT);
     switch (viewType) {
       case VIEW_ISSUE:
         return createItemHolder(context, story, repoInfo.permissions, issueDetailRequestListener);
       case VIEW_COMMENT:
-        return new CommentHolder(new IssueCommentView(context));
+        IssueCommentView issueCommentView = new IssueCommentView(context);
+        issueCommentView.setLayoutParams(params);
+        return new CommentHolder(issueCommentView);
       case VIEW_EVENT:
-        return new TimelineHolder(new IssueTimelineView(context));
+        IssueTimelineView issueTimelineView = new IssueTimelineView(context);
+        issueTimelineView.setLayoutParams(params);
+        return new TimelineHolder(issueTimelineView);
       case VIEW_REVIEW_COMMENT:
-        return new ReviewCommentHolder(new ReviewCommentView(context));
+      case VIEW_REVIEW_COMMENTS:
+        ReviewCommentView reviewCommentView = new ReviewCommentView(context, parent);
+        reviewCommentView.setLayoutParams(params);
+        return new ReviewCommentHolder(reviewCommentView);
       case VIEW_LABELED_LIST:
-        return new LabelsHolder(new IssueStoryLabelDetailView(context));
+        IssueStoryLabelDetailView labelDetailView = new IssueStoryLabelDetailView(context);
+        labelDetailView.setLayoutParams(params);
+        return new LabelsHolder(labelDetailView);
       default:
         return new Holder<K>(
             mInflater.inflate(android.R.layout.simple_list_item_1, parent, false)) {
@@ -107,6 +118,8 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
         return VIEW_COMMENT;
       } else if (issueStoryDetail.getType().equals("review_comment")) {
         return VIEW_REVIEW_COMMENT;
+      } else if (issueStoryDetail.getType().equals("review_comments")) {
+        return VIEW_REVIEW_COMMENTS;
       } else if (issueStoryDetail.isList()) {
         if (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType()
             .equals("unlabeled")) {

@@ -18,6 +18,7 @@ import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
+import com.alorma.github.sdk.bean.issue.IssueStoryReviewComments;
 import com.alorma.github.sdk.bean.issue.PullRequestStoryCommit;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
@@ -28,9 +29,6 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.io.IOException;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class PullRequestCommitsReviewCommentsAdapter
     extends RecyclerArrayAdapter<IssueStoryDetail, PullRequestCommitsReviewCommentsAdapter.Holder> {
 
@@ -70,6 +68,8 @@ public class PullRequestCommitsReviewCommentsAdapter
       handleCommit((CommitViewHolder) holder, commit);
     } else if (detail instanceof IssueStoryReviewComment) {
       handleReviewComment((ReviewCommentHolder) holder, (IssueStoryReviewComment) detail);
+    } else if (detail instanceof IssueStoryReviewComments) {
+      handleReviewComments((ReviewCommentHolder) holder, (IssueStoryReviewComments) detail);
     }
   }
 
@@ -166,7 +166,11 @@ public class PullRequestCommitsReviewCommentsAdapter
   }
 
   private void handleReviewComment(ReviewCommentHolder holder, IssueStoryReviewComment comment) {
-    holder.reviewCommentView.setReviewCommit(comment, repoInfo);
+    holder.reviewCommentView.setReviewComment(comment, repoInfo);
+  }
+
+  private void handleReviewComments(ReviewCommentHolder holder, IssueStoryReviewComments comments) {
+    holder.reviewCommentView.setReviewComments(comments, repoInfo);
   }
 
   @Override

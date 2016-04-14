@@ -4,9 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.diff.lib.DiffTextView;
@@ -15,6 +18,7 @@ import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
+import com.alorma.github.sdk.bean.issue.IssueStoryReviewComments;
 import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.gh4a.utils.UiUtils;
@@ -35,6 +39,7 @@ public class ReviewCommentView extends LinearLayout {
   private static final int ICON_SIZE = 30;
   private static final int ICON_PADDING = 6;
   private static final int MAX_LINES = 7;
+  private ViewGroup parent;
 
   private UserAvatarView profileIcon;
   private TextView userLogin;
@@ -43,8 +48,9 @@ public class ReviewCommentView extends LinearLayout {
   private TextView textDiffFileTitle;
   private DiffTextView textDiff;
 
-  public ReviewCommentView(Context context) {
+  public ReviewCommentView(Context context, ViewGroup parent) {
     super(context);
+    this.parent = parent;
     init();
   }
 
@@ -72,24 +78,26 @@ public class ReviewCommentView extends LinearLayout {
     bodyText = (TextView) findViewById(R.id.bodyText);
     textDiffFileTitle = (TextView) findViewById(R.id.textDiffFileTitle);
     textDiff = (DiffTextView) findViewById(R.id.textDiff);
+
+    setOrientation(HORIZONTAL);
   }
 
-  public void setReviewCommit(IssueStoryReviewComment reviewCommit, RepoInfo repoInfo) {
+  public void setReviewComment(IssueStoryReviewComment reviewComment, RepoInfo repoInfo) {
     long time = System.currentTimeMillis();
 
-    ReviewComment event = reviewCommit.event;
+    ReviewComment event = reviewComment.event;
 
     String htmlCode = HtmlUtils.format(event.body).toString();
     HttpImageGetter imageGetter = new HttpImageGetter(getContext());
     imageGetter.repoInfo(repoInfo);
-    imageGetter.bind(bodyText, htmlCode, reviewCommit.hashCode());
+    imageGetter.bind(bodyText, htmlCode, reviewComment.hashCode());
     bodyText.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
 
-    textDiff.setText(splitDiffHunk(event));
+    textDiff.setText(splitDiffHunk(event.diff_hunk));
     textDiffFileTitle.setText(event.path);
     setIcon(Octicons.Icon.oct_code);
-    userLogin.setText(reviewCommit.user().login);
-    createdAt.setText(getTime(reviewCommit.created_at));
+    userLogin.setText(reviewComment.user().login);
+    createdAt.setText(getTime(reviewComment.created_at));
 
     textDiff.setOnClickListener(v -> {
       FileInfo info = new FileInfo();
@@ -100,11 +108,54 @@ public class ReviewCommentView extends LinearLayout {
       getContext().startActivity(launcherIntent);
     });
 
-    Log.i("PR_time, review", (System.currentTimeMillis() - time) + "ms");
+    Log.i("PR_time_review", (System.currentTimeMillis() - time) + "ms");
   }
 
-  private String splitDiffHunk(ReviewComment event) {
-    List<String> lines = Arrays.asList(event.diff_hunk.split("\\r?\\n|\\r"));
+  public void setReviewComments(IssueStoryReviewComments reviewComments, RepoInfo repoInfo) {
+    long time = System.currentTimeMillis();
+
+    Pair<String, List<ReviewComment>> event = reviewComments.event;
+
+    userLogin.setText(reviewComments.user().login);
+    createdAt.setText(getTime(reviewComments.createdAt()));
+
+    textDiff.setText(splitDiffHunk(event.first));
+    textDiffFileTitle.setText(event.second.get(0).path);
+    setIcon(Octicons.Icon.oct_code);
+
+    textDiff.setOnClickListener(v -> {
+      FileInfo info = new FileInfo();
+      info.content = event.second.get(0).diff_hunk;
+      info.name = event.second.get(0).path;
+
+      Intent launcherIntent = FileActivity.createLauncherIntent(getContext(), info, false);
+      getContext().startActivity(launcherIntent);
+    });
+
+    StringBuilder builder = new StringBuilder();
+
+    for (ReviewComment reviewComment : event.second) {
+      builder.append("<b>");
+      builder.append(reviewComment.user.login);
+      builder.append(":");
+      builder.append("</b>");
+      builder.append("<br />");
+      builder.append(reviewComment.body);
+      builder.append("<br />");
+      builder.append("<br />");
+    }
+
+    String htmlCode = HtmlUtils.format(builder.toString()).toString();
+    HttpImageGetter imageGetter = new HttpImageGetter(getContext());
+    imageGetter.repoInfo(repoInfo);
+    imageGetter.bind(bodyText, htmlCode, event.first.hashCode());
+    bodyText.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
+
+    Log.i("PR_time_reviews", (System.currentTimeMillis() - time) + "ms");
+  }
+
+  private String splitDiffHunk(String hunk) {
+    List<String> lines = Arrays.asList(hunk.split("\\r?\\n|\\r"));
 
     int min = Math.min(MAX_LINES, lines.size());
 
