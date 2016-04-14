@@ -4,26 +4,31 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
+import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.Story;
 import com.alorma.github.ui.adapter.issues.holders.CommentHolder;
 import com.alorma.github.ui.adapter.issues.holders.Holder;
 import com.alorma.github.ui.adapter.issues.holders.LabelsHolder;
+import com.alorma.github.ui.adapter.issues.holders.ReviewCommentHolder;
 import com.alorma.github.ui.adapter.issues.holders.TimelineHolder;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
+import com.alorma.github.ui.view.issue.ReviewCommentView;
 
-public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.Adapter<Holder> {
+public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.Adapter<Holder<K>> {
 
   private static final int VIEW_ISSUE = 0;
   private static final int VIEW_COMMENT = 1;
   private static final int VIEW_EVENT = 2;
   private static final int VIEW_LABELED_LIST = 3;
+  private static final int VIEW_REVIEW_COMMENT = 4;
 
   private final LayoutInflater mInflater;
 
@@ -50,6 +55,8 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
         return new CommentHolder(new IssueCommentView(context));
       case VIEW_EVENT:
         return new TimelineHolder(new IssueTimelineView(context));
+      case VIEW_REVIEW_COMMENT:
+        return new ReviewCommentHolder(new ReviewCommentView(context));
       case VIEW_LABELED_LIST:
         return new LabelsHolder(new IssueStoryLabelDetailView(context));
       default:
@@ -72,7 +79,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
       Permissions permissions, IssueDetailRequestListener issueDetailRequestListener);
 
   @Override
-  public void onBindViewHolder(Holder holder, int position) {
+  public void onBindViewHolder(Holder<K> holder, int position) {
     try {
       holder.setIssue(repoInfo, story.item);
     } catch (Exception e) {
@@ -98,6 +105,8 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
 
       if (issueStoryDetail.getType().equals("commented")) {
         return VIEW_COMMENT;
+      } else if (issueStoryDetail.getType().equals("review_comment")) {
+        return VIEW_REVIEW_COMMENT;
       } else if (issueStoryDetail.isList()) {
         if (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType()
             .equals("unlabeled")) {

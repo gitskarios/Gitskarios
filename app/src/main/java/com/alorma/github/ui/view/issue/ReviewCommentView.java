@@ -2,32 +2,45 @@ package com.alorma.github.ui.view.issue;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.diff.lib.DiffTextView;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.ReviewComment;
+import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.IssueStoryReviewComment;
+import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.view.UserAvatarView;
-import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.materialize.color.Material;
+import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.Arrays;
+import java.util.List;
+import tk.zielony.naturaldateformat.NaturalDateFormat;
+import tk.zielony.naturaldateformat.RelativeDateFormat;
 
-/**
- * Created by Bernat on 21/07/2015.
- */
 public class ReviewCommentView extends LinearLayout {
+
+  private static final int ICON_ROUNDED_CORNER_DP = 16;
+  private static final int ICON_SIZE = 30;
+  private static final int ICON_PADDING = 6;
+  private static final int MAX_LINES = 7;
 
   private UserAvatarView profileIcon;
   private TextView userLogin;
   private TextView createdAt;
   private TextView bodyText;
+  private TextView textDiffFileTitle;
   private DiffTextView textDiff;
 
   public ReviewCommentView(Context context) {
@@ -57,30 +70,68 @@ public class ReviewCommentView extends LinearLayout {
     userLogin = (TextView) findViewById(R.id.userLogin);
     createdAt = (TextView) findViewById(R.id.createdAt);
     bodyText = (TextView) findViewById(R.id.bodyText);
+    textDiffFileTitle = (TextView) findViewById(R.id.textDiffFileTitle);
     textDiff = (DiffTextView) findViewById(R.id.textDiff);
   }
 
   public void setReviewCommit(IssueStoryReviewComment reviewCommit, RepoInfo repoInfo) {
-    applyGenericIssueStory(reviewCommit);
+    long time = System.currentTimeMillis();
 
-    String htmlCode = HtmlUtils.format(reviewCommit.event.body).toString();
+    ReviewComment event = reviewCommit.event;
+
+    String htmlCode = HtmlUtils.format(event.body).toString();
     HttpImageGetter imageGetter = new HttpImageGetter(getContext());
     imageGetter.repoInfo(repoInfo);
     imageGetter.bind(bodyText, htmlCode, reviewCommit.hashCode());
     bodyText.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
 
-    textDiff.setText(reviewCommit.event.diff_hunk);
+    textDiff.setText(splitDiffHunk(event));
+    textDiffFileTitle.setText(event.path);
+    setIcon(Octicons.Icon.oct_code);
+    userLogin.setText(reviewCommit.user().login);
+    createdAt.setText(getTime(reviewCommit.created_at));
+
+    textDiff.setOnClickListener(v -> {
+      FileInfo info = new FileInfo();
+      info.content = event.diff_hunk;
+      info.name = event.path;
+
+      Intent launcherIntent = FileActivity.createLauncherIntent(getContext(), info, false);
+      getContext().startActivity(launcherIntent);
+    });
+
+    Log.i("PR_time, review", (System.currentTimeMillis() - time) + "ms");
   }
 
-  private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
-    userLogin.setText(storyEvent.user().login);
-    profileIcon.setUser(storyEvent.user());
-    setTime(storyEvent.createdAt());
+  private String splitDiffHunk(ReviewComment event) {
+    List<String> lines = Arrays.asList(event.diff_hunk.split("\\r?\\n|\\r"));
+
+    int min = Math.min(MAX_LINES, lines.size());
+
+    min = Math.max(0, lines.size() - 1 - min);
+
+    List<String> splitLines = lines.subList(min, lines.size());
+
+    SpannableStringBuilder builder = new SpannableStringBuilder();
+    for (String splitLine : splitLines) {
+      builder.append(splitLine);
+      builder.append("\n");
+    }
+    return builder.toString();
   }
 
-  private void setTime(long time) {
-    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    String date = TimeUtils.getTimeAgoString(formatter.print(time));
-    createdAt.setText(getContext().getResources().getString(R.string.comment_on_diff, date));
+  private void setIcon(IIcon icon) {
+    IconicsDrawable drawable = new IconicsDrawable(getContext());
+    drawable.backgroundColor(Material.Grey._300.getAsColor());
+    drawable.color(Material.Grey._700.getAsColor());
+    drawable.roundedCornersDp(ICON_ROUNDED_CORNER_DP);
+    drawable.sizeDp(ICON_SIZE);
+    drawable.paddingDp(ICON_PADDING);
+    profileIcon.setImageDrawable(drawable.icon(icon));
+  }
+
+  private String getTime(long time) {
+    RelativeDateFormat relFormat = new RelativeDateFormat(getContext(), NaturalDateFormat.DATE);
+    return relFormat.format(time);
   }
 }
