@@ -25,7 +25,7 @@ before_script:
 script: ./gradlew build -PdisablePreDex
 deploy:
 - provider: script
-  script: ./gradlew publishGithubRelease
+  script: ./gradlew publishApkGithubRelease
   skip_cleanup: true
   on:
     tags: true
