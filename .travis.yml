@@ -1,47 +1,37 @@
 language: android
-
 cache:
   directories:
-    - $HOME/.m2
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.gradle/native
-    - $HOME/.gradle/daemon
-    - $HOME/.gradle/caches/jars-1
-    - $HOME/.gradle/caches/2.10
-
+  - $HOME/.m2
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+  - $HOME/.gradle/native
+  - $HOME/.gradle/daemon
+  - $HOME/.gradle/caches/jars-1
+  - $HOME/.gradle/caches/2.10
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 android:
   components:
-    - tools
-    - build-tools-23.0.2
-    - android-23
-    - extra-android-m2repository
-    - extra-google-google_play_services
-    - extra-google-m2repository
-
+  - tools
+  - build-tools-23.0.2
+  - android-23
+  - extra-android-m2repository
+  - extra-google-google_play_services
+  - extra-google-m2repository
   licenses:
-    - android-sdk-license-.+
-
-before_install:
-  - openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
-  - in gplay-secret.json.enc -out gplay-secret.json -d
-
+  - android-sdk-license-.+
 before_script:
-  - git submodule update --init
-
+- git submodule update --init
 script: ./gradlew build -PdisablePreDex
-
 deploy:
-  - provider: script
-    script:
-      ./gradlew publishApkGithubRelease
-    skip_cleanup: true
-    on:
-      tags: true
-
+- provider: script
+  script: ./gradlew publishApkGithubRelease
+  skip_cleanup: true
+  on:
+    tags: true
 notifications:
   slack:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
+before_install:
+- openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
+  -in gplay-secret.json.enc -out gplay-secret.json -d
