@@ -25,12 +25,6 @@ android:
   licenses:
     - android-sdk-license-.+
 
-env:
-  matrix:
-    - COMPILE_METHOD=check
-    - COMPILE_METHOD=assembleGithub
-    - COMPILE_METHOD=assembleEnterprise
-
 before_install:
   - openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
   - in gplay-secret.json.enc -out gplay-secret.json -d
@@ -38,7 +32,7 @@ before_install:
 before_script:
   - git submodule update --init
 
-script: ./gradlew $COMPILE_METHOD -PdisablePreDex
+script: ./gradlew build -PdisablePreDex
 
 deploy:
   - provider: script
