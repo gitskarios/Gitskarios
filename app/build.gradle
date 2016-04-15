@@ -61,15 +61,11 @@ android {
   }
 
   signingConfigs {
-    playStore
-  }
-
-
-  variantFilter { variant ->
-    if ((variant.buildType.name == "release") && signingConfigs.playStore.storeFile == null) {
-      variant.ignore = true
+    playStore {
+      storeFile file("../keystore/app.keystore.jks")
     }
   }
+
   packagingOptions {
     exclude 'LICENSE.txt'
     exclude 'META-INF/DEPENDENCIES'
@@ -148,13 +144,16 @@ if (propFile.canRead()) {
       props.containsKey('SIGN_KEYSTORE_ALIAS') &&
       props.containsKey('SIGN_KEYSTORE_ALIAS_PASS')) {
 
-    android.signingConfigs.playStore.storeFile = file(props['SIGN_FILE'])
     android.signingConfigs.playStore.storePassword = props['SIGN_KEYSTORE_PASS']
     android.signingConfigs.playStore.keyAlias = props['SIGN_KEYSTORE_ALIAS']
     android.signingConfigs.playStore.keyPassword = props['SIGN_KEYSTORE_ALIAS_PASS']
   } else {
     android.buildTypes.release.signingConfig = null
   }
+} else if (System.getenv('TRAVIS_SECURE_ENV_VARS')) {
+  android.signingConfigs.playStore.storePassword = System.getenv('SIGN_KEYSTORE_PASS')
+  android.signingConfigs.playStore.keyAlias = System.getenv('$SIGN_KEYSTORE_ALIAS')
+  android.signingConfigs.playStore.keyPassword = System.getenv('$SIGN_KEYSTORE_ALIAS_PASS')
 } else {
   android.buildTypes.release.signingConfig = null
 }
@@ -262,7 +261,7 @@ dependencies {
 
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
-  compile ('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
+  compile('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
     exclude group: "joda-time"
   }
 }
