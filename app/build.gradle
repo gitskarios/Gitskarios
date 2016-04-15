@@ -11,7 +11,8 @@ buildscript {
     classpath 'io.fabric.tools:gradle:1.21.2'
     classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
-    classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.5.0"
+    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.5.0'
+    classpath 'com.github.triplet.gradle:play-publisher:1.1.4'
   }
 }
 
@@ -19,6 +20,7 @@ apply plugin: 'com.android.application'
 apply plugin: "build-time-tracker"
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
+apply plugin: 'com.github.triplet.play'
 
 buildtimetracker {
   reporters {
@@ -48,7 +50,7 @@ android {
     minSdkVersion 15
     targetSdkVersion 23
     versionName "2.10.1"
-    versionCode 210102
+    versionCode 210103
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -263,6 +265,11 @@ dependencies {
   compile ('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
     exclude group: "joda-time"
   }
+}
+
+play {
+  jsonFile = file('gplay-secret.json')
+  track = 'alpha'
 }
 
 apply plugin: 'com.google.gms.google-services'

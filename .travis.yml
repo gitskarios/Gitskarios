@@ -21,14 +21,15 @@ jdk:
 
 android:
   components:
-  - tools
-  - build-tools-23.0.2
-  - android-23
-  - extra-android-m2repository
-  - extra-google-google_play_services
-  - extra-google-m2repository
+    - tools
+    - build-tools-23.0.2
+    - android-23
+    - extra-android-m2repository
+    - extra-google-google_play_services
+    - extra-google-m2repository
+
   licenses:
-  - android-sdk-license-.+
+    - android-sdk-license-.+
 
 env:
   matrix:
@@ -36,22 +37,22 @@ env:
     - COMPILE_METHOD=assembleGithub
     - COMPILE_METHOD=assembleEnterprise
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
+  - in gplay-secret.json.enc -out gplay-secret.json -d
+
 before_script:
   - git submodule update --init
 
 script: ./gradlew $COMPILE_METHOD -PdisablePreDex
 
 deploy:
-  provider: releases
-  api_key:
-    secure: KQU8mdeInl/nc6yQa2ir5nqZcZnoqH06RKDd2nhfIsn8FKvKlVD4b2FUip9EcT0gn5iGzrKXBEBMs8KByiMWMEEF2nI01DwJuhrP/j4PJMyXeYs8TlplEbRXyirJI9drZz1EMfS7AHXuLlQgN8USrRG2THxt6EOP4D4qdJ3tvuc=
-  file_glob: true
-  file:
-  - app/build/outputs/apk/app*.apk
-  on:
-    tags: true
-    all_branches: true
-  skip_cleanup: true
+  - provider: script
+    script:
+      ./gradlew publishApkGithubRelease
+    skip_cleanup: true
+    on:
+      tags: true
 
 notifications:
   slack:
