@@ -268,7 +268,7 @@ dependencies {
 }
 
 play {
-  jsonFile = file('gplay-secret.json')
+  jsonFile = file('../gplay-secret.json')
   track = 'alpha'
 }
 
