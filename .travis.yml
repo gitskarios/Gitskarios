@@ -1,9 +1,5 @@
 language: android
 
-branches:
-  only:
-    - develop
-
 cache:
   directories:
     - $HOME/.m2
