@@ -34,4 +34,5 @@ notifications:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
 before_install:
 - openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
-  -in gplay-secret.json.enc -out gplay-secret.json -d
+  -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar app/

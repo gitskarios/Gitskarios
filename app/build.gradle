@@ -61,8 +61,8 @@ android {
   }
 
   signingConfigs {
-    playStore {
-      storeFile file("../keystore/app.keystore.jks")
+    release {
+      storeFile file("../app.keystore.jks")
     }
   }
 
@@ -97,9 +97,7 @@ android {
     }
     release {
       minifyEnabled false
-      if (signingConfigs.playStore != null) {
-        signingConfig signingConfigs.playStore
-      }
+      signingConfig = signingConfigs.release
       buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
       buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
       buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
@@ -131,31 +129,6 @@ android.applicationVariants.all { variant ->
 
 def getCurrentGitHash() {
   return 'git rev-parse --short HEAD'.execute().text.trim()
-}
-
-def Properties props = new Properties()
-def propFile = file('../gradle.properties')
-if (propFile.canRead()) {
-  props.load(new FileInputStream(propFile))
-
-  if (props != null &&
-      props.containsKey('SIGN_FILE') &&
-      props.containsKey('SIGN_KEYSTORE_PASS') &&
-      props.containsKey('SIGN_KEYSTORE_ALIAS') &&
-      props.containsKey('SIGN_KEYSTORE_ALIAS_PASS')) {
-
-    android.signingConfigs.playStore.storePassword = props['SIGN_KEYSTORE_PASS']
-    android.signingConfigs.playStore.keyAlias = props['SIGN_KEYSTORE_ALIAS']
-    android.signingConfigs.playStore.keyPassword = props['SIGN_KEYSTORE_ALIAS_PASS']
-  } else {
-    android.buildTypes.release.signingConfig = null
-  }
-} else if (System.getenv('TRAVIS_SECURE_ENV_VARS')) {
-  android.signingConfigs.playStore.storePassword = System.getenv('SIGN_KEYSTORE_PASS')
-  android.signingConfigs.playStore.keyAlias = System.getenv('$SIGN_KEYSTORE_ALIAS')
-  android.signingConfigs.playStore.keyPassword = System.getenv('$SIGN_KEYSTORE_ALIAS_PASS')
-} else {
-  android.buildTypes.release.signingConfig = null
 }
 
 def getGHId(pro) {
@@ -269,6 +242,44 @@ dependencies {
 play {
   jsonFile = file('../gplay-secret.json')
   track = 'alpha'
+}
+
+def (releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword) = signingConfigFromFile()
+if (releaseKeystorePassword != null && releaseKeyAlias != null && releaseKeyPassword != null) {
+  android.signingConfigs.release.storePassword = releaseKeystorePassword
+  android.signingConfigs.release.keyAlias = releaseKeyAlias
+  android.signingConfigs.release.keyPassword = releaseKeyPassword
+} else {
+  println "No se han encontrado las credenciales necesarias para poder firmar el apk :("
+  android.buildTypes.release.signingConfig = null
+}
+
+
+def signingConfigFromFile() {
+  println '-> signingConfigFromFile'
+  def Properties props = new Properties()
+  def propFile = file('signing.properties')
+
+  if (propFile.canRead()) {
+    props.load(new FileInputStream(propFile))
+
+    if (props != null &&
+        props.containsKey('STORE_PASSWORD') &&
+        props.containsKey('KEY_ALIAS') &&
+        props.containsKey('KEY_PASSWORD')) {
+
+      def keystorePassword = props['STORE_PASSWORD']
+      def keyAlias = props['KEY_ALIAS']
+      def keyPassword = props['KEY_PASSWORD']
+
+      return [keystorePassword, keyAlias, keyPassword]
+    } else {
+      println 'signing.properties found but some entries are missing'
+    }
+  } else {
+    println 'signing.properties not found'
+  }
+  return [null, null, null]
 }
 
 apply plugin: 'com.google.gms.google-services'
