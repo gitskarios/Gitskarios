@@ -44,34 +44,26 @@ public class NotificationsPresenter extends Presenter<NotificationsRequest, List
         new GenericRepository<>(null, cloud);
     useCase = new GenericUseCase<>(repository);
 
-    Observable.fromCallable(new Callable<List<Notification>>() {
-      @Override
-      public List<Notification> call() throws Exception {
-        return useCase.execute(request);
-      }
-    })
-        .map(new Func1<List<Notification>, List<NotificationsParent>>() {
-          @Override
-          public List<NotificationsParent> call(List<Notification> notifications) {
-            Map<Long, NotificationsParent> parents = new HashMap<>();
+    Observable.fromCallable(() -> useCase.execute(request))
+        .map((Func1<List<Notification>, List<NotificationsParent>>) notifications -> {
+          Map<Long, NotificationsParent> parents = new HashMap<>();
 
-            for (Notification notification : notifications) {
-              if (parents.get(notification.repository.getId()) == null) {
-                NotificationsParent notificationsParent = new NotificationsParent();
-                parents.put(notification.repository.getId(), notificationsParent);
-                notificationsParent.repo = notification.repository;
-                notificationsParent.notifications = new ArrayList<>();
-              }
-              parents.get(notification.repository.getId()).notifications.add(notification);
+          for (Notification notification : notifications) {
+            if (parents.get(notification.repository.getId()) == null) {
+              NotificationsParent notificationsParent = new NotificationsParent();
+              parents.put(notification.repository.getId(), notificationsParent);
+              notificationsParent.repo = notification.repository;
+              notificationsParent.notifications = new ArrayList<>();
             }
-
-            Collection<NotificationsParent> values = parents.values();
-            ArrayList<NotificationsParent> notificationsParents = new ArrayList<>(values);
-            Collections.reverse(notificationsParents);
-
-
-            return notificationsParents;
+            parents.get(notification.repository.getId()).notifications.add(notification);
           }
+
+          Collection<NotificationsParent> values = parents.values();
+          ArrayList<NotificationsParent> notificationsParents = new ArrayList<>(values);
+          Collections.reverse(notificationsParents);
+
+
+          return notificationsParents;
         })
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())

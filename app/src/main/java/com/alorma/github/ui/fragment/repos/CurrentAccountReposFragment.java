@@ -1,68 +1,55 @@
 package com.alorma.github.ui.fragment.repos;
 
-import android.content.Intent;
+import android.support.v4.app.Fragment;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.services.repos.UserReposClient;
-import com.alorma.github.ui.activity.CreateRepositoryActivity;
+import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.repos.RepositoriesPresenter;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.RepoUtils;
-import com.alorma.gitskarios.core.Pair;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 
-public class CurrentAccountReposFragment extends BaseReposListFragment {
+public class CurrentAccountReposFragment extends Fragment implements TitleProvider,
+    Presenter.Callback<List<com.alorma.github.sdk.core.repositories.Repo>> {
 
-  private static final int CREATE_REPOS = 131;
 
   public static CurrentAccountReposFragment newInstance() {
     return new CurrentAccountReposFragment();
   }
 
   @Override
-  public void onNext(Pair<List<Repo>, Integer> listIntegerPair) {
-    super.onNext(listIntegerPair);
+  public void onStart() {
+    super.onStart();
 
-    if (getAdapter() != null) {
-      getAdapter().showOwnerNameExtra(false);
-    }
+    RepositoriesPresenter repositoriesPresenter =
+        new RepositoriesPresenter(RepoUtils.sortOrder(getActivity()));
+
+    repositoriesPresenter.load(null, this);
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-
-    setAction(new UserReposClient());
+  public int getTitle() {
+    return R.string.navigation_repos;
   }
 
   @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-    setAction(new UserReposClient(null, RepoUtils.sortOrder(getActivity()), page));
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_repo;
   }
 
   @Override
-  protected void loadArguments() {
+  public void showLoading() {
 
   }
 
   @Override
-  protected int getNoDataText() {
-    return R.string.no_repositories;
+  public void onResponse(List<com.alorma.github.sdk.core.repositories.Repo> repos) {
+
   }
 
   @Override
-  protected boolean useFAB() {
-    return true;
-  }
+  public void hideLoading() {
 
-  @Override
-  protected Octicons.Icon getFABGithubIcon() {
-    return Octicons.Icon.oct_repo_create;
-  }
-
-  @Override
-  protected void fabClick() {
-    Intent intent = new Intent(getActivity(), CreateRepositoryActivity.class);
-    startActivityForResult(intent, CREATE_REPOS);
   }
 }

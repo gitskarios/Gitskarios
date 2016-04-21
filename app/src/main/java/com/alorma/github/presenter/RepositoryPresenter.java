@@ -16,9 +16,6 @@ import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by bernat.borras on 12/11/15.
- */
 public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
   private Context context;
