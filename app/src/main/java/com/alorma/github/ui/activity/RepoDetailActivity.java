@@ -222,6 +222,11 @@ public class RepoDetailActivity extends BackActivity
 
   }
 
+  @Override
+  public void onResponseEmpty() {
+
+  }
+
   private void listFragments() {
     fragments = new ArrayList<>();
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);

@@ -1,31 +1,22 @@
 package com.alorma.github.ui.fragment.repos;
 
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
 import com.alorma.github.R;
-import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.repos.AuthUserRepositoriesPresenter;
 import com.alorma.github.presenter.repos.RepositoriesPresenter;
-import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.List;
 
-public class CurrentAccountReposFragment extends Fragment implements TitleProvider,
-    Presenter.Callback<List<com.alorma.github.sdk.core.repositories.Repo>> {
-
+public class CurrentAccountReposFragment extends ReposFragment {
 
   public static CurrentAccountReposFragment newInstance() {
     return new CurrentAccountReposFragment();
   }
 
+  @NonNull
   @Override
-  public void onStart() {
-    super.onStart();
-
-    RepositoriesPresenter repositoriesPresenter =
-        new RepositoriesPresenter(RepoUtils.sortOrder(getActivity()));
-
-    repositoriesPresenter.load(null, this);
+  protected RepositoriesPresenter getPresenter(String sortOrder) {
+    return new AuthUserRepositoriesPresenter(sortOrder);
   }
 
   @Override
@@ -38,18 +29,4 @@ public class CurrentAccountReposFragment extends Fragment implements TitleProvid
     return Octicons.Icon.oct_repo;
   }
 
-  @Override
-  public void showLoading() {
-
-  }
-
-  @Override
-  public void onResponse(List<com.alorma.github.sdk.core.repositories.Repo> repos) {
-
-  }
-
-  @Override
-  public void hideLoading() {
-
-  }
 }

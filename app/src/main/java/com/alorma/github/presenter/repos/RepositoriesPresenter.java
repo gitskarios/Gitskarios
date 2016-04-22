@@ -1,23 +1,23 @@
 package com.alorma.github.presenter.repos;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 import com.alorma.github.presenter.Presenter;
+import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.Github;
+import com.alorma.github.sdk.core.datasource.CacheDataSource;
+import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repositories.CloudRepositoriesDataSource;
 import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.sdk.core.repositories.RepositoriesRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
-import com.alorma.github.sdk.core.usecase.GenericUseCase;
-import com.alorma.gitskarios.core.client.TokenProvider;
 import java.util.List;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RepositoriesPresenter extends Presenter<String, List<Repo>> {
+public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>> {
 
   private String sortOrder;
+  private int page;
 
   public RepositoriesPresenter(String sortOrder) {
     this.sortOrder = sortOrder;
@@ -25,27 +25,48 @@ public class RepositoriesPresenter extends Presenter<String, List<Repo>> {
 
   @Override
   public void load(String username, Callback<List<Repo>> listCallback) {
-    UserReposCache cache = new UserReposCache();
-
-    String token = TokenProvider.getInstance().getToken();
-    RestWrapper reposRetrofit = new RepositoriesRetrofitWrapper(new Github(), token);
-    CloudRepositoriesDataSource cloudRepositoriesDataSource =
-        new CloudRepositoriesDataSource(reposRetrofit, sortOrder);
-
-    GenericRepository<String, List<Repo>> repository =
-        new GenericRepository<>(cache, cloudRepositoriesDataSource);
-    GenericUseCase<String, List<Repo>> useCase = new GenericUseCase<>(repository);
-
-    Observable.fromCallable(() -> useCase.execute(username))
+    config().execute(username)
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(repos -> {
-          dispatchRepos(repos, listCallback);
-        }, Throwable::printStackTrace);
+        .doOnSubscribe(listCallback::showLoading)
+        .doOnCompleted(listCallback::hideLoading)
+        .map(sdkResponseObservable -> {
+          this.page = sdkResponseObservable.getPage();
+          return sdkResponseObservable.getK();
+        })
+        .subscribe(repos -> action(repos, listCallback), Throwable::printStackTrace);
   }
 
-  private void dispatchRepos(List<Repo> repos, Callback<List<Repo>> listCallback) {
-    Log.i("ALORMA", "Repos:" + repos);
-    listCallback.onResponse(repos);
+  @Override
+  public void action(List<Repo> repos, Callback<List<Repo>> listCallback) {
+    if (repos != null && repos.size() > 0) {
+      listCallback.onResponse(repos);
+    } else {
+      listCallback.onResponseEmpty();
+    }
   }
+
+  @NonNull
+  @Override
+  protected GenericRepository<String, List<Repo>> configRepository(RestWrapper restWrapper) {
+    return new GenericRepository<>(getUserReposCache(),
+        getCloudRepositoriesDataSource(restWrapper, sortOrder));
+  }
+
+  @NonNull
+  @Override
+  protected RepositoriesRetrofitWrapper getRest(ApiClient apiClient, String token) {
+    return new RepositoriesRetrofitWrapper(apiClient, token);
+  }
+
+  @NonNull
+  @Override
+  protected ApiClient getApiClient() {
+    return new Github();
+  }
+
+  protected abstract CacheDataSource<String, List<Repo>> getUserReposCache();
+
+  protected abstract CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
+      RestWrapper reposRetrofit, String sortOrder);
 }

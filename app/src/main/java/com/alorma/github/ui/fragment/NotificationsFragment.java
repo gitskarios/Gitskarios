@@ -248,4 +248,9 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   public void hideLoading() {
     stopRefresh();
   }
+
+  @Override
+  public void onResponseEmpty() {
+
+  }
 }

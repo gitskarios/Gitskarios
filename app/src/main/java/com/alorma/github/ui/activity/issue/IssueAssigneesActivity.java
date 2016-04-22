@@ -72,6 +72,11 @@ public class IssueAssigneesActivity extends BackActivity
   }
 
   @Override
+  public void onResponseEmpty() {
+
+  }
+
+  @Override
   public void onItemSelected(User item) {
     if (returnResult) {
       Intent intent = new Intent();

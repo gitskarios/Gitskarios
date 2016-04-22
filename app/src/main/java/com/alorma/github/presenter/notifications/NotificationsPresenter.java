@@ -2,9 +2,11 @@ package com.alorma.github.presenter.notifications;
 
 import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.presenter.Presenter;
+import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
+import com.alorma.github.sdk.core.datasource.SdkResponse;
 import com.alorma.github.sdk.core.notifications.CloudNotificationsDataSource;
 import com.alorma.github.sdk.core.notifications.Notification;
 import com.alorma.github.sdk.core.notifications.NotificationsRequest;
@@ -17,15 +19,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class NotificationsPresenter extends Presenter<NotificationsRequest, List<NotificationsParent>> {
+public class NotificationsPresenter
+    extends Presenter<NotificationsRequest, List<NotificationsParent>> {
   GenericUseCase<NotificationsRequest, List<Notification>> useCase;
 
   public NotificationsPresenter() {
@@ -44,10 +42,10 @@ public class NotificationsPresenter extends Presenter<NotificationsRequest, List
         new GenericRepository<>(null, cloud);
     useCase = new GenericUseCase<>(repository);
 
-    Observable.fromCallable(() -> useCase.execute(request))
-        .map((Func1<List<Notification>, List<NotificationsParent>>) notifications -> {
+    useCase.execute(request)
+        .map(SdkResponse::getK)
+        .map(notifications -> {
           Map<Long, NotificationsParent> parents = new HashMap<>();
-
           for (Notification notification : notifications) {
             if (parents.get(notification.repository.getId()) == null) {
               NotificationsParent notificationsParent = new NotificationsParent();
@@ -62,32 +60,44 @@ public class NotificationsPresenter extends Presenter<NotificationsRequest, List
           ArrayList<NotificationsParent> notificationsParents = new ArrayList<>(values);
           Collections.reverse(notificationsParents);
 
-
           return notificationsParents;
         })
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(new Action0() {
-          @Override
-          public void call() {
-            if (listCallback != null) {
-              listCallback.showLoading();
-            }
+        .doOnSubscribe(() -> {
+          if (listCallback != null) {
+            listCallback.showLoading();
           }
         })
-        .subscribe(new Action1<List<NotificationsParent>>() {
-          @Override
-          public void call(List<NotificationsParent> notifications) {
-            if (listCallback != null) {
-              listCallback.hideLoading();
-              listCallback.onResponse(notifications);
-            }
+        .subscribe(notifications -> {
+          if (listCallback != null) {
+            listCallback.hideLoading();
+            listCallback.onResponse(notifications);
           }
-        }, new Action1<Throwable>() {
-          @Override
-          public void call(Throwable throwable) {
+        }, throwable -> {
 
-          }
         });
+  }
+
+  @Override
+  protected GenericRepository<NotificationsRequest, List<NotificationsParent>> configRepository(
+      RestWrapper restWrapper) {
+    return null;
+  }
+
+  @Override
+  protected RestWrapper getRest(ApiClient apiClient, String token) {
+    return null;
+  }
+
+  @Override
+  protected ApiClient getApiClient() {
+    return null;
+  }
+
+  @Override
+  public void action(List<NotificationsParent> notificationsParents,
+      Callback<List<NotificationsParent>> listCallback) {
+
   }
 }

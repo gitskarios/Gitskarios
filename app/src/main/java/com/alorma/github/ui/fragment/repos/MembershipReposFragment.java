@@ -1,36 +1,46 @@
 package com.alorma.github.ui.fragment.repos;
 
+import android.support.annotation.NonNull;
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.repos.MemberReposClient;
+import com.alorma.github.presenter.repos.RepositoriesPresenter;
+import com.alorma.github.sdk.core.datasource.CacheDataSource;
+import com.alorma.github.sdk.core.datasource.CloudDataSource;
+import com.alorma.github.sdk.core.datasource.RestWrapper;
+import com.alorma.github.sdk.core.repositories.Repo;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.List;
 
-/**
- * Created by Bernat on 18/07/2015.
- */
-public class MembershipReposFragment extends BaseReposListFragment {
+public class MembershipReposFragment extends ReposFragment {
 
   public static MembershipReposFragment newInstance() {
     return new MembershipReposFragment();
   }
 
+  @NonNull
   @Override
-  protected void loadArguments() {
+  protected RepositoriesPresenter getPresenter(String sortOrder) {
+    return new RepositoriesPresenter(sortOrder) {
+      @Override
+      protected CacheDataSource<String, List<Repo>> getUserReposCache() {
+        return null;
+      }
 
+      @Override
+      protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
+          RestWrapper reposRetrofit, String sortOrder) {
+        return null;
+      }
+    };
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-    setAction(new MemberReposClient());
+  public int getTitle() {
+    return R.string.navigation_orgs_members;
   }
 
   @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-    setAction(new MemberReposClient(page));
-  }
-
-  @Override
-  protected int getNoDataText() {
-    return R.string.no_member_repositories;
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_repo;
   }
 }

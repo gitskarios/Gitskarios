@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.presenter.repos.RepositoriesPresenter;
+import com.alorma.github.presenter.repos.AuthUserRepositoriesPresenter;
 import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.RepoUtils;
@@ -37,10 +37,10 @@ public class UsernameReposFragment extends Fragment implements TitleProvider,
       username = getArguments().getString("USERNAME");
     }
 
-    RepositoriesPresenter repositoriesPresenter =
-        new RepositoriesPresenter(RepoUtils.sortOrder(getActivity()));
+    AuthUserRepositoriesPresenter authUserRepositoriesPresenter =
+        new AuthUserRepositoriesPresenter(RepoUtils.sortOrder(getActivity()));
 
-    repositoriesPresenter.load(username, this);
+    authUserRepositoriesPresenter.load(username, this);
   }
 
   protected void loadArguments() {
@@ -69,6 +69,11 @@ public class UsernameReposFragment extends Fragment implements TitleProvider,
 
   @Override
   public void hideLoading() {
+
+  }
+
+  @Override
+  public void onResponseEmpty() {
 
   }
 }

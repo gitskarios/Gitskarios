@@ -87,6 +87,11 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
   }
 
   @Override
+  public void onResponseEmpty() {
+
+  }
+
+  @Override
   protected void close(boolean navigateUp) {
     if (returnResult) {
       Set<String> selectedLabels = adapter.getSelectedLabels();

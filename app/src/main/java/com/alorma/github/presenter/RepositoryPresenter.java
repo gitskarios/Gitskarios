@@ -6,6 +6,9 @@ import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.core.ApiClient;
+import com.alorma.github.sdk.core.datasource.RestWrapper;
+import com.alorma.github.sdk.core.repository.GenericRepository;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import java.util.List;
@@ -48,23 +51,15 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
     Observable<Repo> combinedWithBranches =
         Observable.combineLatest(repoClient.observable().subscribeOn(Schedulers.newThread()),
-            branchesClient, new Func2<Repo, List<Branch>, Repo>() {
-              @Override
-              public Repo call(Repo repo, List<Branch> branches) {
-                repo.branches = branches;
-                if (branches.size() == 1) {
-                  repo.default_branch = branches.get(0).name;
-                }
-                return repo;
+            branchesClient, (repo, branches) -> {
+              repo.branches = branches;
+              if (branches.size() == 1) {
+                repo.default_branch = branches.get(0).name;
               }
+              return repo;
             });
 
-    Observable<Repo> repoObservable = combinedWithBranches.doOnNext(new Action1<Repo>() {
-      @Override
-      public void call(Repo repo) {
-        CacheWrapper.setRepository(repo);
-      }
-    });
+    Observable<Repo> repoObservable = combinedWithBranches.doOnNext(CacheWrapper::setRepository);
 
     Observable.concat(memory, repoObservable)
         .observeOn(AndroidSchedulers.mainThread())
@@ -85,5 +80,25 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
           }
         });
+  }
+
+  @Override
+  protected GenericRepository<RepoInfo, Repo> configRepository(RestWrapper restWrapper) {
+    return null;
+  }
+
+  @Override
+  protected RestWrapper getRest(ApiClient apiClient, String token) {
+    return null;
+  }
+
+  @Override
+  protected ApiClient getApiClient() {
+    return null;
+  }
+
+  @Override
+  public void action(Repo repo, Callback<Repo> repoCallback) {
+
   }
 }
