@@ -7,10 +7,12 @@ import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
+import com.alorma.github.sdk.core.datasource.SdkItem;
 import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.sdk.core.repositories.RepositoriesRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
 import java.util.List;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -25,8 +27,19 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
 
   @Override
   public void load(String username, Callback<List<Repo>> listCallback) {
-    config().execute(username)
-        .subscribeOn(Schedulers.newThread())
+    execute(config().execute(new SdkItem<>(username)), listCallback);
+  }
+
+  @Override
+  public void loadMore(String username, Callback<List<Repo>> listCallback) {
+    if (page > Integer.MIN_VALUE) {
+      execute(config().execute(new SdkItem<>(page, username)), listCallback);
+    }
+  }
+
+  private void execute(Observable<SdkItem<List<Repo>>> observable,
+      Callback<List<Repo>> listCallback) {
+    observable.subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(listCallback::showLoading)
         .doOnCompleted(listCallback::hideLoading)

@@ -24,6 +24,11 @@ public class IssueLabelsPresenter extends Presenter<IssueInfo, List<Label>> {
   }
 
   @Override
+  public void loadMore(IssueInfo issueInfo, Callback<List<Label>> listCallback) {
+
+  }
+
+  @Override
   protected GenericRepository<IssueInfo, List<Label>> configRepository(RestWrapper restWrapper) {
     return null;
   }

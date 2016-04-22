@@ -11,6 +11,7 @@ import java.util.List;
 public abstract class Presenter<Request, Response> {
 
   public abstract void load(Request request, Callback<Response> responseCallback);
+  public abstract void loadMore(Request request, Callback<Response> responseCallback);
 
   protected GenericUseCase<Request, Response> config() {
     return new GenericUseCase<>(configRepository(getRest(getApiClient(), getToken())));

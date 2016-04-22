@@ -172,7 +172,7 @@ public class RepoDetailActivity extends BackActivity
   }
 
   private void load() {
-    RepositoryPresenter repositoryPresenter = new RepositoryPresenter(this);
+    RepositoryPresenter repositoryPresenter = new RepositoryPresenter();
     repositoryPresenter.load(requestRepoInfo, this);
   }
 

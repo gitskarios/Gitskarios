@@ -26,6 +26,11 @@ public class IssueMilestonePresenter extends Presenter<IssueInfo, List<Milestone
   }
 
   @Override
+  public void loadMore(IssueInfo issueInfo, Callback<List<Milestone>> listCallback) {
+
+  }
+
+  @Override
   protected GenericRepository<IssueInfo, List<Milestone>> configRepository(
       RestWrapper restWrapper) {
     return null;

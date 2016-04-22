@@ -6,7 +6,7 @@ import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.datasource.SdkResponse;
+import com.alorma.github.sdk.core.datasource.SdkItem;
 import com.alorma.github.sdk.core.notifications.CloudNotificationsDataSource;
 import com.alorma.github.sdk.core.notifications.Notification;
 import com.alorma.github.sdk.core.notifications.NotificationsRequest;
@@ -42,8 +42,8 @@ public class NotificationsPresenter
         new GenericRepository<>(null, cloud);
     useCase = new GenericUseCase<>(repository);
 
-    useCase.execute(request)
-        .map(SdkResponse::getK)
+    useCase.execute(new SdkItem<>(request))
+        .map(SdkItem::getK)
         .map(notifications -> {
           Map<Long, NotificationsParent> parents = new HashMap<>();
           for (Notification notification : notifications) {
@@ -77,6 +77,12 @@ public class NotificationsPresenter
         }, throwable -> {
 
         });
+  }
+
+  @Override
+  public void loadMore(NotificationsRequest notificationsRequest,
+      Callback<List<NotificationsParent>> listCallback) {
+
   }
 
   @Override

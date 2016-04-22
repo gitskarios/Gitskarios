@@ -1,6 +1,5 @@
 package com.alorma.github.presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.dto.response.Branch;
@@ -15,16 +14,11 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
-  private Context context;
-
-  public RepositoryPresenter(Context context) {
-    this.context = context;
+  public RepositoryPresenter() {
   }
 
   @Override
@@ -46,8 +40,8 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
       }
     });
 
-    Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo).observable()
-        .subscribeOn(Schedulers.newThread());
+    Observable<List<Branch>> branchesClient =
+        new GetRepoBranchesClient(repoInfo).observable().subscribeOn(Schedulers.newThread());
 
     Observable<Repo> combinedWithBranches =
         Observable.combineLatest(repoClient.observable().subscribeOn(Schedulers.newThread()),
@@ -80,6 +74,11 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
           }
         });
+  }
+
+  @Override
+  public void loadMore(RepoInfo repoInfo, Callback<Repo> repoCallback) {
+
   }
 
   @Override

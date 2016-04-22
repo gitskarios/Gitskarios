@@ -25,6 +25,11 @@ public class IssueAssigneesPresenter extends Presenter<IssueInfo, List<User>> {
   }
 
   @Override
+  public void loadMore(IssueInfo issueInfo, Callback<List<User>> listCallback) {
+
+  }
+
+  @Override
   protected GenericRepository<IssueInfo, List<User>> configRepository(RestWrapper restWrapper) {
     return null;
   }

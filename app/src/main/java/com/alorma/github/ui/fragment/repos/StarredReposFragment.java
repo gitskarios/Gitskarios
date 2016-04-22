@@ -2,11 +2,17 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.repos.StarredReposClient;
+import com.alorma.github.presenter.repos.RepositoriesPresenter;
+import com.alorma.github.presenter.repos.StarredRepositoriesPresenter;
+import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.utils.RepoUtils;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.List;
 
-public class StarredReposFragment extends BaseReposListFragment {
+public class StarredReposFragment extends ReposFragment {
 
+  private static final String USERNAME = "USERNAME";
   private String username;
 
   public static StarredReposFragment newInstance() {
@@ -24,29 +30,34 @@ public class StarredReposFragment extends BaseReposListFragment {
     return reposFragment;
   }
 
+  private RepositoriesPresenter presenter;
+
   @Override
-  protected void loadArguments() {
+  public void onStart() {
+    super.onStart();
+
+    String sortOrder = RepoUtils.sortOrder(getActivity());
+    presenter = new StarredRepositoriesPresenter(sortOrder);
+
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
+
+    presenter.load(username, this);
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-    loadArguments();
-
-    setAction(new StarredReposClient(username, RepoUtils.sortOrder(getActivity())));
+  public int getTitle() {
+    return R.string.navigation_repos;
   }
 
   @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-    setAction(new StarredReposClient(username, RepoUtils.sortOrder(getActivity()), page));
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_repo;
   }
 
   @Override
-  protected int getNoDataText() {
-    return R.string.no_starred_repositories;
+  public void onResponse(List<Repo> repos) {
+
   }
 }
