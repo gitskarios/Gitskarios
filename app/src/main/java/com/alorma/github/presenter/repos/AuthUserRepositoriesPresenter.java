@@ -15,8 +15,8 @@ public class AuthUserRepositoriesPresenter extends RepositoriesPresenter {
   }
 
   @NonNull
-  protected CacheDataSource<String, List<Repo>> getUserReposCache() {
-    return new UserReposCache("auth_repos");
+  protected CacheDataSource<String, List<Repo>> getUserReposCacheDataSource() {
+    return new AuthUserReposCache("auth_repos");
   }
 
   @NonNull

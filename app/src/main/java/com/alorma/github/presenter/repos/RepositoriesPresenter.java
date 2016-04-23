@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>> {
 
   private String sortOrder;
-  private int page;
+  private Integer page;
   private GenericRepository<String, List<Repo>> genericRepository;
 
   public RepositoriesPresenter(String sortOrder) {
@@ -33,7 +33,7 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
 
   @Override
   public void loadMore(String username, Callback<List<Repo>> listCallback) {
-    if (page > Integer.MIN_VALUE) {
+    if (page != null) {
       execute(config().execute(new SdkItem<>(page, username)), listCallback);
     }
   }
@@ -64,7 +64,7 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
   @Override
   protected GenericRepository<String, List<Repo>> configRepository(RestWrapper restWrapper) {
     if (genericRepository == null) {
-      genericRepository = new GenericRepository<>(getUserReposCache(),
+      genericRepository = new GenericRepository<>(getUserReposCacheDataSource(),
           getCloudRepositoriesDataSource(restWrapper, sortOrder));
     }
     return genericRepository;
@@ -82,7 +82,7 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
     return new Github();
   }
 
-  protected abstract CacheDataSource<String, List<Repo>> getUserReposCache();
+  protected abstract CacheDataSource<String, List<Repo>> getUserReposCacheDataSource();
 
   protected abstract CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
       RestWrapper reposRetrofit, String sortOrder);

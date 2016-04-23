@@ -5,7 +5,6 @@ import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.repositories.CloudStarredRepositoriesDataSource;
-import com.alorma.github.sdk.core.repositories.CloudUserRepositoriesDataSource;
 import com.alorma.github.sdk.core.repositories.Repo;
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class StarredRepositoriesPresenter extends RepositoriesPresenter {
   }
 
   @NonNull
-  protected CacheDataSource<String, List<Repo>> getUserReposCache() {
-    return new UserReposCache("auth_starred");
+  protected CacheDataSource<String, List<Repo>> getUserReposCacheDataSource() {
+    return new AuthUserReposCache("auth_starred");
   }
 
   @NonNull
