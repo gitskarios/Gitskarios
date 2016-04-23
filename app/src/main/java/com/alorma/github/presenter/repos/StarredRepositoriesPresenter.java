@@ -17,7 +17,7 @@ public class StarredRepositoriesPresenter extends RepositoriesPresenter {
 
   @NonNull
   protected CacheDataSource<String, List<Repo>> getUserReposCache() {
-    return new UserReposCache();
+    return new UserReposCache("auth_starred");
   }
 
   @NonNull

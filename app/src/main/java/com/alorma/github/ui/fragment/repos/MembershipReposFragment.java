@@ -26,4 +26,9 @@ public class MembershipReposFragment extends ReposFragment {
   public void onResponse(List<Repo> repos) {
 
   }
+
+  @Override
+  public void loadMoreItems() {
+
+  }
 }

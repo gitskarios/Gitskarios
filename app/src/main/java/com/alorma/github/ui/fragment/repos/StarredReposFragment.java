@@ -57,7 +57,7 @@ public class StarredReposFragment extends ReposFragment {
   }
 
   @Override
-  public void onResponse(List<Repo> repos) {
-
+  public void loadMoreItems() {
+    presenter.loadMore(username, this);
   }
 }

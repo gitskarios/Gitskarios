@@ -20,6 +20,7 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
 
   private String sortOrder;
   private int page;
+  private GenericRepository<String, List<Repo>> genericRepository;
 
   public RepositoriesPresenter(String sortOrder) {
     this.sortOrder = sortOrder;
@@ -40,13 +41,13 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
   private void execute(Observable<SdkItem<List<Repo>>> observable,
       Callback<List<Repo>> listCallback) {
     observable.subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(listCallback::showLoading)
-        .doOnCompleted(listCallback::hideLoading)
         .map(sdkResponseObservable -> {
           this.page = sdkResponseObservable.getPage();
           return sdkResponseObservable.getK();
         })
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(listCallback::showLoading)
+        .doOnCompleted(listCallback::hideLoading)
         .subscribe(repos -> action(repos, listCallback), Throwable::printStackTrace);
   }
 
@@ -62,8 +63,11 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
   @NonNull
   @Override
   protected GenericRepository<String, List<Repo>> configRepository(RestWrapper restWrapper) {
-    return new GenericRepository<>(getUserReposCache(),
-        getCloudRepositoriesDataSource(restWrapper, sortOrder));
+    if (genericRepository == null) {
+      genericRepository = new GenericRepository<>(getUserReposCache(),
+          getCloudRepositoriesDataSource(restWrapper, sortOrder));
+    }
+    return genericRepository;
   }
 
   @NonNull
