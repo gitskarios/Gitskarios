@@ -3,12 +3,10 @@ package com.alorma.github.ui.fragment.repos;
 import android.os.Bundle;
 import com.alorma.github.R;
 import com.alorma.github.presenter.repos.RepositoriesPresenter;
-import com.alorma.github.presenter.repos.StarredRepositoriesPresenter;
-import com.alorma.github.sdk.core.repositories.Repo;
+import com.alorma.github.presenter.repos.AuthStarredRepositoriesPresenter;
 import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.List;
 
 public class StarredReposFragment extends ReposFragment {
 
@@ -37,7 +35,7 @@ public class StarredReposFragment extends ReposFragment {
     super.onStart();
 
     String sortOrder = RepoUtils.sortOrder(getActivity());
-    presenter = new StarredRepositoriesPresenter(sortOrder);
+    presenter = new AuthStarredRepositoriesPresenter(sortOrder);
 
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);

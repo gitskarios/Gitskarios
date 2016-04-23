@@ -8,9 +8,9 @@ import com.alorma.github.sdk.core.repositories.CloudStarredRepositoriesDataSourc
 import com.alorma.github.sdk.core.repositories.Repo;
 import java.util.List;
 
-public class StarredRepositoriesPresenter extends RepositoriesPresenter {
+public class AuthStarredRepositoriesPresenter extends RepositoriesPresenter {
 
-  public StarredRepositoriesPresenter(String sortOrder) {
+  public AuthStarredRepositoriesPresenter(String sortOrder) {
     super(sortOrder);
   }
 

@@ -2,11 +2,15 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.repos.WatchedReposClient;
+import com.alorma.github.presenter.repos.AuthWatchedRepositoriesPresenter;
+import com.alorma.github.presenter.repos.RepositoriesPresenter;
 import com.alorma.github.utils.RepoUtils;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
-public class WatchedReposFragment extends BaseReposListFragment {
+public class WatchedReposFragment extends ReposFragment {
 
+  private static final String USERNAME = "USERNAME";
   private String username;
 
   public static WatchedReposFragment newInstance() {
@@ -24,29 +28,34 @@ public class WatchedReposFragment extends BaseReposListFragment {
     return reposFragment;
   }
 
+  private RepositoriesPresenter presenter;
+
   @Override
-  protected void loadArguments() {
+  public void onStart() {
+    super.onStart();
+
+    String sortOrder = RepoUtils.sortOrder(getActivity());
+    presenter = new AuthWatchedRepositoriesPresenter(sortOrder);
+
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
+
+    presenter.load(username, this);
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-    loadArguments();
-
-    setAction(new WatchedReposClient(username, RepoUtils.sortOrder(getActivity())));
+  public int getTitle() {
+    return R.string.navigation_repos;
   }
 
   @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-    setAction(new WatchedReposClient(username, RepoUtils.sortOrder(getActivity()), page));
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_repo;
   }
 
   @Override
-  protected int getNoDataText() {
-    return R.string.no_watched_repositories;
+  public void loadMoreItems() {
+    presenter.loadMore(username, this);
   }
 }
