@@ -2,57 +2,61 @@ package com.alorma.github.ui.fragment.orgs;
 
 import android.os.Bundle;
 import com.alorma.github.R;
-import com.alorma.github.sdk.services.orgs.OrgsReposClient;
-import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
+import com.alorma.github.presenter.repos.OrganizationRepositoriesPresenter;
+import com.alorma.github.presenter.repos.RepositoriesPresenter;
+import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.alorma.github.utils.RepoUtils;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
-public class OrgsReposFragment extends BaseReposListFragment {
+public class OrgsReposFragment extends ReposFragment {
 
-  private static final String ORGANIZATION = "ORG";
-  private String org;
+  private static final String ORGS = "ORGS";
+  private String orgName;
 
   public static OrgsReposFragment newInstance() {
     return new OrgsReposFragment();
   }
 
-  public static OrgsReposFragment newInstance(String orgName) {
+  public static OrgsReposFragment newInstance(String username) {
     OrgsReposFragment reposFragment = new OrgsReposFragment();
-    if (orgName != null) {
+    if (username != null) {
       Bundle bundle = new Bundle();
-      bundle.putString(ORGANIZATION, orgName);
+      bundle.putString(ORGS, username);
 
       reposFragment.setArguments(bundle);
     }
     return reposFragment;
   }
 
+  private RepositoriesPresenter presenter;
+
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public void onStart() {
+    super.onStart();
+
+    String sortOrder = RepoUtils.sortOrder(getActivity());
+    presenter = new OrganizationRepositoriesPresenter(sortOrder);
+
     if (getArguments() != null) {
-      org = getArguments().getString(ORGANIZATION);
+      orgName = getArguments().getString(ORGS);
     }
+
+    presenter.load(orgName, this);
   }
 
   @Override
-  protected void loadArguments() {
-
+  public int getTitle() {
+    return R.string.navigation_repos;
   }
 
   @Override
-  protected void executeRequest() {
-    super.executeRequest();
-    setAction(new OrgsReposClient(org, RepoUtils.sortOrder(getActivity())));
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_repo;
   }
 
   @Override
-  protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
-    setAction(new OrgsReposClient(org, RepoUtils.sortOrder(getActivity()), page));
-  }
-
-  @Override
-  protected int getNoDataText() {
-    return R.string.no_repositories;
+  public void loadMoreItems() {
+    presenter.loadMore(orgName, this);
   }
 }
