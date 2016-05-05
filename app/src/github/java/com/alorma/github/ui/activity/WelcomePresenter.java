@@ -12,15 +12,13 @@ import com.alorma.github.sdk.bean.dto.response.GithubAuthorization;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.login.CreateAuthorizationClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
+import com.alorma.github.sdk.services.user.TwoFactorAppException;
 import com.alorma.github.sdk.services.user.TwoFactorAuthException;
 import com.alorma.github.sdk.services.user.UnauthorizedException;
 import com.alorma.gitskarios.core.Pair;
 import java.lang.ref.WeakReference;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class WelcomePresenter {
@@ -68,36 +66,12 @@ public class WelcomePresenter {
     Observable<GithubAuthorization> observable = createAuthorizationClient.observable();
     observable.subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(new Action0() {
-          @Override
-          public void call() {
-            welcomePresenterViewInterface.willLogin();
-          }
-        })
-        .doOnError(new Action1<Throwable>() {
-          @Override
-          public void call(Throwable throwable) {
-            checkErrorFromAuthorization(throwable);
-          }
-        })
-        .flatMap(new Func1<GithubAuthorization, Observable<Pair<User, String>>>() {
-          @Override
-          public Observable<Pair<User, String>> call(GithubAuthorization githubAuthorization) {
-            return new GetAuthUserClient(githubAuthorization.token).observable();
-          }
-        })
-        .doOnError(new Action1<Throwable>() {
-          @Override
-          public void call(Throwable throwable) {
-            welcomePresenterViewInterface.didLogin();
-          }
-        })
-        .doOnCompleted(new Action0() {
-          @Override
-          public void call() {
-            welcomePresenterViewInterface.didLogin();
-          }
-        })
+        .doOnSubscribe(() -> welcomePresenterViewInterface.willLogin())
+        .doOnError(this::checkErrorFromAuthorization)
+        .flatMap(
+            githubAuthorization -> new GetAuthUserClient(githubAuthorization.token).observable())
+        .doOnError(throwable -> welcomePresenterViewInterface.didLogin())
+        .doOnCompleted(() -> welcomePresenterViewInterface.didLogin())
         .subscribe(new UserSubscription());
   }
 
@@ -127,7 +101,9 @@ public class WelcomePresenter {
   }
 
   private void checkErrorFromAuthorization(Throwable e) {
-    if (e instanceof TwoFactorAuthException) {
+    if (e instanceof TwoFactorAppException) {
+      welcomePresenterViewInterface.onErrorTwoFactorAppException();
+    } else if (e instanceof TwoFactorAuthException) {
       welcomePresenterViewInterface.onErrorTwoFactorException();
     }
   }

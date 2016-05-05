@@ -16,6 +16,8 @@ public interface WelcomePresenterViewInterface {
 
   void didLogin();
 
+  void onErrorTwoFactorAppException();
+
   class NullView implements WelcomePresenterViewInterface {
 
     @Override
@@ -45,6 +47,11 @@ public interface WelcomePresenterViewInterface {
 
     @Override
     public void didLogin() {
+
+    }
+
+    @Override
+    public void onErrorTwoFactorAppException() {
 
     }
   }

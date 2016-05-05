@@ -234,14 +234,14 @@ dependencies {
 
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
-  compile('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
+  compile ('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
     exclude group: "joda-time"
   }
 }
 
 play {
   jsonFile = file('../gplay-secret.json')
-  track = 'alpha'
+  track = 'beta'
 }
 
 def (releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword) = signingConfigFromFile()

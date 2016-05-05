@@ -485,8 +485,9 @@
   <string name="enterprise_ad_try_it_now">Try it now</string>
   <string name="app_theme_pref_title">App theme</string>
   <string name="oauth_login">OAuth login</string>
-  <string name="write_otp_code">Write the code received from SMS</string>
   <string name="write_otp_code_title">2fa Code</string>
+  <string name="write_otp_code_sms">Write the code received from SMS</string>
+  <string name="write_otp_code_app">Write the code from Authenticator App</string>
   <string name="write_otp_code_hint">code</string>
   <string name="external_storage_permission_request">Write permission is requested to download</string>
   <string name="external_storage_permission_request_action">Settings</string>

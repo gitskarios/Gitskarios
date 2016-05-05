@@ -2,10 +2,12 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputType;
@@ -48,14 +50,11 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     addTextWatcher(loginUsername, buttonEnablerTextWatcher);
     addTextWatcher(loginPassword, buttonEnablerTextWatcher);
 
-    buttonLogin.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        String username = getFromTextInputLayout(loginUsername);
-        String passwords = getFromTextInputLayout(loginPassword);
-        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(passwords)) {
-          login(username, passwords);
-        }
+    buttonLogin.setOnClickListener(v -> {
+      String username = getFromTextInputLayout(loginUsername);
+      String passwords = getFromTextInputLayout(loginPassword);
+      if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(passwords)) {
+        login(username, passwords);
       }
     });
   }
@@ -77,15 +76,20 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   public void onErrorTwoFactorException() {
+    show2faDialog(R.string.write_otp_code_sms);
+  }
+
+  @Override
+  public void onErrorTwoFactorAppException() {
+    show2faDialog(R.string.write_otp_code_app);
+  }
+
+  private void show2faDialog(@StringRes int message) {
     new MaterialDialog.Builder(this).title(R.string.write_otp_code_title)
-        .content(R.string.write_otp_code)
-        .input(getString(R.string.write_otp_code_hint), null, false,
-            new MaterialDialog.InputCallback() {
-              @Override
-              public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                welcomePresenter.setOtpCode(String.valueOf(input));
-              }
-            })
+        .content(message)
+        .input(getString(R.string.write_otp_code_hint), null, false, (dialog, input) -> {
+          welcomePresenter.setOtpCode(String.valueOf(input));
+        })
         .inputType(InputType.TYPE_NUMBER_FLAG_DECIMAL)
         .show();
   }
@@ -107,7 +111,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   public void didLogin() {
     progressBar.setVisibility(View.GONE);
     buttonLogin.setEnabled(true);
-    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(buttonLogin.getWindowToken(), 0);
   }
 

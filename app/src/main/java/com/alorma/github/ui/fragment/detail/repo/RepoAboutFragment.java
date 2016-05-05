@@ -164,63 +164,48 @@ public class RepoAboutFragment extends Fragment
     watchedPlaceholder = (TextView) view.findViewById(R.id.watchedPlaceHolder);
     forkPlaceHolder = (TextView) view.findViewById(R.id.forkPlaceHolder);
 
-    starredPlaceholder.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (repoStarred != null) {
-          changeStarStatus();
-        }
+    starredPlaceholder.setOnClickListener(v -> {
+      if (repoStarred != null) {
+        changeStarStatus();
       }
     });
 
-    watchedPlaceholder.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (repoWatched != null) {
-          changeWatchedStatus();
-        }
+    watchedPlaceholder.setOnClickListener(v -> {
+      if (repoWatched != null) {
+        changeWatchedStatus();
       }
     });
 
-    forkPlaceHolder.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (repoInfo != null) {
-          Intent intent = ForksActivity.launchIntent(v.getContext(), repoInfo);
+    forkPlaceHolder.setOnClickListener(v -> {
+      if (repoInfo != null) {
+        Intent intent = ForksActivity.launchIntent(v.getContext(), repoInfo);
+        startActivity(intent);
+      }
+    });
+
+    fork.setOnClickListener(v -> {
+      if (currentRepo != null && currentRepo.parent != null) {
+        RepoInfo repoInfo1 = new RepoInfo();
+        repoInfo1.owner = currentRepo.parent.owner.login;
+        repoInfo1.name = currentRepo.parent.name;
+        if (!TextUtils.isEmpty(currentRepo.default_branch)) {
+          repoInfo1.branch = currentRepo.default_branch;
+        }
+
+        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo1);
+        startActivity(intent);
+      }
+    });
+
+    author.setOnClickListener(v -> {
+      if (currentRepo != null && currentRepo.owner != null) {
+        if (currentRepo.owner.type == UserType.User) {
+          Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
           startActivity(intent);
-        }
-      }
-    });
-
-    fork.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (currentRepo != null && currentRepo.parent != null) {
-          RepoInfo repoInfo = new RepoInfo();
-          repoInfo.owner = currentRepo.parent.owner.login;
-          repoInfo.name = currentRepo.parent.name;
-          if (!TextUtils.isEmpty(currentRepo.default_branch)) {
-            repoInfo.branch = currentRepo.default_branch;
-          }
-
-          Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+        } else if (currentRepo.owner.type == UserType.Organization) {
+          Intent intent =
+              OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
           startActivity(intent);
-        }
-      }
-    });
-
-    author.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (currentRepo != null && currentRepo.owner != null) {
-          if (currentRepo.owner.type == UserType.User) {
-            Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
-            startActivity(intent);
-          } else if (currentRepo.owner.type == UserType.Organization) {
-            Intent intent =
-                OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
-            startActivity(intent);
-          }
         }
       }
     });
@@ -302,7 +287,8 @@ public class RepoAboutFragment extends Fragment
 
   private void onReadmeLoaded(String htmlContent) {
     if (htmlContent != null && htmlContentView != null) {
-
+      loadingHtml.setVisibility(View.GONE);
+      /*
       htmlContentView.getSettings().setUseWideViewPort(false);
       htmlContentView.setWebViewClient(new WebViewClient() {
         @Override
@@ -328,6 +314,7 @@ public class RepoAboutFragment extends Fragment
       loadingHtml.setVisibility(View.GONE);
 
       CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
+      */
     }
   }
 

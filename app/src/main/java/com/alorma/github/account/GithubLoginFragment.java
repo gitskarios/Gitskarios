@@ -52,15 +52,12 @@ public class GithubLoginFragment extends Fragment {
       openExternalLogin();
       return true;
     } else {
-      purchasesFragment.checkSku(new PurchasesFragment.PurchasesCallback() {
-        @Override
-        public void onMultiAccountPurchaseResult(boolean multiAccountPurchased) {
-          if (multiAccountPurchased) {
-            openExternalLogin();
-          } else {
-            advanced = false;
-            purchasesFragment.showDialogBuyMultiAccount();
-          }
+      purchasesFragment.checkSku(multiAccountPurchased -> {
+        if (multiAccountPurchased) {
+          openExternalLogin();
+        } else {
+          advanced = false;
+          purchasesFragment.showDialogBuyMultiAccount();
         }
       });
       return false;
@@ -75,20 +72,18 @@ public class GithubLoginFragment extends Fragment {
       openAdvancedLogin(ADVANCED_URL);
       return true;
     } else {
-      purchasesFragment.checkSku(new PurchasesFragment.PurchasesCallback() {
-        @Override
-        public void onMultiAccountPurchaseResult(boolean multiAccountPurchased) {
-          if (multiAccountPurchased) {
-            openAdvancedLogin(ADVANCED_URL);
-          } else {
-            advanced = true;
-            purchasesFragment.showDialogBuyMultiAccount();
-          }
+      purchasesFragment.checkSku(multiAccountPurchased -> {
+        if (multiAccountPurchased) {
+          openAdvancedLogin(ADVANCED_URL);
+        } else {
+          advanced = true;
+          purchasesFragment.showDialogBuyMultiAccount();
         }
       });
       return false;
     }
   }
+
 
   public void onNewIntent(Intent intent) {
     if (intent != null && intent.getData() != null && intent.getData().getScheme() != null) {
