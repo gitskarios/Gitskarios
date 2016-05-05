@@ -39,7 +39,7 @@ buildtimetracker {
 
 android {
   compileSdkVersion 23
-  buildToolsVersion '23.0.2'
+  buildToolsVersion '23.0.3'
   dexOptions {
     javaMaxHeapSize "4g"
   }
@@ -49,8 +49,8 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 23
-    versionName "2.10.1"
-    versionCode 210104
+    versionName "2.10.2"
+    versionCode 210105
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
