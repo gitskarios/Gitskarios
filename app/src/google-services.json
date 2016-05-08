@@ -7,20 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:922276335491:android:4e0ec7e2c8cff79f",
-        "client_id": "android:com.alorma.github_enterprise.debug",
+        "mobilesdk_app_id": "1:922276335491:android:3de557bff988a5e6",
+        "client_id": "android:com.alorma.github",
         "client_type": 1,
         "android_client_info": {
-          "package_name": "com.alorma.github_enterprise.debug"
+          "package_name": "com.alorma.github"
         }
       },
       "oauth_client": [
         {
-          "client_id": "922276335491-1f6nn02fbq1urqbhgshcj69f1kg9f74d.apps.googleusercontent.com",
+          "client_id": "922276335491-82ri3fdcm3fhe7tkd2jpuencsvdkg4l7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.alorma.github_enterprise.debug",
-            "certificate_hash": "21BA6FA2EAB8A1BA9C403BC31A025C486E6E80C5"
+            "package_name": "com.alorma.github",
+            "certificate_hash": "4748E073DC183E82A51FA7CA18457C3B96ABCAA3"
           }
         }
       ],
@@ -50,19 +50,19 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:922276335491:android:287a870749f29087",
-        "client_id": "android:com.alorma.github_enterprise",
+        "mobilesdk_app_id": "1:922276335491:android:3de557bff988a5e6",
+        "client_id": "android:com.alorma.github.debug",
         "client_type": 1,
         "android_client_info": {
-          "package_name": "com.alorma.github_enterprise"
+          "package_name": "com.alorma.github.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "922276335491-qnvi9inc9t6csk2090mfid884gnp372i.apps.googleusercontent.com",
+          "client_id": "922276335491-82ri3fdcm3fhe7tkd2jpuencsvdkg4l7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.alorma.github_enterprise",
+            "package_name": "com.alorma.github.debug",
             "certificate_hash": "4748E073DC183E82A51FA7CA18457C3B96ABCAA3"
           }
         }

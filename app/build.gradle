@@ -49,8 +49,8 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 23
-    versionName "2.10.8"
-    versionCode 210108
+    versionName "2.10.9"
+    versionCode 210109
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -81,10 +81,6 @@ android {
     github {
       applicationId "com.alorma.github"
       ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
-    }
-    enterprise {
-      applicationId "com.alorma.github_enterprise"
-      ext.betaDistributionGroupAliases = "gitskarios-enterprise-alpha-testers"
     }
   }
 
