@@ -18,9 +18,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class GistFileFragment extends Fragment {
 
   public static final String FILE_NAME = "FILE_NAME";

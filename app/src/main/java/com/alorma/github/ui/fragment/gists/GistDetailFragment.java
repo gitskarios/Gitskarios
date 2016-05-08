@@ -25,9 +25,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 02/04/2015.
- */
 public class GistDetailFragment extends Fragment
     implements Observer<Gist>, GistDetailFilesAdapter.GistFilesAdapterListener {
 
@@ -110,15 +107,9 @@ public class GistDetailFragment extends Fragment
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item != null && item.getItemId() == R.id.action_gist_share) {
       Uri uri = Uri.parse(gist.html_url);
-      String owner = gist.user.login;
-      Uri newUri = new Uri.Builder().scheme(uri.getScheme())
-          .authority(uri.getAuthority())
-          .appendPath(owner)
-          .appendPath(uri.getLastPathSegment())
-          .build();
       Intent intent = new Intent(Intent.ACTION_SEND);
       intent.setType("text/plain");
-      intent.putExtra(Intent.EXTRA_TEXT, newUri.toString());
+      intent.putExtra(Intent.EXTRA_TEXT, uri.toString());
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 

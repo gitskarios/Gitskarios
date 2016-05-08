@@ -14,9 +14,6 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.gists.GistDetailFragment;
 import java.util.TreeMap;
 
-/**
- * Created by Bernat on 02/04/2015.
- */
 public class GistDetailActivity extends BackActivity
     implements GistDetailFragment.GistDetailListener {
 

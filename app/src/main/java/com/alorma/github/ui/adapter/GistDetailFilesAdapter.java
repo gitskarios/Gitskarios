@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bernat on 02/04/2015.
- */
 public class GistDetailFilesAdapter
     extends RecyclerView.Adapter<GistDetailFilesAdapter.ViewHolder> {
 
