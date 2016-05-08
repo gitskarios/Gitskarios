@@ -39,7 +39,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
     }
 
     applyIcon(holder.textStarts, Octicons.Icon.oct_star);
-    holder.textStarts.setText(new DecimalFormat().format(repo.stargazers_count));
+    holder.textStarts.setText(new DecimalFormat().format(repo.getStargazersCount()));
 
     applyIcon(holder.textForks, Octicons.Icon.oct_repo_forked);
     holder.textForks.setText(new DecimalFormat().format(repo.forks_count));
@@ -51,7 +51,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       holder.textDescription.setVisibility(View.GONE);
     }
 
-    if (repo.isPrivate) {
+    if (repo.isPrivateRepo()) {
       holder.repoPrivate.setVisibility(View.VISIBLE);
     } else {
       holder.repoPrivate.setVisibility(View.GONE);

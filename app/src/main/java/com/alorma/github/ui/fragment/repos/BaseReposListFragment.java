@@ -17,9 +17,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 17/07/2014.
- */
 public abstract class BaseReposListFragment extends LoadingListFragment<ReposAdapter>
     implements SharedPreferences.OnSharedPreferenceChangeListener,
     Observer<Pair<List<Repo>, Integer>> {
