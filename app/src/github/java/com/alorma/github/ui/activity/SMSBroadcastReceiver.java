@@ -8,8 +8,7 @@ import android.telephony.SmsMessage;
 
 public class SMSBroadcastReceiver extends BroadcastReceiver {
 
-  private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
-  private static final String TAG = "SMSBroadcastReceiver";
+  public static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 
   @Override
   public void onReceive(Context context, Intent intent) {
@@ -20,7 +19,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         if (pdus != null) {
           final SmsMessage[] messages = new SmsMessage[pdus.length];
           for (int i = 0; i < pdus.length; i++) {
-            messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i], "3gpp");
+            messages[i] = SmsMessageCompat.createFromPdu((byte[]) pdus[i], "3gpp");
           }
           if (messages.length > -1) {
 

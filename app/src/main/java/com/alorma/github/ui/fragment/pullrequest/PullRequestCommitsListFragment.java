@@ -71,7 +71,7 @@ public class PullRequestCommitsListFragment
         issueStoryDetails.add(new PullRequestStoryCommit(commit));
       }
 
-      if (getAdapter() == null) {
+      if (refreshing || getAdapter() == null) {
         PullRequestCommitsReviewCommentsAdapter commitsAdapter =
             new PullRequestCommitsReviewCommentsAdapter(LayoutInflater.from(getActivity()), false,
                 issueInfo.repoInfo);

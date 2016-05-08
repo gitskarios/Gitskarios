@@ -2,9 +2,8 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -21,6 +20,10 @@ import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.single.EmptyPermissionListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity
     implements WelcomePresenterViewInterface {
@@ -30,6 +33,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Bind(R.id.login_password) TextInputLayout loginPassword;
   @Bind(R.id.progressBar) View progressBar;
   private WelcomePresenter welcomePresenter;
+  private SMSBroadcastReceiver smsBroadcastReceiver;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,27 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Override
   public void onErrorTwoFactorException() {
     show2faDialog(R.string.write_otp_code_sms);
+    enableSmsBroadcast();
+  }
+
+  private void enableSmsBroadcast() {
+    PermissionListener permissionListener = new EmptyPermissionListener() {
+      @Override
+      public void onPermissionGranted(PermissionGrantedResponse response) {
+        super.onPermissionGranted(response);
+        registerSmsBroadcast();
+      }
+    };
+    Dexter.checkPermission(permissionListener, "android.permission.READ_SMS");
+  }
+
+  private void registerSmsBroadcast() {
+    smsBroadcastReceiver = new SMSBroadcastReceiver();
+
+    IntentFilter intentFilter = new IntentFilter(SMSBroadcastReceiver.SMS_RECEIVED);
+    intentFilter.setPriority(999);
+
+    registerReceiver(smsBroadcastReceiver, intentFilter);
   }
 
   @Override
@@ -158,7 +183,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   protected void onStop() {
-
+    if (smsBroadcastReceiver != null) {
+      unregisterReceiver(smsBroadcastReceiver);
+    }
     welcomePresenter.stop();
     super.onStop();
   }
