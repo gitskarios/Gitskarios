@@ -162,12 +162,41 @@ dependencies {
   compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
     transitive = true;
   }
+
+
+  compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
+    transitive = true
+  }
+  compile('com.mikepenz:materialdrawer:5.1.5@aar') {
+    transitive = true
+  }
+  compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
+    transitive = true
+  }
+  compile('com.github.afollestad.material-dialogs:commons:0.8.5.3@aar') {
+    transitive = true
+  }
+  compile('com.crashlytics.sdk.android:answers:1.3.6@aar') {
+    transitive = true;
+  }
+
+
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.assertj:assertj-core:1.7.0'
+  testCompile "org.mockito:mockito-core:1.10.19"
+
+
+
+
+
+
+  compile('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
+    exclude group: "joda-time"
+  }
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
   compile 'com.github.xiprox.errorview:library:2.2.0'
-
   compile 'com.google.android.gms:play-services:8.4.0'
   compile 'com.google.android.gms:play-services-analytics:8.4.0'
-
   compile 'com.android.support:design:23.3.0'
   compile 'com.android.support:appcompat-v7:23.3.0'
   compile 'com.android.support:palette-v7:23.3.0'
@@ -177,12 +206,6 @@ dependencies {
   compile 'se.emilsjolander:stickylistheaders:2.7.0'
   compile 'com.nineoldandroids:library:2.4.0'
   compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
-  compile('com.mikepenz:aboutlibraries:5.2.2@aar') {
-    transitive = true
-  }
-  compile('com.mikepenz:materialdrawer:5.1.5@aar') {
-    transitive = true
-  }
   compile 'com.mikepenz:actionitembadge:3.1.1@aar'
   compile 'com.mikepenz:octicons-typeface:3.2.0.1@aar'
   compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
@@ -194,49 +217,29 @@ dependencies {
   compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
   compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
   compile 'com.afollestad:material-cab:0.1.4'
-  compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
-    transitive = true
-  }
-  compile('com.github.afollestad.material-dialogs:commons:0.8.5.3@aar') {
-    transitive = true
-  }
   compile 'com.github.pedrovgs:renderers:2.0.3'
   compile 'com.jakewharton:butterknife:7.0.1'
   compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
   compile 'com.fewlaps.quitnowcache:quitnow-cache:1.4'
   compile 'com.android.support:multidex:1.0.1'
   compile 'io.reactivex:rxandroid:1.0.1'
-  compile('com.crashlytics.sdk.android:answers:1.3.6@aar') {
-    transitive = true;
-  }
   compile 'com.github.Musenkishi:Atelier:1.3.1'
   compile 'com.github.bumptech.glide:glide:3.6.1'
   compile 'jp.wasabeef:glide-transformations:1.3.1'
   compile 'com.github.florent37:glidepalette:1.0.4@aar'
-
   compile 'cat.ereza:customactivityoncrash:1.4.0'
   compile 'io.mola.galimatias:galimatias:0.2.0'
-
-  testCompile 'junit:junit:4.12'
-  testCompile 'org.assertj:assertj-core:1.7.0'
-  testCompile "org.mockito:mockito-core:1.10.19"
-
   compile 'com.karumi:dexter:2.2.1'
-
   compile 'com.linkedin.android.spyglass:spyglass:1.3.0'
   compile 'com.jakewharton:process-phoenix:1.0.2'
-
   compile 'com.github.alorma:timelineview:2.2.1'
   compile 'com.roughike:bottom-bar:1.3.2'
-
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
-
-  compile ('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
-    exclude group: "joda-time"
-  }
+  compile 'com.google.android.gms:play-services-ads:8.4.0'
+  compile 'com.google.android.gms:play-services-auth:8.4.0'
+  compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
 
 play {
@@ -253,7 +256,6 @@ if (releaseKeystorePassword != null && releaseKeyAlias != null && releaseKeyPass
   println "No se han encontrado las credenciales necesarias para poder firmar el apk :("
   android.buildTypes.release.signingConfig = null
 }
-
 
 def signingConfigFromFile() {
   println '-> signingConfigFromFile'

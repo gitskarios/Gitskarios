@@ -13,9 +13,6 @@ import com.alorma.github.R;
 import com.alorma.github.ui.activity.AccountsManager;
 import java.util.List;
 
-/**
- * Created by Bernat on 19/07/2014.
- */
 public class BaseActivity extends AppCompatActivity {
 
   public static final String EXTRA_WITH_TOKEN = "EXTRA_WITH_TOKEN";

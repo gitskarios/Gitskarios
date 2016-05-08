@@ -10,15 +10,10 @@ import com.alorma.github.gcm.GitskariosRegistrationService;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.gitskarios.core.client.LogProvider;
-import com.alorma.gitskarios.core.client.LogProviderInterface;
 import com.alorma.gitskarios.core.client.TokenProvider;
-import com.alorma.gitskarios.core.client.TokenProviderInterface;
 import com.alorma.gitskarios.core.client.UrlProvider;
-import com.alorma.gitskarios.core.client.UrlProviderInterface;
 import com.alorma.gitskarios.core.client.UsernameProvider;
-import com.alorma.gitskarios.core.client.UsernameProviderInterface;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -44,41 +39,24 @@ public class GitskariosApplication extends MultiDexApplication {
 
     if (!BuildConfig.DEBUG) {
       Fabric.with(this, new Crashlytics());
-
-      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-      Tracker tracker = analytics.newTracker(R.xml.global_tracker);
-      tracker.enableAdvertisingIdCollection(true);
     }
+    AnalyticsTrackers.initialize(this);
+    Tracker tracker = AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
+
+    tracker.enableAutoActivityTracking(true);
+    tracker.enableExceptionReporting(true);
 
     ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
 
-    TokenProvider.setTokenProviderInstance(new TokenProviderInterface() {
-      @Override
-      public String getToken() {
-        return getStoreCredentials().token();
-      }
-    });
+    TokenProvider.setTokenProviderInstance(() -> getStoreCredentials().token());
 
-    UrlProvider.setUrlProviderInstance(new UrlProviderInterface() {
-      @Override
-      public String getUrl() {
-        return getStoreCredentials().getUrl();
-      }
-    });
+    UrlProvider.setUrlProviderInstance(() -> getStoreCredentials().getUrl());
 
-    UsernameProvider.setUsernameProviderInterface(new UsernameProviderInterface() {
-      @Override
-      public String getUsername() {
-        return getStoreCredentials().getUserName();
-      }
-    });
+    UsernameProvider.setUsernameProviderInterface(() -> getStoreCredentials().getUserName());
 
-    LogProvider.setTokenProviderInstance(new LogProviderInterface() {
-      @Override
-      public void log(String message) {
-        if (BuildConfig.DEBUG) {
-          Log.v("RETROFIT_LOG", message);
-        }
+    LogProvider.setTokenProviderInstance(message -> {
+      if (BuildConfig.DEBUG) {
+        Log.v("RETROFIT_LOG", message);
       }
     });
 
