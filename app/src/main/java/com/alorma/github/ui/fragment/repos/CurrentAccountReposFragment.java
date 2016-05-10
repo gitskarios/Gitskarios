@@ -1,17 +1,15 @@
 package com.alorma.github.ui.fragment.repos;
 
 import com.alorma.github.R;
+import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.repos.AuthUserRepositoriesPresenter;
-import com.alorma.github.presenter.repos.RepositoriesPresenter;
-import com.alorma.github.sdk.core.repositories.Repo;
-import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.List;
+import javax.inject.Inject;
 
 public class CurrentAccountReposFragment extends ReposFragment {
 
-  private RepositoriesPresenter presenter;
+  @Inject AuthUserRepositoriesPresenter presenter;
 
   public static CurrentAccountReposFragment newInstance() {
     return new CurrentAccountReposFragment();
@@ -21,9 +19,12 @@ public class CurrentAccountReposFragment extends ReposFragment {
   public void onStart() {
     super.onStart();
 
-    String sortOrder = RepoUtils.sortOrder(getActivity());
-    presenter = new AuthUserRepositoriesPresenter(sortOrder);
     presenter.load(null, this);
+  }
+
+  @Override
+  protected void initInjectors(ApiComponent apiComponent) {
+    apiComponent.inject(this);
   }
 
   @Override

@@ -1,12 +1,8 @@
 package com.alorma.github.injector.module;
 
 import android.content.Context;
-import com.alorma.github.injector.PerActivity;
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.Github;
-import com.alorma.github.sdk.core.GithubEnterprise;
-import com.alorma.gitskarios.core.client.UrlProvider;
-import com.alorma.gitskarios.core.client.UrlProviderInterface;
+import com.alorma.github.injector.SortOrder;
+import com.alorma.github.utils.RepoUtils;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -23,5 +19,12 @@ import javax.inject.Singleton;
   @Singleton
   Context providesApplicationContext() {
     return this.application;
+  }
+
+  @Provides
+  @Singleton
+  @SortOrder
+  String getReposSortOrder(Context context) {
+    return RepoUtils.sortOrder(context);
   }
 }

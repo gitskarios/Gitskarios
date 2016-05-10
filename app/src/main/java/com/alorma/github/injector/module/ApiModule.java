@@ -9,7 +9,7 @@ import com.alorma.gitskarios.core.client.UrlProviderInterface;
 import dagger.Module;
 import dagger.Provides;
 
-@Module public class NotificationsModule {
+@Module public class ApiModule {
 
   @Provides
   @PerActivity

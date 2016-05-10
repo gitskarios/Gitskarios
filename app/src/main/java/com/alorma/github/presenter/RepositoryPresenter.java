@@ -92,11 +92,6 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
   }
 
   @Override
-  protected ApiClient getApiClient() {
-    return null;
-  }
-
-  @Override
   public void action(Repo repo, Callback<Repo> repoCallback) {
 
   }

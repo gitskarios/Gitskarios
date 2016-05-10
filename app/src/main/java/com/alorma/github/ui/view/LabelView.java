@@ -58,6 +58,4 @@ public class LabelView extends TextView {
       }
     }
   }
-
-
 }

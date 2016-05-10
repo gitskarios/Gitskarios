@@ -248,8 +248,8 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
             }
           });
 
-      Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()),
-          organizations, new Func2<User, Integer, User>() {
+      Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()), organizations,
+          new Func2<User, Integer, User>() {
             @Override
             public User call(User user, Integer organizations) {
               user.organizations = organizations;
@@ -276,7 +276,7 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
 
   @NonNull
   private Observable<User> getGetAuthUserClient() {
-    return new GetAuthUserClient().observable().map(new Func1<Pair<User,String>, User>() {
+    return new GetAuthUserClient().observable().map(new Func1<Pair<User, String>, User>() {
       @Override
       public User call(Pair<User, String> userStringPair) {
         return userStringPair.first;

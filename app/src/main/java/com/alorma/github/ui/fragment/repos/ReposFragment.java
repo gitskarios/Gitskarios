@@ -8,7 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
@@ -17,9 +22,27 @@ import com.mikepenz.iconics.typeface.IIcon;
 import java.util.List;
 
 public abstract class ReposFragment extends Fragment
-    implements TitleProvider, Presenter.Callback<List<Repo>>,RecyclerArrayAdapter.RecyclerAdapterContentListener {
+    implements TitleProvider, Presenter.Callback<List<Repo>>,
+    RecyclerArrayAdapter.RecyclerAdapterContentListener {
 
   private ReposAdapter adapter;
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
+    ApplicationComponent component = application.getComponent();
+
+    ApiComponent apiComponent = DaggerApiComponent.builder()
+        .applicationComponent(component)
+        .apiModule(new ApiModule())
+        .build();
+
+    initInjectors(apiComponent);
+  }
+
+  protected abstract void initInjectors(ApiComponent apiComponent);
 
   @Nullable
   @Override

@@ -42,7 +42,6 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.gson.Gson;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import io.fabric.sdk.android.Fabric;
@@ -367,8 +366,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       String payload = gson.toJson(item.payload);
       IssueEventPayload issueEventPayload = gson.fromJson(payload, IssueEventPayload.class);
       if (issueEventPayload != null) {
-        startActivity(
-            new IntentsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(
+            Uri.parse(issueEventPayload.issue.html_url)));
       }
     } else if (type == EventType.PullRequestEvent) {
       String payload = gson.toJson(item.payload);

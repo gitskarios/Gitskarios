@@ -20,6 +20,8 @@ import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.gcm.GcmTopicsHelper;
+import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
 import com.alorma.github.sdk.bean.dto.request.WebHookRequest;
@@ -48,8 +50,6 @@ import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
-import com.alorma.github.presenter.Presenter;
-import com.alorma.github.presenter.RepositoryPresenter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -305,7 +305,7 @@ public class RepoDetailActivity extends BackActivity
 
         new ShareAction(this, title, url).execute();
       }
-    }else if (item.getItemId() == R.id.action_open_in_browser){
+    } else if (item.getItemId() == R.id.action_open_in_browser) {
       if (currentRepo != null) {
         new ViewInAction(this, currentRepo.html_url).execute();
       }

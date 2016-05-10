@@ -8,8 +8,8 @@ import com.alorma.github.ui.view.issue.IssueDetailView;
 
 public class IssueHolder extends Holder<Issue> {
 
-  private IssueDetailRequestListener issueDetailRequestListener;
   private final IssueDetailView issueDetailView;
+  private IssueDetailRequestListener issueDetailRequestListener;
 
   public IssueHolder(IssueDetailView issueDetailView,
       IssueDetailRequestListener issueDetailRequestListener) {

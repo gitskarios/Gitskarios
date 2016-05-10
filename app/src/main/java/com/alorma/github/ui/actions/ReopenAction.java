@@ -13,7 +13,7 @@ import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ReopenAction extends Action<Issue> implements MaterialDialog.SingleButtonCallback{
+public class ReopenAction extends Action<Issue> implements MaterialDialog.SingleButtonCallback {
 
   private Context context;
   private IssueInfo issueInfo;

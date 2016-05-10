@@ -2,8 +2,6 @@ package com.alorma.github.ui.adapter.base;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import com.alorma.github.R;
-import com.alorma.github.utils.NaturalTimeFormatter;
 import com.alorma.github.utils.TimeFormatter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,30 +85,28 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
     this.recyclerAdapterContentListener = recyclerAdapterContentListener;
   }
 
-  public void setTimeFormatter(TimeFormatter timeFormatter) {
-    this.timeFormatter = timeFormatter;
-  }
-
   public TimeFormatter getTimeFormatter() {
     if (timeFormatter == null) {
       timeFormatter = new TimeFormatter() {
 
         @Override
         public String relative(long milis) {
-          SimpleDateFormat sdf =
-              new SimpleDateFormat("YYYY/MM/DD", Locale.getDefault());
+          SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/DD", Locale.getDefault());
           return sdf.format(new Date(milis));
         }
 
         @Override
         public String absolute(long milis) {
-          SimpleDateFormat sdf =
-              new SimpleDateFormat("YYYY/MM/DD", Locale.getDefault());
+          SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/DD", Locale.getDefault());
           return sdf.format(new Date(milis));
         }
       };
     }
     return timeFormatter;
+  }
+
+  public void setTimeFormatter(TimeFormatter timeFormatter) {
+    this.timeFormatter = timeFormatter;
   }
 
   public ItemCallback<ItemType> getCallback() {

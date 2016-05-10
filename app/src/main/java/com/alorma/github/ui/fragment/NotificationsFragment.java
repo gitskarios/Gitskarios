@@ -14,9 +14,8 @@ import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.injector.component.ApplicationComponent;
-import com.alorma.github.injector.component.DaggerNotificationsComponent;
-import com.alorma.github.injector.module.ActivityModule;
-import com.alorma.github.injector.module.NotificationsModule;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.notifications.NotificationsPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -42,16 +41,15 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     implements NotificationsAdapter.NotificationsAdapterListener,
     Presenter.Callback<List<NotificationsParent>> {
 
-  private boolean isShowingAllNotifications = false;
-
   @Inject NotificationsPresenter presenter;
-
-  public static NotificationsFragment newInstance() {
-    return new NotificationsFragment();
-  }
+  private boolean isShowingAllNotifications = false;
 
   public NotificationsFragment() {
 
+  }
+
+  public static NotificationsFragment newInstance() {
+    return new NotificationsFragment();
   }
 
   @Override
@@ -66,11 +64,11 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
     ApplicationComponent component = application.getComponent();
 
-    DaggerNotificationsComponent.builder()
+    DaggerApiComponent.builder()
         .applicationComponent(component)
-        .activityModule(new ActivityModule(getActivity()))
-        .notificationsModule(new NotificationsModule())
-        .build().inject(this);
+        .apiModule(new ApiModule())
+        .build()
+        .inject(this);
   }
 
   @Override

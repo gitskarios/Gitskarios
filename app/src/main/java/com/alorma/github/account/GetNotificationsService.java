@@ -60,32 +60,6 @@ public class GetNotificationsService extends IntentService {
     }
   }
 
-  private class NotificationsSubscriber extends Subscriber<List<Notification>> {
-
-    private String name;
-    private String token;
-
-    public NotificationsSubscriber(String name, String token) {
-      this.name = name;
-      this.token = token;
-    }
-
-    @Override
-    public void onCompleted() {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-
-    }
-
-    @Override
-    public void onNext(List<Notification> notifications) {
-      onNotificationsReceived(notifications, name, token);
-    }
-  }
-
   private void onNotificationsReceived(List<Notification> notifications, String name,
       String token) {
 
@@ -260,5 +234,31 @@ public class GetNotificationsService extends IntentService {
         (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
     notificationManager.notify(notificationId, notification);
+  }
+
+  private class NotificationsSubscriber extends Subscriber<List<Notification>> {
+
+    private String name;
+    private String token;
+
+    public NotificationsSubscriber(String name, String token) {
+      this.name = name;
+      this.token = token;
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(List<Notification> notifications) {
+      onNotificationsReceived(notifications, name, token);
+    }
   }
 }

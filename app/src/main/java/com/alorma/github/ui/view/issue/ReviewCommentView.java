@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.util.Log;

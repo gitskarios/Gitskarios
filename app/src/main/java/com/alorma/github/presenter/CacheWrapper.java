@@ -15,5 +15,4 @@ public class CacheWrapper {
     }
     return qnCacheRepos;
   }
-
 }

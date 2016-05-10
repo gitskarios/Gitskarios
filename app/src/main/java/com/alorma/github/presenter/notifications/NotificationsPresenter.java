@@ -4,7 +4,6 @@ import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.injector.PerActivity;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.datasource.SdkItem;
@@ -24,8 +23,7 @@ import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@PerActivity
-public class NotificationsPresenter
+@PerActivity public class NotificationsPresenter
     extends Presenter<NotificationsRequest, List<NotificationsParent>> {
   GenericUseCase<NotificationsRequest, List<Notification>> useCase;
 
@@ -99,11 +97,6 @@ public class NotificationsPresenter
 
   @Override
   protected RestWrapper getRest(ApiClient apiClient, String token) {
-    return null;
-  }
-
-  @Override
-  protected ApiClient getApiClient() {
     return null;
   }
 

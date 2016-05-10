@@ -1,10 +1,6 @@
 package com.alorma.github.ui.fragment.releases;
 
-import android.app.DownloadManager;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.ui.fragment.base.BaseFragment;
@@ -32,8 +27,8 @@ import java.util.List;
 public class ReleaseAssetsFragment extends BaseFragment
     implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
 
-  private ReleaseAssetCallback releaseAssetCallback;
   private static final String RELEASE_ASSETS = "RELEASE_ASSETS";
+  private ReleaseAssetCallback releaseAssetCallback;
 
   public static ReleaseAssetsFragment newInstance(List<ReleaseAsset> releaseAssets) {
     ReleaseAssetsFragment releaseAssetsFragment = new ReleaseAssetsFragment();

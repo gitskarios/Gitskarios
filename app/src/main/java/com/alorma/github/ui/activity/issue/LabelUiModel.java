@@ -3,7 +3,7 @@ package com.alorma.github.ui.activity.issue;
 import android.widget.Checkable;
 import com.alorma.github.sdk.bean.dto.response.Label;
 
-public class LabelUiModel implements Checkable{
+public class LabelUiModel implements Checkable {
   public Label label;
   private boolean selected;
 
@@ -12,13 +12,13 @@ public class LabelUiModel implements Checkable{
   }
 
   @Override
-  public void setChecked(boolean checked) {
-    selected = checked;
+  public boolean isChecked() {
+    return selected;
   }
 
   @Override
-  public boolean isChecked() {
-    return selected;
+  public void setChecked(boolean checked) {
+    selected = checked;
   }
 
   @Override

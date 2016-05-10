@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.Rename;
 import com.alorma.github.sdk.core.ShaUtils;

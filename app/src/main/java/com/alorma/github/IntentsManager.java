@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.UriMatcher;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -219,7 +218,6 @@ public class IntentsManager {
     return RepoDetailActivity.createLauncherIntent(context, repoInfo);
   }
 
-
   public Intent manageUsers(Uri uri) {
     User user = gitsakriosUriManager.getUser(uri);
     return ProfileActivity.createLauncherIntent(context, user);
@@ -236,6 +234,7 @@ public class IntentsManager {
 
     return IssueDetailActivity.createLauncherIntent(context, info);
   }
+
   private Intent manageIssuePullRequest(Uri uri) {
     IssueInfo info = gitsakriosUriManager.getIssueInfo(uri);
 

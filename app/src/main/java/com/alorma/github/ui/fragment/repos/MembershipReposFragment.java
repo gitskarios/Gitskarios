@@ -2,18 +2,16 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import com.alorma.github.R;
+import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.repos.AuthMembershipRepositoriesPresenter;
-import com.alorma.github.presenter.repos.AuthWatchedRepositoriesPresenter;
-import com.alorma.github.presenter.repos.RepositoriesPresenter;
-import com.alorma.github.sdk.core.repositories.Repo;
-import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.List;
+import javax.inject.Inject;
 
 public class MembershipReposFragment extends ReposFragment {
 
   private static final String USERNAME = "USERNAME";
+  @Inject AuthMembershipRepositoriesPresenter presenter;
   private String username;
 
   public static MembershipReposFragment newInstance() {
@@ -31,20 +29,20 @@ public class MembershipReposFragment extends ReposFragment {
     return reposFragment;
   }
 
-  private RepositoriesPresenter presenter;
-
   @Override
   public void onStart() {
     super.onStart();
-
-    String sortOrder = RepoUtils.sortOrder(getActivity());
-    presenter = new AuthMembershipRepositoriesPresenter(sortOrder);
 
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
 
     presenter.load(username, this);
+  }
+
+  @Override
+  protected void initInjectors(ApiComponent apiComponent) {
+    apiComponent.inject(this);
   }
 
   @Override

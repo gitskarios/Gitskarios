@@ -38,9 +38,9 @@ public class GitskariosDownloadManager {
         @Override
         public void onPermissionDenied(PermissionDeniedResponse response) {
           if (response.isPermanentlyDenied() && view != null) {
-            Snackbar snackbar = Snackbar.make(view,
-                context.getString(R.string.external_storage_permission_request),
-                Snackbar.LENGTH_LONG);
+            Snackbar snackbar =
+                Snackbar.make(view, context.getString(R.string.external_storage_permission_request),
+                    Snackbar.LENGTH_LONG);
 
             snackbar.setAction(
                 context.getString(R.string.external_storage_permission_request_action),
@@ -77,7 +77,6 @@ public class GitskariosDownloadManager {
     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
     request.allowScanningByMediaScanner();
     dm.enqueue(request);
-
 
     Toast.makeText(context, name + "queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
   }

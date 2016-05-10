@@ -42,11 +42,6 @@ public class IssueMilestonePresenter extends Presenter<IssueInfo, List<Milestone
   }
 
   @Override
-  protected ApiClient getApiClient() {
-    return null;
-  }
-
-  @Override
   public void action(List<Milestone> milestones, Callback<List<Milestone>> listCallback) {
 
   }

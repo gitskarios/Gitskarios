@@ -43,6 +43,10 @@ public class LabelsAdapter extends RecyclerArrayAdapter<LabelUiModel, LabelsAdap
     return new ViewHolder(getInflater().inflate(R.layout.row_label, parent, false));
   }
 
+  public Set<String> getSelectedLabels() {
+    return selectedLabels;
+  }
+
   public class ViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.labelColor) ImageView labelColor;
     @Bind(R.id.labelTitle) TextView labelTitle;
@@ -73,9 +77,5 @@ public class LabelsAdapter extends RecyclerArrayAdapter<LabelUiModel, LabelsAdap
 
       notifyDataSetChanged();
     }
-  }
-
-  public Set<String> getSelectedLabels() {
-    return selectedLabels;
   }
 }

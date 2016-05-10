@@ -1,18 +1,20 @@
 package com.alorma.github.presenter.repos;
 
 import android.support.annotation.NonNull;
+import com.alorma.github.injector.PerActivity;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repositories.CloudMembershipRepositoriesDataSource;
 import com.alorma.github.sdk.core.repositories.CloudOrganizationRepositoriesDataSource;
 import com.alorma.github.sdk.core.repositories.Repo;
 import java.util.List;
+import javax.inject.Inject;
 
-public class OrganizationRepositoriesPresenter extends RepositoriesPresenter {
+@PerActivity public class OrganizationRepositoriesPresenter extends RepositoriesPresenter {
 
-  public OrganizationRepositoriesPresenter(String sortOrder) {
-    super(sortOrder);
+  @Inject
+  public OrganizationRepositoriesPresenter() {
+    super();
   }
 
   @NonNull

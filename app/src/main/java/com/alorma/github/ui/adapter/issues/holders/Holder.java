@@ -15,5 +15,4 @@ public abstract class Holder<K extends Issue> extends RecyclerView.ViewHolder {
   public abstract void setIssue(RepoInfo repoInfo, K k);
 
   public abstract void setDetail(IssueStoryDetail detail);
-
 }

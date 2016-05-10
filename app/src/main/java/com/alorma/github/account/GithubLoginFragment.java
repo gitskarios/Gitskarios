@@ -84,7 +84,6 @@ public class GithubLoginFragment extends Fragment {
     }
   }
 
-
   public void onNewIntent(Intent intent) {
     if (intent != null && intent.getData() != null && intent.getData().getScheme() != null) {
       if (intent.getData().getScheme().equals(getString(R.string.oauth_scheme))) {

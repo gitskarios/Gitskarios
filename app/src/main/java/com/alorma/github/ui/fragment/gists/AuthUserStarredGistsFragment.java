@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.gists;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,9 +7,7 @@ import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.services.client.GithubListClient;
-import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.sdk.services.gists.UserStarredGistsClient;
-import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistDetailActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;

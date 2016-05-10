@@ -15,8 +15,8 @@ import java.util.Arrays;
 public class GitskariosUriManager {
 
   public static final String[] RESERVED_KEYS = new String[] {
-      "/notifications", "/settings", "/blog", "/explore", "/dashboard", "/repositories",
-      "/site", "/security", "/contact", "/about", "/orgs", "/"
+      "/notifications", "/settings", "/blog", "/explore", "/dashboard", "/repositories", "/site",
+      "/security", "/contact", "/about", "/orgs", "/"
   };
 
   public boolean isReserved(String uri) throws GalimatiasParseException {

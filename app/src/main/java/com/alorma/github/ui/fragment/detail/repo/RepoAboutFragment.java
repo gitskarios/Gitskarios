@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -12,9 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
-import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.gcm.GcmTopicsHelper;
@@ -203,8 +200,7 @@ public class RepoAboutFragment extends Fragment
           Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
           startActivity(intent);
         } else if (currentRepo.owner.type == UserType.Organization) {
-          Intent intent =
-              OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
+          Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
           startActivity(intent);
         }
       }

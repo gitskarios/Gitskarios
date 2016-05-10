@@ -39,11 +39,6 @@ public class IssueLabelsPresenter extends Presenter<IssueInfo, List<Label>> {
   }
 
   @Override
-  protected ApiClient getApiClient() {
-    return null;
-  }
-
-  @Override
   public void action(List<Label> labels, Callback<List<Label>> listCallback) {
 
   }

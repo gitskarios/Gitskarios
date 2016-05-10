@@ -2,16 +2,17 @@ package com.alorma.github.ui.fragment.orgs;
 
 import android.os.Bundle;
 import com.alorma.github.R;
+import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.repos.OrganizationRepositoriesPresenter;
-import com.alorma.github.presenter.repos.RepositoriesPresenter;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
-import com.alorma.github.utils.RepoUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import javax.inject.Inject;
 
 public class OrgsReposFragment extends ReposFragment {
 
   private static final String ORGS = "ORGS";
+  @Inject OrganizationRepositoriesPresenter presenter;
   private String orgName;
 
   public static OrgsReposFragment newInstance() {
@@ -29,20 +30,20 @@ public class OrgsReposFragment extends ReposFragment {
     return reposFragment;
   }
 
-  private RepositoriesPresenter presenter;
-
   @Override
   public void onStart() {
     super.onStart();
-
-    String sortOrder = RepoUtils.sortOrder(getActivity());
-    presenter = new OrganizationRepositoriesPresenter(sortOrder);
 
     if (getArguments() != null) {
       orgName = getArguments().getString(ORGS);
     }
 
     presenter.load(orgName, this);
+  }
+
+  @Override
+  protected void initInjectors(ApiComponent apiComponent) {
+    apiComponent.inject(this);
   }
 
   @Override

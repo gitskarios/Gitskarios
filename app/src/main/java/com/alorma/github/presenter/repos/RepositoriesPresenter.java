@@ -1,9 +1,9 @@
 package com.alorma.github.presenter.repos;
 
 import android.support.annotation.NonNull;
+import com.alorma.github.injector.SortOrder;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
@@ -12,18 +12,19 @@ import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.sdk.core.repositories.RepositoriesRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
 import java.util.List;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>> {
 
-  private String sortOrder;
+  @Inject @SortOrder String sortOrder;
   private Integer page;
   private GenericRepository<String, List<Repo>> genericRepository;
 
-  public RepositoriesPresenter(String sortOrder) {
-    this.sortOrder = sortOrder;
+  public RepositoriesPresenter() {
+
   }
 
   @Override
@@ -74,12 +75,6 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
   @Override
   protected RepositoriesRetrofitWrapper getRest(ApiClient apiClient, String token) {
     return new RepositoriesRetrofitWrapper(apiClient, token);
-  }
-
-  @NonNull
-  @Override
-  protected ApiClient getApiClient() {
-    return new Github();
   }
 
   protected abstract CacheDataSource<String, List<Repo>> getUserReposCacheDataSource();

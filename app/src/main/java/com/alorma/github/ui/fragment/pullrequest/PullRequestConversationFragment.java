@@ -179,38 +179,6 @@ public class PullRequestConversationFragment extends Fragment
     this.pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterface;
   }
 
-  private class CommentCallback implements AddIssueCommentAction.AddCommentCallback {
-
-    private ProgressDialog progressDialog;
-
-    private CommentCallback() {
-    }
-
-    @Override
-    public void onCommentAdded() {
-      if (progressDialog != null) {
-        progressDialog.dismiss();
-      }
-      pullRequestStory = null;
-      getContent();
-    }
-
-    @Override
-    public void onCommentError() {
-      if (progressDialog != null) {
-        progressDialog.dismiss();
-      }
-    }
-
-    @Override
-    public void onCommentAddStarted() {
-      progressDialog = new ProgressDialog(getActivity());
-      progressDialog.setMessage(getString(R.string.adding_comment));
-      progressDialog.setCancelable(true);
-      progressDialog.show();
-    }
-  }
-
   @NonNull
   private AddIssueCommentAction getAddIssueCommentAction(String body) {
     return new AddIssueCommentAction(issueInfo, body);
@@ -304,10 +272,6 @@ public class PullRequestConversationFragment extends Fragment
         });
   }
 
-  public interface PullRequestStoryLoaderInterface {
-    void onStoryLoaded(PullRequestStory story);
-  }
-
   private void showError() {
     MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
     builder.title(R.string.ups);
@@ -378,8 +342,8 @@ public class PullRequestConversationFragment extends Fragment
   @Override
   public void onContentEditRequest() {
     String body =
-        pullRequestStory.item.body != null ? pullRequestStory.item.body.replace("\n",
-            "<br />") : "";
+        pullRequestStory.item.body != null ? pullRequestStory.item.body.replace("\n", "<br />")
+            : "";
     Intent launcherIntent =
         ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
             getString(R.string.edit_issue_body_hint), body, true, false);
@@ -447,5 +411,41 @@ public class PullRequestConversationFragment extends Fragment
             getContent();
           }
         });
+  }
+
+  public interface PullRequestStoryLoaderInterface {
+    void onStoryLoaded(PullRequestStory story);
+  }
+
+  private class CommentCallback implements AddIssueCommentAction.AddCommentCallback {
+
+    private ProgressDialog progressDialog;
+
+    private CommentCallback() {
+    }
+
+    @Override
+    public void onCommentAdded() {
+      if (progressDialog != null) {
+        progressDialog.dismiss();
+      }
+      pullRequestStory = null;
+      getContent();
+    }
+
+    @Override
+    public void onCommentError() {
+      if (progressDialog != null) {
+        progressDialog.dismiss();
+      }
+    }
+
+    @Override
+    public void onCommentAddStarted() {
+      progressDialog = new ProgressDialog(getActivity());
+      progressDialog.setMessage(getString(R.string.adding_comment));
+      progressDialog.setCancelable(true);
+      progressDialog.show();
+    }
   }
 }

@@ -9,9 +9,9 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 
 public class PullRequestHolder extends Holder<PullRequest> {
   private final PullRequestDetailView pullRequestDetailView;
+  private final PullRequestDetailView.PullRequestActionsListener pullRequestActionsListener;
   private Story<PullRequest> story;
   private Permissions permissions;
-  private final PullRequestDetailView.PullRequestActionsListener pullRequestActionsListener;
 
   public PullRequestHolder(PullRequestDetailView pullRequestDetailView, Story<PullRequest> story,
       Permissions permissions,

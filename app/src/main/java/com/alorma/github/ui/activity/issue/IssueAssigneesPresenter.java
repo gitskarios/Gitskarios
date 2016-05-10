@@ -40,11 +40,6 @@ public class IssueAssigneesPresenter extends Presenter<IssueInfo, List<User>> {
   }
 
   @Override
-  protected ApiClient getApiClient() {
-    return null;
-  }
-
-  @Override
   public void action(List<User> users, Callback<List<User>> listCallback) {
 
   }

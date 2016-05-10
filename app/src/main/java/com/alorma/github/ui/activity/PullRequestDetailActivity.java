@@ -185,17 +185,17 @@ public class PullRequestDetailActivity extends BackActivity
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (story != null) {
-    switch (item.getItemId()) {
-      case R.id.share_issue:
-        new ShareAction(this, story.item.title, story.item.html_url).execute();
-        break;
-      case R.id.open_issue:
-        new ViewInAction(this, story.item.html_url).execute();
-        break;
-      case R.id.action_add_shortcut:
-        ShortcutUtils.addPrShortcut(this, issueInfo);
-        break;
-    }
+      switch (item.getItemId()) {
+        case R.id.share_issue:
+          new ShareAction(this, story.item.title, story.item.html_url).execute();
+          break;
+        case R.id.open_issue:
+          new ViewInAction(this, story.item.html_url).execute();
+          break;
+        case R.id.action_add_shortcut:
+          ShortcutUtils.addPrShortcut(this, issueInfo);
+          break;
+      }
     }
     return super.onOptionsItemSelected(item);
   }
@@ -226,8 +226,7 @@ public class PullRequestDetailActivity extends BackActivity
       badgeCommits.setAutoShowAfterUnSelection(true);
 
       if (infoFragment != null) {
-        infoFragment.setArguments(
-            PullRequestInfoFragment.newArguments(issueInfo, story.item));
+        infoFragment.setArguments(PullRequestInfoFragment.newArguments(issueInfo, story.item));
       }
     }
   }
