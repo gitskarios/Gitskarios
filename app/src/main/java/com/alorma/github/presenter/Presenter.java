@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public abstract class Presenter<Request, Response> {
 
-  @Inject ApiClient apiClient;
+  @Inject protected ApiClient apiClient;
 
   public abstract void load(Request request, Callback<Response> responseCallback);
 

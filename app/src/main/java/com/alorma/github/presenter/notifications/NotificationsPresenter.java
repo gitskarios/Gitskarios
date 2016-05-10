@@ -27,11 +27,9 @@ import rx.schedulers.Schedulers;
     extends Presenter<NotificationsRequest, List<NotificationsParent>> {
   GenericUseCase<NotificationsRequest, List<Notification>> useCase;
 
-  ApiClient apiClient;
-
   @Inject
-  public NotificationsPresenter(ApiClient apiClient) {
-    this.apiClient = apiClient;
+  public NotificationsPresenter() {
+
   }
 
   @Override
