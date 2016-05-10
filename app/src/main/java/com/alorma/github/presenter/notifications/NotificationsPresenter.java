@@ -1,6 +1,7 @@
 package com.alorma.github.presenter.notifications;
 
 import com.alorma.github.bean.NotificationsParent;
+import com.alorma.github.injector.PerActivity;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.Github;
@@ -19,22 +20,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@PerActivity
 public class NotificationsPresenter
     extends Presenter<NotificationsRequest, List<NotificationsParent>> {
   GenericUseCase<NotificationsRequest, List<Notification>> useCase;
 
-  public NotificationsPresenter() {
+  ApiClient apiClient;
 
+  @Inject
+  public NotificationsPresenter(ApiClient apiClient) {
+    this.apiClient = apiClient;
   }
 
   @Override
   public void load(final NotificationsRequest request,
       final Callback<List<NotificationsParent>> listCallback) {
 
-    RestWrapper wrapper = new NotificationsRetrofitWrapper(new Github(), request.getToken());
+    RestWrapper wrapper = new NotificationsRetrofitWrapper(apiClient, request.getToken());
 
     CloudDataSource<NotificationsRequest, List<Notification>> cloud =
         new CloudNotificationsDataSource(wrapper);

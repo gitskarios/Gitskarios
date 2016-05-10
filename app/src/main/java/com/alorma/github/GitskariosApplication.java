@@ -7,6 +7,9 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import com.alorma.github.gcm.GitskariosRegistrationService;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApplicationComponent;
+import com.alorma.github.injector.module.ApplicationModule;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.gitskarios.core.client.LogProvider;
@@ -20,6 +23,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
 
 public class GitskariosApplication extends MultiDexApplication {
+
+  private ApplicationComponent component;
 
   public static GitskariosApplication get(Context context) {
     return (GitskariosApplication) context.getApplicationContext();
@@ -40,6 +45,7 @@ public class GitskariosApplication extends MultiDexApplication {
     if (!BuildConfig.DEBUG) {
       Fabric.with(this, new Crashlytics());
     }
+
     AnalyticsTrackers.initialize(this);
     Tracker tracker = AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
 
@@ -64,6 +70,17 @@ public class GitskariosApplication extends MultiDexApplication {
       Intent intent = new Intent(this, GitskariosRegistrationService.class);
       startService(intent);
     }
+
+    initializeInjector();
+  }
+
+  private void initializeInjector() {
+    component =
+        DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+  }
+
+  public ApplicationComponent getComponent() {
+    return component;
   }
 
   @NonNull

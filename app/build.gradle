@@ -21,6 +21,7 @@ apply plugin: "build-time-tracker"
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.triplet.play'
+apply plugin: 'com.neenbedankt.android-apt'
 
 buildtimetracker {
   reporters {
@@ -183,6 +184,8 @@ dependencies {
 
 
 
+  apt "com.google.dagger:dagger-compiler:2.4"
+  compile "com.google.dagger:dagger:2.4"
 
 
 
@@ -207,7 +210,6 @@ dependencies {
   compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
   compile 'com.mikepenz:google-material-typeface:1.2.0@aar'
   compile 'com.squareup:otto:1.3.8'
-  compile 'com.squareup.dagger:dagger:1.2.2'
   compile 'com.wefika:flowlayout:0.4.0'
   compile 'com.github.alorma:diff-textview:1.3.0'
   compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'

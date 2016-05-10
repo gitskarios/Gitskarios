@@ -8,10 +8,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.bean.NotificationsParent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerNotificationsComponent;
+import com.alorma.github.injector.module.ActivityModule;
+import com.alorma.github.injector.module.NotificationsModule;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.notifications.NotificationsPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -28,6 +33,7 @@ import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.gitskarios.core.client.TokenProvider;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
+import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -38,14 +44,33 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
 
   private boolean isShowingAllNotifications = false;
 
+  @Inject NotificationsPresenter presenter;
+
   public static NotificationsFragment newInstance() {
     return new NotificationsFragment();
+  }
+
+  public NotificationsFragment() {
+
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
+
+    initializeInjector();
+  }
+
+  private void initializeInjector() {
+    GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
+    ApplicationComponent component = application.getComponent();
+
+    DaggerNotificationsComponent.builder()
+        .applicationComponent(component)
+        .activityModule(new ActivityModule(getActivity()))
+        .notificationsModule(new NotificationsModule())
+        .build().inject(this);
   }
 
   @Override
@@ -72,7 +97,6 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     }
 
     if (token != null) {
-      NotificationsPresenter presenter = new NotificationsPresenter();
 
       NotificationsRequest request = new NotificationsRequest();
       request.setToken(token);
