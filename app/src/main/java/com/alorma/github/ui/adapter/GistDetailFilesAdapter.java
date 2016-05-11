@@ -155,7 +155,7 @@ public class GistDetailFilesAdapter
             if (menuItem.getItemId() == R.id.action_toolbar_share) {
                 GistFile gistFile = gistFileList.get(getAdapterPosition());
                 new ShareRawAction(textContent.getContext(), gistFile.filename
-                        , gistFile.rawUrl, gistFile.content);
+                        , gistFile.rawUrl, gistFile.content).execute();
             }
             return false;
         }
