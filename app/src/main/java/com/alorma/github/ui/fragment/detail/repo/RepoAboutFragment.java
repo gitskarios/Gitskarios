@@ -2,6 +2,7 @@ package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -11,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
+
+import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.gcm.GcmTopicsHelper;
@@ -49,15 +53,11 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 01/01/2015.
- */
 public class RepoAboutFragment extends Fragment
     implements TitleProvider, BranchManager, BackManager {
 
   public static final int PLACEHOLDER_ICON_SIZE = 20;
   private static final String REPO_INFO = "REPO_INFO";
-  private View author;
   private Integer futureSubscribersCount;
   private Integer futureStarredCount;
 
@@ -145,7 +145,7 @@ public class RepoAboutFragment extends Fragment
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    author = view.findViewById(R.id.author);
+    View author = view.findViewById(R.id.author);
     profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
     authorName = (TextView) author.findViewById(R.id.authorName);
     loadingHtml = view.findViewById(R.id.htmlLoading);
@@ -283,8 +283,6 @@ public class RepoAboutFragment extends Fragment
 
   private void onReadmeLoaded(String htmlContent) {
     if (htmlContent != null && htmlContentView != null) {
-      loadingHtml.setVisibility(View.GONE);
-      /*
       htmlContentView.getSettings().setUseWideViewPort(false);
       htmlContentView.setWebViewClient(new WebViewClient() {
         @Override
@@ -310,7 +308,6 @@ public class RepoAboutFragment extends Fragment
       loadingHtml.setVisibility(View.GONE);
 
       CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
-      */
     }
   }
 
