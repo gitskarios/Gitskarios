@@ -17,9 +17,6 @@ import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceAdapter.ViewHolder> {
 
   private SourceAdapterListener sourceAdapterListener;
@@ -79,23 +76,17 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
       image = (ImageView) itemView.findViewById(R.id.icon);
       overflow = (ImageView) itemView.findViewById(R.id.overflow);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (sourceAdapterListener != null) {
-            sourceAdapterListener.onContentClick(getItem(getAdapterPosition()));
-          }
+      itemView.setOnClickListener(v -> {
+        if (sourceAdapterListener != null) {
+          sourceAdapterListener.onContentClick(getItem(getAdapterPosition()));
         }
       });
 
-      overflow.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-          popupMenu.inflate(R.menu.repo_content_item);
-          popupMenu.setOnMenuItemClickListener(ViewHolder.this);
-          popupMenu.show();
-        }
+      overflow.setOnClickListener(v -> {
+        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+        popupMenu.inflate(R.menu.repo_content_item);
+        popupMenu.setOnMenuItemClickListener(ViewHolder.this);
+        popupMenu.show();
       });
     }
 

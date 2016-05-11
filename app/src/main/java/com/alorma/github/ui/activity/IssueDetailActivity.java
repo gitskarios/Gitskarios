@@ -462,7 +462,7 @@ public class IssueDetailActivity extends BackActivity
           String title = issueInfo.toString();
           String url = issueStory.item.html_url;
 
-          new ShareAction(this, title, url).execute();
+          new ShareAction(this, title, url).setType("Issue").execute();
         }
         break;
       case R.id.action_add_shortcut:

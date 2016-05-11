@@ -187,10 +187,10 @@ public class PullRequestDetailActivity extends BackActivity
     if (story != null) {
       switch (item.getItemId()) {
         case R.id.share_issue:
-          new ShareAction(this, story.item.title, story.item.html_url).execute();
+          new ShareAction(this, story.item.title, story.item.html_url).setType("PullRequest").execute();
           break;
         case R.id.open_issue:
-          new ViewInAction(this, story.item.html_url).execute();
+          new ViewInAction(this, story.item.html_url).setType("PullRequest").execute();
           break;
         case R.id.action_add_shortcut:
           ShortcutUtils.addPrShortcut(this, issueInfo);

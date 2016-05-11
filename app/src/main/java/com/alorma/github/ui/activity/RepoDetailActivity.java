@@ -303,11 +303,11 @@ public class RepoDetailActivity extends BackActivity
         String title = currentRepo.full_name;
         String url = currentRepo.svn_url;
 
-        new ShareAction(this, title, url).execute();
+        new ShareAction(this, title, url).setType("Repository").execute();
       }
     } else if (item.getItemId() == R.id.action_open_in_browser) {
       if (currentRepo != null) {
-        new ViewInAction(this, currentRepo.html_url).execute();
+        new ViewInAction(this, currentRepo.html_url).setType("Repository").execute();
       }
     } else if (item.getItemId() == R.id.action_repo_change_branch) {
       changeBranch();

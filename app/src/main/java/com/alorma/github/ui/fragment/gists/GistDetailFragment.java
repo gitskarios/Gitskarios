@@ -17,6 +17,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.services.gists.GetGistDetailClient;
+import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistsFileActivity;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
@@ -107,13 +108,7 @@ public class GistDetailFragment extends Fragment
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item != null && item.getItemId() == R.id.action_gist_share) {
       Uri uri = Uri.parse(gist.html_url);
-      Intent intent = new Intent(Intent.ACTION_SEND);
-      intent.setType("text/plain");
-      intent.putExtra(Intent.EXTRA_TEXT, uri.toString());
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-
-      startActivity(Intent.createChooser(intent, getString(R.string.send_gist_to)));
+      new ShareAction(getActivity(), gist.description, uri.toString()).setType("Gist").execute();
     }
     return true;
   }
