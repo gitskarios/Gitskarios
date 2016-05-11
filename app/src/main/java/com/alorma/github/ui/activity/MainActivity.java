@@ -66,6 +66,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
@@ -86,7 +87,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   private Drawer resultDrawer;
   private int notificationsSizeCount = 0;
   private DonateFragment donateFragment;
-  private SecondarySwitchDrawerItem notificationsDrawerItem;
+  private SwitchDrawerItem notificationsDrawerItem;
   private List<Account> accountList;
 
   public static void startActivity(Activity context) {
@@ -272,7 +273,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             .withSelectable(false), new DividerDrawerItem());
 
     if (donateFragment.enabled()) {
-      SecondaryDrawerItem donateItem =
+      PrimaryDrawerItem donateItem =
           new SecondaryDrawerItem().withName(R.string.support_development)
               .withIcon(Octicons.Icon.oct_heart)
               .withIconColor(iconColor)
