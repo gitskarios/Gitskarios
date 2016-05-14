@@ -245,7 +245,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   }
 
   @Override
-  public void onResponse(List<NotificationsParent> notifications) {
+  public void onResponse(List<NotificationsParent> notifications, boolean firstTime) {
     if (notifications != null && notifications.size() > 0) {
       if (notifications.size() > 0) {
         if (getAdapter() != null && getAdapter().getItemCount() > 0) {

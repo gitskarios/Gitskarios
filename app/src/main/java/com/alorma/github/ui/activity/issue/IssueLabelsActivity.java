@@ -71,13 +71,16 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
   }
 
   @Override
-  public void onResponse(List<Label> labels) {
+  public void onResponse(List<Label> labels, boolean firstTime) {
     List<LabelUiModel> labelUiModels = new ArrayList<>(labels.size());
 
     for (Label label : labels) {
       labelUiModels.add(new LabelUiModel(label));
     }
 
+    if (firstTime) {
+      adapter.clear();
+    }
     adapter.addAll(labelUiModels);
   }
 

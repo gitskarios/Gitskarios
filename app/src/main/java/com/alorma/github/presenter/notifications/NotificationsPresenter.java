@@ -78,7 +78,7 @@ public class NotificationsPresenter
                 .subscribe(notifications -> {
                     if (listCallback != null) {
                         listCallback.hideLoading();
-                        listCallback.onResponse(notifications);
+                        listCallback.onResponse(notifications, true);
                     }
                 }, throwable -> {
 
@@ -104,7 +104,7 @@ public class NotificationsPresenter
 
     @Override
     public void action(List<NotificationsParent> notificationsParents,
-                       Callback<List<NotificationsParent>> listCallback) {
+                       Callback<List<NotificationsParent>> listCallback, boolean firstTime) {
 
     }
 }

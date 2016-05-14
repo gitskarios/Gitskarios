@@ -61,7 +61,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
           @Override
           public void onNext(Repo repo) {
-            repoCallback.onResponse(repo);
+            repoCallback.onResponse(repo, true);
           }
 
           @Override
@@ -92,7 +92,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
   }
 
   @Override
-  public void action(Repo repo, Callback<Repo> repoCallback) {
+  public void action(Repo repo, Callback<Repo> repoCallback, boolean firstTime) {
 
   }
 }

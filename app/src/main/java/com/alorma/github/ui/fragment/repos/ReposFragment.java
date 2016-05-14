@@ -74,7 +74,10 @@ public abstract class ReposFragment extends Fragment
   }
 
   @Override
-  public void onResponse(List<Repo> repos) {
+  public void onResponse(List<Repo> repos, boolean firstTime) {
+    if (firstTime) {
+      adapter.clear();
+    }
     adapter.addAll(repos);
   }
 

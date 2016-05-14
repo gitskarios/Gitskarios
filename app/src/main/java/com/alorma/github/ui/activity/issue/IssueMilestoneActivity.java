@@ -61,7 +61,10 @@ public class IssueMilestoneActivity extends BackActivity
   }
 
   @Override
-  public void onResponse(List<Milestone> milestones) {
+  public void onResponse(List<Milestone> milestones, boolean firstTime) {
+    if (firstTime) {
+      adapter.clear();
+    }
     adapter.addAll(milestones);
   }
 

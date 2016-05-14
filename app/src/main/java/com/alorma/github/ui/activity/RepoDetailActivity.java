@@ -177,7 +177,7 @@ public class RepoDetailActivity extends BackActivity
   }
 
   @Override
-  public void onResponse(Repo repo) {
+  public void onResponse(Repo repo, boolean firstTime) {
     hideProgressDialog();
     if (repo != null) {
       this.currentRepo = repo;
@@ -463,7 +463,7 @@ public class RepoDetailActivity extends BackActivity
 
               @Override
               public void onNext(Repo repo) {
-                onResponse(repo);
+                onResponse(repo, true);
               }
             });
       } else if (resultCode == RESULT_CANCELED) {

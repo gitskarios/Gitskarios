@@ -20,7 +20,7 @@ public class IssueLabelsPresenter extends Presenter<IssueInfo, List<Label>> {
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(listCallback::showLoading)
         .doOnCompleted(listCallback::hideLoading)
-        .subscribe(listCallback::onResponse, Throwable::printStackTrace);
+        .subscribe(labels -> action(labels, listCallback, true), Throwable::printStackTrace);
   }
 
   @Override
@@ -39,7 +39,7 @@ public class IssueLabelsPresenter extends Presenter<IssueInfo, List<Label>> {
   }
 
   @Override
-  public void action(List<Label> labels, Callback<List<Label>> listCallback) {
-
+  public void action(List<Label> labels, Callback<List<Label>> listCallback, boolean firstTime) {
+    listCallback.onResponse(labels, firstTime);
   }
 }

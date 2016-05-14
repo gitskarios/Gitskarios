@@ -22,7 +22,8 @@ public class IssueMilestonePresenter extends Presenter<IssueInfo, List<Milestone
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(listCallback::showLoading)
         .doOnCompleted(listCallback::hideLoading)
-        .subscribe(listCallback::onResponse, Throwable::printStackTrace);
+        .subscribe(milestones -> action(milestones, listCallback, true)
+                , Throwable::printStackTrace);
   }
 
   @Override
@@ -42,7 +43,8 @@ public class IssueMilestonePresenter extends Presenter<IssueInfo, List<Milestone
   }
 
   @Override
-  public void action(List<Milestone> milestones, Callback<List<Milestone>> listCallback) {
-
+  public void action(List<Milestone> milestones, Callback<List<Milestone>> listCallback
+          , boolean firstTime) {
+    listCallback.onResponse(milestones, firstTime);
   }
 }

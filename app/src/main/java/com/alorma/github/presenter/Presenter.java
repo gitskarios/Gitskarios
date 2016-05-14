@@ -27,13 +27,14 @@ public abstract class Presenter<Request, Response> {
     return TokenProvider.getInstance().getToken();
   }
 
-  public abstract void action(Response response, Callback<Response> responseCallback);
+  public abstract void action(Response response, Callback<Response> responseCallback
+          , boolean firstTime);
 
   public interface Callback<Response> {
 
     void showLoading();
 
-    void onResponse(Response response);
+    void onResponse(Response response, boolean firstTime);
 
     void hideLoading();
 

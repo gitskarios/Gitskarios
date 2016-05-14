@@ -62,7 +62,10 @@ public class IssueAssigneesActivity extends BackActivity
   }
 
   @Override
-  public void onResponse(List<User> organizations) {
+  public void onResponse(List<User> organizations, boolean firstTime) {
+    if (firstTime) {
+      adapter.clear();
+    }
     adapter.addAll(organizations);
   }
 
