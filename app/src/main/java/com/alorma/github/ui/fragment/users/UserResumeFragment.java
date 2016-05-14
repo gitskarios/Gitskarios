@@ -150,12 +150,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     if (user.public_repos > 0) {
       String text = getString(R.string.repos_num, user.public_repos);
       ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, null);
-      profileItemRepos.setCallback(new ProfileItem.Callback() {
-        @Override
-        public void onSelected(int id) {
-          notifyOpenRepos();
-        }
-      });
+      profileItemRepos.setCallback(id -> notifyOpenRepos());
       addItem(profileItemRepos, cardGithub);
     }
 
