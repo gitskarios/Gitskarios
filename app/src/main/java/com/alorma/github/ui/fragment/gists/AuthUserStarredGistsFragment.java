@@ -99,6 +99,9 @@ public class AuthUserStarredGistsFragment extends LoadingListFragment<GistsAdapt
 
           @Override
           public void onNext(List<Gist> gists) {
+            if (refreshing) {
+              getAdapter().clear();
+            }
             getAdapter().addAll(gists);
           }
         });

@@ -169,13 +169,9 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
   protected void stopRefresh() {
     if (swipe != null) {
+      refreshing = false;
       fromRetry = false;
-      swipe.post(new Runnable() {
-        @Override
-        public void run() {
-          swipe.setRefreshing(false);
-        }
-      });
+      swipe.post(() -> swipe.setRefreshing(false));
     }
 
     if (loadingView != null) {

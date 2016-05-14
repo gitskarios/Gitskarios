@@ -101,6 +101,9 @@ public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter>
 
           @Override
           public void onNext(List<Gist> gists) {
+            if (refreshing) {
+              getAdapter().clear();
+            }
             getAdapter().addAll(gists);
           }
         });
