@@ -36,7 +36,10 @@ public class StarredReposFragment extends ReposFragment {
     if (getArguments() != null) {
       username = getArguments().getString(USERNAME);
     }
+  }
 
+  @Override
+  protected void onRefresh() {
     presenter.load(username, this);
   }
 

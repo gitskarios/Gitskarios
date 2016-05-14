@@ -44,9 +44,11 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
     if (getArguments() != null) {
       username = getArguments().getString("USERNAME");
     }
+  }
 
+  @Override
+  protected void onRefresh() {
     authUserRepositoriesPresenter.load(username, this);
-
   }
 
   @Override

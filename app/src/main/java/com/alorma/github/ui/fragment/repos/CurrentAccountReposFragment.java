@@ -16,15 +16,13 @@ public class CurrentAccountReposFragment extends ReposFragment {
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
-
-    presenter.load(null, this);
+  protected void initInjectors(ApiComponent apiComponent) {
+    apiComponent.inject(this);
   }
 
   @Override
-  protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+  protected void onRefresh() {
+    presenter.load(null, this);
   }
 
   @Override

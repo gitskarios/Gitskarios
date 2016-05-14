@@ -54,9 +54,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 03/10/2014.
- */
 public class EventsListFragment extends LoadingListFragment<EventAdapter>
     implements EventAdapter.EventAdapterListener {
 
@@ -64,7 +61,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
 
   private ArrayStrings filterNames;
   private ArrayIntegers filterIds;
-  private Observer<GithubEvent> subscriber = new Observer<GithubEvent>() {
+  private Observer<List<GithubEvent>> subscriber = new Observer<List<GithubEvent>>() {
     @Override
     public void onCompleted() {
       stopRefresh();
@@ -76,9 +73,13 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     }
 
     @Override
-    public void onNext(GithubEvent event) {
+    public void onNext(List<GithubEvent> event) {
       if (getAdapter() != null) {
-        getAdapter().add(event);
+        if (refreshing) {
+          getAdapter().clear();
+          refreshing = false;
+        }
+        getAdapter().addAll(event);
       }
     }
   };
@@ -257,13 +258,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
 
   @NonNull
   private Func1<GithubEvent, Boolean> getFilterNames() {
-    return new Func1<GithubEvent, Boolean>() {
-      @Override
-      public Boolean call(GithubEvent githubEvent) {
-        return (filterNames != null && !filterNames.isEmpty()) ? filterNames.contains(
-            githubEvent.type.name()) : checkEventHandled(githubEvent);
-      }
-    };
+    return githubEvent -> (filterNames != null && !filterNames.isEmpty()) ? filterNames.contains(
+        githubEvent.type.name()) : checkEventHandled(githubEvent);
   }
 
   @Override
@@ -320,13 +316,9 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
             return listIntegerPair.first;
           }
         })
-        .flatMap(new Func1<List<GithubEvent>, Observable<GithubEvent>>() {
-          @Override
-          public Observable<GithubEvent> call(List<GithubEvent> githubEvents) {
-            return Observable.from(githubEvents);
-          }
-        })
+        .flatMap(Observable::from)
         .filter(getFilterNames())
+            .toList()
         .subscribe(subscriber);
   }
 
@@ -409,14 +401,10 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     final CommitsAdapter adapter = new CommitsAdapter(getActivity(), commits);
     MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
     builder.title(R.string.event_select_commit);
-    builder.adapter(adapter, new MaterialDialog.ListCallback() {
-      @Override
-      public void onSelection(MaterialDialog materialDialog, View view, int i,
-          CharSequence charSequence) {
-        Commit item = adapter.getItem(i);
+    builder.adapter(adapter, (materialDialog, view, i, charSequence) -> {
+      Commit item = adapter.getItem(i);
 
-        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url)));
-      }
+      startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url)));
     });
     builder.show();
   }
@@ -427,20 +415,16 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     builder.title(R.string.event_select_repository);
     builder.items(repos);
     builder.alwaysCallSingleChoiceCallback();
-    builder.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-      @Override
-      public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-          CharSequence charSequence) {
-        String repoSelected = repos[i];
-        String[] split = repoSelected.split("/");
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.owner = split[0];
-        repoInfo.name = split[1];
+    builder.itemsCallbackSingleChoice(-1, (materialDialog, view, i, charSequence) -> {
+      String repoSelected = repos[i];
+      String[] split = repoSelected.split("/");
+      RepoInfo repoInfo = new RepoInfo();
+      repoInfo.owner = split[0];
+      repoInfo.name = split[1];
 
-        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivity(intent);
-        return true;
-      }
+      Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+      startActivity(intent);
+      return true;
     });
 
     builder.show();

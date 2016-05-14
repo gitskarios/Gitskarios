@@ -37,6 +37,10 @@ public class MembershipReposFragment extends ReposFragment {
       username = getArguments().getString(USERNAME);
     }
 
+  }
+
+  @Override
+  protected void onRefresh() {
     presenter.load(username, this);
   }
 

@@ -38,12 +38,16 @@ public class OrgsReposFragment extends ReposFragment {
       orgName = getArguments().getString(ORGS);
     }
 
-    presenter.load(orgName, this);
   }
 
   @Override
   protected void initInjectors(ApiComponent apiComponent) {
     apiComponent.inject(this);
+  }
+
+  @Override
+  protected void onRefresh() {
+    presenter.load(orgName, this);
   }
 
   @Override
