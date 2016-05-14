@@ -14,15 +14,18 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.android.vending.billing.IInAppBillingService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by a557114 on 25/07/2015.
@@ -67,7 +70,7 @@ public class DonateFragment extends BaseFragment {
   }
 
   public void launchDonate() {
-    new MaterialDialog.Builder(getActivity()).title(R.string.support_development)
+    dialog = new MaterialDialog.Builder(getActivity()).title(R.string.support_development)
         .adapter(new DonateItemsAdapter(getActivity(), skuList), new MaterialDialog.ListCallback() {
           @Override
           public void onSelection(MaterialDialog materialDialog, View view, int i,

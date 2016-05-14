@@ -134,7 +134,7 @@ public class GistEditorActivity extends BackActivity {
         endGistFile();
       }
     });
-    builder.show();
+    dialog = builder.show();
   }
 
   private void endGistFile() {

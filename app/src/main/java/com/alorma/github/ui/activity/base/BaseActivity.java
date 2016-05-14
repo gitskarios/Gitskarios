@@ -9,8 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.AccountsManager;
+import com.alorma.github.utils.KeyboardUtils;
+
 import java.util.List;
 
 public class BaseActivity extends AppCompatActivity {
@@ -20,6 +24,8 @@ public class BaseActivity extends AppCompatActivity {
   private Toolbar toolbar;
   private AccountsManager accountsManager;
   private ProgressDialog progressDialog;
+  protected MaterialDialog dialog;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +119,14 @@ public class BaseActivity extends AppCompatActivity {
       } catch (Exception e) {
         e.printStackTrace();
       }
+    }
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    if (dialog != null && dialog.isShowing()) {
+      KeyboardUtils.lowerKeyboard(this);
     }
   }
 

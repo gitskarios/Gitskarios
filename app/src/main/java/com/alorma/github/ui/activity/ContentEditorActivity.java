@@ -270,7 +270,7 @@ public class ContentEditorActivity extends BackActivity
   }
 
   private void showAddPicture() {
-    new MaterialDialog.Builder(this).title(R.string.addPicture)
+    dialog = new MaterialDialog.Builder(this).title(R.string.addPicture)
         .content(R.string.addPictureContent)
         .input(R.string.addPictureHint, 0, false, new MaterialDialog.InputCallback() {
           @Override
