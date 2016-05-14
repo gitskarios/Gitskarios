@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ProgressBar;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -61,9 +62,11 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
-import io.fabric.sdk.android.Fabric;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -354,7 +357,7 @@ public class IssueDetailActivity extends BackActivity
         finish();
       }
     });
-    builder.show();
+    dialog = builder.show();
   }
 
   @Override
@@ -486,7 +489,7 @@ public class IssueDetailActivity extends BackActivity
 
   @Override
   public void onTitleEditRequest() {
-    new MaterialDialog.Builder(this).title(R.string.edit_issue_title)
+    dialog = new MaterialDialog.Builder(this).title(R.string.edit_issue_title)
         .input(null, issueStory.item.title, false, new MaterialDialog.InputCallback() {
           @Override
           public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
@@ -808,7 +811,7 @@ public class IssueDetailActivity extends BackActivity
           //                        super.onNeutral(dialog);
           //                    }
         });
-        builder.show();
+        dialog = builder.show();
       }
     }
 

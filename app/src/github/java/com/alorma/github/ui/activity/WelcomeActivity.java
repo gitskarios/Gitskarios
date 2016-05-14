@@ -2,7 +2,6 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -12,13 +11,15 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.utils.KeyboardUtils;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity
     implements WelcomePresenterViewInterface {
@@ -29,6 +30,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Bind(R.id.progressBar) View progressBar;
   private WelcomePresenter welcomePresenter;
   private SMSBroadcastReceiver smsBroadcastReceiver;
+  private MaterialDialog dialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   }
 
   private void show2faDialog(@StringRes int message) {
-    new MaterialDialog.Builder(this).title(R.string.write_otp_code_title)
+    dialog = new MaterialDialog.Builder(this).title(R.string.write_otp_code_title)
         .content(message)
         .input(getString(R.string.write_otp_code_hint), null, false, (dialog, input) -> {
           welcomePresenter.setOtpCode(String.valueOf(input));
@@ -110,8 +112,9 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   public void didLogin() {
     progressBar.setVisibility(View.GONE);
     buttonLogin.setEnabled(true);
-    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    imm.hideSoftInputFromWindow(buttonLogin.getWindowToken(), 0);
+    if (buttonLogin != null) {
+      KeyboardUtils.lowerKeyboard(this);
+    }
   }
 
   private class ButtonEnablerTextWatcher implements TextWatcher {
@@ -153,6 +156,14 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   protected void onStart() {
     super.onStart();
     welcomePresenter.start(this);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    if (dialog != null && dialog.isShowing()) {
+      KeyboardUtils.lowerKeyboard(this);
+    }
   }
 
   @Override

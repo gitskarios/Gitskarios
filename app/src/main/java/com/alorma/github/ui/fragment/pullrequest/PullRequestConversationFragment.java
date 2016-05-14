@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -41,16 +41,18 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
 import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PullRequestConversationFragment extends Fragment
+public class PullRequestConversationFragment extends BaseFragment
     implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener,
     SwipeRefreshLayout.OnRefreshListener {
 
@@ -383,7 +385,7 @@ public class PullRequestConversationFragment extends Fragment
           merge(charSequence.toString(), head.sha, issueInfo);
         });
     builder.inputType(InputType.TYPE_CLASS_TEXT);
-    builder.show();
+    dialog = builder.show();
   }
 
   private void merge(String message, String sha, IssueInfo issueInfo) {

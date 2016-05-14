@@ -395,7 +395,7 @@ public class NewIssueActivity extends BackActivity {
         setAssigneeUser(null);
       }
     });
-    builder.show();
+    dialog = builder.show();
   }
 
   private void setAssigneeUser(User user) {
@@ -494,7 +494,7 @@ public class NewIssueActivity extends BackActivity {
       }
     }).negativeText(R.string.cancel);
 
-    builder.show();
+    dialog = builder.show();
   }
 
   private void createMilestone(String milestoneName) {
@@ -604,7 +604,7 @@ public class NewIssueActivity extends BackActivity {
           setLabels(null);
         }
       });
-      builder.show();
+      dialog = builder.show();
     }
   }
 

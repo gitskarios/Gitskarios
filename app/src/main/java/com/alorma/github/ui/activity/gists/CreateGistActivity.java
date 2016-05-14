@@ -162,7 +162,7 @@ public class CreateGistActivity extends BackActivity
         finish();
       }
     });
-    builder.show();
+    dialog = builder.show();
   }
 
   private void showDialogCancelGist() {
@@ -184,7 +184,7 @@ public class CreateGistActivity extends BackActivity
         publishGist();
       }
     });
-    builder.show();
+    dialog = builder.show();
   }
 
   private void publishGist() {
@@ -246,6 +246,6 @@ public class CreateGistActivity extends BackActivity
         adapter.remove(item);
       }
     });
-    builder.show();
+    dialog = builder.show();
   }
 }
