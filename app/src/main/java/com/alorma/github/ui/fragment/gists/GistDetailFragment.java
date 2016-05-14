@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
@@ -21,125 +22,128 @@ import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistsFileActivity;
 import com.alorma.github.ui.adapter.GistDetailFilesAdapter;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+
 import java.util.ArrayList;
+
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+
 public class GistDetailFragment extends Fragment
-    implements Observer<Gist>, GistDetailFilesAdapter.GistFilesAdapterListener {
+        implements Observer<Gist>, RecyclerArrayAdapter.ItemCallback<GistFile> {
 
-  public static final String GIST_ID = "GIST_ID";
-  private RecyclerView recyclerView;
-  private GistDetailFilesAdapter adapter;
-  private GistDetailListener gistDetailListener;
-  private Gist gist;
+    public static final String GIST_ID = "GIST_ID";
+    private GistDetailFilesAdapter adapter;
+    private GistDetailListener gistDetailListener;
+    private Gist gist;
 
-  public static GistDetailFragment newInstance(String id) {
-    Bundle bundle = new Bundle();
-    bundle.putString(GIST_ID, id);
+    public static GistDetailFragment newInstance(String id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(GIST_ID, id);
 
-    GistDetailFragment f = new GistDetailFragment();
-    f.setArguments(bundle);
-    return f;
-  }
-
-  @Nullable
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.gist_detail_layout, null, false);
-  }
-
-  @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
-    recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-    recyclerView.setLayoutManager(
-        new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count),
-            StaggeredGridLayoutManager.VERTICAL));
-
-    adapter = new GistDetailFilesAdapter(getActivity());
-    adapter.setGistFilesAdapterListener(this);
-    recyclerView.setAdapter(adapter);
-
-    if (getArguments() != null) {
-      String id = getArguments().getString(GIST_ID);
-
-      GetGistDetailClient detailClient = new GetGistDetailClient(id);
-      detailClient.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(this);
+        GistDetailFragment f = new GistDetailFragment();
+        f.setArguments(bundle);
+        return f;
     }
-  }
 
-  @Override
-  public void onNext(Gist gist) {
-    this.gist = gist;
-    if (gistDetailListener != null) {
-      gistDetailListener.onGistLoaded(gist);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.gist_detail_layout, null, false);
     }
-    adapter.addAll(new ArrayList<GistFile>(gist.files.values()));
-  }
 
-  @Override
-  public void onError(Throwable e) {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-  }
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(
+                new StaggeredGridLayoutManager(getResources().getInteger(R.integer.gist_files_count),
+                        StaggeredGridLayoutManager.VERTICAL));
 
-  @Override
-  public void onCompleted() {
+        adapter = new GistDetailFilesAdapter(LayoutInflater.from(getActivity()));
+        adapter.setCallback(this);
+        recyclerView.setAdapter(adapter);
 
-  }
+        if (getArguments() != null) {
+            String id = getArguments().getString(GIST_ID);
 
-  public int getMenuId() {
-    return R.menu.menu_gist;
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    enableCreateGist(false);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item != null && item.getItemId() == R.id.action_gist_share) {
-      Uri uri = Uri.parse(gist.html_url);
-      new ShareAction(getActivity(), gist.description, uri.toString()).setType("Gist").execute();
+            GetGistDetailClient detailClient = new GetGistDetailClient(id);
+            detailClient.observable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this);
+        }
     }
-    return true;
-  }
 
-  @Override
-  public void onStop() {
-    enableCreateGist(true);
-    super.onStop();
-  }
+    @Override
+    public void onNext(Gist gist) {
+        this.gist = gist;
+        if (gistDetailListener != null) {
+            gistDetailListener.onGistLoaded(gist);
+        }
+        adapter.addAll(new ArrayList<GistFile>(gist.files.values()));
+    }
 
-  private void enableCreateGist(boolean b) {
-    int flag = b ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-        : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+    @Override
+    public void onError(Throwable e) {
 
-    ComponentName componentName = new ComponentName(getActivity(), CreateGistActivity.class);
-    getActivity().getPackageManager()
-        .setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
-  }
+    }
 
-  public void setGistDetailListener(GistDetailListener gistDetailListener) {
-    this.gistDetailListener = gistDetailListener;
-  }
+    @Override
+    public void onCompleted() {
 
-  @Override
-  public void onGistFilesSelected(int position, GistFile file) {
-    Intent launcherIntent =
-        GistsFileActivity.createLauncherIntent(getActivity(), file.filename, file.content);
-    startActivity(launcherIntent);
-  }
+    }
 
-  public interface GistDetailListener {
-    void onGistLoaded(Gist gist);
-  }
+    public int getMenuId() {
+        return R.menu.menu_gist;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        enableCreateGist(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item != null && item.getItemId() == R.id.action_gist_share) {
+            Uri uri = Uri.parse(gist.html_url);
+            new ShareAction(getActivity(), gist.description, uri.toString()).setType("Gist").execute();
+        }
+        return true;
+    }
+
+    @Override
+    public void onStop() {
+        enableCreateGist(true);
+        super.onStop();
+    }
+
+    private void enableCreateGist(boolean b) {
+        int flag = b ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+        ComponentName componentName = new ComponentName(getActivity(), CreateGistActivity.class);
+        getActivity().getPackageManager()
+                .setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
+    }
+
+    public void setGistDetailListener(GistDetailListener gistDetailListener) {
+        this.gistDetailListener = gistDetailListener;
+    }
+
+    @Override
+    public void onItemSelected(GistFile item) {
+        Intent launcherIntent =
+                GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
+        startActivity(launcherIntent);
+    }
+
+    public interface GistDetailListener {
+        void onGistLoaded(Gist gist);
+    }
 }

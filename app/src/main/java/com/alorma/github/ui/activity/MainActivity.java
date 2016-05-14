@@ -239,7 +239,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             .withIdentifier(R.id.nav_drawer_notifications)
             .withCheckable(false)
             .withOnCheckedChangeListener(notificationsCheckedListener)
-            .withSelectable(false)
+            .withSelectable(true)
             .withIcon(Octicons.Icon.oct_bell)
             .withIconColor(iconColor);
     drawer.addDrawerItems(new PrimaryDrawerItem().withName(R.string.menu_events)
@@ -297,55 +297,53 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
         .withIdentifier(R.id.nav_drawer_sign_out)
         .withSelectable(false));
 
-    drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-      @Override
-      public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        if (drawerItem != null) {
-          long identifier = drawerItem.getIdentifier();
-          switch ((int) identifier) {
-            case R.id.nav_drawer_events:
-              onUserEventsSelected();
-              break;
-            case R.id.nav_drawer_repositories:
-              onReposSelected();
-              break;
-            case R.id.nav_drawer_people:
-              onPeopleSelected();
-              break;
-            case R.id.nav_drawer_issues:
-              onIssuesSelected();
-              break;
-            case R.id.nav_drawer_gists:
-              onGistsSelected();
-              break;
-            case R.id.nav_drawer_gists_starred:
-              onStarredGistsSelected();
-              break;
-            case R.id.nav_drawer_notifications:
-              openNotifications();
-              break;
-            case R.id.nav_drawer_settings:
-              onSettingsSelected();
-              break;
-            case R.id.nav_drawer_about:
-              onAboutSelected();
-              break;
-            case R.id.nav_drawer_invite:
-              onInviteClicked();
-              break;
-            case R.id.nav_drawer_sign_out:
-              signOut();
-              break;
-            case R.id.nav_drawer_support_development:
-              if (donateFragment != null && donateFragment.enabled()) {
-                donateFragment.launchDonate();
-              }
-              break;
-          }
+    drawer.withOnDrawerItemClickListener((view, position, drawerItem) -> {
+      if (drawerItem != null) {
+        resultDrawer.closeDrawer();
+        long identifier = drawerItem.getIdentifier();
+        switch ((int) identifier) {
+          case R.id.nav_drawer_events:
+            onUserEventsSelected();
+            return true;
+          case R.id.nav_drawer_repositories:
+            onReposSelected();
+            return true;
+          case R.id.nav_drawer_people:
+            onPeopleSelected();
+            return true;
+          case R.id.nav_drawer_issues:
+            onIssuesSelected();
+            return true;
+          case R.id.nav_drawer_gists:
+            onGistsSelected();
+            return true;
+          case R.id.nav_drawer_gists_starred:
+            onStarredGistsSelected();
+            return true;
+          case R.id.nav_drawer_notifications:
+            openNotifications();
+            return false;
+          case R.id.nav_drawer_settings:
+            onSettingsSelected();
+            return true;
+          case R.id.nav_drawer_about:
+            onAboutSelected();
+            return true;
+          case R.id.nav_drawer_invite:
+            onInviteClicked();
+            return true;
+          case R.id.nav_drawer_sign_out:
+            signOut();
+            return true;
+          case R.id.nav_drawer_support_development:
+            if (donateFragment != null && donateFragment.enabled()) {
+              donateFragment.launchDonate();
+            }
+            return true;
         }
-
-        return false;
       }
+
+      return false;
     });
     resultDrawer = drawer.build();
     resultDrawer.setSelection(R.id.nav_drawer_events);

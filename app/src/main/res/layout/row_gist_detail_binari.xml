@@ -40,6 +40,7 @@
           android:id="@+id/imageContent"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:padding="@dimen/materialize_baseline_grid_x2"
           android:layout_marginTop="@dimen/gapMedium"
           />
 

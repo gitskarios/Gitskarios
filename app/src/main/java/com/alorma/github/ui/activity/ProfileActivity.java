@@ -304,21 +304,18 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
     Glide.with(this).load(avatar).asBitmap().into(new SimpleTarget<Bitmap>() {
       @Override
       public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-          @Override
-          public void onGenerated(Palette palette) {
-            Palette.Swatch profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
-            if (profileSwatch == null) {
-              profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
-            }
-            if (profileSwatch == null) {
-              profileSwatch = PaletteUtils.getProfileSwatch(palette);
-            }
+        Palette.from(resource).generate(palette -> {
+          Palette.Swatch profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
+          if (profileSwatch == null) {
+            profileSwatch = PaletteUtils.getProfileLightSwatch(palette);
+          }
+          if (profileSwatch == null) {
+            profileSwatch = PaletteUtils.getProfileSwatch(palette);
+          }
 
-            if (profileSwatch != null) {
-              applySwatchBackground(profileSwatch);
-              applySwatchTexts(profileSwatch);
-            }
+          if (profileSwatch != null) {
+            applySwatchBackground(profileSwatch);
+            applySwatchTexts(profileSwatch);
           }
         });
       }
@@ -368,7 +365,6 @@ public class ProfileActivity extends BackActivity implements UserResumeFragment.
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       getWindow().setStatusBarColor(bkg);
-      getWindow().setNavigationBarColor(bkg);
     }
   }
 

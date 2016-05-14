@@ -9,9 +9,6 @@ import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.gists.GistFileFragment;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class GistsFileActivity extends BackActivity {
 
   public static Intent createLauncherIntent(Context context, String name, String content) {

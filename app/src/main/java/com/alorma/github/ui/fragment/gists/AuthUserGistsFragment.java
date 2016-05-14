@@ -11,6 +11,7 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.gists.CreateGistActivity;
 import com.alorma.github.ui.activity.gists.GistDetailActivity;
+import com.alorma.github.ui.activity.gists.GistsFileActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -46,6 +47,11 @@ public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter>
     super.onViewCreated(view, savedInstanceState);
 
     GistsAdapter adapter = new GistsAdapter(LayoutInflater.from(getActivity()));
+    adapter.setFilesCallback(item -> {
+      Intent launcherIntent =
+              GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
+      startActivity(launcherIntent);
+    });
     adapter.setGistsAdapterListener(this);
     setAdapter(adapter);
   }
