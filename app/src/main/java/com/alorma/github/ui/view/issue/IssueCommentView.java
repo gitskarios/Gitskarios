@@ -26,6 +26,7 @@ public class IssueCommentView extends LinearLayout {
   private UserAvatarView profileIcon;
   private TextView userText;
   private TextView createdAt;
+  private ReactionsView reactions;
 
   public IssueCommentView(Context context) {
     super(context);
@@ -56,6 +57,7 @@ public class IssueCommentView extends LinearLayout {
     userText = (TextView) findViewById(R.id.userLogin);
     profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
     createdAt = (TextView) findViewById(R.id.createdAt);
+    reactions = (ReactionsView) findViewById(R.id.reactionsLy);
   }
 
   public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
@@ -63,6 +65,10 @@ public class IssueCommentView extends LinearLayout {
     GithubComment githubComment = issueStoryDetail.comment;
 
     applyGenericIssueStory(issueStoryDetail);
+
+    if (reactions != null) {
+      reactions.setReactions(githubComment.reactions);
+    }
 
     if (githubComment.user != null) {
       profileIcon.setUser(githubComment.user);

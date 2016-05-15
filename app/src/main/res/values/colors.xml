@@ -53,4 +53,5 @@
   <color name="github_status_red">#b5ff0000</color>
   <color name="crumb_active">#fff</color>
   <color name="crumb_inactive">#73ffffff</color>
+
 </resources>

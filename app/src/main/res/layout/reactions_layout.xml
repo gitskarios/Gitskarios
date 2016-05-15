@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/issue_detail_issue_comment_view">
+
+    <TextView
+        android:id="@+id/reaction1"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/materialize_baseline_grid"
+        android:gravity="center"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/reaction2"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/materialize_baseline_grid"
+        android:gravity="center"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/reaction3"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/materialize_baseline_grid"
+        android:gravity="center"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/reaction4"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/materialize_baseline_grid"
+        android:gravity="center"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/reaction5"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/materialize_baseline_grid"
+        android:gravity="center"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/reaction6"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/materialize_baseline_grid"
+        android:gravity="center"
+        tools:text="2" />
+</merge>

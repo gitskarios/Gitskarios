@@ -100,4 +100,5 @@
   <dimen name="avatar_size_profile">100dp</dimen>
   <dimen name="spacing_normal">16dp</dimen>
   <dimen name="image_final_width">32dp</dimen>
+  <dimen name="reaction_size">20dp</dimen>
 </resources>
