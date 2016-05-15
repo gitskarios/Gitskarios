@@ -81,34 +81,41 @@ public class ReactionsView extends LinearLayout {
             }
 
             int min = Math.min(this.reactions.length, reactionList.size());
-            int size = getResources().getDimensionPixelSize(R.dimen.reaction_size);
             for (int i = 0; i < min; i++) {
                 TextView reaction = this.reactions[i];
-                reaction.setText(String.valueOf(reactionList.get(i).getValue()));
-                Drawable iconForReaction = getIconForReaction(reactionList.get(i));
-                if (iconForReaction != null) {
-                    iconForReaction.setBounds(0, 0, size, size);
+
+                GithubReaction githubReaction = reactionList.get(i);
+
+                int icon = getIconForReaction(githubReaction);
+
+                String text = String.valueOf(githubReaction.getValue());
+                if (icon != 0) {
+                    text = getEmijoByUnicode(icon) + " " + text;
                 }
-                reaction.setCompoundDrawables(iconForReaction, null, null, null);
+
+                reaction.setText(text);
             }
         }
     }
 
-    private Drawable getIconForReaction(GithubReaction githubReaction) {
-        Resources resources = getResources();
+    public String getEmijoByUnicode(int unicode){
+        return new String(Character.toChars(unicode));
+    }
+
+    private int getIconForReaction(GithubReaction githubReaction) {
         if (githubReaction.getContent().equals("plusOne")) {
-            return ResourcesCompat.getDrawable(resources, R.drawable.reaction_plus_one, null);
+            return 0x1F44D;
         } else if (githubReaction.getContent().equals("minusOne")) {
-            return ResourcesCompat.getDrawable(resources, R.drawable.reaction_minus_one, null);
+            return 0x1F44E;
         } else if (githubReaction.getContent().equals("confused")) {
-            return ResourcesCompat.getDrawable(resources, R.drawable.reaction_confused, null);
+            return 0x1F615;
         } else if (githubReaction.getContent().equals("laugh")) {
-            return ResourcesCompat.getDrawable(resources, R.drawable.reaction_laugh, null);
+            return 0x1F604;
         } else if (githubReaction.getContent().equals("hooray")) {
-            return ResourcesCompat.getDrawable(resources, R.drawable.reaction_hooray, null);
+            return 0x1F389;
         } else if (githubReaction.getContent().equals("heart")) {
-            return ResourcesCompat.getDrawable(resources, R.drawable.reaction_heart, null);
+            return 0x2764;
         }
-        return null;
+        return 0;
     }
 }
