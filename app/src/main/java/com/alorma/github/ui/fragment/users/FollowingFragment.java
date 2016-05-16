@@ -4,9 +4,6 @@ import android.os.Bundle;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.user.UserFollowingClient;
 
-/**
- * Created by Bernat on 13/07/2014.
- */
 public class FollowingFragment extends BaseUsersListFragment {
   private String username;
 
