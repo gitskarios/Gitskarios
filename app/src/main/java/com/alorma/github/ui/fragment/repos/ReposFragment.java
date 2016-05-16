@@ -64,7 +64,6 @@ public abstract class ReposFragment extends Fragment
         refreshLayout.setOnRefreshListener(this::onRefresh);
         refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(getActivity()));
 
-
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         adapter = new ReposAdapter(LayoutInflater.from(getActivity()));
         adapter.setRecyclerAdapterContentListener(this);

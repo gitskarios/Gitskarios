@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
@@ -33,8 +34,8 @@ public class WatchedReposFragment extends ReposFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);

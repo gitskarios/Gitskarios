@@ -1,6 +1,8 @@
 package com.alorma.github.ui.fragment.orgs;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.repos.OrganizationRepositoriesPresenter;
@@ -31,13 +33,12 @@ public class OrgsReposFragment extends ReposFragment {
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
     if (getArguments() != null) {
       orgName = getArguments().getString(ORGS);
     }
-
   }
 
   @Override

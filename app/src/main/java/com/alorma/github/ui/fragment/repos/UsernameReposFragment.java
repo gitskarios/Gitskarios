@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
@@ -38,12 +39,18 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
     if (getArguments() != null) {
       username = getArguments().getString("USERNAME");
     }
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+
   }
 
   @Override
