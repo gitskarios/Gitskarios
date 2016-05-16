@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:showIn="@layout/issue_detail_issue_comment_view">
+    tools:showIn="@layout/issue_detail_issue_comment_view"
+    android:divider="@drawable/divider_vertical"
+    android:showDividers="middle"
+    >
 
     <TextView
         android:id="@+id/reaction1"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
@@ -17,7 +20,7 @@
     <TextView
         android:id="@+id/reaction2"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
@@ -26,7 +29,7 @@
     <TextView
         android:id="@+id/reaction3"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
@@ -35,7 +38,7 @@
     <TextView
         android:id="@+id/reaction4"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
@@ -44,7 +47,7 @@
     <TextView
         android:id="@+id/reaction5"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
@@ -53,7 +56,7 @@
     <TextView
         android:id="@+id/reaction6"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"

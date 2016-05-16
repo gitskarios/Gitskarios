@@ -44,32 +44,23 @@ public class UserAvatarView extends RoundTimelineView implements View.OnClickLis
   }
 
   private void init(Context context, AttributeSet attrs, int defStyle) {
-    if (isInEditMode()) {
-      TextDrawable drawable = TextDrawable.builder()
-          .beginConfig()
-          .width(getWidth())
-          .height(getHeight())
-          .endConfig()
-          .buildRound("A", ColorGenerator.MATERIAL.getColor("A"));
+    if (!isInEditMode()) {
+      final TypedArray typedArray =
+              context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserAvatarView, defStyle, 0);
 
-      setImageDrawable(drawable);
+      boolean showLine = typedArray.getBoolean(R.styleable.UserAvatarView_uav_show_timeline, false);
+
+      if (showLine) {
+        setTimelineType(TYPE_MIDDLE);
+        setLineColor(Color.GRAY);
+      } else {
+        setTimelineType(TYPE_HIDDEN);
+      }
+      setIndicatorSize(getResources().getDimensionPixelOffset(R.dimen.user_avatar));
+      setIndicatorColor(Color.TRANSPARENT);
+      setLineWidth(1.5f);
+      setTimelineAlignment(ALIGNMENT_START);
     }
-
-    final TypedArray typedArray =
-        context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserAvatarView, defStyle, 0);
-
-    boolean showLine = typedArray.getBoolean(R.styleable.UserAvatarView_uav_show_timeline, false);
-
-    if (showLine) {
-      setTimelineType(TYPE_MIDDLE);
-      setLineColor(Color.GRAY);
-    } else {
-      setTimelineType(TYPE_HIDDEN);
-    }
-    setIndicatorSize(getResources().getDimensionPixelOffset(R.dimen.user_avatar));
-    setIndicatorColor(Color.TRANSPARENT);
-    setLineWidth(1.5f);
-    setTimelineAlignment(ALIGNMENT_START);
   }
 
   public void setUser(User user) {

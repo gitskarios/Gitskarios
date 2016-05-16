@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,7 +15,6 @@ import com.alorma.github.sdk.services.issues.reactions.GithubReaction;
 import java.util.List;
 
 public class ReactionsView extends LinearLayout {
-
 
     private TextView[] reactions;
 
@@ -55,14 +55,21 @@ public class ReactionsView extends LinearLayout {
     }
 
     public void setReactions(GithubCommentReactions reactions) {
-        if (reactions != null) {
+        if (reactions != null && reactions.getTotalCount() > 0) {
+            setVisibility(View.VISIBLE);
+            for (TextView reaction : this.reactions) {
+                reaction.setVisibility(View.INVISIBLE);
+            }
             List<GithubReaction> reactionList = reactions.getReactions();
             int min = Math.min(this.reactions.length, reactionList.size());
             for (int i = 0; i < min; i++) {
                 TextView reaction = this.reactions[i];
+                reaction.setVisibility(View.VISIBLE);
                 reaction.setText(reactionList.get(i).toString());
             }
 
+        } else {
+            setVisibility(View.GONE);
         }
     }
 }
