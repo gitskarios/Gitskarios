@@ -1,126 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-               android:id="@+id/cardView"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_margin="@dimen/gapMedium"
-               android:orientation="vertical"
-      >
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/textTitle"
+        style="@style/TextAppearance.AppCompat.Headline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:layout_marginLeft="@dimen/materialize_baseline_grid"
+        android:layout_marginStart="@dimen/materialize_baseline_grid" />
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          >
+    <TextView
+        android:id="@+id/textRepository"
+        style="@style/new_issue_push_access_row"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginLeft="@dimen/materialize_baseline_grid"
+        android:layout_marginStart="@dimen/materialize_baseline_grid" />
 
-        <TextView
-            android:id="@+id/textTitle"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/gapMedium"
-            />
+    <include layout="@layout/issue_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:id="@+id/author"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_drawer_item_profile"
-                        android:layout_alignParentTop="true"
-                        android:paddingEnd="@dimen/material_drawer_vertical_padding"
-                        android:paddingLeft="@dimen/material_drawer_vertical_padding"
-                        android:paddingRight="@dimen/material_drawer_vertical_padding"
-                        android:paddingStart="@dimen/material_drawer_vertical_padding"
-            >
-
-          <com.alorma.github.ui.view.UserAvatarView
-              android:id="@+id/profileIcon"
-              android:layout_width="@dimen/material_drawer_item_profile_icon"
-              android:layout_height="@dimen/material_drawer_item_profile_icon"
-              android:layout_gravity="center_vertical"
-              android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-              android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-              android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-              android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-              />
-
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_centerInParent="true"
-              android:layout_toEndOf="@id/profileIcon"
-              android:layout_toRightOf="@id/profileIcon"
-              android:orientation="vertical"
-              >
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical|left"
-                android:lines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/material_drawer_item_profile_text"
-                tools:text="Some drawer text"
-                />
-
-            <TextView
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:gravity="center_vertical|left"
-                android:lines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/material_drawer_item_profile_description"
-                tools:text="Some drawer text"
-                />
-          </LinearLayout>
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/textRepository"
-            style="@style/new_issue_push_access_row"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_marginLeft="@dimen/gapLarge"
-            />
-
-      </LinearLayout>
-
-      <Button
-          android:id="@+id/mergeButton"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_marginLeft="@dimen/gapLarge"
-          android:layout_marginRight="@dimen/gapLarge"
-          android:background="@drawable/pull_request_merge_pending"
-          android:text="@string/pullrequest_merge_action_pending"
-          android:textColor="@color/white"
-          />
-
-      <TextView
-          android:id="@+id/textBody"
-          style="@style/TextAppearance.AppCompat.Caption"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_margin="@dimen/gapMedium"
-          tools:text="dnwjkedn eobfeibfo woeubfouew k wo wo owupij pw wouh fwohrwp"
-          />
-
-    </LinearLayout>
-  </FrameLayout>
+    <Button
+        android:id="@+id/mergeButton"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginBottom="@dimen/materialize_baseline_grid"
+        android:layout_marginLeft="@dimen/gapLarge"
+        android:layout_marginRight="@dimen/gapLarge"
+        android:background="@drawable/pull_request_merge_pending"
+        android:text="@string/pullrequest_merge_action_pending"
+        android:textColor="@color/white" />
 </merge>

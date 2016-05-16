@@ -17,7 +17,9 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
+import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.gitskarios.core.Pair;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 import rx.Observable;
@@ -28,7 +30,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter>
-    implements View.OnClickListener, IssuesAdapter.IssuesAdapterListener {
+    implements View.OnClickListener, IssuesAdapter.IssuesAdapterListener, TitleProvider {
 
   private static final int ISSUE_REQUEST = 1234;
 
@@ -74,12 +76,7 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
             return Observable.from(listIntegerPair.first);
           }
         })
-        .filter(new Func1<Issue, Boolean>() {
-          @Override
-          public Boolean call(Issue issue) {
-            return issue.pullRequest == null;
-          }
-        })
+        .filter(issue -> issue.pullRequest == null)
         .toList()
         .subscribe(new Subscriber<List<Issue>>() {
           @Override
@@ -131,6 +128,8 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
     return Octicons.Icon.oct_issue_opened;
   }
 
+
+
   @Override
   protected int getNoDataText() {
     return R.string.no_issues_found;
@@ -166,5 +165,15 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
         startActivity(intent);
       }
     }
+  }
+
+  @Override
+  public int getTitle() {
+    return R.string.my_issues;
+  }
+
+  @Override
+  public IIcon getTitleIcon() {
+    return null;
   }
 }

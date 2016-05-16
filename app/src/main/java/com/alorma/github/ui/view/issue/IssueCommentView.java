@@ -50,13 +50,13 @@ public class IssueCommentView extends LinearLayout {
   }
 
   private void init() {
-    inflate(getContext(), R.layout.issue_detail_issue_comment_view, this);
+    inflate(getContext(), R.layout.issue_card, this);
     setOrientation(VERTICAL);
     body = (TextView) findViewById(R.id.textBody);
 
-    userText = (TextView) findViewById(R.id.userLogin);
+    userText = (TextView) findViewById(R.id.name);
     profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
-    createdAt = (TextView) findViewById(R.id.createdAt);
+    createdAt = (TextView) findViewById(R.id.time);
     reactions = (ReactionsView) findViewById(R.id.reactionsLy);
   }
 

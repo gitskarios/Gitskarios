@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:showIn="@layout/issue_detail_issue_comment_view"
     android:divider="@drawable/divider_vertical"
     android:showDividers="middle"
-    >
+    tools:showIn="@layout/issue_detail_issue_comment_view">
 
     <TextView
         android:id="@+id/reaction1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/md_grey_300"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
         tools:text="2" />
@@ -22,6 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/md_grey_300"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
         tools:text="2" />
@@ -31,6 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/md_grey_300"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
         tools:text="2" />
@@ -40,6 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/md_grey_300"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
         tools:text="2" />
@@ -49,6 +52,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/md_grey_300"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
         tools:text="2" />
@@ -58,6 +62,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/md_grey_300"
         android:drawablePadding="@dimen/materialize_baseline_grid"
         android:gravity="center"
         tools:text="2" />
