@@ -35,9 +35,6 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
 
-/**
- * Created by Bernat on 08/04/2015.
- */
 public class IssueDetailView extends LinearLayout {
 
   private Issue issue;
@@ -149,11 +146,10 @@ public class IssueDetailView extends LinearLayout {
       }
 
       if (textMilestone != null) {
-        Milestone milestone = issue.milestone;
-        if (milestone != null) {
+        if (issue.milestone != null) {
           textMilestone.setCompoundDrawables(getIcon(Octicons.Icon.oct_milestone), null, null,
               null);
-          textMilestone.setText(milestone.title);
+          textMilestone.setText(issue.milestone.title);
           textMilestone.setVisibility(View.VISIBLE);
         } else {
           textMilestone.setVisibility(View.GONE);
@@ -165,14 +161,11 @@ public class IssueDetailView extends LinearLayout {
         if (assignee != null) {
           textAssignee.setCompoundDrawables(getIcon(Octicons.Icon.oct_person), null, null, null);
           textAssignee.setText(assignee.login);
-          textMilestone.setVisibility(View.VISIBLE);
-          textAssignee.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              Intent launcherIntent =
-                  ProfileActivity.createLauncherIntent(v.getContext(), assignee);
-              v.getContext().startActivity(launcherIntent);
-            }
+          textAssignee.setVisibility(View.VISIBLE);
+          textAssignee.setOnClickListener(v -> {
+            Intent launcherIntent =
+                ProfileActivity.createLauncherIntent(v.getContext(), assignee);
+            v.getContext().startActivity(launcherIntent);
           });
         } else {
           textAssignee.setVisibility(View.GONE);
@@ -185,16 +178,13 @@ public class IssueDetailView extends LinearLayout {
           textRepository.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo), null, null, null);
           textRepository.setText(repo.full_name);
           textRepository.setVisibility(View.VISIBLE);
-          textRepository.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              RepoInfo repoInfo = new RepoInfo();
-              repoInfo.owner = repo.owner.login;
-              repoInfo.name = repo.name;
-              Intent launcherIntent =
-                  RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
-              v.getContext().startActivity(launcherIntent);
-            }
+          textRepository.setOnClickListener(v -> {
+            RepoInfo repoInfo1 = new RepoInfo();
+            repoInfo1.owner = repo.owner.login;
+            repoInfo1.name = repo.name;
+            Intent launcherIntent =
+                RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo1);
+            v.getContext().startActivity(launcherIntent);
           });
         } else {
           textRepository.setVisibility(View.GONE);

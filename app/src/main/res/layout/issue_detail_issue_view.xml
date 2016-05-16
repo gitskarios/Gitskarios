@@ -97,8 +97,8 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_marginLeft="@dimen/gapLarge"
+            android:layout_marginStart="@dimen/gapLarge"
             />
-
 
         <TextView
             android:id="@+id/textRepository"
@@ -106,6 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_marginLeft="@dimen/gapLarge"
+            android:layout_marginStart="@dimen/gapLarge"
             />
 
         <TextView
@@ -114,14 +115,17 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_marginLeft="@dimen/gapLarge"
+            android:layout_marginStart="@dimen/gapLarge"
             />
 
         <com.wefika.flowlayout.FlowLayout
             android:id="@+id/labelsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:layout_height="20dp"
             android:layout_margin="@dimen/gapMedium"
             android:layout_marginLeft="@dimen/gapLarge"
+            android:layout_marginStart="@dimen/gapLarge"
             android:gravity="start|top"
             />
 
@@ -133,9 +137,9 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_margin="@dimen/gapMedium"
-          tools:text="dnwjkedn eobfeibfo woeubfouew k wo wo owupij pw wouh fwohrwp"
+          tools:text="dnwjkedn eobfeibfo woeubfouew k wo wo
+           owupij pw wouh fwohrwp"
           />
     </LinearLayout>
-    <!--</android.support.v7.widget.CardView>-->
   </FrameLayout>
 </merge>
