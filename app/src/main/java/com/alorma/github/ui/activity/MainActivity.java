@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -41,14 +40,12 @@ import com.alorma.github.ui.fragment.issues.GenericIssuesListFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.CustomEvent;
 import com.crashlytics.android.answers.InviteEvent;
 import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.android.gms.appinvite.AppInviteInvitationResult;
-import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.firebase.crash.FirebaseCrash;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
@@ -140,25 +137,23 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   private void checkInvites() {
     try {
       GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(AppInvite.API)
-          .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-            @Override
-            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-            }
-          })
+          .enableAutoManage(this, null)
           .build();
+      // Check for App Invite invitations and launch deep-link activity if possible.
+      // Requires that an Activity is registered in AndroidManifest.xml to handle
+      // deep-link URLs.
+      AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, this, true)
+          .setResultCallback(result -> {
+            if (result.getStatus().isSuccess()) {
+              // Extract information from the intent
+              Intent intent = result.getInvitationIntent();
+              String deepLink = AppInviteReferral.getDeepLink(intent);
+              String invitationId = AppInviteReferral.getInvitationId(intent);
 
-      AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, this, false)
-          .setResultCallback(new ResultCallback<AppInviteInvitationResult>() {
-            @Override
-            public void onResult(@NonNull AppInviteInvitationResult result) {
-              if (result.getInvitationIntent() != null) {
-                if (Fabric.isInitialized()) {
-                  Answers.getInstance()
-                      .logCustom(new CustomEvent("invited").putCustomAttribute("result",
-                          result.getStatus().getStatusMessage()));
-                }
-              }
+              // Because autoLaunchDeepLink = true we don't have to do anything
+              // here, but we could set that to false and manually choose
+              // an Activity to launch to handle the deep link here.
+              // ...
             }
           });
     } catch (Exception e) {
@@ -258,6 +253,11 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             .withIcon(Octicons.Icon.oct_issue_opened)
             .withIconColor(iconColor)
             .withIdentifier(R.id.nav_drawer_issues), new DividerDrawerItem(),
+
+        new SecondaryDrawerItem().withName(R.string.navigation_favorites)
+        .withIdentifier(R.id.navigation_favorites),
+
+        new DividerDrawerItem(),
         new PrimaryDrawerItem().withName(R.string.navigation_gists)
             .withIcon(Octicons.Icon.oct_gist)
             .withIconColor(iconColor)
@@ -335,6 +335,9 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
           case R.id.nav_drawer_sign_out:
             signOut();
             return true;
+          case R.id.navigation_favorites:
+            openFavorites();
+            return true;
           case R.id.nav_drawer_support_development:
             if (donateFragment != null && donateFragment.enabled()) {
               donateFragment.launchDonate();
@@ -349,14 +352,18 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     resultDrawer.setSelection(R.id.nav_drawer_events);
   }
 
+  private void openFavorites() {
+    Intent intent = new Intent(this, SyncFavoritesActivity.class);
+    startActivity(intent);
+  }
+
   private void onInviteClicked() {
-    Intent intent =
-        new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title)).setMessage(
-            getString(R.string.invitation_message))
-            .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-            .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-            .setCallToActionText(getString(R.string.invitation_cta))
-            .build();
+    Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+        .setMessage(getString(R.string.invitation_message))
+        .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+        .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+        .setCallToActionText(getString(R.string.invitation_cta))
+        .build();
     startActivityForResult(intent, REQUEST_INVITE);
   }
 

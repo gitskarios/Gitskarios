@@ -144,5 +144,7 @@
   <item name="action_notifications_new"
         type="id">action_notifications_new
   </item>
+  <item name="navigation_favorites"
+        type="id"/>
 
 </resources>

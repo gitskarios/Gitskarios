@@ -3,31 +3,31 @@ package com.alorma.github.gcm;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import com.alorma.github.R;
 import com.alorma.github.account.GetNotificationsService;
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
-public class GitskariosGcmListenerService extends GcmListenerService {
+public class GitskariosGcmListenerService extends FirebaseMessagingService {
 
   private static final String TAG = "MyGcmListenerService";
 
   /**
    * Called when message is received.
    *
-   * @param from SenderID of the sender.
-   * @param data Data bundle containing message data as key/value pairs.
    * For Set of keys use data.keySet().
    */
   // [START receive_message]
   @Override
-  public void onMessageReceived(String from, Bundle data) {
-    String message = data.getString("message");
-    Log.d(TAG, "From: " + from);
+  public void onMessageReceived(RemoteMessage remoteMessage) {
+    super.onMessageReceived(remoteMessage);
+
+    String message = remoteMessage.getNotification().getBody();
+    Log.d(TAG, "From: " + remoteMessage.getFrom());
     Log.d(TAG, "Message: " + message);
 
-    if (from.startsWith("/topics/")) {
+    if (remoteMessage.getFrom().startsWith("/topics/")) {
       Account[] accounts =
           AccountManager.get(this).getAccountsByType(getString(R.string.account_type));
 

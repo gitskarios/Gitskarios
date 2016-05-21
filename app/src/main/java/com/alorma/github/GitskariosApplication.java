@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
-import com.alorma.github.gcm.GitskariosRegistrationService;
+import com.alorma.github.gcm.GitskariosInstanceIDListenerService;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApplicationComponent;
 import com.alorma.github.injector.module.ApplicationModule;
@@ -17,7 +17,7 @@ import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UsernameProvider;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
@@ -25,6 +25,7 @@ import io.fabric.sdk.android.Fabric;
 public class GitskariosApplication extends MultiDexApplication {
 
   private ApplicationComponent component;
+  private FirebaseAnalytics firebaseAnalytics;
 
   public static GitskariosApplication get(Context context) {
     return (GitskariosApplication) context.getApplicationContext();
@@ -46,11 +47,8 @@ public class GitskariosApplication extends MultiDexApplication {
       Fabric.with(this, new Crashlytics());
     }
 
-    AnalyticsTrackers.initialize(this);
-    Tracker tracker = AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
-
-    tracker.enableAutoActivityTracking(true);
-    tracker.enableExceptionReporting(true);
+    firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    firebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
     ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));
 
@@ -67,7 +65,7 @@ public class GitskariosApplication extends MultiDexApplication {
     });
 
     if (new GitskariosSettings(this).getGCMToken() == null) {
-      Intent intent = new Intent(this, GitskariosRegistrationService.class);
+      Intent intent = new Intent(this, GitskariosInstanceIDListenerService.class);
       startService(intent);
     }
 

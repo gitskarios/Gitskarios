@@ -1,11 +1,10 @@
 package com.alorma.github.gcm;
 
-import android.content.Intent;
-import com.google.android.gms.iid.InstanceIDListenerService;
+import com.alorma.github.GitskariosSettings;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 
-public class GitskariosInstanceIDListenerService extends InstanceIDListenerService {
-
-  private static final String TAG = "MyInstanceIDLS";
+public class GitskariosInstanceIDListenerService extends FirebaseInstanceIdService {
 
   /**
    * Called if InstanceID token is updated. This may occur if the security of
@@ -15,9 +14,8 @@ public class GitskariosInstanceIDListenerService extends InstanceIDListenerServi
   // [START refresh_token]
   @Override
   public void onTokenRefresh() {
-    // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-    Intent intent = new Intent(this, GitskariosRegistrationService.class);
-    startService(intent);
+    String token = FirebaseInstanceId.getInstance().getToken();
+    new GitskariosSettings(this).saveGCMToken(token);
   }
   // [END refresh_token]
 }

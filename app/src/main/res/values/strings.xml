@@ -500,4 +500,5 @@
   <string name="action_pull_request_edit">Edit</string>
   <string name="action_open_in_browser">Open in browser</string>
   <string name="my_issues">Assigned issues</string>
+  <string name="navigation_favorites">Favorites</string>
 </resources>

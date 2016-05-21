@@ -1,40 +1,29 @@
 package com.alorma.github.gcm;
 
 import android.content.Context;
-import com.alorma.github.GitskariosSettings;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.google.android.gms.gcm.GcmPubSub;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class GcmTopicsHelper {
 
   public static void registerInTopic(final Context context, final RepoInfo repoInfo) {
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          String gcmToken = new GitskariosSettings(context).getGCMToken();
-          GcmPubSub pubSub = GcmPubSub.getInstance(context);
-
-          pubSub.subscribe(gcmToken, "/topics/" + repoInfo.owner + "-" + repoInfo.name, null);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+    new Thread(() -> {
+      try {
+        String topic = "/topics/" + repoInfo.owner + "-" + repoInfo.name;
+        FirebaseMessaging.getInstance().subscribeToTopic(topic);
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }).start();
   }
 
   public static void unregisterInTopic(final Context context, final RepoInfo repoInfo) {
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          String gcmToken = new GitskariosSettings(context).getGCMToken();
-          GcmPubSub pubSub = GcmPubSub.getInstance(context);
-
-          pubSub.unsubscribe(gcmToken, "/topics/" + repoInfo.owner + "-" + repoInfo.name);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+    new Thread(() -> {
+      try {
+        String topic = "/topics/" + repoInfo.owner + "-" + repoInfo.name;
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }).start();
   }

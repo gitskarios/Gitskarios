@@ -17,12 +17,6 @@
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
         tools:node="remove" />
-
-    <permission
-        android:name="${applicationId}.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
@@ -138,6 +132,7 @@
         <activity android:name=".ui.activity.issue.IssueMilestoneActivity" />
         <activity android:name=".ui.activity.issue.IssueLabelsActivity" />
         <activity android:name=".ui.activity.issue.IssueAssigneesActivity" />
+        <activity android:name=".ui.activity.SyncFavoritesActivity" />
         <activity
             android:name=".ui.activity.ContentEditorActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -183,19 +178,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!-- GCM -->
-
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="${applicationId}" />
-            </intent-filter>
-        </receiver>
-
         <!-- [START gcm_listener] -->
         <service
             android:name=".gcm.GitskariosGcmListenerService"
@@ -210,15 +192,12 @@
             android:name=".gcm.GitskariosInstanceIDListenerService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.firebase.INSTANCEID_EVENT" />
             </intent-filter>
         </service>
 
         <!-- [END instanceId_listener] -->
 
-        <service
-            android:name=".gcm.GitskariosRegistrationService"
-            android:exported="false" />
         <service android:name=".account.GetNotificationsService" />
     </application>
 

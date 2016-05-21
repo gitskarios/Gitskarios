@@ -194,8 +194,6 @@ dependencies {
   }
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
   compile 'com.github.xiprox.errorview:library:2.2.0'
-  compile 'com.google.android.gms:play-services:8.4.0'
-  compile 'com.google.android.gms:play-services-analytics:8.4.0'
   compile 'com.android.support:design:23.4.0'
   compile 'com.android.support:appcompat-v7:23.4.0'
   compile 'com.android.support:palette-v7:23.4.0'
@@ -237,9 +235,14 @@ dependencies {
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
-  compile 'com.google.android.gms:play-services-ads:8.4.0'
-  compile 'com.google.android.gms:play-services-auth:8.4.0'
-  compile 'com.google.android.gms:play-services-gcm:8.4.0'
+
+  compile 'com.google.firebase:firebase-core:9.0.0'
+  compile 'com.google.firebase:firebase-database:9.0.0'
+  compile 'com.google.firebase:firebase-ads:9.0.0'
+  compile 'com.google.firebase:firebase-auth:9.0.0'
+  compile 'com.google.firebase:firebase-invites:9.0.0'
+  compile 'com.google.firebase:firebase-messaging:9.0.0'
+  compile 'com.google.firebase:firebase-crash:9.0.0'
 }
 
 play {

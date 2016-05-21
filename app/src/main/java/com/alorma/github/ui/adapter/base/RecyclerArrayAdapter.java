@@ -57,6 +57,15 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
     }
   }
 
+  @Override
+  public int getItemViewType(int position) {
+    return getItemViewType(items.get(position));
+  }
+
+  protected int getItemViewType(ItemType itemType) {
+    return 0;
+  }
+
   protected abstract void onBindViewHolder(ViewHolder holder, ItemType type);
 
   protected int lazyLoadCount() {
