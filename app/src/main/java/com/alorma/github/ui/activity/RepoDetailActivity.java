@@ -333,16 +333,10 @@ public class RepoDetailActivity extends BackActivity
       new AddWebHookClient(requestRepoInfo.owner, requestRepoInfo.name, webhook).observable()
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Action1<WebHookResponse>() {
-            @Override
-            public void call(WebHookResponse webHookResponse) {
-              GcmTopicsHelper.registerInTopic(RepoDetailActivity.this, requestRepoInfo);
-            }
-          }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
+          .subscribe(webHookResponse -> {
+            GcmTopicsHelper.registerInTopic(RepoDetailActivity.this, requestRepoInfo);
+          }, throwable -> {
 
-            }
           });
     }
 
@@ -370,17 +364,14 @@ public class RepoDetailActivity extends BackActivity
         .subscribeOn(Schedulers.io())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnNext(new Action1<List<Branch>>() {
-          @Override
-          public void call(List<Branch> branches) {
-            if (currentRepo != null) {
-              if (currentRepo.branches != null) {
-                currentRepo.branches.addAll(branches);
-              } else {
-                currentRepo.branches = branches;
-              }
-              CacheWrapper.setRepository(currentRepo);
+        .doOnNext(branches -> {
+          if (currentRepo != null) {
+            if (currentRepo.branches != null) {
+              currentRepo.branches.addAll(branches);
+            } else {
+              currentRepo.branches = branches;
             }
+            CacheWrapper.setRepository(currentRepo);
           }
         });
 

@@ -24,7 +24,7 @@ public abstract class DialogBranchesSubscriber extends BranchesSubscriber
         builder.autoDismiss(true);
         builder.items(branches);
         builder.itemsCallbackSingleChoice(defaultBranchPosition, this);
-
+        builder.show();
       } else if (branches.length == 1) {
         onBranchSelected(branches[0]);
       } else {

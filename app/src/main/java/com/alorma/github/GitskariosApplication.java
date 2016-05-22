@@ -17,7 +17,9 @@ import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UsernameProvider;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
@@ -36,6 +38,10 @@ public class GitskariosApplication extends MultiDexApplication {
     super.onCreate();
 
     Dexter.initialize(this);
+
+    if (!FirebaseApp.getApps(this).isEmpty()) {
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    }
 
     if (!BuildConfig.DEBUG) {
       CustomActivityOnCrash.install(this);

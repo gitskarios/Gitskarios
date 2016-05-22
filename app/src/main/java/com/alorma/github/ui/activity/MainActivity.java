@@ -41,6 +41,9 @@ import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
@@ -85,6 +88,12 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    if (!FirebaseApp.getApps(this).isEmpty()) {
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    }
+
+    FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
     checkInvites();
 
