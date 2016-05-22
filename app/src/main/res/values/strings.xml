@@ -39,7 +39,7 @@
   <string name="issues">Issues</string>
   <string name="info">info</string>
   <string name="no_followers">There aren\'t any followers</string>
-  <string name="no_followings">There isn\'t anyone following you</string>
+  <string name="no_followings">There isn\'t anyone you follow</string>
   <string name="no_repositories">No repositories found</string>
   <string name="no_watched_repositories">No watched repositories found</string>
   <string name="no_starred_repositories">No starred repositories found</string>
