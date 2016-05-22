@@ -40,8 +40,9 @@ If you clone using plain command line, you should init submodules:
 
 Gitskarios (SDK) provide some ways to use credentials.
 
-** {USER_HOME}/.gradle/gradle.properties ** or ** {PROJECT_ROOT} gradle.properties **
+** {USER_HOME}/.gradle/gradle.properties ** or ** {PROJECT_ROOT}/gradle.properties **
 
+```
 GH_DEV_ID=
 GH_DEV_SECRET=
 GH_DEV_CALLBACK=
@@ -49,42 +50,6 @@ GH_DEV_CALLBACK=
 GH_PRO_ID=
 GH_PRO_SECRET=
 GH_PRO_CALLBACK=
-
-** build.gradle **
-
-``` groovy
-        debug {
-            buildConfigField "String", "CLIENT_ID", "\"" + API_CLIENT_ID + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + API_CLIENT_SECRET + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + API_CLIENT_CALLBACK + "\""
-        }
-        release {
-            buildConfigField "String", "CLIENT_ID", "\"" + API_CLIENT_ID + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + API_CLIENT_SECRET + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + API_CLIENT_CALLBACK + "\""
-            ext.betaDistributionGroupAliases="gitskarios-alpha-testers"
-        }
-```
-
-** AndroidManifest.xml**
-
-AndroidManifest.xml
-```xml
- <application>
-...
-    <meta-data
-        android:name="com.alorma.github.sdk.client"
-        android:value="YOUR_CLIENT_ID_HERE"/>
-
-    <meta-data
-        android:name="com.alorma.github.sdk.secret"
-        android:value="YOUR_SECRET_HERE"/>
-
-    <meta-data
-        android:name="com.alorma.github.sdk.oauth"
-        android:value="YOUR_URL_HERE"/>
-...
-</application>
 ```
 
 GitskariosApplication.java
