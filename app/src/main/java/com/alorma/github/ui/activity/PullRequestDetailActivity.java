@@ -104,6 +104,7 @@ public class PullRequestDetailActivity extends BackActivity
     mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinator),
         findViewById(R.id.content), savedInstanceState);
     mBottomBar.useOnlyStatusBarTopOffset();
+    mBottomBar.noTabletGoodness();
 
     final List<Fragment> fragments = new ArrayList<>();
 
