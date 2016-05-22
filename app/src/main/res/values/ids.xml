@@ -146,5 +146,7 @@
   </item>
   <item name="navigation_favorites"
         type="id"/>
+  <item name="open_gitskarios_issue"
+        type="id"/>
 
 </resources>

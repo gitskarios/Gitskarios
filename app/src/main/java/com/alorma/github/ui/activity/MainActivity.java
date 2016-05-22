@@ -2,9 +2,6 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -19,15 +16,14 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
-import com.alorma.github.account.BaseAccountsManager;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
@@ -45,7 +41,6 @@ import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.crash.FirebaseCrash;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
@@ -56,15 +51,11 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -84,7 +75,6 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   private Drawer resultDrawer;
   private int notificationsSizeCount = 0;
   private DonateFragment donateFragment;
-  private SwitchDrawerItem notificationsDrawerItem;
   private List<Account> accountList;
 
   public static void startActivity(Activity context) {
@@ -213,30 +203,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     drawer.withActivity(this);
     drawer.withToolbar(getToolbar());
     drawer.withAccountHeader(accountHeader);
-    OnCheckedChangeListener notificationsCheckedListener = new OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton,
-          boolean b) {
-        if (iDrawerItem != null && iDrawerItem.getIdentifier() == R.id.nav_drawer_notifications) {
-          changeNotificationState(selectedAccount, b);
-        }
 
-        if (!b) {
-          NotificationManager notificationManager =
-              (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-          notificationManager.cancelAll();
-        }
-      }
-    };
-    notificationsDrawerItem =
-        new SecondarySwitchDrawerItem().withName(R.string.menu_enable_notifications)
-            .withDescription(R.string.menu_enable_notifications_description)
-            .withIdentifier(R.id.nav_drawer_notifications)
-            .withCheckable(false)
-            .withOnCheckedChangeListener(notificationsCheckedListener)
-            .withSelectable(true)
-            .withIcon(Octicons.Icon.oct_bell)
-            .withIconColor(iconColor);
     drawer.addDrawerItems(new PrimaryDrawerItem().withName(R.string.menu_events)
             .withIcon(Octicons.Icon.oct_calendar)
             .withIconColor(iconColor)
@@ -252,13 +219,13 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
         new PrimaryDrawerItem().withName(R.string.navigation_issues)
             .withIcon(Octicons.Icon.oct_issue_opened)
             .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_issues), new DividerDrawerItem(),
+            .withIdentifier(R.id.nav_drawer_issues), new DividerDrawerItem()
+        /*,
 
         new SecondaryDrawerItem().withName(R.string.navigation_favorites)
         .withIdentifier(R.id.navigation_favorites),
-
-        new DividerDrawerItem(),
-        new PrimaryDrawerItem().withName(R.string.navigation_gists)
+        new DividerDrawerItem()
+        */, new PrimaryDrawerItem().withName(R.string.navigation_gists)
             .withIcon(Octicons.Icon.oct_gist)
             .withIconColor(iconColor)
             .withIdentifier(R.id.nav_drawer_gists),
@@ -266,11 +233,23 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             .withIcon(Octicons.Icon.oct_star)
             .withIconColor(iconColor)
             .withIdentifier(R.id.nav_drawer_gists_starred), new DividerDrawerItem(),
-        notificationsDrawerItem, new SecondaryDrawerItem().withName(R.string.navigation_settings)
+        new SecondaryDrawerItem().withName(R.string.menu_enable_notifications)
+            .withIdentifier(R.id.nav_drawer_notifications)
+            .withSelectable(false)
+            .withIcon(Octicons.Icon.oct_bell)
+            .withIconColor(iconColor),
+        new SecondaryDrawerItem().withName(R.string.navigation_settings)
             .withIcon(Octicons.Icon.oct_gear)
             .withIconColor(iconColor)
             .withIdentifier(R.id.nav_drawer_settings)
-            .withSelectable(false), new DividerDrawerItem());
+            .withIsExpanded(false)
+            .withSelectable(false),
+        new SecondaryDrawerItem().withName(R.string.open_gitskarios_issue)
+            .withIconColor(iconColor)
+            .withIdentifier(R.id.open_gitskarios_issue)
+            .withIcon(Octicons.Icon.oct_issue_opened)
+            .withSelectable(false)
+            .withLevel(2), new DividerDrawerItem());
 
     if (donateFragment.enabled()) {
       PrimaryDrawerItem donateItem =
@@ -326,6 +305,9 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
           case R.id.nav_drawer_settings:
             onSettingsSelected();
             return true;
+          case R.id.open_gitskarios_issue:
+            onGitsakriosIssueSelected();
+            return true;
           case R.id.nav_drawer_about:
             onAboutSelected();
             return true;
@@ -358,12 +340,13 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   }
 
   private void onInviteClicked() {
-    Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-        .setMessage(getString(R.string.invitation_message))
-        .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-        .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-        .setCallToActionText(getString(R.string.invitation_cta))
-        .build();
+    Intent intent =
+        new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title)).setMessage(
+            getString(R.string.invitation_message))
+            .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+            .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+            .setCallToActionText(getString(R.string.invitation_cta))
+            .build();
     startActivityForResult(intent, REQUEST_INVITE);
   }
 
@@ -456,15 +439,6 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   private void selectAccount(final Account account) {
     boolean changingUser = selectedAccount != null && !selectedAccount.name.equals(account.name);
     this.selectedAccount = account;
-
-    if (notificationsDrawerItem != null) {
-      notificationsDrawerItem.withChecked(
-          selectedAccount != null && ContentResolver.getSyncAutomatically(selectedAccount,
-              selectedAccount.type.replace(".account", "")));
-      if (resultDrawer != null) {
-        resultDrawer.updateItem(notificationsDrawerItem);
-      }
-    }
 
     StoreCredentials credentials = new StoreCredentials(MainActivity.this);
     credentials.clear();
@@ -619,19 +593,25 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     return false;
   }
 
+  public boolean onGitsakriosIssueSelected() {
+    RepoInfo repoInfo = new RepoInfo();
+    repoInfo.owner = "gitskarios";
+    repoInfo.name = "gitskarios";
+    Intent intent = NewIssueActivity.createLauncherIntent(this, repoInfo);
+    startActivity(intent);
+    return false;
+  }
+
   public void signOut() {
     if (selectedAccount != null) {
-      removeAccount(selectedAccount, new BaseAccountsManager.RemoveAccountCallback() {
-        @Override
-        public void onAccountRemoved() {
-          StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
-          storeCredentials.clear();
+      removeAccount(selectedAccount, () -> {
+        StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
+        storeCredentials.clear();
 
-          Intent intent = new Intent(MainActivity.this, MainActivity.class);
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-          startActivity(intent);
-          finish();
-        }
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
       });
     }
   }
