@@ -3,14 +3,9 @@ package com.alorma.github.ui.fragment.events;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +38,6 @@ import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.gitskarios.core.Pair;
-import com.alorma.tapmoc.BackgroundCompat;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.gson.Gson;
@@ -100,6 +94,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     return R.style.AppTheme_Dark_Events;
   }
 
+
+
   public static EventsListFragment newInstance(String username) {
     Bundle bundle = new Bundle();
     bundle.putString(USERNAME, username);
@@ -121,22 +117,6 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     addNewAdapter();
-
-    if (getActivity() != null) {
-      AppCompatActivity activity = (AppCompatActivity) getActivity();
-      ActionBar actionBar = activity.getSupportActionBar();
-      if (actionBar != null) {
-        int color = ContextCompat.getColor(activity, R.color.md_indigo_600);
-        int colorDark = ContextCompat.getColor(activity, R.color.md_indigo_800);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-
-        actionBar.setBackgroundDrawable(colorDrawable);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          activity.getWindow().setStatusBarColor(colorDark);
-        }
-      }
-    }
   }
 
   protected EventAdapter addNewAdapter() {
@@ -191,22 +171,18 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
         logAnswers("EVENT_FILTER_CLICK");
 
         new MaterialDialog.Builder(getActivity()).items(names)
-            .itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
-              @Override
-              public boolean onSelection(MaterialDialog dialog, Integer[] which,
-                  CharSequence[] text) {
-                EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
-                List<CharSequence> filterNames = Arrays.asList(text);
-                List<String> filters = new ArrayList<>(filterNames.size());
-                for (CharSequence filterName : filterNames) {
-                  filters.add(String.valueOf(filterName));
-                }
-                EventsListFragment.this.filterNames = new ArrayStrings(filters);
-                saveFilter();
-                executeFromFilter();
-                logAnswers("EVENT_FILTER_APPLIED");
-                return false;
+            .itemsCallbackMultiChoice(ids, (dialog1, which, text) -> {
+              EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
+              List<CharSequence> filterNames1 = Arrays.asList(text);
+              List<String> filters = new ArrayList<>(filterNames1.size());
+              for (CharSequence filterName : filterNames1) {
+                filters.add(String.valueOf(filterName));
               }
+              EventsListFragment.this.filterNames = new ArrayStrings(filters);
+              saveFilter();
+              executeFromFilter();
+              logAnswers("EVENT_FILTER_APPLIED");
+              return false;
             })
             .positiveText(R.string.ok)
             .neutralText(R.string.clear_filters)
@@ -350,7 +326,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
         })
         .flatMap(Observable::from)
         .filter(getFilterNames())
-            .toList()
+        .toList()
         .subscribe(subscriber);
   }
 

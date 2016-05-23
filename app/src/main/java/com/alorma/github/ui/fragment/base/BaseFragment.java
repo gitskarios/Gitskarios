@@ -5,17 +5,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.utils.AttributesUtils;
@@ -23,17 +19,10 @@ import com.alorma.github.utils.KeyboardUtils;
 
 public class BaseFragment extends Fragment {
   protected MaterialDialog dialog;
-  private Context themedContext;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    themedContext = new ContextThemeWrapper(getActivity(), getTheme());
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
+  public void onResume() {
+    super.onResume();
     colorize();
   }
 
@@ -42,13 +31,13 @@ public class BaseFragment extends Fragment {
       AppCompatActivity activity = (AppCompatActivity) getActivity();
       ActionBar actionBar = activity.getSupportActionBar();
       if (actionBar != null) {
-        int color = AttributesUtils.getPrimaryColor(themedContext);
+        int color = AttributesUtils.getPrimaryColor(getContext());
 
         ColorDrawable colorDrawable = new ColorDrawable(color);
         actionBar.setBackgroundDrawable(colorDrawable);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          int colorDark = AttributesUtils.getPrimaryDarkColor(themedContext);
+          int colorDark = AttributesUtils.getPrimaryDarkColor(getContext());
           activity.getWindow().setStatusBarColor(colorDark);
         }
       }
@@ -57,7 +46,7 @@ public class BaseFragment extends Fragment {
 
   @Override
   public Context getContext() {
-    return themedContext;
+    return new ContextThemeWrapper(getActivity(), getTheme());
   }
 
   @Override
@@ -70,18 +59,13 @@ public class BaseFragment extends Fragment {
     }
   }
 
-  @Override
-  public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-    return LayoutInflater.from(themedContext);
+  public LayoutInflater getThemedLayoutInflater(LayoutInflater inflater) {
+    return inflater.cloneInContext(getContext());
   }
 
   @StyleRes
   private int getTheme() {
-    int theme = getLightTheme();
-    if (isDarkTheme()) {
-      theme = getDarkTheme();
-    }
-    return theme;
+    return isDarkTheme() ? getDarkTheme() : getLightTheme();
   }
 
   @StyleRes

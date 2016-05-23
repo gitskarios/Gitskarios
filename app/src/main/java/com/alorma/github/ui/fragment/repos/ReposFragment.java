@@ -46,6 +46,16 @@ public abstract class ReposFragment extends BaseFragment
     initInjectors(apiComponent);
   }
 
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
   protected abstract void initInjectors(ApiComponent apiComponent);
 
   @Nullable
