@@ -3,7 +3,6 @@ package com.alorma.github.ui.fragment.base;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tr.xip.errorview.ErrorView;
 
-public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment
+public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends BaseFragment
     implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener,
     RecyclerArrayAdapter.RecyclerAdapterContentListener, ErrorView.RetryListener {
 

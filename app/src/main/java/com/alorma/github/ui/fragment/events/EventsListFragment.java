@@ -89,6 +89,16 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     }
   };
 
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Events;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Events;
+  }
+
   public static EventsListFragment newInstance(String username) {
     Bundle bundle = new Bundle();
     bundle.putString(USERNAME, username);

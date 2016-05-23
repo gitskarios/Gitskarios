@@ -254,7 +254,7 @@ dependencies {
 
 play {
   jsonFile = file('../gplay-secret.json')
-  track = 'production'
+  track = 'beta'
 }
 
 def (releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword) = signingConfigFromFile()

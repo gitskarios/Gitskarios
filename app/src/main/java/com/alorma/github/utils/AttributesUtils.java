@@ -47,7 +47,7 @@ public class AttributesUtils {
     return getColor(context, R.attr.colorControlHighlight);
   }
 
-  public static int getColor(Context context, int attr) {
+  private static int getColor(Context context, int attr) {
     TypedValue typedValue = new TypedValue();
     TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { attr });
     int color = a.getColor(0, 0);
