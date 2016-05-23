@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.orgs;
 
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,9 +19,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 13/07/2014.
- */
 public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdapter>
     implements Observer<List<Organization>> {
   private String username;
@@ -38,6 +36,18 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
       followersFragment.setArguments(bundle);
     }
     return followersFragment;
+  }
+
+  @StyleRes
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_People;
+  }
+
+  @StyleRes
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_People;
   }
 
   @Override
