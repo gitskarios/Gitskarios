@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,6 +116,9 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     }
 
     setContentView(R.layout.generic_toolbar);
+
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
 
     boolean changeLog = checkChangeLog();
     if (changeLog) {

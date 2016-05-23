@@ -46,6 +46,17 @@ public class AuthUserStarredGistsFragment extends LoadingListFragment<GistsAdapt
     }
 
     @Override
+    protected int getLightTheme() {
+        return R.style.AppTheme_Gists;
+    }
+
+    @Override
+    protected int getDarkTheme() {
+        return R.style.AppTheme_Dark_Gists;
+    }
+
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

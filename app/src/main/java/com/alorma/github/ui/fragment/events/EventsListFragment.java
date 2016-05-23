@@ -3,13 +3,8 @@ package com.alorma.github.ui.fragment.events;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -98,6 +93,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     return R.style.AppTheme_Dark_Events;
   }
 
+
+
   public static EventsListFragment newInstance(String username) {
     Bundle bundle = new Bundle();
     bundle.putString(USERNAME, username);
@@ -119,22 +116,6 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     addNewAdapter();
-
-    if (getActivity() != null) {
-      AppCompatActivity activity = (AppCompatActivity) getActivity();
-      ActionBar actionBar = activity.getSupportActionBar();
-      if (actionBar != null) {
-        int color = ContextCompat.getColor(activity, R.color.md_indigo_600);
-        int colorDark = ContextCompat.getColor(activity, R.color.md_indigo_800);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-
-        actionBar.setBackgroundDrawable(colorDrawable);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          activity.getWindow().setStatusBarColor(colorDark);
-        }
-      }
-    }
   }
 
   protected EventAdapter addNewAdapter() {
@@ -186,32 +167,34 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
 
         logAnswers("EVENT_FILTER_CLICK");
 
-        new MaterialDialog.Builder(getActivity()).items(names).itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
-          @Override
-          public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-            EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
-            List<CharSequence> filterNames = Arrays.asList(text);
-            List<String> filters = new ArrayList<>(filterNames.size());
-            for (CharSequence filterName : filterNames) {
-              filters.add(String.valueOf(filterName));
-            }
-            EventsListFragment.this.filterNames = new ArrayStrings(filters);
-            saveFilter();
-            executeFromFilter();
-            logAnswers("EVENT_FILTER_APPLIED");
-            return false;
-          }
-        }).positiveText(R.string.ok).neutralText(R.string.clear_filters).callback(new MaterialDialog.ButtonCallback() {
-          @Override
-          public void onNeutral(MaterialDialog dialog) {
-            super.onNeutral(dialog);
-            EventsListFragment.this.filterIds = null;
-            EventsListFragment.this.filterNames = null;
-            clearSavedFilter();
-            executeFromFilter();
-            logAnswers("EVENT_FILTER_CLEAR");
-          }
-        }).show();
+        new MaterialDialog.Builder(getActivity()).items(names)
+            .itemsCallbackMultiChoice(ids, (dialog1, which, text) -> {
+              EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
+              List<CharSequence> filterNames1 = Arrays.asList(text);
+              List<String> filters = new ArrayList<>(filterNames1.size());
+              for (CharSequence filterName : filterNames1) {
+                filters.add(String.valueOf(filterName));
+              }
+              EventsListFragment.this.filterNames = new ArrayStrings(filters);
+              saveFilter();
+              executeFromFilter();
+              logAnswers("EVENT_FILTER_APPLIED");
+              return false;
+            })
+            .positiveText(R.string.ok)
+            .neutralText(R.string.clear_filters)
+            .callback(new MaterialDialog.ButtonCallback() {
+              @Override
+              public void onNeutral(MaterialDialog dialog) {
+                super.onNeutral(dialog);
+                EventsListFragment.this.filterIds = null;
+                EventsListFragment.this.filterNames = null;
+                clearSavedFilter();
+                executeFromFilter();
+                logAnswers("EVENT_FILTER_CLEAR");
+              }
+            })
+            .show();
         break;
     }
 
