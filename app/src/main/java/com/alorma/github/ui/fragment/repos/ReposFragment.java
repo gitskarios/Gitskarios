@@ -3,7 +3,6 @@ package com.alorma.github.ui.fragment.repos;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,7 +30,6 @@ public abstract class ReposFragment extends BaseFragment
 
   private ReposAdapter adapter;
   private SwipeRefreshLayout refreshLayout;
-  private ContextThemeWrapper themedContext;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,12 +52,8 @@ public abstract class ReposFragment extends BaseFragment
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    themedContext = new ContextThemeWrapper(getActivity(), R.style.AppTheme_Repository);
-    if (isDarkTheme()) {
-      themedContext = new ContextThemeWrapper(getActivity(), R.style.AppTheme_Dark_Repository);
-    }
-    LayoutInflater layoutInflater = inflater.cloneInContext(themedContext);
-    return layoutInflater.inflate(R.layout.recyclerview, null, false);
+    super.onCreateView(inflater, container, savedInstanceState);
+    return getLayoutInflater(savedInstanceState).inflate(R.layout.recyclerview, null, false);
   }
 
   @Override
@@ -68,13 +62,13 @@ public abstract class ReposFragment extends BaseFragment
 
     refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
     refreshLayout.setOnRefreshListener(this::onRefresh);
-    refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(themedContext));
+    refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(getContext()));
 
     RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-    adapter = new ReposAdapter(LayoutInflater.from(themedContext));
+    adapter = new ReposAdapter(LayoutInflater.from(getContext()));
     adapter.setRecyclerAdapterContentListener(this);
     recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(themedContext));
+    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
   }
 
   @Override
@@ -107,7 +101,7 @@ public abstract class ReposFragment extends BaseFragment
 
   @Override
   public void onResponseEmpty() {
-    Toast.makeText(themedContext, R.string.empty_repos, Toast.LENGTH_SHORT).show();
+    Toast.makeText(getContext(), R.string.empty_repos, Toast.LENGTH_SHORT).show();
   }
 
   @Override

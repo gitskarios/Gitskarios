@@ -20,6 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
+        app:expandedTitleMarginTop="80dp"
+        app:expandedTitleGravity="center"
         app:layout_behavior="com.alorma.github.ui.utils.AvatarImageBehavior"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         >
@@ -29,8 +31,9 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/gapXLarge"
           android:fitsSystemWindows="true"
-          android:orientation="vertical"
+          android:orientation="horizontal"
           app:layout_collapseMode="parallax"
+          android:padding="8dp"
           >
 
         <ImageView
@@ -43,23 +46,11 @@
             />
 
         <TextView
-            android:id="@id/userLogin"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapSmall"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:textSize="36sp"
-            tools:text="ALORMA"
-            />
-
-        <TextView
             android:id="@+id/userName"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gapSmall"
+            android:layout_marginTop="72dp"
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:textSize="22sp"
@@ -73,8 +64,9 @@
           android:layout_width="match_parent"
           android:layout_height="?actionBarSize"
           app:layout_collapseMode="pin"
-          app:popupTheme="@style/Toolbar.Popup.AppCompat"
+          android:minHeight="?actionBarSize"
           app:theme="@style/Toolbar.AppCompat.Responsive.Transparent"
+          android:background="?colorPrimary"
           />
     </android.support.design.widget.CollapsingToolbarLayout>
 
