@@ -1,10 +1,14 @@
 package com.alorma.github.ui.fragment.gists;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
 import com.alorma.github.sdk.services.client.GithubListClient;
@@ -16,9 +20,7 @@ import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.List;
-
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -55,6 +57,22 @@ public class AuthUserStarredGistsFragment extends LoadingListFragment<GistsAdapt
         });
         adapter.setGistsAdapterListener(this);
         setAdapter(adapter);
+
+        if (getActivity() != null) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                int color = ContextCompat.getColor(activity, R.color.md_blue_grey_600);
+                int colorDark = ContextCompat.getColor(activity, R.color.md_blue_grey_800);
+                ColorDrawable colorDrawable = new ColorDrawable(color);
+
+                actionBar.setBackgroundDrawable(colorDrawable);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    activity.getWindow().setStatusBarColor(colorDark);
+                }
+            }
+        }
     }
 
     @Override

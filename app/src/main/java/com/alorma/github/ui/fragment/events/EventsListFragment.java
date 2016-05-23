@@ -3,9 +3,14 @@ package com.alorma.github.ui.fragment.events;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,6 +43,7 @@ import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.gitskarios.core.Pair;
+import com.alorma.tapmoc.BackgroundCompat;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.gson.Gson;
@@ -104,6 +110,22 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     addNewAdapter();
+
+    if (getActivity() != null) {
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
+      ActionBar actionBar = activity.getSupportActionBar();
+      if (actionBar != null) {
+        int color = ContextCompat.getColor(activity, R.color.md_indigo_600);
+        int colorDark = ContextCompat.getColor(activity, R.color.md_indigo_800);
+        ColorDrawable colorDrawable = new ColorDrawable(color);
+
+        actionBar.setBackgroundDrawable(colorDrawable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          activity.getWindow().setStatusBarColor(colorDark);
+        }
+      }
+    }
   }
 
   protected EventAdapter addNewAdapter() {

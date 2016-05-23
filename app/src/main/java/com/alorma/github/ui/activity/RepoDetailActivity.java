@@ -25,7 +25,6 @@ import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
 import com.alorma.github.sdk.bean.dto.request.WebHookRequest;
-import com.alorma.github.sdk.bean.dto.request.WebHookResponse;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -35,7 +34,7 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.webhooks.AddWebHookClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -58,10 +57,9 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class RepoDetailActivity extends BackActivity
+public class RepoDetailActivity extends RepositoryThemeActivity
     implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo>,
     SourceListFragment.SourceCallback {
 
@@ -143,6 +141,15 @@ public class RepoDetailActivity extends BackActivity
       }
     } else {
       finish();
+    }
+  }
+
+  @Override
+  protected void configureTheme(boolean dark) {
+    if (dark) {
+      setTheme(R.style.AppTheme_Dark_Repository);
+    } else {
+      setTheme(R.style.AppTheme_Repository);
     }
   }
 

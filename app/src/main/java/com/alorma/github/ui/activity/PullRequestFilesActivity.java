@@ -7,13 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
 
-/**
- * Created by Bernat on 17/06/2015.
- */
-public class PullRequestFilesActivity extends BackActivity {
+public class PullRequestFilesActivity extends RepositoryThemeActivity {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
 

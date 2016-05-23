@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.repos.ListForksFragment;
 
-/**
- * Created by a557114 on 05/09/2015.
- */
-public class ForksActivity extends BackActivity {
+public class ForksActivity extends RepositoryThemeActivity {
 
   public static final String REPO_INFO = "REPO_INFO";
 
