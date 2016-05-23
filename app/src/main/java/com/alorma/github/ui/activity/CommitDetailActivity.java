@@ -14,7 +14,7 @@ import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
@@ -25,7 +25,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class CommitDetailActivity extends BackActivity implements CommitFilesAdapter.OnFileRequestListener {
+public class CommitDetailActivity extends RepositoryThemeActivity
+    implements CommitFilesAdapter.OnFileRequestListener {
 
   private CommitInfo info;
 

@@ -9,12 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.utils.KeyboardUtils;
-
 import java.util.List;
 
 public class BaseActivity extends AppCompatActivity {
@@ -26,7 +24,6 @@ public class BaseActivity extends AppCompatActivity {
   private ProgressDialog progressDialog;
   protected MaterialDialog dialog;
 
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     configureTheme();
@@ -34,13 +31,19 @@ public class BaseActivity extends AppCompatActivity {
     accountsManager = new AccountsManager();
   }
 
-  protected void configureTheme() {
+  private void configureTheme() {
     SharedPreferences defaultSharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     String pref_theme =
         defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+    configureTheme("theme_dark".equalsIgnoreCase(pref_theme));
+  }
+
+  protected void configureTheme(boolean dark) {
+    if (dark) {
       setTheme(R.style.AppTheme_Dark);
+    } else {
+      setTheme(R.style.AppTheme);
     }
   }
 

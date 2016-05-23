@@ -13,7 +13,7 @@ import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetReleaseClient;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.releases.ReleaseAboutFragment;
 import com.alorma.github.ui.fragment.releases.ReleaseAssetsFragment;
@@ -24,7 +24,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ReleaseDetailActivity extends BackActivity
+public class ReleaseDetailActivity extends RepositoryThemeActivity
     implements Observer<Release>, ReleaseAssetsFragment.ReleaseAssetCallback {
 
   private static final String RELEASE_INFO = "RELEASE_INFO";

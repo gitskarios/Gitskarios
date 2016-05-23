@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
 
-public class WatchedReposActivity extends BackActivity {
+public class WatchedReposActivity extends RepositoryThemeActivity {
 
   private static final String USER = "USER";
 

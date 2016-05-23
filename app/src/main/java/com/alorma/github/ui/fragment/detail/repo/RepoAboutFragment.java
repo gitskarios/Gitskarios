@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
-
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
@@ -35,6 +33,7 @@ import com.alorma.github.ui.activity.ForksActivity;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.AttributesUtils;
@@ -53,7 +52,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RepoAboutFragment extends Fragment
+public class RepoAboutFragment extends BaseFragment
     implements TitleProvider, BranchManager, BackManager {
 
   public static final int PLACEHOLDER_ICON_SIZE = 20;

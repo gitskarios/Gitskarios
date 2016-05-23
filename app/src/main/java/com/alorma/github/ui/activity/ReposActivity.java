@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.UserType;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 
-public class ReposActivity extends BackActivity {
+public class ReposActivity extends RepositoryThemeActivity {
 
   private static final String USER = "USER";
   private static final String USER_TYPE = "USER_TYPE";

@@ -9,13 +9,10 @@ import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.RepositoryManagerFragment;
 
-/**
- * Created by a557114 on 01/08/2015.
- */
-public class ManageRepositoryActivity extends BackActivity {
+public class ManageRepositoryActivity extends RepositoryThemeActivity {
 
   public static final String CONTENT = "CONTENT";
   private static final String REPO_INFO = "REPO_INFO";

@@ -2,9 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -175,13 +173,11 @@ public class SearchActivity extends BackActivity {
   }
 
   @Override
-  protected void configureTheme() {
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+  protected void configureTheme(boolean dark) {
+    if (dark) {
       setTheme(R.style.AppTheme_Dark_Search);
+    } else {
+      setTheme(R.style.AppTheme_Search);
     }
   }
 }

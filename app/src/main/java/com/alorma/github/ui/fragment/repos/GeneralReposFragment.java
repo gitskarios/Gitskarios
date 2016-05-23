@@ -1,23 +1,30 @@
 package com.alorma.github.ui.fragment.repos;
 
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.utils.AttributesUtils;
 
-/**
- * Created by Bernat on 06/06/2015.
- */
 public class GeneralReposFragment extends BaseFragment {
+
+  private Context themedContext;
 
   public static GeneralReposFragment newInstance() {
     return new GeneralReposFragment();
@@ -27,7 +34,12 @@ public class GeneralReposFragment extends BaseFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.general_repos_fragment, null, false);
+    themedContext = new ContextThemeWrapper(getActivity(), R.style.AppTheme_Repository);
+    if (isDarkTheme()) {
+      themedContext = new ContextThemeWrapper(getActivity(), R.style.AppTheme_Dark_Repository);
+    }
+    LayoutInflater layoutInflater = inflater.cloneInContext(themedContext);
+    return layoutInflater.inflate(R.layout.general_repos_fragment, null, false);
   }
 
   @Override
@@ -55,6 +67,26 @@ public class GeneralReposFragment extends BaseFragment {
           tabLayout.removeOnLayoutChangeListener(this);
         }
       });
+    }
+
+    if (getActivity() != null) {
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
+      ActionBar actionBar = activity.getSupportActionBar();
+      if (actionBar != null) {
+        int color = AttributesUtils.getPrimaryColor(themedContext);
+        int colorDark = AttributesUtils.getPrimaryDarkColor(themedContext);
+        int colorAccent = AttributesUtils.getAccentColor(themedContext);
+
+        ColorDrawable colorDrawable = new ColorDrawable(color);
+
+        actionBar.setBackgroundDrawable(colorDrawable);
+
+        tabLayout.setSelectedTabIndicatorColor(colorAccent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          activity.getWindow().setStatusBarColor(colorDark);
+        }
+      }
     }
   }
 

@@ -14,7 +14,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CompareCommit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.CompareCommitsClient;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.compare.CompareCommitsListFragment;
 import com.alorma.github.ui.fragment.compare.CompareFilesListFragment;
 import java.util.ArrayList;
@@ -23,10 +23,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by a557114 on 31/07/2015.
- */
-public class CompareRepositoryCommitsActivity extends BackActivity {
+public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String BASE = "BASE";
