@@ -7,13 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.FileFragment;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
-public class FileActivity extends BackActivity {
+public class FileActivity extends RepositoryThemeActivity {
 
   private boolean fromUrl;
   private FileInfo info;

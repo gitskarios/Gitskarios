@@ -179,7 +179,7 @@
 
   <style name="Repos.Title"
          parent="TextAppearance.AppCompat.Headline">
-    <item name="android:textColor">?attr/gitskarios_title</item>
+    <item name="android:textColor">?colorAccent</item>
     <item name="android:ellipsize">end</item>
     <item name="android:lines">1</item>
   </style>
@@ -233,4 +233,5 @@
     <item name="android:ellipsize">end</item>
     <item name="android:maxLines">1</item>
   </style>
+
 </resources>

@@ -1,13 +1,18 @@
 package com.alorma.github.ui.fragment;
 
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +21,10 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.fragment.orgs.OrganizationsFragment;
 import com.alorma.github.ui.fragment.users.FollowersFragment;
 import com.alorma.github.ui.fragment.users.FollowingFragment;
+import com.alorma.tapmoc.BackgroundCompat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bernat on 31/01/2015.
- */
 public class GeneralPeopleFragment extends BaseFragment {
 
   public static GeneralPeopleFragment newInstance() {
@@ -69,6 +72,25 @@ public class GeneralPeopleFragment extends BaseFragment {
           tabLayout.removeOnLayoutChangeListener(this);
         }
       });
+    }
+
+    if (getActivity() != null) {
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
+      ActionBar actionBar = activity.getSupportActionBar();
+      if (actionBar != null) {
+        int color = ContextCompat.getColor(activity, R.color.md_deep_orange_A700);
+        int colorDark = ContextCompat.getColor(activity, R.color.md_deep_orange_900);
+        ColorDrawable colorDrawable = new ColorDrawable(color);
+
+        actionBar.setBackgroundDrawable(colorDrawable);
+
+        BackgroundCompat.setBackground(tabLayout, colorDrawable);
+        BackgroundCompat.setBackground(tabLayout, colorDrawable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          activity.getWindow().setStatusBarColor(colorDark);
+        }
+      }
     }
   }
 

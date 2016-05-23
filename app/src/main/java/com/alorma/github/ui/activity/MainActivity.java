@@ -383,7 +383,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     DrawerImageLoader.init(new DrawerImage());
 
     AccountHeaderBuilder headerBuilder =
-        new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.accent_welcome);
+        new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.md_grey_600);
 
     headerBuilder.withOnAccountHeaderListener(this);
 
