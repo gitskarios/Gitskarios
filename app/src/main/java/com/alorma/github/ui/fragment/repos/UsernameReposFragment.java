@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.presenter.repos.AuthUserRepositoriesPresenter;
+import com.alorma.github.presenter.repos.UserRepositoriesPresenter;
 import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class UsernameReposFragment extends ReposFragment implements TitleProvider,
     Presenter.Callback<List<Repo>> {
 
-  @Inject AuthUserRepositoriesPresenter authUserRepositoriesPresenter;
+  @Inject UserRepositoriesPresenter userRepositoriesPresenter;
   private String username;
 
   public static UsernameReposFragment newInstance(String username) {
@@ -55,7 +55,7 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
 
   @Override
   protected void onRefresh() {
-    authUserRepositoriesPresenter.load(username, this);
+    userRepositoriesPresenter.load(username, this);
   }
 
   @Override
@@ -70,6 +70,6 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
 
   @Override
   public void loadMoreItems() {
-    authUserRepositoriesPresenter.loadMore(username, this);
+    userRepositoriesPresenter.loadMore(username, this);
   }
 }
