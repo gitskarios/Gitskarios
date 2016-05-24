@@ -17,6 +17,11 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: "build-time-tracker"
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
