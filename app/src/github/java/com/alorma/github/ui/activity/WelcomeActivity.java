@@ -12,14 +12,12 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.utils.KeyboardUtils;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity
     implements WelcomePresenterViewInterface {
@@ -29,7 +27,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Bind(R.id.login_password) TextInputLayout loginPassword;
   @Bind(R.id.progressBar) View progressBar;
   private WelcomePresenter welcomePresenter;
-  private SMSBroadcastReceiver smsBroadcastReceiver;
   private MaterialDialog dialog;
 
   @Override
@@ -168,9 +165,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   protected void onStop() {
-    if (smsBroadcastReceiver != null) {
-      unregisterReceiver(smsBroadcastReceiver);
-    }
     welcomePresenter.stop();
     super.onStop();
   }

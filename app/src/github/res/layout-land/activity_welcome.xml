@@ -37,12 +37,12 @@
       <android.support.design.widget.TextInputLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:id="@+id/login_username"
           >
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/login_username"
             android:hint="@string/login_username"
             >
           <requestFocus/>
@@ -53,12 +53,12 @@
       <android.support.design.widget.TextInputLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:id="@+id/login_password"
           >
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/login_password"
             android:inputType="textPassword"
             android:hint="@string/login_password"
             />
