@@ -42,7 +42,9 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
 
   private void execute(Observable<SdkItem<List<Repo>>> observable,
       Callback<List<Repo>> listCallback, boolean firstTime) {
-    observable.subscribeOn(Schedulers.newThread())
+    observable
+        .timeout(20, TimeUnit.SECONDS)
+        .retry(3).subscribeOn(Schedulers.newThread())
         .map(sdkResponseObservable -> {
           if (sdkResponseObservable.getPage() != null && sdkResponseObservable.getPage() > 0) {
             this.page = sdkResponseObservable.getPage();
@@ -51,8 +53,6 @@ public abstract class RepositoriesPresenter extends Presenter<String, List<Repo>
           }
           return sdkResponseObservable.getK();
         })
-        .timeout(20, TimeUnit.SECONDS)
-        .retry(3)
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(listCallback::showLoading)
         .doOnCompleted(listCallback::hideLoading)
