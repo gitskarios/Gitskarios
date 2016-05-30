@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.Repo;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
@@ -115,7 +117,15 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
             + event.payload.issue.number
             + "</b>";
       case MemberEvent:
-        return "";
+        return " "
+            + event.payload.action
+            + " "
+            + "<b>"
+            + event.payload.member.login
+            + "</b>"
+            + " "
+            + " to "
+            + event.repo.name;
       case PublicEvent:
         return "";
       case PullRequestEvent:

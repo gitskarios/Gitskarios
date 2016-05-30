@@ -244,9 +244,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     executeRequest();
   }
 
-  @NonNull
   private boolean filterEvent(GithubEvent event) {
-    return !(filterNames != null && !filterNames.isEmpty()) || filterNames.contains(event.type.name();
+    return !(filterNames != null && !filterNames.isEmpty()) || filterNames.contains(event.type.name());
   }
 
   @Override
