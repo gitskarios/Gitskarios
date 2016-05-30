@@ -54,8 +54,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class EventsListFragment extends LoadingListFragment<EventAdapter>
-    implements EventAdapter.EventAdapterListener {
+public class EventsListFragment extends LoadingListFragment<EventAdapter> implements EventAdapter.EventAdapterListener {
 
   protected String username;
 
@@ -127,9 +126,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     if (getActivity() != null) {
       MenuItem item = menu.findItem(R.id.events_list_filter);
       if (item != null) {
-        item.setIcon(
-            new IconicsDrawable(getActivity(), CommunityMaterial.Icon.cmd_filter_outline).colorRes(
-                R.color.white).actionBar());
+        item.setIcon(new IconicsDrawable(getActivity(), CommunityMaterial.Icon.cmd_filter_outline).colorRes(R.color.white).actionBar());
       }
     }
   }
@@ -158,38 +155,32 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
 
         logAnswers("EVENT_FILTER_CLICK");
 
-        new MaterialDialog.Builder(getActivity()).items(names)
-            .itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
-              @Override
-              public boolean onSelection(MaterialDialog dialog, Integer[] which,
-                  CharSequence[] text) {
-                EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
-                List<CharSequence> filterNames = Arrays.asList(text);
-                List<String> filters = new ArrayList<>(filterNames.size());
-                for (CharSequence filterName : filterNames) {
-                  filters.add(String.valueOf(filterName));
-                }
-                EventsListFragment.this.filterNames = new ArrayStrings(filters);
-                saveFilter();
-                executeFromFilter();
-                logAnswers("EVENT_FILTER_APPLIED");
-                return false;
-              }
-            })
-            .positiveText(R.string.ok)
-            .neutralText(R.string.clear_filters)
-            .callback(new MaterialDialog.ButtonCallback() {
-              @Override
-              public void onNeutral(MaterialDialog dialog) {
-                super.onNeutral(dialog);
-                EventsListFragment.this.filterIds = null;
-                EventsListFragment.this.filterNames = null;
-                clearSavedFilter();
-                executeFromFilter();
-                logAnswers("EVENT_FILTER_CLEAR");
-              }
-            })
-            .show();
+        new MaterialDialog.Builder(getActivity()).items(names).itemsCallbackMultiChoice(ids, new MaterialDialog.ListCallbackMultiChoice() {
+          @Override
+          public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+            EventsListFragment.this.filterIds = new ArrayIntegers(Arrays.asList(which));
+            List<CharSequence> filterNames = Arrays.asList(text);
+            List<String> filters = new ArrayList<>(filterNames.size());
+            for (CharSequence filterName : filterNames) {
+              filters.add(String.valueOf(filterName));
+            }
+            EventsListFragment.this.filterNames = new ArrayStrings(filters);
+            saveFilter();
+            executeFromFilter();
+            logAnswers("EVENT_FILTER_APPLIED");
+            return false;
+          }
+        }).positiveText(R.string.ok).neutralText(R.string.clear_filters).callback(new MaterialDialog.ButtonCallback() {
+          @Override
+          public void onNeutral(MaterialDialog dialog) {
+            super.onNeutral(dialog);
+            EventsListFragment.this.filterIds = null;
+            EventsListFragment.this.filterNames = null;
+            clearSavedFilter();
+            executeFromFilter();
+            logAnswers("EVENT_FILTER_CLEAR");
+          }
+        }).show();
         break;
     }
 
@@ -207,8 +198,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
 
     Gson gson = new Gson();
 
-    ArrayList events_filter =
-        gson.fromJson(shared.getString("EVENTS_FILTER", null), ArrayList.class);
+    ArrayList events_filter = gson.fromJson(shared.getString("EVENTS_FILTER", null), ArrayList.class);
 
     if (events_filter != null) {
       EventsListFragment.this.filterNames = new ArrayStrings();
@@ -217,8 +207,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       }
     }
 
-    ArrayList events_filter_ids =
-        gson.fromJson(shared.getString("EVENTS_FILTER_IDS", null), ArrayList.class);
+    ArrayList events_filter_ids = gson.fromJson(shared.getString("EVENTS_FILTER_IDS", null), ArrayList.class);
 
     if (events_filter_ids != null) {
       EventsListFragment.this.filterIds = new ArrayIntegers();
@@ -230,8 +219,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
 
   private void saveFilter() {
     if (filterNames != null && filterIds != null) {
-      SharedPreferences shared =
-          getActivity().getSharedPreferences("FILTERS", Context.MODE_PRIVATE);
+      SharedPreferences shared = getActivity().getSharedPreferences("FILTERS", Context.MODE_PRIVATE);
 
       Gson gson = new Gson();
       SharedPreferences.Editor edit = shared.edit();
@@ -257,9 +245,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
   }
 
   @NonNull
-  private Func1<GithubEvent, Boolean> getFilterNames() {
-    return githubEvent -> (filterNames != null && !filterNames.isEmpty()) ? filterNames.contains(
-        githubEvent.type.name()) : checkEventHandled(githubEvent);
+  private boolean filterEvent(GithubEvent event) {
+    return !(filterNames != null && !filterNames.isEmpty()) || filterNames.contains(event.type.name();
   }
 
   @Override
@@ -267,22 +254,6 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
     super.onResume();
 
     getActivity().setTitle(R.string.menu_events);
-  }
-
-  private boolean checkEventHandled(GithubEvent event) {
-    return event.getType() != null && (event.getType() == EventType.PushEvent)
-        || (event.getType()
-        == EventType.WatchEvent)
-        || (event.getType() == EventType.CreateEvent)
-        || (event.getType()
-        == EventType.IssueCommentEvent)
-        || (event.getType() == EventType.CommitCommentEvent)
-        || (event.getType()
-        == EventType.IssuesEvent)
-        || (event.getType() == EventType.ForkEvent)
-        || (event.getType() == EventType.ReleaseEvent)
-        || (event.getType() == EventType.PullRequestEvent)
-        || (event.getType() == EventType.DeleteEvent);
   }
 
   @Override
@@ -317,8 +288,8 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
           }
         })
         .flatMap(Observable::from)
-        .filter(getFilterNames())
-            .toList()
+        .filter(this::filterEvent)
+        .toList()
         .subscribe(subscriber);
   }
 
@@ -358,16 +329,13 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       String payload = gson.toJson(item.payload);
       IssueEventPayload issueEventPayload = gson.fromJson(payload, IssueEventPayload.class);
       if (issueEventPayload != null) {
-        startActivity(new IntentsManager(getActivity()).checkUri(
-            Uri.parse(issueEventPayload.issue.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
       }
     } else if (type == EventType.PullRequestEvent) {
       String payload = gson.toJson(item.payload);
-      PullRequestEventPayload pullRequestEventPayload =
-          gson.fromJson(payload, PullRequestEventPayload.class);
+      PullRequestEventPayload pullRequestEventPayload = gson.fromJson(payload, PullRequestEventPayload.class);
       if (pullRequestEventPayload != null) {
-        startActivity(new IntentsManager(getActivity()).checkUri(
-            Uri.parse(pullRequestEventPayload.pull_request.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(pullRequestEventPayload.pull_request.html_url)));
       }
     } else if (type == EventType.ForkEvent) {
       String payload = gson.toJson(item.payload);
@@ -382,8 +350,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       String payload = gson.toJson(item.payload);
       ReleaseEventPayload releaseEventPayload = gson.fromJson(payload, ReleaseEventPayload.class);
       if (releaseEventPayload != null) {
-        Intent intent =
-            new IntentsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
+        Intent intent = new IntentsManager(getActivity()).checkUri(Uri.parse(releaseEventPayload.release.url));
 
         if (intent != null) {
           startActivity(intent);
@@ -508,17 +475,14 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
       if (commit.stats != null) {
         String textCommitsStr = null;
         if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-          textCommitsStr = holder.itemView.getContext()
-              .getString(R.string.commit_file_add_del, commit.stats.additions,
-                  commit.stats.deletions);
+          textCommitsStr =
+              holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
           holder.textNums.setVisibility(View.VISIBLE);
         } else if (commit.stats.additions > 0) {
-          textCommitsStr = holder.itemView.getContext()
-              .getString(R.string.commit_file_add, commit.stats.additions);
+          textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
           holder.textNums.setVisibility(View.VISIBLE);
         } else if (commit.stats.deletions > 0) {
-          textCommitsStr = holder.itemView.getContext()
-              .getString(R.string.commit_file_del, commit.stats.deletions);
+          textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
           holder.textNums.setVisibility(View.VISIBLE);
         } else {
           holder.textNums.setVisibility(View.GONE);
@@ -533,8 +497,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter>
 
       if (commit.files != null && commit.files.size() > 0) {
         holder.numFiles.setVisibility(View.VISIBLE);
-        holder.numFiles.setText(
-            holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
+        holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
       } else {
         holder.numFiles.setVisibility(View.GONE);
       }

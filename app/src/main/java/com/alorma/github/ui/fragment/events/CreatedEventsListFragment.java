@@ -7,9 +7,6 @@ import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-/**
- * Created by Bernat on 03/10/2014.
- */
 public class CreatedEventsListFragment extends EventsListFragment implements TitleProvider {
 
   public static CreatedEventsListFragment newInstance(String username) {
