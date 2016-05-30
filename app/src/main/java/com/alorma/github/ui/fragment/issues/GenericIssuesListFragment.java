@@ -30,7 +30,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter>
-    implements View.OnClickListener, IssuesAdapter.IssuesAdapterListener, TitleProvider {
+    implements View.OnClickListener, IssuesAdapter.IssuesAdapterListener {
 
   private static final int ISSUE_REQUEST = 1234;
 
@@ -168,12 +168,8 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
   }
 
   @Override
-  public int getTitle() {
-    return R.string.my_issues;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return null;
+  public void onResume() {
+    super.onResume();
+    getActivity().setTitle(R.string.my_issues);
   }
 }

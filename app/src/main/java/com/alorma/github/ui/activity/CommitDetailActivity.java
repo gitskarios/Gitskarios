@@ -25,15 +25,10 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 22/12/2014.
- */
-public class CommitDetailActivity extends BackActivity
-    implements CommitFilesAdapter.OnFileRequestListener {
+public class CommitDetailActivity extends BackActivity implements CommitFilesAdapter.OnFileRequestListener {
 
   private CommitInfo info;
 
-  private List<Fragment> listFragments;
   private CommitFilesFragment commitFilesFragment;
 
   public static Intent launchIntent(Context context, CommitInfo commitInfo) {
@@ -52,7 +47,7 @@ public class CommitDetailActivity extends BackActivity
     setContentView(R.layout.commit_activity);
 
     if (getIntent().getExtras() != null) {
-      info = (CommitInfo) getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
+      info = getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
 
       if (info != null && info.repoInfo != null) {
 
@@ -63,7 +58,7 @@ public class CommitDetailActivity extends BackActivity
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-        listFragments = new ArrayList<>();
+        List<Fragment> listFragments = new ArrayList<>();
 
         commitFilesFragment = CommitFilesFragment.newInstance(info);
         commitFilesFragment.setOnFileRequestListener(this);
@@ -74,10 +69,13 @@ public class CommitDetailActivity extends BackActivity
         CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
         listFragments.add(commitCommentsFragment);
 
-        viewPager.setAdapter(
-            new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-        viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
-        tabLayout.setupWithViewPager(viewPager);
+        if (viewPager != null) {
+          viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
+          viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
+          if (tabLayout != null) {
+            tabLayout.setupWithViewPager(viewPager);
+          }
+        }
       } else {
         finish();
       }
@@ -88,31 +86,28 @@ public class CommitDetailActivity extends BackActivity
   protected void getContent() {
     super.getContent();
     GetSingleCommitClient client = new GetSingleCommitClient(info);
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Commit>() {
-          @Override
-          public void onCompleted() {
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Commit>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
+      @Override
+      public void onError(Throwable e) {
 
-          }
+      }
 
-          @Override
-          public void onNext(Commit commit) {
-            if (getSupportActionBar() != null) {
-              getSupportActionBar().setSubtitle(commit.shortSha());
-            }
+      @Override
+      public void onNext(Commit commit) {
+        if (getSupportActionBar() != null) {
+          getSupportActionBar().setSubtitle(commit.shortSha());
+        }
 
-            if (commitFilesFragment != null) {
-              commitFilesFragment.setFiles(commit.files);
-            }
-          }
-        });
+        if (commitFilesFragment != null) {
+          commitFilesFragment.setFiles(commit.files);
+        }
+      }
+    });
   }
 
   @Override
