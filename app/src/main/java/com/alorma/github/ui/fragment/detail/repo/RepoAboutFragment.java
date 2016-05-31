@@ -131,6 +131,17 @@ public class RepoAboutFragment extends BaseFragment
     return f;
   }
 
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,

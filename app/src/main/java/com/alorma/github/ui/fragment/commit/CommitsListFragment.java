@@ -111,6 +111,16 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
     CommitInfo commitInfo = new CommitInfo();
