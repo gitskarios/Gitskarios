@@ -99,6 +99,16 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter>
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   public int getTitle() {
     return R.string.contributors_fragment_title;
   }

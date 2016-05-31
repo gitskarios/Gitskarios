@@ -50,8 +50,7 @@ import rx.schedulers.Schedulers;
  * Created by Bernat on 22/08/2014.
  */
 public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
-    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager,
-    IssuesAdapter.IssuesAdapterListener {
+    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -83,8 +82,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.issues_list_fragment, null, false);
   }
 
@@ -96,8 +94,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
     Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
     String[] items = getResources().getStringArray(R.array.issues_filter);
-    ArrayAdapter<String> adapter =
-        new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
     spinner.setAdapter(adapter);
 
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -116,6 +113,16 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
       }
     });
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -316,9 +323,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
     float y = fab.getY() + (fab.getHeight() / 2);
 
     int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
-    Animator anim =
-        ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2,
-            finalRadius);
+    Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
     revealView.setVisibility(View.VISIBLE);
     anim.setDuration(600);
     anim.setInterpolator(new AccelerateInterpolator());

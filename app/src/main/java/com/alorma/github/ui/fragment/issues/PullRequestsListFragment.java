@@ -39,8 +39,8 @@ import rx.schedulers.Schedulers;
  * Created by Bernat on 22/08/2014.
  */
 public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAdapter>
-    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager,
-    IssuesAdapter.IssuesAdapterListener, Observer<List<PullRequest>> {
+    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener,
+    Observer<List<PullRequest>> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -61,8 +61,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.issues_list_fragment, null, false);
   }
 
@@ -72,8 +71,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
 
     Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
     String[] items = getResources().getStringArray(R.array.pullrequest_filter);
-    ArrayAdapter<String> adapter =
-        new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
     spinner.setAdapter(adapter);
 
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -92,6 +90,16 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
 
       }
     });
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -153,8 +161,7 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
     if (issues.size() > 0) {
       hideEmpty();
       if (refreshing || getAdapter() == null) {
-        PullRequestsAdapter pullRequestsAdapter =
-            new PullRequestsAdapter(LayoutInflater.from(getActivity()));
+        PullRequestsAdapter pullRequestsAdapter = new PullRequestsAdapter(LayoutInflater.from(getActivity()));
         pullRequestsAdapter.setIssuesAdapterListener(this);
         pullRequestsAdapter.addAll(issues);
         setAdapter(pullRequestsAdapter);

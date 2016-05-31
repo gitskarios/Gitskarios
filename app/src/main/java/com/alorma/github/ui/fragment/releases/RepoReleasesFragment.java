@@ -62,6 +62,16 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter>
     setAction(new GetRepoReleasesClient(repoInfo, page));
   }
 
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
   private void setAction(GithubListClient<List<Release>> getRepoReleasesClient) {
     getRepoReleasesClient.observable()
         .subscribeOn(Schedulers.io())
