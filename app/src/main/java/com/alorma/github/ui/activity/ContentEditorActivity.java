@@ -1,8 +1,12 @@
 package com.alorma.github.ui.activity;
 
+import akiniyalocts.imgurapiexample.imgurmodel.Upload;
+import akiniyalocts.imgurapiexample.services.ImgurUpload;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +16,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.bean.SearchableUser;
 import com.alorma.github.cache.CacheWrapper;
@@ -25,14 +28,21 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.utils.IntentHelper;
+import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.gitskarios.core.Pair;
 import com.github.mobile.util.HtmlUtils;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.single.EmptyPermissionListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.linkedin.android.spyglass.suggestions.SuggestionsResult;
 import com.linkedin.android.spyglass.tokenization.QueryToken;
 import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver;
 import com.linkedin.android.spyglass.ui.RichEditorView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,13 +50,10 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class ContentEditorActivity extends BackActivity
-    implements Toolbar.OnMenuItemClickListener, QueryTokenReceiver {
+public class ContentEditorActivity extends BackActivity implements Toolbar.OnMenuItemClickListener, QueryTokenReceiver {
 
   public static final String CONTENT = "CONTENT";
   private static final String HINT = "HINT";
@@ -65,8 +72,7 @@ public class ContentEditorActivity extends BackActivity
   private IssueInfo issueInfo;
   private boolean applied = false;
 
-  public static Intent createLauncherIntent(Context context, String hint, String prefill,
-      boolean allowEmpty, boolean backIsOk) {
+  public static Intent createLauncherIntent(Context context, String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
     Intent intent = new Intent(context, ContentEditorActivity.class);
 
     if (hint != null) {
@@ -82,8 +88,8 @@ public class ContentEditorActivity extends BackActivity
     return intent;
   }
 
-  public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum,
-      String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
+  public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, int issueNum, String hint, String prefill,
+      boolean allowEmpty, boolean backIsOk) {
     Intent intent = new Intent(context, ContentEditorActivity.class);
 
     if (hint != null) {
@@ -126,8 +132,7 @@ public class ContentEditorActivity extends BackActivity
       editText.setQueryTokenReceiver(this);
 
       String content = getIntent().getExtras().getString(PREFILL);
-      if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras()
-          .containsKey(ISSUE_NUM)) {
+      if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(ISSUE_NUM)) {
 
         RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
         int issueNumber = getIntent().getExtras().getInt(ISSUE_NUM);
@@ -203,15 +208,13 @@ public class ContentEditorActivity extends BackActivity
     MenuItem okItem = menu.findItem(R.id.action_ok);
 
     if (okItem != null) {
-      IconicsDrawable iconicsDrawable =
-          new IconicsDrawable(this, Octicons.Icon.oct_check).actionBar().color(Color.WHITE);
+      IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_check).actionBar().color(Color.WHITE);
       okItem.setIcon(iconicsDrawable);
     }
     MenuItem trashItem = menu.findItem(R.id.action_trash);
 
     if (okItem != null) {
-      IconicsDrawable iconicsDrawable =
-          new IconicsDrawable(this, Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE);
+      IconicsDrawable iconicsDrawable = new IconicsDrawable(this, Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE);
       trashItem.setIcon(iconicsDrawable);
     }
 
@@ -270,21 +273,17 @@ public class ContentEditorActivity extends BackActivity
   }
 
   private void showAddPicture() {
-    dialog = new MaterialDialog.Builder(this).title(R.string.addPicture)
-        .content(R.string.addPictureContent)
-        .input(R.string.addPictureHint, 0, false, new MaterialDialog.InputCallback() {
-          @Override
-          public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
-            editText.getText().append("\n");
-            editText.getText().append("\n");
-            editText.getText().append("![]");
-            editText.getText().append("(" + charSequence.toString() + ")");
-            editText.getText().append("\n");
-            editText.getText().append("\n");
-          }
-        })
-        .neutralText(R.string.cancel)
-        .show();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+      PermissionListener permissionListener = new EmptyPermissionListener() {
+        @Override
+        public void onPermissionGranted(PermissionGrantedResponse response) {
+          IntentHelper.chooseFileIntent(ContentEditorActivity.this);
+        }
+      };
+      Dexter.checkPermission(permissionListener, Manifest.permission.READ_EXTERNAL_STORAGE);
+    } else {
+      IntentHelper.chooseFileIntent(this);
+    }
   }
 
   @Override
@@ -297,8 +296,44 @@ public class ContentEditorActivity extends BackActivity
           Emoji emoji = data.getParcelableExtra(EmojisActivity.EMOJI);
           editText.getText().append(" :" + emoji.getKey() + ": ");
           break;
+        case IntentHelper.FILE_PICK:
+          String path = UriUtils.getPath(this, data.getData());
+          if (path != null) {
+            File file = new File(path);
+            if (file != null) {
+              uploadFile(file);
+            }
+          }
+          break;
       }
     }
+  }
+
+  private void uploadFile(File file) {
+    Upload upload = new Upload();
+    upload.image = file;
+    upload.title = file.getName();
+    ImgurUpload imgurUpload = new ImgurUpload();
+
+    String clientId = getString(R.string.imgur_client_id);
+
+    imgurUpload.uploadImage(upload, clientId).observeOn(AndroidSchedulers.mainThread()).subscribe(o -> {
+      if (o.success) {
+        String link = o.data.link;
+
+        editText.getText().append("\n");
+        editText.getText().append("\n");
+        editText.getText().append("![");
+        editText.getText().append(o.data.name);
+        editText.getText().append("]");
+        editText.getText().append("(");
+        editText.getText().append(link);
+        editText.getText().append(")");
+        editText.getText().append("\n");
+        editText.getText().append("\n");
+
+      }
+    }, Throwable::printStackTrace);
   }
 
   @Override
@@ -372,81 +407,47 @@ public class ContentEditorActivity extends BackActivity
           }
         }
       })
-          .filter(new Func1<String, Boolean>() {
-            @Override
-            public Boolean call(String s) {
-              return queryToken.getTokenString().startsWith("@")
-                  && queryToken.getTokenString().length() > 2;
-            }
-          })
-          .map(new Func1<String, String>() {
-            @Override
-            public String call(String s) {
-              return s.replaceFirst("@", "");
-            }
-          })
-          .flatMap(new Func1<String, Observable<List<User>>>() {
-            @Override
-            public Observable<List<User>> call(final String s) {
-              Observable<List<User>> search = new UsersSearchClient(s).observable()
-                  .delay(200, TimeUnit.MILLISECONDS)
-                  .map(new Func1<Pair<List<User>, Integer>, List<User>>() {
-                    @Override
-                    public List<User> call(Pair<List<User>, Integer> listIntegerPair) {
-                      return listIntegerPair.first;
-                    }
-                  })
-                  .delay(2, TimeUnit.SECONDS);
+          .filter(s -> queryToken.getTokenString().startsWith("@") && queryToken.getTokenString().length() > 2)
+          .map(s -> s.replaceFirst("@", ""))
+          .flatMap(s -> {
+            Observable<List<User>> search = new UsersSearchClient(s).observable()
+                .delay(200, TimeUnit.MILLISECONDS)
+                .map(new Func1<Pair<List<User>, Integer>, List<User>>() {
+                  @Override
+                  public List<User> call(Pair<List<User>, Integer> listIntegerPair) {
+                    return listIntegerPair.first;
+                  }
+                })
+                .delay(2, TimeUnit.SECONDS);
 
-              Observable<List<User>> contributors =
-                  new GetRepoContributorsClient(issueInfo.repoInfo).observable()
-                      .map(new Func1<List<Contributor>, List<User>>() {
-                        @Override
-                        public List<User> call(List<Contributor> contributors) {
-                          List<User> users = new ArrayList<>();
-                          for (Contributor contributor : contributors) {
-                            if (contributor.author.login.contains(s)) {
-                              users.add(contributor.author);
-                            }
-                          }
-                          return users;
-                        }
-                      });
-
-              return Observable.concat(contributors, search);
-            }
-          })
-          .map(new Func1<List<User>, List<SearchableUser>>() {
-            @Override
-            public List<SearchableUser> call(List<User> users) {
-              List<SearchableUser> searchableUsers = new ArrayList<>();
-              for (User user : users) {
-                SearchableUser searchableUser = new SearchableUser();
-                searchableUser.id = user.id;
-                searchableUser.login = user.login;
-                searchableUsers.add(searchableUser);
+            Observable<List<User>> contributors = new GetRepoContributorsClient(issueInfo.repoInfo).observable().map(contributors1 -> {
+              List<User> users = new ArrayList<>();
+              for (Contributor contributor : contributors1) {
+                if (contributor.author.login.contains(s)) {
+                  users.add(contributor.author);
+                }
               }
-              return searchableUsers;
+              return users;
+            });
+
+            return Observable.concat(contributors, search);
+          })
+          .map(users -> {
+            List<SearchableUser> searchableUsers = new ArrayList<>();
+            for (User user : users) {
+              SearchableUser searchableUser = new SearchableUser();
+              searchableUser.id = user.id;
+              searchableUser.login = user.login;
+              searchableUsers.add(searchableUser);
             }
+            return searchableUsers;
           })
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Action1<List<SearchableUser>>() {
-            @Override
-            public void call(List<SearchableUser> users) {
-              editText.onReceiveSuggestionsResult(new SuggestionsResult(queryToken, users),
-                  "github");
-            }
-          }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
+          .subscribe(users -> editText.onReceiveSuggestionsResult(new SuggestionsResult(queryToken, users), "github"), throwable -> {
 
-            }
-          }, new Action0() {
-            @Override
-            public void call() {
+          }, () -> {
 
-            }
           });
 
       return buckets;
