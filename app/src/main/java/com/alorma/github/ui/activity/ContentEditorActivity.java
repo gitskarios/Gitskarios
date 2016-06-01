@@ -1,5 +1,6 @@
 package com.alorma.github.ui.activity;
 
+import akiniyalocts.imgurapiexample.imgurmodel.ImageResponse;
 import akiniyalocts.imgurapiexample.imgurmodel.Upload;
 import akiniyalocts.imgurapiexample.services.ImgurUpload;
 import android.Manifest;
@@ -28,6 +29,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.utils.ContentEditorText;
 import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.gitskarios.core.Pair;
@@ -319,21 +321,16 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
 
     imgurUpload.uploadImage(upload, clientId).observeOn(AndroidSchedulers.mainThread()).subscribe(o -> {
       if (o.success) {
-        String link = o.data.link;
-
-        editText.getText().append("\n");
-        editText.getText().append("\n");
-        editText.getText().append("![");
-        editText.getText().append(o.data.name);
-        editText.getText().append("]");
-        editText.getText().append("(");
-        editText.getText().append(link);
-        editText.getText().append(")");
-        editText.getText().append("\n");
-        editText.getText().append("\n");
-
+        addImgurImage(o, file.getName());
       }
     }, Throwable::printStackTrace);
+  }
+
+  private void addImgurImage(ImageResponse imageResponse, String name) {
+    String link = imageResponse.data.link;
+
+    String textForImage = new ContentEditorText().getTextForImage(name, link);
+    editText.setText(textForImage);
   }
 
   @Override
