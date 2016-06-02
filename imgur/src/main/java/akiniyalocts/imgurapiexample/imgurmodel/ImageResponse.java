@@ -57,4 +57,8 @@ public class ImageResponse {
         ", data=" + data.toString() +
         '}';
   }
+
+  public boolean isSucces() {
+    return success;
+  }
 }

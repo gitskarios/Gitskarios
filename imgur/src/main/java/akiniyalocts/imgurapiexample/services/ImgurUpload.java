@@ -13,7 +13,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.functions.Func0;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by AKiniyalocts on 1/12/15.
@@ -33,7 +32,7 @@ public class ImgurUpload {
         }
       }
     };
-    return Observable.defer(defer).subscribeOn(Schedulers.io());
+    return Observable.defer(defer);
   }
 
   private Observable<ImageResponse> getCall(Upload upload, String clientId) throws IOException {
@@ -54,7 +53,7 @@ public class ImgurUpload {
     }
   }
 
-  private Retrofit buildRestAdapter() {
+  protected Retrofit buildRestAdapter() {
     return new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(ImgurAPI.server).build();
   }
 }

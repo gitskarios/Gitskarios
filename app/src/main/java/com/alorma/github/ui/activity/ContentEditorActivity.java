@@ -1,7 +1,5 @@
 package com.alorma.github.ui.activity;
 
-import akiniyalocts.imgurapiexample.imgurmodel.ImageResponse;
-import akiniyalocts.imgurapiexample.imgurmodel.Upload;
 import akiniyalocts.imgurapiexample.services.ImgurUpload;
 import android.Manifest;
 import android.content.Context;
@@ -29,7 +27,6 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.activity.base.BackActivity;
-import com.alorma.github.ui.utils.ContentEditorText;
 import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.gitskarios.core.Pair;
@@ -50,12 +47,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class ContentEditorActivity extends BackActivity implements Toolbar.OnMenuItemClickListener, QueryTokenReceiver {
+public class ContentEditorActivity extends BackActivity
+    implements Toolbar.OnMenuItemClickListener, QueryTokenReceiver, ContentEditorPresenter.Callback {
 
   public static final String CONTENT = "CONTENT";
   private static final String HINT = "HINT";
@@ -73,6 +72,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
   private boolean backIsOk;
   private IssueInfo issueInfo;
   private boolean applied = false;
+  private ContentEditorPresenter contentEditorPresenter;
 
   public static Intent createLauncherIntent(Context context, String hint, String prefill, boolean allowEmpty, boolean backIsOk) {
     Intent intent = new Intent(context, ContentEditorActivity.class);
@@ -120,6 +120,10 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
     if (getIntent().getExtras() != null) {
 
       findViews();
+
+      Scheduler observeOn = AndroidSchedulers.mainThread();
+      Scheduler subscribeOn = Schedulers.io();
+      contentEditorPresenter = new ContentEditorPresenter(getString(R.string.imgur_client_id), new ImgurUpload(), observeOn, subscribeOn);
 
       toolbarExtra.inflateMenu(R.menu.content_editor_extra);
       toolbarExtra.setOnMenuItemClickListener(this);
@@ -302,35 +306,11 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
           String path = UriUtils.getPath(this, data.getData());
           if (path != null) {
             File file = new File(path);
-            if (file != null) {
-              uploadFile(file);
-            }
+            contentEditorPresenter.uploadImageWithImgurAPI(file);
           }
           break;
       }
     }
-  }
-
-  private void uploadFile(File file) {
-    Upload upload = new Upload();
-    upload.image = file;
-    upload.title = file.getName();
-    ImgurUpload imgurUpload = new ImgurUpload();
-
-    String clientId = getString(R.string.imgur_client_id);
-
-    imgurUpload.uploadImage(upload, clientId).observeOn(AndroidSchedulers.mainThread()).subscribe(o -> {
-      if (o.success) {
-        addImgurImage(o, file.getName());
-      }
-    }, Throwable::printStackTrace);
-  }
-
-  private void addImgurImage(ImageResponse imageResponse, String name) {
-    String link = imageResponse.data.link;
-
-    String textForImage = new ContentEditorText().getTextForImage(name, link);
-    editText.setText(textForImage);
   }
 
   @Override
@@ -366,6 +346,8 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
   public void onStart() {
     super.onStart();
 
+    contentEditorPresenter.setCallback(this);
+
     if (issueInfo != null) {
       String issueComment = CacheWrapper.getIssueComment(issueInfo.toString());
       if (issueComment != null) {
@@ -377,6 +359,7 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
   @Override
   public void onStop() {
     saveCache();
+    contentEditorPresenter.setCallback(null);
     super.onStop();
   }
 
@@ -450,5 +433,25 @@ public class ContentEditorActivity extends BackActivity implements Toolbar.OnMen
       return buckets;
     }
     return Collections.emptyList();
+  }
+
+  @Override
+  public void showImageLoading() {
+
+  }
+
+  @Override
+  public void appendText(String text) {
+
+  }
+
+  @Override
+  public void showImageUploadError() {
+
+  }
+
+  @Override
+  public void hideImageLoading() {
+
   }
 }
