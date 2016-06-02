@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.bean.SearchableUser;
 import com.alorma.github.cache.CacheWrapper;
@@ -306,6 +307,7 @@ public class ContentEditorActivity extends BackActivity
           String path = UriUtils.getPath(this, data.getData());
           if (path != null) {
             File file = new File(path);
+            contentEditorPresenter.setCallback(this);
             contentEditorPresenter.uploadImageWithImgurAPI(file);
           }
           break;
@@ -437,21 +439,24 @@ public class ContentEditorActivity extends BackActivity
 
   @Override
   public void showImageLoading() {
-
+    // TODO show notification
+    Toast.makeText(ContentEditorActivity.this, "Uploading image", Toast.LENGTH_SHORT).show();
   }
 
   @Override
   public void appendText(String text) {
-
+    editText.getText().append("\n");
+    editText.getText().append(text);
+    editText.getText().append("\n");
   }
 
   @Override
   public void showImageUploadError() {
-
+    Toast.makeText(ContentEditorActivity.this, "Uploading image error", Toast.LENGTH_SHORT).show();
   }
 
   @Override
   public void hideImageLoading() {
-
+    // TODO Hide notification
   }
 }
