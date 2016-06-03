@@ -10,6 +10,7 @@
       android:layout_height="wrap_content"
       android:fitsSystemWindows="true"
       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      android:elevation="8dp"
       >
 
     <android.support.v7.widget.Toolbar

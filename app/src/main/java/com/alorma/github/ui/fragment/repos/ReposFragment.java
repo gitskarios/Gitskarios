@@ -2,13 +2,13 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
@@ -30,6 +30,7 @@ public abstract class ReposFragment extends BaseFragment
 
   private ReposAdapter adapter;
   private SwipeRefreshLayout refreshLayout;
+  private RecyclerView recyclerView;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,12 +75,12 @@ public abstract class ReposFragment extends BaseFragment
     refreshLayout.setOnRefreshListener(this::onRefresh);
     refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(getContext()));
 
-    RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-    adapter = new ReposAdapter(LayoutInflater.from(getContext()));
-    adapter.setRecyclerAdapterContentListener(this);
-    recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-  }
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        adapter = new ReposAdapter(LayoutInflater.from(getContext()));
+        adapter.setRecyclerAdapterContentListener(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
 
   @Override
   public void onStart() {
@@ -111,7 +112,9 @@ public abstract class ReposFragment extends BaseFragment
 
   @Override
   public void onResponseEmpty() {
-    Toast.makeText(getContext(), R.string.empty_repos, Toast.LENGTH_SHORT).show();
+    if (isResumed()) {
+      Snackbar.make(recyclerView, R.string.empty_repos, Snackbar.LENGTH_SHORT).show();
+    }
   }
 
   @Override

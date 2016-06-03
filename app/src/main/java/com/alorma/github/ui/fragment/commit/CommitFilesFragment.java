@@ -56,6 +56,7 @@ public class CommitFilesFragment extends BaseFragment {
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     if (getArguments() != null) {
+
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
       recyclerView.setLayoutManager(
           new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

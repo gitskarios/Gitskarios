@@ -501,7 +501,7 @@
   <string name="action_open_in_browser">Open in browser</string>
   <string name="my_issues">Assigned issues</string>
   <string name="navigation_favorites">Favorites</string>
-  <string name="open_gitskarios_issue">Found bug?</string>
+  <string name="open_gitskarios_issue">Report bug</string>
   <string name="empty_repos">No repositories found</string>
   <string name="content_description_verified_commit">Commit verified</string>
 </resources>

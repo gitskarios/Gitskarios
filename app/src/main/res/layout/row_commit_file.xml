@@ -43,7 +43,7 @@
             tools:text="MyFile.java"
             />
 
-        <com.alorma.diff.lib.DiffTextView
+        <com.alorma.github.ui.view.DiffTextView
             android:id="@+id/textContent"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
