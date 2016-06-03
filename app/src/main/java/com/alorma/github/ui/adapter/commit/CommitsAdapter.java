@@ -8,6 +8,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.emoji.EmojiBitmapLoader;
@@ -94,17 +95,14 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     if (commit.stats != null) {
       String textCommitsStr = null;
       if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-        textCommitsStr = holder.itemView.getContext()
-            .getString(R.string.commit_file_add_del, commit.stats.additions,
-                commit.stats.deletions);
+        textCommitsStr =
+            holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
         holder.textNums.setVisibility(View.VISIBLE);
       } else if (commit.stats.additions > 0) {
-        textCommitsStr = holder.itemView.getContext()
-            .getString(R.string.commit_file_add, commit.stats.additions);
+        textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
         holder.textNums.setVisibility(View.VISIBLE);
       } else if (commit.stats.deletions > 0) {
-        textCommitsStr = holder.itemView.getContext()
-            .getString(R.string.commit_file_del, commit.stats.deletions);
+        textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
         holder.textNums.setVisibility(View.VISIBLE);
       } else {
         holder.textNums.setVisibility(View.GONE);
@@ -119,14 +117,17 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
     if (commit.files != null && commit.files.size() > 0) {
       holder.numFiles.setVisibility(View.VISIBLE);
-      holder.numFiles.setText(
-          holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
+      holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
     } else {
       holder.numFiles.setVisibility(View.GONE);
     }
 
-    TextUtils.applyNumToTextView(holder.comments_count, Octicons.Icon.oct_comment_discussion,
-        commit.comment_count);
+    boolean verifiedCommit = commit.commit.verification != null;
+    holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
+
+    // TODO Add commit verified info
+
+    TextUtils.applyNumToTextView(holder.comments_count, Octicons.Icon.oct_comment_discussion, commit.comment_count);
   }
 
   @Override
@@ -136,17 +137,14 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
   @Override
   public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-    return new HeaderViewHolder(
-        getInflater().inflate(R.layout.row_header_commit, viewGroup, false));
+    return new HeaderViewHolder(getInflater().inflate(R.layout.row_header_commit, viewGroup, false));
   }
 
   @Override
   public void onBindHeaderViewHolder(HeaderViewHolder headerViewHolder, int i) {
     Commit commit = getItem(i);
 
-    if (commit.commit != null
-        && commit.commit.author != null
-        && commit.commit.author.date != null) {
+    if (commit.commit != null && commit.commit.author != null && commit.commit.author.date != null) {
       DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
       DateTime dt = formatter.parseDateTime(commit.commit.author.date);
 
@@ -175,6 +173,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     private final TextView numFiles;
     private final TextView comments_count;
     private final UserAvatarView avatar;
+    private final ImageView verifiedCommit;
 
     public ViewHolder(final View itemView) {
       super(itemView);
@@ -186,32 +185,26 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
       numFiles = (TextView) itemView.findViewById(R.id.numFiles);
       comments_count = (TextView) itemView.findViewById(R.id.comments_count);
       avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
+      verifiedCommit = (ImageView) itemView.findViewById(R.id.verifiedCommit);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (commitsAdapterListener != null) {
-            Commit commit = getItem(getAdapterPosition());
-            commitsAdapterListener.onCommitClick(commit);
-          }
+      itemView.setOnClickListener(v -> {
+        if (commitsAdapterListener != null) {
+          Commit commit = getItem(getAdapterPosition());
+          commitsAdapterListener.onCommitClick(commit);
         }
       });
 
-      itemView.setOnLongClickListener(new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-          if (commitsAdapterListener != null) {
-            Commit commit = getItem(getAdapterPosition());
-            return commitsAdapterListener.onCommitLongClick(commit);
-          }
-          return true;
+      itemView.setOnLongClickListener(v -> {
+        if (commitsAdapterListener != null) {
+          Commit commit = getItem(getAdapterPosition());
+          return commitsAdapterListener.onCommitLongClick(commit);
         }
+        return true;
       });
     }
 
     public void copy(String text) {
-      ClipboardManager clipboard =
-          (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+      ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
       ClipData clip = ClipData.newPlainText("Gitskarios", text);
       clipboard.setPrimaryClip(clip);
     }

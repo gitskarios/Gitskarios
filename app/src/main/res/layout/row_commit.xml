@@ -7,13 +7,29 @@
               android:orientation="horizontal"
     >
 
-  <com.alorma.github.ui.view.UserAvatarView
-      android:id="@id/avatarAuthor"
-      android:layout_width="36dp"
-      android:layout_height="36dp"
-      android:layout_margin="8dp"
-      />
+  <LinearLayout
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:orientation="vertical"
+      >
 
+    <com.alorma.github.ui.view.UserAvatarView
+        android:id="@id/avatarAuthor"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="8dp"
+        />
+
+    <ImageView
+        android:id="@+id/verifiedCommit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/verified_commit"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/content_description_verified_commit"
+        />
+
+  </LinearLayout>
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
