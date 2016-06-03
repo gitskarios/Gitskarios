@@ -481,16 +481,9 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
       return view;
     }
 
-
     private void bindVerification(ViewHolder holder, Commit commit) {
-      // TODO Add commit verified info
-      boolean verifiedCommit = isCommitVerified(commit);
+      boolean verifiedCommit = commit.isCommitVerified();
       holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
-    }
-
-    private boolean isCommitVerified(Commit commit) {
-      GitCommitVerification verification = commit.commit.verification;
-      return verification != null && verification.verified;
     }
 
     public class ViewHolder {

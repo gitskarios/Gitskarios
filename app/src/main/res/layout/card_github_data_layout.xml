@@ -49,7 +49,7 @@
         android:layout_height="@dimen/card_row_item_divider_height"
         android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
         android:layout_marginStart="@dimen/card_row_item_divider_left_margin"
-        android:background="@drawable/divider_inside_car"
+        android:background="@drawable/divider_horizontal"
         />
 
     <LinearLayout
@@ -89,7 +89,7 @@
         android:layout_height="@dimen/card_row_item_divider_height"
         android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
         android:layout_marginStart="@dimen/card_row_item_divider_left_margin"
-        android:background="@drawable/divider_inside_car"
+        android:background="@drawable/divider_horizontal"
         />
 
     <LinearLayout
@@ -129,7 +129,7 @@
         android:layout_height="@dimen/card_row_item_divider_height"
         android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
         android:layout_marginStart="@dimen/card_row_item_divider_left_margin"
-        android:background="@drawable/divider_inside_car"
+        android:background="@drawable/divider_horizontal"
         />
 
     <LinearLayout
@@ -170,7 +170,7 @@
         android:layout_height="@dimen/card_row_item_divider_height"
         android:layout_marginLeft="@dimen/card_row_item_divider_left_margin"
         android:layout_marginStart="@dimen/card_row_item_divider_left_margin"
-        android:background="@drawable/divider_inside_car"
+        android:background="@drawable/divider_horizontal"
         />
 
     <LinearLayout

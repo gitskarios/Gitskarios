@@ -127,8 +127,7 @@ public class PullRequestCommitsReviewCommentsAdapter
   }
 
   private void bindVerification(CommitViewHolder holder, Commit commit) {
-    // TODO Add commit verified info
-    boolean verifiedCommit = isCommitVerified(commit);
+    boolean verifiedCommit = commit.isCommitVerified();
     holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
   }
 

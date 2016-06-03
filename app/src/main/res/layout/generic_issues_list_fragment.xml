@@ -10,7 +10,7 @@
       android:id="@+id/listContainer"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:divider="@drawable/divider_inside_car"
+      android:divider="@drawable/divider_horizontal"
       android:orientation="vertical"
       android:showDividers="middle"
       >
