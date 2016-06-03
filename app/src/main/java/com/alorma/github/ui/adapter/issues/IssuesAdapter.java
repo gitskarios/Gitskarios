@@ -11,6 +11,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.Label;
+import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TextUtils;
@@ -20,9 +21,6 @@ import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
 
-/**
- * Created by Bernat on 22/08/2014.
- */
 public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
 
   private IssuesAdapterListener issuesAdapterListener;
@@ -41,16 +39,13 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
     holder.title.setText(issue.title);
 
     String timeAgo = TimeUtils.getTimeAgoString(issue.created_at);
-    String info = holder.info.getContext()
-        .getResources()
-        .getString(R.string.issue_info, issue.number, timeAgo, issue.user.login);
+    String info = holder.info.getContext().getResources().getString(R.string.issue_info, issue.number, timeAgo, issue.user.login);
 
     holder.info.setText(info);
 
     int colorState = getColorState(issue);
 
-    IconicsDrawable iconDrawable =
-        new IconicsDrawable(holder.itemView.getContext(), getIconStateDrawable(issue));
+    IconicsDrawable iconDrawable = new IconicsDrawable(holder.itemView.getContext(), getIconStateDrawable(issue));
     iconDrawable.colorRes(colorState);
     holder.imageState.setImageDrawable(iconDrawable);
 
@@ -58,18 +53,14 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
       holder.labelsLayout.removeAllViews();
       if (issue.labels.size() > 0) {
         holder.labelsLayout.setVisibility(View.VISIBLE);
-        int margin = holder.labelsLayout.getContext()
-            .getResources()
-            .getDimensionPixelOffset(R.dimen.gapSmall);
+        int margin = holder.labelsLayout.getContext().getResources().getDimensionPixelOffset(R.dimen.gapSmall);
         for (Label label : issue.labels) {
           LabelView labelView = new LabelView(holder.labelsLayout.getContext());
           labelView.setLabel(label);
           holder.labelsLayout.addView(labelView);
 
-          if (labelView.getLayoutParams() != null
-              && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
-            FlowLayout.LayoutParams layoutParams =
-                (FlowLayout.LayoutParams) labelView.getLayoutParams();
+          if (labelView.getLayoutParams() != null && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
+            FlowLayout.LayoutParams layoutParams = (FlowLayout.LayoutParams) labelView.getLayoutParams();
             layoutParams.height = FlowLayout.LayoutParams.WRAP_CONTENT;
             layoutParams.width = FlowLayout.LayoutParams.WRAP_CONTENT;
             layoutParams.setMargins(margin, margin, margin, margin);
@@ -83,8 +74,16 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
       holder.labelsLayout.setVisibility(View.GONE);
     }
 
-    TextUtils.applyNumToTextView(holder.numComments, Octicons.Icon.oct_comment_discussion,
-        issue.comments);
+    Milestone milestone = issue.milestone;
+    if (milestone != null) {
+      String milestoneText = milestone.title + " " + milestone.openIssues + "/" + (milestone.openIssues + milestone.closedIssues);
+      holder.textMilestone.setText(milestoneText);
+      holder.milestoneLy.setVisibility(View.VISIBLE);
+    } else {
+      holder.milestoneLy.setVisibility(View.GONE);
+    }
+
+    TextUtils.applyNumToTextView(holder.numComments, Octicons.Icon.oct_comment_discussion, issue.comments);
   }
 
   @NonNull
@@ -119,7 +118,9 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
     private final TextView info;
     private final ImageView imageState;
     private final TextView numComments;
+    private final TextView textMilestone;
     private FlowLayout labelsLayout;
+    private ViewGroup milestoneLy;
 
     public ViewHolder(View itemView) {
       super(itemView);
@@ -127,17 +128,16 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
       title = (TextView) itemView.findViewById(R.id.textTitle);
       info = (TextView) itemView.findViewById(R.id.textInfo);
       numComments = (TextView) itemView.findViewById(R.id.numComments);
+      textMilestone = (TextView) itemView.findViewById(R.id.textMilestone);
       imageState = (ImageView) itemView.findViewById(R.id.imageState);
       labelsLayout = (FlowLayout) itemView.findViewById(R.id.labelsLayout);
+      milestoneLy = (ViewGroup) itemView.findViewById(R.id.milestoneLy);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          Issue item = getItem(getAdapterPosition());
+      itemView.setOnClickListener(v -> {
+        Issue item = getItem(getAdapterPosition());
 
-          if (issuesAdapterListener != null) {
-            issuesAdapterListener.onIssueOpenRequest(item);
-          }
+        if (issuesAdapterListener != null) {
+          issuesAdapterListener.onIssueOpenRequest(item);
         }
       });
     }
