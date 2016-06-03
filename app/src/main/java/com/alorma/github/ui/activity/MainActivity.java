@@ -93,8 +93,6 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
       FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    FirebaseCrash.report(new Exception("My first Android non-fatal error"));
-
     checkInvites();
 
     if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("rebirth", false)) {
@@ -122,12 +120,9 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     if (changeLog) {
       View view = findViewById(R.id.content);
       Snackbar.make(view, R.string.app_updated, Snackbar.LENGTH_LONG)
-          .setAction("Changelog", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              startActivity(
-                  new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
-            }
+          .setAction("Changelog", v -> {
+            startActivity(
+                new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
           })
           .show();
     }
