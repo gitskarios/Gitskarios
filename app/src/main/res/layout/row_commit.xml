@@ -105,18 +105,5 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         />
-
-    <TextView
-        android:id="@+id/textNums"
-        style="@style/TextAppearance.AppCompat.Caption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/gapLarge"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:background="@drawable/bg_event_commits"
-        android:padding="@dimen/gapSmall"
-        android:paddingLeft="@dimen/gapMedium"
-        android:textSize="@dimen/textSizeMicro"
-        />
   </LinearLayout>
 </LinearLayout>

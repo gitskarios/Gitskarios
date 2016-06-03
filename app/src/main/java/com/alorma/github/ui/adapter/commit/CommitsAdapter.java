@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +28,12 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     implements StickyRecyclerHeadersAdapter<CommitsAdapter.HeaderViewHolder> {
 
   private boolean shortMessage;
-  private RepoInfo repoInfo;
   private CommitsAdapterListener commitsAdapterListener;
   private EmojiBitmapLoader emojiBitmapLoader;
 
   public CommitsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
     super(inflater);
     this.shortMessage = shortMessage;
-    this.repoInfo = repoInfo;
     emojiBitmapLoader = new EmojiBitmapLoader();
   }
 
@@ -47,29 +44,40 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
   @Override
   public void onBindViewHolder(CommitsAdapter.ViewHolder holder, Commit commit) {
+    bindUser(holder, commit);
+    bindMessage(holder, commit);
+    bindSha(holder, commit);
+    bindFiles(holder, commit);
+    bindVerification(holder, commit);
+    bindComments(holder, commit);
+  }
 
-    User author = commit.author;
+  private void bindComments(ViewHolder holder, Commit commit) {
+    TextUtils.applyNumToTextView(holder.comments_count, Octicons.Icon.oct_comment_discussion, commit.comment_count);
+  }
 
-    if (author == null) {
-      author = commit.commit.author;
+  private void bindVerification(ViewHolder holder, Commit commit) {
+    // TODO Add commit verified info
+    boolean verifiedCommit = commit.commit.verification != null;
+    holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
+  }
+
+  private void bindFiles(ViewHolder holder, Commit commit) {
+    if (commit.files != null && commit.files.size() > 0) {
+      holder.numFiles.setVisibility(View.VISIBLE);
+      holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
+    } else {
+      holder.numFiles.setVisibility(View.GONE);
     }
+  }
 
-    if (author == null) {
-      author = commit.commit.committer;
+  private void bindSha(ViewHolder holder, Commit commit) {
+    if (commit.sha != null) {
+      holder.sha.setText(commit.shortSha());
     }
+  }
 
-    if (author != null) {
-      holder.avatar.setUser(author);
-
-      if (author.login != null) {
-        holder.user.setText(author.login);
-      } else if (author.name != null) {
-        holder.user.setText(author.name);
-      } else if (author.email != null) {
-        holder.user.setText(author.email);
-      }
-    }
-
+  private void bindMessage(ViewHolder holder, Commit commit) {
     String message = commit.shortMessage();
     if (commit.commit != null && commit.commit.shortMessage() != null) {
       message = commit.commit.shortMessage();
@@ -85,49 +93,34 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
       holder.title.setText(message);
     }
     emojiBitmapLoader.parseTextView(holder.title);
+  }
 
-    if (commit.sha != null) {
-      holder.sha.setText(commit.shortSha());
-    }
+  private void bindUser(ViewHolder holder, Commit commit) {
+    User author = getUser(commit);
+    if (author != null) {
+      holder.avatar.setUser(author);
 
-    holder.textNums.setText("");
-
-    if (commit.stats != null) {
-      String textCommitsStr = null;
-      if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-        textCommitsStr =
-            holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
-        holder.textNums.setVisibility(View.VISIBLE);
-      } else if (commit.stats.additions > 0) {
-        textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
-        holder.textNums.setVisibility(View.VISIBLE);
-      } else if (commit.stats.deletions > 0) {
-        textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
-        holder.textNums.setVisibility(View.VISIBLE);
-      } else {
-        holder.textNums.setVisibility(View.GONE);
+      if (author.login != null) {
+        holder.user.setText(author.login);
+      } else if (author.name != null) {
+        holder.user.setText(author.name);
+      } else if (author.email != null) {
+        holder.user.setText(author.email);
       }
+    }
+  }
 
-      if (textCommitsStr != null) {
-        holder.textNums.setText(Html.fromHtml(textCommitsStr));
-      }
-    } else {
-      holder.textNums.setVisibility(View.GONE);
+  private User getUser(Commit commit) {
+    User author = commit.author;
+
+    if (author == null) {
+      author = commit.commit.author;
     }
 
-    if (commit.files != null && commit.files.size() > 0) {
-      holder.numFiles.setVisibility(View.VISIBLE);
-      holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
-    } else {
-      holder.numFiles.setVisibility(View.GONE);
+    if (author == null) {
+      author = commit.commit.committer;
     }
-
-    boolean verifiedCommit = commit.commit.verification != null;
-    holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
-
-    // TODO Add commit verified info
-
-    TextUtils.applyNumToTextView(holder.comments_count, Octicons.Icon.oct_comment_discussion, commit.comment_count);
+    return author;
   }
 
   @Override
@@ -169,7 +162,6 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     private final TextView title;
     private final TextView user;
     private final TextView sha;
-    private final TextView textNums;
     private final TextView numFiles;
     private final TextView comments_count;
     private final UserAvatarView avatar;
@@ -181,7 +173,6 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
       title = (TextView) itemView.findViewById(R.id.title);
       user = (TextView) itemView.findViewById(R.id.user);
       sha = (TextView) itemView.findViewById(R.id.sha);
-      textNums = (TextView) itemView.findViewById(R.id.textNums);
       numFiles = (TextView) itemView.findViewById(R.id.numFiles);
       comments_count = (TextView) itemView.findViewById(R.id.comments_count);
       avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
