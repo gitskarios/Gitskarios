@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.GitCommitVerification;
 import com.alorma.github.sdk.bean.dto.response.User;
-import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TextUtils;
@@ -31,7 +31,7 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
   private CommitsAdapterListener commitsAdapterListener;
   private EmojiBitmapLoader emojiBitmapLoader;
 
-  public CommitsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
+  public CommitsAdapter(LayoutInflater inflater, boolean shortMessage) {
     super(inflater);
     this.shortMessage = shortMessage;
     emojiBitmapLoader = new EmojiBitmapLoader();
@@ -58,8 +58,13 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
   private void bindVerification(ViewHolder holder, Commit commit) {
     // TODO Add commit verified info
-    boolean verifiedCommit = commit.commit.verification != null;
+    boolean verifiedCommit = isCommitVerified(commit);
     holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
+  }
+
+  private boolean isCommitVerified(Commit commit) {
+    GitCommitVerification verification = commit.commit.verification;
+    return verification != null && verification.verified;
   }
 
   private void bindFiles(ViewHolder holder, Commit commit) {
