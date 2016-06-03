@@ -133,4 +133,20 @@
         format="color"/>
   <attr name="gitskarios_webview"
         format="color"/>
+
+  <declare-styleable name="DiffTextStyle">
+    <attr name="diff_theme" format="reference"/>
+  </declare-styleable>
+
+  <declare-styleable name="DiffTextViewStyle">
+
+    <attr name="diff_addition_color" format="color"/>
+    <attr name="diff_deletion_color" format="color"/>
+    <attr name="diff_info_color" format="color" />
+    <attr name="diff_addition_text_color" format="color"/>
+    <attr name="diff_deletion_text_color" format="color"/>
+    <attr name="diff_info_text_color" format="color" />
+    <attr name="diff_show_diff_info" format="boolean"/>
+
+  </declare-styleable>
 </resources>

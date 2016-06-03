@@ -28,7 +28,6 @@ public class CommitFilesFragment extends BaseFragment {
   public static final String INFO = "INFO";
   private RecyclerView recyclerView;
   private UpdateReceiver updateReceiver;
-  private CommitInfo info;
   private CommitFilesAdapter.OnFileRequestListener onFileRequestListener;
 
   public static CommitFilesFragment newInstance(CommitInfo info) {
@@ -50,7 +49,6 @@ public class CommitFilesFragment extends BaseFragment {
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     if (getArguments() != null) {
-      info = (CommitInfo) getArguments().getParcelable(INFO);
 
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
       recyclerView.setLayoutManager(

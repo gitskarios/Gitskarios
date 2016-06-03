@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.alorma.diff.lib.DiffTextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.view.DiffTextView;
 import com.alorma.github.utils.TextUtils;
 import java.io.IOException;
 
-public class CommitFilesAdapter
-    extends RecyclerArrayAdapter<CommitFile, CommitFilesAdapter.FileVH> {
+public class CommitFilesAdapter extends RecyclerArrayAdapter<CommitFile, CommitFilesAdapter.FileVH> {
 
   private OnFileRequestListener onFileRequestListener;
 
@@ -47,8 +46,7 @@ public class CommitFilesAdapter
 
     String textCommitsStr = null;
     if (additions > 0 && deletions > 0) {
-      textCommitsStr = holder.itemView.getContext()
-          .getString(R.string.commit_file_add_del, additions, deletions);
+      textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add_del, additions, deletions);
       holder.toolbar.setVisibility(View.VISIBLE);
     } else if (additions > 0) {
       textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, additions);
