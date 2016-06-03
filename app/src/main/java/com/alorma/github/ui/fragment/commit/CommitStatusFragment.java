@@ -38,6 +38,16 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   protected void executeRequest() {
     super.executeRequest();
     GetShaCombinedStatus getShaCombinedStatus =

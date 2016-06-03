@@ -20,15 +20,11 @@ import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import java.util.List;
 
-/**
- * Created by Bernat on 22/12/2014.
- */
 public class CommitFilesFragment extends BaseFragment {
 
   public static final String INFO = "INFO";
   private RecyclerView recyclerView;
   private UpdateReceiver updateReceiver;
-  private CommitInfo info;
   private CommitFilesAdapter.OnFileRequestListener onFileRequestListener;
 
   public static CommitFilesFragment newInstance(CommitInfo info) {
@@ -47,11 +43,19 @@ public class CommitFilesFragment extends BaseFragment {
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     if (getArguments() != null) {
-      info = (CommitInfo) getArguments().getParcelable(INFO);
-
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
       recyclerView.setLayoutManager(
           new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

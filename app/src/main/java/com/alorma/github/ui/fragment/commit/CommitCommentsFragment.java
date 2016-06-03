@@ -17,11 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 23/06/2015.
- */
-public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAdapter>
-    implements Observer<List<CommitComment>> {
+public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAdapter> implements Observer<List<CommitComment>> {
 
   private static final String INFO = "INFO";
   private CommitInfo info;
@@ -40,6 +36,16 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
     if (info != null) {
       setAction(new GetCommitCommentsClient(info));
     }
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -81,8 +87,7 @@ public class CommitCommentsFragment extends LoadingListFragment<CommitCommentAda
       if (getAdapter() != null) {
         getAdapter().addAll(commitComments);
       } else {
-        CommitCommentAdapter commentsAdapter =
-            new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
+        CommitCommentAdapter commentsAdapter = new CommitCommentAdapter(LayoutInflater.from(getActivity()), info.repoInfo);
         setAdapter(commentsAdapter);
       }
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {

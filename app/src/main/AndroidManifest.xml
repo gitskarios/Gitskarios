@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.ProfileActivity" />
-        <activity android:name=".ui.activity.CommitDetailActivity" />
+        <activity android:name=".ui.activity.CommitDetailActivity"/>
         <activity
             android:name=".ui.activity.RepoDetailActivity"
             android:exported="true" />
