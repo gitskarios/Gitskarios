@@ -253,7 +253,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             .withIdentifier(R.id.open_gitskarios_issue)
             .withIcon(Octicons.Icon.oct_issue_opened)
             .withSelectable(false)
-            .withLevel(2), new DividerDrawerItem());
+        , new DividerDrawerItem());
 
     if (donateFragment.enabled()) {
       PrimaryDrawerItem donateItem =
