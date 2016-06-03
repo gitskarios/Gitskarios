@@ -33,7 +33,6 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.issue.IssueAssigneesActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
-import com.alorma.github.ui.activity.issue.IssueMilestoneActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.view.LabelView;
