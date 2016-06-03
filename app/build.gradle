@@ -60,6 +60,7 @@ android {
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
+    vectorDrawables.useSupportLibrary = true
   }
 
   lintOptions {

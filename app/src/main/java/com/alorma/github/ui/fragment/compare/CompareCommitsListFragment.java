@@ -70,7 +70,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
   public void setCommits(List<Commit> commits) {
     commits = orderCommits(commits);
 
-    CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true, repoInfo);
+    CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true);
     adapter.addAll(commits);
     adapter.setCommitsAdapterListener(this);
     setAdapter(adapter);

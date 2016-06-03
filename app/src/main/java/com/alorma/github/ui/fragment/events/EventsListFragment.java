@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,12 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.GitCommitVerification;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -469,31 +469,6 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
         holder.sha.setText(commit.shortSha());
       }
 
-      holder.textNums.setText("");
-
-      if (commit.stats != null) {
-        String textCommitsStr = null;
-        if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-          textCommitsStr =
-              holder.itemView.getContext().getString(R.string.commit_file_add_del, commit.stats.additions, commit.stats.deletions);
-          holder.textNums.setVisibility(View.VISIBLE);
-        } else if (commit.stats.additions > 0) {
-          textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_add, commit.stats.additions);
-          holder.textNums.setVisibility(View.VISIBLE);
-        } else if (commit.stats.deletions > 0) {
-          textCommitsStr = holder.itemView.getContext().getString(R.string.commit_file_del, commit.stats.deletions);
-          holder.textNums.setVisibility(View.VISIBLE);
-        } else {
-          holder.textNums.setVisibility(View.GONE);
-        }
-
-        if (textCommitsStr != null) {
-          holder.textNums.setText(Html.fromHtml(textCommitsStr));
-        }
-      } else {
-        holder.textNums.setVisibility(View.GONE);
-      }
-
       if (commit.files != null && commit.files.size() > 0) {
         holder.numFiles.setVisibility(View.VISIBLE);
         holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
@@ -501,7 +476,21 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
         holder.numFiles.setVisibility(View.GONE);
       }
 
+      bindVerification(holder, commit);
+
       return view;
+    }
+
+
+    private void bindVerification(ViewHolder holder, Commit commit) {
+      // TODO Add commit verified info
+      boolean verifiedCommit = isCommitVerified(commit);
+      holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean isCommitVerified(Commit commit) {
+      GitCommitVerification verification = commit.commit.verification;
+      return verification != null && verification.verified;
     }
 
     public class ViewHolder {
@@ -509,9 +498,9 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
       private final TextView title;
       private final TextView user;
       private final TextView sha;
-      private final TextView textNums;
       private final TextView numFiles;
       private final UserAvatarView avatar;
+      private final ImageView verifiedCommit;
       private View itemView;
 
       public ViewHolder(final View itemView) {
@@ -519,9 +508,9 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
         title = (TextView) itemView.findViewById(R.id.title);
         user = (TextView) itemView.findViewById(R.id.user);
         sha = (TextView) itemView.findViewById(R.id.sha);
-        textNums = (TextView) itemView.findViewById(R.id.textNums);
         numFiles = (TextView) itemView.findViewById(R.id.numFiles);
         avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
+        verifiedCommit = (ImageView) itemView.findViewById(R.id.verifiedCommit);
       }
     }
   }

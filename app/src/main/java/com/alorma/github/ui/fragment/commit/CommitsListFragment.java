@@ -139,7 +139,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
       if (refreshing || getAdapter() == null) {
         CommitsAdapter commitsAdapter =
-            new CommitsAdapter(LayoutInflater.from(getActivity()), false, repoInfo);
+            new CommitsAdapter(LayoutInflater.from(getActivity()), false);
         commitsAdapter.addAll(commits);
         commitsAdapter.setCommitsAdapterListener(this);
         setAdapter(commitsAdapter);

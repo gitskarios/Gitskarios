@@ -5,14 +5,15 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.GitCommitVerification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -39,29 +40,25 @@ public class PullRequestCommitsReviewCommentsAdapter
   private boolean shortMessage;
   private RepoInfo repoInfo;
 
-  public PullRequestCommitsReviewCommentsAdapter(LayoutInflater inflater, boolean shortMessage,
-      RepoInfo repoInfo) {
+  public PullRequestCommitsReviewCommentsAdapter(LayoutInflater inflater, boolean shortMessage, RepoInfo repoInfo) {
     super(inflater);
     this.shortMessage = shortMessage;
     this.repoInfo = repoInfo;
   }
 
   @Override
-  public PullRequestCommitsReviewCommentsAdapter.Holder onCreateViewHolder(ViewGroup parent,
-      int viewType) {
+  public PullRequestCommitsReviewCommentsAdapter.Holder onCreateViewHolder(ViewGroup parent, int viewType) {
     if (viewType == VIEW_COMMIT) {
       return new CommitViewHolder(getInflater().inflate(R.layout.row_commit, parent, false));
     } else if (viewType == VIEW_REVIEW) {
-      return new ReviewCommentHolder(
-          getInflater().inflate(R.layout.timeline_review_comment, parent, false));
+      return new ReviewCommentHolder(getInflater().inflate(R.layout.timeline_review_comment, parent, false));
     } else {
       return new Holder(getInflater().inflate(android.R.layout.simple_list_item_1, parent, false));
     }
   }
 
   @Override
-  public void onBindViewHolder(PullRequestCommitsReviewCommentsAdapter.Holder holder,
-      IssueStoryDetail detail) {
+  public void onBindViewHolder(PullRequestCommitsReviewCommentsAdapter.Holder holder, IssueStoryDetail detail) {
 
     if (detail instanceof PullRequestStoryCommit) {
       Commit commit = ((PullRequestStoryCommit) detail).commit;
@@ -116,44 +113,28 @@ public class PullRequestCommitsReviewCommentsAdapter
       holder.sha.setText(commit.shortSha());
     }
 
-    holder.textNums.setText("");
-
-    if (commit.stats != null) {
-      String textCommitsStr = null;
-      if (commit.stats.additions > 0 && commit.stats.deletions > 0) {
-        textCommitsStr = holder.itemView.getContext()
-            .getString(R.string.commit_file_add_del, commit.stats.additions,
-                commit.stats.deletions);
-        holder.textNums.setVisibility(View.VISIBLE);
-      } else if (commit.stats.additions > 0) {
-        textCommitsStr = holder.itemView.getContext()
-            .getString(R.string.commit_file_add, commit.stats.additions);
-        holder.textNums.setVisibility(View.VISIBLE);
-      } else if (commit.stats.deletions > 0) {
-        textCommitsStr = holder.itemView.getContext()
-            .getString(R.string.commit_file_del, commit.stats.deletions);
-        holder.textNums.setVisibility(View.VISIBLE);
-      } else {
-        holder.textNums.setVisibility(View.GONE);
-      }
-
-      if (textCommitsStr != null) {
-        holder.textNums.setText(Html.fromHtml(textCommitsStr));
-      }
-    } else {
-      holder.textNums.setVisibility(View.GONE);
-    }
-
     if (commit.files != null && commit.files.size() > 0) {
       holder.numFiles.setVisibility(View.VISIBLE);
-      holder.numFiles.setText(
-          holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
+      holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
     } else {
       holder.numFiles.setVisibility(View.GONE);
     }
 
     holder.comments_count.setText(String.valueOf(commit.comment_count));
     applyIcon(holder.comments_count, Octicons.Icon.oct_comment_discussion);
+
+    bindVerification(holder, commit);
+  }
+
+  private void bindVerification(CommitViewHolder holder, Commit commit) {
+    // TODO Add commit verified info
+    boolean verifiedCommit = isCommitVerified(commit);
+    holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
+  }
+
+  private boolean isCommitVerified(Commit commit) {
+    GitCommitVerification verification = commit.commit.verification;
+    return verification != null && verification.verified;
   }
 
   private void applyIcon(TextView textView, Octicons.Icon value) {
@@ -191,10 +172,10 @@ public class PullRequestCommitsReviewCommentsAdapter
     private final TextView title;
     private final TextView user;
     private final TextView sha;
-    private final TextView textNums;
     private final TextView numFiles;
     private final UserAvatarView avatar;
     private final TextView comments_count;
+    private final ImageView verifiedCommit;
 
     public CommitViewHolder(final View itemView) {
       super(itemView);
@@ -202,10 +183,10 @@ public class PullRequestCommitsReviewCommentsAdapter
       title = (TextView) itemView.findViewById(R.id.title);
       user = (TextView) itemView.findViewById(R.id.user);
       sha = (TextView) itemView.findViewById(R.id.sha);
-      textNums = (TextView) itemView.findViewById(R.id.textNums);
       numFiles = (TextView) itemView.findViewById(R.id.numFiles);
       comments_count = (TextView) itemView.findViewById(R.id.comments_count);
       avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
+      verifiedCommit = (ImageView) itemView.findViewById(R.id.verifiedCommit);
 
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -222,25 +203,19 @@ public class PullRequestCommitsReviewCommentsAdapter
         }
       });
 
-      itemView.setOnLongClickListener(new View.OnLongClickListener() {
-
-        @Override
-        public boolean onLongClick(View v) {
-          if (getItem(getAdapterPosition()) instanceof PullRequestStoryCommit) {
-            Commit item = ((PullRequestStoryCommit) getItem(getAdapterPosition())).commit;
-            copy(item.shortSha());
-            Toast.makeText(itemView.getContext(),
-                itemView.getContext().getString(R.string.sha_copied, item.shortSha()),
-                Toast.LENGTH_SHORT).show();
-          }
-          return true;
+      itemView.setOnLongClickListener(v -> {
+        if (getItem(getAdapterPosition()) instanceof PullRequestStoryCommit) {
+          Commit item = ((PullRequestStoryCommit) getItem(getAdapterPosition())).commit;
+          copy(item.shortSha());
+          Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.sha_copied, item.shortSha()), Toast.LENGTH_SHORT)
+              .show();
         }
+        return true;
       });
     }
 
     public void copy(String text) {
-      ClipboardManager clipboard =
-          (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+      ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
       ClipData clip = ClipData.newPlainText("Gitskarios", text);
       clipboard.setPrimaryClip(clip);
     }

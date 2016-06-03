@@ -36,7 +36,7 @@
         android:textColor="@color/privateRepo"
         android:textSize="@dimen/textSizeXMicro"
         android:visibility="invisible"
-        tools:visibility="gone"
+        tools:visibility="visible"
         />
 
     <TextView
