@@ -87,64 +87,6 @@ public class PullRequestCommitsListFragment
     }
   }
 
-  // TODO
-    /*
-    private void getReviewComments() {
-        PullRequestReviewCommentsClient pullRequestReviewComments = new PullRequestReviewCommentsClient(getActivity(), issueInfo);
-        pullRequestReviewComments.setOnResultCallback(new BaseClient.OnResultCallback<List<ReviewComment>>() {
-            @Override
-            public void onResponseOk(List<ReviewComment> reviewComments, Response r) {
-                if (reviewComments != null) {
-                    List<IssueStoryDetail> items = getAdapter().getItems();
-
-                    if (items != null) {
-                        List<PullRequestStoryCommit> commits = new ArrayList<PullRequestStoryCommit>();
-                        for (IssueStoryDetail item : items) {
-                            if (item instanceof PullRequestStoryCommit) {
-                                commits.add((PullRequestStoryCommit) item);
-                            }
-                        }
-
-                        Map<String, List<ReviewComment>> mapComments = new HashMap<>();
-
-                        for (ReviewComment reviewComment : reviewComments) {
-                            if (mapComments.get(reviewComment.original_commit_id) == null) {
-                                mapComments.put(reviewComment.original_commit_id, new ArrayList<ReviewComment>());
-                            }
-                            mapComments.get(reviewComment.original_commit_id).add(reviewComment);
-                        }
-
-                        items = new ArrayList<>();
-                        for (PullRequestStoryCommit commit : commits) {
-                            items.add(commit);
-                             if (mapComments.get(commit.commit.sha) != null) {
-                                for (ReviewComment reviewComment : mapComments.get(commit.commit.sha)) {
-
-                                    IssueStoryReviewComment issueStoryReviewComment = new IssueStoryReviewComment(reviewComment);
-                                    issueStoryReviewComment.created_at = getMilisFromDateClearHour(reviewComment.created_at);
-                                    items.add(issueStoryReviewComment);
-                                }
-                            }
-                        }
-
-                        getAdapter().clear();
-                        getAdapter().addAll(items);
-                    }
-                }
-            }
-
-            private long getMilisFromDateClearHour(String createdAt) {
-                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-                DateTime dt = formatter.parseDateTime(createdAt);
-
-                return dt.hourOfDay().roundFloorCopy().getMillis();
-            }
-        });
-        pullRequestReviewComments.execute();
-    }
-    */
-
   @Override
   public void onError(Throwable error) {
     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
