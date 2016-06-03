@@ -25,7 +25,6 @@ import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
 import com.alorma.github.sdk.bean.dto.request.WebHookRequest;
-import com.alorma.github.sdk.bean.dto.request.WebHookResponse;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.Repo;
@@ -44,8 +43,8 @@ import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
-import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
+import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.GitskariosDownloadManager;
@@ -58,7 +57,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class RepoDetailActivity extends BackActivity
@@ -235,7 +233,7 @@ public class RepoDetailActivity extends BackActivity
     sourceListFragment.setSourceCallback(this);
     fragments.add(sourceListFragment);
     fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
-    fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
+    fragments.add(RepositoryIssuesListFragment.newInstance(requestRepoInfo, false));
     fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
     fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
     fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));

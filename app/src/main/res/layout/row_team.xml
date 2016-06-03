@@ -28,7 +28,7 @@
       android:id="@+id/divider"
       android:layout_width="match_parent"
       android:layout_height="@dimen/card_row_item_divider_height"
-      android:background="@drawable/divider_inside_car"
+      android:background="@drawable/divider_horizontal"
       />
 
 </LinearLayout>

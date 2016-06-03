@@ -129,7 +129,7 @@
         <activity android:name=".ui.activity.PullRequestCommitsActivity" />
         <activity android:name=".ui.activity.PullRequestFilesActivity" />
         <activity android:name=".ui.activity.ForksActivity" />
-        <activity android:name=".ui.activity.issue.IssueMilestoneActivity" />
+        <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity" />
         <activity android:name=".ui.activity.issue.IssueLabelsActivity" />
         <activity android:name=".ui.activity.issue.IssueAssigneesActivity" />
         <activity android:name=".ui.activity.SyncFavoritesActivity" />

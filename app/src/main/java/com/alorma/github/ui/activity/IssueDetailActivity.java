@@ -430,24 +430,16 @@ public class IssueDetailActivity extends BackActivity
         finish();
         break;
       case R.id.action_close_issue:
-        new CloseAction(this, issueInfo, R.string.closeIssue).setCallback(
-            new ActionCallback<Issue>() {
-              @Override
-              public void onResult(Issue issue) {
-                getContent();
-                Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
-              }
-            }).execute();
+        new CloseAction(this, issueInfo, R.string.closeIssue).setCallback(issue -> {
+          getContent();
+          Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+        }).execute();
         break;
       case R.id.action_reopen_issue:
-        new ReopenAction(this, issueInfo, R.string.reopenIssue).setCallback(
-            new ActionCallback<Issue>() {
-              @Override
-              public void onResult(Issue issue) {
-                getContent();
-                Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
-              }
-            }).execute();
+        new ReopenAction(this, issueInfo, R.string.reopenIssue).setCallback(issue -> {
+          getContent();
+          Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+        }).execute();
         break;
       case R.id.issue_edit_milestone:
         editMilestone();

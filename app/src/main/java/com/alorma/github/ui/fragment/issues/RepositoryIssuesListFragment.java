@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -29,6 +30,7 @@ import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
+import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -46,9 +48,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
-    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager,
-    IssuesAdapter.IssuesAdapterListener {
+public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdapter>
+    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -63,12 +64,12 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   private int currentFilter = 0;
   private View revealView;
 
-  public static IssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
+  public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
     bundle.putBoolean(FROM_SEARCH, fromSearch);
 
-    IssuesListFragment fragment = new IssuesListFragment();
+    RepositoryIssuesListFragment fragment = new RepositoryIssuesListFragment();
     fragment.setArguments(bundle);
     return fragment;
   }
@@ -80,8 +81,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.issues_list_fragment, null, false);
   }
 
@@ -93,8 +93,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
     Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
     String[] items = getResources().getStringArray(R.array.issues_filter);
-    ArrayAdapter<String> adapter =
-        new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
     spinner.setAdapter(adapter);
 
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -113,6 +112,17 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
       }
     });
+
+    view.findViewById(R.id.labels).setOnClickListener(v -> {
+
+    });
+
+    view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
+  }
+
+  private void showMilestones() {
+    Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, false);
+    startActivity(intent);
   }
 
   @Override
@@ -313,9 +323,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
     float y = fab.getY() + (fab.getHeight() / 2);
 
     int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
-    Animator anim =
-        ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2,
-            finalRadius);
+    Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
     revealView.setVisibility(View.VISIBLE);
     anim.setDuration(600);
     anim.setInterpolator(new AccelerateInterpolator());
