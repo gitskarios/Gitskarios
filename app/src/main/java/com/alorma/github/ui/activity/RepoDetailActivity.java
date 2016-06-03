@@ -43,8 +43,8 @@ import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
-import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
+import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.GitskariosDownloadManager;
@@ -242,7 +242,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     sourceListFragment.setSourceCallback(this);
     fragments.add(sourceListFragment);
     fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
-    fragments.add(IssuesListFragment.newInstance(requestRepoInfo, false));
+    fragments.add(RepositoryIssuesListFragment.newInstance(requestRepoInfo, false));
     fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
     fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
     fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));

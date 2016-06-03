@@ -10,26 +10,37 @@ import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
-import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.NaturalTimeFormatter;
 import java.util.List;
 
-public class IssueMilestoneActivity extends BackActivity
+public class RepositoryMilestonesActivity extends BackActivity
     implements Presenter.Callback<List<Milestone>>, RecyclerArrayAdapter.ItemCallback<Milestone> {
 
-  private static final String ISSUE_INFO = "ISSUE_INFO";
+  private static final String REPO_INFO = "REPO_INFO";
   private static final String RETURN = "RETURN";
+  private static final String STATE = "STATE";
 
   @Bind(R.id.recycler) RecyclerView recyclerView;
   private MilestonesAdapter adapter;
   private boolean returnResult;
 
-  public static Intent createLauncher(Context context, IssueInfo issueInfo, boolean returnResult) {
-    Intent intent = new Intent(context, IssueMilestoneActivity.class);
-    intent.putExtra(ISSUE_INFO, issueInfo);
+  public static Intent createLauncher(Context context, RepoInfo repoInfo, boolean returnResult) {
+    Intent intent = new Intent(context, RepositoryMilestonesActivity.class);
+    intent.putExtra(REPO_INFO, repoInfo);
     intent.putExtra(RETURN, returnResult);
+    intent.putExtra(STATE, MilestoneState.open);
+    return intent;
+  }
+
+  public static Intent createLauncher(Context context, RepoInfo issrepoInfoeInfo, MilestoneState state, boolean returnResult) {
+    Intent intent = new Intent(context, RepositoryMilestonesActivity.class);
+    intent.putExtra(REPO_INFO, issrepoInfoeInfo);
+    intent.putExtra(RETURN, returnResult);
+    intent.putExtra(STATE, state);
     return intent;
   }
 
@@ -41,7 +52,8 @@ public class IssueMilestoneActivity extends BackActivity
 
     setTitle(R.string.milestones);
 
-    IssueInfo issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+    RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+    MilestoneState state = (MilestoneState) getIntent().getExtras().getSerializable(STATE);
 
     returnResult = getIntent().getExtras().getBoolean(RETURN, false);
 
@@ -51,8 +63,8 @@ public class IssueMilestoneActivity extends BackActivity
     adapter.setCallback(this);
     recyclerView.setAdapter(adapter);
 
-    IssueMilestonePresenter presenter = new IssueMilestonePresenter();
-    presenter.load(issueInfo, this);
+    IssueMilestonePresenter presenter = new IssueMilestonePresenter(state);
+    presenter.load(repoInfo, this);
   }
 
   @Override

@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -29,6 +30,7 @@ import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
+import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -46,7 +48,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
+public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdapter>
     implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
@@ -62,12 +64,12 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   private int currentFilter = 0;
   private View revealView;
 
-  public static IssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
+  public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
     bundle.putBoolean(FROM_SEARCH, fromSearch);
 
-    IssuesListFragment fragment = new IssuesListFragment();
+    RepositoryIssuesListFragment fragment = new RepositoryIssuesListFragment();
     fragment.setArguments(bundle);
     return fragment;
   }
@@ -110,16 +112,17 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
       }
     });
+
+    view.findViewById(R.id.labels).setOnClickListener(v -> {
+
+    });
+
+    view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
   }
 
-  @Override
-  protected int getLightTheme() {
-    return R.style.AppTheme_Repository;
-  }
-
-  @Override
-  protected int getDarkTheme() {
-    return R.style.AppTheme_Dark_Repository;
+  private void showMilestones() {
+    Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, false);
+    startActivity(intent);
   }
 
   @Override

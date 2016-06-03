@@ -13,7 +13,7 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:divider="@drawable/divider_inside_car"
+      android:divider="@drawable/divider_horizontal"
       android:orientation="vertical"
       android:showDividers="middle"
       >

@@ -35,6 +35,7 @@ import com.alorma.github.ui.activity.issue.IssueAssigneesActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.IssueMilestoneActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.view.LabelView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -226,7 +227,7 @@ public class PullRequestInfoFragment extends BaseFragment {
       milestoneView.setVisibility(View.GONE);
     }
     configToolbar(toolbarMilestone, item -> {
-      Intent intent = IssueMilestoneActivity.createLauncher(getActivity(), issueInfo, true);
+      Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), issueInfo.repoInfo, true);
       startActivityForResult(intent, MILESTONE_EDIT);
       return true;
     });

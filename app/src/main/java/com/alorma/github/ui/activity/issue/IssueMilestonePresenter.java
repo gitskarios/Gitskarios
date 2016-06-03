@@ -4,6 +4,7 @@ import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
@@ -12,11 +13,17 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class IssueMilestonePresenter extends Presenter<IssueInfo, List<Milestone>> {
+public class IssueMilestonePresenter extends Presenter<RepoInfo, List<Milestone>> {
+  private MilestoneState state;
+
+  public IssueMilestonePresenter(MilestoneState state) {
+    this.state = state;
+  }
+
   @Override
-  public void load(IssueInfo issueInfo, Callback<List<Milestone>> listCallback) {
+  public void load(RepoInfo repoInfo, Callback<List<Milestone>> listCallback) {
     GetMilestonesClient milestonesClient =
-        new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
+        new GetMilestonesClient(repoInfo, state, true);
     milestonesClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -27,12 +34,12 @@ public class IssueMilestonePresenter extends Presenter<IssueInfo, List<Milestone
   }
 
   @Override
-  public void loadMore(IssueInfo issueInfo, Callback<List<Milestone>> listCallback) {
+  public void loadMore(RepoInfo repoInfo, Callback<List<Milestone>> listCallback) {
 
   }
 
   @Override
-  protected GenericRepository<IssueInfo, List<Milestone>> configRepository(
+  protected GenericRepository<RepoInfo, List<Milestone>> configRepository(
       RestWrapper restWrapper) {
     return null;
   }

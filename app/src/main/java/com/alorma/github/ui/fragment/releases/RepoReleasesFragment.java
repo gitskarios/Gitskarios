@@ -135,6 +135,6 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter>
 
   @Override
   public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_tag;
+    return Octicons.Icon.oct_package;
   }
 }
