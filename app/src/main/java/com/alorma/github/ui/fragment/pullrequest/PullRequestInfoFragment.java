@@ -34,6 +34,7 @@ import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.issue.IssueAssigneesActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.IssueMilestoneActivity;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.view.LabelView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -44,7 +45,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PullRequestInfoFragment extends Fragment {
+public class PullRequestInfoFragment extends BaseFragment {
 
   private static final String EXTRA_PULL_REQUEST = "EXTRA_PULL_REQUEST";
   private static final String ISSUE_INFO = "ISSUE_INFO";
@@ -90,6 +91,17 @@ public class PullRequestInfoFragment extends Fragment {
       @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.pullrequest_info_fragment, null, false);
   }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

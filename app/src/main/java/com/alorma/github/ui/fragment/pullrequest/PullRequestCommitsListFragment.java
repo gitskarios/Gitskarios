@@ -27,8 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class PullRequestCommitsListFragment
-    extends LoadingListFragment<PullRequestCommitsReviewCommentsAdapter>
+public class PullRequestCommitsListFragment extends LoadingListFragment<PullRequestCommitsReviewCommentsAdapter>
     implements PermissionsManager, BackManager, Observer<List<Commit>> {
 
   private static final String ISSUE_INFO = "ISSUE_INFO";
@@ -56,6 +55,16 @@ public class PullRequestCommitsListFragment
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   public void onNext(final List<Commit> commits) {
     if (this.commits == null || refreshing) {
       this.commits = new ArrayList<>();
@@ -73,8 +82,7 @@ public class PullRequestCommitsListFragment
 
       if (refreshing || getAdapter() == null) {
         PullRequestCommitsReviewCommentsAdapter commitsAdapter =
-            new PullRequestCommitsReviewCommentsAdapter(LayoutInflater.from(getActivity()), false,
-                issueInfo.repoInfo);
+            new PullRequestCommitsReviewCommentsAdapter(LayoutInflater.from(getActivity()), false, issueInfo.repoInfo);
 
         commitsAdapter.addAll(issueStoryDetails);
         setAdapter(commitsAdapter);
@@ -127,8 +135,7 @@ public class PullRequestCommitsListFragment
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
 
-        Days days = Days.daysBetween(dt.withTimeAtStartOfDay(),
-            new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+        Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
         commit.days = days.getDays();
 
