@@ -82,7 +82,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.issues_list_fragment, null, false);
+    return inflater.inflate(R.layout.repository_issues_list_fragment, null, false);
   }
 
   @Override
@@ -111,10 +111,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
       public void onNothingSelected(AdapterView<?> parent) {
 
       }
-    });
-
-    view.findViewById(R.id.labels).setOnClickListener(v -> {
-
     });
 
     view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
