@@ -241,13 +241,13 @@ dependencies {
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
-  compile 'com.google.firebase:firebase-core:9.0.0'
-  compile 'com.google.firebase:firebase-database:9.0.0'
-  compile 'com.google.firebase:firebase-ads:9.0.0'
-  compile 'com.google.firebase:firebase-auth:9.0.0'
-  compile 'com.google.firebase:firebase-invites:9.0.0'
-  compile 'com.google.firebase:firebase-messaging:9.0.0'
-  compile 'com.google.firebase:firebase-crash:9.0.0'
+  compile 'com.google.firebase:firebase-core:9.0.2'
+  compile 'com.google.firebase:firebase-database:9.0.2'
+  compile 'com.google.firebase:firebase-ads:9.0.2'
+  compile 'com.google.firebase:firebase-auth:9.0.2'
+  compile 'com.google.firebase:firebase-invites:9.0.2'
+  compile 'com.google.firebase:firebase-messaging:9.0.2'
+  compile 'com.google.firebase:firebase-crash:9.0.2'
 }
 
 play {
