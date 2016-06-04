@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
+import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -28,6 +29,7 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
+import com.alorma.github.ui.activity.MilestoneIssuesActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
@@ -55,6 +57,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   private static final String FROM_SEARCH = "FROM_SEARCH";
 
   private static final int ISSUE_REQUEST = 1234;
+  private static final int MILESTONES_REQUEST = 1212;
 
   private RepoInfo repoInfo;
 
@@ -82,7 +85,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.issues_list_fragment, null, false);
+    return inflater.inflate(R.layout.repository_issues_list_fragment, null, false);
   }
 
   @Override
@@ -113,16 +116,12 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
       }
     });
 
-    view.findViewById(R.id.labels).setOnClickListener(v -> {
-
-    });
-
     view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
   }
 
   private void showMilestones() {
-    Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, false);
-    startActivity(intent);
+    Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, true);
+    startActivityForResult(intent, MILESTONES_REQUEST);
   }
 
   @Override
@@ -208,12 +207,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
             return Observable.from(listIntegerPair.first);
           }
         })
-        .filter(new Func1<Issue, Boolean>() {
-          @Override
-          public Boolean call(Issue issue) {
-            return issue.pullRequest == null;
-          }
-        })
+        .filter(issue -> issue.pullRequest == null)
         .toList()
         .subscribe(new Subscriber<List<Issue>>() {
           @Override
@@ -357,8 +351,14 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == Activity.RESULT_FIRST_USER) {
       invalidate();
-    } else if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
-      invalidate();
+    } else if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == ISSUE_REQUEST) {
+        invalidate();
+      } else if (requestCode == MILESTONES_REQUEST) {
+        Milestone milestone = data.getParcelableExtra(Milestone.class.getSimpleName());
+        Intent intent = MilestoneIssuesActivity.launchIntent(getActivity(), repoInfo, milestone);
+        startActivity(intent);
+      }
     }
   }
 
@@ -400,10 +400,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   @Override
   public IIcon getTitleIcon() {
     return Octicons.Icon.oct_issue_opened;
-  }
-
-  public void setSearchClientRequest(SearchClientRequest searchClientRequest) {
-    this.searchClientRequest = searchClientRequest;
   }
 
   public void clear() {

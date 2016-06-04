@@ -13,9 +13,6 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 
-/**
- * Created by Bernat on 31/01/2015.
- */
 public class SearchIssuesActivity extends BackActivity
     implements SearchView.OnQueryTextListener, SearchView.OnCloseListener,
     IssuesListFragment.SearchClientRequest {

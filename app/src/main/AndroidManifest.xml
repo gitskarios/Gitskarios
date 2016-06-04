@@ -132,7 +132,8 @@
         <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity" />
         <activity android:name=".ui.activity.issue.IssueLabelsActivity" />
         <activity android:name=".ui.activity.issue.IssueAssigneesActivity" />
-        <activity android:name=".ui.activity.SyncFavoritesActivity" />
+        <!--<activity android:name=".ui.activity.SyncFavoritesActivity" />-->
+        <activity android:name=".ui.activity.MilestoneIssuesActivity" />
         <activity
             android:name=".ui.activity.ContentEditorActivity"
             android:windowSoftInputMode="adjustPan" />
