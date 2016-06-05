@@ -33,6 +33,8 @@ public class FileActivity extends RepositoryThemeActivity {
     info = (FileInfo) getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
     fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
 
+    setTitle(info.name);
+
     FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
     fileFragment.setArguments(getIntent().getExtras());
     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

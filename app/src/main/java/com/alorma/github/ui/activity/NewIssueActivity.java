@@ -88,6 +88,8 @@ public class NewIssueActivity extends BackActivity {
       repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
       findViews();
 
+      setTitle(getString(R.string.new_issue_title, repoInfo.name));
+
       issueRequest = CacheWrapper.getIssueRequest(repoInfo.owner + "/" + repoInfo.name);
       if (issueRequest != null) {
         setupFromCache(issueRequest);

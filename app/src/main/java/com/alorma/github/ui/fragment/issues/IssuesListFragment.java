@@ -151,7 +151,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+      repoInfo = getArguments().getParcelable(REPO_INFO);
       fromSearch = getArguments().getBoolean(FROM_SEARCH, false);
     }
   }
