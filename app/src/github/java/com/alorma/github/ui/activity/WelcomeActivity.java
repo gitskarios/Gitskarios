@@ -25,7 +25,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Bind(R.id.openLogin) View buttonLogin;
   @Bind(R.id.login_username) TextInputLayout loginUsername;
   @Bind(R.id.login_password) TextInputLayout loginPassword;
-  @Bind(R.id.progressBar) View progressBar;
   private WelcomePresenter welcomePresenter;
   private MaterialDialog dialog;
 
@@ -63,7 +62,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   public void willLogin() {
-    progressBar.setVisibility(View.VISIBLE);
     buttonLogin.setEnabled(false);
   }
 
@@ -107,7 +105,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   public void didLogin() {
-    progressBar.setVisibility(View.GONE);
     buttonLogin.setEnabled(true);
     if (buttonLogin != null) {
       KeyboardUtils.lowerKeyboard(this);
