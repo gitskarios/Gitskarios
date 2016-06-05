@@ -10,9 +10,6 @@ import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.FileFragment;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class FileActivity extends BackActivity {
 
   private boolean fromUrl;
@@ -35,6 +32,8 @@ public class FileActivity extends BackActivity {
 
     info = (FileInfo) getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
     fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
+
+    setTitle(info.name);
 
     FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
     fileFragment.setArguments(getIntent().getExtras());
