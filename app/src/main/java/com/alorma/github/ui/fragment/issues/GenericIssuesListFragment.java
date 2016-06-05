@@ -52,7 +52,7 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
     super.onViewCreated(view, savedInstanceState);
 
     if (getActivity() != null) {
-      AppCompatActivity activity = (AppCompatActivity) getAcgitivity();
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
       ActionBar actionBar = activity.getSupportActionBar();
       if (actionBar != null) {
         int color = ContextCompat.getColor(activity, R.color.md_teal_600);

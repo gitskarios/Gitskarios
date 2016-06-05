@@ -76,6 +76,16 @@ public class FileFragment extends BaseFragment {
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
