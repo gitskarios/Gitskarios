@@ -7,9 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
@@ -17,13 +15,9 @@ import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bernat on 22/02/2015.
- */
 public class OrganizationActivity extends BackActivity {
 
   private static final String ORG = "ORG";
-  private ViewPager viewPager;
 
   public static Intent launchIntent(Context context, String orgName) {
     Intent intent = new Intent(context, OrganizationActivity.class);
@@ -45,7 +39,7 @@ public class OrganizationActivity extends BackActivity {
 
     final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 
-    viewPager = (ViewPager) findViewById(R.id.pager);
+    ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
     String orgName = null;
     if (getIntent().getExtras() != null) {
@@ -63,19 +57,18 @@ public class OrganizationActivity extends BackActivity {
     //listFragments.add(orgsTeamsFragment);
     listFragments.add(orgMembersFragment);
 
-    viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-    if (ViewCompat.isLaidOut(tabLayout)) {
+    if (viewPager != null && tabLayout != null) {
+      viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
       tabLayout.setupWithViewPager(viewPager);
-    } else {
-      tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-            int oldTop, int oldRight, int oldBottom) {
-          tabLayout.setupWithViewPager(viewPager);
+    }
+  }
 
-          tabLayout.removeOnLayoutChangeListener(this);
-        }
-      });
+  @Override
+  protected void configureTheme(boolean dark) {
+    if (dark) {
+      setTheme(R.style.AppTheme_Dark_People);
+    } else {
+      setTheme(R.style.AppTheme_People);
     }
   }
 
