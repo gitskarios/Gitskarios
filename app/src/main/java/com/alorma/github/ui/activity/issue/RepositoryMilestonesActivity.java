@@ -13,11 +13,12 @@ import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.NaturalTimeFormatter;
 import java.util.List;
 
-public class RepositoryMilestonesActivity extends BackActivity
+public class RepositoryMilestonesActivity extends RepositoryThemeActivity
     implements Presenter.Callback<List<Milestone>>, RecyclerArrayAdapter.ItemCallback<Milestone> {
 
   private static final String REPO_INFO = "REPO_INFO";

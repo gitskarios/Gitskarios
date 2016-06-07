@@ -1,12 +1,7 @@
 package com.alorma.github.ui.fragment.issues;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,30 +37,18 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.generic_issues_list_fragment, null, false);
   }
 
   @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
 
-    if (getActivity() != null) {
-      AppCompatActivity activity = (AppCompatActivity) getActivity();
-      ActionBar actionBar = activity.getSupportActionBar();
-      if (actionBar != null) {
-        int color = ContextCompat.getColor(activity, R.color.md_teal_600);
-        int colorDark = ContextCompat.getColor(activity, R.color.md_teal_800);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-
-        actionBar.setBackgroundDrawable(colorDrawable);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          activity.getWindow().setStatusBarColor(colorDark);
-        }
-      }
-    }
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -151,8 +134,6 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
   protected Octicons.Icon getNoDataIcon() {
     return Octicons.Icon.oct_issue_opened;
   }
-
-
 
   @Override
   protected int getNoDataText() {

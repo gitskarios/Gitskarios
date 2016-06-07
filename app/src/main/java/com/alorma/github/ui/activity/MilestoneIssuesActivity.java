@@ -7,10 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 
-public class MilestoneIssuesActivity extends BackActivity implements IssuesListFragment.SearchClientRequest {
+public class MilestoneIssuesActivity extends RepositoryThemeActivity implements IssuesListFragment.SearchClientRequest {
 
   private static String REPO_INFO = "REPO_INFO";
   private static String MILESTONE = "MILESTONE";

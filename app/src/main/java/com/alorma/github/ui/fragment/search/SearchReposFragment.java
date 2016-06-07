@@ -16,9 +16,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 08/08/2014.
- */
 public class SearchReposFragment extends BaseReposListFragment implements TitleProvider {
 
   private String query = null;
@@ -70,19 +67,13 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
             .subscribeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext(new Action1<Pair<List<Repo>, Integer>>() {
-              @Override
-              public void call(Pair<List<Repo>, Integer> listIntegerPair) {
-                if (getAdapter() != null) {
-                  getAdapter().clear();
-                }
+            .doOnNext((Action1<Pair<List<Repo>, Integer>>) listIntegerPair -> {
+              if (getAdapter() != null) {
+                getAdapter().clear();
               }
             })
-            .doOnError(new Action1<Throwable>() {
-              @Override
-              public void call(Throwable throwable) {
+            .doOnError((Action1<Throwable>) throwable -> {
 
-              }
             })
             .subscribe(this);
       }
@@ -117,5 +108,15 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
   @Override
   public IIcon getTitleIcon() {
     return Octicons.Icon.oct_repo;
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Search;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Search;
   }
 }

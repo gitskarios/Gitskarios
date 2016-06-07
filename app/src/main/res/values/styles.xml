@@ -89,7 +89,6 @@
          parent="Widget.AppCompat.ActionMode">
     <item name="android:paddingLeft">@dimen/toolbar_h_padding</item>
     <item name="android:paddingRight">@dimen/toolbar_h_padding</item>
-    <item name="android:background">@color/primary</item>
   </style>
 
 

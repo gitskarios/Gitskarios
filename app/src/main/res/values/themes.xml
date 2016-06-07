@@ -341,4 +341,24 @@
     <item name="colorControlActivated">@color/md_deep_orange_800</item>
     <item name="colorControlHighlight">@color/md_deep_orange_800</item>
   </style>
+
+  <!-- Notifications themes -->
+
+  <style name="AppTheme.Notifications">
+    <item name="colorPrimary">@color/md_red_400</item>
+    <item name="colorPrimaryDark">@color/md_red_600</item>
+    <item name="colorAccent">@color/md_blue_600</item>
+    <item name="colorControlNormal">@color/md_blue_600</item>
+    <item name="colorControlActivated">@color/md_blue_800</item>
+    <item name="colorControlHighlight">@color/md_blue_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Notifications">
+    <item name="colorPrimary">@color/md_red_600</item>
+    <item name="colorPrimaryDark">@color/md_red_900</item>
+    <item name="colorAccent">@color/md_blue_900</item>
+    <item name="colorControlNormal">@color/md_blue_800</item>
+    <item name="colorControlActivated">@color/md_blue_800</item>
+    <item name="colorControlHighlight">@color/md_blue_900</item>
+  </style>
 </resources>

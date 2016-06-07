@@ -35,8 +35,9 @@ public class UniversalImageLoaderUtils {
 
   public static ImageLoaderConfiguration getImageLoaderConfiguration(Context context) {
     ImageLoaderConfiguration config =
-        new ImageLoaderConfiguration.Builder(context).defaultDisplayImageOptions(
-            getDisplayImageOptions(context)).imageDecoder(new BaseImageDecoder(true)).build();
+        new ImageLoaderConfiguration.Builder(context).defaultDisplayImageOptions(getDisplayImageOptions(context))
+            .imageDecoder(new BaseImageDecoder(true))
+            .build();
     return config;
   }
 
@@ -44,12 +45,8 @@ public class UniversalImageLoaderUtils {
     IconicsDrawable drawable = new IconicsDrawable(context, Octicons.Icon.oct_octoface);
     drawable.color(AttributesUtils.getSecondaryTextColor(context));
     drawable.sizeDp(24);
-    BitmapDrawable bitmapDrawable =
-        new BitmapDrawable(context.getResources(), drawableToBitmap(drawable));
-    return new DisplayImageOptions.Builder().showImageOnLoading(bitmapDrawable)
-        .cacheInMemory(true)
-        .cacheOnDisk(true)
-        .build();
+    BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), drawableToBitmap(drawable));
+    return new DisplayImageOptions.Builder().showImageOnLoading(bitmapDrawable).cacheInMemory(true).cacheOnDisk(true).build();
   }
 
   public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -57,8 +54,7 @@ public class UniversalImageLoaderUtils {
       return ((BitmapDrawable) drawable).getBitmap();
     }
 
-    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
-        Bitmap.Config.ARGB_8888);
+    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
     Canvas canvas = new Canvas(bitmap);
     drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
     drawable.draw(canvas);
@@ -67,7 +63,7 @@ public class UniversalImageLoaderUtils {
   }
 
   public static void loadUserAvatar(final ImageView imageView, Organization actor) {
-    final int defaultProfileColor = ContextCompat.getColor(imageView.getContext(), R.color.primary);
+    final int defaultProfileColor = AttributesUtils.getPrimaryColor(imageView.getContext());
 
     int avatarSize = imageView.getResources().getDimensionPixelOffset(R.dimen.avatar_size);
 
@@ -94,43 +90,42 @@ public class UniversalImageLoaderUtils {
         .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
         .bitmapConfig(Bitmap.Config.ALPHA_8)
         .build();
-    ImageLoader.getInstance()
-        .displayImage(avatarUrl, imageView, displayImageOptions, new ImageLoadingListener() {
-          @Override
-          public void onLoadingStarted(String imageUri, View view) {
+    ImageLoader.getInstance().displayImage(avatarUrl, imageView, displayImageOptions, new ImageLoadingListener() {
+      @Override
+      public void onLoadingStarted(String imageUri, View view) {
 
-          }
+      }
 
-          @Override
-          public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+      @Override
+      public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-          }
+      }
 
-          @Override
-          public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            Context context = imageView.getContext();
+      @Override
+      public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        Context context = imageView.getContext();
 
-            //Set color tag to imageView
-            Atelier.with(context, imageUri)
-                .load(loadedImage)
-                .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                .listener(new Atelier.OnPaletteRenderedListener() {
-                  @Override
-                  public void onRendered(Palette palette) {
-                    imageView.setTag(palette.getVibrantColor(defaultProfileColor));
-                  }
-                });
-          }
+        //Set color tag to imageView
+        Atelier.with(context, imageUri)
+            .load(loadedImage)
+            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+            .listener(new Atelier.OnPaletteRenderedListener() {
+              @Override
+              public void onRendered(Palette palette) {
+                imageView.setTag(palette.getVibrantColor(defaultProfileColor));
+              }
+            });
+      }
 
-          @Override
-          public void onLoadingCancelled(String imageUri, View view) {
+      @Override
+      public void onLoadingCancelled(String imageUri, View view) {
 
-          }
-        });
+      }
+    });
   }
 
   public static void loadUserAvatarSquare(final ImageView imageView, Organization actor) {
-    final int defaultProfileColor = ContextCompat.getColor(imageView.getContext(), R.color.primary);
+    final int defaultProfileColor = AttributesUtils.getPrimaryColor(imageView.getContext());
 
     int avatarSize = imageView.getResources().getDimensionPixelOffset(R.dimen.avatar_size);
 
@@ -157,38 +152,37 @@ public class UniversalImageLoaderUtils {
         .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
         .bitmapConfig(Bitmap.Config.ALPHA_8)
         .build();
-    ImageLoader.getInstance()
-        .displayImage(avatarUrl, imageView, displayImageOptions, new ImageLoadingListener() {
-          @Override
-          public void onLoadingStarted(String imageUri, View view) {
+    ImageLoader.getInstance().displayImage(avatarUrl, imageView, displayImageOptions, new ImageLoadingListener() {
+      @Override
+      public void onLoadingStarted(String imageUri, View view) {
 
-          }
+      }
 
-          @Override
-          public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+      @Override
+      public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-          }
+      }
 
-          @Override
-          public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            Context context = imageView.getContext();
+      @Override
+      public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        Context context = imageView.getContext();
 
-            //Set color tag to imageView
-            Atelier.with(context, imageUri)
-                .load(loadedImage)
-                .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-                .listener(new Atelier.OnPaletteRenderedListener() {
-                  @Override
-                  public void onRendered(Palette palette) {
-                    imageView.setTag(palette.getVibrantColor(defaultProfileColor));
-                  }
-                });
-          }
+        //Set color tag to imageView
+        Atelier.with(context, imageUri)
+            .load(loadedImage)
+            .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
+            .listener(new Atelier.OnPaletteRenderedListener() {
+              @Override
+              public void onRendered(Palette palette) {
+                imageView.setTag(palette.getVibrantColor(defaultProfileColor));
+              }
+            });
+      }
 
-          @Override
-          public void onLoadingCancelled(String imageUri, View view) {
+      @Override
+      public void onLoadingCancelled(String imageUri, View view) {
 
-          }
-        });
+      }
+    });
   }
 }

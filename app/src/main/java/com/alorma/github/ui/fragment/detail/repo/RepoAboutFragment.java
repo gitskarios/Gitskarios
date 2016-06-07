@@ -52,8 +52,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RepoAboutFragment extends BaseFragment
-    implements TitleProvider, BranchManager, BackManager {
+public class RepoAboutFragment extends BaseFragment implements TitleProvider, BranchManager, BackManager {
 
   public static final int PLACEHOLDER_ICON_SIZE = 20;
   private static final String REPO_INFO = "REPO_INFO";
@@ -131,7 +130,6 @@ public class RepoAboutFragment extends BaseFragment
     return f;
   }
 
-
   @Override
   protected int getLightTheme() {
     return R.style.AppTheme_Repository;
@@ -144,8 +142,7 @@ public class RepoAboutFragment extends BaseFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
     return inflater.inflate(R.layout.repo_overview_fragment, null, false);
@@ -324,10 +321,8 @@ public class RepoAboutFragment extends BaseFragment
   private String configureHtml(String htmlContent) {
     if (getActivity() != null) {
       String fileName = "source_pre.html";
-      SharedPreferences defaultSharedPreferences =
-          PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-      String pref_theme =
-          defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+      SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+      String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
       if ("theme_dark".equalsIgnoreCase(pref_theme)) {
         fileName = "source_pre_dark.html";
       }
@@ -368,17 +363,12 @@ public class RepoAboutFragment extends BaseFragment
 
         if (this.currentRepo.parent != null) {
           fork.setVisibility(View.VISIBLE);
-          forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null,
-              null, null);
-          forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login,
-              this.currentRepo.parent.name));
+          forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
+          forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login, this.currentRepo.parent.name));
         }
 
-        createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null,
-            null);
-        createdAtTextView.setText(
-            TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at,
-                R.string.created_at));
+        createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
+        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at, R.string.created_at));
 
         changeStarView();
         changeWatchView();
@@ -389,8 +379,7 @@ public class RepoAboutFragment extends BaseFragment
 
         forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
 
-        forkPlaceHolder.setCompoundDrawables(
-            getIcon(Octicons.Icon.oct_repo_forked, PLACEHOLDER_ICON_SIZE), null, null, null);
+        forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, PLACEHOLDER_ICON_SIZE), null, null, null);
       }
     }
   }
@@ -409,8 +398,7 @@ public class RepoAboutFragment extends BaseFragment
   }
 
   private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
-    return new IconicsDrawable(getActivity(), icon).color(
-        AttributesUtils.getAccentColor(getActivity())).sizeDp(sizeDp);
+    return new IconicsDrawable(getActivity(), icon).color(AttributesUtils.getAccentColor(getActivity())).sizeDp(sizeDp);
   }
 
   @Override
@@ -427,17 +415,11 @@ public class RepoAboutFragment extends BaseFragment
   }
 
   private void starAction(GithubClient<Boolean> starClient) {
-    starClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(startObserver);
+    starClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(startObserver);
   }
 
   private void watchAction(GithubClient<Boolean> starClient) {
-    starClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(watchObserver);
+    starClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(watchObserver);
   }
 
   protected void getStarWatchData() {
@@ -469,8 +451,7 @@ public class RepoAboutFragment extends BaseFragment
 
   private void changeStarView() {
     if (getActivity() != null) {
-      IconicsDrawable drawable =
-          new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
+      IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
       if (repoStarred != null && repoStarred) {
         drawable.color(AttributesUtils.getAccentColor(getActivity()));
       } else {
@@ -487,8 +468,7 @@ public class RepoAboutFragment extends BaseFragment
 
   private void changeWatchView() {
     if (getActivity() != null) {
-      IconicsDrawable drawable =
-          new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
+      IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
       if (repoWatched != null && repoWatched) {
         drawable.color(AttributesUtils.getAccentColor(getActivity()));
       } else {

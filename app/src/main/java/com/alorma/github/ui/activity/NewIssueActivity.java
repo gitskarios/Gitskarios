@@ -34,6 +34,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -139,8 +140,7 @@ public class NewIssueActivity extends BackActivity {
       public void onClick(View v) {
         String hint = getString(R.string.add_issue_body);
         Intent intent =
-            ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint,
-                editBody.getText().toString(), false, false);
+            ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, editBody.getText().toString(), false, false);
 
         startActivityForResult(intent, NEW_ISSUE_REQUEST);
       }
@@ -154,12 +154,9 @@ public class NewIssueActivity extends BackActivity {
       milestoneTextView = (TextView) findViewById(R.id.milestone);
       labelsTextView = (TextView) findViewById(R.id.labels);
 
-      userTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_person), null, null,
-          null);
-      milestoneTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_milestone), null,
-          null, null);
-      labelsTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_tag), null, null,
-          null);
+      userTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_person), null, null, null);
+      milestoneTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_milestone), null, null, null);
+      labelsTextView.setCompoundDrawables(pushAccessInfoIcon(Octicons.Icon.oct_tag), null, null, null);
 
       View.OnClickListener pushAccessListener = new View.OnClickListener() {
         @Override
@@ -197,7 +194,7 @@ public class NewIssueActivity extends BackActivity {
   }
 
   public Drawable pushAccessInfoIcon(IIcon icon) {
-    return new IconicsDrawable(this, icon).actionBar().colorRes(R.color.primary);
+    return new IconicsDrawable(this, icon).actionBar().color(AttributesUtils.getPrimaryColor(this));
   }
 
   @Override
@@ -245,8 +242,7 @@ public class NewIssueActivity extends BackActivity {
 
       MenuItem emojiMenu = menu.findItem(R.id.action_add_emoji);
       emojiMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-      Drawable emojiIcon =
-          new IconicsDrawable(this, Octicons.Icon.oct_octoface).actionBar().color(Color.WHITE);
+      Drawable emojiIcon = new IconicsDrawable(this, Octicons.Icon.oct_octoface).actionBar().color(Color.WHITE);
       emojiMenu.setIcon(emojiIcon);
     }
 
@@ -310,8 +306,7 @@ public class NewIssueActivity extends BackActivity {
             creatingIssue = false;
             ErrorHandler.onError(NewIssueActivity.this, "Creating issue", e);
             invalidateOptionsMenu();
-            Toast.makeText(NewIssueActivity.this, R.string.create_issue_error, Toast.LENGTH_SHORT)
-                .show();
+            Toast.makeText(NewIssueActivity.this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
           }
 
           @Override
@@ -321,8 +316,7 @@ public class NewIssueActivity extends BackActivity {
               IssueInfo issueInfo = new IssueInfo();
               issueInfo.repoInfo = repoInfo;
               issueInfo.num = issue.number;
-              Intent launcherIntent =
-                  IssueDetailActivity.createLauncherIntent(NewIssueActivity.this, issueInfo);
+              Intent launcherIntent = IssueDetailActivity.createLauncherIntent(NewIssueActivity.this, issueInfo);
               startActivity(launcherIntent);
               setResult(RESULT_OK);
               CacheWrapper.clearIssueRequest(repoInfo.owner + "/" + repoInfo.name);
@@ -382,8 +376,7 @@ public class NewIssueActivity extends BackActivity {
     MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
     builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
       @Override
-      public void onSelection(MaterialDialog materialDialog, View view, int i,
-          CharSequence charSequence) {
+      public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
         User user = users.get(i);
         setAssigneeUser(user);
         materialDialog.dismiss();
@@ -416,8 +409,7 @@ public class NewIssueActivity extends BackActivity {
    */
 
   private void openMilestone() {
-    GetMilestonesClient milestonesClient =
-        new GetMilestonesClient(repoInfo, MilestoneState.open, true);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(repoInfo, MilestoneState.open, true);
     milestonesClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -449,37 +441,18 @@ public class NewIssueActivity extends BackActivity {
         itemsMilestones[i] = milestones.get(i).title;
       }
 
-      MaterialDialog.Builder builder =
-          new MaterialDialog.Builder(NewIssueActivity.this).title(R.string.select_milestone)
-              .items(itemsMilestones)
-              .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                @Override
-                public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-                    CharSequence text) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this).title(R.string.select_milestone)
+          .items(itemsMilestones)
+          .itemsCallbackSingleChoice(-1, (materialDialog, view, i, text) -> {
+            addMilestone(milestones.get(i));
+            return false;
+          })
+          .forceStacking(true)
+          .widgetColor(AttributesUtils.getPrimaryColor(this))
+          .negativeText(R.string.add_milestone);
 
-                  addMilestone(milestones.get(i));
-
-                  return false;
-                }
-              })
-              .forceStacking(true)
-              .widgetColorRes(R.color.primary)
-              .negativeText(R.string.add_milestone);
-
-      builder.callback(new MaterialDialog.ButtonCallback() {
-
-        @Override
-        public void onNegative(MaterialDialog dialog) {
-          super.onNegative(dialog);
-          showCreateMilestone();
-        }
-
-        @Override
-        public void onNeutral(MaterialDialog dialog) {
-          super.onNeutral(dialog);
-          clearMilestone();
-        }
-      });
+      builder.onNeutral((dialog1, which) -> clearMilestone());
+      builder.onNegative((dialog1, which) -> showCreateMilestone());
 
       builder.show();
     }
@@ -489,22 +462,17 @@ public class NewIssueActivity extends BackActivity {
     MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
     builder.title(R.string.add_milestone);
     builder.content(R.string.add_milestone_description);
-    builder.input(R.string.add_milestone_hint, 0, new MaterialDialog.InputCallback() {
-      @Override
-      public void onInput(MaterialDialog materialDialog, CharSequence milestoneName) {
-        createMilestone(milestoneName.toString());
-      }
+    builder.input(R.string.add_milestone_hint, 0, (materialDialog, milestoneName) -> {
+      createMilestone(milestoneName.toString());
     }).negativeText(R.string.cancel);
 
     dialog = builder.show();
   }
 
   private void createMilestone(String milestoneName) {
-    CreateMilestoneRequestDTO createMilestoneRequestDTO =
-        new CreateMilestoneRequestDTO(milestoneName);
+    CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-    CreateMilestoneClient createMilestoneClient =
-        new CreateMilestoneClient(repoInfo, createMilestoneRequestDTO);
+    CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(repoInfo, createMilestoneRequestDTO);
     createMilestoneClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -573,20 +541,18 @@ public class NewIssueActivity extends BackActivity {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
       builder.items(items.toArray(new String[items.size()]));
       builder.alwaysCallMultiChoiceCallback();
-      builder.itemsCallbackMultiChoice(positionsSelectedLabels,
-          new MaterialDialog.ListCallbackMultiChoice() {
-            @Override
-            public boolean onSelection(MaterialDialog materialDialog, Integer[] integers,
-                CharSequence[] charSequences) {
-              List<String> labels = new ArrayList<>();
-              for (CharSequence charSequence : charSequences) {
-                labels.add(charSequence.toString());
-              }
-              issueRequest.labels = labels.toArray(new String[labels.size()]);
-              positionsSelectedLabels = integers;
-              return true;
-            }
-          });
+      builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {
+        @Override
+        public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
+          List<String> labels = new ArrayList<>();
+          for (CharSequence charSequence : charSequences) {
+            labels.add(charSequence.toString());
+          }
+          issueRequest.labels = labels.toArray(new String[labels.size()]);
+          positionsSelectedLabels = integers;
+          return true;
+        }
+      });
       builder.forceStacking(true);
       builder.positiveText(R.string.ok);
       //                builder.neutralText(R.string.add_new_label);

@@ -21,9 +21,6 @@ import com.pedrogomez.renderers.RVRendererAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by a557114 on 30/07/2015.
- */
 public class ReleaseAssetsFragment extends BaseFragment
     implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
 
@@ -46,6 +43,16 @@ public class ReleaseAssetsFragment extends BaseFragment
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.release_assets_fragment, null, false);
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override

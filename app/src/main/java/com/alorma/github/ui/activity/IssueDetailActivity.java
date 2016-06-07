@@ -53,6 +53,7 @@ import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ShortcutUtils;
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -70,8 +71,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class IssueDetailActivity extends BackActivity
-    implements View.OnClickListener, IssueDetailRequestListener,
-    SwipeRefreshLayout.OnRefreshListener {
+    implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -137,7 +137,7 @@ public class IssueDetailActivity extends BackActivity
         issueInfo.num = num;
       }
 
-      primary = ContextCompat.getColor(this, R.color.primary);
+      primary = AttributesUtils.getPrimaryColor(this);
       primaryDark = ContextCompat.getColor(this, R.color.primary_dark_alpha);
 
       findViews();
@@ -163,10 +163,7 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void showEditDialog(int content) {
-    new MaterialDialog.Builder(this).title(R.string.dialog_edit_issue)
-        .content(content)
-        .positiveText(R.string.ok)
-        .show();
+    new MaterialDialog.Builder(this).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
   }
 
   private void findViews() {
@@ -177,9 +174,7 @@ public class IssueDetailActivity extends BackActivity
     swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
     swipe.setColorSchemeResources(R.color.accent_dark);
 
-    IconicsDrawable drawable =
-        new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE)
-            .sizeDp(24);
+    IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
     fab.setImageDrawable(drawable);
 
@@ -195,27 +190,24 @@ public class IssueDetailActivity extends BackActivity
     loadingView.setVisibility(View.VISIBLE);
 
     GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-    repoClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Repo>() {
-          @Override
-          public void onCompleted() {
+    repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
+      @Override
+      public void onError(Throwable e) {
 
-          }
+      }
 
-          @Override
-          public void onNext(Repo repo) {
-            issueInfo.repoInfo.permissions = repo.permissions;
-            repository = repo;
-            loadIssue();
-          }
-        });
+      @Override
+      public void onNext(Repo repo) {
+        issueInfo.repoInfo.permissions = repo.permissions;
+        repository = repo;
+        loadIssue();
+      }
+    });
   }
 
   private void loadIssue() {
@@ -268,8 +260,7 @@ public class IssueDetailActivity extends BackActivity
       status = getString(R.string.issue_status_close);
     }
     setTitle("#" + issueStory.item.number + " " + status);
-    IssueDetailAdapter adapter =
-        new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this);
+    IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();
@@ -293,8 +284,7 @@ public class IssueDetailActivity extends BackActivity
       }
     });
 
-    ValueAnimator colorAnimationStatus =
-        ValueAnimator.ofObject(new ArgbEvaluator(), primaryDark, colorStateDark);
+    ValueAnimator colorAnimationStatus = ValueAnimator.ofObject(new ArgbEvaluator(), primaryDark, colorStateDark);
     colorAnimationStatus.addUpdateListener(animator -> {
       int color = (Integer) animator.getAnimatedValue();
 
@@ -394,13 +384,11 @@ public class IssueDetailActivity extends BackActivity
           menu.removeItem(R.id.action_reopen_issue);
         }
         if (issueStory.item.state == IssueState.closed) {
-          MenuItem menuItem =
-              menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+          MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
           menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         } else {
 
-          MenuItem menuItem =
-              menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+          MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
           menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
       }
@@ -411,9 +399,7 @@ public class IssueDetailActivity extends BackActivity
 
   public void onAddComment() {
     String hint = getString(R.string.add_comment);
-    Intent intent =
-        ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint,
-            null, false, false);
+    Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
     startActivityForResult(intent, NEW_COMMENT_REQUEST);
   }
 
@@ -442,8 +428,7 @@ public class IssueDetailActivity extends BackActivity
         editMilestone();
         break;
       case R.id.issue_edit_assignee:
-        new ChangeAssigneeAction(this, issueInfo).setCallback(new AssigneActionCallback())
-            .execute();
+        new ChangeAssigneeAction(this, issueInfo).setCallback(new AssigneActionCallback()).execute();
         break;
       case R.id.issue_edit_labels:
         openLabels();
@@ -466,8 +451,7 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void editMilestone() {
-    GetMilestonesClient milestonesClient =
-        new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(issueInfo.repoInfo, MilestoneState.open, true);
     milestonesClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -497,8 +481,8 @@ public class IssueDetailActivity extends BackActivity
   public void onContentEditRequest() {
     String body = issueStory.item.body != null ? issueStory.item.body.replace("\n", "<br />") : "";
     Intent launcherIntent =
-        ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num,
-            getString(R.string.edit_issue_body_hint), body, true, false);
+        ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, getString(R.string.edit_issue_body_hint), body,
+            true, false);
     startActivityForResult(launcherIntent, ISSUE_BODY_EDIT);
   }
 
@@ -517,11 +501,9 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void createMilestone(String milestoneName) {
-    CreateMilestoneRequestDTO createMilestoneRequestDTO =
-        new CreateMilestoneRequestDTO(milestoneName);
+    CreateMilestoneRequestDTO createMilestoneRequestDTO = new CreateMilestoneRequestDTO(milestoneName);
 
-    CreateMilestoneClient createMilestoneClient =
-        new CreateMilestoneClient(issueInfo.repoInfo, createMilestoneRequestDTO);
+    CreateMilestoneClient createMilestoneClient = new CreateMilestoneClient(issueInfo.repoInfo, createMilestoneRequestDTO);
     createMilestoneClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -557,33 +539,29 @@ public class IssueDetailActivity extends BackActivity
     executeEditIssue(editIssueRequestDTO, R.string.issue_change_clear_milestone);
   }
 
-  private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO,
-      final int changedText) {
+  private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO, final int changedText) {
     EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
 
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<Issue>() {
-          @Override
-          public void onCompleted() {
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Issue>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
+      @Override
+      public void onError(Throwable e) {
 
-          }
+      }
 
-          @Override
-          public void onNext(Issue issue) {
-            shouldRefreshOnBack = true;
-            hideProgressDialog();
-            getContent();
+      @Override
+      public void onNext(Issue issue) {
+        shouldRefreshOnBack = true;
+        hideProgressDialog();
+        getContent();
 
-            Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
-          }
-        });
+        Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
+      }
+    });
   }
 
   /**
@@ -592,10 +570,7 @@ public class IssueDetailActivity extends BackActivity
 
   private void openLabels() {
     GithubIssueLabelsClient labelsClient = new GithubIssueLabelsClient(issueInfo.repoInfo, true);
-    labelsClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new LabelsCallback());
+    labelsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new LabelsCallback());
   }
 
   private void setLabels(CharSequence[] selectedLabels) {
@@ -683,23 +658,17 @@ public class IssueDetailActivity extends BackActivity
           }
         }
 
-        MaterialDialog.Builder builder =
-            new MaterialDialog.Builder(IssueDetailActivity.this).title(R.string.select_milestone)
-                .items(itemsMilestones)
-                .itemsCallbackSingleChoice(selectedMilestone,
-                    new MaterialDialog.ListCallbackSingleChoice() {
-                      @Override
-                      public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-                          CharSequence text) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this).title(R.string.select_milestone)
+            .items(itemsMilestones)
+            .itemsCallbackSingleChoice(selectedMilestone, (materialDialog, view, i, text) -> {
 
-                        addMilestone(milestones.get(i));
+              addMilestone(milestones.get(i));
 
-                        return false;
-                      }
-                    })
-                .forceStacking(true)
-                .widgetColorRes(R.color.primary)
-                .negativeText(R.string.add_milestone);
+              return false;
+            })
+            .forceStacking(true)
+            .widgetColorRes(AttributesUtils.getPrimaryColor(IssueDetailActivity.this))
+            .negativeText(R.string.add_milestone);
 
         if (selectedMilestone != -1) {
           builder.neutralText(R.string.clear_milestone);
@@ -761,18 +730,15 @@ public class IssueDetailActivity extends BackActivity
           i++;
         }
 
-        LabelsCallback.this.selectedLabels =
-            selectedLabels.toArray(new String[selectedLabels.size()]);
+        LabelsCallback.this.selectedLabels = selectedLabels.toArray(new String[selectedLabels.size()]);
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
         builder.items(items.toArray(new String[items.size()]));
         builder.alwaysCallMultiChoiceCallback();
-        builder.itemsCallbackMultiChoice(
-            positionsSelectedLabels.toArray(new Integer[positionsSelectedLabels.size()]),
+        builder.itemsCallbackMultiChoice(positionsSelectedLabels.toArray(new Integer[positionsSelectedLabels.size()]),
             new MaterialDialog.ListCallbackMultiChoice() {
               @Override
-              public boolean onSelection(MaterialDialog materialDialog, Integer[] integers,
-                  CharSequence[] charSequences) {
+              public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
                 LabelsCallback.this.selectedLabels = charSequences;
                 return true;
               }
@@ -824,16 +790,14 @@ public class IssueDetailActivity extends BackActivity
 
     @Override
     public void onCommentAdded() {
-      Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT)
-          .setAction(R.string.retry, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              AddIssueCommentAction addIssueCommentAction1 = getAddIssueCommentAction(body);
-              addIssueCommentAction1.setAddCommentCallback(CommentCallback.this);
-              addIssueCommentAction1.execute();
-            }
-          })
-          .show();
+      Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT).setAction(R.string.retry, new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          AddIssueCommentAction addIssueCommentAction1 = getAddIssueCommentAction(body);
+          addIssueCommentAction1.setAddCommentCallback(CommentCallback.this);
+          addIssueCommentAction1.execute();
+        }
+      }).show();
 
       getContent();
     }
