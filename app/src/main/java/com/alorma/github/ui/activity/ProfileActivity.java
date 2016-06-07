@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -122,6 +124,10 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
   public void onStart() {
     super.onStart();
 
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    }
+
     if (userResumeFragment != null) {
       userResumeFragment.setUserResumeCallback(this);
     }
@@ -158,7 +164,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       }
 
       if (login != null) {
-        collapsingToolbarLayout.setTitle(login);
+        collapsingToolbarLayout.setTitle("@" + login);
 
         List<Fragment> fragments = new ArrayList<>();
 

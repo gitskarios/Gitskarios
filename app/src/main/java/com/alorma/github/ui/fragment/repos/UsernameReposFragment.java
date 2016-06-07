@@ -72,4 +72,14 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
   public void loadMoreItems() {
     userRepositoriesPresenter.loadMore(username, this);
   }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Profile;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Profile;
+  }
 }
