@@ -38,8 +38,16 @@ public class NotificationsActivity extends BackActivity {
       ViewCompat.setElevation(getToolbar(), 4);
     }
 
-    NotificationManager notificationManager =
-        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     notificationManager.cancelAll();
+  }
+
+  @Override
+  protected void configureTheme(boolean dark) {
+    if (dark) {
+      setTheme(R.style.AppTheme_Dark_Notifications);
+    } else {
+      setTheme(R.style.AppTheme_Notifications);
+    }
   }
 }

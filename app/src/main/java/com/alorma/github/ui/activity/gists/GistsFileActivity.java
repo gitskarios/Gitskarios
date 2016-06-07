@@ -1,9 +1,9 @@
 package com.alorma.github.ui.activity.gists;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
@@ -31,11 +31,21 @@ public class GistsFileActivity extends BackActivity {
 
     GistFileFragment fileFragment = new GistFileFragment();
     fileFragment.setArguments(getIntent().getExtras());
-    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     ft.replace(R.id.content, fileFragment);
     ft.commit();
 
     String title = getIntent().getExtras().getString(GistFileFragment.FILE_NAME);
     setTitle(title);
   }
+
+  @Override
+  protected void configureTheme(boolean dark) {
+    if (dark) {
+      setTheme(R.style.AppTheme_Dark_Gists);
+    } else {
+      setTheme(R.style.AppTheme_Gists);
+    }
+  }
+
 }

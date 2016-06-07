@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <color name="primary">@color/md_indigo_600</color>
+  <color name="primary_dark">@color/md_indigo_800</color>
+  <color name="primary_alpha">@color/md_indigo_600</color>
+  <color name="primary_dark_alpha">@color/md_indigo_800</color>
+
+  <color name="primary_light">#C5CAE9</color>
+  <color name="accent_welcome">#7CBDD6</color>
+  <color name="accent">#FF5722</color>
+  <color name="accent_dark">#ffba3f19</color>
+  <color name="primary_text">#212121</color>
+  <color name="secondary_text">#727272</color>
+  <color name="icons">#B6B6B6</color>
+  <color name="divider">#B6B6B6</color>
+
+  <color name="commit_stats_bg">#9697d2ff</color>
+  <color name="commit_stats_stroke">#a883bae7</color>
+
+  <color name="primary_enterprise">@color/md_blue_grey_500</color>
+  <color name="primary_enterprise_dark">@color/md_blue_grey_700</color>
+  <color name="accent_enterprise">@color/md_teal_A400</color>
+
+
   <color name="gray_github_light">#f3f3f3</color>
   <color name="gray_github_medium">#ffb9b9b9</color>
   <color name="gray_github_dark">#ff979797</color>

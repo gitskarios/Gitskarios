@@ -2,7 +2,12 @@ package com.alorma.github.ui.fragment.gists;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.alorma.github.R;
@@ -43,6 +48,16 @@ public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter>
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Gists;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Gists;
+  }
+
+  @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
@@ -54,6 +69,22 @@ public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter>
     });
     adapter.setGistsAdapterListener(this);
     setAdapter(adapter);
+
+    if (getActivity() != null) {
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
+      ActionBar actionBar = activity.getSupportActionBar();
+      if (actionBar != null) {
+        int color = ContextCompat.getColor(activity, R.color.md_blue_grey_600);
+        int colorDark = ContextCompat.getColor(activity, R.color.md_blue_grey_800);
+        ColorDrawable colorDrawable = new ColorDrawable(color);
+
+        actionBar.setBackgroundDrawable(colorDrawable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          activity.getWindow().setStatusBarColor(colorDark);
+        }
+      }
+    }
   }
 
   @Override

@@ -5,9 +5,6 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.services.orgs.OrgsMembersClient;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 
-/**
- * Created by Bernat on 13/07/2014.
- */
 public class OrgsMembersFragment extends BaseUsersListFragment {
   private String org;
 
@@ -24,6 +21,16 @@ public class OrgsMembersFragment extends BaseUsersListFragment {
       orgsMembersFragment.setArguments(bundle);
     }
     return orgsMembersFragment;
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_People;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_People;
   }
 
   @Override

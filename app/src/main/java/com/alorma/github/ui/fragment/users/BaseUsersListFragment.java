@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.users;
 
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,9 +16,6 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 13/07/2014.
- */
 public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAdapter>
     implements Observer<Pair<List<User>, Integer>> {
 
@@ -42,6 +40,19 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
       setEmpty();
     }
   }
+
+  @StyleRes
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_People;
+  }
+
+  @StyleRes
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_People;
+  }
+
 
   @Override
   public void onError(Throwable e) {

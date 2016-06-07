@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.ProfileActivity" />
-        <activity android:name=".ui.activity.CommitDetailActivity" />
+        <activity android:name=".ui.activity.CommitDetailActivity"/>
         <activity
             android:name=".ui.activity.RepoDetailActivity"
             android:exported="true" />
@@ -46,7 +46,8 @@
             android:theme="@style/AppTheme.Search" />
         <activity android:name=".ui.activity.FileActivity" />
         <activity android:name=".ui.activity.ContentCommitsActivity" />
-        <activity android:name=".ui.activity.OrganizationActivity" />
+        <activity android:name=".ui.activity.OrganizationActivity"
+            />
         <activity android:name=".ui.activity.ReleaseDetailActivity" />
         <activity android:name=".ui.activity.LanguagesActivity" />
         <activity android:name=".ui.activity.gists.GistEditorActivity" />
@@ -126,8 +127,6 @@
         <activity android:name=".ui.activity.WatchedReposActivity" />
         <activity android:name=".ui.activity.OrganizationsActivity" />
         <activity android:name=".ui.activity.SearchIssuesActivity" />
-        <activity android:name=".ui.activity.PullRequestCommitsActivity" />
-        <activity android:name=".ui.activity.PullRequestFilesActivity" />
         <activity android:name=".ui.activity.ForksActivity" />
         <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity" />
         <activity android:name=".ui.activity.issue.IssueLabelsActivity" />

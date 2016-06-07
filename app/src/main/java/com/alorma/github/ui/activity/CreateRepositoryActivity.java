@@ -12,16 +12,13 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.CreateRepositoryFragment;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by bernat.borras on 10/11/15.
- */
-public class CreateRepositoryActivity extends BackActivity
+public class CreateRepositoryActivity extends RepositoryThemeActivity
     implements CreateRepositoryFragment.CreateRepositoryInterface, View.OnClickListener {
 
   @Bind(R.id.create) Button create;

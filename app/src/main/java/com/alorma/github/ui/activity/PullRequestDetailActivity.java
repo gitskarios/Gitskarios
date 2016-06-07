@@ -17,7 +17,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestConversationFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
@@ -35,7 +35,7 @@ import com.roughike.bottombar.OnTabClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PullRequestDetailActivity extends BackActivity
+public class PullRequestDetailActivity extends RepositoryThemeActivity
     implements PullRequestConversationFragment.PullRequestStoryLoaderInterface {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";

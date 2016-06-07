@@ -32,9 +32,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by a557114 on 30/07/2015.
- */
 public class ReleaseAboutFragment extends BaseFragment implements TitleProvider {
 
   private static final String RELEASE = "RELEASE";
@@ -56,9 +53,18 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.release_detail_fragment, null, false);
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -83,11 +89,9 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
       authorName.setText(owner.login);
 
       createdIcon.setImageDrawable(
-          new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).color(
-              AttributesUtils.getAccentColor(getActivity())).actionBar());
+          new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).color(AttributesUtils.getAccentColor(getActivity())).actionBar());
       if (release.created_at != null) {
-        createdAtTextView.setText(
-            TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
+        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
       }
 
       final RepoInfo repoInfo = getArguments().getParcelable(REPO_INFO);
@@ -133,8 +137,7 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
               Intent intent = ProfileActivity.createLauncherIntent(getActivity(), release.author);
               startActivity(intent);
             } else if (release.author.type == UserType.Organization) {
-              Intent intent =
-                  OrganizationActivity.launchIntent(getActivity(), release.author.login);
+              Intent intent = OrganizationActivity.launchIntent(getActivity(), release.author.login);
               startActivity(intent);
             }
           }

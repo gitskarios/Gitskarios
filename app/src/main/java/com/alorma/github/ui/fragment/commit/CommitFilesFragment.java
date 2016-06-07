@@ -20,9 +20,6 @@ import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import java.util.List;
 
-/**
- * Created by Bernat on 22/12/2014.
- */
 public class CommitFilesFragment extends BaseFragment {
 
   public static final String INFO = "INFO";
@@ -43,6 +40,16 @@ public class CommitFilesFragment extends BaseFragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     return inflater.inflate(R.layout.files_fragment, null);
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
