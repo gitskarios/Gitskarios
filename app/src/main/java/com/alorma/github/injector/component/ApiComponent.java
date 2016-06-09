@@ -3,6 +3,7 @@ package com.alorma.github.injector.component;
 import com.alorma.github.injector.PerActivity;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.sdk.core.ApiClient;
+import com.alorma.github.ui.activity.NotificationsActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.repos.CurrentAccountReposFragment;

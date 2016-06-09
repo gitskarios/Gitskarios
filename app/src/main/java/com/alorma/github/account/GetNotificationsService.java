@@ -1,6 +1,5 @@
 package com.alorma.github.account;
 
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -19,56 +18,60 @@ import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.NotificationsHelper;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class GetNotificationsService extends IntentService {
+public class GetNotificationsService extends JobService {
 
   public static final String ACCOUNT_NAME = "ACCOUNT_NAME";
   public static final String ACCOUNT_TOKEN = "ACCOUNT_TOKEN";
 
   private static final int MAX_LINES_NOTIFICATION = 5;
+  private Subscription subscription;
 
-  /**
-   * Creates an IntentService.  Invoked by your subclass's constructor.
-   */
-  public GetNotificationsService() {
-    super("GetNotificationsService");
+  @Override
+  public boolean onStartJob(JobParameters jobParameters) {
+
+    if (jobParameters != null && jobParameters.getExtras() != null) {
+      String name = jobParameters.getExtras().getString(ACCOUNT_NAME);
+      String token = jobParameters.getExtras().getString(ACCOUNT_TOKEN);
+
+      if (name != null && token != null) {
+        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(token.hashCode());
+
+        GetNotificationsClient notificationsClient = new GetNotificationsClient(token);
+        subscription = notificationsClient.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new NotificationsSubscriber(name, token));
+      }
+    }
+    return true;
   }
 
   @Override
-  protected void onHandleIntent(Intent intent) {
-
-    String name = intent.getStringExtra(ACCOUNT_NAME);
-    String token = intent.getStringExtra(ACCOUNT_TOKEN);
-
-    if (name != null && token != null) {
-      final NotificationManager notificationManager =
-          (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      notificationManager.cancel(token.hashCode());
-
-      GetNotificationsClient notificationsClient = new GetNotificationsClient(token);
-      notificationsClient.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new NotificationsSubscriber(name, token));
-    }
+  public boolean onStopJob(JobParameters jobParameters) {
+    subscription.unsubscribe();
+    return true;
   }
 
-  private void onNotificationsReceived(List<Notification> notifications, String name,
-      String token) {
+
+  private void onNotificationsReceived(List<Notification> notifications, String name, String token) {
 
     if (notifications != null) {
       List<Notification> newNotifications = new ArrayList<>();
 
       for (Notification notification : notifications) {
-        boolean showNotification =
-            NotificationsHelper.checkNotFireNotification(this, notification.id);
+        boolean showNotification = NotificationsHelper.checkNotFireNotification(this, notification.id);
         if (showNotification) {
           newNotifications.add(notification);
         }
@@ -103,12 +106,11 @@ public class GetNotificationsService extends IntentService {
     }
   }
 
-  private NotificationCompat.Builder createNotificationBuilder(Repo repository, String account,
-      PendingIntent pendingIntent, @Nullable PendingIntent cancelIntent) {
+  private NotificationCompat.Builder createNotificationBuilder(Repo repository, String account, PendingIntent pendingIntent,
+      @Nullable PendingIntent cancelIntent) {
 
     int color = AttributesUtils.getPrimaryColor(this);
-    int shape_notifications_avatar =
-        this.getResources().getDimensionPixelOffset(R.dimen.shape_notifications_avatar);
+    int shape_notifications_avatar = this.getResources().getDimensionPixelOffset(R.dimen.shape_notifications_avatar);
 
     NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
     builder.setContentTitle(repository.full_name);
@@ -134,8 +136,7 @@ public class GetNotificationsService extends IntentService {
       if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
         bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
       } else {
-        bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
-            Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
       }
 
       Canvas canvas = new Canvas(bitmap);
@@ -157,22 +158,16 @@ public class GetNotificationsService extends IntentService {
     return builder;
   }
 
-  private void fireSingleNotifications(String account, String token,
-      Notification githubNotification) {
+  private void fireSingleNotifications(String account, String token, Notification githubNotification) {
     if (githubNotification != null) {
       Intent intentNotificationsActivity = NotificationsActivity.launchIntent(this, token);
-      PendingIntent pendingIntent =
-          PendingIntent.getActivity(this, 0, intentNotificationsActivity, 0);
+      PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intentNotificationsActivity, 0);
 
-      Intent intentDisableService =
-          NotificationsDisableService.createIntentSingleNotification(this, githubNotification);
+      Intent intentDisableService = NotificationsDisableService.createIntentSingleNotification(this, githubNotification);
       PendingIntent cancelIntent =
-          PendingIntent.getService(this, (int) githubNotification.id, intentDisableService,
-              PendingIntent.FLAG_ONE_SHOT);
+          PendingIntent.getService(this, (int) githubNotification.id, intentDisableService, PendingIntent.FLAG_ONE_SHOT);
 
-      NotificationCompat.Builder builder =
-          createNotificationBuilder(githubNotification.repository, account, pendingIntent,
-              cancelIntent);
+      NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, account, pendingIntent, cancelIntent);
 
       StringBuilder stringBuilder = new StringBuilder().append("<b>")
           .append("[")
@@ -189,15 +184,13 @@ public class GetNotificationsService extends IntentService {
     }
   }
 
-  private void fireNotificationByRepository(String account, String token, long repoId,
-      List<Notification> notifications) {
+  private void fireNotificationByRepository(String account, String token, long repoId, List<Notification> notifications) {
     if (notifications != null && notifications.size() > 0) {
       Intent intent = NotificationsActivity.launchIntent(this, token);
 
       PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-      NotificationCompat.Builder builder =
-          createNotificationBuilder(notifications.get(0).repository, account, pendingIntent, null);
+      NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, account, pendingIntent, null);
 
       builder.setContentText(notifications.size() + " notifications");
 
@@ -230,8 +223,7 @@ public class GetNotificationsService extends IntentService {
   }
 
   private void fireNotification(int notificationId, android.app.Notification notification) {
-    NotificationManager notificationManager =
-        (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+    NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
     notificationManager.notify(notificationId, notification);
   }

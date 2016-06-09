@@ -161,6 +161,7 @@ def getGHCallback(pro) {
 dependencies {
   compile project(':sdks:GithubAndroidSdk')
   compile project(':sdks:GithubReborn')
+  compile project(':jobdispatcher-release')
 
   compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
     transitive = true;

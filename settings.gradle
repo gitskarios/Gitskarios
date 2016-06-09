@@ -1,3 +1,4 @@
 include ':app'
 include ':sdks:GithubAndroidSdk'
 include ':sdks:GithubReborn'
+include ':jobdispatcher-release'

@@ -17,17 +17,18 @@ import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UsernameProvider;
 import com.crashlytics.android.Crashlytics;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
+import javax.inject.Inject;
 
 public class GitskariosApplication extends MultiDexApplication {
 
   private ApplicationComponent component;
-  private FirebaseAnalytics firebaseAnalytics;
 
   public static GitskariosApplication get(Context context) {
     return (GitskariosApplication) context.getApplicationContext();
@@ -53,7 +54,7 @@ public class GitskariosApplication extends MultiDexApplication {
       Fabric.with(this, new Crashlytics());
     }
 
-    firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     firebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
     ImageLoader.getInstance().init(UniversalImageLoaderUtils.getImageLoaderConfiguration(this));

@@ -506,4 +506,7 @@
   <string name="content_description_verified_commit">Commit verified</string>
   <string name="milestone_issues_activity_title">Mileston: %s</string>
   <string name="new_issue_title">Creating issue on %s</string>
+  <string name="notifications_disabled">Disabled</string>
+  <string name="notifications_enabled">Enabled</string>
+  <string name="notifications_scheule_error">Unable to schedule notifications</string>
 </resources>

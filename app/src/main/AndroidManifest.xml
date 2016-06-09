@@ -1,204 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.alorma.github" >
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.alorma.github"
+    >
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission
-        android:name="android.permission.READ_PHONE_STATE"
-        tools:node="remove" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+  <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+  <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+  <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+  <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+  <uses-permission
+      android:name="android.permission.READ_PHONE_STATE"
+      tools:node="remove"
+      />
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
-    <application
-        android:name=".GitskariosApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:launchMode="singleInstance"
-        android:sharedUserId="GITSKARIOS"
-        android:sharedUserLabel="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".ui.activity.MainActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+  <application
+      android:name=".GitskariosApplication"
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:launchMode="singleInstance"
+      android:sharedUserId="GITSKARIOS"
+      android:sharedUserLabel="@string/app_name"
+      android:theme="@style/AppTheme"
+      >
+    <activity android:name=".ui.activity.MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ui.activity.ProfileActivity" />
-        <activity android:name=".ui.activity.CommitDetailActivity"/>
-        <activity
-            android:name=".ui.activity.RepoDetailActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activity.SearchActivity"
-            android:theme="@style/AppTheme.Search" />
-        <activity android:name=".ui.activity.FileActivity" />
-        <activity android:name=".ui.activity.ContentCommitsActivity" />
-        <activity android:name=".ui.activity.OrganizationActivity"
-            />
-        <activity android:name=".ui.activity.ReleaseDetailActivity" />
-        <activity android:name=".ui.activity.LanguagesActivity" />
-        <activity android:name=".ui.activity.gists.GistEditorActivity" />
-        <activity android:name=".ui.activity.CompareRepositoryCommitsActivity" />
-        <activity android:name=".ui.activity.StatusActivity" />
-        <activity
-            android:name=".ui.activity.ManageRepositoryActivity"
-            android:label="@string/repository_settings" />
-        <activity
-            android:name=".ui.activity.gists.GistsMainActivity"
-            android:label="@string/title_gists" >
+        <category android:name="android.intent.category.LAUNCHER"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity android:name=".ui.activity.ProfileActivity"/>
+    <activity android:name=".ui.activity.CommitDetailActivity"/>
+    <activity
+        android:name=".ui.activity.RepoDetailActivity"
+        android:exported="true"
+        />
+    <activity
+        android:name=".ui.activity.SearchActivity"
+        android:theme="@style/AppTheme.Search"
+        />
+    <activity android:name=".ui.activity.FileActivity"/>
+    <activity android:name=".ui.activity.ContentCommitsActivity"/>
+    <activity android:name=".ui.activity.OrganizationActivity"
+        />
+    <activity android:name=".ui.activity.ReleaseDetailActivity"/>
+    <activity android:name=".ui.activity.LanguagesActivity"/>
+    <activity android:name=".ui.activity.gists.GistEditorActivity"/>
+    <activity android:name=".ui.activity.CompareRepositoryCommitsActivity"/>
+    <activity android:name=".ui.activity.StatusActivity"/>
+    <activity
+        android:name=".ui.activity.ManageRepositoryActivity"
+        android:label="@string/repository_settings"
+        />
+    <activity
+        android:name=".ui.activity.gists.GistsMainActivity"
+        android:label="@string/title_gists"
+        >
 
-            <!--
-      <intent-filter android:label="@string/open_gist">
+      <!--
+<intent-filter android:label="@string/open_gist">
+  <action android:name="android.intent.action.SEND"/>
+
+  <category android:name="android.intent.category.DEFAULT"/>
+
+  <data
+      android:host="hgist.github.com"
+      android:scheme="http"
+      android:mimeType="text/*"
+      />
+  <data
+      android:host="hgist.github.com"
+      android:scheme="https"
+      android:mimeType="text/*"
+      />
+</intent-filter>
+<intent-filter android:label="@string/open_gist">
+  <action android:name="android.intent.action.VIEW"/>
+
+  <data
+      android:host="gist.github.com"
+      android:scheme="http"
+      />
+  <data
+      android:host="gist.github.com"
+      android:scheme="https"
+      />
+  <data android:pathPattern=".*"/>
+
+  <category android:name="android.intent.category.DEFAULT"/>
+  <category android:name="android.intent.category.BROWSABLE"/>
+</intent-filter>
+      -->
+    </activity>
+    <activity android:name=".ui.activity.NotificationsActivity"/>
+    <activity android:name=".ui.activity.gists.GistDetailActivity"/>
+    <activity android:name=".ui.activity.gists.GistsFileActivity"/>
+    <activity
+        android:name=".ui.activity.gists.CreateGistActivity"
+        android:label="@string/create_gist"
+        >
+      <intent-filter>
         <action android:name="android.intent.action.SEND"/>
 
         <category android:name="android.intent.category.DEFAULT"/>
 
-        <data
-            android:host="hgist.github.com"
-            android:scheme="http"
-            android:mimeType="text/*"
-            />
-        <data
-            android:host="hgist.github.com"
-            android:scheme="https"
-            android:mimeType="text/*"
-            />
+        <data android:mimeType="text/*"/>
       </intent-filter>
-      <intent-filter android:label="@string/open_gist">
-        <action android:name="android.intent.action.VIEW"/>
+    </activity>
+    <activity
+        android:name=".ui.activity.NewIssueActivity"
+        android:label="@string/title_activity_new_issue"
+        android:windowSoftInputMode="adjustPan"
+        />
+    <activity
+        android:name=".ui.activity.IssueDetailActivity"
+        android:exported="true"
+        />
+    <activity
+        android:name=".ui.activity.PullRequestDetailActivity"
+        android:exported="true"
+        />
+    <activity
+        android:name=".ui.activity.SettingsActivity"
+        android:label="@string/title_activity_settings"
+        />
+    <activity android:name=".ui.activity.ReposActivity"/>
+    <activity android:name=".ui.activity.StarredReposActivity"/>
+    <activity android:name=".ui.activity.WatchedReposActivity"/>
+    <activity android:name=".ui.activity.OrganizationsActivity"/>
+    <activity android:name=".ui.activity.SearchIssuesActivity"/>
+    <activity android:name=".ui.activity.ForksActivity"/>
+    <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity"/>
+    <activity android:name=".ui.activity.issue.IssueLabelsActivity"/>
+    <activity android:name=".ui.activity.issue.IssueAssigneesActivity"/>
+    <!--<activity android:name=".ui.activity.SyncFavoritesActivity" />-->
+    <activity android:name=".ui.activity.MilestoneIssuesActivity"/>
+    <activity
+        android:name=".ui.activity.ContentEditorActivity"
+        android:windowSoftInputMode="adjustPan"
+        />
+    <activity
+        android:name=".emoji.EmojisActivity"
+        android:label="@string/emoji_activity"
+        />
+    <activity
+        android:name=".ui.activity.CreateRepositoryActivity"
+        android:label="@string/create_repository_activity"
+        android:theme="@style/AppTheme.ColoredButton"
+        />
 
-        <data
-            android:host="gist.github.com"
-            android:scheme="http"
-            />
-        <data
-            android:host="gist.github.com"
-            android:scheme="https"
-            />
-        <data android:pathPattern=".*"/>
+    <meta-data
+        android:name="io.fabric.ApiKey"
+        android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080"
+        />
 
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
+    <service android:name=".account.AccountService">
+      <intent-filter>
+        <action android:name="android.accounts.AccountAuthenticator"/>
       </intent-filter>
-            -->
-        </activity>
-        <activity android:name=".ui.activity.NotificationsActivity" />
-        <activity android:name=".ui.activity.gists.GistDetailActivity" />
-        <activity android:name=".ui.activity.gists.GistsFileActivity" />
-        <activity
-            android:name=".ui.activity.gists.CreateGistActivity"
-            android:label="@string/create_gist" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+      <meta-data
+          android:name="android.accounts.AccountAuthenticator"
+          android:resource="@xml/account_authenticator"
+          />
+    </service>
+    <service android:name=".account.NotificationsDisableService"/>
 
-                <data android:mimeType="text/*" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.activity.NewIssueActivity"
-            android:label="@string/title_activity_new_issue"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".ui.activity.IssueDetailActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activity.PullRequestDetailActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".ui.activity.ReposActivity" />
-        <activity android:name=".ui.activity.StarredReposActivity" />
-        <activity android:name=".ui.activity.WatchedReposActivity" />
-        <activity android:name=".ui.activity.OrganizationsActivity" />
-        <activity android:name=".ui.activity.SearchIssuesActivity" />
-        <activity android:name=".ui.activity.ForksActivity" />
-        <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity" />
-        <activity android:name=".ui.activity.issue.IssueLabelsActivity" />
-        <activity android:name=".ui.activity.issue.IssueAssigneesActivity" />
-        <!--<activity android:name=".ui.activity.SyncFavoritesActivity" />-->
-        <activity android:name=".ui.activity.MilestoneIssuesActivity" />
-        <activity
-            android:name=".ui.activity.ContentEditorActivity"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".emoji.EmojisActivity"
-            android:label="@string/emoji_activity" />
-        <activity
-            android:name=".ui.activity.CreateRepositoryActivity"
-            android:label="@string/create_repository_activity"
-            android:theme="@style/AppTheme.ColoredButton" />
+    <provider
+        android:name=".account.StubContentProvider"
+        android:authorities="${applicationId}"
+        />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="e331bb7b7ec0167c4cfcc3b095a54a718802f080" />
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"
+        />
 
-        <service android:name=".account.AccountService" >
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
+    <!-- [START gcm_listener] -->
+    <service
+        android:name=".gcm.GitskariosGcmListenerService"
+        android:exported="false"
+        >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+      </intent-filter>
+    </service>
+    <!-- [END gcm_listener] -->
+    <!-- [START instanceId_listener] -->
+    <service
+        android:name=".gcm.GitskariosInstanceIDListenerService"
+        android:exported="false"
+        >
+      <intent-filter>
+        <action android:name="com.google.firebase.INSTANCEID_EVENT"/>
+      </intent-filter>
+    </service>
 
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/account_authenticator" />
-        </service>
-        <service
-            android:name=".account.NotificationsSyncService"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
-            </intent-filter>
+    <!-- [END instanceId_listener] -->
 
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/notifications_syncadapter" />
-        </service>
-        <service android:name=".account.NotificationsDisableService" />
-
-        <provider
-            android:name=".account.StubContentProvider"
-            android:authorities="${applicationId}" />
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <!-- [START gcm_listener] -->
-        <service
-            android:name=".gcm.GitskariosGcmListenerService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <!-- [END gcm_listener] -->
-        <!-- [START instanceId_listener] -->
-        <service
-            android:name=".gcm.GitskariosInstanceIDListenerService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCEID_EVENT" />
-            </intent-filter>
-        </service>
-
-        <!-- [END instanceId_listener] -->
-
-        <service android:name=".account.GetNotificationsService" />
-    </application>
+    <service
+        android:name=".account.GetNotificationsService"
+        android:exported="false"
+        >
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+      </intent-filter>
+    </service>
+  </application>
 
 </manifest>
