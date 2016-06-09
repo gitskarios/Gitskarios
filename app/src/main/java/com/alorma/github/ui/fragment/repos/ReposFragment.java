@@ -113,7 +113,9 @@ public abstract class ReposFragment extends BaseFragment
   @Override
   public void onResponseEmpty() {
     if (isResumed()) {
-      Snackbar.make(recyclerView, R.string.empty_repos, Snackbar.LENGTH_SHORT).show();
+      if (recyclerView != null) {
+        Snackbar.make(recyclerView, R.string.empty_repos, Snackbar.LENGTH_SHORT).show();
+      }
     }
   }
 
