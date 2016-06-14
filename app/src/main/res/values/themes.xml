@@ -68,7 +68,7 @@
     <item name="gitskarios_primary_light">@color/primary_light</item>
     <item name="gitskarios_icons">@color/gray_github_light</item>
     <item name="gitskarios_title">@color/accent</item>
-    <item name="gitskarios_webview">@color/gray_github_dark</item>
+    <item name="gitskarios_webview">@color/md_grey_900</item>
     <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
 
     <item name="diff_addition_text_color">@color/black</item>
@@ -106,7 +106,7 @@
     <item name="gitskarios_primary_light">@color/gray_github_light</item>
     <item name="gitskarios_icons">@color/icons</item>
     <item name="gitskarios_title">@color/accent</item>
-    <item name="gitskarios_webview">@color/gray_github_dark</item>
+    <item name="gitskarios_webview">@android:color/transparent</item>
   </style>
 
   <style name="Base.AppTheme.Dark.Search"
@@ -126,7 +126,7 @@
     <item name="gitskarios_primary_light">@color/gray_github_light</item>
     <item name="gitskarios_icons">@color/icons</item>
     <item name="gitskarios_title">@color/accent</item>
-    <item name="gitskarios_webview">@color/gray_github_dark</item>
+    <item name="gitskarios_webview">@color/md_grey_900</item>
     <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
   </style>
 

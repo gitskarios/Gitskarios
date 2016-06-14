@@ -10,12 +10,12 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.MainActivity;
-import com.jakewharton.processphoenix.ProcessPhoenix;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment
     implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -95,7 +95,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
       preference.getEditor().putString(PREF_THEME, String.valueOf(newValue)).apply();
       Intent intent = new Intent(getActivity(), MainActivity.class);
       intent.putExtra("rebirth", true);
-      ProcessPhoenix.triggerRebirth(getActivity(), intent);
+      Toast.makeText(getActivity(), R.string.restart_app_apply_theme, Toast.LENGTH_SHORT).show();
     }
     return true;
   }
