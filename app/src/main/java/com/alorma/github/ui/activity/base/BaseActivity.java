@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.AccountsManager;
+import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
 import com.alorma.github.utils.KeyboardUtils;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class BaseActivity extends AppCompatActivity {
     SharedPreferences defaultSharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+        defaultSharedPreferences.getString(GitskariosPreferenceFragment.PREF_THEME, getString(R.string.theme_light));
     configureTheme("theme_dark".equalsIgnoreCase(pref_theme));
   }
 
