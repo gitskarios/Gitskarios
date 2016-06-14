@@ -69,6 +69,15 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
   }
 
   @Override
+  protected void configureTheme(boolean dark) {
+    if (dark) {
+      setTheme(R.style.AppTheme_Dark_Repository);
+    } else {
+      setTheme(R.style.AppTheme_Repository);
+    }
+  }
+
+  @Override
   public void showLoading() {
 
   }

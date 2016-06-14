@@ -43,9 +43,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class FileFragment extends BaseFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
@@ -92,15 +89,16 @@ public class FileFragment extends BaseFragment {
     loadingView = view.findViewById(R.id.loading_view);
 
     webView = (CopyWebView) view.findViewById(R.id.webview);
-    webView.setWebViewListener(new CopyWebView.WebViewListener() {
-      @Override
-      public void onTextCopy(String text) {
-        // put selected text into clipdata
-        ClipboardManager clipboard =
-            (ClipboardManager) webView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("simple text", text);
-        clipboard.setPrimaryClip(clip);
-      }
+
+    int webviewColor = AttributesUtils.getWebviewColor(getActivity());
+    webView.setBackgroundColor(webviewColor);
+
+    webView.setWebViewListener(text -> {
+      // put selected text into clipdata
+      ClipboardManager clipboard =
+          (ClipboardManager) webView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+      ClipData clip = ClipData.newPlainText("simple text", text);
+      clipboard.setPrimaryClip(clip);
     });
 
     webView.setBackgroundColor(AttributesUtils.getWebviewColor(getActivity()));

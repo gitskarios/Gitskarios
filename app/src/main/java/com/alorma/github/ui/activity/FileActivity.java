@@ -30,7 +30,7 @@ public class FileActivity extends RepositoryThemeActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_toolbar);
 
-    info = (FileInfo) getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
+    info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
     fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
 
     setTitle(info.name);
