@@ -3,6 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical"
+             android:background="?gitskarios_webview"
     >
 
   <ImageView
@@ -13,7 +14,7 @@
       android:visibility="gone"
       />
 
-  <com.alorma.github.ui.view.CopyWebView
+  <com.pddstudio.highlightjs.HighlightJsView
       android:id="@+id/webview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
