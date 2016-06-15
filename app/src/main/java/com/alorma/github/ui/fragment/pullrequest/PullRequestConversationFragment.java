@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -47,14 +46,12 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class PullRequestConversationFragment extends BaseFragment
-    implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener,
-    SwipeRefreshLayout.OnRefreshListener {
+    implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -74,8 +71,8 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterfaceNull = story -> {
   };
-  private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface =
-      pullRequestStoryLoaderInterfaceNull;
+  private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterfaceNull;
+  private PullRequestDetailAdapter adapter;
 
   public static PullRequestConversationFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -89,8 +86,7 @@ public class PullRequestConversationFragment extends BaseFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.pullrequest_detail_fragment, null, false);
   }
 
@@ -142,9 +138,7 @@ public class PullRequestConversationFragment extends BaseFragment
 
       MenuItem item = menu.findItem(R.id.action_pull_request_add_comment);
       if (item != null) {
-        item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_comment_add)
-            .actionBar()
-            .color(Color.WHITE));
+        item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_comment_add).actionBar().color(Color.WHITE));
       }
     } else {
       menu.removeItem(R.id.action_pull_request_add_comment);
@@ -162,9 +156,7 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void onAddComment() {
     String hint = getString(R.string.add_comment);
-    Intent intent =
-        ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
-            hint, null, false, false);
+    Intent intent = ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
     startActivityForResult(intent, NEW_COMMENT_REQUEST);
   }
 
@@ -186,8 +178,7 @@ public class PullRequestConversationFragment extends BaseFragment
     }
   }
 
-  public void setPullRequestStoryLoaderInterface(
-      PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface) {
+  public void setPullRequestStoryLoaderInterface(PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface) {
     this.pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterface;
   }
 
@@ -215,10 +206,7 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private void showEditDialog(int content) {
-    new MaterialDialog.Builder(getActivity()).title(R.string.dialog_edit_issue)
-        .content(content)
-        .positiveText(R.string.ok)
-        .show();
+    new MaterialDialog.Builder(getActivity()).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
   }
 
   private void findViews(View rootView) {
@@ -234,28 +222,25 @@ public class PullRequestConversationFragment extends BaseFragment
   private void getContent() {
     if (pullRequestStory == null) {
       GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-      repoClient.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<Repo>() {
-            @Override
-            public void onCompleted() {
+      repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+        @Override
+        public void onCompleted() {
 
-            }
+        }
 
-            @Override
-            public void onError(Throwable e) {
+        @Override
+        public void onError(Throwable e) {
 
-            }
+        }
 
-            @Override
-            public void onNext(Repo repo) {
-              issueInfo.repoInfo.permissions = repo.permissions;
-              repository = repo;
+        @Override
+        public void onNext(Repo repo) {
+          issueInfo.repoInfo.permissions = repo.permissions;
+          repository = repo;
 
-              loadPullRequest();
-            }
-          });
+          loadPullRequest();
+        }
+      });
     } else {
       onResponseOk(pullRequestStory);
     }
@@ -323,9 +308,7 @@ public class PullRequestConversationFragment extends BaseFragment
       status = getString(R.string.pullrequest_status_merged);
     }
     getActivity().setTitle("#" + pullRequestStory.item.number + " " + status);
-    PullRequestDetailAdapter adapter =
-        new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(),
-            pullRequestStory, issueInfo.repoInfo, this);
+    adapter = new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this);
     recyclerView.setAdapter(adapter);
 
     getActivity().invalidateOptionsMenu();
@@ -353,36 +336,30 @@ public class PullRequestConversationFragment extends BaseFragment
 
   @Override
   public void onContentEditRequest() {
-    String body =
-        pullRequestStory.item.body != null ? pullRequestStory.item.body.replace("\n", "<br />")
-            : "";
-    Intent launcherIntent =
-        ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
-            getString(R.string.edit_issue_body_hint), body, true, false);
+    String body = pullRequestStory.item.body != null ? pullRequestStory.item.body.replace("\n", "<br />") : "";
+    Intent launcherIntent = ContentEditorActivity.createLauncherIntent(getActivity(), issueInfo.repoInfo, issueInfo.num,
+        getString(R.string.edit_issue_body_hint), body, true, false);
     startActivityForResult(launcherIntent, ISSUE_BODY_EDIT);
   }
 
   private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
     EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Issue>() {
-          @Override
-          public void onCompleted() {
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
-            ErrorHandler.onError(getActivity(), "Issue detail", e);
-          }
+      @Override
+      public void onError(Throwable e) {
+        ErrorHandler.onError(getActivity(), "Issue detail", e);
+      }
 
-          @Override
-          public void onNext(Issue issue) {
-            getContent();
-          }
-        });
+      @Override
+      public void onNext(Issue issue) {
+        getContent();
+      }
+    });
   }
 
   @Override
@@ -390,10 +367,9 @@ public class PullRequestConversationFragment extends BaseFragment
     MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
     builder.title(R.string.merge_title);
     builder.content(head.label);
-    builder.input(getString(R.string.merge_message), pullRequestStory.item.title, false,
-        (materialDialog, charSequence) -> {
-          merge(charSequence.toString(), head.sha, issueInfo);
-        });
+    builder.input(getString(R.string.merge_message), pullRequestStory.item.title, false, (materialDialog, charSequence) -> {
+      merge(charSequence.toString(), head.sha, issueInfo);
+    });
     builder.inputType(InputType.TYPE_CLASS_TEXT);
     dialog = builder.show();
   }
@@ -402,8 +378,7 @@ public class PullRequestConversationFragment extends BaseFragment
     MergeButtonRequest mergeButtonRequest = new MergeButtonRequest();
     mergeButtonRequest.commit_message = message;
     mergeButtonRequest.sha = sha;
-    MergePullRequestClient mergePullRequestClient =
-        new MergePullRequestClient(issueInfo, mergeButtonRequest);
+    MergePullRequestClient mergePullRequestClient = new MergePullRequestClient(issueInfo, mergeButtonRequest);
     mergePullRequestClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -420,9 +395,14 @@ public class PullRequestConversationFragment extends BaseFragment
 
           @Override
           public void onNext(MergeButtonResponse mergeButtonResponse) {
-            getContent();
+            restartActivity();
           }
         });
+  }
+
+  private void restartActivity() {
+    startActivity(getActivity().getIntent());
+    getActivity().finish();
   }
 
   public interface PullRequestStoryLoaderInterface {
