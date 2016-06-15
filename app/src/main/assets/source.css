@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 0;
+  padding: 8px;
+}
+.CodeMirror {
+  height: auto;
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+pre {
+	color: #222;
+	background-color: #DDD;
+	display: inline-block;
+}

@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 8px;
+  color: #fff;
+}
+.CodeMirror {
+  height: auto;
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+pre {
+	color: #AAAAAA;
+	background-color: #222;
+	display: inline-block;
+}
+a {
+  color: #CCC;
+}
