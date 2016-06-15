@@ -78,7 +78,7 @@ public class GitskariosDownloadManager {
     request.allowScanningByMediaScanner();
     dm.enqueue(request);
 
-    Toast.makeText(context, name + "queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
+    Toast.makeText(context, name + " queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
   }
 
   private void openSettings(Context context) {
