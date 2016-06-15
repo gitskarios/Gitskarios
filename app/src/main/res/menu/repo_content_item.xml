@@ -21,4 +21,9 @@
       android:title="@string/copy_content_url"
       />
 
+  <item
+      android:id="@+id/action_content_download"
+      android:title="@string/download"
+      />
+
 </menu>

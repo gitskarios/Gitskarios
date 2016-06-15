@@ -507,4 +507,5 @@
   <string name="milestone_issues_activity_title">Mileston: %s</string>
   <string name="new_issue_title">Creating issue on %s</string>
   <string name="restart_app_apply_theme">Restart GitSkarios to apply the theme</string>
+  <string name="download_only_files">You can only download files</string>
 </resources>
