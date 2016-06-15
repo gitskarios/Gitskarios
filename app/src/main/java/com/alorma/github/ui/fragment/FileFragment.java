@@ -114,7 +114,7 @@ public class FileFragment extends BaseFragment {
           getContent();
         }
       } else {
-        webView.setSource(decodeContent(fileInfo.content));
+        webView.setSource(fileInfo.content);
       }
     }
   }
