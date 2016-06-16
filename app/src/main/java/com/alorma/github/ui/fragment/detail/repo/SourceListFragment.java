@@ -206,10 +206,10 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   public void onContentMenuAction(Content content, MenuItem menuItem) {
     switch (menuItem.getItemId()) {
       case R.id.action_content_share:
-        new ShareAction(getActivity(), repoInfo.owner + "/" + repoInfo.name, content._links.html).setType("Source file").execute();
+        new ShareAction(getActivity(), repoInfo.owner + "/" + repoInfo.name, content._links.html).setType(getString(R.string.source_code)).execute();
         break;
       case R.id.action_content_open:
-        new ViewInAction(getActivity(), content._links.html).setType("Source file").execute();
+        new ViewInAction(getActivity(), content._links.html).setType(getString(R.string.source_code)).execute();
         break;
       case R.id.action_copy_content_url:
         copy(content._links.html);
@@ -220,57 +220,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         startActivity(intent);
         break;
       case R.id.action_content_download:
-        if (file.equals(content.type)) {
-          FileInfo info = new FileInfo();
-          info.repoInfo = repoInfo;
-          info.path = content.path;
-          info.name = content.name;
-
-          new GetFileContentClient(info).observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Content content) {
-              File downloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios");
-
-              if (!downloadFolder.exists()) {
-                downloadFolder.mkdir();
-              }
-
-              File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios", content.name);
-
-              if (!file.exists()) {
-                try {
-                  file.createNewFile();
-                } catch (IOException e) {
-                  e.printStackTrace();
-                }
-              }
-
-              FileOutputStream outputStream;
-
-              try {
-                outputStream = new FileOutputStream(file);
-                outputStream.write(decodeContent(content.content).getBytes());
-                outputStream.close();
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-
-              Toast.makeText(getContext(), content.name + " has been download at Downloads/gitskarios/" + content.name, Toast.LENGTH_SHORT).show();
-            }
-          });
-        } else {
-          Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
-        }
+        downloadContent(content);
         break;
     }
   }
@@ -371,6 +321,60 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   @Override
   public void loadMoreItems() {
 
+  }
+
+  private void downloadContent(Content content) {
+    if (file.equals(content.type)) {
+      FileInfo info = new FileInfo();
+      info.repoInfo = repoInfo;
+      info.path = content.path;
+      info.name = content.name;
+
+      new GetFileContentClient(info).observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(Content content) {
+          File downloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios");
+
+          if (!downloadFolder.exists()) {
+            downloadFolder.mkdirs();
+          }
+
+          File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios", content.name);
+
+          if (!file.exists()) {
+            try {
+              file.createNewFile();
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+
+          FileOutputStream outputStream;
+
+          try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(decodeContent(content.content).getBytes());
+            outputStream.close();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+
+          Toast.makeText(getContext(), content.name + " has been download at Download/gitskarios/" + content.name, Toast.LENGTH_SHORT).show();
+        }
+      });
+    } else {
+      Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
+    }
   }
 
   private String decodeContent(String encoded) {
