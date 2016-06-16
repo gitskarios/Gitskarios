@@ -496,7 +496,7 @@
   <string name="unauthorized_login">Bad credentials</string>
   <string name="notifications_all">ALL</string>
   <string name="notifications_new">NEW</string>
-  <string name="action_pull_request_add_comment">Add coment</string>
+  <string name="action_pull_request_add_comment">Add comment</string>
   <string name="action_pull_request_edit">Edit</string>
   <string name="action_open_in_browser">Open in browser</string>
   <string name="my_issues">Assigned issues</string>
@@ -504,7 +504,7 @@
   <string name="open_gitskarios_issue">Report bug</string>
   <string name="empty_repos">No repositories found</string>
   <string name="content_description_verified_commit">Commit verified</string>
-  <string name="milestone_issues_activity_title">Mileston: %s</string>
+  <string name="milestone_issues_activity_title">Milestone: %s</string>
   <string name="new_issue_title">Creating issue on %s</string>
   <string name="restart_app_apply_theme">Restart GitSkarios to apply the theme</string>
 </resources>
