@@ -195,7 +195,7 @@ dependencies {
 
   compile 'com.pddstudio:highlightjs-android:1.0.1'
 
-  compile('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
+  compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
     exclude group: "joda-time"
   }
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
