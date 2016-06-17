@@ -1,11 +1,13 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +16,9 @@ import android.widget.Toast;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
+import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
@@ -24,15 +28,29 @@ import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.LinearBreadcrumb;
 import com.alorma.gitskarios.core.Pair;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.EmptyPermissionListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import retrofit.RetrofitError;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.alorma.github.sdk.bean.dto.response.ContentType.file;
 
 public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     implements TitleProvider, BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
@@ -193,10 +211,10 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   public void onContentMenuAction(Content content, MenuItem menuItem) {
     switch (menuItem.getItemId()) {
       case R.id.action_content_share:
-        new ShareAction(getActivity(), repoInfo.owner + "/" + repoInfo.name, content._links.html).setType("Source file").execute();
+        new ShareAction(getActivity(), repoInfo.owner + "/" + repoInfo.name, content._links.html).setType(getString(R.string.source_code)).execute();
         break;
       case R.id.action_content_open:
-        new ViewInAction(getActivity(), content._links.html).setType("SOurce file").execute();
+        new ViewInAction(getActivity(), content._links.html).setType(getString(R.string.source_code)).execute();
         break;
       case R.id.action_copy_content_url:
         copy(content._links.html);
@@ -206,7 +224,91 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         Intent intent = ContentCommitsActivity.createLauncherIntent(getActivity(), repoInfo, content.path, content.name);
         startActivity(intent);
         break;
+      case R.id.action_content_download:
+        if (file.equals(content.type)) {
+          checkPermissionsAndDownload(content);
+        } else {
+          Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
+        }
+        break;
     }
+  }
+
+  private void checkPermissionsAndDownload(Content content) {
+    PermissionListener listener = new EmptyPermissionListener() {
+      @Override
+      public void onPermissionGranted(PermissionGrantedResponse response) {
+        super.onPermissionGranted(response);
+        downloadFile(content);
+      }
+
+      @Override
+      public void onPermissionDenied(PermissionDeniedResponse response) {
+        super.onPermissionDenied(response);
+        Toast.makeText(getActivity(), R.string.external_storage_permission_request, Toast.LENGTH_SHORT).show();
+      }
+
+      @Override
+      public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+        token.continuePermissionRequest();
+      }
+    };
+    Dexter.checkPermission(listener, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+  }
+
+  private void downloadFile(Content content) {
+    FileInfo info = new FileInfo();
+    info.repoInfo = repoInfo;
+    info.path = content.path;
+    info.name = content.name;
+
+    new GetFileContentClient(info).observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Content>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onNext(Content content) {
+            File downloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios");
+
+            if (!downloadFolder.exists()) {
+              downloadFolder.mkdir();
+            }
+
+            File file =
+                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios", content.name);
+
+            if (!file.exists()) {
+              try {
+                file.createNewFile();
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+            }
+
+            FileOutputStream outputStream;
+
+            try {
+              outputStream = new FileOutputStream(file);
+              outputStream.write(decodeContent(content.content).getBytes());
+              outputStream.close();
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+
+            Toast.makeText(getContext(), content.name + " has been download at Downloads/gitskarios/" + content.name, Toast.LENGTH_SHORT)
+                .show();
+          }
+        });
   }
 
   public void copy(String text) {
@@ -305,6 +407,71 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   @Override
   public void loadMoreItems() {
 
+  }
+
+  private void downloadContent(Content content) {
+    if (file.equals(content.type)) {
+      FileInfo info = new FileInfo();
+      info.repoInfo = repoInfo;
+      info.path = content.path;
+      info.name = content.name;
+
+      new GetFileContentClient(info).observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(Content content) {
+          File downloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios");
+
+          if (!downloadFolder.exists()) {
+            downloadFolder.mkdirs();
+          }
+
+          File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios", content.name);
+
+          if (!file.exists()) {
+            try {
+              file.createNewFile();
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+
+          FileOutputStream outputStream;
+
+          try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(decodeContent(content.content).getBytes());
+            outputStream.close();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+
+          Toast.makeText(getContext(), content.name + " has been download at Download/gitskarios/" + content.name, Toast.LENGTH_SHORT).show();
+        }
+      });
+    } else {
+      Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
+    }
+  }
+
+  private String decodeContent(String encoded) {
+    String decoded = encoded;
+    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
+    try {
+      decoded = new String(data, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    return decoded;
   }
 
   @Override
