@@ -32,7 +32,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
   protected void onBindViewHolder(ViewHolder holder, Repo repo) {
     holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
 
-    if (showOwnerNameExtra && repo.owner != null) {
+    if (showOwnerNameExtra && repo.owner != null && repo.owner.login != null) {
       holder.textOwnerName.setText(repo.owner.login);
     } else {
       holder.textOwnerName.setText("");
