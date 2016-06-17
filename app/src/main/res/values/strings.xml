@@ -508,4 +508,5 @@
   <string name="new_issue_title">Creating issue on %s</string>
   <string name="restart_app_apply_theme">Restart GitSkarios to apply the theme</string>
   <string name="download_only_files">You can only download files</string>
+  <string name="source_code">Source Code</string>
 </resources>
