@@ -44,13 +44,6 @@ public class FileActivity extends RepositoryThemeActivity {
 
   @Override
   protected void close(boolean navigateUp) {
-    if (navigateUp && fromUrl) {
-      Intent upIntent = RepoDetailActivity.createLauncherIntent(this, info.repoInfo);
-      upIntent.putExtra(RepoDetailActivity.FROM_URL, fromUrl);
-      TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
-      finish();
-    } else {
-      super.close(navigateUp);
-    }
+    finish();
   }
 }
