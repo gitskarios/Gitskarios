@@ -225,6 +225,7 @@
   <string name="issue_renamed_to"><b>to:</b><br/>%s</string>
   <string name="issue_self_assigned">%1$s self assigned</string>
   <string name="issue_self_unassigned">%1$s removed their assignment</string>
+  <string name="issue_closed">closed in %s</string>
 
   <string name="no_collaborators">No collaborators</string>
   <string name="collaborators_fragment_title">Collaborators</string>
