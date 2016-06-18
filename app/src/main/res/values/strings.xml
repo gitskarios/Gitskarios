@@ -510,4 +510,11 @@
   <string name="restart_app_apply_theme">Restart GitSkarios to apply the theme</string>
   <string name="download_only_files">You can only download files</string>
   <string name="source_code">Source Code</string>
+  <string name="imgur_uploading_image_title">Uploading image</string>
+  <string name="imgur_uploading_image_text">%s</string>
+  <string name="imgur_uploading_image_action_open">Open</string>
+  <string name="add_image_title">Add image</string>
+  <string name="add_image_by_link">By link</string>
+  <string name="add_image_by_upload">Upload image</string>
+  <string name="imgur_uploading_image_title_done">Image uploaded</string>
 </resources>

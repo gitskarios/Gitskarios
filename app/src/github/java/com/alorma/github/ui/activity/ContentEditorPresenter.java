@@ -29,8 +29,7 @@ public class ContentEditorPresenter {
     imgurUpload.uploadImage(upload, clientId)
         .subscribeOn(scheduleOn)
         .observeOn(observeOn)
-        .doOnSubscribe(() -> callback.showImageLoading())
-        .doOnCompleted(() -> callback.hideImageLoading())
+        .doOnSubscribe(() -> callback.showImageLoading(upload.image.getName()))
         .filter(ImageResponse::isSucces)
         .subscribe(o -> {
           String name = null;
@@ -38,11 +37,8 @@ public class ContentEditorPresenter {
             name = file.getName();
           }
           setImageUrl(name, o.data.link);
-        }, this::onErrorPublishingImage);
-  }
-
-  private void onErrorPublishingImage(Throwable throwable) {
-    callback.showImageUploadError();
+          callback.onImageUploaded(upload.image.getName(), o.data.link);
+        }, throwable -> {callback.showImageUploadError(upload.image.getName());});
   }
 
   public void setImageUrl(String name, String link) {
@@ -58,18 +54,18 @@ public class ContentEditorPresenter {
   }
 
   public interface Callback {
-    void showImageLoading();
+    void showImageLoading(String name);
 
     void appendText(String text);
 
-    void showImageUploadError();
+    void showImageUploadError(String name);
 
-    void hideImageLoading();
+    void onImageUploaded(String name, String link);
 
     class Null implements Callback {
 
       @Override
-      public void showImageLoading() {
+      public void showImageLoading(String name) {
 
       }
 
@@ -79,12 +75,12 @@ public class ContentEditorPresenter {
       }
 
       @Override
-      public void showImageUploadError() {
+      public void showImageUploadError(String name) {
 
       }
 
       @Override
-      public void hideImageLoading() {
+      public void onImageUploaded(String name, String link) {
 
       }
     }
