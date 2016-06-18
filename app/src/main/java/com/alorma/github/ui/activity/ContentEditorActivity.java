@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.bean.SearchableUser;
 import com.alorma.github.cache.CacheWrapper;
@@ -30,7 +33,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.github.utils.AttributesUtils;
@@ -40,6 +43,7 @@ import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.single.EmptyPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.linkedin.android.spyglass.mentions.MentionsEditable;
 import com.linkedin.android.spyglass.suggestions.SuggestionsResult;
 import com.linkedin.android.spyglass.tokenization.QueryToken;
 import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver;
@@ -58,7 +62,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class ContentEditorActivity extends BackActivity
+public class ContentEditorActivity extends RepositoryThemeActivity
     implements Toolbar.OnMenuItemClickListener, QueryTokenReceiver, ContentEditorPresenter.Callback {
 
   public static final String CONTENT = "CONTENT";
@@ -120,8 +124,6 @@ public class ContentEditorActivity extends BackActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_content_editor);
 
-    setTitle("");
-
     if (getIntent().getExtras() != null) {
 
       findViews();
@@ -129,6 +131,10 @@ public class ContentEditorActivity extends BackActivity
       Scheduler observeOn = AndroidSchedulers.mainThread();
       Scheduler subscribeOn = Schedulers.io();
       contentEditorPresenter = new ContentEditorPresenter(getString(R.string.imgur_client_id), new ImgurUpload(), observeOn, subscribeOn);
+
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(AttributesUtils.getPrimaryColor(this)));
+      }
 
       toolbarExtra.inflateMenu(R.menu.content_editor_extra);
       toolbarExtra.setOnMenuItemClickListener(this);
@@ -284,6 +290,34 @@ public class ContentEditorActivity extends BackActivity
   }
 
   private void showAddPicture() {
+    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    builder.title(R.string.add_image_title);
+    builder.negativeText(R.string.add_image_by_link);
+    builder.onNegative((dialog1, which) -> showImageLink());
+    builder.positiveText(R.string.add_image_by_upload);
+    builder.onPositive((dialog1, which) -> showImageUploadPicker());
+    builder.show();
+  }
+
+  private void showImageLink() {
+    new MaterialDialog.Builder(this).title(R.string.addPicture)
+        .content(R.string.addPictureContent)
+        .input(R.string.addPictureHint, 0, false, (materialDialog, charSequence) -> {
+          MentionsEditable text = editText.getText();
+          text.append("\n");
+          text.append("\n");
+          text.append("![]");
+          text.append("(");
+          text.append(charSequence.toString());
+          text.append(")");
+          text.append("\n");
+          text.append("\n");
+        })
+        .neutralText(R.string.cancel)
+        .show();
+  }
+
+  private void showImageUploadPicker() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       PermissionListener permissionListener = new EmptyPermissionListener() {
         @Override
@@ -442,16 +476,8 @@ public class ContentEditorActivity extends BackActivity
   }
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Repository);
-    } else {
-      setTheme(R.style.AppTheme_Repository);
-    }
-  }
-
-  @Override
   public void showImageLoading(String imageName) {
+    Toast.makeText(ContentEditorActivity.this, R.string.imgur_uploading_image_title, Toast.LENGTH_SHORT).show();
     NotificationCompat.Builder builder = getImageNotificationBuilder(imageName);
     builder.setProgress(100, 50, true);
     builder.setOngoing(true);
@@ -484,8 +510,9 @@ public class ContentEditorActivity extends BackActivity
   }
 
   @Override
-  public void hideImageLoading(String imageName, String link) {
+  public void onImageUploaded(String imageName, String link) {
     NotificationCompat.Builder builder = getImageNotificationBuilder(imageName);
+    builder.setContentTitle(getString(R.string.imgur_uploading_image_title_done));
     Intent openPhotoIntent = new Intent(Intent.ACTION_VIEW);
     openPhotoIntent.setData(Uri.parse(link));
     PendingIntent openIntent = PendingIntent.getActivity(this, 1234, openPhotoIntent, 0);

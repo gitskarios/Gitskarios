@@ -37,7 +37,7 @@ public class ContentEditorPresenter {
             name = file.getName();
           }
           setImageUrl(name, o.data.link);
-          callback.hideImageLoading(upload.image.getName(), o.data.link);
+          callback.onImageUploaded(upload.image.getName(), o.data.link);
         }, throwable -> {callback.showImageUploadError(upload.image.getName());});
   }
 
@@ -60,7 +60,7 @@ public class ContentEditorPresenter {
 
     void showImageUploadError(String name);
 
-    void hideImageLoading(String name, String link);
+    void onImageUploaded(String name, String link);
 
     class Null implements Callback {
 
@@ -80,7 +80,7 @@ public class ContentEditorPresenter {
       }
 
       @Override
-      public void hideImageLoading(String name, String link) {
+      public void onImageUploaded(String name, String link) {
 
       }
     }

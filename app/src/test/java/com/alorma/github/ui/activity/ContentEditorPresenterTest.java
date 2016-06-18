@@ -66,7 +66,7 @@ import static org.mockito.Mockito.when;
     when(imgurUpload.uploadImage(any(Upload.class), anyString())).thenReturn(obs);
 
     contentEditorPresenter.uploadImageWithImgurAPI(file);
-    verify(callback).hideImageLoading(upload.image.getName(), o.data.link);
+    verify(callback).onImageUploaded(upload.image.getName(), o.data.link);
   }
 
   @Test
