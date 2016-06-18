@@ -55,8 +55,8 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 23
-    versionName "2.13.5"
-    versionCode 213005
+    versionName "2.14.14"
+    versionCode 214014
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -179,7 +179,7 @@ dependencies {
   compile project(':sdks:GithubReborn')
   compile project(':imgur')
 
-  compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+  compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
     transitive = true;
   }
 
@@ -196,7 +196,7 @@ dependencies {
   compile('com.github.afollestad.material-dialogs:commons:0.8.5.8@aar') {
     transitive = true
   }
-  compile('com.crashlytics.sdk.android:answers:1.3.6@aar') {
+  compile('com.crashlytics.sdk.android:answers:1.3.7@aar') {
     transitive = true;
   }
 
@@ -210,9 +210,9 @@ dependencies {
   apt "com.google.dagger:dagger-compiler:2.4"
   compile "com.google.dagger:dagger:2.4"
 
+  compile 'com.pddstudio:highlightjs-android:1.0.1'
 
-
-  compile('com.github.ZieIony:NaturalDateFormat:-SNAPSHOT') {
+  compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
     exclude group: "joda-time"
   }
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'

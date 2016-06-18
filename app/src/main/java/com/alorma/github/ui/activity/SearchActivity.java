@@ -2,9 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -32,9 +30,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-/**
- * Created by Bernat on 31/01/2015.
- */
 public class SearchActivity extends BackActivity {
 
   private EditText searchView;
@@ -67,37 +62,30 @@ public class SearchActivity extends BackActivity {
     listFragments.add(searchReposFragment);
     listFragments.add(searchUsersFragment);
 
-    viewPager.setAdapter(
-        new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
-    tabLayout.setupWithViewPager(viewPager);
+    if (viewPager != null && tabLayout != null) {
+      viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+      tabLayout.setupWithViewPager(viewPager);
+    }
 
-    searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      @Override
-      public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-        if (textView.length() > 0) {
-          switch (actionId) {
-            case EditorInfo.IME_ACTION_DONE:
-            case EditorInfo.IME_ACTION_SEARCH:
-            case EditorInfo.IME_ACTION_SEND:
-            case EditorInfo.IME_ACTION_NEXT:
-            case EditorInfo.IME_ACTION_GO:
-              if (textView.getText() != null) {
-                search(textView.getText().toString());
-              }
-              break;
-          }
+    searchView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+      if (textView.length() > 0) {
+        switch (actionId) {
+          case EditorInfo.IME_ACTION_DONE:
+          case EditorInfo.IME_ACTION_SEARCH:
+          case EditorInfo.IME_ACTION_SEND:
+          case EditorInfo.IME_ACTION_NEXT:
+          case EditorInfo.IME_ACTION_GO:
+            if (textView.getText() != null) {
+              search(textView.getText().toString());
+            }
+            break;
         }
-        return false;
       }
+      return false;
     });
 
     subscription = RxTextView.textChanges(searchView)
-        .filter(new Func1<CharSequence, Boolean>() {
-          @Override
-          public Boolean call(CharSequence s) {
-            return s.length() >= 3;
-          }
-        })
+        .filter(s -> s.length() >= 3)
         .throttleLast(100, TimeUnit.MILLISECONDS)
         .debounce(250, TimeUnit.MILLISECONDS)
         .subscribeOn(AndroidSchedulers.mainThread())
@@ -175,13 +163,11 @@ public class SearchActivity extends BackActivity {
   }
 
   @Override
-  protected void configureTheme() {
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    if ("theme_dark".equalsIgnoreCase(pref_theme)) {
+  protected void configureTheme(boolean dark) {
+    if (dark) {
       setTheme(R.style.AppTheme_Dark_Search);
+    } else {
+      setTheme(R.style.AppTheme_Search);
     }
   }
 }

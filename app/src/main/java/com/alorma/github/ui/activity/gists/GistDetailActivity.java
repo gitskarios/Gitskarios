@@ -1,9 +1,9 @@
 package com.alorma.github.ui.activity.gists;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,8 +14,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.gists.GistDetailFragment;
 import java.util.TreeMap;
 
-public class GistDetailActivity extends BackActivity
-    implements GistDetailFragment.GistDetailListener {
+public class GistDetailActivity extends BackActivity implements GistDetailFragment.GistDetailListener {
 
   private Toolbar toolbar;
   private GistDetailFragment detailFragment;
@@ -30,6 +29,15 @@ public class GistDetailActivity extends BackActivity
   }
 
   @Override
+  protected void configureTheme(boolean dark) {
+    if (dark) {
+      setTheme(R.style.AppTheme_Dark_Gists);
+    } else {
+      setTheme(R.style.AppTheme_Gists);
+    }
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_toolbar);
@@ -37,10 +45,9 @@ public class GistDetailActivity extends BackActivity
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    detailFragment =
-        GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID));
+    detailFragment = GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID));
     detailFragment.setGistDetailListener(this);
-    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     ft.replace(R.id.content, detailFragment);
     ft.commit();
   }

@@ -69,26 +69,22 @@ public class IssueTimelineView extends TextView {
       if (actor.equalsIgnoreCase(issueEvent.event.assignee.login)) {
         setText(getResources().getString(R.string.issue_self_assigned, actor));
       } else {
-        setText(getResources().getString(R.string.issue_assigned, actor,
-            issueEvent.event.assignee.login));
+        setText(getResources().getString(R.string.issue_assigned, actor, issueEvent.event.assignee.login));
       }
     } else if (eventType.equals("unassigned")) {
       setIcon(Octicons.Icon.oct_person);
       if (actor.equalsIgnoreCase(issueEvent.event.assignee.login)) {
         setText(getResources().getString(R.string.issue_self_unassigned, actor));
       } else {
-        setText(getResources().getString(R.string.issue_unassigned, actor,
-            issueEvent.event.assignee.login));
+        setText(getResources().getString(R.string.issue_unassigned, actor, issueEvent.event.assignee.login));
       }
     } else if (eventType.equals("milestoned")) {
       setIcon(Octicons.Icon.oct_milestone);
-      String text = getResources().getString(R.string.issue_milestoned, actor,
-          issueEvent.event.milestone.title);
+      String text = getResources().getString(R.string.issue_milestoned, actor, issueEvent.event.milestone.title);
       setText(text);
     } else if (eventType.equals("demilestoned")) {
       setIcon(Octicons.Icon.oct_milestone);
-      String text = getResources().getString(R.string.issue_demilestoned, actor,
-          issueEvent.event.milestone.title);
+      String text = getResources().getString(R.string.issue_demilestoned, actor, issueEvent.event.milestone.title);
       setText(text);
     } else if (eventType.equals("merged") || eventType.equals("referenced")) {
       String text = null;
@@ -121,6 +117,13 @@ public class IssueTimelineView extends TextView {
       String from = getResources().getString(R.string.issue_renamed_from, rename.from);
       String to = getResources().getString(R.string.issue_renamed_to, rename.to);
       setText(Html.fromHtml(actor + " " + from + "<br/>" + to));
+    } else if (eventType.equals("closed")) {
+      setIcon(Octicons.Icon.oct_x);
+      String commitId = issueEvent.event.commit_id;
+      if (commitId != null) {
+        String text = getResources().getString(R.string.issue_closed, commitId.substring(0, 8));
+        setText(String.format("%s %s", actor, text));
+      }
     } else {
       setIcon(Octicons.Icon.oct_octoface);
       String text = issueEvent.event.actor.login + " " + eventType + " ";

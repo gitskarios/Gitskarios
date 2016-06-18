@@ -7,15 +7,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.view.LinearBreadcrumb;
 import java.io.File;
 
-/**
- * Created by Bernat on 14/07/2015.
- */
-public class ContentCommitsActivity extends BackActivity {
+public class ContentCommitsActivity extends RepositoryThemeActivity {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String PATH = "PATH";

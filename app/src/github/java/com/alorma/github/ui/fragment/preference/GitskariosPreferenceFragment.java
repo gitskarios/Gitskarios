@@ -2,18 +2,20 @@ package com.alorma.github.ui.fragment.preference;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 import com.alorma.github.GitskariosSettings;
+import com.alorma.github.IntentsManager;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
-import com.alorma.github.IntentsManager;
 import com.alorma.github.ui.activity.MainActivity;
-import com.jakewharton.processphoenix.ProcessPhoenix;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment
     implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -25,7 +27,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
   public static final String CHANGELOG = "changelog";
   private static final String PREF_INTERCEPT = "pref_intercept";
   private static final String PREF_MARK_AS_READ = "pref_mark_as_read";
-  private static final String PREF_THEME = "pref_theme";
+  public static final String PREF_THEME = "pref_theme";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -38,10 +40,8 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
     CheckBoxPreference intercetor = (CheckBoxPreference) findPreference(PREF_INTERCEPT);
 
     ComponentName componentName = new ComponentName(getActivity(), Interceptor.class);
-    int componentEnabledSetting =
-        getActivity().getPackageManager().getComponentEnabledSetting(componentName);
-    intercetor.setChecked(
-        componentEnabledSetting == PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
+    int componentEnabledSetting = getActivity().getPackageManager().getComponentEnabledSetting(componentName);
+    intercetor.setChecked(componentEnabledSetting == PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
     intercetor.setOnPreferenceChangeListener(this);
 
     findPreference(REPOS_SORT).setOnPreferenceChangeListener(this);
@@ -63,8 +63,7 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
   @Override
   public boolean onPreferenceClick(Preference preference) {
     if (preference.getKey().equals(GITSKARIOS)) {
-      startActivity(new IntentsManager(getActivity()).manageRepos(
-          Uri.parse("https://github.com/gitskarios/Gitskarios")));
+      startActivity(new IntentsManager(getActivity()).manageRepos(Uri.parse("https://github.com/gitskarios/Gitskarios")));
     } else if (preference.getKey().equals(CHANGELOG)) {
       startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
     }
@@ -76,12 +75,10 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
     if (preference.getKey().equals(PREF_INTERCEPT)) {
       Boolean value = (Boolean) newValue;
 
-      int flag = value ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-          : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+      int flag = value ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
 
       ComponentName componentName = new ComponentName(getActivity(), Interceptor.class);
-      getActivity().getPackageManager()
-          .setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
+      getActivity().getPackageManager().setComponentEnabledSetting(componentName, flag, PackageManager.DONT_KILL_APP);
     } else if (preference.getKey().equals(REPOS_SORT)) {
       GitskariosSettings settings = new GitskariosSettings(getActivity());
       settings.saveRepoSort(String.valueOf(newValue));
@@ -93,10 +90,12 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
       Boolean value = (Boolean) newValue;
       settings.saveMarkAsRead(value);
     } else if (preference.getKey().equals(PREF_THEME)) {
+      SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+      defaultSharedPreferences.edit().putString(PREF_THEME, String.valueOf(newValue)).apply();
       preference.getEditor().putString(PREF_THEME, String.valueOf(newValue)).apply();
       Intent intent = new Intent(getActivity(), MainActivity.class);
       intent.putExtra("rebirth", true);
-      ProcessPhoenix.triggerRebirth(getActivity(), intent);
+      Toast.makeText(getActivity(), R.string.restart_app_apply_theme, Toast.LENGTH_SHORT).show();
     }
     return true;
   }

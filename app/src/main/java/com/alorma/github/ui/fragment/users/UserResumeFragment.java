@@ -175,4 +175,14 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
   public interface UserResumeCallback {
     void openRepos(String login);
   }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Profile;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Profile;
+  }
 }

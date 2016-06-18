@@ -38,8 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NotificationsFragment extends LoadingListFragment<NotificationsAdapter>
-    implements NotificationsAdapter.NotificationsAdapterListener,
-    Presenter.Callback<List<NotificationsParent>> {
+    implements NotificationsAdapter.NotificationsAdapterListener, Presenter.Callback<List<NotificationsParent>> {
 
   @Inject NotificationsPresenter presenter;
   private boolean isShowingAllNotifications = false;
@@ -64,11 +63,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
     ApplicationComponent component = application.getComponent();
 
-    DaggerApiComponent.builder()
-        .applicationComponent(component)
-        .apiModule(new ApiModule())
-        .build()
-        .inject(this);
+    DaggerApiComponent.builder().applicationComponent(component).apiModule(new ApiModule()).build().inject(this);
   }
 
   @Override
@@ -79,17 +74,25 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.notifications_list_fragment, null, false);
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Notifications;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Notifications;
   }
 
   @Override
   protected void executeRequest() {
     super.executeRequest();
 
-    String token =
-        TokenProvider.getInstance() != null ? TokenProvider.getInstance().getToken() : null;
+    String token = TokenProvider.getInstance() != null ? TokenProvider.getInstance().getToken() : null;
     if (getArguments() != null && getArguments().containsKey(BaseActivity.EXTRA_WITH_TOKEN)) {
       token = getArguments().getString(BaseActivity.EXTRA_WITH_TOKEN);
     }
@@ -161,9 +164,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     String type = notification.subject.type;
 
     Uri uri = null;
-    if (type.equalsIgnoreCase("Issue")
-        || type.equalsIgnoreCase("PullRequest")
-        || type.equalsIgnoreCase("Release")) {
+    if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest") || type.equalsIgnoreCase("Release")) {
       uri = Uri.parse(notification.subject.url);
     } else {
       uri = Uri.parse(notification.repository.htmlUrl);
@@ -252,8 +253,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
           hideEmpty();
         }
 
-        NotificationsAdapter notificationsAdapter =
-            new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
+        NotificationsAdapter notificationsAdapter = new NotificationsAdapter(getActivity(), LayoutInflater.from(getActivity()));
         notificationsAdapter.addAll(notifications);
         notificationsAdapter.setNotificationsAdapterListener(this);
 

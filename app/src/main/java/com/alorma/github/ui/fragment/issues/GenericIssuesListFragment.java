@@ -37,9 +37,18 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.generic_issues_list_fragment, null, false);
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -125,8 +134,6 @@ public class GenericIssuesListFragment extends LoadingListFragment<IssuesAdapter
   protected Octicons.Icon getNoDataIcon() {
     return Octicons.Icon.oct_issue_opened;
   }
-
-
 
   @Override
   protected int getNoDataText() {

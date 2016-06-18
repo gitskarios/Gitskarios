@@ -33,6 +33,16 @@ public class OrgsReposFragment extends ReposFragment {
   }
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_People;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_People;
+  }
+
+  @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 

@@ -1,22 +1,14 @@
 package com.alorma.github.ui.fragment;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.alorma.github.Base64;
@@ -31,33 +23,27 @@ import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
-import com.alorma.github.ui.view.CopyWebView;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ImageUtils;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.pddstudio.highlightjs.HighlightJsView;
+import com.pddstudio.highlightjs.models.Language;
+import com.pddstudio.highlightjs.models.Theme;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class FileFragment extends BaseFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
   public static final String FROM_URL = "FROM_URL";
 
-  private CopyWebView webView;
+  private HighlightJsView webView;
   private ImageView imageView;
   private Content fileContent;
   private View loadingView;
 
   private FileInfo fileInfo;
-  private boolean fromUrl;
 
   public static FileFragment getInstance(FileInfo info, boolean fromUrl) {
     FileFragment fragment = new FileFragment();
@@ -70,9 +56,18 @@ public class FileFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.file_fragment, null, false);
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   @Override
@@ -81,26 +76,27 @@ public class FileFragment extends BaseFragment {
 
     loadingView = view.findViewById(R.id.loading_view);
 
-    webView = (CopyWebView) view.findViewById(R.id.webview);
-    webView.setWebViewListener(new CopyWebView.WebViewListener() {
-      @Override
-      public void onTextCopy(String text) {
-        // put selected text into clipdata
-        ClipboardManager clipboard =
-            (ClipboardManager) webView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("simple text", text);
-        clipboard.setPrimaryClip(clip);
-      }
-    });
+    webView = (HighlightJsView) view.findViewById(R.id.webview);
 
-    webView.setBackgroundColor(AttributesUtils.getWebviewColor(getActivity()));
+    webView.setTheme(Theme.ANDROID_STUDIO);
+    webView.setHighlightLanguage(Language.AUTO_DETECT);
+
+    /*
+    webView.setWebViewListener(text -> {
+      // put selected text into clipdata
+      ClipboardManager clipboard =
+          (ClipboardManager) webView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+      ClipData clip = ClipData.newPlainText("simple text", text);
+      clipboard.setPrimaryClip(clip);
+    });
+    */
 
     imageView = (ImageView) view.findViewById(R.id.imageView);
 
     if (getArguments() != null) {
 
-      fileInfo = (FileInfo) getArguments().getParcelable(FILE_INFO);
-      fromUrl = getArguments().getBoolean(FROM_URL);
+      fileInfo = getArguments().getParcelable(FILE_INFO);
+      boolean fromUrl = getArguments().getBoolean(FROM_URL);
 
       webView.clearCache(true);
       webView.clearFormData();
@@ -108,10 +104,6 @@ public class FileFragment extends BaseFragment {
       webView.clearMatches();
       webView.clearSslPreferences();
       webView.setVisibility(View.VISIBLE);
-      WebSettings settings = webView.getSettings();
-      settings.setBuiltInZoomControls(true);
-      settings.setJavaScriptEnabled(true);
-      webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 
       new IntentsManager(getActivity()).manageUrls(webView);
 
@@ -122,52 +114,9 @@ public class FileFragment extends BaseFragment {
           getContent();
         }
       } else {
-        SharedPreferences defaultSharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        String pref_theme =
-            defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-          webView.loadUrl("file:///android_asset/diff_dark.html");
-        } else {
-          webView.loadUrl("file:///android_asset/diff.html");
-        }
-        loadingView.setVisibility(View.GONE);
+        webView.setSource(fileInfo.content);
       }
     }
-  }
-
-  private String configureHtml(String htmlContent) {
-    String fileName = "source_pre.html";
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-      fileName = "source_pre_dark.html";
-    }
-
-    String head = getAssetFileContent(fileName);
-    String end = getAssetFileContent("source_post.html");
-
-    return head + "\n" + htmlContent + "\n" + end;
-  }
-
-  public String getAssetFileContent(String filename) {
-    StringBuilder buf = new StringBuilder();
-    try {
-      InputStream json = getActivity().getAssets().open(filename);
-      BufferedReader in = new BufferedReader(new InputStreamReader(json, "UTF-8"));
-      String str;
-
-      while ((str = in.readLine()) != null) {
-        buf.append(str);
-      }
-
-      in.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return buf.toString();
   }
 
   private void getBranches() {
@@ -239,9 +188,7 @@ public class FileFragment extends BaseFragment {
                 webView.clearHistory();
                 webView.clearMatches();
                 webView.clearSslPreferences();
-                webView.getSettings().setUseWideViewPort(false);
-                webView.loadDataWithBaseURL("http://github.com", configureHtml(s),
-                    "text/html; charset=UTF-8", null, null);
+                webView.setSource(s);
               }
             }
           });
@@ -268,19 +215,19 @@ public class FileFragment extends BaseFragment {
         }
       }
     } else {
-      if (getActivity() != null && isAdded()) {
-        SharedPreferences defaultSharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        String pref_theme =
-            defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-
-        if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-          webView.loadUrl("file:///android_asset/source_dark.html");
-        } else {
-          webView.loadUrl("file:///android_asset/source.html");
-        }
-      }
+      webView.setSource(decodeContent(content.content));
     }
+  }
+
+  private String decodeContent(String encoded) {
+    String decoded = encoded;
+    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
+    try {
+      decoded = new String(data, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    return decoded;
   }
 
   private String decodeContent() {
@@ -303,28 +250,6 @@ public class FileFragment extends BaseFragment {
 
   protected void hideProgressDialog() {
     loadingView.setVisibility(View.GONE);
-  }
-
-  protected class JavaScriptInterface {
-    @JavascriptInterface
-    public String getCode() {
-      return TextUtils.htmlEncode(decodeContent().replace("\t", "    "));
-    }
-
-    @JavascriptInterface
-    public String getRawCode() {
-      return decodeContent();
-    }
-
-    @JavascriptInterface
-    public String getFilename() {
-      return fileContent.name;
-    }
-
-    @JavascriptInterface
-    public int getLineHighlight() {
-      return 0;
-    }
   }
 
   private class ParseBranchesCallback extends Subscriber<List<Branch>> {

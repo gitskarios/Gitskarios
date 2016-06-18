@@ -16,9 +16,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 08/08/2014.
- */
 public class SearchUsersFragment extends BaseUsersListFragment implements TitleProvider {
 
   private String query;
@@ -84,12 +81,9 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
             .subscribeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext(new Action1<Pair<List<User>, Integer>>() {
-              @Override
-              public void call(Pair<List<User>, Integer> listIntegerPair) {
-                if (getAdapter() != null) {
-                  getAdapter().clear();
-                }
+            .doOnNext((Action1<Pair<List<User>, Integer>>) listIntegerPair -> {
+              if (getAdapter() != null) {
+                getAdapter().clear();
               }
             })
             .subscribe(this);
@@ -119,5 +113,15 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
   @Override
   public IIcon getTitleIcon() {
     return Octicons.Icon.oct_person;
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Search;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Search;
   }
 }

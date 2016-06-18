@@ -68,7 +68,7 @@
     <item name="gitskarios_primary_light">@color/primary_light</item>
     <item name="gitskarios_icons">@color/gray_github_light</item>
     <item name="gitskarios_title">@color/accent</item>
-    <item name="gitskarios_webview">@color/gray_github_dark</item>
+    <item name="gitskarios_webview">@color/md_grey_900</item>
     <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
 
     <item name="diff_addition_text_color">@color/black</item>
@@ -106,7 +106,7 @@
     <item name="gitskarios_primary_light">@color/gray_github_light</item>
     <item name="gitskarios_icons">@color/icons</item>
     <item name="gitskarios_title">@color/accent</item>
-    <item name="gitskarios_webview">@color/gray_github_dark</item>
+    <item name="gitskarios_webview">@android:color/transparent</item>
   </style>
 
   <style name="Base.AppTheme.Dark.Search"
@@ -126,7 +126,7 @@
     <item name="gitskarios_primary_light">@color/gray_github_light</item>
     <item name="gitskarios_icons">@color/icons</item>
     <item name="gitskarios_title">@color/accent</item>
-    <item name="gitskarios_webview">@color/gray_github_dark</item>
+    <item name="gitskarios_webview">@color/md_grey_900</item>
     <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
   </style>
 
@@ -192,11 +192,8 @@
 
   </style>
 
-
   <style name="Toolbar.AppCompat.Responsive"
          parent="AppTheme.AppCompat.Responsive">
-
-
     <item name="android:textColorPrimary">@color/white</item>
     <item name="android:textColorSecondary">@color/white</item>
     <item name="colorControlHighlight">@color/white</item>
@@ -206,14 +203,10 @@
 
   <style name="Toolbar.AppCompat.Responsive.Transparent"
          parent="AppTheme.AppCompat.Responsive">
-
-
     <item name="android:textColorPrimary">@color/white</item>
     <item name="android:textColorSecondary">@color/white</item>
     <item name="colorControlHighlight">@color/white</item>
     <item name="colorPrimary">@android:color/transparent</item>
-
-
   </style>
 
 
@@ -245,5 +238,127 @@
 
   <style name="AppTheme.ColoredButton">
     <item name="colorButtonNormal">?attr/colorPrimary</item>
+  </style>
+
+  <!-- APP Themes -->
+
+  <!-- Events themes -->
+
+  <style name="AppTheme.Events">
+    <item name="colorPrimary">@color/md_indigo_400</item>
+    <item name="colorPrimaryDark">@color/md_indigo_600</item>
+    <item name="colorAccent">@color/md_amber_700</item>
+    <item name="colorControlNormal">@color/md_red_400</item>
+    <item name="colorControlActivated">@color/md_red_600</item>
+    <item name="colorControlHighlight">@color/md_red_600</item>
+  </style>
+
+  <style name="AppTheme.Dark.Events">
+    <item name="colorPrimary">@color/md_indigo_600</item>
+    <item name="colorPrimaryDark">@color/md_indigo_800</item>
+    <item name="colorAccent">@color/md_amber_800</item>
+    <item name="colorControlNormal">@color/md_red_900</item>
+    <item name="colorControlActivated">@color/md_red_900</item>
+    <item name="colorControlHighlight">@color/md_red_900</item>
+  </style>
+
+  <!-- Repositories themes -->
+
+  <style name="AppTheme.Repository">
+    <item name="colorPrimary">@color/md_teal_600</item>
+    <item name="colorPrimaryDark">@color/md_teal_800</item>
+    <item name="colorAccent">@color/md_amber_700</item>
+    <item name="colorControlNormal">@color/md_amber_700</item>
+    <item name="colorControlActivated">@color/md_amber_800</item>
+    <item name="colorControlHighlight">@color/md_amber_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Repository">
+    <item name="colorPrimary">@color/md_teal_600</item>
+    <item name="colorPrimaryDark">@color/md_teal_800</item>
+    <item name="colorAccent">@color/md_amber_600</item>
+    <item name="colorControlNormal">@color/md_amber_600</item>
+    <item name="colorControlActivated">@color/md_amber_700</item>
+    <item name="colorControlHighlight">@color/md_amber_700</item>
+  </style>
+
+  <!-- People themes -->
+
+  <style name="AppTheme.People">
+    <item name="colorPrimary">@color/md_amber_600</item>
+    <item name="colorPrimaryDark">@color/md_amber_700</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.People">
+    <item name="colorPrimary">@color/md_amber_600</item>
+    <item name="colorPrimaryDark">@color/md_amber_700</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <!-- Profile themes -->
+
+  <style name="AppTheme.Profile">
+    <item name="colorPrimary">@color/md_grey_600</item>
+    <item name="colorPrimaryDark">@color/md_grey_700</item>
+    <item name="colorAccent">@color/md_indigo_500</item>
+    <item name="colorControlNormal">@color/md_indigo_500</item>
+    <item name="colorControlActivated">@color/md_indigo_800</item>
+    <item name="colorControlHighlight">@color/md_indigo_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Profile">
+    <item name="colorPrimary">@color/md_grey_600</item>
+    <item name="colorPrimaryDark">@color/md_grey_700</item>
+    <item name="colorAccent">@color/md_indigo_500</item>
+    <item name="colorControlNormal">@color/md_indigo_500</item>
+    <item name="colorControlActivated">@color/md_indigo_800</item>
+    <item name="colorControlHighlight">@color/md_indigo_800</item>
+  </style>
+
+  <!-- Gists themes -->
+
+  <style name="AppTheme.Gists">
+    <item name="colorPrimary">@color/md_brown_400</item>
+    <item name="colorPrimaryDark">@color/md_brown_500</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Gists">
+    <item name="colorPrimary">@color/md_brown_400</item>
+    <item name="colorPrimaryDark">@color/md_brown_500</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <!-- Notifications themes -->
+
+  <style name="AppTheme.Notifications">
+    <item name="colorPrimary">@color/md_red_400</item>
+    <item name="colorPrimaryDark">@color/md_red_600</item>
+    <item name="colorAccent">@color/md_blue_600</item>
+    <item name="colorControlNormal">@color/md_blue_600</item>
+    <item name="colorControlActivated">@color/md_blue_800</item>
+    <item name="colorControlHighlight">@color/md_blue_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Notifications">
+    <item name="colorPrimary">@color/md_red_600</item>
+    <item name="colorPrimaryDark">@color/md_red_900</item>
+    <item name="colorAccent">@color/md_blue_900</item>
+    <item name="colorControlNormal">@color/md_blue_800</item>
+    <item name="colorControlActivated">@color/md_blue_800</item>
+    <item name="colorControlHighlight">@color/md_blue_900</item>
   </style>
 </resources>

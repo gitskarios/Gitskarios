@@ -119,6 +119,16 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
   }
 
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
   private void showMilestones() {
     Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, true);
     startActivityForResult(intent, MILESTONES_REQUEST);

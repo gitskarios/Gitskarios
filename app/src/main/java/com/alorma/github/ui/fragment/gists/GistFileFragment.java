@@ -1,6 +1,5 @@
 package com.alorma.github.ui.fragment.gists;
 
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,12 +12,15 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.alorma.github.R;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.AttributesUtils;
+import com.pddstudio.highlightjs.HighlightJsView;
+import com.pddstudio.highlightjs.models.Language;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class GistFileFragment extends Fragment {
+public class GistFileFragment extends BaseFragment {
 
   public static final String FILE_NAME = "FILE_NAME";
   public static final String CONTENT = "CONTENT";
@@ -37,7 +39,7 @@ public class GistFileFragment extends Fragment {
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    WebView webView = (WebView) view.findViewById(R.id.webview);
+    HighlightJsView webView = (HighlightJsView) view.findViewById(R.id.webview);
 
     if (getArguments() != null) {
       fileName = getArguments().getString(FILE_NAME);
@@ -50,25 +52,22 @@ public class GistFileFragment extends Fragment {
       webView.clearSslPreferences();
       webView.getSettings().setUseWideViewPort(false);
       webView.setVisibility(View.VISIBLE);
-      WebSettings settings = webView.getSettings();
-      settings.setBuiltInZoomControls(true);
-      settings.setJavaScriptEnabled(true);
-      webView.addJavascriptInterface(new JavaScriptInterface(), "bitbeaker");
 
-      webView.setBackgroundColor(AttributesUtils.getWebviewColor(getActivity()));
-
-      SharedPreferences defaultSharedPreferences =
-          PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-      String pref_theme =
-          defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-      if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-        webView.loadUrl("file:///android_asset/diff_dark.html");
-      } else {
-        webView.loadUrl("file:///android_asset/diff.html");
-      }
+      webView.setHighlightLanguage(Language.AUTO_DETECT);
+      webView.setSource(content);
 
       webView.getSettings().setDefaultTextEncodingName("utf-8");
     }
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Gists;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Gists;
   }
 
   private String configureHtml(String htmlContent) {

@@ -3,7 +3,6 @@ package com.alorma.github.ui.fragment.base;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tr.xip.errorview.ErrorView;
 
-public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends Fragment
+public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends BaseFragment
     implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener,
     RecyclerArrayAdapter.RecyclerAdapterContentListener, ErrorView.RetryListener {
 
@@ -48,8 +47,8 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
       Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
-    return inflater.inflate(useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment,
-        null, false);
+    return getThemedLayoutInflater(inflater).inflate(
+        useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
   }
 
   public void setPage(Integer page) {
@@ -77,7 +76,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 
     if (swipe != null) {
-      int accent = AttributesUtils.getAccentColor(getActivity());
+      int accent = AttributesUtils.getAccentColor(getContext());
       swipe.setColorSchemeColors(accent);
       swipe.setOnRefreshListener(this);
     }
@@ -93,7 +92,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   }
 
   protected RecyclerView.LayoutManager getLayoutManager() {
-    return new LinearLayoutManager(getActivity());
+    return new LinearLayoutManager(getContext());
   }
 
   protected RecyclerView.ItemAnimator getItemAnimator() {
@@ -180,11 +179,11 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   }
 
   protected void checkFAB() {
-    if (getActivity() != null && fab != null) {
+    if (getContext() != null && fab != null) {
       if (useFAB()) {
         fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(this);
-        IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), getFABGithubIcon());
+        IconicsDrawable iconicsDrawable = new IconicsDrawable(getContext(), getFABGithubIcon());
         iconicsDrawable.color(Color.WHITE);
         iconicsDrawable.sizeDp(24);
 
@@ -203,7 +202,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
   public void setEmpty() {
     stopRefresh();
-    if (getActivity() != null) {
+    if (getContext() != null) {
       if (error_view != null) {
         error_view.setVisibility(View.VISIBLE);
         error_view.setTitle(getNoDataText());
@@ -219,7 +218,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   }
 
   public void setEmpty(boolean withError, int statusCode) {
-    if (getActivity() != null) {
+    if (getContext() != null) {
       if (error_view != null) {
         error_view.setVisibility(View.VISIBLE);
         error_view.setError(statusCode);
@@ -232,7 +231,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   }
 
   public void hideEmpty() {
-    if (getActivity() != null) {
+    if (getContext() != null) {
       if (error_view != null) {
         error_view.setVisibility(View.GONE);
       }
