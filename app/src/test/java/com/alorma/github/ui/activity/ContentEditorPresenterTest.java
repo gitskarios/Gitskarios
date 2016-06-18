@@ -20,7 +20,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class) public class ContentEditorPresenterTest {
+public class ContentEditorPresenterTest {
 
   public static final String LINK = "http://aaa/aaa.png";
 
@@ -84,7 +84,7 @@ import static org.mockito.Mockito.when;
     when(imgurUpload.uploadImage(any(Upload.class), anyString())).thenReturn(obs);
 
     contentEditorPresenter.uploadImageWithImgurAPI(null);
-    verify(callback).showImageUploadError(anyString());
+    verify(callback).showImageUploadError(null);
   }
 
   private String buildResult(String name) {

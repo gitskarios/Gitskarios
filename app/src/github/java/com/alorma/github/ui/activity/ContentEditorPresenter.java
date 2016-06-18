@@ -23,22 +23,26 @@ public class ContentEditorPresenter {
   }
 
   public void uploadImageWithImgurAPI(File file) {
-    Upload upload = new Upload();
-    upload.image = file;
+    if (file != null) {
+      Upload upload = new Upload();
+      upload.image = file;
 
-    imgurUpload.uploadImage(upload, clientId)
-        .subscribeOn(scheduleOn)
-        .observeOn(observeOn)
-        .doOnSubscribe(() -> callback.showImageLoading(upload.image.getName()))
-        .filter(ImageResponse::isSucces)
-        .subscribe(o -> {
-          String name = null;
-          if (file != null) {
+      imgurUpload.uploadImage(upload, clientId)
+          .subscribeOn(scheduleOn)
+          .observeOn(observeOn)
+          .doOnSubscribe(() -> callback.showImageLoading(upload.image.getName()))
+          .filter(ImageResponse::isSucces)
+          .subscribe(o -> {
+            String name = null;
             name = file.getName();
-          }
-          setImageUrl(name, o.data.link);
-          callback.onImageUploaded(upload.image.getName(), o.data.link);
-        }, throwable -> {callback.showImageUploadError(upload.image.getName());});
+            setImageUrl(name, o.data.link);
+            callback.onImageUploaded(upload.image.getName(), o.data.link);
+          }, throwable -> {
+            callback.showImageUploadError(upload.image.getName());
+          });
+    } else {
+      callback.showImageUploadError(null);
+    }
   }
 
   public void setImageUrl(String name, String link) {
