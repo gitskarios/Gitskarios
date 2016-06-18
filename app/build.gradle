@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.android.application'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+  maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: "build-time-tracker"
@@ -61,6 +61,10 @@ android {
 
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
+
+    resValue "string", "imgur_client_id", getImgurClient()
+    resValue "string", "imgur_client_secret", getImgurSecret()
+    resValue "string", "imgur_client_callback", getImgurCallback()
   }
 
   lintOptions {
@@ -158,9 +162,22 @@ def getGHCallback(pro) {
   }
 }
 
+def getImgurClient() {
+  return hasProperty('IMGUR_CLIENT') ? IMGUR_CLIENT : System.getenv('IMGUR_CLIENT')
+}
+
+def getImgurSecret() {
+  return hasProperty('IMGUR_SECRET') ? IMGUR_SECRET : System.getenv('IMGUR_SECRET')
+}
+
+def getImgurCallback() {
+  return hasProperty('IMGUR_CALLBACK') ? IMGUR_CALLBACK : System.getenv('IMGUR_CALLBACK')
+}
+
 dependencies {
   compile project(':sdks:GithubAndroidSdk')
   compile project(':sdks:GithubReborn')
+  compile project(':imgur')
 
   compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
     transitive = true;
@@ -273,10 +290,7 @@ def signingConfigFromFile() {
   if (propFile.canRead()) {
     props.load(new FileInputStream(propFile))
 
-    if (props != null &&
-        props.containsKey('STORE_PASSWORD') &&
-        props.containsKey('KEY_ALIAS') &&
-        props.containsKey('KEY_PASSWORD')) {
+    if (props != null && props.containsKey('STORE_PASSWORD') && props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
 
       def keystorePassword = props['STORE_PASSWORD']
       def keyAlias = props['KEY_ALIAS']
