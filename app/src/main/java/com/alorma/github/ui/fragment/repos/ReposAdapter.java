@@ -30,7 +30,9 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, Repo repo) {
-    holder.textTitle.setText(showOwnerName ? repo.getOwner().getLogin() : repo.name);
+    if (repo.getOwner() != null) {
+      holder.textTitle.setText(showOwnerName ? repo.getOwner().getLogin() : repo.name);
+    }
 
     if (showOwnerNameExtra) {
       holder.textOwnerName.setText(repo.getOwner().getLogin());
