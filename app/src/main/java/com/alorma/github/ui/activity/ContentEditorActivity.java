@@ -38,6 +38,8 @@ import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.core.Pair;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.github.mobile.util.HtmlUtils;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
@@ -50,6 +52,7 @@ import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver;
 import com.linkedin.android.spyglass.ui.RichEditorView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import io.fabric.sdk.android.Fabric;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -300,6 +303,10 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   }
 
   private void showImageLink() {
+    if (Fabric.isInitialized()) {
+      Answers.getInstance().logCustom(new CustomEvent("UPLOAD_IMAGE").putCustomAttribute("type", "link"));
+    }
+
     new MaterialDialog.Builder(this).title(R.string.addPicture)
         .content(R.string.addPictureContent)
         .input(R.string.addPictureHint, 0, false, (materialDialog, charSequence) -> {
@@ -318,6 +325,9 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   }
 
   private void showImageUploadPicker() {
+    if (Fabric.isInitialized()) {
+      Answers.getInstance().logCustom(new CustomEvent("UPLOAD_IMAGE").putCustomAttribute("type", "upload"));
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       PermissionListener permissionListener = new EmptyPermissionListener() {
         @Override
@@ -484,6 +494,10 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
     NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     manager.notify(imageName.hashCode(), builder.build());
+
+    if (Fabric.isInitialized()) {
+      Answers.getInstance().logCustom(new CustomEvent("UPLOAD_IMAGE").putCustomAttribute("status", "start"));
+    }
   }
 
   @NonNull
@@ -507,6 +521,10 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   public void showImageUploadError(String imageName) {
     NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     manager.cancel(imageName.hashCode());
+
+    if (Fabric.isInitialized()) {
+      Answers.getInstance().logCustom(new CustomEvent("UPLOAD_IMAGE").putCustomAttribute("status", "error"));
+    }
   }
 
   @Override
@@ -520,5 +538,9 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
     NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     manager.notify(imageName.hashCode(), builder.build());
+
+    if (Fabric.isInitialized()) {
+      Answers.getInstance().logCustom(new CustomEvent("UPLOAD_IMAGE").putCustomAttribute("status", "complete"));
+    }
   }
 }

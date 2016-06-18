@@ -57,7 +57,7 @@ import static org.mockito.Mockito.when;
     when(imgurUpload.uploadImage(any(Upload.class), anyString())).thenReturn(obs);
 
     contentEditorPresenter.uploadImageWithImgurAPI(file);
-    verify(callback).showImageLoading(upload.image.getName());
+    verify(callback).showImageLoading(anyString());
   }
 
   @Test
@@ -66,7 +66,7 @@ import static org.mockito.Mockito.when;
     when(imgurUpload.uploadImage(any(Upload.class), anyString())).thenReturn(obs);
 
     contentEditorPresenter.uploadImageWithImgurAPI(file);
-    verify(callback).onImageUploaded(upload.image.getName(), o.data.link);
+    verify(callback).onImageUploaded(anyString(), anyString());
   }
 
   @Test
@@ -84,7 +84,7 @@ import static org.mockito.Mockito.when;
     when(imgurUpload.uploadImage(any(Upload.class), anyString())).thenReturn(obs);
 
     contentEditorPresenter.uploadImageWithImgurAPI(null);
-    verify(callback).showImageUploadError(upload.image.getName());
+    verify(callback).showImageUploadError(anyString());
   }
 
   private String buildResult(String name) {

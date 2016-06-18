@@ -10,8 +10,10 @@ import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import io.fabric.sdk.android.Fabric;
 import java.text.DecimalFormat;
 
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
@@ -30,8 +32,14 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, Repo repo) {
-    if (repo.getOwner() != null) {
-      holder.textTitle.setText(showOwnerName ? repo.getOwner().getLogin() : repo.name);
+    try {
+      if (repo.getOwner() != null) {
+        holder.textTitle.setText(showOwnerName ? repo.getOwner().getLogin() : repo.name);
+      }
+    } catch (NullPointerException e) {
+      if (Fabric.isInitialized()) {
+        Crashlytics.logException(e);
+      }
     }
 
     if (showOwnerNameExtra) {
