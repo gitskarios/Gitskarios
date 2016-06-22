@@ -43,7 +43,9 @@ import com.alorma.gitskarios.core.Pair;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.List;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -91,7 +93,13 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       extras.putParcelable(USER, user);
 
       StoreCredentials settings = new StoreCredentials(context);
-      extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
+      if (user.login != null) {
+        extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
+      } else {
+        if (Fabric.isInitialized()) {
+          Crashlytics.log("User.login is null :S " + user.toString());
+        }
+      }
     }
     Intent intent = new Intent(context, ProfileActivity.class);
     intent.putExtras(extras);
