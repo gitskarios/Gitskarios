@@ -21,20 +21,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.alorma.github.Base64;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.request.NewContentRequest;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
-import com.alorma.github.sdk.services.content.NewFileClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
-import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.activity.NewContentActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
@@ -437,6 +433,17 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   private void createFile() {
     Intent launcherIntent = NewContentActivity.createLauncherIntent(getActivity(), repoInfo, currentPath);
     startActivityForResult(launcherIntent, RESULT_NEW_FILE);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == RESULT_NEW_FILE) {
+        onRefresh();
+      }
+    }
   }
 
   @Override

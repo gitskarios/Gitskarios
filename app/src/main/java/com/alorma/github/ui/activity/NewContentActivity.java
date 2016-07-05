@@ -166,6 +166,8 @@ public class NewContentActivity extends RepositoryThemeActivity {
     client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(newContentResponse -> {
       Toast.makeText(NewContentActivity.this, "File created", Toast.LENGTH_SHORT).show();
       hideProgressDialog();
+      setResult(RESULT_OK);
+      finish();
     }, throwable -> {
       Toast.makeText(NewContentActivity.this, "Error creating file", Toast.LENGTH_SHORT).show();
       hideProgressDialog();
