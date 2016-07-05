@@ -104,7 +104,7 @@ public class NewContentActivity extends RepositoryThemeActivity {
     return true;
   }
 
-  private NewContentRequest checkDataAndCreateIssue() {
+  private NewContentRequest checkDataAndCreateFile() {
     if (editTitle.length() <= 0) {
       editTitle.setError(getString(R.string.content_message_mandatory));
       return null;
@@ -138,7 +138,7 @@ public class NewContentActivity extends RepositoryThemeActivity {
     super.onOptionsItemSelected(item);
     switch (item.getItemId()) {
       case R.id.action_send:
-        NewContentRequest contentRequest = checkDataAndCreateIssue();
+        NewContentRequest contentRequest = checkDataAndCreateFile();
         invalidateOptionsMenu();
         createContent(contentRequest);
         showProgressDialog(R.string.creating_content);
@@ -158,12 +158,17 @@ public class NewContentActivity extends RepositoryThemeActivity {
   }
 
   private void createContent(NewContentRequest newContentRequest) {
-    NewFileClient client = new NewFileClient(newContentRequest, repoInfo, currentPath + editPath.getText().toString());
+    String path = currentPath + editPath.getText().toString();
+    if (currentPath.equals("/")) {
+      path = editPath.getText().toString();
+    }
+    NewFileClient client = new NewFileClient(newContentRequest, repoInfo, path);
     client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(newContentResponse -> {
       Toast.makeText(NewContentActivity.this, "File created", Toast.LENGTH_SHORT).show();
       hideProgressDialog();
     }, throwable -> {
       Toast.makeText(NewContentActivity.this, "Error creating file", Toast.LENGTH_SHORT).show();
+      hideProgressDialog();
     });
   }
 }
