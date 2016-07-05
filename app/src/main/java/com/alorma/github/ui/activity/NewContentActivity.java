@@ -47,11 +47,6 @@ public class NewContentActivity extends RepositoryThemeActivity {
   }
 
   @Override
-  public int getToolbarId() {
-    return super.getToolbarId();
-  }
-
-  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_content);
@@ -61,7 +56,13 @@ public class NewContentActivity extends RepositoryThemeActivity {
       currentPath = getIntent().getExtras().getString(PATH);
       findViews();
 
-      pathTextView.setText(currentPath);
+      if (currentPath != null) {
+        if (currentPath.equals("/")) {
+          pathTextView.setText(currentPath);
+        } else {
+          pathTextView.setText(String.format("%s/", currentPath));
+        }
+      }
 
       setTitle(getString(R.string.new_content_title, repoInfo.name));
     } else {
@@ -77,9 +78,8 @@ public class NewContentActivity extends RepositoryThemeActivity {
 
     if (editBody != null) {
       editBody.setOnClickListener(v -> {
-        String hint = getString(R.string.add_issue_body);
         Intent intent =
-            ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, hint, editBody.getText().toString(), false, false);
+            ContentEditorActivity.createLauncherIntent(v.getContext(), repoInfo, 0, null, editBody.getText().toString(), false, false);
 
         startActivityForResult(intent, NEW_ISSUE_REQUEST);
       });
@@ -158,9 +158,11 @@ public class NewContentActivity extends RepositoryThemeActivity {
   }
 
   private void createContent(NewContentRequest newContentRequest) {
-    String path = currentPath + editPath.getText().toString();
+    String path;
     if (currentPath.equals("/")) {
       path = editPath.getText().toString();
+    } else {
+      path = currentPath + "/" + editPath.getText().toString();
     }
     NewFileClient client = new NewFileClient(newContentRequest, repoInfo, path);
     client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(newContentResponse -> {
