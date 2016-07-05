@@ -3,9 +3,10 @@ package com.alorma.github.ui.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -16,7 +17,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.alorma.github.IntentsManager;
+import android.widget.ImageView;
+import android.widget.Toast;
+import com.alorma.github.Base64;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.Content;
@@ -26,29 +29,25 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.EditContentActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.ImageUtils;
-import com.pddstudio.highlightjs.HighlightJsView;
-import com.pddstudio.highlightjs.models.Language;
-import com.pddstudio.highlightjs.models.Theme;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class FileFragment extends BaseFragment {
+public class ImageFileFragment extends BaseFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
   public static final String FROM_URL = "FROM_URL";
   private static final int RESULT_EDIT = 123;
 
-  private HighlightJsView webView;
-  private Content fileContent;
+  private ImageView imageView;
   private View loadingView;
 
   private FileInfo fileInfo;
 
-  public static FileFragment getInstance(FileInfo info, boolean fromUrl) {
-    FileFragment fragment = new FileFragment();
+  public static ImageFileFragment getInstance(FileInfo info, boolean fromUrl) {
+    ImageFileFragment fragment = new ImageFileFragment();
     Bundle args = new Bundle();
     args.putParcelable(FILE_INFO, info);
     args.putBoolean(FROM_URL, fromUrl);
@@ -59,7 +58,7 @@ public class FileFragment extends BaseFragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.file_fragment, null, false);
+    return inflater.inflate(R.layout.image_file_fragment, null, false);
   }
 
   @Override
@@ -84,25 +83,12 @@ public class FileFragment extends BaseFragment {
 
     loadingView = view.findViewById(R.id.loading_view);
 
-    webView = (HighlightJsView) view.findViewById(R.id.webview);
-
-    webView.setTheme(Theme.ANDROID_STUDIO);
-    webView.setHighlightLanguage(Language.AUTO_DETECT);
-    webView.invokeZoomPicker();
+    imageView = (ImageView) view.findViewById(R.id.imageView);
 
     if (getArguments() != null) {
 
       fileInfo = getArguments().getParcelable(FILE_INFO);
       boolean fromUrl = getArguments().getBoolean(FROM_URL);
-
-      webView.clearCache(true);
-      webView.clearFormData();
-      webView.clearHistory();
-      webView.clearMatches();
-      webView.clearSslPreferences();
-      webView.setVisibility(View.VISIBLE);
-
-      new IntentsManager(getActivity()).manageUrls(webView);
 
       if (fileInfo.content == null) {
         if (fromUrl) {
@@ -112,8 +98,6 @@ public class FileFragment extends BaseFragment {
         }
       } else {
         getActivity().invalidateOptionsMenu();
-        fileInfo.content = fileContent.content;
-        webView.setSource(fileInfo.content);
       }
     }
   }
@@ -207,34 +191,22 @@ public class FileFragment extends BaseFragment {
   }
 
   public void onContentLoaded(Content content) {
-    this.fileContent = content;
 
     hideProgressDialog();
 
-    if (content.isSubmodule()) {
+    if (ImageUtils.isImage(content.name)) {
       if (getActivity() != null && isAdded()) {
-        Intent intent = new IntentsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
-        if (intent != null) {
-          startActivity(intent);
-          getActivity().finish();
+        try {
+          byte[] imageAsBytes = Base64.decode(content.content);
+          Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+          imageView.setVisibility(View.VISIBLE);
+          imageView.setImageBitmap(bitmap);
+        } catch (Exception e) {
+          Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
+          e.printStackTrace();
         }
       }
-    } else {
-      getActivity().invalidateOptionsMenu();
-      fileInfo.content = decodeContent(content.content);
-      webView.setSource(decodeContent(content.content));
     }
-  }
-
-  private String decodeContent(String encoded) {
-    String decoded = encoded;
-    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
-    try {
-      decoded = new String(data, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-    return decoded;
   }
 
   protected void showProgressDialog() {

@@ -16,6 +16,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.KeyboardUtils;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class BaseFragment extends Fragment {
   protected MaterialDialog dialog;
@@ -79,10 +81,18 @@ public class BaseFragment extends Fragment {
   }
 
   protected boolean isDarkTheme() {
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getActivity());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    return "theme_dark".equalsIgnoreCase(pref_theme);
+    try {
+      SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+      if (defaultSharedPreferences != null) {
+        String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+        return "theme_dark".equalsIgnoreCase(pref_theme);
+      }
+      return false;
+    } catch (Exception e) {
+      if (Fabric.isInitialized()) {
+        Crashlytics.logException(e);
+      }
+      return false;
+    }
   }
 }

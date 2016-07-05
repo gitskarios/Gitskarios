@@ -87,8 +87,8 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
       overflow.setOnClickListener(v -> {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        /*
         popupMenu.inflate(R.menu.repo_content_item);
+        /*
         if (repoInfo != null && repoInfo.permissions != null && repoInfo.permissions.push) {
           MenuItem deleteItem = popupMenu.getMenu().findItem(R.id.action_content_delete);
           if (deleteItem != null) {

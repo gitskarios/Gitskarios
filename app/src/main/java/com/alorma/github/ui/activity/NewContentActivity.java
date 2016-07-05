@@ -2,6 +2,8 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import com.alorma.github.sdk.bean.dto.request.NewContentRequest;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.NewFileClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import rx.android.schedulers.AndroidSchedulers;
@@ -85,6 +88,13 @@ public class NewContentActivity extends RepositoryThemeActivity {
       });
     }
     if (getToolbar() != null) {
+      ColorDrawable drawable = new ColorDrawable(AttributesUtils.getPrimaryColor(this));
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        getToolbar().setBackground(drawable);
+      } else {
+        getToolbar().setBackgroundDrawable(drawable);
+      }
       ViewCompat.setElevation(getToolbar(), 8);
     }
   }

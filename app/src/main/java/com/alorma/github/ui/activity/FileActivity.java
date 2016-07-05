@@ -8,6 +8,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.FileFragment;
+import com.alorma.github.ui.fragment.ImageFileFragment;
+import com.alorma.github.utils.ImageUtils;
 
 public class FileActivity extends RepositoryThemeActivity {
 
@@ -31,13 +33,21 @@ public class FileActivity extends RepositoryThemeActivity {
 
     if (info != null) {
       setTitle(info.name);
-    }
 
-    FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
-    fileFragment.setArguments(getIntent().getExtras());
-    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    ft.replace(R.id.content, fileFragment);
-    ft.commit();
+      if (ImageUtils.isImage(info.name)) {
+        ImageFileFragment imageFileFragment = ImageFileFragment.getInstance(info, fromUrl);
+        imageFileFragment.setArguments(getIntent().getExtras());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content, imageFileFragment);
+        ft.commit();
+      } else {
+        FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
+        fileFragment.setArguments(getIntent().getExtras());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fileFragment);
+        ft.commit();
+      }
+    }
   }
 
   @Override
