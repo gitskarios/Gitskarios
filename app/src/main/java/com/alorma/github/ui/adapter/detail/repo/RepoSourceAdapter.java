@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.ContentType;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -21,10 +22,12 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
   private SourceAdapterListener sourceAdapterListener;
   private Context context;
+  private final RepoInfo repoInfo;
 
-  public RepoSourceAdapter(Context context, LayoutInflater inflater) {
+  public RepoSourceAdapter(Context context, LayoutInflater inflater, RepoInfo repoInfo) {
     super(inflater);
     this.context = context;
+    this.repoInfo = repoInfo;
   }
 
   @Override
@@ -84,7 +87,15 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
       overflow.setOnClickListener(v -> {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+        /*
         popupMenu.inflate(R.menu.repo_content_item);
+        if (repoInfo != null && repoInfo.permissions != null && repoInfo.permissions.push) {
+          MenuItem deleteItem = popupMenu.getMenu().findItem(R.id.action_content_delete);
+          if (deleteItem != null) {
+            deleteItem.setEnabled(true);
+          }
+        }
+        */
         popupMenu.setOnMenuItemClickListener(ViewHolder.this);
         popupMenu.show();
       });

@@ -20,12 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
+import com.alorma.github.ui.actions.DeleteFileAction;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
@@ -201,7 +203,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         breadCrumbs.addPath(currentPath, "/");
       }
 
-      RepoSourceAdapter contentAdapter = new RepoSourceAdapter(getActivity(), LayoutInflater.from(getActivity()));
+      RepoSourceAdapter contentAdapter = new RepoSourceAdapter(getActivity(), LayoutInflater.from(getActivity()), repoInfo);
       contentAdapter.setSourceAdapterListener(this);
       contentAdapter.addAll(contents);
       setAdapter(contentAdapter);
@@ -282,6 +284,15 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
           Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
         }
         break;
+      /*
+      case R.id.action_content_delete:
+        String message = getString(R.string.delete_repository_file, content.name);
+        new MaterialDialog.Builder(getActivity()).content(message)
+        .positiveText(R.string.ok)
+        .onPositive((dialog1, which) -> new DeleteFileAction(content, repoInfo, message).execute())
+        .negativeText(R.string.cancel).show();
+        break;
+        */
     }
   }
 

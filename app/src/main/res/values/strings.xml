@@ -387,7 +387,7 @@
   <string name="action_detele_repo">Delete repository</string>
   <string name="delete_repository">Delete repository</string>
   <string name="delete_repository_content">This action <b>CANNOT</b> be undone. This will permanently delete the <b>%1$s/%2$s</b> repository, wiki, issues, and comments, and remove all collaborator associations.</string>
-  <string name="delete">DELETE</string>
+  <string name="delete">Delete</string>
   <string name="delete_repository_scope_request">Scope request</string>
   <string name="delete_repository_scope_request_content">In order to delete repositories, you will be redirect to reauthorizing github page.</string>
   <string name="pref_repo_manage_title">Title</string>
@@ -526,4 +526,5 @@
   <string name="file_body">File body</string>
   <string name="file_path">Path</string>
   <string name="edit_content">Edit content</string>
+  <string name="delete_repository_file">Delete %s file</string>
 </resources>
