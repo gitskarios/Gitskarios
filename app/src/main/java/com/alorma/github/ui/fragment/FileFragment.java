@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
@@ -41,6 +42,8 @@ public class FileFragment extends BaseFragment {
   public static final String FROM_URL = "FROM_URL";
   private static final int RESULT_EDIT = 123;
 
+  //private FloatingActionButton zoomIn;
+  //private FloatingActionButton zoomOut;
   private HighlightJsView webView;
   private Content fileContent;
   private View loadingView;
@@ -85,10 +88,23 @@ public class FileFragment extends BaseFragment {
     loadingView = view.findViewById(R.id.loading_view);
 
     webView = (HighlightJsView) view.findViewById(R.id.webview);
+    /*
+    zoomIn = (FloatingActionButton) view.findViewById(R.id.zoomIn);
+    zoomOut = (FloatingActionButton) view.findViewById(R.id.zoomOut);
 
-    webView.setTheme(Theme.ANDROID_STUDIO);
+    zoomIn.setOnClickListener(v -> webView.zoomIn());
+    zoomOut.setOnClickListener(v -> webView.zoomOut());
+    */
+
+    webView.getSettings().setBuiltInZoomControls(true);
+    webView.getSettings().setSupportZoom(true);
+
+    if (isDarkTheme()) {
+      webView.setTheme(Theme.ANDROID_STUDIO);
+    } else {
+      webView.setTheme(Theme.MONO_BLUE);
+    }
     webView.setHighlightLanguage(Language.AUTO_DETECT);
-    webView.invokeZoomPicker();
 
     if (getArguments() != null) {
 
@@ -223,6 +239,7 @@ public class FileFragment extends BaseFragment {
       getActivity().invalidateOptionsMenu();
       fileInfo.content = decodeContent(content.content);
       webView.setSource(decodeContent(content.content));
+      webView.invokeZoomPicker();
     }
   }
 
