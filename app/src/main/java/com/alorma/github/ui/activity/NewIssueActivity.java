@@ -33,6 +33,7 @@ import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -45,7 +46,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class NewIssueActivity extends BackActivity {
+public class NewIssueActivity extends RepositoryThemeActivity {
 
   public static final String REPO_INFO = "REPO_INFO";
   private static final int EMOJI_CODE = 1554;

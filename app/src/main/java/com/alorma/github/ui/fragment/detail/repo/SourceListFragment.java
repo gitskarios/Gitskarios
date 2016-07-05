@@ -1,28 +1,41 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.alorma.github.Base64;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.request.NewContentRequest;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
+import com.alorma.github.sdk.services.content.NewFileClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
+import com.alorma.github.ui.activity.ContentEditorActivity;
+import com.alorma.github.ui.activity.NewContentActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
@@ -56,6 +69,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     implements TitleProvider, BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
+  private static final int RESULT_NEW_FILE = 111;
 
   private RepoInfo repoInfo;
   private SourceCallback sourceCallback;
@@ -76,6 +90,8 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    setHasOptionsMenu(true);
 
     subscriber = new Observer<Pair<List<Content>, Integer>>() {
       @Override
@@ -208,10 +224,45 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   }
 
   @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.source_list_fragment, menu);
+  }
+
+  @SuppressLint("NewApi")
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+
+    MenuItem menuItem = menu.findItem(R.id.action_content_download);
+
+    if (menuItem != null) {
+      Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.cloud_download);
+      drawable = DrawableCompat.wrap(drawable);
+      drawable.setTint(Color.WHITE);
+      menuItem.setIcon(drawable);
+    }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_content_download:
+        if (sourceCallback != null) {
+          sourceCallback.onSourceDownload();
+        }
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  @Override
   public void onContentMenuAction(Content content, MenuItem menuItem) {
     switch (menuItem.getItemId()) {
       case R.id.action_content_share:
-        new ShareAction(getActivity(), repoInfo.owner + "/" + repoInfo.name, content._links.html).setType(getString(R.string.source_code)).execute();
+        new ShareAction(getActivity(), repoInfo.owner + "/" + repoInfo.name, content._links.html).setType(getString(R.string.source_code))
+            .execute();
         break;
       case R.id.action_content_open:
         new ViewInAction(getActivity(), content._links.html).setType(getString(R.string.source_code)).execute();
@@ -369,20 +420,23 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
   @Override
   protected boolean useFAB() {
-    return true;
+    return repoInfo != null && repoInfo.permissions != null && repoInfo.permissions.push;
   }
 
   @Override
   protected Octicons.Icon getFABGithubIcon() {
-    return Octicons.Icon.oct_cloud_download;
+    return Octicons.Icon.oct_plus;
   }
 
   @Override
   protected void fabClick() {
     super.fabClick();
-    if (sourceCallback != null) {
-      sourceCallback.onSourceDownload();
-    }
+    createFile();
+  }
+
+  private void createFile() {
+    Intent launcherIntent = NewContentActivity.createLauncherIntent(getActivity(), repoInfo, currentPath);
+    startActivityForResult(launcherIntent, RESULT_NEW_FILE);
   }
 
   @Override
@@ -416,48 +470,54 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
       info.path = content.path;
       info.name = content.name;
 
-      new GetFileContentClient(info).observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Content>() {
-        @Override
-        public void onCompleted() {
+      new GetFileContentClient(info).observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Subscriber<Content>() {
+            @Override
+            public void onCompleted() {
 
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(Content content) {
-          File downloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios");
-
-          if (!downloadFolder.exists()) {
-            downloadFolder.mkdirs();
-          }
-
-          File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios", content.name);
-
-          if (!file.exists()) {
-            try {
-              file.createNewFile();
-            } catch (IOException e) {
-              e.printStackTrace();
             }
-          }
 
-          FileOutputStream outputStream;
+            @Override
+            public void onError(Throwable e) {
 
-          try {
-            outputStream = new FileOutputStream(file);
-            outputStream.write(decodeContent(content.content).getBytes());
-            outputStream.close();
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+            }
 
-          Toast.makeText(getContext(), content.name + " has been download at Download/gitskarios/" + content.name, Toast.LENGTH_SHORT).show();
-        }
-      });
+            @Override
+            public void onNext(Content content) {
+              File downloadFolder =
+                  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios");
+
+              if (!downloadFolder.exists()) {
+                downloadFolder.mkdirs();
+              }
+
+              File file =
+                  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/gitskarios", content.name);
+
+              if (!file.exists()) {
+                try {
+                  file.createNewFile();
+                } catch (IOException e) {
+                  e.printStackTrace();
+                }
+              }
+
+              FileOutputStream outputStream;
+
+              try {
+                outputStream = new FileOutputStream(file);
+                outputStream.write(decodeContent(content.content).getBytes());
+                outputStream.close();
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+
+              Toast.makeText(getContext(), content.name + " has been download at Download/gitskarios/" + content.name, Toast.LENGTH_SHORT)
+                  .show();
+            }
+          });
     } else {
       Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
     }

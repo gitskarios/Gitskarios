@@ -25,8 +25,7 @@ import com.mikepenz.iconics.typeface.IIcon;
 import java.util.List;
 
 public abstract class ReposFragment extends BaseFragment
-    implements TitleProvider, Presenter.Callback<List<Repo>>,
-    RecyclerArrayAdapter.RecyclerAdapterContentListener {
+    implements TitleProvider, Presenter.Callback<List<Repo>>, RecyclerArrayAdapter.RecyclerAdapterContentListener {
 
   private ReposAdapter adapter;
   private SwipeRefreshLayout refreshLayout;
@@ -39,10 +38,7 @@ public abstract class ReposFragment extends BaseFragment
     GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
     ApplicationComponent component = application.getComponent();
 
-    ApiComponent apiComponent = DaggerApiComponent.builder()
-        .applicationComponent(component)
-        .apiModule(new ApiModule())
-        .build();
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(component).apiModule(new ApiModule()).build();
 
     initInjectors(apiComponent);
   }
@@ -61,8 +57,7 @@ public abstract class ReposFragment extends BaseFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
     return getLayoutInflater(savedInstanceState).inflate(R.layout.recyclerview, null, false);
   }
@@ -75,12 +70,12 @@ public abstract class ReposFragment extends BaseFragment
     refreshLayout.setOnRefreshListener(this::onRefresh);
     refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(getContext()));
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-        adapter = new ReposAdapter(LayoutInflater.from(getContext()));
-        adapter.setRecyclerAdapterContentListener(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
+    RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+    adapter = new ReposAdapter(LayoutInflater.from(getContext()));
+    adapter.setRecyclerAdapterContentListener(this);
+    recyclerView.setAdapter(adapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+  }
 
   @Override
   public void onStart() {

@@ -517,4 +517,11 @@
   <string name="add_image_by_link">By link</string>
   <string name="add_image_by_upload">Upload image</string>
   <string name="imgur_uploading_image_title_done">Image uploaded</string>
+  <string name="new_content_title">Creating file on %s</string>
+  <string name="content_message_mandatory">Commit message is mandatory</string>
+  <string name="content_body_mandatory">Content body is mandatory</string>
+  <string name="creating_content">Creating content</string>
+  <string name="commit_message">Commit message</string>
+  <string name="file_body">File body</string>
+  <string name="file_path">Path</string>
 </resources>
