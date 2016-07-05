@@ -118,6 +118,9 @@
             android:name=".ui.activity.NewContentActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
+            android:name=".ui.activity.EditContentActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activity.IssueDetailActivity"
             android:exported="true" />
         <activity

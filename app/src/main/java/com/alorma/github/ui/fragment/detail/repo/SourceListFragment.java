@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -21,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
@@ -31,6 +29,7 @@ import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
+import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.activity.NewContentActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
@@ -214,7 +213,12 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     if (item.isDir()) {
       getPathContent(item.path);
     } else if (item.isFile()) {
-      Intent intent = new IntentsManager(getActivity()).checkUri(Uri.parse(item._links.html));
+      FileInfo fileInfo = new FileInfo();
+      fileInfo.repoInfo = repoInfo;
+      fileInfo.head = item.sha;
+      fileInfo.name = item.name;
+      fileInfo.path = item.path;
+      Intent intent = FileActivity.createLauncherIntent(getActivity(), fileInfo, false);
       startActivity(intent);
     }
   }

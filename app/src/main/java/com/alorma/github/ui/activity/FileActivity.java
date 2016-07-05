@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.FileFragment;
 
 public class FileActivity extends RepositoryThemeActivity {
-
-  private boolean fromUrl;
-  private FileInfo info;
 
   public static Intent createLauncherIntent(Context context, FileInfo fileInfo, boolean fromUrl) {
     Bundle bundle = new Bundle();
@@ -30,10 +26,12 @@ public class FileActivity extends RepositoryThemeActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_toolbar);
 
-    info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
-    fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
+    FileInfo info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
+    boolean fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
 
-    setTitle(info.name);
+    if (info != null) {
+      setTitle(info.name);
+    }
 
     FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
     fileFragment.setArguments(getIntent().getExtras());

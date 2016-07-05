@@ -1,12 +1,21 @@
 package com.alorma.github.ui.fragment;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +30,7 @@ import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
+import com.alorma.github.ui.activity.EditContentActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
@@ -37,6 +47,7 @@ public class FileFragment extends BaseFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
   public static final String FROM_URL = "FROM_URL";
+  private static final int RESULT_EDIT = 123;
 
   private HighlightJsView webView;
   private ImageView imageView;
@@ -71,6 +82,12 @@ public class FileFragment extends BaseFragment {
   }
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
+  }
+
+  @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
@@ -80,16 +97,6 @@ public class FileFragment extends BaseFragment {
 
     webView.setTheme(Theme.ANDROID_STUDIO);
     webView.setHighlightLanguage(Language.AUTO_DETECT);
-
-    /*
-    webView.setWebViewListener(text -> {
-      // put selected text into clipdata
-      ClipboardManager clipboard =
-          (ClipboardManager) webView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-      ClipData clip = ClipData.newPlainText("simple text", text);
-      clipboard.setPrimaryClip(clip);
-    });
-    */
 
     imageView = (ImageView) view.findViewById(R.id.imageView);
 
@@ -114,7 +121,57 @@ public class FileFragment extends BaseFragment {
           getContent();
         }
       } else {
+        getActivity().invalidateOptionsMenu();
+        fileInfo.content = fileContent.content;
         webView.setSource(fileInfo.content);
+      }
+    }
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    if (fileInfo.repoInfo.permissions != null && fileInfo.repoInfo.permissions.push) {
+      inflater.inflate(R.menu.file_fragment_edit, menu);
+    }
+  }
+
+  @SuppressLint("NewApi")
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+
+    MenuItem menuItem = menu.findItem(R.id.edit);
+
+    if (menuItem != null) {
+      Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.pencil);
+      drawable = DrawableCompat.wrap(drawable);
+      drawable.setTint(Color.WHITE);
+      menuItem.setIcon(drawable);
+      menuItem.setEnabled(fileInfo.content != null);
+    }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.edit) {
+      editContent();
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  private void editContent() {
+    Intent launcherIntent = EditContentActivity.createLauncherIntent(getActivity(), fileInfo);
+    startActivityForResult(launcherIntent, RESULT_EDIT);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == RESULT_EDIT) {
+        getContent();
       }
     }
   }
@@ -188,6 +245,8 @@ public class FileFragment extends BaseFragment {
                 webView.clearHistory();
                 webView.clearMatches();
                 webView.clearSslPreferences();
+                getActivity().invalidateOptionsMenu();
+                fileInfo.content = s;
                 webView.setSource(s);
               }
             }
@@ -200,7 +259,6 @@ public class FileFragment extends BaseFragment {
           webView.setVisibility(View.GONE);
           imageView.setVisibility(View.VISIBLE);
           imageView.setImageBitmap(bitmap);
-          // TODO STOP loading
         } catch (Exception e) {
           Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
           e.printStackTrace();
@@ -215,6 +273,8 @@ public class FileFragment extends BaseFragment {
         }
       }
     } else {
+      getActivity().invalidateOptionsMenu();
+      fileInfo.content = decodeContent(content.content);
       webView.setSource(decodeContent(content.content));
     }
   }
