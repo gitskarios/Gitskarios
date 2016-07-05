@@ -16,6 +16,7 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -162,7 +163,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
         issueInfo.num = issueNumber;
 
         if (!TextUtils.isEmpty(content)) {
-          editText.setText(Html.fromHtml(HtmlUtils.format(content).toString()));
+          editText.setText(formatText(content));
         }
       }
 
@@ -212,6 +213,10 @@ public class ContentEditorActivity extends RepositoryThemeActivity
     } else {
       finish();
     }
+  }
+
+  private String formatText(String source) {
+    return HtmlUtils.format(source).toString();
   }
 
   private void findViews() {
@@ -401,7 +406,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
     if (issueInfo != null) {
       String issueComment = CacheWrapper.getIssueComment(issueInfo.toString());
       if (issueComment != null) {
-        editText.setText(Html.fromHtml(issueComment));
+        editText.setText(formatText(issueComment));
       }
     }
   }

@@ -39,10 +39,7 @@ import static android.text.Spanned.SPAN_MARK_MARK;
 
 public class HtmlUtils {
 
-  private static final String TAG_ROOT = "githubroot";
   private static final String TAG_HTML = "html";
-  private static final String ROOT_START = '<' + TAG_ROOT + '>';
-  private static final String ROOT_END = "</" + TAG_ROOT + '>';
   private static final String TAG_DEL = "del";
   private static final String TAG_UL = "ul";
   private static final String TAG_OL = "ol";
@@ -117,7 +114,7 @@ public class HtmlUtils {
         }
       }
 
-      if ((TAG_ROOT.equalsIgnoreCase(tag) || TAG_HTML.equalsIgnoreCase(tag)) && !opening) {
+      if (TAG_HTML.equalsIgnoreCase(tag) && !opening) {
         // Remove leading newlines
         while (output.length() > 0 && output.charAt(0) == '\n') output.delete(0, 1);
 
@@ -226,9 +223,6 @@ public class HtmlUtils {
     formatEmailFragments(formatted);
 
     trim(formatted);
-
-    formatted.insert(0, ROOT_START);
-    formatted.append(ROOT_END);
 
     return formatted;
   }
