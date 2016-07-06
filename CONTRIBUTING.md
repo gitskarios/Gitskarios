@@ -3,16 +3,16 @@ Thank you for contributing to this project!
 
 TL;DR
 Contributing Issues
-1.Title:
+- Title:
   - Be short and specific
   - Add a word like 'Add' or 'Fix' to the beginning and capitalize it
   - Do not add points, questionmarks to the title
-2.Body:
+- Body:
   - Do not tell your live story
   - One picture, GIF or video tells more than a thousand words
   - Be friendly
   - Include nessary informations like versions, steps to reproduce, anything that could help
-3.Comments:
+- Comments:
   - This is a discussion feature, use it
   - BE FRIENDLY. You're the one how wants something, always keep that in mind
   - If you email-reply watch out that you're not sending anything more than your text
