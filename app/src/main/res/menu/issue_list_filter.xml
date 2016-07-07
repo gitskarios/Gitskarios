@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-  <item
-      android:id="@+id/action_search"
-      android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-      android:orderInCategory="3000"
-      android:title="@string/action_search"
-      app:showAsAction="always"
-      />
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="3000"
+        android:title="@string/action_search"
+        app:showAsAction="always" />
 
 </menu>
