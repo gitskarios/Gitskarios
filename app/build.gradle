@@ -157,7 +157,6 @@ def getImgurCallback() {
 }
 
 dependencies {
-    compile project(':sdks:GithubAndroidSdk')
     compile project(':sdks:GithubReborn')
     compile project(':imgur')
 

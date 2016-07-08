@@ -1,6 +1,3 @@
-[submodule "sdks/GithubAndroidSdk"]
-	path = sdks/GithubAndroidSdk
-	url = https://github.com/gitskarios/GithubAndroidSdk
 [submodule "sdks/GithubReborn"]
 	path = sdks/GithubReborn
 [submodule "sdks/GithubReborn"]
