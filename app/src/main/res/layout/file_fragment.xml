@@ -24,36 +24,34 @@
       tools:visibility="visible"
       />
 
-  <!--
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|right"
-    android:orientation="vertical"
-    >
-
-  <android.support.design.widget.FloatingActionButton
+  <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:borderWidth="0dp"
-      app:backgroundTint="@color/white"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
-      android:layout_marginBottom="8dp"
-      android:id="@+id/zoomOut"
-      />
+      android:layout_gravity="bottom|right"
+      android:orientation="vertical"
+      >
 
-  <android.support.design.widget.FloatingActionButton
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:borderWidth="0dp"
-      app:backgroundTint="?colorPrimary"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
-      android:layout_marginBottom="16dp"
-      android:id="@+id/zoomIn"
-      />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:backgroundTint="@color/white"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/zoomOut"
+        />
 
-</LinearLayout>
--->
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:backgroundTint="?colorPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/zoomIn"
+        />
+
+  </LinearLayout>
 </FrameLayout>

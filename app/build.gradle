@@ -218,7 +218,7 @@ dependencies {
     apt "com.google.dagger:dagger-compiler:2.4"
     compile "com.google.dagger:dagger:2.4"
 
-    compile 'com.pddstudio:highlightjs-android:1.0.1'
+    compile 'com.pddstudio:highlightjs-android:1.1.0'
 
     compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
         exclude group: "joda-time"

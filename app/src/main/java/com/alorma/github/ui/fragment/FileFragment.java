@@ -96,6 +96,8 @@ public class FileFragment extends BaseFragment {
     zoomOut.setOnClickListener(v -> webView.zoomOut());
     */
 
+    webView.setZoomSupportEnabled(true);
+
     webView.getSettings().setBuiltInZoomControls(true);
     webView.getSettings().setSupportZoom(true);
 
