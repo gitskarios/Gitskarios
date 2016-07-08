@@ -11,7 +11,6 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.21.2'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
-        classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.5.0'
         classpath 'com.github.triplet.gradle:play-publisher:1.1.4'
     }
 }
@@ -22,25 +21,11 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-apply plugin: "build-time-tracker"
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'com.neenbedankt.android-apt'
 
-buildtimetracker {
-    reporters {
-        csv {
-            output "build/times.csv"
-            append true
-            header false
-        }
-
-        csvSummary {
-            csv "build/times.csv"
-        }
-    }
-}
 //gradle dependencyUpdates -Drevision=release
 
 android {
@@ -61,6 +46,10 @@ android {
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
+        applicationId "com.alorma.github"
+        ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
+        ext.betaDistributionNotifications = false
 
         resValue "string", "imgur_client_id", getImgurClient()
         resValue "string", "imgur_client_secret", getImgurSecret()
@@ -86,13 +75,6 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
-    }
-
-    productFlavors {
-        github {
-            applicationId "com.alorma.github"
-            ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
-        }
     }
 
     buildTypes {

@@ -11,9 +11,6 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bernat on 31/07/2014.
- */
 public class Interceptor extends Activity {
 
   private Intent failIntent;

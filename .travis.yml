@@ -30,7 +30,7 @@ deploy:
   on:
     tags: true
 - provider: script
-  script: ./gradlew crashlyticsUploadDistributionGithubRelease -PgithubReleaseDistributionGroupAliases="gitskarios-alpha-testers" ;
+  script: ./gradlew crashlyticsUploadDistributionRelease;
   skip_cleanup: true
   on:
     branch: develop
