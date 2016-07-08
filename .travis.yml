@@ -29,6 +29,11 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+- provider: script
+  script: ./gradlew crashlyticsUploadDistributionGithubRelease -PgithubReleaseDistributionGroupAliases="gitskarios-alpha-testers" ;
+  skip_cleanup: true
+  on:
+    branch: develop
 notifications:
   slack:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
