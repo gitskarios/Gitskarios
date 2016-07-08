@@ -130,6 +130,7 @@ public class NewContentActivity extends RepositoryThemeActivity {
     NewContentRequest request = new NewContentRequest();
     request.content = encoded;
     request.message = editTitle.getText().toString();
+    request.branch = repoInfo.branch;
     return request;
   }
 

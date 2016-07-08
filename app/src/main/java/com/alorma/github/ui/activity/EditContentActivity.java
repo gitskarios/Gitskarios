@@ -118,6 +118,7 @@ public class EditContentActivity extends RepositoryThemeActivity {
     request.content = encoded;
     request.message = editTitle.getText().toString();
     request.sha = fileInfo.head;
+    request.branch = fileInfo.repoInfo.branch;
     return request;
   }
 
