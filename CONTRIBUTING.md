@@ -35,6 +35,6 @@ This is the place to disguss. Don't get angry if someone don't share your opinio
 ### Reactions
 Software projects are mostly driven by community feedpack and ideas, so if you read another issue that wants to add a feature, react to it by writing something like "I like / don't like it" or by using the emoticons to show the creators what you want. This is the most valuable feedpack a developer can have. 
 ## Pull Requests
-In order to use a create a Pull Request, you have to create a fork first. To optain infos about how to get your fork working check out [this](https://github.com/gitskarios/Gitskarios/blob/develop/FORK.md). If you still have problems getting your branch working, create an issue explaining what your problem is.  
+In order to create a Pull Request, you have to create a fork first. To obtain infos about how to get your fork working check out [this](https://github.com/gitskarios/Gitskarios/blob/develop/FORK.md). If you still have problems getting your branch working, create an issue explaining what your problem is.  
 When you're about creating a pull request, you have to name it after it contains, for example: You created feature X, then name it after this feature. You created a fix for a issue, name it 'Fix #tag-of-the-issue' so everyone knows what you were doing.  
-**ALSO KEEP IN MIND THAT PULL REQUEST WITH A BASE BRANCH OF MASTER OR DEVELOP WILL NOT BE ACCEPTED. CREATE ONE BRANCH FOR ONE FIX OR FEATURE.**  
+**KEEP IN MIND THAT PULL REQUEST WITH A BASE BRANCH OF 'MASTER' OR 'DEVELOP' WILL NOT BE ACCEPTED. CREATE ONE BRANCH FOR ONE FIX OR FEATURE. ALSO KEEP IN MIND THAT THE BRANCH NAME HAS TO REPRESENTATE THE CHANGES IT CONTAINS.**  
