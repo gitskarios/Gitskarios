@@ -47,6 +47,16 @@ public class OtpCodeActivity extends BaseActivity {
 
   private void onOtpCode() {
     if (otpCodeTextView != null && otpCodeTextView.getEditText() != null) {
+      if (otpCodeTextView.getEditText().length() > 0) {
+        onValidOtpCode();
+      }
+    } else {
+      onInvalidOtpCode();
+    }
+  }
+
+  private void onValidOtpCode() {
+    if (otpCodeTextView != null && otpCodeTextView.getEditText() != null) {
       String code = otpCodeTextView.getEditText().getText().toString();
 
       Intent data = new Intent();
@@ -54,5 +64,9 @@ public class OtpCodeActivity extends BaseActivity {
       setResult(RESULT_OK, data);
       finish();
     }
+  }
+
+  private void onInvalidOtpCode() {
+    otpCodeTextView.setError(getString(R.string.write_otp_code_error));
   }
 }

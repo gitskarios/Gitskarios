@@ -5,12 +5,12 @@ import com.alorma.github.R;
 public abstract class RepositoryThemeActivity extends BackActivity {
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Repository);
-    } else {
-      setTheme(R.style.AppTheme_Repository);
-    }
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Repository;
   }
 
+  @Override
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
 }

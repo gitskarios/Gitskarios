@@ -40,12 +40,12 @@ public class GistsFileActivity extends BackActivity {
   }
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Gists);
-    } else {
-      setTheme(R.style.AppTheme_Gists);
-    }
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Gists;
   }
 
+  @Override
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Gists;
+  }
 }

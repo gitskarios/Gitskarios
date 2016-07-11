@@ -145,12 +145,13 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Repository);
-    } else {
-      setTheme(R.style.AppTheme_Repository);
-    }
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
   }
 
   private void showTabsIcons(TabLayout tabLayout) {
