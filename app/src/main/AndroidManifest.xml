@@ -160,6 +160,9 @@
             android:name=".ui.activity.EditContentActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
+            android:name=".ui.activity.login.OtpCodeActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activity.IssueDetailActivity"
             android:exported="true" />
         <activity

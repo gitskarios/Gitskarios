@@ -2,6 +2,7 @@ package com.alorma.github.ui.activity;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -17,10 +18,13 @@ import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
+import com.alorma.github.ui.activity.login.OtpCodeActivity;
 import com.alorma.github.utils.KeyboardUtils;
 
 public class WelcomeActivity extends AccountAuthenticatorActivity
     implements WelcomePresenterViewInterface {
+
+  private static final int OTP_REQUEST = 1121;
 
   @Bind(R.id.openLogin) View buttonLogin;
   @Bind(R.id.login_username) TextInputLayout loginUsername;
@@ -81,13 +85,8 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   }
 
   private void show2faDialog(@StringRes int message) {
-    dialog = new MaterialDialog.Builder(this).title(R.string.write_otp_code_title)
-        .content(message)
-        .input(getString(R.string.write_otp_code_hint), null, false, (dialog, input) -> {
-          welcomePresenter.setOtpCode(String.valueOf(input));
-        })
-        .inputType(InputType.TYPE_NUMBER_FLAG_DECIMAL)
-        .show();
+    Intent intent = OtpCodeActivity.createLauncherIntent(this, getString(message));
+    startActivityForResult(intent, OTP_REQUEST);
   }
 
   @Override

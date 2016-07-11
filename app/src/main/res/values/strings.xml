@@ -528,4 +528,5 @@
   <string name="edit_content">Edit content</string>
   <string name="invitation_custom_image">https://raw.githubusercontent.com/gitskarios/Gitskarios/develop/media/icon/release/icon.png</string>
   <string name="delete_repository_file">Delete %s file</string>
+  <string name="write_otp_code_button">Check</string>
 </resources>
