@@ -20,14 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.repo.GetRepoContentsClient;
-import com.alorma.github.ui.actions.DeleteFileAction;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.activity.ContentCommitsActivity;
@@ -238,11 +236,15 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
 
     MenuItem menuItem = menu.findItem(R.id.action_content_download);
 
-    if (menuItem != null) {
-      Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.cloud_download);
-      drawable = DrawableCompat.wrap(drawable);
-      drawable.setTint(Color.WHITE);
-      menuItem.setIcon(drawable);
+    try {
+      if (menuItem != null) {
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.cloud_download);
+        drawable = DrawableCompat.wrap(drawable);
+        drawable.setTint(Color.WHITE);
+        menuItem.setIcon(drawable);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
