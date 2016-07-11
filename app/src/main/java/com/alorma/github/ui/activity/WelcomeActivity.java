@@ -8,14 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.login.OtpCodeActivity;
@@ -30,7 +28,6 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   @Bind(R.id.login_username) TextInputLayout loginUsername;
   @Bind(R.id.login_password) TextInputLayout loginPassword;
   private WelcomePresenter welcomePresenter;
-  private MaterialDialog dialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +73,15 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
 
   @Override
   public void onErrorTwoFactorException() {
-    show2faDialog(R.string.write_otp_code_sms);
+    show2faRequest(R.string.write_otp_code_sms);
   }
 
   @Override
   public void onErrorTwoFactorAppException() {
-    show2faDialog(R.string.write_otp_code_app);
+    show2faRequest(R.string.write_otp_code_app);
   }
 
-  private void show2faDialog(@StringRes int message) {
+  private void show2faRequest(@StringRes int message) {
     Intent intent = OtpCodeActivity.createLauncherIntent(this, getString(message));
     startActivityForResult(intent, OTP_REQUEST);
   }
@@ -146,17 +143,23 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   }
 
   @Override
-  protected void onStart() {
-    super.onStart();
-    welcomePresenter.start(this);
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (resultCode == RESULT_OK) {
+      if (requestCode == OTP_REQUEST) {
+        String code = data.getStringExtra(OtpCodeActivity.EXTRA_MESSAGE);
+        if (code != null) {
+          welcomePresenter.setOtpCode(code);
+        }
+      }
+    }
   }
 
   @Override
-  protected void onPause() {
-    super.onPause();
-    if (dialog != null && dialog.isShowing()) {
-      KeyboardUtils.lowerKeyboard(this);
-    }
+  protected void onStart() {
+    super.onStart();
+    welcomePresenter.start(this);
   }
 
   @Override

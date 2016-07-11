@@ -23,10 +23,8 @@ import rx.schedulers.Schedulers;
 
 public class WelcomePresenter {
 
-  private WelcomePresenterViewInterface welcomePresenterViewInterfaceNull =
-      new WelcomePresenterViewInterface.NullView();
-  private WelcomePresenterViewInterface welcomePresenterViewInterface =
-      welcomePresenterViewInterfaceNull;
+  private WelcomePresenterViewInterface welcomePresenterViewInterfaceNull = new WelcomePresenterViewInterface.NullView();
+  private WelcomePresenterViewInterface welcomePresenterViewInterface = welcomePresenterViewInterfaceNull;
 
   private String username;
   private String password;
@@ -56,8 +54,7 @@ public class WelcomePresenter {
     createRequest.client_secret = BuildConfig.CLIENT_SECRET;
     createRequest.note_url = "http://gitskarios.github.io";
 
-    CreateAuthorizationClient createAuthorizationClient =
-        new CreateAuthorizationClient(username, password, createRequest);
+    CreateAuthorizationClient createAuthorizationClient = new CreateAuthorizationClient(username, password, createRequest);
 
     if (otpCode != null) {
       createAuthorizationClient.setOtpCode(otpCode);
@@ -68,8 +65,7 @@ public class WelcomePresenter {
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(() -> welcomePresenterViewInterface.willLogin())
         .doOnError(this::checkErrorFromAuthorization)
-        .flatMap(
-            githubAuthorization -> new GetAuthUserClient(githubAuthorization.token).observable())
+        .flatMap(githubAuthorization -> new GetAuthUserClient(githubAuthorization.token).observable())
         .doOnError(throwable -> welcomePresenterViewInterface.didLogin())
         .doOnCompleted(() -> welcomePresenterViewInterface.didLogin())
         .subscribe(new UserSubscription());
@@ -95,7 +91,7 @@ public class WelcomePresenter {
   private void checkError(Throwable e) {
     if (e instanceof UnauthorizedException) {
       onErrorUnauthorized();
-    } else {
+    } else if (!(e instanceof TwoFactorAppException || e instanceof TwoFactorAuthException)) {
       onGenericError();
     }
   }
@@ -125,18 +121,14 @@ public class WelcomePresenter {
   }
 
   private void addAccount(User user, String accessToken) {
-    if (accessToken != null
-        && accountAuthenticatorActivity != null
-        && accountAuthenticatorActivity.get() != null) {
-      Account account = new Account(user.login,
-          accountAuthenticatorActivity.get().getString(R.string.account_type));
+    if (accessToken != null && accountAuthenticatorActivity != null && accountAuthenticatorActivity.get() != null) {
+      Account account = new Account(user.login, accountAuthenticatorActivity.get().getString(R.string.account_type));
       Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url);
       userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
       AccountManager accountManager = AccountManager.get(accountAuthenticatorActivity.get());
       accountManager.addAccountExplicitly(account, null, userData);
-      accountManager.setAuthToken(account,
-          accountAuthenticatorActivity.get().getString(R.string.account_type), accessToken);
+      accountManager.setAuthToken(account, accountAuthenticatorActivity.get().getString(R.string.account_type), accessToken);
 
       Bundle result = new Bundle();
       result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
