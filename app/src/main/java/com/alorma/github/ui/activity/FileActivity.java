@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.ui.fragment.ContentFileFragment;
 import com.alorma.github.ui.fragment.FileFragment;
 import com.alorma.github.ui.fragment.ImageFileFragment;
 import com.alorma.github.utils.ImageUtils;
@@ -39,6 +40,12 @@ public class FileActivity extends RepositoryThemeActivity {
         imageFileFragment.setArguments(getIntent().getExtras());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, imageFileFragment);
+        ft.commit();
+      } else if (info.content != null) {
+        ContentFileFragment fileFragment = ContentFileFragment.getInstance(info);
+        fileFragment.setArguments(getIntent().getExtras());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content, fileFragment);
         ft.commit();
       } else {
         FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
