@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
@@ -161,7 +160,7 @@ public class FileFragment extends BaseFragment {
 
     MenuItem menuItem = menu.findItem(R.id.edit);
 
-    if (menuItem != null) {
+    if (menuItem != null && fileContent != null) {
       Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.pencil);
       drawable = DrawableCompat.wrap(drawable);
       drawable.setTint(Color.WHITE);
@@ -233,22 +232,24 @@ public class FileFragment extends BaseFragment {
   }
 
   public void onContentLoaded(Content content) {
-    this.fileContent = content;
+    if (content != null) {
+      this.fileContent = content;
 
-    hideProgressDialog();
+      hideProgressDialog();
 
-    if (content.isSubmodule()) {
-      if (getActivity() != null && isAdded()) {
-        Intent intent = new IntentsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
-        if (intent != null) {
-          startActivity(intent);
-          getActivity().finish();
+      if (content.isSubmodule()) {
+        if (getActivity() != null && isAdded()) {
+          Intent intent = new IntentsManager(getActivity()).manageRepos(Uri.parse(content.git_url));
+          if (intent != null) {
+            startActivity(intent);
+            getActivity().finish();
+          }
         }
+      } else {
+        getActivity().invalidateOptionsMenu();
+        fileInfo.content = decodeContent(content.content);
+        setSourceIntoWebview(fileInfo);
       }
-    } else {
-      getActivity().invalidateOptionsMenu();
-      fileInfo.content = decodeContent(content.content);
-      setSourceIntoWebview(fileInfo);
     }
   }
 
