@@ -96,6 +96,8 @@ public class FileFragment extends BaseFragment {
     zoomOut.setOnClickListener(v -> webView.zoomOut());
     */
 
+    webView.setZoomSupportEnabled(true);
+
     webView.getSettings().setBuiltInZoomControls(true);
     webView.getSettings().setSupportZoom(true);
 
@@ -118,6 +120,10 @@ public class FileFragment extends BaseFragment {
       webView.clearSslPreferences();
       webView.setVisibility(View.VISIBLE);
 
+      if (fileInfo.name.endsWith(".xml")) {
+        webView.setHighlightLanguage(Language.XML);
+      }
+
       new IntentsManager(getActivity()).manageUrls(webView);
 
       if (fileInfo.content == null) {
@@ -129,9 +135,13 @@ public class FileFragment extends BaseFragment {
       } else {
         getActivity().invalidateOptionsMenu();
         fileInfo.content = fileContent.content;
-        webView.setSource(fileInfo.content);
+        setSourceIntoWebview(fileInfo);
       }
     }
+  }
+
+  private void setSourceIntoWebview(FileInfo fileInfo) {
+    webView.setSource(fileInfo.content);
   }
 
   @Override
@@ -238,8 +248,7 @@ public class FileFragment extends BaseFragment {
     } else {
       getActivity().invalidateOptionsMenu();
       fileInfo.content = decodeContent(content.content);
-      webView.setSource(decodeContent(content.content));
-      webView.invokeZoomPicker();
+      setSourceIntoWebview(fileInfo);
     }
   }
 

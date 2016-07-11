@@ -1,3 +1,2 @@
 include ':app', ':imgur'
-include ':sdks:GithubAndroidSdk'
 include ':sdks:GithubReborn'

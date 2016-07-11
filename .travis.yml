@@ -13,8 +13,8 @@ jdk:
 android:
   components:
   - tools
-  - build-tools-23.0.3
-  - android-23
+  - build-tools-24.0.0
+  - android-24
   - extra-android-m2repository
   - extra-google-google_play_services
   - extra-google-m2repository
@@ -29,6 +29,11 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+- provider: script
+  script: ./gradlew crashlyticsUploadDistributionRelease;
+  skip_cleanup: true
+  on:
+    branch: develop
 notifications:
   slack:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
