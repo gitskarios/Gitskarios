@@ -225,6 +225,7 @@
   <string name="issue_renamed_to"><b>to:</b><br/>%s</string>
   <string name="issue_self_assigned">%1$s self assigned</string>
   <string name="issue_self_unassigned">%1$s removed their assignment</string>
+  <string name="issue_closed">closed in %s</string>
 
   <string name="no_collaborators">No collaborators</string>
   <string name="collaborators_fragment_title">Collaborators</string>
@@ -386,7 +387,7 @@
   <string name="action_detele_repo">Delete repository</string>
   <string name="delete_repository">Delete repository</string>
   <string name="delete_repository_content">This action <b>CANNOT</b> be undone. This will permanently delete the <b>%1$s/%2$s</b> repository, wiki, issues, and comments, and remove all collaborator associations.</string>
-  <string name="delete">DELETE</string>
+  <string name="delete">Delete</string>
   <string name="delete_repository_scope_request">Scope request</string>
   <string name="delete_repository_scope_request_content">In order to delete repositories, you will be redirect to reauthorizing github page.</string>
   <string name="pref_repo_manage_title">Title</string>
@@ -496,7 +497,7 @@
   <string name="unauthorized_login">Bad credentials</string>
   <string name="notifications_all">ALL</string>
   <string name="notifications_new">NEW</string>
-  <string name="action_pull_request_add_comment">Add coment</string>
+  <string name="action_pull_request_add_comment">Add comment</string>
   <string name="action_pull_request_edit">Edit</string>
   <string name="action_open_in_browser">Open in browser</string>
   <string name="my_issues">Assigned issues</string>
@@ -504,9 +505,32 @@
   <string name="open_gitskarios_issue">Report bug</string>
   <string name="empty_repos">No repositories found</string>
   <string name="content_description_verified_commit">Commit verified</string>
-  <string name="milestone_issues_activity_title">Mileston: %s</string>
+  <string name="milestone_issues_activity_title">Milestone: %s</string>
   <string name="new_issue_title">Creating issue on %s</string>
   <string name="notifications_disabled">Disabled</string>
   <string name="notifications_enabled">Enabled</string>
   <string name="notifications_scheule_error">Unable to schedule notifications</string>
+  <string name="restart_app_apply_theme">Restart GitSkarios to apply the theme</string>
+  <string name="download_only_files">You can only download files</string>
+  <string name="source_code">Source Code</string>
+  <string name="imgur_uploading_image_title">Uploading image</string>
+  <string name="imgur_uploading_image_text">%s</string>
+  <string name="imgur_uploading_image_action_open">Open</string>
+  <string name="add_image_title">Add image</string>
+  <string name="add_image_by_link">By link</string>
+  <string name="add_image_by_upload">Upload image</string>
+  <string name="imgur_uploading_image_title_done">Image uploaded</string>
+  <string name="new_content_title">Creating file on %s</string>
+  <string name="edit_content_title">Edit file %s</string>
+  <string name="content_message_mandatory">Commit message is mandatory</string>
+  <string name="content_body_mandatory">Content body is mandatory</string>
+  <string name="creating_content">Creating content</string>
+  <string name="commit_message">Commit message</string>
+  <string name="file_body">File body</string>
+  <string name="file_path">Path</string>
+  <string name="edit_content">Edit content</string>
+  <string name="invitation_custom_image">https://raw.githubusercontent.com/gitskarios/Gitskarios/develop/media/icon/release/icon.png</string>
+  <string name="delete_repository_file">Delete %s file</string>
+  <string name="write_otp_code_button">Check</string>
+  <string name="write_otp_code_error">Code cannot be empty</string>
 </resources>

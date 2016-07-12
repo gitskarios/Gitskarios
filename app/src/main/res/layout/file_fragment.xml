@@ -1,19 +1,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical"
+             android:background="?gitskarios_webview"
     >
 
-  <ImageView
-      android:id="@+id/imageView"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:scaleType="centerInside"
-      android:visibility="gone"
-      />
-
-  <com.alorma.github.ui.view.CopyWebView
+  <com.pddstudio.highlightjs.HighlightJsView
       android:id="@+id/webview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -29,4 +23,36 @@
       android:visibility="gone"
       tools:visibility="visible"
       />
+<!--
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|right"
+      android:orientation="vertical"
+      >
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:backgroundTint="@color/white"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/zoomOut"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:backgroundTint="?colorPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/zoomIn"
+        />
+
+  </LinearLayout>
+  -->
 </FrameLayout>

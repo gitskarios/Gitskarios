@@ -10,8 +10,10 @@ import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import io.fabric.sdk.android.Fabric;
 import java.text.DecimalFormat;
 
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
@@ -30,9 +32,17 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, Repo repo) {
-    holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
+    try {
+      if (repo.owner != null) {
+        holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
+      }
+    } catch (NullPointerException e) {
+      if (Fabric.isInitialized()) {
+        Crashlytics.logException(e);
+      }
+    }
 
-    if (showOwnerNameExtra) {
+    if (showOwnerNameExtra && repo.owner != null && repo.owner.login != null) {
       holder.textOwnerName.setText(repo.owner.login);
     } else {
       holder.textOwnerName.setText("");
@@ -99,9 +109,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
         public void onClick(View v) {
           Repo item = getItem(getAdapterPosition());
           if (item != null) {
-            v.getContext()
-                .startActivity(
-                    new IntentsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
+            v.getContext().startActivity(new IntentsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
           }
         }
       });

@@ -163,11 +163,12 @@ public class SearchActivity extends BackActivity {
   }
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Search);
-    } else {
-      setTheme(R.style.AppTheme_Search);
-    }
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Search;
+  }
+
+  @Override
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Search;
   }
 }

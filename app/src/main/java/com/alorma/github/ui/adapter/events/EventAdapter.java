@@ -144,7 +144,13 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
             + event.payload.pull_request.number
             + "</b>";
       case PullRequestReviewCommentEvent:
-        return "";
+        return "commented on "
+            + " "
+            + "<b>"
+            + event.repo.name
+            + "#"
+            + event.payload.pull_request.number
+            + "</b>";
       case PushEvent:
         String ref = event.payload.ref;
         String[] refs = ref.split("/");

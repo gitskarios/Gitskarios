@@ -111,11 +111,12 @@ public class NotificationsActivity extends BackActivity {
   }
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Notifications);
-    } else {
-      setTheme(R.style.AppTheme_Notifications);
-    }
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Notifications;
+  }
+
+  @Override
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Notifications;
   }
 }

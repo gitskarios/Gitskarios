@@ -790,13 +790,10 @@ public class IssueDetailActivity extends BackActivity
 
     @Override
     public void onCommentAdded() {
-      Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT).setAction(R.string.retry, new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          AddIssueCommentAction addIssueCommentAction1 = getAddIssueCommentAction(body);
-          addIssueCommentAction1.setAddCommentCallback(CommentCallback.this);
-          addIssueCommentAction1.execute();
-        }
+      Snackbar.make(fab, R.string.add_comment_issue_ok, Snackbar.LENGTH_SHORT).setAction(R.string.retry, v -> {
+        AddIssueCommentAction addIssueCommentAction1 = getAddIssueCommentAction(body);
+        addIssueCommentAction1.setAddCommentCallback(CommentCallback.this);
+        addIssueCommentAction1.execute();
       }).show();
 
       getContent();

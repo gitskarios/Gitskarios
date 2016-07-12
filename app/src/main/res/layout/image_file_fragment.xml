@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical"
+             android:background="?gitskarios_webview"
+    >
+
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="centerInside"
+      android:visibility="gone"
+      />
+
+  <ProgressBar
+      android:id="@+id/loading_view"
+      style="?android:attr/progressBarStyleSmall"
+      android:layout_width="?attr/listPreferredItemHeight"
+      android:layout_height="?attr/listPreferredItemHeight"
+      android:layout_gravity="center"
+      android:indeterminate="true"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
+</FrameLayout>

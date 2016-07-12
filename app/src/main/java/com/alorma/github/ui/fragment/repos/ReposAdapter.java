@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.repos;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,10 +9,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Permissions;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.core.repositories.Repo;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import io.fabric.sdk.android.Fabric;
 import java.text.DecimalFormat;
 
 public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHolder> {
@@ -30,7 +36,15 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, Repo repo) {
-    holder.textTitle.setText(showOwnerName ? repo.getOwner().getLogin() : repo.name);
+    try {
+      if (repo.getOwner() != null) {
+        holder.textTitle.setText(showOwnerName ? repo.getOwner().getLogin() : repo.name);
+      }
+    } catch (NullPointerException e) {
+      if (Fabric.isInitialized()) {
+        Crashlytics.logException(e);
+      }
+    }
 
     if (showOwnerNameExtra) {
       holder.textOwnerName.setText(repo.getOwner().getLogin());
@@ -97,9 +111,16 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       itemView.setOnClickListener(v -> {
         Repo item = getItem(getAdapterPosition());
         if (item != null) {
-          v.getContext()
-              .startActivity(
-                  new IntentsManager(v.getContext()).manageRepos(Uri.parse(item.getHtmlUrl())));
+          RepoInfo repoInfo = new RepoInfo();
+          repoInfo.owner = item.owner.getLogin();
+          repoInfo.name = item.name;
+          Permissions permissions = new Permissions();
+          permissions.pull = item.permissions.pull;
+          permissions.push = item.permissions.push;
+          permissions.admin = item.permissions.admin;
+          repoInfo.permissions = permissions;
+          Intent intent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
+          v.getContext().startActivity(intent);
         }
       });
     }

@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.AccountsManager;
+import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
 import com.alorma.github.utils.KeyboardUtils;
 import java.util.List;
 
@@ -32,19 +33,29 @@ public class BaseActivity extends AppCompatActivity {
   }
 
   private void configureTheme() {
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    configureTheme("theme_dark".equalsIgnoreCase(pref_theme));
+    try {
+      SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+      String pref_theme = defaultSharedPreferences.getString(GitskariosPreferenceFragment.PREF_THEME, getString(R.string.theme_light));
+      configureTheme("theme_dark".equalsIgnoreCase(pref_theme));
+    } catch (Exception e) {
+      configureTheme(false);
+    }
   }
 
-  protected void configureTheme(boolean dark) {
+  private void configureTheme(boolean dark) {
     if (dark) {
-      setTheme(R.style.AppTheme_Dark);
+      setTheme(getAppDarkTheme());
     } else {
-      setTheme(R.style.AppTheme);
+      setTheme(getAppLightTheme());
     }
+  }
+
+  protected int getAppLightTheme() {
+    return R.style.AppTheme;
+  }
+
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark;
   }
 
   @Override
@@ -94,8 +105,7 @@ public class BaseActivity extends AppCompatActivity {
     return accountsManager.getAccounts(this);
   }
 
-  protected void removeAccount(Account selectedAccount,
-      final AccountsManager.RemoveAccountCallback removeAccountCallback) {
+  protected void removeAccount(Account selectedAccount, final AccountsManager.RemoveAccountCallback removeAccountCallback) {
     accountsManager.removeAccount(this, selectedAccount, removeAccountCallback);
   }
 

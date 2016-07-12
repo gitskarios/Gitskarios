@@ -21,10 +21,6 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
     super(inflater);
   }
 
-  public void setRepoOwner(String owner) {
-
-  }
-
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     return new ViewHolder(getInflater().inflate(R.layout.row_user_square, parent, false));

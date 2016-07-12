@@ -16,9 +16,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 08/08/2014.
- */
 public class SearchUsersFragment extends BaseUsersListFragment implements TitleProvider {
 
   private String query;

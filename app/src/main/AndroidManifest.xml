@@ -36,6 +36,43 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+    <activity
+        android:name="com.alorma.github.ui.activity.WelcomeActivity"
+        android:label="@string/app_name"
+        android:launchMode="singleInstance"
+        android:theme="@style/AppTheme.Welcome"
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+
+        <data android:scheme="@string/oauth_scheme"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+      </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".Interceptor"
+        android:theme="@android:style/Theme.NoDisplay"
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+
+        <data
+            android:host="github.com"
+            android:scheme="http"
+            />
+        <data
+            android:host="github.com"
+            android:scheme="https"
+            />
+        <data android:pathPattern=".*"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+      </intent-filter>
+    </activity>
     <activity android:name=".ui.activity.ProfileActivity"/>
     <activity android:name=".ui.activity.CommitDetailActivity"/>
     <activity
@@ -111,50 +148,52 @@
 
         <category android:name="android.intent.category.DEFAULT"/>
 
-        <data android:mimeType="text/*"/>
-      </intent-filter>
-    </activity>
-    <activity
-        android:name=".ui.activity.NewIssueActivity"
-        android:label="@string/title_activity_new_issue"
-        android:windowSoftInputMode="adjustPan"
-        />
-    <activity
-        android:name=".ui.activity.IssueDetailActivity"
-        android:exported="true"
-        />
-    <activity
-        android:name=".ui.activity.PullRequestDetailActivity"
-        android:exported="true"
-        />
-    <activity
-        android:name=".ui.activity.SettingsActivity"
-        android:label="@string/title_activity_settings"
-        />
-    <activity android:name=".ui.activity.ReposActivity"/>
-    <activity android:name=".ui.activity.StarredReposActivity"/>
-    <activity android:name=".ui.activity.WatchedReposActivity"/>
-    <activity android:name=".ui.activity.OrganizationsActivity"/>
-    <activity android:name=".ui.activity.SearchIssuesActivity"/>
-    <activity android:name=".ui.activity.ForksActivity"/>
-    <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity"/>
-    <activity android:name=".ui.activity.issue.IssueLabelsActivity"/>
-    <activity android:name=".ui.activity.issue.IssueAssigneesActivity"/>
-    <!--<activity android:name=".ui.activity.SyncFavoritesActivity" />-->
-    <activity android:name=".ui.activity.MilestoneIssuesActivity"/>
-    <activity
-        android:name=".ui.activity.ContentEditorActivity"
-        android:windowSoftInputMode="adjustPan"
-        />
-    <activity
-        android:name=".emoji.EmojisActivity"
-        android:label="@string/emoji_activity"
-        />
-    <activity
-        android:name=".ui.activity.CreateRepositoryActivity"
-        android:label="@string/create_repository_activity"
-        android:theme="@style/AppTheme.ColoredButton"
-        />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.NewIssueActivity"
+            android:label="@string/title_activity_new_issue"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.NewContentActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.EditContentActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.login.OtpCodeActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.IssueDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.PullRequestDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activity.SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".ui.activity.ReposActivity" />
+        <activity android:name=".ui.activity.StarredReposActivity" />
+        <activity android:name=".ui.activity.WatchedReposActivity" />
+        <activity android:name=".ui.activity.OrganizationsActivity" />
+        <activity android:name=".ui.activity.SearchIssuesActivity" />
+        <activity android:name=".ui.activity.ForksActivity" />
+        <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity" />
+        <activity android:name=".ui.activity.issue.IssueLabelsActivity" />
+        <activity android:name=".ui.activity.issue.IssueAssigneesActivity" />
+        <!--<activity android:name=".ui.activity.SyncFavoritesActivity" />-->
+        <activity android:name=".ui.activity.MilestoneIssuesActivity" />
+        <activity
+            android:name=".ui.activity.ContentEditorActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".emoji.EmojisActivity"
+            android:label="@string/emoji_activity" />
+        <activity
+            android:name=".ui.activity.CreateRepositoryActivity"
+            android:label="@string/create_repository_activity"
+            android:theme="@style/AppTheme.ColoredButton" />
 
     <meta-data
         android:name="io.fabric.ApiKey"

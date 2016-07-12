@@ -5,11 +5,12 @@ import com.alorma.github.R;
 public abstract class PeopleThemeActivity extends BackActivity {
 
   @Override
-  protected void configureTheme(boolean dark) {
-    if (dark) {
-      setTheme(R.style.AppTheme_Dark_Profile);
-    } else {
-      setTheme(R.style.AppTheme_Profile);
-    }
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Profile;
+  }
+
+  @Override
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Profile;
   }
 }

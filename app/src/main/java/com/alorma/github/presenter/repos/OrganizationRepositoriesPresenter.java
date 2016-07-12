@@ -19,12 +19,11 @@ import javax.inject.Inject;
 
   @NonNull
   protected CacheDataSource<String, List<Repo>> getUserReposCacheDataSource() {
-    return new AuthUserReposCache("org_repos");
+    return new UserReposCache("org_repos");
   }
 
   @NonNull
-  protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
-      RestWrapper reposRetrofit, String sortOrder) {
+  protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(RestWrapper reposRetrofit, String sortOrder) {
     return new CloudOrganizationRepositoriesDataSource(reposRetrofit, sortOrder);
   }
 }

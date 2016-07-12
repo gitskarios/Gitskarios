@@ -23,10 +23,8 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 public class GitskariosDownloadManager {
 
-  public void download(final Context context, final String path, final String name,
-      @Nullable final View view) {
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        == PackageManager.PERMISSION_GRANTED) {
+  public void download(final Context context, final String path, final String name, @Nullable final View view) {
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
       downloadFromAndroid(context, path, name);
     } else {
       PermissionListener permissionListener = new PermissionListener() {
@@ -38,26 +36,18 @@ public class GitskariosDownloadManager {
         @Override
         public void onPermissionDenied(PermissionDeniedResponse response) {
           if (response.isPermanentlyDenied() && view != null) {
-            Snackbar snackbar =
-                Snackbar.make(view, context.getString(R.string.external_storage_permission_request),
-                    Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(view, context.getString(R.string.external_storage_permission_request), Snackbar.LENGTH_LONG);
 
-            snackbar.setAction(
-                context.getString(R.string.external_storage_permission_request_action),
-                new View.OnClickListener() {
-                  @Override
-                  public void onClick(View v) {
-                    openSettings(context);
-                  }
-                });
+            snackbar.setAction(context.getString(R.string.external_storage_permission_request_action), v -> {
+              openSettings(context);
+            });
 
             snackbar.show();
           }
         }
 
         @Override
-        public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
-            PermissionToken token) {
+        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
           token.continuePermissionRequest();
         }
       };
@@ -72,18 +62,16 @@ public class GitskariosDownloadManager {
     DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 
     request.setTitle(name);
-    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-        "gitskarios/" + name);
+    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "gitskarios/" + name);
     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
     request.allowScanningByMediaScanner();
     dm.enqueue(request);
 
-    Toast.makeText(context, name + "queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
+    Toast.makeText(context, name + " queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
   }
 
   private void openSettings(Context context) {
-    Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-        Uri.parse("package:" + context.getPackageName()));
+    Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + context.getPackageName()));
     myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
     myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(myAppSettings);
