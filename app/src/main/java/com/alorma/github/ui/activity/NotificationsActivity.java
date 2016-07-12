@@ -21,7 +21,6 @@ import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
-import com.firebase.jobdispatcher.Trigger;
 import javax.inject.Inject;
 
 public class NotificationsActivity extends BackActivity {
@@ -85,15 +84,14 @@ public class NotificationsActivity extends BackActivity {
         .setService(GetNotificationsService.class)
         .setTag(getJobTag())
         .setConstraints(Constraint.ON_ANY_NETWORK)
-        .setTrigger(Trigger.NOW)
-        .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+        .setLifetime(Lifetime.FOREVER)
         .setRecurring(true)
         .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
         .build();
 
     int result = jobDispatcher.schedule(job);
     if (result != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
-      jonScheduleError();
+      jobScheduleError();
     }
   }
 
@@ -102,7 +100,7 @@ public class NotificationsActivity extends BackActivity {
     return BuildConfig.APPLICATION_ID + "-" + "notifications";
   }
 
-  private void jonScheduleError() {
+  private void jobScheduleError() {
     Toast.makeText(this, R.string.notifications_scheule_error, Toast.LENGTH_SHORT).show();
   }
 
