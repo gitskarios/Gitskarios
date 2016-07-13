@@ -17,6 +17,7 @@ import com.alorma.github.sdk.services.user.TwoFactorAuthException;
 import com.alorma.github.sdk.services.user.UnauthorizedException;
 import com.alorma.gitskarios.core.Pair;
 import java.lang.ref.WeakReference;
+import java.util.UUID;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -122,7 +123,7 @@ public class WelcomePresenter {
 
   private void addAccount(User user, String accessToken) {
     if (accessToken != null && accountAuthenticatorActivity != null && accountAuthenticatorActivity.get() != null) {
-      Account account = new Account(user.login, accountAuthenticatorActivity.get().getString(R.string.account_type));
+      Account account = new Account(user.login + UUID.randomUUID().toString(), accountAuthenticatorActivity.get().getString(R.string.account_type));
       Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url);
       userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 

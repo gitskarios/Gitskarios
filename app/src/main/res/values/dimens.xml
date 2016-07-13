@@ -101,4 +101,5 @@
   <dimen name="spacing_normal">16dp</dimen>
   <dimen name="image_final_width">32dp</dimen>
   <dimen name="reaction_size">20dp</dimen>
+  <dimen name="repo_about_icon">20dp</dimen>
 </resources>
