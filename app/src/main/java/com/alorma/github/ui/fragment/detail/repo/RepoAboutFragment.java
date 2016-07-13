@@ -41,6 +41,7 @@ import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.varunest.sparkbutton.SparkButton;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,9 +65,14 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
   private WebView htmlContentView;
   private UserAvatarView profileIcon;
 
-  private TextView starredPlaceholder;
-  private TextView watchedPlaceholder;
-  private TextView forkPlaceHolder;
+  private SparkButton starredPlaceholder;
+  private TextView starredTextView;
+
+  private SparkButton watchedPlaceholder;
+  private TextView watchedTextView;
+
+  private SparkButton forkedPlaceholder;
+  private TextView forkedTextView;
 
   private TextView authorName;
   private View fork;
@@ -164,23 +170,36 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
     createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
 
-    starredPlaceholder = (TextView) view.findViewById(R.id.starredPlaceholder);
-    watchedPlaceholder = (TextView) view.findViewById(R.id.watchedPlaceHolder);
-    forkPlaceHolder = (TextView) view.findViewById(R.id.forkPlaceHolder);
+    starredPlaceholder = (SparkButton) view.findViewById(R.id.starredPlaceholder);
+    starredTextView = (TextView) view.findViewById(R.id.starredTextView);
 
-    starredPlaceholder.setOnClickListener(v -> {
+    watchedPlaceholder = (SparkButton) view.findViewById(R.id.watchedPlaceHolder);
+    watchedTextView = (TextView) view.findViewById(R.id.watchedTextView);
+
+    forkedPlaceholder = (SparkButton) view.findViewById(R.id.forkedPlaceholder);
+    forkedTextView = (TextView) view.findViewById(R.id.forkedTextView);
+
+    starredPlaceholder.setEventListener((button, buttonState) -> {
+      starredPlaceholder.playAnimation();
+      if (repoStarred != null) {
+        changeStarStatus();
+      }
+    });
+    starredTextView.setOnClickListener(v -> {
       if (repoStarred != null) {
         changeStarStatus();
       }
     });
 
-    watchedPlaceholder.setOnClickListener(v -> {
+    watchedTextView.setOnClickListener(view1 -> {
+      watchedPlaceholder.playAnimation();
       if (repoWatched != null) {
         changeWatchedStatus();
       }
     });
+    watchedPlaceholder.setEventListener((button, buttonState) -> changeWatchedStatus());
 
-    forkPlaceHolder.setOnClickListener(v -> {
+    forkedTextView.setOnClickListener(v -> {
       if (repoInfo != null) {
         Intent intent = ForksActivity.launchIntent(v.getContext(), repoInfo);
         startActivity(intent);
@@ -361,6 +380,9 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
         profileIcon.setUser(owner);
         authorName.setText(owner.login);
 
+        forkedPlaceholder.setChecked(this.currentRepo.parent != null);
+
+
         if (this.currentRepo.parent != null) {
           fork.setVisibility(View.VISIBLE);
           forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
@@ -377,19 +399,17 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
         setWatchersCount(currentRepo.subscribers_count);
 
-        forkPlaceHolder.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
-
-        forkPlaceHolder.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, PLACEHOLDER_ICON_SIZE), null, null, null);
+        forkedTextView.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
       }
     }
   }
 
   private void setStarsCount(int stargazers_count) {
-    starredPlaceholder.setText(String.valueOf(placeHolderNum(stargazers_count)));
+    starredTextView.setText(String.valueOf(placeHolderNum(stargazers_count)));
   }
 
   private void setWatchersCount(int subscribers_count) {
-    watchedPlaceholder.setText(String.valueOf(placeHolderNum(subscribers_count)));
+    watchedTextView.setText(String.valueOf(placeHolderNum(subscribers_count)));
   }
 
   private String placeHolderNum(int value) {
@@ -451,13 +471,7 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
   private void changeStarView() {
     if (getActivity() != null) {
-      IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_star).sizeDp(PLACEHOLDER_ICON_SIZE);
-      if (repoStarred != null && repoStarred) {
-        drawable.color(AttributesUtils.getAccentColor(getActivity()));
-      } else {
-        drawable.colorRes(R.color.icons);
-      }
-      starredPlaceholder.setCompoundDrawables(drawable, null, null, null);
+      starredPlaceholder.setChecked(repoStarred != null && repoStarred);
 
       if (futureStarredCount != null) {
         setStarsCount(futureStarredCount);
@@ -468,13 +482,9 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
   private void changeWatchView() {
     if (getActivity() != null) {
-      IconicsDrawable drawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_eye).sizeDp(PLACEHOLDER_ICON_SIZE);
-      if (repoWatched != null && repoWatched) {
-        drawable.color(AttributesUtils.getAccentColor(getActivity()));
-      } else {
-        drawable.colorRes(R.color.icons);
-      }
-      watchedPlaceholder.setCompoundDrawables(drawable, null, null, null);
+      watchedPlaceholder.setChecked(repoWatched != null && repoWatched);
+
+      watchedPlaceholder.invalidate();
 
       if (futureSubscribersCount != null) {
         setWatchersCount(futureSubscribersCount);

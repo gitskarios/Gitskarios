@@ -40,8 +40,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 24
-        versionName "2.16.5"
-        versionCode 216005
+        versionName "2.16.7"
+        versionCode 216007
         resValue "string", "app_git_hash", getCurrentGitHash()
 
         multiDexEnabled true
@@ -192,9 +192,13 @@ dependencies {
         transitive = true;
     }
 
+    compile 'com.github.varunest:sparkbutton:1.0.0'
+
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.0'
     testCompile "org.mockito:mockito-core:1.10.19"
+
+    compile 'com.maksim88:PasswordEditText:v0.8'
 
     apt "com.google.dagger:dagger-compiler:2.4"
     compile "com.google.dagger:dagger:2.4"
