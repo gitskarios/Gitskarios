@@ -9,7 +9,11 @@ import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import com.alorma.github.gcm.GitskariosInstanceIDListenerService;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApplicationComponent;
+import com.alorma.github.injector.component.DaggerNotificationsComponent;
+import com.alorma.github.injector.component.NotificationsComponent;
 import com.alorma.github.injector.module.ApplicationModule;
+import com.alorma.github.injector.module.NotificationsModule;
+import com.alorma.github.notifications.AppNotificationsManager;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.gitskarios.core.client.LogProvider;
@@ -17,7 +21,6 @@ import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UsernameProvider;
 import com.crashlytics.android.Crashlytics;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,7 +31,10 @@ import javax.inject.Inject;
 
 public class GitskariosApplication extends MultiDexApplication {
 
+  @Inject AppNotificationsManager notificationsManager;
+
   private ApplicationComponent component;
+  private NotificationsComponent notificationsComponent;
 
   public static GitskariosApplication get(Context context) {
     return (GitskariosApplication) context.getApplicationContext();
@@ -77,11 +83,14 @@ public class GitskariosApplication extends MultiDexApplication {
     }
 
     initializeInjector();
+
+    notificationsManager.setNotificationsEnabled(notificationsManager.areNotificationsEnabled());
   }
 
   private void initializeInjector() {
-    component =
-        DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+    component = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+    notificationsComponent = DaggerNotificationsComponent.builder().notificationsModule(new NotificationsModule()).build();
+    notificationsComponent.inject(this);
   }
 
   public ApplicationComponent getComponent() {
