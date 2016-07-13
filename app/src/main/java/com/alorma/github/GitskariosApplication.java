@@ -89,7 +89,7 @@ public class GitskariosApplication extends MultiDexApplication {
 
   private void initializeInjector() {
     component = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
-    notificationsComponent = DaggerNotificationsComponent.builder().notificationsModule(new NotificationsModule()).build();
+    notificationsComponent = DaggerNotificationsComponent.builder().notificationsModule(new NotificationsModule(this)).build();
     notificationsComponent.inject(this);
   }
 
@@ -100,5 +100,9 @@ public class GitskariosApplication extends MultiDexApplication {
   @NonNull
   private StoreCredentials getStoreCredentials() {
     return new StoreCredentials(GitskariosApplication.this);
+  }
+
+  public void setNotificationsEnabled(boolean isChecked) {
+    notificationsManager.setNotificationsEnabled(isChecked);
   }
 }

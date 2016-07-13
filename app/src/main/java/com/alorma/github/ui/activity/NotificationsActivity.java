@@ -4,23 +4,15 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.widget.Switch;
-import android.widget.Toast;
-import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
-import com.alorma.github.account.GetNotificationsService;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
-import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
 import javax.inject.Inject;
 
 public class NotificationsActivity extends BackActivity {
@@ -49,11 +41,10 @@ public class NotificationsActivity extends BackActivity {
       notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
         if (isChecked) {
           buttonView.setText(R.string.notifications_enabled);
-          enableAutomaticNotifications();
         } else {
           buttonView.setText(R.string.notifications_disabled);
-          disableAutomaticNotifications();
         }
+        ((GitskariosApplication) getApplication()).setNotificationsEnabled(isChecked);
       });
     }
 
@@ -79,34 +70,6 @@ public class NotificationsActivity extends BackActivity {
     component.inject(this);
   }
 
-  private void enableAutomaticNotifications() {
-    Job job = jobDispatcher.newJobBuilder()
-        .setService(GetNotificationsService.class)
-        .setTag(getJobTag())
-        .setConstraints(Constraint.ON_ANY_NETWORK)
-        .setLifetime(Lifetime.FOREVER)
-        .setRecurring(true)
-        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-        .build();
-
-    int result = jobDispatcher.schedule(job);
-    if (result != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
-      jobScheduleError();
-    }
-  }
-
-  @NonNull
-  private String getJobTag() {
-    return BuildConfig.APPLICATION_ID + "-" + "notifications";
-  }
-
-  private void jobScheduleError() {
-    Toast.makeText(this, R.string.notifications_scheule_error, Toast.LENGTH_SHORT).show();
-  }
-
-  private void disableAutomaticNotifications() {
-    jobDispatcher.cancel(getJobTag());
-  }
 
   @Override
   protected int getAppDarkTheme() {

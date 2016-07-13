@@ -13,6 +13,7 @@ public class GitskariosSettings extends PreferencesHelper {
   public static final String KEY_DOWNLOAD_FILE_TYPE = "KEY_DOWNLOAD_FILE_TYPE";
   private static final String KEY_SHOW_ENTERPRISE = "KEY_SHOW_ENTERPRISE";
   private static final String GCM_TOKEN = "GCM_TOKEN";
+  private static final String NOTIFICATIONS = "NOTIFICATIONS";
 
   public GitskariosSettings(Context context) {
     super(context);
@@ -72,5 +73,13 @@ public class GitskariosSettings extends PreferencesHelper {
 
   public String getGCMToken() {
     return getStringSetting(GCM_TOKEN, null);
+  }
+
+  public boolean areNotificationsEnabled() {
+    return getBooleanSetting(NOTIFICATIONS, true);
+  }
+
+  public void setNotificationsEnabled(boolean enabled) {
+    saveBooleanSetting(NOTIFICATIONS, enabled);
   }
 }
