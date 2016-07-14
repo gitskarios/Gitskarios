@@ -180,8 +180,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
         fragments.add(UsernameReposFragment.newInstance(login));
         fragments.add(CreatedEventsListFragment.newInstance(login));
 
-        PagerAdapter adapter =
-            new ProfilePagesAdapter(this, getSupportFragmentManager(), fragments);
+        PagerAdapter adapter = new ProfilePagesAdapter(this, getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(fragments.size());
         tabLayout.setupWithViewPager(viewPager);
@@ -212,20 +211,18 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
       invalidateOptionsMenu();
 
-      Observable<Integer> organizations = new GetOrgsClient(login).observable()
-          .subscribeOn(Schedulers.io())
-          .map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
+      Observable<Integer> organizations =
+          new GetOrgsClient(login).observable().subscribeOn(Schedulers.io()).map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
             @Override
             public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
               return listIntegerPair.first.size();
             }
           });
 
-      Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()), organizations,
-          (user1, organizations1) -> {
-            user1.organizations = organizations1;
-            return user1;
-          }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+      Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()), organizations, (user1, organizations1) -> {
+        user1.organizations = organizations1;
+        return user1;
+      }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
         @Override
         public void onCompleted() {
 
@@ -277,9 +274,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
       StoreCredentials settings = new StoreCredentials(this);
 
-      if (user != null
-          && !settings.getUserName().equals(user.login)
-          && user.type == UserType.User) {
+      if (user != null && !settings.getUserName().equals(user.login) && user.type == UserType.User) {
         MenuItem item;
         if (followingUser) {
           item = menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
@@ -309,26 +304,23 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
   }
 
   private void followUserAction(GithubClient<Boolean> githubClient) {
-    githubClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Boolean>() {
-          @Override
-          public void onCompleted() {
+    githubClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
+      @Override
+      public void onError(Throwable e) {
 
-          }
+      }
 
-          @Override
-          public void onNext(Boolean aBoolean) {
-            followingUser = aBoolean;
-            invalidateOptionsMenu();
-          }
-        });
+      @Override
+      public void onNext(Boolean aBoolean) {
+        followingUser = aBoolean;
+        invalidateOptionsMenu();
+      }
+    });
   }
 
   public void onUserLoaded(final User user) {
@@ -371,9 +363,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
   @Override
   public void openRepos(String login) {
-    if (viewPager != null
-        && viewPager.getAdapter() != null
-        && viewPager.getAdapter().getCount() >= 1) {
+    if (viewPager != null && viewPager.getAdapter() != null && viewPager.getAdapter().getCount() >= 1) {
       viewPager.setCurrentItem(1);
     }
   }

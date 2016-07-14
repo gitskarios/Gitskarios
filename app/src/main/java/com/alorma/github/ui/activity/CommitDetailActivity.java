@@ -25,8 +25,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class CommitDetailActivity extends RepositoryThemeActivity
-    implements CommitFilesAdapter.OnFileRequestListener {
+public class CommitDetailActivity extends RepositoryThemeActivity implements CommitFilesAdapter.OnFileRequestListener {
 
   private CommitInfo info;
 

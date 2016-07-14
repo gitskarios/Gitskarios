@@ -41,8 +41,7 @@ public class IssueStoryLabelDetailView extends LinearLayout {
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  public IssueStoryLabelDetailView(Context context, AttributeSet attrs, int defStyleAttr,
-      int defStyleRes) {
+  public IssueStoryLabelDetailView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     init();
   }
@@ -75,10 +74,8 @@ public class IssueStoryLabelDetailView extends LinearLayout {
     labelsView.setLabels(labels);
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String date = TimeUtils.getTimeAgoString(formatter.print(created_at));
-    String dateText = getContext().getResources()
-        .getString(
-            added ? R.string.aissue_detail_add_labels : R.string.aissue_detail_removed_labels,
-            date);
+    String dateText =
+        getContext().getResources().getString(added ? R.string.aissue_detail_add_labels : R.string.aissue_detail_removed_labels, date);
     createdAt.setText(dateText);
   }
 }

@@ -20,9 +20,9 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 
 public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceAdapter.ViewHolder> {
 
+  private final RepoInfo repoInfo;
   private SourceAdapterListener sourceAdapterListener;
   private Context context;
-  private final RepoInfo repoInfo;
 
   public RepoSourceAdapter(Context context, LayoutInflater inflater, RepoInfo repoInfo) {
     super(inflater);
@@ -41,11 +41,9 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
 
     IconicsDrawable iconDrawable = null;
     if (ContentType.dir.equals(content.type)) {
-      iconDrawable =
-          new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_directory);
+      iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_directory);
     } else if (ContentType.symlink.equals(content.type)) {
-      iconDrawable = new IconicsDrawable(holder.itemView.getContext(),
-          Octicons.Icon.oct_file_symlink_directory);
+      iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_symlink_directory);
     } else if (ContentType.file.equals(content.type)) {
       iconDrawable = new IconicsDrawable(holder.itemView.getContext(), Octicons.Icon.oct_file_text);
     }
@@ -67,8 +65,7 @@ public class RepoSourceAdapter extends RecyclerArrayAdapter<Content, RepoSourceA
     void onContentMenuAction(Content content, MenuItem menuItem);
   }
 
-  public class ViewHolder extends RecyclerView.ViewHolder
-      implements PopupMenu.OnMenuItemClickListener {
+  public class ViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener {
     private final TextView textName;
     private final ImageView image;
     private final ImageView overflow;

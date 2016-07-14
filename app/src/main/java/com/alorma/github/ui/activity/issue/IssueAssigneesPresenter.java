@@ -14,8 +14,7 @@ import rx.schedulers.Schedulers;
 public class IssueAssigneesPresenter extends Presenter<IssueInfo, List<User>> {
   @Override
   public void load(IssueInfo issueInfo, Callback<List<User>> listCallback) {
-    GetRepoCollaboratorsClient contributorsClient =
-        new GetRepoCollaboratorsClient(issueInfo.repoInfo);
+    GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(issueInfo.repoInfo);
     contributorsClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

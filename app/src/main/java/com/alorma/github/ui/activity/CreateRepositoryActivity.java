@@ -55,31 +55,27 @@ public class CreateRepositoryActivity extends RepositoryThemeActivity
   public void onClick(View v) {
     if (fragment != null) {
       CreateRepositoryClient client = new CreateRepositoryClient(fragment.getRequest());
-      client.observable()
-          .subscribeOn(Schedulers.newThread())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<Repo>() {
-            @Override
-            public void onCompleted() {
-              openRepo(repo);
-            }
+      client.observable().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+        @Override
+        public void onCompleted() {
+          openRepo(repo);
+        }
 
-            @Override
-            public void onError(Throwable e) {
-              if (BuildConfig.DEBUG) {
-                Snackbar.make(create, "Error creating repository: " + e.getMessage(),
-                    Snackbar.LENGTH_SHORT).show();
-                e.printStackTrace();
-              } else {
-                Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT).show();
-              }
-            }
+        @Override
+        public void onError(Throwable e) {
+          if (BuildConfig.DEBUG) {
+            Snackbar.make(create, "Error creating repository: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+            e.printStackTrace();
+          } else {
+            Snackbar.make(create, "Error creating repository", Snackbar.LENGTH_SHORT).show();
+          }
+        }
 
-            @Override
-            public void onNext(Repo repo) {
-              CreateRepositoryActivity.this.repo = repo;
-            }
-          });
+        @Override
+        public void onNext(Repo repo) {
+          CreateRepositoryActivity.this.repo = repo;
+        }
+      });
     }
   }
 

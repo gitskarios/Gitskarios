@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.repos.AuthOrgsRepositoriesPresenter;

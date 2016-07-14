@@ -32,8 +32,7 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
   private CompareCommitsListFragment commitsFragment;
   private CompareFilesListFragment filesFragment;
 
-  public static Intent launcherIntent(Context context, RepoInfo repoInfo, String base,
-      String head) {
+  public static Intent launcherIntent(Context context, RepoInfo repoInfo, String base, String head) {
     Intent intent = new Intent(context, CompareRepositoryCommitsActivity.class);
 
     intent.putExtra(REPO_INFO, repoInfo);
@@ -90,8 +89,7 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
       listFragments.add(commitsFragment);
       filesFragment = CompareFilesListFragment.newInstance(repoInfo);
       listFragments.add(filesFragment);
-      NavigationPagerAdapter adapter =
-          new NavigationPagerAdapter(getSupportFragmentManager(), listFragments);
+      NavigationPagerAdapter adapter = new NavigationPagerAdapter(getSupportFragmentManager(), listFragments);
 
       viewPager.setAdapter(adapter);
       if (ViewCompat.isLaidOut(tabLayout)) {
@@ -99,8 +97,8 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
       } else {
         tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
           @Override
-          public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-              int oldTop, int oldRight, int oldBottom) {
+          public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
+              int oldBottom) {
             tabLayout.setupWithViewPager(viewPager);
 
             tabLayout.removeOnLayoutChangeListener(this);

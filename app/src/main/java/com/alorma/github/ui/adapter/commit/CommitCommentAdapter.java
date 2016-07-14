@@ -18,8 +18,7 @@ import com.github.mobile.util.HttpImageGetter;
 /**
  * Created by Bernat on 23/06/2015.
  */
-public class CommitCommentAdapter
-    extends RecyclerArrayAdapter<CommitComment, CommitCommentAdapter.ViewHolder> {
+public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, CommitCommentAdapter.ViewHolder> {
 
   private RepoInfo repoInfo;
 

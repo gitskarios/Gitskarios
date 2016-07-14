@@ -10,8 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends RecyclerView.ViewHolder>
-    extends RecyclerView.Adapter<ViewHolder> {
+public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<ViewHolder> {
 
   public List<ItemType> items;
   private LayoutInflater inflater;
@@ -89,8 +88,7 @@ public abstract class RecyclerArrayAdapter<ItemType, ViewHolder extends Recycler
     return items;
   }
 
-  public void setRecyclerAdapterContentListener(
-      RecyclerAdapterContentListener recyclerAdapterContentListener) {
+  public void setRecyclerAdapterContentListener(RecyclerAdapterContentListener recyclerAdapterContentListener) {
     this.recyclerAdapterContentListener = recyclerAdapterContentListener;
   }
 

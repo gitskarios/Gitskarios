@@ -15,8 +15,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -35,6 +33,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.github.utils.AttributesUtils;
@@ -298,7 +297,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   }
 
   private void showAddPicture() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.title(R.string.add_image_title);
     builder.negativeText(R.string.add_image_by_link);
     builder.onNegative((dialog1, which) -> showImageLink());
@@ -312,7 +311,8 @@ public class ContentEditorActivity extends RepositoryThemeActivity
       Answers.getInstance().logCustom(new CustomEvent("UPLOAD_IMAGE").putCustomAttribute("type", "link"));
     }
 
-    new MaterialDialog.Builder(this).title(R.string.addPicture)
+    new DialogUtils().builder(this)
+        .title(R.string.addPicture)
         .content(R.string.addPictureContent)
         .input(R.string.addPictureHint, 0, false, (materialDialog, charSequence) -> {
           MentionsEditable text = editText.getText();

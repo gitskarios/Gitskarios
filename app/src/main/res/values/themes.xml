@@ -3,9 +3,12 @@
 
     <style name="AppTheme" parent="Base.AppTheme" />
 
-    <style name="AppTheme.Dark" parent="Base.AppTheme.Dark" />
+  <style name="AppTheme.Dark"
+         parent="Base.AppTheme.Dark">
+    <item name="md_dark_theme">true</item>
+  </style>
 
-    <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
+  <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
 
     <style name="AppTheme.Dark.Search" parent="Base.AppTheme.Dark.Search" />
 
@@ -81,6 +84,8 @@
         <item name="material_drawer_header_selection_text">
             @color/material_drawer_dark_header_selection_text
         </item>
+
+      <item name="md_dark_theme">true</item>
 
     </style>
 

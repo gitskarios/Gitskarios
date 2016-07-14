@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
@@ -64,8 +63,7 @@ public class PullRequestDetailView extends LinearLayout {
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  public PullRequestDetailView(Context context, AttributeSet attrs, int defStyleAttr,
-      int defStyleRes) {
+  public PullRequestDetailView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     init();
   }
@@ -83,8 +81,8 @@ public class PullRequestDetailView extends LinearLayout {
     reactionsLy = (ReactionsView) findViewById(R.id.reactionsLy);
   }
 
-  public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest,
-      GithubStatusResponse statusResponse, Permissions permissions) {
+  public void setPullRequest(final RepoInfo repoInfo, final PullRequest pullRequest, GithubStatusResponse statusResponse,
+      Permissions permissions) {
     long milis = System.currentTimeMillis();
     if (this.pullRequest == null) {
       this.pullRequest = pullRequest;
@@ -101,8 +99,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   private void checkEditable(RepoInfo repoInfo, PullRequest pullRequest) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push
-        || pullRequest.user.login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push || pullRequest.user.login.equals(credentials.getUserName())) {
       OnClickListener editClickListener = v -> {
         if (pullRequestActionsListener != null) {
           if (v.getId() == R.id.textTitle) {
@@ -154,8 +151,7 @@ public class PullRequestDetailView extends LinearLayout {
           RepoInfo repoInfo1 = new RepoInfo();
           repoInfo1.owner = repo.owner.login;
           repoInfo1.name = repo.name;
-          Intent launcherIntent =
-              RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo1);
+          Intent launcherIntent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo1);
           v.getContext().startActivity(launcherIntent);
         });
       } else {
@@ -184,8 +180,7 @@ public class PullRequestDetailView extends LinearLayout {
       profileIcon.setUser(pullRequest.user);
 
       OnClickListener issueUserClick = v -> {
-        Intent launcherIntent =
-            ProfileActivity.createLauncherIntent(v.getContext(), pullRequest.user);
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(v.getContext(), pullRequest.user);
         v.getContext().startActivity(launcherIntent);
       };
       profileName.setOnClickListener(issueUserClick);

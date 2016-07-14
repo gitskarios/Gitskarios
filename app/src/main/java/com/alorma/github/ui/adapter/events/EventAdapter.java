@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
@@ -43,8 +41,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
 
       String textForEvent = getTextForEvent(githubEvent);
 
-      holder.authorName.setText(
-          Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, textForEvent)));
+      holder.authorName.setText(Html.fromHtml(resources.getString(textRes, githubEvent.actor.login, textForEvent)));
 
       String timeString = TimeUtils.getTimeAgoString(githubEvent.created_at);
 
@@ -62,70 +59,29 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         return textRes + " " + "<b>" + event.repo.name + "</b>";
       case CreateEvent:
         if (event.payload.ref != null) {
-          return "created branch <b>"
-              + event.payload.ref
-              + "</b> on repository"
-              + " "
-              + "<b>"
-              + event.repo.name
-              + "</b>";
+          return "created branch <b>" + event.payload.ref + "</b> on repository" + " " + "<b>" + event.repo.name + "</b>";
         } else {
           return "created repository" + " " + "<b>" + event.repo.name + "</b>";
         }
       case CommitCommentEvent:
-        return "commented on commit "
-            + "<b>"
-            + event.repo.name
-            + "@"
-            + event.payload.comment.commit_id.substring(0, 10)
-            + "</b>";
+        return "commented on commit " + "<b>" + event.repo.name + "@" + event.payload.comment.commit_id.substring(0, 10) + "</b>";
       case DownloadEvent:
         return "";
       case FollowEvent:
         return "";
       case ForkEvent:
-        return "forked"
-            + " <b>"
-            + event.repo.name
-            + "</b>"
-            + " "
-            + "to"
-            + " "
-            + "<b>"
-            + event.payload.forkee.full_name
-            + "</b>";
+        return "forked" + " <b>" + event.repo.name + "</b>" + " " + "to" + " " + "<b>" + event.payload.forkee.full_name + "</b>";
       case GistEvent:
         return "";
       case GollumEvent:
         return "";
       case IssueCommentEvent:
         String type = event.payload.issue.pullRequest == null ? "issue" : "pull request";
-        return "commented on "
-            + type
-            + " "
-            + "<b>"
-            + event.repo.name
-            + "#"
-            + event.payload.issue.number
-            + "</b>";
+        return "commented on " + type + " " + "<b>" + event.repo.name + "#" + event.payload.issue.number + "</b>";
       case IssuesEvent:
-        return event.payload.action
-            + " "
-            + "<b>"
-            + event.repo.name
-            + "#"
-            + event.payload.issue.number
-            + "</b>";
+        return event.payload.action + " " + "<b>" + event.repo.name + "#" + event.payload.issue.number + "</b>";
       case MemberEvent:
-        return " "
-            + event.payload.action
-            + " "
-            + "<b>"
-            + event.payload.member.login
-            + "</b>"
-            + " "
-            + " to "
-            + event.repo.name;
+        return " " + event.payload.action + " " + "<b>" + event.payload.member.login + "</b>" + " " + " to " + event.repo.name;
       case PublicEvent:
         return "";
       case PullRequestEvent:
@@ -135,22 +91,9 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
           action = "merged";
         }
 
-        return action
-            + " pull request"
-            + " "
-            + "<b>"
-            + event.repo.name
-            + "#"
-            + event.payload.pull_request.number
-            + "</b>";
+        return action + " pull request" + " " + "<b>" + event.repo.name + "#" + event.payload.pull_request.number + "</b>";
       case PullRequestReviewCommentEvent:
-        return "commented on "
-            + " "
-            + "<b>"
-            + event.repo.name
-            + "#"
-            + event.payload.pull_request.number
-            + "</b>";
+        return "commented on " + " " + "<b>" + event.repo.name + "#" + event.payload.pull_request.number + "</b>";
       case PushEvent:
         String ref = event.payload.ref;
         String[] refs = ref.split("/");
@@ -159,17 +102,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         } else if (refs.length == 1) {
           ref = refs[0];
         }
-        return "pushed to"
-            + " "
-            + "<b>"
-            + ref
-            + "</b>"
-            + " "
-            + "at"
-            + " "
-            + "<b>"
-            + event.repo.name
-            + "</b>";
+        return "pushed to" + " " + "<b>" + ref + "</b>" + " " + "at" + " " + "<b>" + event.repo.name + "</b>";
       case StatusEvent:
         return "";
       case TeamAddEvent:

@@ -39,8 +39,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.user_resume_fragment, null, false);
   }
 
@@ -79,23 +78,21 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
   private void fillCardBio(User user) {
     if (user.created_at != null) {
-      ProfileItem profileUserCreated = new ProfileItem(Octicons.Icon.oct_clock,
-          TimeUtils.getDateToText(getActivity(), user.created_at, R.string.joined_at), null);
+      ProfileItem profileUserCreated =
+          new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(getActivity(), user.created_at, R.string.joined_at), null);
       addItem(profileUserCreated, cardAbout);
     }
     if (!TextUtils.isEmpty(user.company)) {
       Intent intent = new Intent(Intent.ACTION_SEARCH);
       intent.putExtra(SearchManager.QUERY, user.company);
-      ProfileItem profileUserOrganization =
-          new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
+      ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
       addItem(profileUserOrganization, cardAbout);
     }
     if (!TextUtils.isEmpty(user.location)) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
       Uri geo = Uri.parse("geo:0,0?q=" + user.location);
       intent.setData(geo);
-      ProfileItem profileUserLocation =
-          new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
+      ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
       addItem(profileUserLocation, cardAbout);
     }
     if (!TextUtils.isEmpty(user.email)) {
@@ -141,9 +138,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
   private void fillCardGithubData(User user) {
     if (user.organizations > 0) {
       Intent intent = OrganizationsActivity.launchIntent(getActivity(), user.login);
-      final ProfileItem profileItemOrgs =
-          new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty),
-              intent);
+      final ProfileItem profileItemOrgs = new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
       addItem(profileItemOrgs, cardGithub);
     }
 
@@ -172,10 +167,6 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     this.userResumeCallback = userResumeCallback;
   }
 
-  public interface UserResumeCallback {
-    void openRepos(String login);
-  }
-
   @Override
   protected int getLightTheme() {
     return R.style.AppTheme_Profile;
@@ -184,5 +175,9 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
   @Override
   protected int getDarkTheme() {
     return R.style.AppTheme_Dark_Profile;
+  }
+
+  public interface UserResumeCallback {
+    void openRepos(String login);
   }
 }

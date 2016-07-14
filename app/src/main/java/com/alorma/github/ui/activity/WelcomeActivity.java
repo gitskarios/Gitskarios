@@ -19,8 +19,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.login.OtpCodeActivity;
 import com.alorma.github.utils.KeyboardUtils;
 
-public class WelcomeActivity extends AccountAuthenticatorActivity
-    implements WelcomePresenterViewInterface {
+public class WelcomeActivity extends AccountAuthenticatorActivity implements WelcomePresenterViewInterface {
 
   private static final int OTP_REQUEST = 1121;
 
@@ -36,8 +35,7 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     ButterKnife.bind(this);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      getWindow().addFlags(
-          View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+      getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
 
     welcomePresenter = new WelcomePresenter(this);
@@ -107,30 +105,8 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
     }
   }
 
-  private class ButtonEnablerTextWatcher implements TextWatcher {
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-      String username = getFromTextInputLayout(loginUsername);
-      String passwords = getFromTextInputLayout(loginPassword);
-
-      buttonLogin.setEnabled(!TextUtils.isEmpty(username) && !TextUtils.isEmpty(passwords));
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
-    }
-  }
-
   public String getFromTextInputLayout(TextInputLayout inputLayout) {
-    if (inputLayout != null
-        && inputLayout.getEditText() != null
-        && inputLayout.getEditText().getText() != null) {
+    if (inputLayout != null && inputLayout.getEditText() != null && inputLayout.getEditText().getText() != null) {
       return inputLayout.getEditText().getText().toString();
     }
     return null;
@@ -166,5 +142,25 @@ public class WelcomeActivity extends AccountAuthenticatorActivity
   protected void onStop() {
     welcomePresenter.stop();
     super.onStop();
+  }
+
+  private class ButtonEnablerTextWatcher implements TextWatcher {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+      String username = getFromTextInputLayout(loginUsername);
+      String passwords = getFromTextInputLayout(loginPassword);
+
+      buttonLogin.setEnabled(!TextUtils.isEmpty(username) && !TextUtils.isEmpty(passwords));
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
   }
 }

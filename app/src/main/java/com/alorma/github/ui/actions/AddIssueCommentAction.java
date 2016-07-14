@@ -24,10 +24,7 @@ public class AddIssueCommentAction extends Action<GithubComment> {
       addCommentCallback.onCommentAddStarted();
     }
     NewIssueCommentClient client = new NewIssueCommentClient(issueInfo, body);
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this);
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     return this;
   }
 

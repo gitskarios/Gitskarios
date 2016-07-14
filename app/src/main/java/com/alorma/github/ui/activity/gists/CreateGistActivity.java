@@ -23,6 +23,7 @@ import com.alorma.github.sdk.bean.dto.response.GistFilesMap;
 import com.alorma.github.sdk.services.gists.PublishGistClient;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.GistCreatedDetailFilesAdapter;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import rx.Subscriber;
@@ -32,8 +33,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class CreateGistActivity extends BackActivity
-    implements GistCreatedDetailFilesAdapter.GistCreateAdapterListener {
+public class CreateGistActivity extends BackActivity implements GistCreatedDetailFilesAdapter.GistCreateAdapterListener {
 
   private static final int GIST_FILE_CREATOR = 540;
   private static final int GIST_FILE_EDITOR = 541;
@@ -72,8 +72,7 @@ public class CreateGistActivity extends BackActivity
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabButton);
 
-    fab.setImageDrawable(
-        new IconicsDrawable(this, Octicons.Icon.oct_gist_new).color(Color.WHITE).actionBar());
+    fab.setImageDrawable(new IconicsDrawable(this, Octicons.Icon.oct_gist_new).color(Color.WHITE).actionBar());
 
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -151,22 +150,16 @@ public class CreateGistActivity extends BackActivity
   }
 
   private void showDialogNotEmpty() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.content(R.string.gist_creator_not_empty);
     builder.positiveText(R.string.gist_creator_editor_discard);
     builder.negativeText(R.string.cancel);
-    builder.callback(new MaterialDialog.ButtonCallback() {
-      @Override
-      public void onPositive(MaterialDialog dialog) {
-        super.onPositive(dialog);
-        finish();
-      }
-    });
+    builder.onPositive((dialog1, which) -> finish());
     dialog = builder.show();
   }
 
   private void showDialogCancelGist() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.content(R.string.gist_creator_cancel_job);
     builder.positiveText(R.string.ok);
     builder.negativeText(R.string.cancel);
@@ -235,7 +228,7 @@ public class CreateGistActivity extends BackActivity
 
   @Override
   public void removeFile(int position, final GistFile item) {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.content(getString(R.string.gist_creator_remove_file, item.filename));
     builder.positiveText(R.string.ok);
     builder.negativeText(R.string.cancel);

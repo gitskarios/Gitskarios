@@ -18,8 +18,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public abstract class BaseReposListFragment extends LoadingListFragment<ReposAdapter>
-    implements SharedPreferences.OnSharedPreferenceChangeListener,
-    Observer<Pair<List<Repo>, Integer>> {
+    implements SharedPreferences.OnSharedPreferenceChangeListener, Observer<Pair<List<Repo>, Integer>> {
 
   private GitskariosSettings settings;
 
@@ -80,10 +79,7 @@ public abstract class BaseReposListFragment extends LoadingListFragment<ReposAda
 
   protected void setAction(GithubListClient<List<Repo>> reposClient) {
     startRefresh();
-    reposClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this);
+    reposClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
   }
 
   @Override

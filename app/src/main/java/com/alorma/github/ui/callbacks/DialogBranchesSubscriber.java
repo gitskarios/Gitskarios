@@ -5,9 +5,9 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.BranchesSubscriber;
+import com.alorma.github.ui.utils.DialogUtils;
 
-public abstract class DialogBranchesSubscriber extends BranchesSubscriber
-    implements MaterialDialog.ListCallbackSingleChoice {
+public abstract class DialogBranchesSubscriber extends BranchesSubscriber implements MaterialDialog.ListCallbackSingleChoice {
 
   private Context context;
 
@@ -20,7 +20,7 @@ public abstract class DialogBranchesSubscriber extends BranchesSubscriber
   protected void showBranches(String[] branches, int defaultBranchPosition) {
     if (branches != null) {
       if (branches.length > 1) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        MaterialDialog.Builder builder = new DialogUtils().builder(context);
         builder.autoDismiss(true);
         builder.items(branches);
         builder.itemsCallbackSingleChoice(defaultBranchPosition, this);
@@ -36,8 +36,7 @@ public abstract class DialogBranchesSubscriber extends BranchesSubscriber
   protected abstract void onNoBranches();
 
   @Override
-  public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-      CharSequence charSequence) {
+  public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
     materialDialog.dismiss();
     onBranchSelected(charSequence.toString());
     return true;

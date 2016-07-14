@@ -11,8 +11,7 @@ public class IssueHolder extends Holder<Issue> {
   private final IssueDetailView issueDetailView;
   private IssueDetailRequestListener issueDetailRequestListener;
 
-  public IssueHolder(IssueDetailView issueDetailView,
-      IssueDetailRequestListener issueDetailRequestListener) {
+  public IssueHolder(IssueDetailView issueDetailView, IssueDetailRequestListener issueDetailRequestListener) {
     super(issueDetailView);
     this.issueDetailRequestListener = issueDetailRequestListener;
     this.issueDetailView = issueDetailView;

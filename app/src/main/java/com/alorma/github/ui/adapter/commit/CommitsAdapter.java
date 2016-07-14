@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.GitCommitVerification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;

@@ -14,18 +14,16 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.android.vending.billing.IInAppBillingService;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by a557114 on 25/07/2015.
@@ -70,11 +68,11 @@ public class DonateFragment extends BaseFragment {
   }
 
   public void launchDonate() {
-    dialog = new MaterialDialog.Builder(getActivity()).title(R.string.support_development)
+    dialog = new DialogUtils().builder(getActivity())
+        .title(R.string.support_development)
         .adapter(new DonateItemsAdapter(getActivity(), skuList), new MaterialDialog.ListCallback() {
           @Override
-          public void onSelection(MaterialDialog materialDialog, View view, int i,
-              CharSequence charSequence) {
+          public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
             materialDialog.dismiss();
             buy(skuList.get(i).getSku());
           }
@@ -86,13 +84,11 @@ public class DonateFragment extends BaseFragment {
     try {
       if (mService != null) {
         purchaseId = UUID.randomUUID().toString();
-        Bundle buyIntentBundle =
-            mService.getBuyIntent(3, getActivity().getPackageName(), sku, "inapp", purchaseId);
+        Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(), sku, "inapp", purchaseId);
         if (buyIntentBundle != null) {
           PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
           if (pendingIntent != null) {
-            getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
-                new Intent(), 0, 0, 0);
+            getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(), 0, 0, 0);
           }
         }
       }

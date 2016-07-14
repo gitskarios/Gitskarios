@@ -18,8 +18,7 @@ import rx.schedulers.Schedulers;
  * Created by Bernat on 13/10/2014.
  */
 public class GitIgnorePopup extends ListPopupWindow
-    implements Observer<GitIgnoreTemplates>, AdapterView.OnItemClickListener,
-    PopupWindow.OnDismissListener {
+    implements Observer<GitIgnoreTemplates>, AdapterView.OnItemClickListener, PopupWindow.OnDismissListener {
 
   private final Context context;
   private GitIgnoreTemplates ignoresList;
@@ -49,8 +48,7 @@ public class GitIgnorePopup extends ListPopupWindow
   @Override
   public void show() {
     if (ignoresList != null) {
-      ignoresAdapter =
-          new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, ignoresList);
+      ignoresAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, ignoresList);
       setAdapter(ignoresAdapter);
       setOnItemClickListener(this);
       setOnDismissListener(this);
@@ -62,10 +60,7 @@ public class GitIgnorePopup extends ListPopupWindow
 
   private void loadData() {
     GitIgnoreClient client = new GitIgnoreClient();
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this);
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
   }
 
   @Override

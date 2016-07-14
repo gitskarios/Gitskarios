@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Gist;
-import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.gists.UserGistsClient;
 import com.alorma.github.ui.activity.gists.GistDetailActivity;
 import com.alorma.github.ui.activity.gists.GistsFileActivity;
 import com.alorma.github.ui.adapter.GistsAdapter;
-import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.gitskarios.core.Pair;
@@ -23,8 +21,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class GistsFragment extends LoadingListFragment<GistsAdapter>
-    implements GistsAdapter.GistsAdapterListener, BackManager {
+public class GistsFragment extends LoadingListFragment<GistsAdapter> implements GistsAdapter.GistsAdapterListener, BackManager {
 
   private static final String USERNAME = "USERNAME";
   private String username;
@@ -59,8 +56,7 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter>
 
     GistsAdapter adapter = new GistsAdapter(LayoutInflater.from(getActivity()));
     adapter.setFilesCallback(item -> {
-      Intent launcherIntent =
-              GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
+      Intent launcherIntent = GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
       startActivity(launcherIntent);
     });
     adapter.setGistsAdapterListener(this);

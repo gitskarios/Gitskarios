@@ -25,9 +25,9 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
   public static final String REAUTHORIZE = "reauthorize";
   public static final String GITSKARIOS = "gitskarios";
   public static final String CHANGELOG = "changelog";
+  public static final String PREF_THEME = "pref_theme";
   private static final String PREF_INTERCEPT = "pref_intercept";
   private static final String PREF_MARK_AS_READ = "pref_mark_as_read";
-  public static final String PREF_THEME = "pref_theme";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {

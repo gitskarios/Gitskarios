@@ -286,15 +286,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
           Toast.makeText(getActivity(), R.string.download_only_files, Toast.LENGTH_LONG).show();
         }
         break;
-      /*
-      case R.id.action_content_delete:
-        String message = getString(R.string.delete_repository_file, content.name);
-        new MaterialDialog.Builder(getActivity()).content(message)
-        .positiveText(R.string.ok)
-        .onPositive((dialog1, which) -> new DeleteFileAction(content, repoInfo, message).execute())
-        .negativeText(R.string.cancel).show();
-        break;
-        */
     }
   }
 

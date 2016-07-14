@@ -53,6 +53,7 @@ import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ShortcutUtils;
 import com.crashlytics.android.Crashlytics;
@@ -163,7 +164,7 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void showEditDialog(int content) {
-    new MaterialDialog.Builder(this).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
+    new DialogUtils().builder(this).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
   }
 
   private void findViews() {
@@ -326,7 +327,7 @@ public class IssueDetailActivity extends BackActivity
 
   public void showError() {
     hideProgressDialog();
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.title(R.string.ups);
     builder.content(getString(R.string.issue_detail_error, issueInfo.toString()));
     builder.positiveText(R.string.retry);
@@ -462,7 +463,8 @@ public class IssueDetailActivity extends BackActivity
 
   @Override
   public void onTitleEditRequest() {
-    dialog = new MaterialDialog.Builder(this).title(R.string.edit_issue_title)
+    dialog = new DialogUtils().builder(this)
+        .title(R.string.edit_issue_title)
         .input(null, issueStory.item.title, false, new MaterialDialog.InputCallback() {
           @Override
           public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
@@ -487,7 +489,7 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void showCreateMilestone() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.title(R.string.add_milestone);
     builder.content(R.string.add_milestone_description);
     builder.input(R.string.add_milestone_hint, 0, new MaterialDialog.InputCallback() {
@@ -658,7 +660,8 @@ public class IssueDetailActivity extends BackActivity
           }
         }
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this).title(R.string.select_milestone)
+        MaterialDialog.Builder builder = new DialogUtils().builder(IssueDetailActivity.this)
+            .title(R.string.select_milestone)
             .items(itemsMilestones)
             .itemsCallbackSingleChoice(selectedMilestone, (materialDialog, view, i, text) -> {
 
@@ -732,39 +735,22 @@ public class IssueDetailActivity extends BackActivity
 
         LabelsCallback.this.selectedLabels = selectedLabels.toArray(new String[selectedLabels.size()]);
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(IssueDetailActivity.this);
+        MaterialDialog.Builder builder = new DialogUtils().builder(IssueDetailActivity.this);
         builder.items(items.toArray(new String[items.size()]));
         builder.alwaysCallMultiChoiceCallback();
         builder.itemsCallbackMultiChoice(positionsSelectedLabels.toArray(new Integer[positionsSelectedLabels.size()]),
-            new MaterialDialog.ListCallbackMultiChoice() {
-              @Override
-              public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
-                LabelsCallback.this.selectedLabels = charSequences;
-                return true;
-              }
+            (materialDialog, integers, charSequences) -> {
+              LabelsCallback.this.selectedLabels = charSequences;
+              return true;
             });
         builder.forceStacking(true);
         builder.positiveText(R.string.ok);
         //                builder.neutralText(R.string.add_new_label);
         builder.negativeText(R.string.clear_labels);
-        builder.callback(new MaterialDialog.ButtonCallback() {
-          @Override
-          public void onPositive(MaterialDialog dialog) {
-            super.onPositive(dialog);
-            setLabels(LabelsCallback.this.selectedLabels);
-          }
-
-          @Override
-          public void onNegative(MaterialDialog dialog) {
-            super.onNegative(dialog);
-            LabelsCallback.this.selectedLabels = null;
-            setLabels(null);
-          }
-
-          //                    @Override
-          //                    public void onNeutral(MaterialDialog dialog) {
-          //                        super.onNeutral(dialog);
-          //                    }
+        builder.onPositive((dialog1, which) -> setLabels(LabelsCallback.this.selectedLabels));
+        builder.onNegative((dialog1, which) -> {
+          LabelsCallback.this.selectedLabels = null;
+          setLabels(null);
         });
         dialog = builder.show();
       }

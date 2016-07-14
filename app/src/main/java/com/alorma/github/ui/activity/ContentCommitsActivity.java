@@ -18,8 +18,7 @@ public class ContentCommitsActivity extends RepositoryThemeActivity {
   private static final String PATH = "PATH";
   private static final String NAME = "NAME";
 
-  public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String path,
-      String name) {
+  public static Intent createLauncherIntent(Context context, RepoInfo repoInfo, String path, String name) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
     bundle.putString(PATH, path);

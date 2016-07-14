@@ -13,8 +13,7 @@ public class PullRequestHolder extends Holder<PullRequest> {
   private Story<PullRequest> story;
   private Permissions permissions;
 
-  public PullRequestHolder(PullRequestDetailView pullRequestDetailView, Story<PullRequest> story,
-      Permissions permissions,
+  public PullRequestHolder(PullRequestDetailView pullRequestDetailView, Story<PullRequest> story, Permissions permissions,
       PullRequestDetailView.PullRequestActionsListener pullRequestActionsListener) {
     super(pullRequestDetailView);
     this.pullRequestDetailView = pullRequestDetailView;
@@ -25,8 +24,7 @@ public class PullRequestHolder extends Holder<PullRequest> {
 
   @Override
   public void setIssue(RepoInfo repoInfo, PullRequest pullRequest) {
-    pullRequestDetailView.setPullRequest(repoInfo, story.item, story.item.statusResponse,
-        permissions);
+    pullRequestDetailView.setPullRequest(repoInfo, story.item, story.item.statusResponse, permissions);
     pullRequestDetailView.setPullRequestActionsListener(pullRequestActionsListener);
   }
 

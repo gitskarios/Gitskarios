@@ -50,7 +50,6 @@ public class CreatedEventsListFragment extends EventsListFragment implements Tit
     return Octicons.Icon.oct_calendar;
   }
 
-
   @Override
   protected int getLightTheme() {
     return R.style.AppTheme_Profile;

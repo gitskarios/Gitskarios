@@ -15,8 +15,7 @@ public abstract class BasePagerFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
     return getThemedLayoutInflater(inflater).inflate(R.layout.general_pager, null, false);
   }

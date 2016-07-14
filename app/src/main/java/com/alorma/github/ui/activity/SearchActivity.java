@@ -7,12 +7,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
@@ -28,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 
 public class SearchActivity extends BackActivity {
 
@@ -123,8 +120,7 @@ public class SearchActivity extends BackActivity {
       MenuItem searchItem = menu.findItem(R.id.action_search);
 
       IconicsDrawable searchIcon =
-          new IconicsDrawable(getApplicationContext(), Octicons.Icon.oct_search).actionBar()
-              .color(AttributesUtils.getIconsColor(this));
+          new IconicsDrawable(getApplicationContext(), Octicons.Icon.oct_search).actionBar().color(AttributesUtils.getIconsColor(this));
 
       searchItem.setIcon(searchIcon);
     }

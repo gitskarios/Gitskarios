@@ -9,11 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import com.alorma.github.R;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.github.utils.AttributesUtils;
 import com.pddstudio.highlightjs.HighlightJsView;
 import com.pddstudio.highlightjs.models.Language;
 import java.io.BufferedReader;
@@ -30,8 +27,7 @@ public class GistFileFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_content, null, false);
   }
 
@@ -72,10 +68,8 @@ public class GistFileFragment extends BaseFragment {
 
   private String configureHtml(String htmlContent) {
     String fileName = "source_pre.html";
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+    SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+    String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
     if ("theme_dark".equalsIgnoreCase(pref_theme)) {
       fileName = "source_pre_dark.html";
     }

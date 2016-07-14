@@ -19,8 +19,7 @@ import java.util.List;
 /**
  * Created by Bernat on 08/07/2015.
  */
-public class ShowEmojisFragment extends EmojisFragment
-    implements EmojisAdapter.OnEmojiSelectedListener {
+public class ShowEmojisFragment extends EmojisFragment implements EmojisAdapter.OnEmojiSelectedListener {
 
   private EmojisAdapter emojisAdapter;
   private EditText filterEdit;
@@ -28,8 +27,7 @@ public class ShowEmojisFragment extends EmojisFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
     return inflater.inflate(R.layout.test_emojis_fragment, null, false);
@@ -82,8 +80,7 @@ public class ShowEmojisFragment extends EmojisFragment
     }
   }
 
-  public void setOnEmojiSelectedListener(
-      EmojisAdapter.OnEmojiSelectedListener onEmojiSelectedListener) {
+  public void setOnEmojiSelectedListener(EmojisAdapter.OnEmojiSelectedListener onEmojiSelectedListener) {
     this.onEmojiSelectedListener = onEmojiSelectedListener;
   }
 }

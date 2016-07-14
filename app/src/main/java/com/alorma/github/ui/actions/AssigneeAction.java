@@ -10,6 +10,7 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
+import com.alorma.github.ui.utils.DialogUtils;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -32,10 +33,7 @@ public class AssigneeAction extends Action<Boolean> {
 
   @Override
   public Action<Boolean> execute() {
-    dialog = new MaterialDialog.Builder(context).content(R.string.changing_assignee)
-        .progress(true, 0)
-        .theme(Theme.DARK)
-        .show();
+    dialog = new DialogUtils().builder(context).content(R.string.changing_assignee).progress(true, 0).theme(Theme.DARK).show();
     EditIssueAssigneeRequestDTO editIssueRequestDTO = new EditIssueAssigneeRequestDTO();
     if (user != null) {
       editIssueRequestDTO.assignee = user.login;
@@ -48,25 +46,22 @@ public class AssigneeAction extends Action<Boolean> {
 
   private void executeEditIssue(final EditIssueRequestDTO editIssueRequestDTO) {
     EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Issue>() {
-          @Override
-          public void onCompleted() {
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
-            returnResult(false);
-          }
+      @Override
+      public void onError(Throwable e) {
+        returnResult(false);
+      }
 
-          @Override
-          public void onNext(Issue issue) {
-            returnResult(true);
-          }
-        });
+      @Override
+      public void onNext(Issue issue) {
+        returnResult(true);
+      }
+    });
   }
 
   private void returnResult(boolean t) {

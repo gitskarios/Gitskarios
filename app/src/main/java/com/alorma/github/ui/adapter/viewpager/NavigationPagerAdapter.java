@@ -12,8 +12,7 @@ public class NavigationPagerAdapter extends FragmentPagerAdapter {
   private Resources resources;
   private List<Fragment> listFragments;
 
-  public NavigationPagerAdapter(FragmentManager fm, Resources resources,
-      List<Fragment> listFragments) {
+  public NavigationPagerAdapter(FragmentManager fm, Resources resources, List<Fragment> listFragments) {
     super(fm);
     this.resources = resources;
     this.listFragments = listFragments;

@@ -8,6 +8,7 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.ChangeIssueStateClient;
+import com.alorma.github.ui.utils.DialogUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -33,16 +34,11 @@ public class CloseAction extends Action<Issue> {
     String accept = context.getResources().getString(R.string.accept);
     String cancel = context.getResources().getString(R.string.cancel);
 
-    MaterialDialog dialog = new MaterialDialog.Builder(context).title(title)
+    MaterialDialog dialog = new DialogUtils().builder(context)
+        .title(title)
         .positiveText(accept)
         .negativeText(cancel)
-        .callback(new MaterialDialog.ButtonCallback() {
-          @Override
-          public void onPositive(MaterialDialog materialDialog) {
-            super.onPositive(materialDialog);
-            changeIssueState(IssueState.closed);
-          }
-        })
+        .onPositive((dialog1, which) -> changeIssueState(IssueState.closed))
         .build();
 
     dialog.show();
@@ -51,16 +47,10 @@ public class CloseAction extends Action<Issue> {
 
   private void changeIssueState(IssueState state) {
 
-    dialog = new MaterialDialog.Builder(context).content(dialogString)
-        .progress(true, 0)
-        .theme(Theme.DARK)
-        .show();
+    dialog = new DialogUtils().builder(context).content(dialogString).progress(true, 0).theme(Theme.DARK).show();
 
     ChangeIssueStateClient changeIssueStateClient = new ChangeIssueStateClient(issueInfo, state);
-    changeIssueStateClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this);
+    changeIssueStateClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
   }
 
   @Override

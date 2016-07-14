@@ -19,8 +19,7 @@ import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-public class NotificationsAdapter
-    extends RecyclerArrayAdapter<NotificationsParent, NotificationsAdapter.ViewHolder> {
+public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsParent, NotificationsAdapter.ViewHolder> {
 
   private final IconicsDrawable iconDrawable;
   private NotificationsAdapterListener notificationsAdapterListener;
@@ -46,9 +45,7 @@ public class NotificationsAdapter
 
     if (holder.notificationsPlaceHolder.getChildCount() == 0) {
       for (Notification noti : notification.notifications) {
-        View view =
-            getInflater().inflate(R.layout.notification_row, holder.notificationsPlaceHolder,
-                false);
+        View view = getInflater().inflate(R.layout.notification_row, holder.notificationsPlaceHolder, false);
         bindNotificationView(view, noti);
         holder.notificationsPlaceHolder.addView(view);
       }
@@ -81,16 +78,14 @@ public class NotificationsAdapter
       @Override
       public void onClick(View v) {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        popupMenu.inflate(noti.unread ? R.menu.notifications_row_menu_unread
-            : R.menu.notifications_row_menu_read);
+        popupMenu.inflate(noti.unread ? R.menu.notifications_row_menu_unread : R.menu.notifications_row_menu_read);
         popupMenu.setOnMenuItemClickListener(new MenuListener(noti));
         popupMenu.show();
       }
     });
   }
 
-  public void setNotificationsAdapterListener(
-      NotificationsAdapterListener notificationsAdapterListener) {
+  public void setNotificationsAdapterListener(NotificationsAdapterListener notificationsAdapterListener) {
     this.notificationsAdapterListener = notificationsAdapterListener;
   }
 

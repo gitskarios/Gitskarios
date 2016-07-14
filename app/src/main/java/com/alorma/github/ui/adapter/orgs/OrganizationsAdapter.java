@@ -15,8 +15,7 @@ import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 /**
  * Created by Bernat on 04/09/2014.
  */
-public class OrganizationsAdapter
-    extends RecyclerArrayAdapter<Organization, OrganizationsAdapter.ViewHolder> {
+public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, OrganizationsAdapter.ViewHolder> {
 
   public OrganizationsAdapter(LayoutInflater inflater) {
     super(inflater);
@@ -50,8 +49,7 @@ public class OrganizationsAdapter
         @Override
         public void onClick(View v) {
           Organization organization = getItem(getAdapterPosition());
-          v.getContext()
-              .startActivity(OrganizationActivity.launchIntent(v.getContext(), organization.login));
+          v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), organization.login));
         }
       });
     }

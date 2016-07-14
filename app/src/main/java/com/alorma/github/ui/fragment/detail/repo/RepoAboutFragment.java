@@ -382,7 +382,6 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
         forkedPlaceholder.setChecked(this.currentRepo.parent != null);
 
-
         if (this.currentRepo.parent != null) {
           fork.setVisibility(View.VISIBLE);
           forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);

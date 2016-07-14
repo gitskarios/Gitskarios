@@ -24,8 +24,7 @@ import java.util.List;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAdapter>
-    implements CommitsAdapter.CommitsAdapterListener {
+public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAdapter> implements CommitsAdapter.CommitsAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private RepoInfo repoInfo;
@@ -40,8 +39,7 @@ public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAda
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_compare_commits, null, false);
   }
 
@@ -96,14 +94,12 @@ public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAda
   @Override
   public boolean onCommitLongClick(Commit commit) {
     copy(commit.shortSha());
-    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()),
-        Toast.LENGTH_SHORT).show();
+    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()), Toast.LENGTH_SHORT).show();
     return true;
   }
 
   public void copy(String text) {
-    ClipboardManager clipboard =
-        (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
     ClipData clip = ClipData.newPlainText("Gitskarios", text);
     clipboard.setPrimaryClip(clip);
   }

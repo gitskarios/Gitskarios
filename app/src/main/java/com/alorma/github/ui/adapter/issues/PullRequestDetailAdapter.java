@@ -13,15 +13,14 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 
 public class PullRequestDetailAdapter extends StoryDetailAdapter<PullRequest> {
 
-  public PullRequestDetailAdapter(Context context, LayoutInflater inflater,
-      Story<PullRequest> story, RepoInfo repoInfo,
+  public PullRequestDetailAdapter(Context context, LayoutInflater inflater, Story<PullRequest> story, RepoInfo repoInfo,
       IssueDetailRequestListener issueDetailRequestListener) {
     super(context, inflater, story, repoInfo, issueDetailRequestListener);
   }
 
   @Override
-  protected Holder<PullRequest> createItemHolder(Context context, Story<PullRequest> story,
-      Permissions permissions, IssueDetailRequestListener issueDetailRequestListener) {
+  protected Holder<PullRequest> createItemHolder(Context context, Story<PullRequest> story, Permissions permissions,
+      IssueDetailRequestListener issueDetailRequestListener) {
 
     PullRequestDetailView detailView = new PullRequestDetailView(context);
     return new PullRequestHolder(detailView, story, permissions,

@@ -50,15 +50,13 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    GetShaCombinedStatus getShaCombinedStatus =
-        new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha);
+    GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha);
     getShaCombinedStatus.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
           @Override
-          public GithubStatusResponse call(
-              Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
+          public GithubStatusResponse call(Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
             return githubStatusResponseIntegerPair.first;
           }
         })
@@ -68,15 +66,13 @@ public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapte
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    GetShaCombinedStatus getShaCombinedStatus =
-        new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha, page);
+    GetShaCombinedStatus getShaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha, page);
     getShaCombinedStatus.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .map(new Func1<Pair<GithubStatusResponse, Integer>, GithubStatusResponse>() {
           @Override
-          public GithubStatusResponse call(
-              Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
+          public GithubStatusResponse call(Pair<GithubStatusResponse, Integer> githubStatusResponseIntegerPair) {
             return githubStatusResponseIntegerPair.first;
           }
         })

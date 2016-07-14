@@ -18,7 +18,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -45,10 +44,8 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.HashMap;
 import java.util.List;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -57,414 +54,415 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdapter>
-        implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
+    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
 
-    private static final String REPO_INFO = "REPO_INFO";
-    private static final String FROM_SEARCH = "FROM_SEARCH";
+  private static final String REPO_INFO = "REPO_INFO";
+  private static final String FROM_SEARCH = "FROM_SEARCH";
 
-    private static final int ISSUE_REQUEST = 1234;
-    private static final int MILESTONES_REQUEST = 1212;
+  private static final int ISSUE_REQUEST = 1234;
+  private static final int MILESTONES_REQUEST = 1212;
 
-    private RepoInfo repoInfo;
+  private RepoInfo repoInfo;
 
-    private boolean fromSearch = false;
-    private SearchClientRequest searchClientRequest;
+  private boolean fromSearch = false;
+  private SearchClientRequest searchClientRequest;
 
-    private int currentFilter = 0;
-    private View revealView;
+  private int currentFilter = 0;
+  private View revealView;
 
-    public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(REPO_INFO, repoInfo);
-        bundle.putBoolean(FROM_SEARCH, fromSearch);
+  public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
+    Bundle bundle = new Bundle();
+    bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putBoolean(FROM_SEARCH, fromSearch);
 
-        RepositoryIssuesListFragment fragment = new RepositoryIssuesListFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    RepositoryIssuesListFragment fragment = new RepositoryIssuesListFragment();
+    fragment.setArguments(bundle);
+    return fragment;
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(!fromSearch);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.repository_issues_list_fragment, null, false);
+  }
+
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    revealView = view.findViewById(R.id.revealView);
+
+    Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+    String[] items = getResources().getStringArray(R.array.issues_filter);
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
+    spinner.setAdapter(adapter);
+
+    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (currentFilter != position) {
+          currentFilter = position;
+
+          clear();
+          onRefresh();
+        }
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+
+      }
+    });
+
+    view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  private void showMilestones() {
+    Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, true);
+    startActivityForResult(intent, MILESTONES_REQUEST);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+
+    if (revealView != null) {
+      revealView.setVisibility(View.INVISIBLE);
     }
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(!fromSearch);
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.issue_list_filter, menu);
+  }
+
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+
+    menu.findItem(R.id.action_search)
+        .setIcon(
+            new IconicsDrawable(this.getContext(), GoogleMaterial.Icon.gmd_search).color(Color.WHITE).sizeDp(24).respectFontBounds(true));
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_search:
+        Intent intent = SearchIssuesActivity.launchIntent(getActivity(), repoInfo);
+        startActivity(intent);
+        break;
     }
+    return super.onOptionsItemSelected(item);
+  }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.repository_issues_list_fragment, null, false);
+  @Override
+  protected void loadArguments() {
+    if (getArguments() != null) {
+      repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+      fromSearch = getArguments().getBoolean(FROM_SEARCH, false);
     }
+  }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+  protected void executeRequest() {
+    super.executeRequest();
+    if (repoInfo != null) {
+      if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
+        if (currentFilter == 0 || currentFilter == 1) {
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
+          if (currentFilter == 0) {
+            issueInfo.state = IssueState.open;
+          } else if (currentFilter == 1) {
+            issueInfo.state = IssueState.closed;
+          }
 
-        revealView = view.findViewById(R.id.revealView);
+          setAction(new IssuesSearchClient(searchClientRequest.request()));
+        }
+      } else {
+        if (currentFilter == 0 || currentFilter == 1) {
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
+          if (currentFilter == 0) {
+            issueInfo.state = IssueState.open;
+          } else if (currentFilter == 1) {
+            issueInfo.state = IssueState.closed;
+          }
+          HashMap<String, String> map = new HashMap<>();
+          map.put("state", issueInfo.state.name());
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
-        String[] items = getResources().getStringArray(R.array.issues_filter);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
-        spinner.setAdapter(adapter);
+          setAction(new GetIssuesClient(issueInfo, map));
+        }
+      }
+    }
+  }
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (currentFilter != position) {
-                    currentFilter = position;
+  private void setAction(GithubListClient<List<Issue>> client) {
+    client.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext(new Action1<Pair<List<Issue>, Integer>>() {
+          @Override
+          public void call(Pair<List<Issue>, Integer> listIntegerPair) {
+            setPage(listIntegerPair.second);
+          }
+        })
+        .flatMap(new Func1<Pair<List<Issue>, Integer>, Observable<Issue>>() {
+          @Override
+          public Observable<Issue> call(Pair<List<Issue>, Integer> listIntegerPair) {
+            return Observable.from(listIntegerPair.first);
+          }
+        })
+        .filter(issue -> issue.pullRequest == null)
+        .toList()
+        .subscribe(new Subscriber<List<Issue>>() {
+          @Override
+          public void onCompleted() {
+            stopRefresh();
+          }
 
-                    clear();
-                    onRefresh();
-                }
+          @Override
+          public void onError(Throwable e) {
+            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+              setEmpty();
             }
+          }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+          @Override
+          public void onNext(List<Issue> issues) {
+            onResponse(issues);
+          }
         });
+  }
 
-        view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
-    }
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
 
-    @Override
-    protected int getLightTheme() {
-        return R.style.AppTheme_Repository;
-    }
+    if (repoInfo != null) {
+      if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
+        if (currentFilter == 0 || currentFilter == 1) {
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
+          if (currentFilter == 0) {
+            issueInfo.state = IssueState.open;
+          } else if (currentFilter == 1) {
+            issueInfo.state = IssueState.closed;
+          }
 
-    @Override
-    protected int getDarkTheme() {
-        return R.style.AppTheme_Dark_Repository;
-    }
-
-    private void showMilestones() {
-        Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, true);
-        startActivityForResult(intent, MILESTONES_REQUEST);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (revealView != null) {
-            revealView.setVisibility(View.INVISIBLE);
+          setAction(new IssuesSearchClient(searchClientRequest.request(), page));
         }
-    }
+      } else {
+        if (currentFilter == 0 || currentFilter == 1) {
+          IssueInfo issueInfo = new IssueInfo();
+          issueInfo.repoInfo = repoInfo;
+          if (currentFilter == 0) {
+            issueInfo.state = IssueState.open;
+          } else if (currentFilter == 1) {
+            issueInfo.state = IssueState.closed;
+          }
+          HashMap<String, String> map = new HashMap<>();
+          map.put("state", issueInfo.state.name());
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.issue_list_filter, menu);
-    }
-
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        menu.findItem(R.id.action_search).setIcon(new IconicsDrawable(this.getContext(), GoogleMaterial.Icon.gmd_search).color(Color.WHITE).sizeDp(24).respectFontBounds(true));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                Intent intent = SearchIssuesActivity.launchIntent(getActivity(), repoInfo);
-                startActivity(intent);
-                break;
+          setAction(new GetIssuesClient(issueInfo, map, page));
         }
-        return super.onOptionsItemSelected(item);
+      }
     }
+  }
 
-    @Override
-    protected void loadArguments() {
-        if (getArguments() != null) {
-            repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
-            fromSearch = getArguments().getBoolean(FROM_SEARCH, false);
-        }
+  protected void onResponse(List<Issue> issues) {
+    if (issues.size() > 0) {
+      hideEmpty();
+      if (refreshing || getAdapter() == null) {
+        IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
+        issuesAdapter.setIssuesAdapterListener(this);
+        issuesAdapter.addAll(issues);
+        setAdapter(issuesAdapter);
+      } else {
+        getAdapter().addAll(issues);
+      }
+    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
+    } else {
+      getAdapter().clear();
+      setEmpty();
     }
+  }
 
-    protected void executeRequest() {
-        super.executeRequest();
-        if (repoInfo != null) {
-            if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
-                if (currentFilter == 0 || currentFilter == 1) {
-                    IssueInfo issueInfo = new IssueInfo();
-                    issueInfo.repoInfo = repoInfo;
-                    if (currentFilter == 0) {
-                        issueInfo.state = IssueState.open;
-                    } else if (currentFilter == 1) {
-                        issueInfo.state = IssueState.closed;
-                    }
+  @Override
+  protected Octicons.Icon getNoDataIcon() {
+    return Octicons.Icon.oct_issue_opened;
+  }
 
-                    setAction(new IssuesSearchClient(searchClientRequest.request()));
-                }
-            } else {
-                if (currentFilter == 0 || currentFilter == 1) {
-                    IssueInfo issueInfo = new IssueInfo();
-                    issueInfo.repoInfo = repoInfo;
-                    if (currentFilter == 0) {
-                        issueInfo.state = IssueState.open;
-                    } else if (currentFilter == 1) {
-                        issueInfo.state = IssueState.closed;
-                    }
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("state", issueInfo.state.name());
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_issues_found;
+  }
 
-                    setAction(new GetIssuesClient(issueInfo, map));
-                }
-            }
-        }
+  @Override
+  protected boolean useFAB() {
+    return !fromSearch && (repoInfo.permissions == null || repoInfo.permissions.pull);
+  }
+
+  @Override
+  protected void fabClick() {
+    super.fabClick();
+    if (repoInfo.permissions != null) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
+        animateRevealFab();
+      } else {
+        Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+        startActivityForResult(intent, ISSUE_REQUEST);
+      }
     }
+  }
 
-    private void setAction(GithubListClient<List<Issue>> client) {
-        client.observable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<Pair<List<Issue>, Integer>>() {
-                    @Override
-                    public void call(Pair<List<Issue>, Integer> listIntegerPair) {
-                        setPage(listIntegerPair.second);
-                    }
-                })
-                .flatMap(new Func1<Pair<List<Issue>, Integer>, Observable<Issue>>() {
-                    @Override
-                    public Observable<Issue> call(Pair<List<Issue>, Integer> listIntegerPair) {
-                        return Observable.from(listIntegerPair.first);
-                    }
-                })
-                .filter(issue -> issue.pullRequest == null)
-                .toList()
-                .subscribe(new Subscriber<List<Issue>>() {
-                    @Override
-                    public void onCompleted() {
-                        stopRefresh();
-                    }
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  private void animateRevealFab() {
+    float x = fab.getX() + (fab.getWidth() / 2);
+    float y = fab.getY() + (fab.getHeight() / 2);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                            setEmpty();
-                        }
-                    }
+    int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
+    Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
+    revealView.setVisibility(View.VISIBLE);
+    anim.setDuration(600);
+    anim.setInterpolator(new AccelerateInterpolator());
+    anim.addListener(new Animator.AnimatorListener() {
+      @Override
+      public void onAnimationStart(Animator animator) {
 
-                    @Override
-                    public void onNext(List<Issue> issues) {
-                        onResponse(issues);
-                    }
-                });
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animator) {
+        Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+        startActivityForResult(intent, ISSUE_REQUEST);
+      }
+
+      @Override
+      public void onAnimationCancel(Animator animator) {
+
+      }
+
+      @Override
+      public void onAnimationRepeat(Animator animator) {
+
+      }
+    });
+    anim.start();
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == Activity.RESULT_FIRST_USER) {
+      invalidate();
+    } else if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == ISSUE_REQUEST) {
+        invalidate();
+      } else if (requestCode == MILESTONES_REQUEST) {
+        Milestone milestone = data.getParcelableExtra(Milestone.class.getSimpleName());
+        Intent intent = MilestoneIssuesActivity.launchIntent(getActivity(), repoInfo, milestone);
+        startActivity(intent);
+      }
     }
+  }
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
+  public void invalidate() {
+    onRefresh();
+  }
 
-        if (repoInfo != null) {
-            if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
-                if (currentFilter == 0 || currentFilter == 1) {
-                    IssueInfo issueInfo = new IssueInfo();
-                    issueInfo.repoInfo = repoInfo;
-                    if (currentFilter == 0) {
-                        issueInfo.state = IssueState.open;
-                    } else if (currentFilter == 1) {
-                        issueInfo.state = IssueState.closed;
-                    }
+  @Override
+  public void onIssueOpenRequest(Issue item) {
+    if (item != null) {
+      IssueInfo info = new IssueInfo();
+      info.repoInfo = repoInfo;
+      info.num = item.number;
 
-                    setAction(new IssuesSearchClient(searchClientRequest.request(), page));
-                }
-            } else {
-                if (currentFilter == 0 || currentFilter == 1) {
-                    IssueInfo issueInfo = new IssueInfo();
-                    issueInfo.repoInfo = repoInfo;
-                    if (currentFilter == 0) {
-                        issueInfo.state = IssueState.open;
-                    } else if (currentFilter == 1) {
-                        issueInfo.state = IssueState.closed;
-                    }
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("state", issueInfo.state.name());
-
-                    setAction(new GetIssuesClient(issueInfo, map, page));
-                }
-            }
-        }
+      if (item.pullRequest == null) {
+        Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
+        startActivityForResult(intent, ISSUE_REQUEST);
+      }
     }
+  }
 
-    protected void onResponse(List<Issue> issues) {
-        if (issues.size() > 0) {
-            hideEmpty();
-            if (refreshing || getAdapter() == null) {
-                IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
-                issuesAdapter.setIssuesAdapterListener(this);
-                issuesAdapter.addAll(issues);
-                setAdapter(issuesAdapter);
-            } else {
-                getAdapter().addAll(issues);
-            }
-        } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-            setEmpty();
-        } else {
-            getAdapter().clear();
-            setEmpty();
-        }
+  public void setPermissions(Permissions permissions) {
+    if (this.repoInfo != null) {
+      this.repoInfo.permissions = permissions;
+      checkFAB();
     }
+  }
 
-    @Override
-    protected Octicons.Icon getNoDataIcon() {
-        return Octicons.Icon.oct_issue_opened;
+  @Override
+  protected Octicons.Icon getFABGithubIcon() {
+    return Octicons.Icon.oct_bug;
+  }
+
+  @Override
+  public int getTitle() {
+    return R.string.issues_fragment_title;
+  }
+
+  @Override
+  public IIcon getTitleIcon() {
+    return Octicons.Icon.oct_issue_opened;
+  }
+
+  public void clear() {
+    if (getAdapter() != null) {
+      getAdapter().clear();
     }
+  }
 
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_issues_found;
+  @Override
+  public void setPermissions(boolean admin, boolean push, boolean pull) {
+    if (this.repoInfo != null) {
+      Permissions permissions = new Permissions();
+      permissions.admin = admin;
+      permissions.push = push;
+      permissions.pull = pull;
+
+      setPermissions(permissions);
     }
+  }
 
-    @Override
-    protected boolean useFAB() {
-        return !fromSearch && (repoInfo.permissions == null || repoInfo.permissions.pull);
-    }
+  @Override
+  public boolean onBackPressed() {
+    return true;
+  }
 
-    @Override
-    protected void fabClick() {
-        super.fabClick();
-        if (repoInfo.permissions != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
-                animateRevealFab();
-            } else {
-                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-                startActivityForResult(intent, ISSUE_REQUEST);
-            }
-        }
-    }
+  public void executeSearch() {
+    onRefresh();
+  }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void animateRevealFab() {
-        float x = fab.getX() + (fab.getWidth() / 2);
-        float y = fab.getY() + (fab.getHeight() / 2);
+  @Override
+  protected boolean autoStart() {
+    return !fromSearch;
+  }
 
-        int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
-        Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
-        revealView.setVisibility(View.VISIBLE);
-        anim.setDuration(600);
-        anim.setInterpolator(new AccelerateInterpolator());
-        anim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
+  @Override
+  public void setRefreshing() {
+    super.setRefreshing();
+    startRefresh();
+  }
 
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-                startActivityForResult(intent, ISSUE_REQUEST);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
-        anim.start();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_FIRST_USER) {
-            invalidate();
-        } else if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == ISSUE_REQUEST) {
-                invalidate();
-            } else if (requestCode == MILESTONES_REQUEST) {
-                Milestone milestone = data.getParcelableExtra(Milestone.class.getSimpleName());
-                Intent intent = MilestoneIssuesActivity.launchIntent(getActivity(), repoInfo, milestone);
-                startActivity(intent);
-            }
-        }
-    }
-
-    public void invalidate() {
-        onRefresh();
-    }
-
-    @Override
-    public void onIssueOpenRequest(Issue item) {
-        if (item != null) {
-            IssueInfo info = new IssueInfo();
-            info.repoInfo = repoInfo;
-            info.num = item.number;
-
-            if (item.pullRequest == null) {
-                Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-                startActivityForResult(intent, ISSUE_REQUEST);
-            }
-        }
-    }
-
-    public void setPermissions(Permissions permissions) {
-        if (this.repoInfo != null) {
-            this.repoInfo.permissions = permissions;
-            checkFAB();
-        }
-    }
-
-    @Override
-    protected Octicons.Icon getFABGithubIcon() {
-        return Octicons.Icon.oct_bug;
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.issues_fragment_title;
-    }
-
-    @Override
-    public IIcon getTitleIcon() {
-        return Octicons.Icon.oct_issue_opened;
-    }
-
-    public void clear() {
-        if (getAdapter() != null) {
-            getAdapter().clear();
-        }
-    }
-
-    @Override
-    public void setPermissions(boolean admin, boolean push, boolean pull) {
-        if (this.repoInfo != null) {
-            Permissions permissions = new Permissions();
-            permissions.admin = admin;
-            permissions.push = push;
-            permissions.pull = pull;
-
-            setPermissions(permissions);
-        }
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return true;
-    }
-
-    public void executeSearch() {
-        onRefresh();
-    }
-
-    @Override
-    protected boolean autoStart() {
-        return !fromSearch;
-    }
-
-    @Override
-    public void setRefreshing() {
-        super.setRefreshing();
-        startRefresh();
-    }
-
-    public interface SearchClientRequest {
-        String request();
-    }
+  public interface SearchClientRequest {
+    String request();
+  }
 }

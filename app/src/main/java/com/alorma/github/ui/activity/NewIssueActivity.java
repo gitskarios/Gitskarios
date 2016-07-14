@@ -32,9 +32,9 @@ import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
 import com.alorma.github.sdk.services.issues.PostNewIssueClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.ErrorHandler;
-import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -374,14 +374,11 @@ public class NewIssueActivity extends RepositoryThemeActivity {
     Collections.reverse(users);
     UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
 
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
-    builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
-      @Override
-      public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-        User user = users.get(i);
-        setAssigneeUser(user);
-        materialDialog.dismiss();
-      }
+    MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this);
+    builder.adapter(assigneesAdapter, (materialDialog, view, i, charSequence) -> {
+      User user = users.get(i);
+      setAssigneeUser(user);
+      materialDialog.dismiss();
     });
     builder.negativeText(R.string.no_assignee);
     builder.callback(new MaterialDialog.ButtonCallback() {
@@ -442,7 +439,7 @@ public class NewIssueActivity extends RepositoryThemeActivity {
         itemsMilestones[i] = milestones.get(i).title;
       }
 
-      MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this).title(R.string.select_milestone)
+      MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this).title(R.string.select_milestone)
           .items(itemsMilestones)
           .itemsCallbackSingleChoice(-1, (materialDialog, view, i, text) -> {
             addMilestone(milestones.get(i));
@@ -460,7 +457,7 @@ public class NewIssueActivity extends RepositoryThemeActivity {
   }
 
   private void showCreateMilestone() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.title(R.string.add_milestone);
     builder.content(R.string.add_milestone_description);
     builder.input(R.string.add_milestone_hint, 0, (materialDialog, milestoneName) -> {
@@ -539,7 +536,7 @@ public class NewIssueActivity extends RepositoryThemeActivity {
         items.add(label.name);
       }
 
-      MaterialDialog.Builder builder = new MaterialDialog.Builder(NewIssueActivity.this);
+      MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this);
       builder.items(items.toArray(new String[items.size()]));
       builder.alwaysCallMultiChoiceCallback();
       builder.itemsCallbackMultiChoice(positionsSelectedLabels, new MaterialDialog.ListCallbackMultiChoice() {

@@ -13,14 +13,14 @@ import com.alorma.github.ui.view.issue.IssueDetailView;
 
 public class IssueDetailAdapter extends StoryDetailAdapter<Issue> {
 
-  public IssueDetailAdapter(Context context, LayoutInflater inflater, Story<Issue> story,
-      RepoInfo repoInfo, IssueDetailRequestListener issueDetailRequestListener) {
+  public IssueDetailAdapter(Context context, LayoutInflater inflater, Story<Issue> story, RepoInfo repoInfo,
+      IssueDetailRequestListener issueDetailRequestListener) {
     super(context, inflater, story, repoInfo, issueDetailRequestListener);
   }
 
   @Override
-  protected Holder<Issue> createItemHolder(Context context, Story<Issue> story,
-      Permissions permissions, IssueDetailRequestListener issueDetailRequestListener) {
+  protected Holder<Issue> createItemHolder(Context context, Story<Issue> story, Permissions permissions,
+      IssueDetailRequestListener issueDetailRequestListener) {
     return new IssueHolder(new IssueDetailView(context), issueDetailRequestListener);
   }
 }

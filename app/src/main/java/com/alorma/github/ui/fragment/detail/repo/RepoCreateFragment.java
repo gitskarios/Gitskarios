@@ -23,8 +23,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 /**
  * Created by Bernat on 28/09/2014.
  */
-public class RepoCreateFragment extends Fragment
-    implements View.OnClickListener, GitIgnorePopup.OnGitIgnoresListener {
+public class RepoCreateFragment extends Fragment implements View.OnClickListener, GitIgnorePopup.OnGitIgnoresListener {
 
   private CheckedTextView repoPrivateCheck;
   private CheckedTextView repoIssuesCheck;
@@ -51,8 +50,7 @@ public class RepoCreateFragment extends Fragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.repo_create_fragment, null, false);
   }
 

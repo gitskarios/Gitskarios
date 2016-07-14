@@ -32,11 +32,9 @@ public class IssueStoryLabelsView extends FlowLayout {
         labelView.setLabel(label);
         addView(labelView);
 
-        if (labelView.getLayoutParams() != null
-            && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
+        if (labelView.getLayoutParams() != null && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
           int margin = getResources().getDimensionPixelOffset(R.dimen.gapSmall);
-          FlowLayout.LayoutParams layoutParams =
-              (FlowLayout.LayoutParams) labelView.getLayoutParams();
+          FlowLayout.LayoutParams layoutParams = (FlowLayout.LayoutParams) labelView.getLayoutParams();
           layoutParams.height = FlowLayout.LayoutParams.WRAP_CONTENT;
           layoutParams.width = FlowLayout.LayoutParams.WRAP_CONTENT;
           layoutParams.setMargins(margin, margin, margin, margin);

@@ -19,8 +19,7 @@ public class ManageRepositoryActivity extends RepositoryThemeActivity {
   private static final String REQUEST_DTO = "REQUEST_DTO";
   private RepositoryManagerFragment repositoryManagerFragment;
 
-  public static Intent createIntent(Context context, RepoInfo repoInfo,
-      RepoRequestDTO repoRequestDTO) {
+  public static Intent createIntent(Context context, RepoInfo repoInfo, RepoRequestDTO repoRequestDTO) {
     Intent intent = new Intent(context, ManageRepositoryActivity.class);
 
     intent.putExtra(REPO_INFO, repoInfo);
@@ -35,8 +34,7 @@ public class ManageRepositoryActivity extends RepositoryThemeActivity {
     setContentView(R.layout.generic_toolbar);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
-      if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras()
-          .containsKey(REQUEST_DTO)) {
+      if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(REQUEST_DTO)) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
         RepoRequestDTO dto = (RepoRequestDTO) getIntent().getExtras().getParcelable(REQUEST_DTO);
@@ -60,8 +58,7 @@ public class ManageRepositoryActivity extends RepositoryThemeActivity {
       setResult(RESULT_OK, data);
       finish();
     } else {
-      Toast.makeText(this, getString(R.string.edit_repo_title_cannot_empty), Toast.LENGTH_SHORT)
-          .show();
+      Toast.makeText(this, getString(R.string.edit_repo_title_cannot_empty), Toast.LENGTH_SHORT).show();
     }
   }
 }

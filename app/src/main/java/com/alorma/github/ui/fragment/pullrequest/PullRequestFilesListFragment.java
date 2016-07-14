@@ -22,8 +22,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PullRequestFilesListFragment extends BaseFragment
-    implements CommitFilesAdapter.OnFileRequestListener {
+public class PullRequestFilesListFragment extends BaseFragment implements CommitFilesAdapter.OnFileRequestListener {
 
   public static final String INFO = "INFO";
   private RecyclerView recyclerView;
@@ -40,8 +39,7 @@ public class PullRequestFilesListFragment extends BaseFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.files_fragment, null);
   }
 
@@ -64,8 +62,7 @@ public class PullRequestFilesListFragment extends BaseFragment
 
       info = (IssueInfo) getArguments().getParcelable(INFO);
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-      recyclerView.setLayoutManager(
-          new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+      recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
       getContent();
     }
   }

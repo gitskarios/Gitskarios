@@ -9,6 +9,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapterSpinner;
+import com.alorma.github.ui.utils.DialogUtils;
 import java.util.Collections;
 import java.util.List;
 import rx.Observable;
@@ -32,13 +33,9 @@ public class CollaboratorsPickerAction extends Action<User> {
 
   @Override
   public Action<User> execute() {
-    dialog = new MaterialDialog.Builder(context).content(R.string.loading_collaborators)
-        .progress(true, 0)
-        .theme(Theme.DARK)
-        .show();
+    dialog = new DialogUtils().builder(context).content(R.string.loading_collaborators).progress(true, 0).theme(Theme.DARK).show();
 
-    GetRepoCollaboratorsClient contributorsClient =
-        new GetRepoCollaboratorsClient(issueInfo.repoInfo);
+    GetRepoCollaboratorsClient contributorsClient = new GetRepoCollaboratorsClient(issueInfo.repoInfo);
     contributorsClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -69,11 +66,10 @@ public class CollaboratorsPickerAction extends Action<User> {
       Collections.reverse(users);
       UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(context, users);
 
-      MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+      MaterialDialog.Builder builder = new DialogUtils().builder(context);
       builder.adapter(assigneesAdapter, new MaterialDialog.ListCallback() {
         @Override
-        public void onSelection(MaterialDialog materialDialog, View view, int i,
-            CharSequence charSequence) {
+        public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
           User user = users.get(i);
           Observable.just(user).subscribe(CollaboratorsPickerAction.this);
           materialDialog.dismiss();

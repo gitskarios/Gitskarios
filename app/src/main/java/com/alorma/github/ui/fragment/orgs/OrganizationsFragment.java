@@ -19,8 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdapter>
-    implements Observer<List<Organization>> {
+public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdapter> implements Observer<List<Organization>> {
   private String username;
 
   public static OrganizationsFragment newInstance() {
@@ -108,8 +107,7 @@ public class OrganizationsFragment extends LoadingListFragment<OrganizationsAdap
 
   @Override
   protected RecyclerView.LayoutManager getLayoutManager() {
-    return new GridLayoutManager(getActivity(),
-        getResources().getInteger(R.integer.grid_layout_columns));
+    return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
   }
 
   @Override
