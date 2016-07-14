@@ -35,12 +35,14 @@ public class NotificationsActivity extends BackActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.notifications_activity);
+
+    injectComponent();
 
     Switch notificationsSwitch = (Switch) findViewById(R.id.notificationsSwitch);
 
     if (notificationsSwitch != null) {
+      notificationsSwitch.setChecked(appNotificationsManager.areNotificationsEnabled());
       notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
         if (isChecked) {
           buttonView.setText(R.string.notifications_enabled);
@@ -64,7 +66,6 @@ public class NotificationsActivity extends BackActivity {
     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     notificationManager.cancelAll();
 
-    injectComponent();
   }
 
   private void injectComponent() {
