@@ -530,4 +530,6 @@
   <string name="delete_repository_file">Delete %s file</string>
   <string name="write_otp_code_button">Check</string>
   <string name="write_otp_code_error">Code cannot be empty</string>
+  <string name="login_button_token">Login with token</string>
+  <string name="login_token">Token</string>
 </resources>
