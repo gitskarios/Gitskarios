@@ -12,23 +12,16 @@ import javax.inject.Named;
 
 @Module public class NotificationsModule {
 
-  private Context context;
-
-  public NotificationsModule(Context context) {
-
-    this.context = context;
-  }
-
   @Provides
   @NotificationsScope
   @Named("NotificationsJobManager")
-  AppJobManager getJobManager() {
+  AppJobManager getJobManager(Context context) {
     return new JobDispatcherJobManager(context);
   }
 
   @Provides
   @NotificationsScope
-  AppNotificationsManager getNotificationsManager(@Named("NotificationsJobManager") AppJobManager jobManager) {
+  AppNotificationsManager getNotificationsManager(Context context, @Named("NotificationsJobManager") AppJobManager jobManager) {
     return new AppNotificationsManagerImpl(context, jobManager);
   }
 }

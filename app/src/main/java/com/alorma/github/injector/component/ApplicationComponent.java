@@ -1,8 +1,8 @@
 package com.alorma.github.injector.component;
 
+import android.content.Context;
 import com.alorma.github.injector.SortOrder;
 import com.alorma.github.injector.module.ApplicationModule;
-import com.alorma.github.ui.activity.NotificationsActivity;
 import dagger.Component;
 import javax.inject.Singleton;
 
@@ -11,5 +11,5 @@ import javax.inject.Singleton;
   @SortOrder
   String getRepoSortOrder();
 
-  void inject(NotificationsActivity activity);
+  Context getContext();
 }

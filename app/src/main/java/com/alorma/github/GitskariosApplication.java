@@ -33,7 +33,7 @@ public class GitskariosApplication extends MultiDexApplication {
 
   @Inject AppNotificationsManager notificationsManager;
 
-  private ApplicationComponent component;
+  private ApplicationComponent applicationComponent;
   private NotificationsComponent notificationsComponent;
 
   public static GitskariosApplication get(Context context) {
@@ -88,13 +88,16 @@ public class GitskariosApplication extends MultiDexApplication {
   }
 
   private void initializeInjector() {
-    component = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
-    notificationsComponent = DaggerNotificationsComponent.builder().notificationsModule(new NotificationsModule(this)).build();
+    applicationComponent = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+    notificationsComponent = DaggerNotificationsComponent.builder()
+        .applicationComponent(applicationComponent)
+        .notificationsModule(new NotificationsModule())
+        .build();
     notificationsComponent.inject(this);
   }
 
-  public ApplicationComponent getComponent() {
-    return component;
+  public ApplicationComponent getApplicationComponent() {
+    return applicationComponent;
   }
 
   @NonNull

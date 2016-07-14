@@ -36,7 +36,7 @@ public abstract class ReposFragment extends BaseFragment
     super.onCreate(savedInstanceState);
 
     GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
-    ApplicationComponent component = application.getComponent();
+    ApplicationComponent component = application.getApplicationComponent();
 
     ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(component).apiModule(new ApiModule()).build();
 

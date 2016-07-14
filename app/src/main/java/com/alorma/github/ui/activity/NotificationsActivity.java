@@ -10,9 +10,12 @@ import android.widget.Switch;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerNotificationsComponent;
+import com.alorma.github.injector.component.NotificationsComponent;
+import com.alorma.github.injector.module.NotificationsModule;
+import com.alorma.github.notifications.AppNotificationsManager;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import javax.inject.Inject;
 
 public class NotificationsActivity extends BackActivity {
@@ -27,7 +30,7 @@ public class NotificationsActivity extends BackActivity {
     return intent;
   }
 
-  @Inject FirebaseJobDispatcher jobDispatcher;
+  @Inject AppNotificationsManager appNotificationsManager;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class NotificationsActivity extends BackActivity {
         } else {
           buttonView.setText(R.string.notifications_disabled);
         }
-        ((GitskariosApplication) getApplication()).setNotificationsEnabled(isChecked);
+        appNotificationsManager.setNotificationsEnabled(isChecked);
       });
     }
 
@@ -66,10 +69,14 @@ public class NotificationsActivity extends BackActivity {
 
   private void injectComponent() {
     GitskariosApplication application = (GitskariosApplication) getApplication();
-    ApplicationComponent component = application.getComponent();
-    component.inject(this);
-  }
+    ApplicationComponent applicationComponent = application.getApplicationComponent();
 
+    NotificationsComponent notificationsComponent = DaggerNotificationsComponent.builder()
+        .applicationComponent(applicationComponent)
+        .notificationsModule(new NotificationsModule())
+        .build();
+    notificationsComponent.inject(this);
+  }
 
   @Override
   protected int getAppDarkTheme() {

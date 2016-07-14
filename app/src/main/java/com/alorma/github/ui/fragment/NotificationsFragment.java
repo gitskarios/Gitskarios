@@ -61,7 +61,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
 
   private void initializeInjector() {
     GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
-    ApplicationComponent component = application.getComponent();
+    ApplicationComponent component = application.getApplicationComponent();
 
     DaggerApiComponent.builder().applicationComponent(component).apiModule(new ApiModule()).build().inject(this);
   }
