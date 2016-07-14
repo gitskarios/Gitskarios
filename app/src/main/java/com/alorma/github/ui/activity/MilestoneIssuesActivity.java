@@ -65,6 +65,10 @@ public class MilestoneIssuesActivity extends RepositoryThemeActivity implements 
 
   @Override
   public String request() {
-    return "repo:" + repoInfo.toString() + "+milestone:" + milestone.title;
+    return "repo:" + urlEncode(repoInfo.toString()) + "+milestone:" + urlEncode(milestone.title);
+  }
+
+  private String urlEncode(String s) {
+    return s != null ? "\"" + s + "\"" : s;
   }
 }
