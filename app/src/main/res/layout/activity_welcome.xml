@@ -72,6 +72,13 @@
           android:layout_height="wrap_content"
           android:text="@string/login_button"
           />
+      <Button
+          android:id="@+id/openAlternateLogin"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/login_button_token"
+          android:visibility="gone"
+          />
     </LinearLayout>
   </android.support.v7.widget.CardView>
 

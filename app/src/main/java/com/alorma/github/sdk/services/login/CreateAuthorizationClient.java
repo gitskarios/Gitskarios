@@ -38,7 +38,7 @@ public class CreateAuthorizationClient extends GithubClient<GithubAuthorization>
     if (username != null && password != null) {
       String userCredentials = username + ":" + password;
       String basicAuth =
-          "Basic " + new String(Base64.encode(userCredentials.getBytes(), Base64.DEFAULT));
+          "Basic " + new String(Base64.encode(userCredentials.getBytes(), Base64.NO_WRAP));
 
       request.addHeader("Authorization", basicAuth.trim());
 
