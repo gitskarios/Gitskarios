@@ -82,14 +82,12 @@ android {
             applicationIdSuffix ".debug"
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(false) + "\""
         }
         release {
             minifyEnabled false
             signingConfig = signingConfigs.release
             buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
-            buildConfigField "String", "CLIENT_CALLBACK", "\"" + getGHCallback(true) + "\""
         }
     }
 
@@ -133,14 +131,6 @@ def getGHSecret(pro) {
         return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
     } else {
         return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
-    }
-}
-
-def getGHCallback(pro) {
-    if (pro) {
-        return hasProperty('GH_PRO_CALLBACK') ? GH_PRO_CALLBACK : System.getenv('GH_PRO_CALLBACK')
-    } else {
-        return hasProperty('GH_DEV_CALLBACK') ? GH_DEV_CALLBACK : System.getenv('GH_DEV_CALLBACK')
     }
 }
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="account_name">Github account DEV</string>
-  <string name="oauth_scheme">gitskariosgithubdevel</string>
   <string name="account_type">com.alorma.github.debug.account</string>
   <string name="app_name">GitSkarios DEV</string>
 </resources>
