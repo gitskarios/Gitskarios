@@ -53,9 +53,8 @@ public class ReleasesAdapter extends RecyclerArrayAdapter<Release, ReleasesAdapt
         size = size + 1;
       }
 
-      holder.filesRelease.setText(holder.filesRelease.getContext()
-          .getResources()
-          .getQuantityString(R.plurals.repo_release_num_files, size, size));
+      holder.filesRelease.setText(
+          holder.filesRelease.getContext().getResources().getQuantityString(R.plurals.repo_release_num_files, size, size));
     }
   }
 
@@ -73,9 +72,7 @@ public class ReleasesAdapter extends RecyclerArrayAdapter<Release, ReleasesAdapt
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-          Intent intent =
-              ReleaseDetailActivity.launchIntent(v.getContext(), getItem(getAdapterPosition()),
-                  repoInfo);
+          Intent intent = ReleaseDetailActivity.launchIntent(v.getContext(), getItem(getAdapterPosition()), repoInfo);
           v.getContext().startActivity(intent);
         }
       });

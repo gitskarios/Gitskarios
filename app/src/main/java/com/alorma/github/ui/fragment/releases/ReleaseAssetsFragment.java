@@ -21,8 +21,7 @@ import com.pedrogomez.renderers.RVRendererAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReleaseAssetsFragment extends BaseFragment
-    implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
+public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
 
   private static final String RELEASE_ASSETS = "RELEASE_ASSETS";
   private ReleaseAssetCallback releaseAssetCallback;
@@ -40,8 +39,7 @@ public class ReleaseAssetsFragment extends BaseFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.release_assets_fragment, null, false);
   }
 
@@ -66,8 +64,8 @@ public class ReleaseAssetsFragment extends BaseFragment
 
     if (assets != null) {
       RVRendererAdapter<ReleaseAsset> adapter =
-          new RVRendererAdapter<>(LayoutInflater.from(getActivity()),
-              new ReleaseAssetRendererBuilder(this), new ListAdapteeCollection<>(assets));
+          new RVRendererAdapter<>(LayoutInflater.from(getActivity()), new ReleaseAssetRendererBuilder(this),
+              new ListAdapteeCollection<>(assets));
 
       recyclerView.setAdapter(adapter);
     }

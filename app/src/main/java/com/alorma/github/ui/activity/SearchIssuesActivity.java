@@ -14,8 +14,7 @@ import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.issues.IssuesListFragment;
 
 public class SearchIssuesActivity extends BackActivity
-    implements SearchView.OnQueryTextListener, SearchView.OnCloseListener,
-    IssuesListFragment.SearchClientRequest {
+    implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, IssuesListFragment.SearchClientRequest {
 
   private static String REPO_INFO = "REPO_INFO";
 
@@ -59,19 +58,18 @@ public class SearchIssuesActivity extends BackActivity
 
       MenuItem searchItem = menu.findItem(R.id.action_search);
 
-      MenuItemCompat.setOnActionExpandListener(searchItem,
-          new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-              return false;
-            }
+      MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+        @Override
+        public boolean onMenuItemActionExpand(MenuItem item) {
+          return false;
+        }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-              clearSearch();
-              return false;
-            }
-          });
+        @Override
+        public boolean onMenuItemActionCollapse(MenuItem item) {
+          clearSearch();
+          return false;
+        }
+      });
 
       searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
       searchView.setIconifiedByDefault(false);

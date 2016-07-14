@@ -36,8 +36,8 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
   private RepoInfo repoInfo;
   private IssueDetailRequestListener issueDetailRequestListener;
 
-  public StoryDetailAdapter(Context context, LayoutInflater inflater, Story<K> story,
-      RepoInfo repoInfo, IssueDetailRequestListener issueDetailRequestListener) {
+  public StoryDetailAdapter(Context context, LayoutInflater inflater, Story<K> story, RepoInfo repoInfo,
+      IssueDetailRequestListener issueDetailRequestListener) {
     this.context = context;
     this.story = story;
     this.repoInfo = repoInfo;
@@ -47,9 +47,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
 
   @Override
   public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-    ViewGroup.LayoutParams params =
-        new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT);
+    ViewGroup.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     switch (viewType) {
       case VIEW_ISSUE:
         return createItemHolder(context, story, repoInfo.permissions, issueDetailRequestListener);
@@ -71,8 +69,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
         labelDetailView.setLayoutParams(params);
         return new LabelsHolder(labelDetailView);
       default:
-        return new Holder<K>(
-            mInflater.inflate(android.R.layout.simple_list_item_1, parent, false)) {
+        return new Holder<K>(mInflater.inflate(android.R.layout.simple_list_item_1, parent, false)) {
           @Override
           public void setIssue(RepoInfo repoInfo, Issue issue) {
 
@@ -86,8 +83,8 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
     }
   }
 
-  protected abstract Holder<K> createItemHolder(Context context, Story<K> story,
-      Permissions permissions, IssueDetailRequestListener issueDetailRequestListener);
+  protected abstract Holder<K> createItemHolder(Context context, Story<K> story, Permissions permissions,
+      IssueDetailRequestListener issueDetailRequestListener);
 
   @Override
   public void onBindViewHolder(Holder<K> holder, int position) {
@@ -121,8 +118,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
       } else if (issueStoryDetail.getType().equals("review_comments")) {
         return VIEW_REVIEW_COMMENTS;
       } else if (issueStoryDetail.isList()) {
-        if (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType()
-            .equals("unlabeled")) {
+        if (issueStoryDetail.getType().equals("labeled") || issueStoryDetail.getType().equals("unlabeled")) {
           return VIEW_LABELED_LIST;
         }
       }

@@ -64,8 +64,7 @@ public class PurchasesFragment extends Fragment {
     task.execute(SKU_MULTI_ACCOUNT);
   }
 
-  public void finishPurchase(int requestCode, int resultCode, Intent data,
-      PurchasesCallback callback) {
+  public void finishPurchase(int requestCode, int resultCode, Intent data, PurchasesCallback callback) {
     if (requestCode == 1001) {
       String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
       if (resultCode == Activity.RESULT_OK) {
@@ -74,8 +73,7 @@ public class PurchasesFragment extends Fragment {
           String sku = jo.getString("productId");
           String developerPayload = jo.getString("developerPayload");
           if (callback != null) {
-            boolean purchased =
-                developerPayload.equals(purchaseId) && SKU_MULTI_ACCOUNT.equals(sku);
+            boolean purchased = developerPayload.equals(purchaseId) && SKU_MULTI_ACCOUNT.equals(sku);
             callback.onMultiAccountPurchaseResult(purchased);
           }
         } catch (JSONException e) {
@@ -94,12 +92,9 @@ public class PurchasesFragment extends Fragment {
   public void showDialogBuyMultiAccount() {
     try {
       purchaseId = UUID.randomUUID().toString();
-      Bundle buyIntentBundle =
-          mService.getBuyIntent(3, getActivity().getPackageName(), SKU_MULTI_ACCOUNT, "inapp",
-              purchaseId);
+      Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(), SKU_MULTI_ACCOUNT, "inapp", purchaseId);
       PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-      getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(),
-          0, 0, 0);
+      getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(), 0, 0, 0);
     } catch (RemoteException | IntentSender.SendIntentException e) {
       e.printStackTrace();
     }

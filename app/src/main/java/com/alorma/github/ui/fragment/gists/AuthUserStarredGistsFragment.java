@@ -27,132 +27,130 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class AuthUserStarredGistsFragment extends LoadingListFragment<GistsAdapter>
-        implements GistsAdapter.GistsAdapterListener, BackManager {
+    implements GistsAdapter.GistsAdapterListener, BackManager {
 
-    public static AuthUserStarredGistsFragment newInstance() {
-        return new AuthUserStarredGistsFragment();
-    }
+  public static AuthUserStarredGistsFragment newInstance() {
+    return new AuthUserStarredGistsFragment();
+  }
 
-    @Override
-    protected void loadArguments() {
+  @Override
+  protected void loadArguments() {
 
-    }
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+  @Override
+  public void onResume() {
+    super.onResume();
 
-        getActivity().setTitle(R.string.navigation_gists_starred);
-    }
+    getActivity().setTitle(R.string.navigation_gists_starred);
+  }
 
-    @Override
-    protected int getLightTheme() {
-        return R.style.AppTheme_Gists;
-    }
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Gists;
+  }
 
-    @Override
-    protected int getDarkTheme() {
-        return R.style.AppTheme_Dark_Gists;
-    }
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Gists;
+  }
 
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    GistsAdapter adapter = new GistsAdapter(LayoutInflater.from(getActivity()));
+    adapter.setFilesCallback(item -> {
+      Intent launcherIntent = GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
+      startActivity(launcherIntent);
+    });
+    adapter.setGistsAdapterListener(this);
+    setAdapter(adapter);
 
-        GistsAdapter adapter = new GistsAdapter(LayoutInflater.from(getActivity()));
-        adapter.setFilesCallback(item -> {
-            Intent launcherIntent =
-                    GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
-            startActivity(launcherIntent);
-        });
-        adapter.setGistsAdapterListener(this);
-        setAdapter(adapter);
+    if (getActivity() != null) {
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
+      ActionBar actionBar = activity.getSupportActionBar();
+      if (actionBar != null) {
+        int color = ContextCompat.getColor(activity, R.color.md_blue_grey_600);
+        int colorDark = ContextCompat.getColor(activity, R.color.md_blue_grey_800);
+        ColorDrawable colorDrawable = new ColorDrawable(color);
 
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            ActionBar actionBar = activity.getSupportActionBar();
-            if (actionBar != null) {
-                int color = ContextCompat.getColor(activity, R.color.md_blue_grey_600);
-                int colorDark = ContextCompat.getColor(activity, R.color.md_blue_grey_800);
-                ColorDrawable colorDrawable = new ColorDrawable(color);
+        actionBar.setBackgroundDrawable(colorDrawable);
 
-                actionBar.setBackgroundDrawable(colorDrawable);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    activity.getWindow().setStatusBarColor(colorDark);
-                }
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          activity.getWindow().setStatusBarColor(colorDark);
         }
+      }
     }
+  }
 
-    @Override
-    protected Octicons.Icon getNoDataIcon() {
-        return Octicons.Icon.oct_gist;
-    }
+  @Override
+  protected Octicons.Icon getNoDataIcon() {
+    return Octicons.Icon.oct_gist;
+  }
 
-    @Override
-    protected int getNoDataText() {
-        return R.string.no_gists;
-    }
+  @Override
+  protected int getNoDataText() {
+    return R.string.no_gists;
+  }
 
-    @Override
-    protected void executeRequest() {
-        super.executeRequest();
+  @Override
+  protected void executeRequest() {
+    super.executeRequest();
 
-        setAction(new UserStarredGistsClient());
-    }
+    setAction(new UserStarredGistsClient());
+  }
 
-    @Override
-    protected void executePaginatedRequest(int page) {
-        super.executePaginatedRequest(page);
+  @Override
+  protected void executePaginatedRequest(int page) {
+    super.executePaginatedRequest(page);
 
-        setAction(new UserStarredGistsClient(page));
-    }
+    setAction(new UserStarredGistsClient(page));
+  }
 
-    private void setAction(GithubListClient<List<Gist>> userGistsClient) {
-        userGistsClient.observable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
-                    @Override
-                    public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
-                        setPage(listIntegerPair.second);
-                        return listIntegerPair.first;
-                    }
-                })
-                .subscribe(new Subscriber<List<Gist>>() {
-                    @Override
-                    public void onCompleted() {
-                        stopRefresh();
-                    }
+  private void setAction(GithubListClient<List<Gist>> userGistsClient) {
+    userGistsClient.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .map(new Func1<Pair<List<Gist>, Integer>, List<Gist>>() {
+          @Override
+          public List<Gist> call(Pair<List<Gist>, Integer> listIntegerPair) {
+            setPage(listIntegerPair.second);
+            return listIntegerPair.first;
+          }
+        })
+        .subscribe(new Subscriber<List<Gist>>() {
+          @Override
+          public void onCompleted() {
+            stopRefresh();
+          }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        stopRefresh();
-                        if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                            setEmpty();
-                        }
-                    }
+          @Override
+          public void onError(Throwable e) {
+            stopRefresh();
+            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+              setEmpty();
+            }
+          }
 
-                    @Override
-                    public void onNext(List<Gist> gists) {
-                        if (refreshing) {
-                            getAdapter().clear();
-                        }
-                        getAdapter().addAll(gists);
-                    }
-                });
-    }
+          @Override
+          public void onNext(List<Gist> gists) {
+            if (refreshing) {
+              getAdapter().clear();
+            }
+            getAdapter().addAll(gists);
+          }
+        });
+  }
 
-    @Override
-    public void onGistSelected(Gist gist) {
-        Intent launcherIntent = GistDetailActivity.createLauncherIntent(getActivity(), gist.id);
-        startActivity(launcherIntent);
-    }
+  @Override
+  public void onGistSelected(Gist gist) {
+    Intent launcherIntent = GistDetailActivity.createLauncherIntent(getActivity(), gist.id);
+    startActivity(launcherIntent);
+  }
 
-    @Override
-    public boolean onBackPressed() {
-        return false;
-    }
+  @Override
+  public boolean onBackPressed() {
+    return false;
+  }
 }

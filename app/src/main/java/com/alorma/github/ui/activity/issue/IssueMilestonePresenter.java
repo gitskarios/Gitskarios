@@ -3,7 +3,6 @@ package com.alorma.github.ui.activity.issue;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
-import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
@@ -22,15 +21,13 @@ public class IssueMilestonePresenter extends Presenter<RepoInfo, List<Milestone>
 
   @Override
   public void load(RepoInfo repoInfo, Callback<List<Milestone>> listCallback) {
-    GetMilestonesClient milestonesClient =
-        new GetMilestonesClient(repoInfo, state, true);
+    GetMilestonesClient milestonesClient = new GetMilestonesClient(repoInfo, state, true);
     milestonesClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(listCallback::showLoading)
         .doOnCompleted(listCallback::hideLoading)
-        .subscribe(milestones -> action(milestones, listCallback, true)
-                , Throwable::printStackTrace);
+        .subscribe(milestones -> action(milestones, listCallback, true), Throwable::printStackTrace);
   }
 
   @Override
@@ -39,8 +36,7 @@ public class IssueMilestonePresenter extends Presenter<RepoInfo, List<Milestone>
   }
 
   @Override
-  protected GenericRepository<RepoInfo, List<Milestone>> configRepository(
-      RestWrapper restWrapper) {
+  protected GenericRepository<RepoInfo, List<Milestone>> configRepository(RestWrapper restWrapper) {
     return null;
   }
 
@@ -50,8 +46,7 @@ public class IssueMilestonePresenter extends Presenter<RepoInfo, List<Milestone>
   }
 
   @Override
-  public void action(List<Milestone> milestones, Callback<List<Milestone>> listCallback
-          , boolean firstTime) {
+  public void action(List<Milestone> milestones, Callback<List<Milestone>> listCallback, boolean firstTime) {
     listCallback.onResponse(milestones, firstTime);
   }
 }

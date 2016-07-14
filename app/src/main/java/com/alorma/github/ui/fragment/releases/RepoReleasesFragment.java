@@ -19,8 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter>
-    implements TitleProvider, Observer<List<Release>> {
+public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> implements TitleProvider, Observer<List<Release>> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";

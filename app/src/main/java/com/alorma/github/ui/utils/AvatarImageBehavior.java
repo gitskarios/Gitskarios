@@ -48,20 +48,15 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<ImageView> {
   }
 
   @Override
-  public boolean onDependentViewChanged(CoordinatorLayout parent, ImageView child,
-      View dependency) {
+  public boolean onDependentViewChanged(CoordinatorLayout parent, ImageView child, View dependency) {
     shouldInitProperties(child, dependency);
 
     final int maxScrollDistance = (int) (mStartToolbarPosition - getStatusBarHeight());
     float expandedPercentageFactor = dependency.getY() / maxScrollDistance;
 
-    float distanceYToSubtract =
-        ((mStartYPosition - mFinalYPosition) * (1f - expandedPercentageFactor)) + (child.getHeight()
-            / 2);
+    float distanceYToSubtract = ((mStartYPosition - mFinalYPosition) * (1f - expandedPercentageFactor)) + (child.getHeight() / 2);
 
-    float distanceXToSubtract =
-        ((mStartXPosition - mFinalXPosition) * (1f - expandedPercentageFactor)) + (child.getWidth()
-            / 2);
+    float distanceXToSubtract = ((mStartXPosition - mFinalXPosition) * (1f - expandedPercentageFactor)) + (child.getWidth() / 2);
 
     float heightToSubtract = ((mStartHeight - finalHeight) * (1f - expandedPercentageFactor));
 
@@ -91,9 +86,7 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<ImageView> {
     if (mStartXPosition == 0) mStartXPosition = (int) (child.getX() + (child.getWidth() / 2));
 
     if (mFinalXPosition == 0) {
-      mFinalXPosition = mContext.getResources()
-          .getDimensionPixelOffset(R.dimen.abc_action_bar_content_inset_material) + (finalHeight
-          / 2);
+      mFinalXPosition = mContext.getResources().getDimensionPixelOffset(R.dimen.abc_action_bar_content_inset_material) + (finalHeight / 2);
     }
 
     if (mStartToolbarPosition == 0) {

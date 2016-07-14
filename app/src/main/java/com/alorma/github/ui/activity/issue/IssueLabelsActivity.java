@@ -27,8 +27,7 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
   private LabelsAdapter adapter;
   private boolean returnResult;
 
-  public static Intent createLauncher(Context context, IssueInfo issueInfo, List<Label> labels,
-      boolean returnResult) {
+  public static Intent createLauncher(Context context, IssueInfo issueInfo, List<Label> labels, boolean returnResult) {
     Intent intent = new Intent(context, IssueLabelsActivity.class);
     Bundle args = new Bundle();
     args.putParcelable(ISSUE_INFO, issueInfo);

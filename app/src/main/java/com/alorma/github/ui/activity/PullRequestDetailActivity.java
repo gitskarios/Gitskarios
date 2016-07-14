@@ -101,15 +101,13 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
   }
 
   private void createBottom(Bundle savedInstanceState) {
-    mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinator),
-        findViewById(R.id.content), savedInstanceState);
+    mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinator), findViewById(R.id.content), savedInstanceState);
     mBottomBar.useOnlyStatusBarTopOffset();
     mBottomBar.noTabletGoodness();
 
     final List<Fragment> fragments = new ArrayList<>();
 
-    PullRequestConversationFragment overviewFragment =
-        PullRequestConversationFragment.newInstance(issueInfo);
+    PullRequestConversationFragment overviewFragment = PullRequestConversationFragment.newInstance(issueInfo);
     overviewFragment.setPullRequestStoryLoaderInterface(this);
 
     fragments.add(overviewFragment);
@@ -120,8 +118,7 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
     fragments.add(PullRequestFilesListFragment.newInstance(issueInfo));
     fragments.add(PullRequestCommitsListFragment.newInstance(issueInfo));
 
-    mBottomBar.setItems(
-        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation"),
+    mBottomBar.setItems(new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_info), "Info"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_file_code), "Files"),
         new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
@@ -144,10 +141,8 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
       }
     });
 
-    SharedPreferences defaultSharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String pref_theme =
-        defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
+    SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
     if ("theme_dark".equalsIgnoreCase(pref_theme)) {
       mBottomBar.useDarkTheme();
     }
@@ -155,8 +150,7 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
 
   private void selectFragment(Fragment fragment) {
     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    Fragment fragmentByTag =
-        getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName());
+    Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName());
     if (fragmentByTag != null) {
       ft.replace(R.id.content, fragmentByTag, fragmentByTag.getClass().getSimpleName());
     } else {
@@ -175,9 +169,7 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
     getMenuInflater().inflate(R.menu.pullrequest_detail, menu);
     MenuItem item = menu.findItem(R.id.share_issue);
     if (item != null) {
-      IconicsDrawable drawable = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_share)
-          .actionBar()
-          .color(Color.WHITE);
+      IconicsDrawable drawable = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_share).actionBar().color(Color.WHITE);
       item.setIcon(drawable);
     }
     return super.onPrepareOptionsMenu(menu);
@@ -213,15 +205,13 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
     invalidateOptionsMenu();
     if (mBottomBar != null && story != null) {
       if (badgeFiles == null) {
-        badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this),
-            story.item.changed_files);
+        badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this), story.item.changed_files);
       }
       badgeFiles.setCount(story.item.changed_files);
       badgeFiles.setAutoShowAfterUnSelection(true);
 
       if (badgeCommits == null) {
-        badgeCommits = mBottomBar.makeBadgeForTabAt(3, AttributesUtils.getAccentColor(this),
-            story.item.commits);
+        badgeCommits = mBottomBar.makeBadgeForTabAt(3, AttributesUtils.getAccentColor(this), story.item.commits);
       }
       badgeCommits.setCount(story.item.commits);
       badgeCommits.setAutoShowAfterUnSelection(true);

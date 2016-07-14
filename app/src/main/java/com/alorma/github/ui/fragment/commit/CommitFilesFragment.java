@@ -37,8 +37,7 @@ public class CommitFilesFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.files_fragment, null);
   }
 
@@ -58,8 +57,7 @@ public class CommitFilesFragment extends BaseFragment {
     if (getArguments() != null) {
 
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-      recyclerView.setLayoutManager(
-          new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+      recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
       getContent();
     }
   }
@@ -95,8 +93,7 @@ public class CommitFilesFragment extends BaseFragment {
     getActivity().unregisterReceiver(updateReceiver);
   }
 
-  public void setOnFileRequestListener(
-      CommitFilesAdapter.OnFileRequestListener onFileRequestListener) {
+  public void setOnFileRequestListener(CommitFilesAdapter.OnFileRequestListener onFileRequestListener) {
     this.onFileRequestListener = onFileRequestListener;
   }
 
@@ -111,12 +108,10 @@ public class CommitFilesFragment extends BaseFragment {
     }
 
     public boolean isOnline(Context context) {
-      ConnectivityManager cm =
-          (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+      ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
       NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-      return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null
-          && netInfoWifi.isConnectedOrConnecting());
+      return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
     }
   }
 }

@@ -12,13 +12,11 @@ import java.util.List;
  */
 public class ReleaseAssetRendererBuilder extends RendererBuilder<ReleaseAsset> {
 
-  public ReleaseAssetRendererBuilder(
-      ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
+  public ReleaseAssetRendererBuilder(ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
     setPrototypes(generatePrototypes(onReleaseAssetClicked));
   }
 
-  private Collection<Renderer<ReleaseAsset>> generatePrototypes(
-      ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
+  private Collection<Renderer<ReleaseAsset>> generatePrototypes(ReleaseAssetsRenderer.OnReleaseAssetClicked onReleaseAssetClicked) {
     List<Renderer<ReleaseAsset>> list = new ArrayList<>();
 
     ReleaseAssetsRenderer renderer = new ReleaseAssetsRenderer();

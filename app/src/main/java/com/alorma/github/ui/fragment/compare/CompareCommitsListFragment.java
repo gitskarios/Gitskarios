@@ -27,8 +27,7 @@ import org.joda.time.format.DateTimeFormatter;
 /**
  * Created by Bernat on 07/09/2014.
  */
-public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapter>
-    implements CommitsAdapter.CommitsAdapterListener {
+public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapter> implements CommitsAdapter.CommitsAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private RepoInfo repoInfo;
@@ -43,8 +42,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_compare_commits, null, false);
   }
 
@@ -56,8 +54,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
 
-        Days days = Days.daysBetween(dt.withTimeAtStartOfDay(),
-            new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+        Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
         commit.days = days.getDays();
 
@@ -121,14 +118,12 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
   @Override
   public boolean onCommitLongClick(Commit commit) {
     copy(commit.shortSha());
-    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()),
-        Toast.LENGTH_SHORT).show();
+    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()), Toast.LENGTH_SHORT).show();
     return true;
   }
 
   public void copy(String text) {
-    ClipboardManager clipboard =
-        (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
     ClipData clip = ClipData.newPlainText("Gitskarios", text);
     clipboard.setPrimaryClip(clip);
   }

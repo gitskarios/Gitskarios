@@ -17,6 +17,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GistFile;
 import com.alorma.github.ui.activity.LanguagesActivity;
 import com.alorma.github.ui.activity.base.BackActivity;
+import com.alorma.github.ui.utils.DialogUtils;
 
 /**
  * Created by Bernat on 03/04/2015.
@@ -116,7 +117,7 @@ public class GistEditorActivity extends BackActivity {
   }
 
   private void showDialogCancelFile() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+    MaterialDialog.Builder builder = new DialogUtils().builder(this);
     builder.content(R.string.gist_file_editor_cancel_job);
     builder.positiveText(R.string.ok);
     builder.negativeText(R.string.cancel);

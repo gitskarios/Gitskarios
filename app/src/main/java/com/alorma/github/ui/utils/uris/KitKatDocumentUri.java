@@ -10,13 +10,24 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 
-@TargetApi(Build.VERSION_CODES.KITKAT)
-public class KitKatDocumentUri extends UriType {
+@TargetApi(Build.VERSION_CODES.KITKAT) public class KitKatDocumentUri extends UriType {
 
   public static final String DOCUMENT_TYPE_PRIMARY = "primary";
   public static final String DOCUMENT_TYPE_IMAGE = "image";
   public static final String DOCUMENT_TYPE_VIDEO = "video";
   public static final String DOCUMENT_TYPE_AUDIO = "audio";
+
+  public static boolean isExternalStorageDocument(Uri uri) {
+    return "com.android.externalstorage.documents".equals(uri.getAuthority());
+  }
+
+  public static boolean isDownloadsDocument(Uri uri) {
+    return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+  }
+
+  public static boolean isMediaDocument(Uri uri) {
+    return "com.android.providers.media.documents".equals(uri.getAuthority());
+  }
 
   @Override
   public String getPath(Context context, Uri uri) {
@@ -55,9 +66,7 @@ public class KitKatDocumentUri extends UriType {
 
   private String getFromDownloads(Context context, Uri uri) {
     final String id = DocumentsContract.getDocumentId(uri);
-    final Uri contentUri =
-        ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
-            Long.valueOf(id));
+    final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
     return getDataColumn(context, contentUri, null, null);
   }
@@ -72,17 +81,5 @@ public class KitKatDocumentUri extends UriType {
       return Environment.getExternalStorageDirectory() + "/" + split[1];
     }
     return null;
-  }
-
-  public static boolean isExternalStorageDocument(Uri uri) {
-    return "com.android.externalstorage.documents".equals(uri.getAuthority());
-  }
-
-  public static boolean isDownloadsDocument(Uri uri) {
-    return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-  }
-
-  public static boolean isMediaDocument(Uri uri) {
-    return "com.android.providers.media.documents".equals(uri.getAuthority());
   }
 }

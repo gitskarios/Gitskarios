@@ -13,8 +13,7 @@ import com.alorma.github.ui.adapter.LanguagesAdapter;
 import java.util.Arrays;
 import java.util.List;
 
-public class LanguagesActivity extends BackActivity
-    implements LanguagesAdapter.LanguageSelectedListener {
+public class LanguagesActivity extends BackActivity implements LanguagesAdapter.LanguageSelectedListener {
 
   public static final String EXTRA_LANGUAGE = "EXTRA_LANGUAGE";
   private LanguagesAdapter adapter;

@@ -8,8 +8,7 @@ import android.widget.TextView;
 import com.alorma.github.bean.sync.SyncFavorite;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 
-public class SyncFavoritesAdapter
-    extends RecyclerArrayAdapter<SyncFavorite, SyncFavoritesAdapter.Holder> {
+public class SyncFavoritesAdapter extends RecyclerArrayAdapter<SyncFavorite, SyncFavoritesAdapter.Holder> {
 
   private static final int DEFAULT_VIEW = 0;
 

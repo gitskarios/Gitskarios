@@ -29,7 +29,6 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.ui.activity.EditContentActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.ImageUtils;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

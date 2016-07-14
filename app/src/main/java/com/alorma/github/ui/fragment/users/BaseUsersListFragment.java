@@ -16,8 +16,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAdapter>
-    implements Observer<Pair<List<User>, Integer>> {
+public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAdapter> implements Observer<Pair<List<User>, Integer>> {
 
   @Override
   public void onNext(Pair<List<User>, Integer> listIntegerPair) {
@@ -53,7 +52,6 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
     return R.style.AppTheme_Dark_People;
   }
 
-
   @Override
   public void onError(Throwable e) {
 
@@ -66,16 +64,12 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
 
   protected void setAction(GithubListClient<List<User>> userFollowersClient) {
     startRefresh();
-    userFollowersClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this);
+    userFollowersClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
   }
 
   @Override
   protected RecyclerView.LayoutManager getLayoutManager() {
-    return new GridLayoutManager(getActivity(),
-        getResources().getInteger(R.integer.grid_layout_columns));
+    return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
   }
 
   @Override

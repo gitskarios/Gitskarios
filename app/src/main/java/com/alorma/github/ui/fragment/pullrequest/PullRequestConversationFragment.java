@@ -42,6 +42,7 @@ import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -206,7 +207,7 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private void showEditDialog(int content) {
-    new MaterialDialog.Builder(getActivity()).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
+    new DialogUtils().builder(getActivity()).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
   }
 
   private void findViews(View rootView) {
@@ -270,7 +271,7 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private void showError() {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+    MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
     builder.title(R.string.ups);
     builder.content(getString(R.string.issue_detail_error, issueInfo.toString()));
     builder.positiveText(R.string.retry);
@@ -322,7 +323,8 @@ public class PullRequestConversationFragment extends BaseFragment
 
   @Override
   public void onTitleEditRequest() {
-    new MaterialDialog.Builder(getActivity()).title(R.string.edit_issue_title)
+    new DialogUtils().builder(getActivity())
+        .title(R.string.edit_issue_title)
         .input(null, pullRequestStory.item.title, false, (materialDialog, charSequence) -> {
 
           EditIssueTitleRequestDTO editIssueTitleRequestDTO = new EditIssueTitleRequestDTO();
@@ -364,7 +366,7 @@ public class PullRequestConversationFragment extends BaseFragment
 
   @Override
   public void mergeRequest(Head head, Head base) {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+    MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
     builder.title(R.string.merge_title);
     builder.content(head.label);
     builder.input(getString(R.string.merge_message), pullRequestStory.item.title, false, (materialDialog, charSequence) -> {

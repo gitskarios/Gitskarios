@@ -20,8 +20,8 @@ import java.util.List;
 import tr.xip.errorview.ErrorView;
 
 public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> extends BaseFragment
-    implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener,
-    RecyclerArrayAdapter.RecyclerAdapterContentListener, ErrorView.RetryListener {
+    implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, RecyclerArrayAdapter.RecyclerAdapterContentListener,
+    ErrorView.RetryListener {
 
   protected static final String USERNAME = "USERNAME";
   protected FloatingActionButton fab;
@@ -43,12 +43,10 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
-    return getThemedLayoutInflater(inflater).inflate(
-        useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
+    return getThemedLayoutInflater(inflater).inflate(useFAB() ? R.layout.list_fragment_with_fab : R.layout.list_fragment, null, false);
   }
 
   public void setPage(Integer page) {
@@ -160,8 +158,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
       });
     }
 
-    if (!fromPaginated && loadingView != null && (getAdapter() == null
-        || getAdapter().getItemCount() == 0)) {
+    if (!fromPaginated && loadingView != null && (getAdapter() == null || getAdapter().getItemCount() == 0)) {
       loadingView.setVisibility(View.VISIBLE);
     }
   }

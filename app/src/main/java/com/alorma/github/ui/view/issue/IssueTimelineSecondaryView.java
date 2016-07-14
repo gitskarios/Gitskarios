@@ -35,8 +35,7 @@ public class IssueTimelineSecondaryView extends LinearLayout {
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  public IssueTimelineSecondaryView(Context context, AttributeSet attrs, int defStyleAttr,
-      int defStyleRes) {
+  public IssueTimelineSecondaryView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     init();
   }
@@ -48,10 +47,7 @@ public class IssueTimelineSecondaryView extends LinearLayout {
   }
 
   public void setCommit(PullRequestStoryCommit issueStoryDetail) {
-    shaContent.setText(Html.fromHtml("<b>"
-        + issueStoryDetail.commit.shortSha()
-        + "</b> "
-        + issueStoryDetail.commit.commit.shortMessage()));
+    shaContent.setText(Html.fromHtml("<b>" + issueStoryDetail.commit.shortSha() + "</b> " + issueStoryDetail.commit.commit.shortMessage()));
 
     profileIcon.setUser(issueStoryDetail.user());
   }

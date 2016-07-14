@@ -13,8 +13,7 @@ import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 /**
  * Created by a557114 on 30/07/2015.
  */
-public class ReleaseAssetsAdapter
-    extends RecyclerArrayAdapter<ReleaseAsset, ReleaseAssetsAdapter.Holder> {
+public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<ReleaseAsset, ReleaseAssetsAdapter.Holder> {
 
   public ReleaseAssetsAdapter(LayoutInflater inflater) {
     super(inflater);
@@ -29,8 +28,7 @@ public class ReleaseAssetsAdapter
   protected void onBindViewHolder(Holder holder, ReleaseAsset releaseAsset) {
     holder.releaseAssetName.setText(releaseAsset.name);
     if (releaseAsset.size > 0) {
-      String size =
-          Formatter.formatShortFileSize(holder.releaseAssetSize.getContext(), releaseAsset.size);
+      String size = Formatter.formatShortFileSize(holder.releaseAssetSize.getContext(), releaseAsset.size);
       holder.releaseAssetSize.setText(size);
       holder.releaseAssetSize.setVisibility(View.VISIBLE);
     } else {

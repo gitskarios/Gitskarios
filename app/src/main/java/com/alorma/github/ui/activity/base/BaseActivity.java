@@ -19,11 +19,10 @@ import java.util.List;
 public class BaseActivity extends AppCompatActivity {
 
   public static final String EXTRA_WITH_TOKEN = "EXTRA_WITH_TOKEN";
-
+  protected MaterialDialog dialog;
   private Toolbar toolbar;
   private AccountsManager accountsManager;
   private ProgressDialog progressDialog;
-  protected MaterialDialog dialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

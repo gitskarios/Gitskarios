@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 
 public abstract class UriType {
-  public abstract String getPath(Context context, Uri uri);
-
   /**
    * Get the value of the data column for this Uri. This is useful for
    * MediaStore Uris, and other file-based ContentProviders.
@@ -17,8 +15,7 @@ public abstract class UriType {
    * @param selectionArgs (Optional) Selection arguments used in the query.
    * @return The value of the _data column, which is typically a file path.
    */
-  public static String getDataColumn(Context context, Uri uri, String selection,
-      String[] selectionArgs) {
+  public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
 
     Cursor cursor = null;
     final String column = "_data";
@@ -39,4 +36,6 @@ public abstract class UriType {
     }
     return null;
   }
+
+  public abstract String getPath(Context context, Uri uri);
 }

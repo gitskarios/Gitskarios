@@ -19,8 +19,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 /**
  * Created by a557114 on 06/09/2015.
  */
-public class GithubStatusAdapter
-    extends RecyclerArrayAdapter<GithubStatus, GithubStatusAdapter.ViewHolder> {
+public class GithubStatusAdapter extends RecyclerArrayAdapter<GithubStatus, GithubStatusAdapter.ViewHolder> {
 
   public GithubStatusAdapter(LayoutInflater inflater) {
     super(inflater);
@@ -43,10 +42,9 @@ public class GithubStatusAdapter
       background = R.drawable.github_status_circle_red;
     }
 
-    IconicsDrawable drawable =
-        new IconicsDrawable(holder.icon.getContext(), icon).colorRes(R.color.white)
-            .sizeRes(R.dimen.material_drawer_item_primary)
-            .paddingRes(R.dimen.gapMedium);
+    IconicsDrawable drawable = new IconicsDrawable(holder.icon.getContext(), icon).colorRes(R.color.white)
+        .sizeRes(R.dimen.material_drawer_item_primary)
+        .paddingRes(R.dimen.gapMedium);
     holder.icon.setImageDrawable(drawable);
 
     holder.icon.setBackgroundResource(background);

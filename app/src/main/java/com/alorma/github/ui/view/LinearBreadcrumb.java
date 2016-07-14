@@ -50,8 +50,7 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
     setClipToPadding(false);
     mCrumbs = new ArrayList<>();
     mChildFrame = new LinearLayout(getContext());
-    addView(mChildFrame, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.MATCH_PARENT));
+    addView(mChildFrame, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -79,8 +78,7 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
   }
 
   public void addCrumb(@NonNull Crumb crumb, boolean refreshLayout) {
-    LinearLayout view =
-        (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.bread_crumb, this, false);
+    LinearLayout view = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.bread_crumb, this, false);
     view.setTag(mCrumbs.size());
     view.setOnClickListener(this);
 
@@ -94,8 +92,7 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
     iv.setImageDrawable(arrow);
     iv.setVisibility(View.GONE);
 
-    mChildFrame.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT));
+    mChildFrame.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     mCrumbs.add(crumb);
     if (refreshLayout) {
       mActive = mCrumbs.size() - 1;
@@ -147,8 +144,8 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
   private void invalidateActivatedAll() {
     for (int i = 0; i < mCrumbs.size(); i++) {
       Crumb crumb = mCrumbs.get(i);
-      invalidateActivated(mChildFrame.getChildAt(i), mActive == mCrumbs.indexOf(crumb), false,
-          i < mCrumbs.size() - 1).setText(crumb.getTitle());
+      invalidateActivated(mChildFrame.getChildAt(i), mActive == mCrumbs.indexOf(crumb), false, i < mCrumbs.size() - 1).setText(
+          crumb.getTitle());
     }
   }
 
@@ -170,12 +167,10 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
     return mCrumbs.size();
   }
 
-  private TextView invalidateActivated(View view, boolean isActive, boolean noArrowIfAlone,
-      boolean allowArrowVisible) {
+  private TextView invalidateActivated(View view, boolean isActive, boolean noArrowIfAlone, boolean allowArrowVisible) {
     LinearLayout child = (LinearLayout) view;
     TextView tv = (TextView) child.getChildAt(0);
-    tv.setTextColor(
-        getResources().getColor(isActive ? R.color.crumb_active : R.color.crumb_inactive));
+    tv.setTextColor(getResources().getColor(isActive ? R.color.crumb_active : R.color.crumb_inactive));
     ImageView iv = (ImageView) child.getChildAt(1);
     setAlpha(iv, isActive ? 255 : 109);
     if (noArrowIfAlone && getChildCount() == 1) {
@@ -193,8 +188,7 @@ public class LinearBreadcrumb extends HorizontalScrollView implements View.OnCli
     if (mCallback != null) {
       int index = (Integer) v.getTag();
       if (index >= 0 && index < size()) {
-        mCallback.onCrumbSelection(mCrumbs.get(index), getAbsolutePath(mCrumbs.get(index), "/"),
-            mCrumbs.size(), index);
+        mCallback.onCrumbSelection(mCrumbs.get(index), getAbsolutePath(mCrumbs.get(index), "/"), mCrumbs.size(), index);
       }
     }
   }

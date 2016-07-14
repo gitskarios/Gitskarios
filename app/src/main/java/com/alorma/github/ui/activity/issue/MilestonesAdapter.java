@@ -12,8 +12,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 
-public class MilestonesAdapter
-    extends RecyclerArrayAdapter<Milestone, MilestonesAdapter.ViewHolder> {
+public class MilestonesAdapter extends RecyclerArrayAdapter<Milestone, MilestonesAdapter.ViewHolder> {
 
   public MilestonesAdapter(LayoutInflater inflater) {
     super(inflater);

@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.Presenter;
@@ -11,13 +10,10 @@ import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
 import java.util.List;
-
 import javax.inject.Inject;
 
-public class UsernameReposFragment extends ReposFragment implements TitleProvider,
-    Presenter.Callback<List<Repo>> {
+public class UsernameReposFragment extends ReposFragment implements TitleProvider, Presenter.Callback<List<Repo>> {
 
   @Inject UserRepositoriesPresenter userRepositoriesPresenter;
   private String username;
@@ -50,7 +46,6 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
   @Override
   public void onStart() {
     super.onStart();
-
   }
 
   @Override

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,8 +32,8 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.issue.IssueAssigneesActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
-import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
+import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.view.LabelView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -87,8 +86,7 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.pullrequest_info_fragment, null, false);
   }
 
@@ -101,7 +99,6 @@ public class PullRequestInfoFragment extends BaseFragment {
   protected int getDarkTheme() {
     return R.style.AppTheme_Dark_Repository;
   }
-
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -140,9 +137,7 @@ public class PullRequestInfoFragment extends BaseFragment {
 
     toolbar.inflateMenu(R.menu.pullrequest_detail_info_toolbars);
     MenuItem item = menu.findItem(R.id.action_pull_request_edit);
-    item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_gear)
-        .actionBar()
-        .colorRes(R.color.md_grey_500));
+    item.setIcon(new IconicsDrawable(getActivity()).icon(Octicons.Icon.oct_gear).actionBar().colorRes(R.color.md_grey_500));
     if (itemClickListener != null) {
       toolbar.setOnMenuItemClickListener(itemClickListener);
     }
@@ -187,14 +182,11 @@ public class PullRequestInfoFragment extends BaseFragment {
         labelView.setLabel(label);
         labelsView.addView(labelView);
 
-        if (labelView.getLayoutParams() != null
-            && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
-          FlowLayout.LayoutParams layoutParams =
-              (FlowLayout.LayoutParams) labelView.getLayoutParams();
+        if (labelView.getLayoutParams() != null && labelView.getLayoutParams() instanceof FlowLayout.LayoutParams) {
+          FlowLayout.LayoutParams layoutParams = (FlowLayout.LayoutParams) labelView.getLayoutParams();
           layoutParams.height = FlowLayout.LayoutParams.WRAP_CONTENT;
           layoutParams.width = FlowLayout.LayoutParams.WRAP_CONTENT;
-          layoutParams.setMargins(marginHorizontal, marginHorizontal, marginHorizontal,
-              marginHorizontal);
+          layoutParams.setMargins(marginHorizontal, marginHorizontal, marginHorizontal, marginHorizontal);
           labelView.setLayoutParams(layoutParams);
         }
       }
@@ -216,8 +208,7 @@ public class PullRequestInfoFragment extends BaseFragment {
       milestoneView.setText(milestone.title);
       progressMilestone.setMax(milestone.closedIssues + milestone.openIssues);
       ValueAnimator animator = ValueAnimator.ofInt(0, milestone.closedIssues);
-      animator.addUpdateListener(
-          animation -> progressMilestone.setProgress((int) animation.getAnimatedValue()));
+      animator.addUpdateListener(animation -> progressMilestone.setProgress((int) animation.getAnimatedValue()));
       animator.setDuration(300);
       animator.setInterpolator(new DecelerateInterpolator());
       animator.start();
@@ -264,25 +255,22 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   private void executeEditIssue(EditIssueRequestDTO editIssueRequestDTO) {
     EditIssueClient client = new EditIssueClient(issueInfo, editIssueRequestDTO);
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Issue>() {
-          @Override
-          public void onCompleted() {
+    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Issue>() {
+      @Override
+      public void onCompleted() {
 
-          }
+      }
 
-          @Override
-          public void onError(Throwable e) {
-            ErrorHandler.onError(getActivity(), "PR detail", e);
-          }
+      @Override
+      public void onError(Throwable e) {
+        ErrorHandler.onError(getActivity(), "PR detail", e);
+      }
 
-          @Override
-          public void onNext(Issue issue) {
-            showLabels(issue.labels);
-            Toast.makeText(getActivity(), R.string.md_done_label, Toast.LENGTH_SHORT).show();
-          }
-        });
+      @Override
+      public void onNext(Issue issue) {
+        showLabels(issue.labels);
+        Toast.makeText(getActivity(), R.string.md_done_label, Toast.LENGTH_SHORT).show();
+      }
+    });
   }
 }

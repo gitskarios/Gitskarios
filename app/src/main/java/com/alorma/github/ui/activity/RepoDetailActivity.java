@@ -60,8 +60,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class RepoDetailActivity extends RepositoryThemeActivity
-    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo>,
-    SourceListFragment.SourceCallback {
+    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo>, SourceListFragment.SourceCallback {
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -104,8 +103,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       requestRepoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
       if (requestRepoInfo == null) {
-        if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras()
-            .containsKey(REPO_INFO_OWNER)) {
+        if (getIntent().getExtras().containsKey(REPO_INFO_NAME) && getIntent().getExtras().containsKey(REPO_INFO_OWNER)) {
           String name = getIntent().getExtras().getString(REPO_INFO_NAME);
           String owner = getIntent().getExtras().getString(REPO_INFO_OWNER);
 
@@ -213,8 +211,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
           if (fragment.isAdded()) {
 
             if (fragment instanceof PermissionsManager) {
-              ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push,
-                  permissions.pull);
+              ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
             }
             if (fragment instanceof BranchManager) {
               ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
@@ -283,12 +280,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
 
       if (menuChangeBranch != null) {
-        if (currentRepo != null
-            && currentRepo.branches != null
-            && currentRepo.branches.size() > 1) {
-          Drawable changeBranch =
-              new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar()
-                  .colorRes(R.color.white);
+        if (currentRepo != null && currentRepo.branches != null && currentRepo.branches.size() > 1) {
+          Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
 
           menuChangeBranch.setIcon(changeBranch);
         } else {
@@ -321,8 +314,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       changeBranch();
     } else if (item.getItemId() == R.id.action_manage_repo) {
       if (currentRepo != null) {
-        Intent intent =
-            ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
+        Intent intent = ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
         startActivityForResult(intent, EDIT_REPO);
       }
     } else if (item.getItemId() == R.id.action_add_shortcut) {
@@ -383,47 +375,44 @@ public class RepoDetailActivity extends RepositoryThemeActivity
           }
         });
 
-    Observable<List<Branch>> memCacheObservable =
-        Observable.create(new Observable.OnSubscribe<List<Branch>>() {
-          @Override
-          public void call(Subscriber<? super List<Branch>> subscriber) {
-            try {
-              if (!subscriber.isUnsubscribed()) {
-                if (currentRepo != null && currentRepo.branches != null) {
-                  subscriber.onNext(currentRepo.branches);
-                }
-              }
-              subscriber.onCompleted();
-            } catch (Exception e) {
-              subscriber.onError(e);
+    Observable<List<Branch>> memCacheObservable = Observable.create(new Observable.OnSubscribe<List<Branch>>() {
+      @Override
+      public void call(Subscriber<? super List<Branch>> subscriber) {
+        try {
+          if (!subscriber.isUnsubscribed()) {
+            if (currentRepo != null && currentRepo.branches != null) {
+              subscriber.onNext(currentRepo.branches);
             }
           }
-        });
+          subscriber.onCompleted();
+        } catch (Exception e) {
+          subscriber.onError(e);
+        }
+      }
+    });
 
-    Observable.concat(memCacheObservable, apiObservable)
-        .first()
-        .subscribe(new DialogBranchesSubscriber(this, requestRepoInfo) {
-          @Override
-          protected void onNoBranches() {
+    Observable.concat(memCacheObservable, apiObservable).first().subscribe(new DialogBranchesSubscriber(this, requestRepoInfo) {
+      @Override
+      protected void onNoBranches() {
 
+      }
+
+      @Override
+      protected void onBranchSelected(String branch) {
+        requestRepoInfo.branch = branch;
+        if (currentRepo != null) {
+          currentRepo.default_branch = branch;
+        }
+        if (getSupportActionBar() != null) {
+          getSupportActionBar().setSubtitle(branch);
+        }
+        for (Fragment fragment : fragments) {
+          if (fragment instanceof BranchManager) {
+            ((BranchManager) fragment).setCurrentBranch(branch);
           }
-
-          @Override
-          protected void onBranchSelected(String branch) {
-            requestRepoInfo.branch = branch;
-            if (currentRepo != null) {
-              currentRepo.default_branch = branch;
-            }
-            if (getSupportActionBar() != null) {
-              getSupportActionBar().setSubtitle(branch);
-            }
-            for (Fragment fragment : fragments) {
-              if (fragment instanceof BranchManager) {
-                ((BranchManager) fragment).setCurrentBranch(branch);
-              }
-            }
-          }
-        });
+        }
+      }
+    });
   }
 
   @Override
@@ -442,8 +431,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
 
     if (requestCode == EDIT_REPO) {
       if (resultCode == RESULT_OK && data != null) {
-        RepoRequestDTO repoRequestDTO =
-            (RepoRequestDTO) data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+        RepoRequestDTO repoRequestDTO = (RepoRequestDTO) data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
         showProgressDialog(R.string.edit_repo_loading);
         EditRepoClient editRepositoryClient = new EditRepoClient(requestRepoInfo, repoRequestDTO);
         editRepositoryClient.observable()
@@ -503,8 +491,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     archive_url = archive_url.replace("{/ref}", "/" + currentRepo.default_branch);
 
     new GitskariosDownloadManager().download(this, archive_url,
-        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(
-            fileType), viewPager);
+        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(fileType), viewPager);
   }
 
   private String getExtensionFromFileType(String fileType) {

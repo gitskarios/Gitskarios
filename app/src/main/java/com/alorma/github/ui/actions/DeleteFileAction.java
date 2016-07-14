@@ -27,11 +27,11 @@ public class DeleteFileAction extends Action<NewContentResponse> {
     new DeleteFileClient(request, repoInfo, content.path).observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(newContentResponse -> {
+        .subscribe(newContentResponse -> {
 
-    }, throwable -> {
+        }, throwable -> {
 
-    });
+        });
     return this;
   }
 }

@@ -22,8 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter>
-    implements TitleProvider {
+public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> implements TitleProvider {
 
   private static final String REPO_INFO = "REPO_INFO";
   private RepoInfo repoInfo;
@@ -120,8 +119,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter>
 
   @Override
   protected RecyclerView.LayoutManager getLayoutManager() {
-    return new GridLayoutManager(getActivity(),
-        getResources().getInteger(R.integer.grid_layout_columns));
+    return new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_layout_columns));
   }
 
   protected void loadArguments() {

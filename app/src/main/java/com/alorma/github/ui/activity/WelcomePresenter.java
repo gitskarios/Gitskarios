@@ -72,23 +72,6 @@ public class WelcomePresenter {
         .subscribe(new UserSubscription());
   }
 
-  private class UserSubscription extends rx.Subscriber<Pair<User, String>> {
-    @Override
-    public void onCompleted() {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      checkError(e);
-    }
-
-    @Override
-    public void onNext(Pair<User, String> userStringPair) {
-      addAccount(userStringPair.first, userStringPair.second);
-    }
-  }
-
   private void checkError(Throwable e) {
     if (e instanceof UnauthorizedException) {
       onErrorUnauthorized();
@@ -138,6 +121,23 @@ public class WelcomePresenter {
       result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
       accountAuthenticatorActivity.get().setAccountAuthenticatorResult(result);
       welcomePresenterViewInterface.finishAccess(user);
+    }
+  }
+
+  private class UserSubscription extends rx.Subscriber<Pair<User, String>> {
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      checkError(e);
+    }
+
+    @Override
+    public void onNext(Pair<User, String> userStringPair) {
+      addAccount(userStringPair.first, userStringPair.second);
     }
   }
 }

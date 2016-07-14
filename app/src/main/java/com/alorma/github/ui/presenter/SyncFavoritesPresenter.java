@@ -132,23 +132,19 @@ public class SyncFavoritesPresenter {
   }
 
   public void addRepo() {
-    SyncFavorite syncFavorite =
-        new RepositorySyncFavorite(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    SyncFavorite syncFavorite = new RepositorySyncFavorite(UUID.randomUUID().toString(), UUID.randomUUID().toString());
 
     addValue(syncFavorite);
   }
 
   public void addIssue() {
-    SyncFavorite syncFavorite =
-        new IssueSyncFavorite(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
-            new Random().nextLong());
+    SyncFavorite syncFavorite = new IssueSyncFavorite(UUID.randomUUID().toString(), UUID.randomUUID().toString(), new Random().nextLong());
 
     addValue(syncFavorite);
   }
 
   public void addGist() {
-    SyncFavorite syncFavorite =
-        new GistSyncFavorite(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    SyncFavorite syncFavorite = new GistSyncFavorite(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     addValue(syncFavorite);
   }
 

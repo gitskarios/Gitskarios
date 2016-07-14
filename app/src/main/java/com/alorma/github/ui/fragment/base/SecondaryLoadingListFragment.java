@@ -31,8 +31,7 @@ import com.mikepenz.octicons_typeface_library.Octicons;
  * Created by Bernat on 05/08/2014.
  */
 public abstract class SecondaryLoadingListFragment<T> extends Fragment
-    implements SwipeRefreshLayout.OnRefreshListener, AbsListView.OnScrollListener,
-    View.OnClickListener, AdapterView.OnItemClickListener {
+    implements SwipeRefreshLayout.OnRefreshListener, AbsListView.OnScrollListener, View.OnClickListener, AdapterView.OnItemClickListener {
 
   protected TextView emptyText;
   protected ImageView emptyIcon;
@@ -46,8 +45,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment
   private ArrayAdapter<T> listAdapter;
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
     View v = inflater.inflate(R.layout.list_fragment_gists, null, false);
@@ -132,8 +130,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment
       if (useFAB()) {
         fabVisible = true;
         fab.setOnClickListener(this);
-        IconicsDrawable drawable =
-            new IconicsDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).actionBar();
+        IconicsDrawable drawable = new IconicsDrawable(getActivity(), getFABGithubIcon()).color(Color.WHITE).actionBar();
 
         fab.setImageDrawable(drawable);
       } else {
@@ -174,8 +171,7 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment
   }
 
   @Override
-  public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-      int totalItemCount) {
+  public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
   }
 
@@ -245,21 +241,16 @@ public abstract class SecondaryLoadingListFragment<T> extends Fragment
     @Override
     public void onReceive(Context context, Intent intent) {
 
-      if (listView != null
-          && listView.getAdapter() != null
-          && listView.getAdapter().getCount() == 0
-          && isOnline(context)) {
+      if (listView != null && listView.getAdapter() != null && listView.getAdapter().getCount() == 0 && isOnline(context)) {
         reload();
       }
     }
 
     public boolean isOnline(Context context) {
-      ConnectivityManager cm =
-          (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+      ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfoMob = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
       NetworkInfo netInfoWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-      return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null
-          && netInfoWifi.isConnectedOrConnecting());
+      return (netInfoMob != null && netInfoMob.isConnectedOrConnecting()) || (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting());
     }
   }
 }

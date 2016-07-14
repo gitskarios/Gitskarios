@@ -28,8 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter>
-    implements GistsAdapter.GistsAdapterListener, BackManager {
+public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter> implements GistsAdapter.GistsAdapterListener, BackManager {
 
   public static AuthUserGistsFragment newInstance() {
     return new AuthUserGistsFragment();
@@ -63,8 +62,7 @@ public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter>
 
     GistsAdapter adapter = new GistsAdapter(LayoutInflater.from(getActivity()));
     adapter.setFilesCallback(item -> {
-      Intent launcherIntent =
-              GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
+      Intent launcherIntent = GistsFileActivity.createLauncherIntent(getActivity(), item.filename, item.content);
       startActivity(launcherIntent);
     });
     adapter.setGistsAdapterListener(this);

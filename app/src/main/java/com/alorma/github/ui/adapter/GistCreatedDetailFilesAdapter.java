@@ -15,8 +15,7 @@ import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 /**
  * Created by Bernat on 02/04/2015.
  */
-public class GistCreatedDetailFilesAdapter
-    extends RecyclerArrayAdapter<GistFile, GistCreatedDetailFilesAdapter.ViewHolder> {
+public class GistCreatedDetailFilesAdapter extends RecyclerArrayAdapter<GistFile, GistCreatedDetailFilesAdapter.ViewHolder> {
 
   private GistCreateAdapterListener gistCreateAdapterListener;
 
@@ -26,8 +25,7 @@ public class GistCreatedDetailFilesAdapter
 
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    return new ViewHolder(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.text_with_overflow, parent, false));
+    return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.text_with_overflow, parent, false));
   }
 
   @Override
@@ -69,8 +67,7 @@ public class GistCreatedDetailFilesAdapter
         @Override
         public void onClick(View view) {
           if (gistCreateAdapterListener != null) {
-            gistCreateAdapterListener.updateFile(getAdapterPosition(),
-                getItem(getAdapterPosition()));
+            gistCreateAdapterListener.updateFile(getAdapterPosition(), getItem(getAdapterPosition()));
           }
         }
       });
@@ -80,8 +77,7 @@ public class GistCreatedDetailFilesAdapter
         public void onClick(View v) {
           PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
           popupMenu.inflate(R.menu.gist_file_created_row_menu);
-          popupMenu.setOnMenuItemClickListener(
-              new MenuListener(getAdapterPosition(), getItem(getAdapterPosition())));
+          popupMenu.setOnMenuItemClickListener(new MenuListener(getAdapterPosition(), getItem(getAdapterPosition())));
           popupMenu.show();
         }
       });

@@ -74,10 +74,7 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
       } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
         releaseInfo = (ReleaseInfo) getIntent().getExtras().getParcelable(RELEASE_INFO);
         GetReleaseClient releaseClient = new GetReleaseClient(releaseInfo);
-        releaseClient.observable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this);
+        releaseClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
       }
     }
   }
@@ -114,8 +111,7 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
       listFragments.add(releaseAssetsFragment);
 
       if (viewPager != null) {
-        viewPager.setAdapter(
-            new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
+        viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), getResources(), listFragments));
         if (tabLayout != null) {
           tabLayout.setupWithViewPager(viewPager);
         }
@@ -140,7 +136,6 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
 
   @Override
   public void onReleaseDownloadRequest(final ReleaseAsset asset) {
-    new GitskariosDownloadManager().download(this, asset.browser_download_url, asset.name,
-        viewPager);
+    new GitskariosDownloadManager().download(this, asset.browser_download_url, asset.name, viewPager);
   }
 }

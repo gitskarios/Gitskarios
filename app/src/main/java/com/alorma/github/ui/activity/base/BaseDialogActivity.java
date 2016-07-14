@@ -15,8 +15,7 @@ public class BaseDialogActivity extends BackActivity {
   }
 
   private void showAsDialog() {
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND,
-        WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     WindowManager.LayoutParams params = getWindow().getAttributes();
     params.width = getResources().getDimensionPixelOffset(R.dimen.floattingActivityWidth);
     params.height = getResources().getDimensionPixelOffset(R.dimen.floattingActivityHeight);

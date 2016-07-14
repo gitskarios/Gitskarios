@@ -15,8 +15,6 @@ import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.timeline.RoundTimelineView;
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import io.fabric.sdk.android.Fabric;
@@ -45,8 +43,7 @@ public class UserAvatarView extends RoundTimelineView implements View.OnClickLis
 
   private void init(Context context, AttributeSet attrs, int defStyle) {
     if (!isInEditMode()) {
-      final TypedArray typedArray =
-              context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserAvatarView, defStyle, 0);
+      final TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserAvatarView, defStyle, 0);
 
       boolean showLine = typedArray.getBoolean(R.styleable.UserAvatarView_uav_show_timeline, false);
 
@@ -74,8 +71,7 @@ public class UserAvatarView extends RoundTimelineView implements View.OnClickLis
   public void onClick(final View v) {
 
     if (Fabric.isInitialized()) {
-      Answers.getInstance()
-          .logContentView(new ContentViewEvent().putContentName("UserAvatarViewClick"));
+      Answers.getInstance().logContentView(new ContentViewEvent().putContentName("UserAvatarViewClick"));
     }
 
     if (user.type == UserType.Organization) {

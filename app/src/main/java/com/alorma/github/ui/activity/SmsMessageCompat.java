@@ -25,8 +25,7 @@ public class SmsMessageCompat {
     SmsMessage createFromPdu(byte[] pdu, String format);
   }
 
-  @TargetApi(Build.VERSION_CODES.M) static class MarshmallowSmsMessageCompatImpl
-      implements SmsMessageCompatImpl {
+  @TargetApi(Build.VERSION_CODES.M) static class MarshmallowSmsMessageCompatImpl implements SmsMessageCompatImpl {
     @Override
     public SmsMessage createFromPdu(byte[] pdu, String format) {
       return SmsMessage.createFromPdu(pdu, format);

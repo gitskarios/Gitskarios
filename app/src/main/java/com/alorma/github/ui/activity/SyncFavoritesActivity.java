@@ -11,8 +11,7 @@ import com.alorma.github.ui.adapter.SyncFavoritesAdapter;
 import com.alorma.github.ui.presenter.SyncFavoritesPresenter;
 import java.util.List;
 
-public class SyncFavoritesActivity extends BaseActivity
-    implements SyncFavoritesPresenter.SyncCallbacks {
+public class SyncFavoritesActivity extends BaseActivity implements SyncFavoritesPresenter.SyncCallbacks {
 
   private View addRepoButton;
   private View addIssueButton;

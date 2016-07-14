@@ -51,8 +51,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
           getCallback().onItemSelected(user);
         } else {
           if (user.type == UserType.Organization) {
-            v.getContext()
-                .startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
+            v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
           } else {
             final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
             if (textRootView.getTag() != null) {

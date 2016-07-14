@@ -80,8 +80,7 @@ public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
           .width(context.getResources().getDimensionPixelOffset(R.dimen.avatar_size))
           .height(context.getResources().getDimensionPixelOffset(R.dimen.avatar_size))
           .endConfig()
-          .buildRound(userName.substring(0, 1),
-              ColorGenerator.MATERIAL.getColor(userName.substring(0, 1)));
+          .buildRound(userName.substring(0, 1), ColorGenerator.MATERIAL.getColor(userName.substring(0, 1)));
     } else {
       IconicsDrawable drawable = new IconicsDrawable(context, Octicons.Icon.oct_octoface);
       drawable.color(AttributesUtils.getSecondaryTextColor(context));

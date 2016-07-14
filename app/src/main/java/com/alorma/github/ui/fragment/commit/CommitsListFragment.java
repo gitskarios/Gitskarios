@@ -46,8 +46,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
-    implements TitleProvider, BranchManager, PermissionsManager, BackManager,
-    CommitsAdapter.CommitsAdapterListener, MaterialCab.Callback, Observer<List<Commit>> {
+    implements TitleProvider, BranchManager, PermissionsManager, BackManager, CommitsAdapter.CommitsAdapterListener, MaterialCab.Callback,
+    Observer<List<Commit>> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String PATH = "PATH";
@@ -148,8 +148,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
       hideEmpty();
 
       if (refreshing || getAdapter() == null) {
-        CommitsAdapter commitsAdapter =
-            new CommitsAdapter(LayoutInflater.from(getActivity()), false);
+        CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
         commitsAdapter.addAll(commits);
         commitsAdapter.setCommitsAdapterListener(this);
         setAdapter(commitsAdapter);
@@ -159,8 +158,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
       removeDecorations();
 
-      StickyRecyclerHeadersDecoration headersDecoration =
-          new StickyRecyclerHeadersDecoration(getAdapter());
+      StickyRecyclerHeadersDecoration headersDecoration = new StickyRecyclerHeadersDecoration(getAdapter());
       addItemDecoration(headersDecoration);
     } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
       setEmpty();
@@ -178,8 +176,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
           DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
           DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
 
-          Days days = Days.daysBetween(dt.withTimeAtStartOfDay(),
-              new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
+          Days days = Days.daysBetween(dt.withTimeAtStartOfDay(), new DateTime(System.currentTimeMillis()).withTimeAtStartOfDay());
 
           commit.days = days.getDays();
 
@@ -257,16 +254,16 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     checkFAB();
     if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
       if (getActivity().findViewById(R.id.cab_stub) != null) {
-        cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub).setTitle(
-            ":base ... :head").setMenu(R.menu.menu_commits_compare).start(this);
+        cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub).setTitle(":base ... :head")
+            .setMenu(R.menu.menu_commits_compare)
+            .start(this);
 
         if (cab.getMenu() != null) {
           MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
 
           if (itemCompare != null) {
             IconicsDrawable iconicsDrawable =
-                new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar()
-                    .color(Color.WHITE);
+                new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(Color.WHITE);
             itemCompare.setIcon(iconicsDrawable);
             itemCompare.setEnabled(false);
           }
@@ -275,8 +272,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
           if (itemChangeBranch != null) {
             IconicsDrawable iconicsDrawable =
-                new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar()
-                    .color(Color.WHITE);
+                new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar().color(Color.WHITE);
             itemChangeBranch.setIcon(iconicsDrawable);
           }
         }
@@ -328,14 +324,12 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   @Override
   public boolean onCommitLongClick(Commit commit) {
     copy(commit.shortSha());
-    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()),
-        Toast.LENGTH_SHORT).show();
+    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()), Toast.LENGTH_SHORT).show();
     return true;
   }
 
   public void copy(String text) {
-    ClipboardManager clipboard =
-        (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
     ClipData clip = ClipData.newPlainText("Gitskarios", text);
     clipboard.setPrimaryClip(clip);
   }
@@ -352,9 +346,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
       if (cab.isActive()) {
         cab.finish();
       }
-      Intent intent =
-          CompareRepositoryCommitsActivity.launcherIntent(getActivity(), repoInfo, baseCompare,
-              headCompare);
+      Intent intent = CompareRepositoryCommitsActivity.launcherIntent(getActivity(), repoInfo, baseCompare, headCompare);
       startActivity(intent);
       baseCompare = null;
       headCompare = null;
