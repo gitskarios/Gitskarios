@@ -218,12 +218,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
                         return Observable.from(listIntegerPair.first);
                     }
                 })
-                .filter(new Func1<Issue, Boolean>() {
-                    @Override
-                    public Boolean call(Issue issue) {
-                        return issue.pullRequest == null;
-                    }
-                })
+                .filter(issue -> issue.pullRequest == null)
                 .toList()
                 .subscribe(new Subscriber<List<Issue>>() {
                     @Override
