@@ -59,12 +59,9 @@ public class GetMilestonesClient extends GithubClient<List<Milestone>> {
     if (!sortAlphabetic) {
       return listObservable;
     } else {
-      return listObservable.map(new Func1<List<Milestone>, List<Milestone>>() {
-        @Override
-        public List<Milestone> call(List<Milestone> milestones) {
-          Collections.sort(milestones, NAME_SORT);
-          return milestones;
-        }
+      return listObservable.map(milestones -> {
+        Collections.sort(milestones, NAME_SORT);
+        return milestones;
       });
     }
   }

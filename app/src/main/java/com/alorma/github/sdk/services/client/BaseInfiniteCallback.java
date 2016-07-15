@@ -17,6 +17,7 @@ public abstract class BaseInfiniteCallback<K> implements Observable.OnSubscribe<
 
   protected Subscriber<? super K> subscriber;
   private List<K> ks;
+  private int lastUsedPage;
 
   public BaseInfiniteCallback() {
 
@@ -34,6 +35,7 @@ public abstract class BaseInfiniteCallback<K> implements Observable.OnSubscribe<
     int nextPage = getLinkData(response);
     subscriber.onNext(k);
     if (nextPage != -1) {
+      lastUsedPage = nextPage;
       executePaginated(nextPage);
     } else {
       subscriber.onCompleted();
@@ -60,13 +62,16 @@ public abstract class BaseInfiniteCallback<K> implements Observable.OnSubscribe<
 
     if (link != null) {
       String[] parts = link.split(",");
-      try {
-        PaginationLink bottomPaginationLink = new PaginationLink(parts[0]);
-        if (bottomPaginationLink.rel == RelType.next) {
-          return bottomPaginationLink.page;
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
+      Map<RelType, PaginationLink> linkMap = new HashMap<>();
+      for (String part : parts) {
+        PaginationLink paginationLink = new PaginationLink(part);
+        linkMap.put(paginationLink.rel, paginationLink);
+      }
+
+      PaginationLink next = linkMap.get(RelType.next);
+      if (next != null) {
+        int nextPage = next.page;
+        return lastUsedPage != nextPage ? nextPage : -1;
       }
     }
     return -1;
