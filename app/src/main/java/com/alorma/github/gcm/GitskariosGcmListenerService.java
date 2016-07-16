@@ -5,7 +5,7 @@ import android.accounts.AccountManager;
 import android.content.Intent;
 import android.util.Log;
 import com.alorma.github.R;
-import com.alorma.github.account.GetNotificationsService;
+import com.alorma.github.account.GetNotificationsJob;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -37,9 +37,9 @@ public class GitskariosGcmListenerService extends FirebaseMessagingService {
 
         String token = AccountManager.get(this).getUserData(account, AccountManager.KEY_AUTHTOKEN);
 
-        Intent intent = new Intent(this, GetNotificationsService.class);
-        intent.putExtra(GetNotificationsService.ACCOUNT_NAME, name);
-        intent.putExtra(GetNotificationsService.ACCOUNT_TOKEN, token);
+        Intent intent = new Intent(this, GetNotificationsJob.class);
+        intent.putExtra(GetNotificationsJob.ACCOUNT_NAME, name);
+        intent.putExtra(GetNotificationsJob.ACCOUNT_TOKEN, token);
         this.startService(intent);
       }
     }

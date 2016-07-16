@@ -1,29 +1,25 @@
 package com.alorma.github.account;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
-import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.activity.NotificationsActivity;
-import com.alorma.github.utils.AccountUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.NotificationsHelper;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +29,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class GetNotificationsService extends Service {
+public class GetNotificationsJob extends JobService {
 
   public static final String ACCOUNT_NAME = "ACCOUNT_NAME";
   public static final String ACCOUNT_TOKEN = "ACCOUNT_TOKEN";
@@ -42,16 +38,12 @@ public class GetNotificationsService extends Service {
   private Subscription subscription;
 
   @Override
-  public int onStartCommand(Intent intent, int flags, int startId) {
+  public boolean onStartJob(JobParameters jobParameters) {
 
-    AccountManager accountManager = AccountManager.get(this);
+    if (jobParameters != null && jobParameters.getExtras() != null) {
+      String name = jobParameters.getExtras().getString(ACCOUNT_NAME);
+      String token = jobParameters.getExtras().getString(ACCOUNT_TOKEN);
 
-    Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
-
-    AccountUtils accountUtils = new AccountUtils();
-    for (Account account : accounts) {
-      String name = accountUtils.getNameFromAccount(account.name);
-      String token = AccountsHelper.getUserToken(this, account);
       if (name != null && token != null) {
         final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(token.hashCode());
@@ -63,17 +55,15 @@ public class GetNotificationsService extends Service {
             .subscribe(new NotificationsSubscriber(name, token));
       }
     }
-
-    return Service.START_NOT_STICKY;
+    return true;
   }
 
   @Override
-  public void onDestroy() {
-    if (subscription != null) {
-      subscription.unsubscribe();
-    }
-    super.onDestroy();
+  public boolean onStopJob(JobParameters jobParameters) {
+    subscription.unsubscribe();
+    return true;
   }
+
 
   private void onNotificationsReceived(List<Notification> notifications, String name, String token) {
 
@@ -236,12 +226,6 @@ public class GetNotificationsService extends Service {
     NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
     notificationManager.notify(notificationId, notification);
-  }
-
-  @Nullable
-  @Override
-  public IBinder onBind(Intent intent) {
-    return null;
   }
 
   private class NotificationsSubscriber extends Subscriber<List<Notification>> {

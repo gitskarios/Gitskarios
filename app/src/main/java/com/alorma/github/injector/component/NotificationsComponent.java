@@ -12,7 +12,7 @@ import javax.inject.Named;
 @NotificationsScope @Component(modules = NotificationsModule.class, dependencies = ApplicationComponent.class)
 public interface NotificationsComponent {
 
-  @Named("NotificationsJobManager")
+  @Named("AlarmManagerNotificationsJobManager")
   AppJobManager getJobManager();
 
   AppNotificationsManager getNotificationsManager();
