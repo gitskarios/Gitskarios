@@ -27,6 +27,7 @@
       android:layout_marginRight="@dimen/gapMedium"
       android:layout_toLeftOf="@+id/overflow"
       android:layout_toRightOf="@+id/icon"
+      android:layout_toEndOf="@+id/icon"
       android:layout_toStartOf="@+id/overflow"
       android:gravity="center_vertical"
       android:textSize="16sp"
