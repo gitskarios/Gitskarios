@@ -149,7 +149,6 @@ def getImgurCallback() {
 dependencies {
     compile project(':sdks:GithubReborn')
     compile project(':imgur')
-  compile project(':jobdispatcher-release')
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
         transitive = true;

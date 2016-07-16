@@ -44,27 +44,37 @@ public class GetNotificationsService extends Service {
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
 
-    AccountManager accountManager = AccountManager.get(this);
+    if (intent.getExtras().containsKey(ACCOUNT_NAME) && intent.getExtras().containsKey(ACCOUNT_TOKEN)) {
+      String name = intent.getExtras().getString(ACCOUNT_NAME);
+      String token = intent.getExtras().getString(ACCOUNT_TOKEN);
+      checkNotifications(name, token);
+    } else {
+      AccountManager accountManager = AccountManager.get(this);
 
-    Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
+      Account[] accounts = accountManager.getAccountsByType(getString(R.string.account_type));
 
-    AccountUtils accountUtils = new AccountUtils();
-    for (Account account : accounts) {
-      String name = accountUtils.getNameFromAccount(account.name);
-      String token = AccountsHelper.getUserToken(this, account);
-      if (name != null && token != null) {
-        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(token.hashCode());
-
-        GetNotificationsClient notificationsClient = new GetNotificationsClient(token);
-        subscription = notificationsClient.observable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new NotificationsSubscriber(name, token));
+      AccountUtils accountUtils = new AccountUtils();
+      for (Account account : accounts) {
+        String name = accountUtils.getNameFromAccount(account.name);
+        String token = AccountsHelper.getUserToken(this, account);
+        checkNotifications(name, token);
       }
     }
 
     return Service.START_NOT_STICKY;
+  }
+
+  private void checkNotifications(String name, String token) {
+    if (name != null && token != null) {
+      final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+      notificationManager.cancel(token.hashCode());
+
+      GetNotificationsClient notificationsClient = new GetNotificationsClient(token);
+      subscription = notificationsClient.observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new NotificationsSubscriber(name, token));
+    }
   }
 
   @Override

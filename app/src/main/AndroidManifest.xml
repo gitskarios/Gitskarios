@@ -222,7 +222,6 @@
 
     <!-- [END instanceId_listener] -->
 
-    <service android:name=".account.GetNotificationsJob"/>
     <service
         android:name=".account.GetNotificationsService"
         android:exported="true"
