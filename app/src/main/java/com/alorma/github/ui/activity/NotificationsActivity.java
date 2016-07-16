@@ -20,6 +20,8 @@ import javax.inject.Inject;
 
 public class NotificationsActivity extends BackActivity {
 
+  private Switch notificationsSwitch;
+
   public static Intent launchIntent(Context context) {
     return new Intent(context, NotificationsActivity.class);
   }
@@ -39,16 +41,13 @@ public class NotificationsActivity extends BackActivity {
 
     injectComponent();
 
-    Switch notificationsSwitch = (Switch) findViewById(R.id.notificationsSwitch);
+    notificationsSwitch = (Switch) findViewById(R.id.notificationsSwitch);
 
     if (notificationsSwitch != null) {
       notificationsSwitch.setChecked(appNotificationsManager.areNotificationsEnabled());
+      changeSwitchText(appNotificationsManager.areNotificationsEnabled());
       notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-        if (isChecked) {
-          buttonView.setText(R.string.notifications_enabled);
-        } else {
-          buttonView.setText(R.string.notifications_disabled);
-        }
+        changeSwitchText(isChecked);
         appNotificationsManager.setNotificationsEnabled(isChecked);
       });
     }
@@ -65,7 +64,14 @@ public class NotificationsActivity extends BackActivity {
 
     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     notificationManager.cancelAll();
+  }
 
+  private void changeSwitchText(boolean enabled) {
+    if (enabled) {
+      notificationsSwitch.setText(R.string.notifications_enabled);
+    } else {
+      notificationsSwitch.setText(R.string.notifications_disabled);
+    }
   }
 
   private void injectComponent() {
