@@ -670,27 +670,15 @@ public class IssueDetailActivity extends BackActivity
               return false;
             })
             .forceStacking(true)
-            .widgetColorRes(AttributesUtils.getPrimaryColor(IssueDetailActivity.this))
+            .widgetColor(AttributesUtils.getPrimaryColor(IssueDetailActivity.this))
             .negativeText(R.string.add_milestone);
 
         if (selectedMilestone != -1) {
           builder.neutralText(R.string.clear_milestone);
         }
 
-        builder.callback(new MaterialDialog.ButtonCallback() {
-
-          @Override
-          public void onNegative(MaterialDialog dialog) {
-            super.onNegative(dialog);
-            showCreateMilestone();
-          }
-
-          @Override
-          public void onNeutral(MaterialDialog dialog) {
-            super.onNeutral(dialog);
-            clearMilestone();
-          }
-        });
+        builder.onNegative((dialog1, which) -> clearMilestone());
+        builder.onPositive((dialog1, which) -> showCreateMilestone());
 
         builder.show();
       }
