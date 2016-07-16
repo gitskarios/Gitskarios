@@ -33,6 +33,7 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImageFileFragment extends BaseFragment {
 
@@ -40,6 +41,7 @@ public class ImageFileFragment extends BaseFragment {
   public static final String FROM_URL = "FROM_URL";
   private static final int RESULT_EDIT = 123;
 
+  PhotoViewAttacher mAttacher;
   private ImageView imageView;
   private View loadingView;
 
@@ -83,6 +85,7 @@ public class ImageFileFragment extends BaseFragment {
     loadingView = view.findViewById(R.id.loading_view);
 
     imageView = (ImageView) view.findViewById(R.id.imageView);
+    mAttacher = new PhotoViewAttacher(imageView);
 
     if (getArguments() != null) {
 
@@ -200,6 +203,7 @@ public class ImageFileFragment extends BaseFragment {
           Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
           imageView.setVisibility(View.VISIBLE);
           imageView.setImageBitmap(bitmap);
+          mAttacher.update();
         } catch (Exception e) {
           Toast.makeText(getActivity(), R.string.error_loading_image, Toast.LENGTH_SHORT).show();
           e.printStackTrace();
