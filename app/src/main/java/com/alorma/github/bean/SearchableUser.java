@@ -6,9 +6,6 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.linkedin.android.spyglass.mentions.Mentionable;
 import com.linkedin.android.spyglass.suggestions.interfaces.Suggestible;
 
-/**
- * Created by bernat.borras on 9/1/16.
- */
 public class SearchableUser extends User implements Suggestible, Mentionable {
   public static final Creator<User> CREATOR = new Creator<User>() {
     public User createFromParcel(Parcel source) {

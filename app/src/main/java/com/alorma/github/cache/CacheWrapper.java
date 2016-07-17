@@ -1,10 +1,12 @@
 package com.alorma.github.cache;
 
+import com.alorma.github.emoji.Emoji;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.fewlaps.quitnowcache.QNCache;
 import com.fewlaps.quitnowcache.QNCacheBuilder;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CacheWrapper {
@@ -15,6 +17,7 @@ public class CacheWrapper {
   private static final String README_KEY_PREFIX = "readme";
   private static final String ISSUE_COMMENT_KEY_PREFIX = "issue";
   private static final String ISSUE_REQUEST_KEY_PREFIX = "issue_request";
+  private static final String EMOJIS = "EMOJIS";
 
   private static QNCache cache =
       new QNCacheBuilder().setDefaultKeepaliveInMillis(KEEPALIVE_IN_MILLIS).createQNCache();
@@ -84,5 +87,13 @@ public class CacheWrapper {
   public static void setRepository(Repo repo) {
     cache.set(convertToEffectiveRepoKey(repo.owner + "/" + repo.name), repo,
         TimeUnit.MINUTES.toMillis(10));
+  }
+
+  public static void setEmojis(List<Emoji> emojis) {
+    cache.set(EMOJIS, emojis);
+  }
+
+  public static List<Emoji> getEmojis() {
+    return cache.get(EMOJIS);
   }
 }

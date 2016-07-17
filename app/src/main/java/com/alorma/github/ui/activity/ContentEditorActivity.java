@@ -33,6 +33,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.ui.utils.ContentEditorText;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
@@ -146,10 +147,18 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
       if (!TextUtils.isEmpty(hint)) {
         editText.setHint(hint);
+      } else {
+        editText.setHint(getString(R.string.edit_hint));
       }
 
-      editText.setHint(getString(R.string.edit_hint));
       editText.setQueryTokenReceiver(this);
+
+      if (issueInfo != null) {
+        String issueComment = CacheWrapper.getIssueComment(issueInfo.toString());
+        if (issueComment != null) {
+          editText.setText(formatText(issueComment));
+        }
+      }
 
       String content = getIntent().getExtras().getString(PREFILL);
       if (getIntent().getExtras().containsKey(REPO_INFO) && getIntent().getExtras().containsKey(ISSUE_NUM)) {
@@ -282,10 +291,13 @@ public class ContentEditorActivity extends RepositoryThemeActivity
         startActivityForResult(intentEmojis, EMOJI_REQUEST);
         break;
       case R.id.add_content_editor_source:
-        editText.getText().append(" ```");
-        editText.getText().append("\n");
-        editText.getText().append("\n");
-        editText.getText().append(" ```");
+        StringBuilder builder = new StringBuilder();
+        builder.append(" ```");
+        builder.append("\n");
+        builder.append("\n");
+        builder.append(" ```");
+
+        appendText(builder.toString());
 
         editText.setSelection(editText.getText().length() - 5);
         break;
@@ -316,14 +328,9 @@ public class ContentEditorActivity extends RepositoryThemeActivity
         .content(R.string.addPictureContent)
         .input(R.string.addPictureHint, 0, false, (materialDialog, charSequence) -> {
           MentionsEditable text = editText.getText();
-          text.append("\n");
-          text.append("\n");
-          text.append("![]");
-          text.append("(");
-          text.append(charSequence.toString());
-          text.append(")");
-          text.append("\n");
-          text.append("\n");
+
+          String textForImage = new ContentEditorText().getTextForImage(charSequence.toString());
+          text.append(textForImage);
         })
         .neutralText(R.string.cancel)
         .show();
@@ -402,13 +409,6 @@ public class ContentEditorActivity extends RepositoryThemeActivity
     super.onStart();
 
     contentEditorPresenter.setCallback(this);
-
-    if (issueInfo != null) {
-      String issueComment = CacheWrapper.getIssueComment(issueInfo.toString());
-      if (issueComment != null) {
-        editText.setText(formatText(issueComment));
-      }
-    }
   }
 
   @Override
@@ -517,9 +517,10 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
   @Override
   public void appendText(String text) {
-    editText.getText().append("\n");
-    editText.getText().append(text);
-    editText.getText().append("\n");
+    runOnUiThread(() -> {
+      MentionsEditable mentionsEditable = editText.getText();
+      mentionsEditable.append(text);
+    });
   }
 
   @Override

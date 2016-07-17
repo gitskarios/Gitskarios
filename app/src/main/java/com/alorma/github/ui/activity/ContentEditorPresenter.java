@@ -47,7 +47,7 @@ public class ContentEditorPresenter {
 
   public void setImageUrl(String name, String link) {
     String textForImage = new ContentEditorText().getTextForImage(name, link);
-    callback.appendText(textForImage);
+    callback.appendText("\n" + textForImage + "\n");
   }
 
   public void setCallback(Callback callback) {

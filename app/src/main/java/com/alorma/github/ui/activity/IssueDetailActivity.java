@@ -360,6 +360,7 @@ public class IssueDetailActivity extends BackActivity
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     if (this.issueStory != null) {
+
       if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
         getMenuInflater().inflate(R.menu.issue_detail, menu);
       } else {

@@ -13,7 +13,7 @@ public abstract class EmojisFragment extends BaseFragment {
   public void onStart() {
     super.onStart();
 
-    EmojisPresenter emojisPresenter = new EmojisPresenter(getContext());
+    EmojisPresenter emojisPresenter = new EmojisPresenter();
     subscribe = emojisPresenter.getEmojis().subscribe(new EmojiSubscriber());
   }
 
@@ -21,7 +21,7 @@ public abstract class EmojisFragment extends BaseFragment {
     if (subscribe != null) {
       subscribe.unsubscribe();
     }
-    EmojisPresenter emojisPresenter = new EmojisPresenter(getContext());
+    EmojisPresenter emojisPresenter = new EmojisPresenter();
     subscribe = emojisPresenter.getEmojis(filter)
         .throttleLast(100, TimeUnit.MILLISECONDS)
         .debounce(250, TimeUnit.MILLISECONDS)

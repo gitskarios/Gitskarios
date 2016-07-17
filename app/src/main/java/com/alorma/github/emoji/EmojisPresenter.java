@@ -1,6 +1,5 @@
 package com.alorma.github.emoji;
 
-import android.content.Context;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.SdkItem;
@@ -13,14 +12,11 @@ import rx.schedulers.Schedulers;
 
 public class EmojisPresenter {
 
-  private Context context;
-
-  public EmojisPresenter(Context context) {
-    this.context = context;
+  public EmojisPresenter() {
   }
 
   public Observable<List<Emoji>> getEmojis() {
-    CacheDataSource<Void, List<Emoji>> cache = new EmojisCacheDataSource(context);
+    CacheDataSource<Void, List<Emoji>> cache = new EmojisCacheDataSource();
     CloudDataSource<Void, List<Emoji>> api = new EmojisApiDataSource(null);
 
     GenericRepository<Void, List<Emoji>> repository = new GenericRepository<>(cache, api);
