@@ -219,7 +219,6 @@ dependencies {
     compile('com.afollestad:material-cab:0.1.11@aar') {
         transitive = true
     }
-    compile 'com.github.pedrovgs:renderers:2.0.3'
     compile 'com.jakewharton:butterknife:8.2.1'
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'

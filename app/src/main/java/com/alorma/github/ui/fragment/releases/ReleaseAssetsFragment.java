@@ -12,16 +12,12 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.github.ui.renderers.releases.assets.ReleaseAssetRendererBuilder;
-import com.alorma.github.ui.renderers.releases.assets.ReleaseAssetsRenderer;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.pedrogomez.renderers.ListAdapteeCollection;
-import com.pedrogomez.renderers.RVRendererAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssetsRenderer.OnReleaseAssetClicked, TitleProvider {
+public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssetsAdapter.OnReleaseAssetClicked, TitleProvider {
 
   private static final String RELEASE_ASSETS = "RELEASE_ASSETS";
   private ReleaseAssetCallback releaseAssetCallback;
@@ -63,11 +59,10 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
     List<ReleaseAsset> assets = getArguments().getParcelableArrayList(RELEASE_ASSETS);
 
     if (assets != null) {
-      RVRendererAdapter<ReleaseAsset> adapter =
-          new RVRendererAdapter<>(LayoutInflater.from(getActivity()), new ReleaseAssetRendererBuilder(this),
-              new ListAdapteeCollection<>(assets));
-
-      recyclerView.setAdapter(adapter);
+      ReleaseAssetsAdapter releaseAssetsAdapter = new ReleaseAssetsAdapter(getActivity().getLayoutInflater());
+      releaseAssetsAdapter.setOnReleaseAssetClicked(this);
+      recyclerView.setAdapter(releaseAssetsAdapter);
+      releaseAssetsAdapter.addAll(assets);
     }
   }
 
