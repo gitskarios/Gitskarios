@@ -16,9 +16,6 @@ import com.alorma.github.emoji.EmojisAdapter;
 import com.alorma.github.emoji.EmojisFragment;
 import java.util.List;
 
-/**
- * Created by Bernat on 08/07/2015.
- */
 public class ShowEmojisFragment extends EmojisFragment implements EmojisAdapter.OnEmojiSelectedListener {
 
   private EmojisAdapter emojisAdapter;

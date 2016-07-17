@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Bernat on 08/07/2015.
- */
 public class EmojisAdapter extends RecyclerView.Adapter<EmojisAdapter.EmojiViewHolder> {
 
   private final List<Emoji> emojis;
