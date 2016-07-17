@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -229,7 +230,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     inflater.inflate(R.menu.source_list_fragment, menu);
   }
 
-  @SuppressLint("NewApi")
   @Override
   public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
@@ -239,8 +239,10 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     try {
       if (menuItem != null) {
         Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.cloud_download);
-        drawable = DrawableCompat.wrap(drawable);
-        drawable.setTint(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          drawable = DrawableCompat.wrap(drawable);
+          drawable.setTint(Color.WHITE);
+        }
         menuItem.setIcon(drawable);
       }
     } catch (Exception e) {
