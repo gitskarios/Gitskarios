@@ -14,6 +14,7 @@ import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.NaturalTimeFormatter;
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_recyclerview);
     ButterKnife.bind(this);
+
+    if (getToolbar() != null) {
+      getToolbar().setBackgroundColor(AttributesUtils.getPrimaryColor(this));
+    }
 
     setTitle(R.string.milestones);
 
