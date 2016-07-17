@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/gitskarios/Gitskarios.svg?branch=develop)](https://travis-ci.org/gitskarios/Gitskarios)
 
 BETA: https://betas.to/TVbqhdCA
+Google Plus community: https://plus.google.com/communities/100177663530836613291
 
 [![Join the chat at https://gitter.im/gitskarios/Gitskarios](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gitskarios/Gitskarios?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
