@@ -6,7 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BaseActivity;
@@ -15,8 +15,8 @@ public class OtpCodeActivity extends BaseActivity {
 
   public static final String EXTRA_MESSAGE = "MESSAGE";
 
-  @Bind(R.id.otpCode) View buttonOtpCode;
-  @Bind(R.id.otpCodeText) TextInputLayout otpCodeTextView;
+  @BindView(R.id.otpCode) View buttonOtpCode;
+  @BindView(R.id.otpCodeText) TextInputLayout otpCodeTextView;
 
   public static Intent createLauncherIntent(Context context, String message) {
     Intent intent = new Intent(context, OtpCodeActivity.class);

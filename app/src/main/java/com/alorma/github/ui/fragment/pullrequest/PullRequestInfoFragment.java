@@ -14,7 +14,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
@@ -53,16 +53,16 @@ public class PullRequestInfoFragment extends BaseFragment {
   private static final int LABELS_EDIT = 1235;
   private static final int ASSIGNEE_EDIT = 1236;
 
-  @Bind(R.id.labels) ViewGroup labelsView;
-  @Bind(R.id.milestone) TextView milestoneView;
-  @Bind(R.id.progressMilestone) ProgressBar progressMilestone;
-  @Bind(R.id.assignee) TextView assigneeView;
-  @Bind(R.id.branch_head) TextView branchHeadView;
-  @Bind(R.id.branch_base) TextView branchBaseView;
-  @Bind(R.id.toolbar_labels_title) Toolbar toolbarLabels;
-  @Bind(R.id.toolbar_milestone) Toolbar toolbarMilestone;
-  @Bind(R.id.toolbar_assignee) Toolbar toolbarAssignee;
-  @Bind(R.id.toolbar_branches) Toolbar toolbarBranches;
+  @BindView(R.id.labels) ViewGroup labelsView;
+  @BindView(R.id.milestone) TextView milestoneView;
+  @BindView(R.id.progressMilestone) ProgressBar progressMilestone;
+  @BindView(R.id.assignee) TextView assigneeView;
+  @BindView(R.id.branch_head) TextView branchHeadView;
+  @BindView(R.id.branch_base) TextView branchBaseView;
+  @BindView(R.id.toolbar_labels_title) Toolbar toolbarLabels;
+  @BindView(R.id.toolbar_milestone) Toolbar toolbarMilestone;
+  @BindView(R.id.toolbar_assignee) Toolbar toolbarAssignee;
+  @BindView(R.id.toolbar_branches) Toolbar toolbarBranches;
 
   private IssueInfo issueInfo;
 

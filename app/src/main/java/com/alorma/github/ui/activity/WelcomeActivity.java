@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -24,10 +24,10 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Wel
 
   private static final int OTP_REQUEST = 1121;
 
-  @Bind(R.id.openLogin) View buttonLogin;
-  @Bind(R.id.openAlternateLogin) View buttonLoginToken;
-  @Bind(R.id.login_username) TextInputLayout loginUsername;
-  @Bind(R.id.login_password) TextInputLayout loginPassword;
+  @BindView(R.id.openLogin) View buttonLogin;
+  @BindView(R.id.openAlternateLogin) View buttonLoginToken;
+  @BindView(R.id.login_username) TextInputLayout loginUsername;
+  @BindView(R.id.login_password) TextInputLayout loginPassword;
   private WelcomePresenter welcomePresenter;
 
   @Override

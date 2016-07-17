@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.User;
@@ -19,9 +19,9 @@ import com.alorma.github.utils.KeyboardUtils;
 
 public class AlternateLoginActivity extends AccountAuthenticatorActivity implements AlternateLoginPresenterViewInterface {
 
-  @Bind(R.id.openLogin) View buttonLogin;
-  @Bind(R.id.login_username) TextInputLayout loginUsername;
-  @Bind(R.id.login_token) TextInputLayout loginToken;
+  @BindView(R.id.openLogin) View buttonLogin;
+  @BindView(R.id.login_username) TextInputLayout loginUsername;
+  @BindView(R.id.login_token) TextInputLayout loginToken;
   private AlternateLoginPresenter alternateLoginPresenter;
 
   @Override

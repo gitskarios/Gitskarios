@@ -5,19 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.pedrogomez.renderers.Renderer;
 
-/**
- * Created by a557114 on 30/07/2015.
- */
 public class ReleaseAssetsRenderer extends Renderer<ReleaseAsset> {
 
-  @Bind(R.id.releaseAssetName) TextView releaseAssetName;
-  @Bind(R.id.releaseAssetSize) TextView releaseAssetSize;
+  @BindView(R.id.releaseAssetName) TextView releaseAssetName;
+  @BindView(R.id.releaseAssetSize) TextView releaseAssetSize;
   private OnReleaseAssetClicked onReleaseAssetClicked;
 
   @Override

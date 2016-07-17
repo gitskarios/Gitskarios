@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.presenter.Presenter;
@@ -23,7 +23,7 @@ public class IssueLabelsActivity extends BackActivity implements Presenter.Callb
   private static final String LABELS = "LABELS";
   private static final String RETURN = "RETURN";
 
-  @Bind(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.recycler) RecyclerView recyclerView;
   private LabelsAdapter adapter;
   private boolean returnResult;
 

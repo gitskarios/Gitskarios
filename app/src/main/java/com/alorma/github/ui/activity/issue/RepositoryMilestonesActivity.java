@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.presenter.Presenter;
@@ -25,7 +25,7 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
   private static final String RETURN = "RETURN";
   private static final String STATE = "STATE";
 
-  @Bind(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.recycler) RecyclerView recyclerView;
   private MilestonesAdapter adapter;
   private boolean returnResult;
 

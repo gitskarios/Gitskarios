@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.presenter.Presenter;
@@ -22,7 +22,7 @@ public class IssueAssigneesActivity extends BackActivity
   private static final String ISSUE_INFO = "ISSUE_INFO";
   private static final String RETURN = "RETURN";
 
-  @Bind(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.recycler) RecyclerView recyclerView;
   private UsersAdapter adapter;
   private boolean returnResult;
 

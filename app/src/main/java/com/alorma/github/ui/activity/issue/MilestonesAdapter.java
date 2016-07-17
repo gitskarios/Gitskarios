@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
@@ -32,9 +32,9 @@ public class MilestonesAdapter extends RecyclerArrayAdapter<Milestone, Milestone
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
-    @Bind(R.id.milestoneTitle) TextView milestoneTitle;
-    @Bind(R.id.milestoneProgress) ProgressBar milestoneProgress;
-    @Bind(R.id.milestoneUpdated) TextView milestoneUpdated;
+    @BindView(R.id.milestoneTitle) TextView milestoneTitle;
+    @BindView(R.id.milestoneProgress) ProgressBar milestoneProgress;
+    @BindView(R.id.milestoneUpdated) TextView milestoneUpdated;
 
     public ViewHolder(View itemView) {
       super(itemView);

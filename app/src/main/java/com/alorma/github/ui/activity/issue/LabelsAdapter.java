@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
@@ -48,9 +48,9 @@ public class LabelsAdapter extends RecyclerArrayAdapter<LabelUiModel, LabelsAdap
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
-    @Bind(R.id.labelColor) ImageView labelColor;
-    @Bind(R.id.labelTitle) TextView labelTitle;
-    @Bind(R.id.labelCheck) CheckBox labelCheck;
+    @BindView(R.id.labelColor) ImageView labelColor;
+    @BindView(R.id.labelTitle) TextView labelTitle;
+    @BindView(R.id.labelCheck) CheckBox labelCheck;
 
     public ViewHolder(View itemView) {
       super(itemView);

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 public class CreateRepositoryActivity extends RepositoryThemeActivity
     implements CreateRepositoryFragment.CreateRepositoryInterface, View.OnClickListener {
 
-  @Bind(R.id.create) Button create;
+  @BindView(R.id.create) Button create;
   private Repo repo;
   private CreateRepositoryFragment fragment;
 
