@@ -66,11 +66,6 @@ public class ShowEmojisFragment extends EmojisFragment implements EmojisAdapter.
   }
 
   @Override
-  public void onEmojisLoadFail() {
-
-  }
-
-  @Override
   public void onEmojiSelected(Emoji emoji) {
     if (onEmojiSelectedListener != null) {
       onEmojiSelectedListener.onEmojiSelected(emoji);

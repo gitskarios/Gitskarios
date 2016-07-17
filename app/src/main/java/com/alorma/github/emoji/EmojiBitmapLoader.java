@@ -48,8 +48,8 @@ public class EmojiBitmapLoader {
 
 
         if (emojisMap.size() == 0) {
-            EmojisProvider provider = new EmojisProvider(textView.getContext());
-            provider.getEmojis(new EmojisProvider.EmojisCallback() {
+            EmojisPresenter provider = new EmojisPresenter(textView.getContext());
+            provider.getEmojis(new EmojisPresenter.EmojisCallback() {
                 @Override
                 public void onEmojisLoaded(List<Emoji> emojis) {
 

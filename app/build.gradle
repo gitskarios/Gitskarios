@@ -253,7 +253,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
 
-    compile 'io.reactivex:rxjava:1.0.16'
+    compile 'io.reactivex:rxjava:1.1.7'
 
     compile 'net.danlew:android.joda:2.8.2'
 

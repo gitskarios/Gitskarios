@@ -354,7 +354,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
       switch (requestCode) {
         case EMOJI_REQUEST:
           Emoji emoji = data.getParcelableExtra(EmojisActivity.EMOJI);
-          editText.getText().append(" :" + emoji.getKey() + ": ");
+          appendText(":" + emoji.getKey() + ":");
           break;
         case IntentHelper.FILE_PICK:
           String path = UriUtils.getPath(this, data.getData());
