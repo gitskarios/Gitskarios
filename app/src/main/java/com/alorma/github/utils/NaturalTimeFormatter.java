@@ -14,14 +14,15 @@ public class NaturalTimeFormatter implements TimeFormatter {
 
   @Override
   public String relative(long milis) {
-    RelativeDateFormat relFormat = new RelativeDateFormat(context, NaturalDateFormat.TIME);
+    RelativeDateFormat relFormat = new RelativeDateFormat(context,
+        NaturalDateFormat.MONTHS | NaturalDateFormat.DAYS);
     return relFormat.format(milis);
   }
 
   @Override
   public String absolute(long milis) {
     AbsoluteDateFormat absFormat = new AbsoluteDateFormat(context,
-        NaturalDateFormat.DATE | NaturalDateFormat.HOURS | NaturalDateFormat.MINUTES);
+        NaturalDateFormat.DATE | NaturalDateFormat.MONTHS | NaturalDateFormat.DAYS | NaturalDateFormat.HOURS | NaturalDateFormat.MINUTES);
     return absFormat.format(milis);
   }
 }
