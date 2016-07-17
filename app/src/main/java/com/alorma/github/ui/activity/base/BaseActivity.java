@@ -10,11 +10,15 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.account.AccountNameProvider;
+import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
 import com.alorma.github.utils.KeyboardUtils;
 import java.util.List;
+import javax.inject.Inject;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -24,11 +28,21 @@ public class BaseActivity extends AppCompatActivity {
   private AccountsManager accountsManager;
   private ProgressDialog progressDialog;
 
+  @Inject protected AccountNameProvider accountNameProvider;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     configureTheme();
     super.onCreate(savedInstanceState);
+    injectComponents();
     accountsManager = new AccountsManager();
+  }
+
+  private void injectComponents() {
+    GitskariosApplication application = (GitskariosApplication) getApplication();
+    ApplicationComponent applicationComponent = application.getApplicationComponent();
+
+    applicationComponent.inject(this);
   }
 
   private void configureTheme() {

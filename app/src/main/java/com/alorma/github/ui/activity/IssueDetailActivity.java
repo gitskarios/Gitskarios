@@ -121,7 +121,7 @@ public class IssueDetailActivity extends BackActivity
 
     if (getIntent().getExtras() != null) {
 
-      issueInfo = (IssueInfo) getIntent().getExtras().getParcelable(ISSUE_INFO);
+      issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
 
       if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
         String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
@@ -377,26 +377,27 @@ public class IssueDetailActivity extends BackActivity
   public boolean onPrepareOptionsMenu(Menu menu) {
     if (this.issueStory != null) {
 
-      if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
-        if (menu.findItem(R.id.action_close_issue) != null) {
-          menu.removeItem(R.id.action_close_issue);
-        }
-        if (menu.findItem(R.id.action_reopen_issue) != null) {
-          menu.removeItem(R.id.action_reopen_issue);
-        }
-        if (issueStory.item.state == IssueState.closed) {
-          MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
-          menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        } else {
+      if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push
+          || accountNameProvider.getName().equals(issueStory.item.user.login)) {
+          if (menu.findItem(R.id.action_close_issue) != null) {
+            menu.removeItem(R.id.action_close_issue);
+          }
+          if (menu.findItem(R.id.action_reopen_issue) != null) {
+            menu.removeItem(R.id.action_reopen_issue);
+          }
+          if (issueStory.item.state == IssueState.closed) {
+            MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+          } else {
 
-          MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
-          menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+          }
         }
       }
-    }
 
-    return true;
-  }
+      return true;
+    }
 
   public void onAddComment() {
     String hint = getString(R.string.add_comment);

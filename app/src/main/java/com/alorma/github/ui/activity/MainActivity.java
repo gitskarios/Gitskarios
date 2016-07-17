@@ -432,6 +432,8 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     boolean changingUser = selectedAccount != null && !getNameFromAccount(selectedAccount).equals(getNameFromAccount(account));
     this.selectedAccount = account;
 
+    accountNameProvider.setName(getNameFromAccount(account));
+
     StoreCredentials credentials = new StoreCredentials(MainActivity.this);
     credentials.clear();
     String authToken = AccountsHelper.getUserToken(this, account);
