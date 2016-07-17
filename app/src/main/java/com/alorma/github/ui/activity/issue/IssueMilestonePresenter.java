@@ -8,6 +8,7 @@ import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
+import java.util.Collections;
 import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,6 +28,10 @@ public class IssueMilestonePresenter extends Presenter<RepoInfo, List<Milestone>
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(listCallback::showLoading)
         .doOnCompleted(listCallback::hideLoading)
+        .map(milestones -> {
+          Collections.sort(milestones, (milestone, t1) -> t1.updatedAt.compareTo(milestone.updatedAt));
+          return milestones;
+        })
         .subscribe(milestones -> action(milestones, listCallback, true), Throwable::printStackTrace);
   }
 
