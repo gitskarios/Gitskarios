@@ -8,14 +8,15 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.Story;
 import com.alorma.github.ui.adapter.issues.holders.Holder;
 import com.alorma.github.ui.adapter.issues.holders.IssueHolder;
+import com.alorma.github.ui.listeners.IssueCommentRequestListener;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueDetailView;
 
 public class IssueDetailAdapter extends StoryDetailAdapter<Issue> {
 
   public IssueDetailAdapter(Context context, LayoutInflater inflater, Story<Issue> story, RepoInfo repoInfo,
-      IssueDetailRequestListener issueDetailRequestListener) {
-    super(context, inflater, story, repoInfo, issueDetailRequestListener);
+      IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
+    super(context, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
   }
 
   @Override

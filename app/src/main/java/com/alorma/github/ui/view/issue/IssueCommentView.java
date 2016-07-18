@@ -14,6 +14,7 @@ import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
+import com.alorma.github.ui.listeners.IssueCommentRequestListener;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
@@ -23,6 +24,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class IssueCommentView extends LinearLayout {
+
+  private IssueCommentRequestListener issueCommentRequestListener;
 
   private TextView body;
   private UserAvatarView profileIcon;
@@ -90,11 +93,15 @@ public class IssueCommentView extends LinearLayout {
     Log.i("PR_time_comment", (System.currentTimeMillis() - milis) + "ms");
   }
 
-  private void checkEditable(RepoInfo repoInfo, IssueStoryComment issue) {
+  private void checkEditable(RepoInfo repoInfo, IssueStoryComment issueStoryComment) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user().login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push || issueStoryComment.user().login.equals(credentials.getUserName())) {
       editComment.setVisibility(VISIBLE);
-      editComment.setOnClickListener(view -> {});
+      editComment.setOnClickListener(view -> {
+        if (issueCommentRequestListener != null) {
+          issueCommentRequestListener.onContentEditRequest(issueStoryComment);
+        }
+      });
     }
   }
 
@@ -108,5 +115,9 @@ public class IssueCommentView extends LinearLayout {
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String date = TimeUtils.getTimeAgoString(formatter.print(time));
     createdAt.setText(date);
+  }
+
+  public void setIssueCommentRequestListener(IssueCommentRequestListener issueCommentRequestListener) {
+    this.issueCommentRequestListener = issueCommentRequestListener;
   }
 }

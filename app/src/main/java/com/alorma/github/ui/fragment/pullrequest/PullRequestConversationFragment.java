@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -31,6 +32,7 @@ import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
@@ -41,6 +43,7 @@ import com.alorma.github.ui.actions.AddIssueCommentAction;
 import com.alorma.github.ui.activity.ContentEditorActivity;
 import com.alorma.github.ui.adapter.issues.PullRequestDetailAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.listeners.IssueCommentRequestListener;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
@@ -52,7 +55,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class PullRequestConversationFragment extends BaseFragment
-    implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
+    implements PullRequestDetailView.PullRequestActionsListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener,
+    IssueCommentRequestListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -309,7 +313,8 @@ public class PullRequestConversationFragment extends BaseFragment
       status = getString(R.string.pullrequest_status_merged);
     }
     getActivity().setTitle("#" + pullRequestStory.item.number + " " + status);
-    adapter = new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this);
+    adapter =
+        new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     getActivity().invalidateOptionsMenu();
@@ -405,6 +410,13 @@ public class PullRequestConversationFragment extends BaseFragment
   private void restartActivity() {
     startActivity(getActivity().getIntent());
     getActivity().finish();
+  }
+
+  @Override
+  public void onContentEditRequest(IssueStoryComment issueStoryComment) {
+    if (getActivity() != null) {
+      Toast.makeText(getActivity(), "Edit comment: " + issueStoryComment.comment.id, Toast.LENGTH_SHORT).show();
+    }
   }
 
   public interface PullRequestStoryLoaderInterface {

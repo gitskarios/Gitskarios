@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -37,6 +38,7 @@ import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
+import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
@@ -52,6 +54,7 @@ import com.alorma.github.ui.actions.ReopenAction;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.adapter.issues.IssueDetailAdapter;
+import com.alorma.github.ui.listeners.IssueCommentRequestListener;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.utils.AttributesUtils;
@@ -72,7 +75,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class IssueDetailActivity extends BackActivity
-    implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener {
+    implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener {
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -261,7 +264,7 @@ public class IssueDetailActivity extends BackActivity
       status = getString(R.string.issue_status_close);
     }
     setTitle("#" + issueStory.item.number + " " + status);
-    IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this);
+    IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();
@@ -378,27 +381,27 @@ public class IssueDetailActivity extends BackActivity
   public boolean onPrepareOptionsMenu(Menu menu) {
     if (this.issueStory != null) {
 
-      if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push
-          || accountNameProvider.getName().equals(issueStory.item.user.login)) {
-          if (menu.findItem(R.id.action_close_issue) != null) {
-            menu.removeItem(R.id.action_close_issue);
-          }
-          if (menu.findItem(R.id.action_reopen_issue) != null) {
-            menu.removeItem(R.id.action_reopen_issue);
-          }
-          if (issueStory.item.state == IssueState.closed) {
-            MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-          } else {
+      if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push || accountNameProvider.getName()
+          .equals(issueStory.item.user.login)) {
+        if (menu.findItem(R.id.action_close_issue) != null) {
+          menu.removeItem(R.id.action_close_issue);
+        }
+        if (menu.findItem(R.id.action_reopen_issue) != null) {
+          menu.removeItem(R.id.action_reopen_issue);
+        }
+        if (issueStory.item.state == IssueState.closed) {
+          MenuItem menuItem = menu.add(0, R.id.action_reopen_issue, 1, getString(R.string.reopenIssue));
+          menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        } else {
 
-            MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-          }
+          MenuItem menuItem = menu.add(0, R.id.action_close_issue, 1, getString(R.string.closeIssue));
+          menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
       }
-
-      return true;
     }
+
+    return true;
+  }
 
   public void onAddComment() {
     String hint = getString(R.string.add_comment);
@@ -636,6 +639,11 @@ public class IssueDetailActivity extends BackActivity
   public void onRefresh() {
     getContent();
     swipe.setOnRefreshListener(null);
+  }
+
+  @Override
+  public void onContentEditRequest(IssueStoryComment issueStoryComment) {
+    Toast.makeText(this, "Edit comment: " + issueStoryComment.comment.id, Toast.LENGTH_SHORT).show();
   }
 
   private class MilestonesCallback implements Observer<List<Milestone>> {

@@ -14,6 +14,7 @@ import com.alorma.github.ui.adapter.issues.holders.Holder;
 import com.alorma.github.ui.adapter.issues.holders.LabelsHolder;
 import com.alorma.github.ui.adapter.issues.holders.ReviewCommentHolder;
 import com.alorma.github.ui.adapter.issues.holders.TimelineHolder;
+import com.alorma.github.ui.listeners.IssueCommentRequestListener;
 import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
@@ -35,14 +36,16 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
   private Story<K> story;
   private RepoInfo repoInfo;
   private IssueDetailRequestListener issueDetailRequestListener;
+  private IssueCommentRequestListener issueCommentRequestListener;
 
   public StoryDetailAdapter(Context context, LayoutInflater inflater, Story<K> story, RepoInfo repoInfo,
-      IssueDetailRequestListener issueDetailRequestListener) {
+      IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
     this.context = context;
     this.story = story;
     this.repoInfo = repoInfo;
     this.issueDetailRequestListener = issueDetailRequestListener;
     this.mInflater = inflater;
+    this.issueCommentRequestListener = issueCommentRequestListener;
   }
 
   @Override
@@ -53,6 +56,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
         return createItemHolder(context, story, repoInfo.permissions, issueDetailRequestListener);
       case VIEW_COMMENT:
         IssueCommentView issueCommentView = new IssueCommentView(context);
+        issueCommentView.setIssueCommentRequestListener(issueCommentRequestListener);
         issueCommentView.setLayoutParams(params);
         return new CommentHolder(issueCommentView);
       case VIEW_EVENT:
