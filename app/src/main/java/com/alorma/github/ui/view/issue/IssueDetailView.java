@@ -49,6 +49,7 @@ public class IssueDetailView extends LinearLayout {
   private TextView textRepository;
   private IssueDetailRequestListener issueDetailRequestListener;
   private ReactionsView reactionsLy;
+  private View editComment;
 
   public IssueDetailView(Context context) {
     super(context);
@@ -84,6 +85,7 @@ public class IssueDetailView extends LinearLayout {
     textAssignee = (TextView) findViewById(R.id.textAssignee);
     textRepository = (TextView) findViewById(R.id.textRepository);
     reactionsLy = (ReactionsView) findViewById(R.id.reactionsLy);
+    editComment = findViewById(R.id.editComment);
   }
 
   public void setIssue(RepoInfo repoInfo, final Issue issue) {
@@ -125,18 +127,20 @@ public class IssueDetailView extends LinearLayout {
     StoreCredentials credentials = new StoreCredentials(getContext());
     if (repoInfo.permissions != null && repoInfo.permissions.push
         || issue.user.login.equals(credentials.getUserName())) {
+      editComment.setVisibility(VISIBLE);
       OnClickListener editClickListener = v -> {
         if (issueDetailRequestListener != null) {
           if (v.getId() == R.id.textTitle) {
             issueDetailRequestListener.onTitleEditRequest();
-          } else if (v.getId() == R.id.textBody) {
+          } else if (v.getId() == R.id.editComment) {
             issueDetailRequestListener.onContentEditRequest();
           }
         }
       };
 
       title.setOnClickListener(editClickListener);
-      body.setOnClickListener(editClickListener);
+
+      editComment.setOnClickListener(editClickListener);
     }
   }
 

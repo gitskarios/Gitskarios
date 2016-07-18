@@ -29,7 +29,7 @@
         <item name="gitskarios_icons">@color/icons</item>
         <item name="gitskarios_title">@color/primary_dark</item>
         <item name="gitskarios_webview">@android:color/transparent</item>
-        <item name="gitskarios_card_background">@color/white</item>
+        <item name="gitskarios_card_background">@color/md_grey_300</item>
 
         <item name="diff_addition_text_color">@color/black</item>
         <item name="diff_deletion_text_color">@color/black</item>
