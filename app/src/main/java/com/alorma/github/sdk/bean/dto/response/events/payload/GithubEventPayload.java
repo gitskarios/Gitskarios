@@ -3,14 +3,8 @@ package com.alorma.github.sdk.bean.dto.response.events.payload;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Bernat on 04/10/2014.
- */
 public class GithubEventPayload implements Parcelable {
   public GithubEventPayload() {
-  }
-
-  protected GithubEventPayload(Parcel in) {
   }
 
   @Override
@@ -21,4 +15,19 @@ public class GithubEventPayload implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
   }
+
+  protected GithubEventPayload(Parcel in) {
+  }
+
+  public static final Creator<GithubEventPayload> CREATOR = new Creator<GithubEventPayload>() {
+    @Override
+    public GithubEventPayload createFromParcel(Parcel source) {
+      return new GithubEventPayload(source);
+    }
+
+    @Override
+    public GithubEventPayload[] newArray(int size) {
+      return new GithubEventPayload[size];
+    }
+  };
 }
