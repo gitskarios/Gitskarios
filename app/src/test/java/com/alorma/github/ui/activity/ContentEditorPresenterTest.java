@@ -88,10 +88,10 @@ public class ContentEditorPresenterTest {
   }
 
   private String buildResult(String name) {
-    return "![" + name + "](" + LINK + ")";
+    return "\n" + "![" + name + "](" + LINK + ")" + "\n";
   }
 
-  class ImgurTestApi extends ImgurUpload {
+  private class ImgurTestApi extends ImgurUpload {
     @Override
     public Observable<ImageResponse> uploadImage(Upload upload, String clientId) {
       return Observable.just(validImageResponse);
