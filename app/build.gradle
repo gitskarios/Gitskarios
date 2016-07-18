@@ -40,8 +40,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 24
-        versionName "2.17.4"
-        versionCode 217004
+        versionName "2.17.5"
+        versionCode 217005
         resValue "string", "app_git_hash", getCurrentGitHash()
 
         multiDexEnabled true
@@ -264,7 +264,7 @@ dependencies {
 
 play {
     jsonFile = file('../gplay-secret.json')
-    track = 'production'
+    track = 'beta'
 }
 
 def (releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword) = signingConfigFromFile()
