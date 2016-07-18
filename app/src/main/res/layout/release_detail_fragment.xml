@@ -12,11 +12,11 @@
       android:orientation="vertical"
       >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:id="@+id/author"
-                  style="@style/repo_overview_item"
-                  android:layout_width="match_parent"
-                  android:layout_height="@dimen/material_drawer_item_profile"
+    <LinearLayout
+        android:id="@+id/author"
+        style="@style/repo_overview_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_drawer_item_profile"
         >
 
       <com.alorma.github.ui.view.UserAvatarView
@@ -47,13 +47,13 @@
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:id="@+id/created"
-                  style="@style/repo_overview_item"
-                  android:layout_width="match_parent"
-                  android:layout_height="@dimen/material_drawer_item_profile"
-                  android:background="@null"
-                  android:clickable="false"
+    <LinearLayout
+        android:id="@+id/created"
+        style="@style/repo_overview_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_drawer_item_profile"
+        android:background="@null"
+        android:clickable="false"
         >
 
       <ImageView

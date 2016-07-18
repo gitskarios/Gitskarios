@@ -1,37 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?gitskarios_card_background"
-    android:orientation="horizontal"
-    tools:showIn="@layout/issue_detail_issue_view">
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="?gitskarios_card_background"
+             android:orientation="horizontal"
+    >
 
-    <com.alorma.github.ui.view.UserAvatarView
-        android:id="@+id/profileIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:uav_show_timeline="false" />
+  <com.alorma.github.ui.view.UserAvatarView
+      android:id="@+id/profileIcon"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      app:uav_show_timeline="false"
+      />
 
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="48dp"
+      android:orientation="horizontal"
+      android:layout_marginLeft="48dp"
+      android:layout_marginStart="48dp"
+      android:gravity="center_vertical"
+      >
     <TextView
         android:id="@+id/name"
         style="@style/Base.TextAppearance.AppCompat.Caption"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
         android:textSize="@dimen/textSizeMedium"
         android:textStyle="bold"
-        tools:text="Alorma" />
+        android:layout_marginLeft="@dimen/materialize_baseline_grid"
+        android:layout_marginStart="@dimen/materialize_baseline_grid"
+        tools:text="Alorma"
+        />
 
     <TextView
         android:id="@+id/time"
         style="@style/Base.TextAppearance.AppCompat.Caption"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="48dp"
         android:layout_marginLeft="@dimen/materialize_baseline_grid"
         android:layout_marginStart="@dimen/materialize_baseline_grid"
         android:gravity="center_vertical"
         android:textSize="@dimen/textSizeSmall"
-        tools:text="3 days ago" />
-</LinearLayout>
+        tools:text="3 days ago"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_margin="4dp"
+      android:layout_gravity="right|end|center_vertical"
+      android:id="@+id/editComment"
+      android:gravity="center"
+      android:visibility="gone"
+      tools:visibility="visible"
+      android:background="?selectableItemBackgroundBorderless"
+      >
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:padding="4dp"
+        app:srcCompat="@drawable/pencil"
+        android:tint="?gitskarios_icons"
+        />
+  </LinearLayout>
+</FrameLayout>

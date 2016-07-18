@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
+import com.alorma.github.StoreCredentials;
 import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
@@ -27,6 +29,7 @@ public class IssueCommentView extends LinearLayout {
   private TextView userText;
   private TextView createdAt;
   private ReactionsView reactions;
+  private View editComment;
 
   public IssueCommentView(Context context) {
     super(context);
@@ -58,6 +61,7 @@ public class IssueCommentView extends LinearLayout {
     profileIcon = (UserAvatarView) findViewById(R.id.profileIcon);
     createdAt = (TextView) findViewById(R.id.time);
     reactions = (ReactionsView) findViewById(R.id.reactionsLy);
+    editComment = findViewById(R.id.editComment);
   }
 
   public void setComment(RepoInfo repoInfo, IssueStoryComment issueStoryDetail) {
@@ -81,7 +85,17 @@ public class IssueCommentView extends LinearLayout {
       imageGetter.bind(body, htmlCode, githubComment.hashCode());
       body.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
     }
+
+    checkEditable(repoInfo, issueStoryDetail);
     Log.i("PR_time_comment", (System.currentTimeMillis() - milis) + "ms");
+  }
+
+  private void checkEditable(RepoInfo repoInfo, IssueStoryComment issue) {
+    StoreCredentials credentials = new StoreCredentials(getContext());
+    if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user().login.equals(credentials.getUserName())) {
+      editComment.setVisibility(VISIBLE);
+      editComment.setOnClickListener(view -> {});
+    }
   }
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {

@@ -5,7 +5,7 @@
        tools:showIn="@layout/repo_overview_fragment"
     >
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <LinearLayout
                 android:id="@+id/author"
                 style="@style/repo_overview_item"
                 android:layout_width="match_parent"
@@ -41,7 +41,7 @@
 
   </LinearLayout>
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <LinearLayout
                 android:id="@+id/fork"
                 style="@style/repo_overview_item"
                 android:layout_width="match_parent"
@@ -64,7 +64,7 @@
 
   </LinearLayout>
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <LinearLayout
                 android:id="@+id/created"
                 style="@style/repo_overview_item"
                 android:layout_width="match_parent"

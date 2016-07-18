@@ -123,7 +123,8 @@ public class IssueDetailView extends LinearLayout {
 
   private void checkEditable(RepoInfo repoInfo, Issue issue) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user.login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push
+        || issue.user.login.equals(credentials.getUserName())) {
       OnClickListener editClickListener = v -> {
         if (issueDetailRequestListener != null) {
           if (v.getId() == R.id.textTitle) {

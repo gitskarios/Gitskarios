@@ -122,10 +122,6 @@ public class BaseActivity extends AppCompatActivity {
     accountsManager.removeAccount(this, selectedAccount, removeAccountCallback);
   }
 
-  protected void changeNotificationState(Account account, boolean enabled) {
-    accountsManager.changeNotificationState(this, account, enabled);
-  }
-
   public void reload() {
     getContent();
   }
