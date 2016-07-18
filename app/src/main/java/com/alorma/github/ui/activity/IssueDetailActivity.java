@@ -18,11 +18,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.issue.IssueCommentPresenter;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
@@ -39,6 +44,8 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
+import com.alorma.github.sdk.core.GithubComment;
+import com.alorma.github.sdk.core.issue.EditIssueCommentBodyRequest;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
@@ -69,6 +76,7 @@ import com.nineoldandroids.animation.ValueAnimator;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -77,6 +85,8 @@ import rx.schedulers.Schedulers;
 public class IssueDetailActivity extends BackActivity
     implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener {
 
+  @Inject IssueCommentPresenter issueCommentPresenter;
+
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
   public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";
@@ -84,6 +94,8 @@ public class IssueDetailActivity extends BackActivity
 
   private static final int NEW_COMMENT_REQUEST = 1243;
   private static final int ISSUE_BODY_EDIT = 4252;
+  private static final int EDIT_COMMENT_REQUEST = 1121;
+
   public Repo repository;
   private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
@@ -148,6 +160,14 @@ public class IssueDetailActivity extends BackActivity
 
       getContent();
     }
+  }
+
+  @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    super.injectComponents(applicationComponent);
+
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.inject(this);
   }
 
   private void checkEditTitle() {
@@ -626,6 +646,11 @@ public class IssueDetailActivity extends BackActivity
         bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
 
         executeEditIssue(bodyRequestDTO, R.string.issue_change_body);
+      } else if (requestCode == EDIT_COMMENT_REQUEST) {
+        IssueStoryComment comment = data.getParcelableExtra(ContentEditorActivity.PARCELABLE);
+        String body = data.getStringExtra(ContentEditorActivity.CONTENT);
+
+        editComment(comment, body);
       }
     }
   }
@@ -643,7 +668,37 @@ public class IssueDetailActivity extends BackActivity
 
   @Override
   public void onContentEditRequest(IssueStoryComment issueStoryComment) {
-    Toast.makeText(this, "Edit comment: " + issueStoryComment.comment.id, Toast.LENGTH_SHORT).show();
+    Intent intent = ContentEditorActivity.createLauncherIntent(this, null, issueStoryComment.comment.body, true, false);
+    intent.putExtra(ContentEditorActivity.PARCELABLE, issueStoryComment);
+    startActivityForResult(intent, EDIT_COMMENT_REQUEST);
+  }
+
+  private void editComment(IssueStoryComment issueStoryComment, String string) {
+    com.alorma.github.sdk.core.repositories.RepoInfo repoInfo = new com.alorma.github.sdk.core.repositories.RepoInfo();
+    repoInfo.name = issueInfo.repoInfo.name;
+    repoInfo.owner = issueInfo.repoInfo.owner;
+    EditIssueCommentBodyRequest edit = new EditIssueCommentBodyRequest(repoInfo, issueStoryComment.comment.id, string);
+    issueCommentPresenter.load(edit, new Presenter.Callback<GithubComment>() {
+      @Override
+      public void showLoading() {
+
+      }
+
+      @Override
+      public void onResponse(GithubComment githubComment, boolean firstTime) {
+        getContent();
+      }
+
+      @Override
+      public void hideLoading() {
+
+      }
+
+      @Override
+      public void onResponseEmpty() {
+
+      }
+    });
   }
 
   private class MilestonesCallback implements Observer<List<Milestone>> {

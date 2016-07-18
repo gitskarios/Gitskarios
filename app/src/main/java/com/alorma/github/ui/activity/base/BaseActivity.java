@@ -43,6 +43,12 @@ public class BaseActivity extends AppCompatActivity {
     ApplicationComponent applicationComponent = application.getApplicationComponent();
 
     applicationComponent.inject(this);
+
+    injectComponents(applicationComponent);
+  }
+
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+
   }
 
   private void configureTheme() {

@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
@@ -76,6 +77,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   private static final String ISSUE_NUM = "ISSUE_NUM";
   private static final String ALLOW_EMPTY = "ALLOW_EMPTY";
   private static final String BACK_IS_OK = "BACK_IS_OK";
+  public static final String PARCELABLE = "PARCELABLE";
   private static final int EMOJI_REQUEST = 1515;
 
   private RichEditorView editText;
@@ -149,6 +151,12 @@ public class ContentEditorActivity extends RepositoryThemeActivity
         editText.setHint(hint);
       } else {
         editText.setHint(getString(R.string.edit_hint));
+      }
+
+      final String prefill = getIntent().getExtras().getString(PREFILL);
+
+      if (!TextUtils.isEmpty(prefill)) {
+        editText.setText(prefill);
       }
 
       editText.setQueryTokenReceiver(this);
@@ -271,16 +279,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
     switch (item.getItemId()) {
       case R.id.action_ok:
-        Intent intent = new Intent();
-        intent.putExtra(CONTENT, editText.getText().toString());
-
-        if (issueInfo != null) {
-          applied = true;
-          CacheWrapper.clearIssueComment(issueInfo.toString());
-        }
-
-        setResult(RESULT_OK, intent);
-        finish();
+        returnContent();
         break;
       case R.id.action_trash:
         editText.setText("");
@@ -378,24 +377,37 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   @Override
   protected void close(boolean navigateUp) {
     saveCache();
-    int result = RESULT_CANCELED;
     if (!allowEmpty) {
       finish();
-      return;
     } else {
-      if (TextUtils.isEmpty(editText.getText())) {
-        result = RESULT_OK;
-      }
-      if (backIsOk) {
-        result = RESULT_OK;
-      }
-
-      Intent intent = new Intent();
-      intent.putExtra(CONTENT, editText.getText().toString());
-
-      setResult(result, intent);
-      finish();
+      returnContent();
     }
+  }
+
+  private void returnContent() {
+    int result = RESULT_CANCELED;
+    if (!TextUtils.isEmpty(editText.getText())) {
+      result = RESULT_OK;
+    }
+    if (backIsOk) {
+      result = RESULT_OK;
+    }
+
+    Intent getIntent = getIntent();
+    Parcelable parcelable = getIntent.getParcelableExtra(PARCELABLE);
+    Intent intent = new Intent();
+    intent.putExtra(CONTENT, editText.getText().toString());
+    if (parcelable != null) {
+      intent.putExtra(PARCELABLE, parcelable);
+    }
+
+    if (issueInfo != null) {
+      applied = true;
+      CacheWrapper.clearIssueComment(issueInfo.toString());
+    }
+
+    setResult(result, intent);
+    finish();
   }
 
   @Override
