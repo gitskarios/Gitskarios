@@ -2,7 +2,9 @@ package com.alorma.github.injector.module;
 
 import android.content.Context;
 import com.alorma.github.account.AccountNameProvider;
-import com.alorma.github.injector.SortOrder;
+import com.alorma.github.injector.named.SortOrder;
+import com.alorma.github.log.LogWrapper;
+import com.alorma.github.track.Tracker;
 import com.alorma.github.utils.RepoUtils;
 import dagger.Module;
 import dagger.Provides;
@@ -33,5 +35,17 @@ import javax.inject.Singleton;
   @Singleton
   AccountNameProvider getAccountName() {
     return new AccountNameProvider();
+  }
+
+  @Provides
+  @Singleton
+  Tracker getTracker() {
+    return new AppTracker();
+  }
+
+  @Provides
+  @Singleton
+  LogWrapper getLogWrapper() {
+    return new AndroidLogWrapper();
   }
 }

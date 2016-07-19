@@ -1,4 +1,4 @@
-package com.alorma.github.injector;
+package com.alorma.github.injector.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

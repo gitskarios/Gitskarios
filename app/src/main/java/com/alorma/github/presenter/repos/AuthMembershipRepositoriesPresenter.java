@@ -1,7 +1,7 @@
 package com.alorma.github.presenter.repos;
 
 import android.support.annotation.NonNull;
-import com.alorma.github.injector.PerActivity;
+import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;

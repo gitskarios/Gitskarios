@@ -14,6 +14,8 @@ import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.log.LogWrapper;
+import com.alorma.github.track.Tracker;
 import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
 import com.alorma.github.utils.KeyboardUtils;
@@ -29,6 +31,8 @@ public class BaseActivity extends AppCompatActivity {
   private ProgressDialog progressDialog;
 
   @Inject protected AccountNameProvider accountNameProvider;
+  @Inject protected Tracker tracker;
+  @Inject protected LogWrapper logWrapper;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,9 @@ public class BaseActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     injectComponents();
     accountsManager = new AccountsManager();
+
+    tracker.trackActivity(this);
+    logWrapper.i("LogWrapper", this.getClass().getName());
   }
 
   private void injectComponents() {

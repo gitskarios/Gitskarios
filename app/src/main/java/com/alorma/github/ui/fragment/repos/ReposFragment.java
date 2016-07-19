@@ -32,13 +32,10 @@ public abstract class ReposFragment extends BaseFragment
   private RecyclerView recyclerView;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    super.injectComponents(applicationComponent);
 
-    GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
-    ApplicationComponent component = application.getApplicationComponent();
-
-    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(component).apiModule(new ApiModule()).build();
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
 
     initInjectors(apiComponent);
   }
