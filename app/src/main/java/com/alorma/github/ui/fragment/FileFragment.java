@@ -110,6 +110,10 @@ public class FileFragment extends BaseFragment {
     if (getArguments() != null) {
 
       fileInfo = getArguments().getParcelable(FILE_INFO);
+      if (fileInfo == null) {
+        getActivity().finish();
+      }
+
       boolean fromUrl = getArguments().getBoolean(FROM_URL);
 
       webView.clearCache(true);
