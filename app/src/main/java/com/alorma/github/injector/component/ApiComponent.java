@@ -1,6 +1,6 @@
 package com.alorma.github.injector.component;
 
-import com.alorma.github.injector.PerActivity;
+import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;

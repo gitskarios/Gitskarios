@@ -248,10 +248,7 @@ public class IssueDetailActivity extends BackActivity
           @Override
           public void onError(Throwable e) {
             showError();
-
-            if (Fabric.isInitialized()) {
-              Crashlytics.logException(e);
-            }
+            tracker.trackError(e);
           }
 
           @Override

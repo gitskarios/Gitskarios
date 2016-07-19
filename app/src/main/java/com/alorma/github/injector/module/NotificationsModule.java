@@ -1,7 +1,7 @@
 package com.alorma.github.injector.module;
 
 import android.content.Context;
-import com.alorma.github.injector.NotificationsScope;
+import com.alorma.github.injector.scope.NotificationsScope;
 import com.alorma.github.notifications.AlarmManagerJobManager;
 import com.alorma.github.notifications.AppJobManager;
 import com.alorma.github.notifications.AppNotificationsManager;

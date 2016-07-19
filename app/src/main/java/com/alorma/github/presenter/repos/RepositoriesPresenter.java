@@ -1,7 +1,7 @@
 package com.alorma.github.presenter.repos;
 
 import android.support.annotation.NonNull;
-import com.alorma.github.injector.SortOrder;
+import com.alorma.github.injector.named.SortOrder;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;

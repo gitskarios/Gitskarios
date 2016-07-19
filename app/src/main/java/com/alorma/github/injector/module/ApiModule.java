@@ -1,6 +1,6 @@
 package com.alorma.github.injector.module;
 
-import com.alorma.github.injector.PerActivity;
+import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.Github;
 import com.alorma.github.sdk.core.GithubEnterprise;

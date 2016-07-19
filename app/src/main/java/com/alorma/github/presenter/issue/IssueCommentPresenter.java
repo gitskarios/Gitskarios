@@ -1,6 +1,6 @@
 package com.alorma.github.presenter.issue;
 
-import com.alorma.github.injector.PerActivity;
+import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.GithubComment;
