@@ -1,13 +1,18 @@
 package com.alorma.github.injector.module;
 
 import android.content.Context;
+import com.alorma.github.BuildConfig;
 import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.named.SortOrder;
 import com.alorma.github.log.LogWrapper;
 import com.alorma.github.track.Tracker;
 import com.alorma.github.utils.RepoUtils;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import dagger.Module;
 import dagger.Provides;
+import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.services.common.Crash;
 import javax.inject.Singleton;
 
 @Module public class ApplicationModule {
@@ -39,8 +44,26 @@ import javax.inject.Singleton;
 
   @Provides
   @Singleton
-  Tracker getTracker() {
-    return new AppTracker();
+  Answers getAnswers() {
+    return Answers.getInstance();
+  }
+
+  @Provides
+  @Singleton
+  Crashlytics getCrashlytics() {
+    return Crashlytics.getInstance();
+  }
+
+  @Provides
+  @Singleton
+  Tracker getTracker(Answers answers, Crashlytics crashlytics) {
+    if (BuildConfig.DEBUG) {
+      return new DebugTracker();
+    } else if (Fabric.isInitialized()){
+      return new AnswersTracker(answers, crashlytics);
+    } else {
+      return new DebugTracker();
+    }
   }
 
   @Provides

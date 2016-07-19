@@ -37,8 +37,6 @@ import com.alorma.github.ui.fragment.issues.GenericIssuesListFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.utils.AccountUtils;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.InviteEvent;
 import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.appinvite.AppInviteReferral;
@@ -63,7 +61,6 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import io.fabric.sdk.android.Fabric;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -345,22 +342,6 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             .setCallToActionText(getString(R.string.invitation_cta))
             .build();
     startActivityForResult(intent, REQUEST_INVITE);
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-
-    if (requestCode == REQUEST_INVITE) {
-      if (resultCode == RESULT_OK) {
-        String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-
-        if (Fabric.isInitialized()) {
-          Answers.getInstance()
-              .logInvite(new InviteEvent().putMethod("play-services").putCustomAttribute("number", String.valueOf(ids.length)));
-        }
-      }
-    }
   }
 
   private AccountHeader buildHeader() {
