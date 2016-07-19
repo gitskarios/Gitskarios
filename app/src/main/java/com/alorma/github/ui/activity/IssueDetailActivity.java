@@ -401,8 +401,8 @@ public class IssueDetailActivity extends BackActivity
   public boolean onPrepareOptionsMenu(Menu menu) {
     if (this.issueStory != null) {
 
-      if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push || accountNameProvider.getName()
-          .equals(issueStory.item.user.login)) {
+      if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push || (accountNameProvider.getName() != null
+          && accountNameProvider.getName().equals(issueStory.item.user.login))) {
         if (menu.findItem(R.id.action_close_issue) != null) {
           menu.removeItem(R.id.action_close_issue);
         }
