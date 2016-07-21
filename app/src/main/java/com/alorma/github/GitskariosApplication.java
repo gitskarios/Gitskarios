@@ -56,9 +56,7 @@ public class GitskariosApplication extends MultiDexApplication {
       CustomActivityOnCrash.setEnableAppRestart(true);
     }
 
-    if (!BuildConfig.DEBUG) {
-      Fabric.with(this, new Crashlytics());
-    }
+    Fabric.with(this, new Crashlytics());
 
     FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     firebaseAnalytics.setAnalyticsCollectionEnabled(true);

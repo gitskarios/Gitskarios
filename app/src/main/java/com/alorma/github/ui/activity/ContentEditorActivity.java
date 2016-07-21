@@ -280,7 +280,9 @@ public class ContentEditorActivity extends RepositoryThemeActivity
         break;
       case R.id.action_trash:
         editText.setText("");
-        CacheWrapper.clearIssueComment(issueInfo.toString());
+        if (issueInfo != null) {
+          CacheWrapper.clearIssueComment(issueInfo.toString());
+        }
         break;
       case R.id.add_content_editor_emojis:
         Intent intentEmojis = new Intent(this, EmojisActivity.class);
