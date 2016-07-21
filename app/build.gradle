@@ -40,8 +40,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 24
-        versionName "2.17.6"
-        versionCode 217006
+        versionName "2.17.7"
+        versionCode 217007
         resValue "string", "app_git_hash", getCurrentGitHash()
 
         multiDexEnabled true
@@ -192,7 +192,7 @@ dependencies {
     apt "com.google.dagger:dagger-compiler:2.4"
     compile "com.google.dagger:dagger:2.4"
 
-    compile 'com.pddstudio:highlightjs-android:1.1.0'
+    compile 'com.pddstudio:highlightjs-android:1.2.0'
 
     compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
         exclude group: "joda-time"
