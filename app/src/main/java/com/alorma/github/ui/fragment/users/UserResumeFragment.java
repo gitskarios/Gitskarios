@@ -19,6 +19,7 @@ import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.TimeUtils;
+import com.github.javierugarte.GitHubContributionsView;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.List;
 public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
   ViewGroup cardAbout;
+  ViewGroup cardContributions;
   ViewGroup cardGithub;
   private List<ProfileItem> profileItems = new ArrayList<>();
   private int color = Color.BLACK;
@@ -48,6 +50,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     super.onViewCreated(view, savedInstanceState);
 
     cardAbout = (ViewGroup) view.findViewById(R.id.cardAbout);
+    cardContributions = (ViewGroup) view.findViewById(R.id.cardContributions);
     cardGithub = (ViewGroup) view.findViewById(R.id.cardGithub);
   }
 
@@ -64,6 +67,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     this.user = user;
     if (getActivity() != null && isAdded()) {
       fillCardBio(user);
+      fillCardContributions(user);
       fillCardGithubData(user);
       cardsFilled = true;
     }
@@ -110,6 +114,15 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
       intent.setData(Uri.parse(user.blog));
       ProfileItem profileUserBlog = new ProfileItem(Octicons.Icon.oct_link, user.blog, intent);
       addItem(profileUserBlog, cardAbout);
+    }
+  }
+
+  private void fillCardContributions(User user) {
+    if (user != null && user.login != null && getView() != null) {
+      GitHubContributionsView contributionsView = (GitHubContributionsView)
+              getView().findViewById(R.id.github_contributions_view);
+      contributionsView.displayMonth(true);
+      contributionsView.loadUserName(user.login);
     }
   }
 

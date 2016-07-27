@@ -54,6 +54,51 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/gapMedium"
+        card_view:cardElevation="4dp"
+        tools:layout_height="120dp"
+        app:cardBackgroundColor="?attr/gitskarios_card_background"
+        >
+
+      <LinearLayout
+          android:id="@+id/cardContributions"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="?attr/colorAccent"
+            android:padding="@dimen/gapMedium"
+            android:text="@string/user_resume_contributions"
+            android:textSize="24sp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorAccent"
+            />
+
+        <com.github.javierugarte.GitHubContributionsView
+            android:id="@+id/github_contributions_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gapMedium"
+            />
+
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/gapXLarge"
         android:layout_marginTop="@dimen/gapMedium"
         card_view:cardElevation="4dp"
