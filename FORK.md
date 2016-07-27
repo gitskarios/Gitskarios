@@ -16,7 +16,7 @@ This url should follow the structure: `gitskariosgithubdevel://{domain}` It's ma
 
 Once you have a valid Credentials, you can FORK this project in your account / organization.
 
-This repository uses `develop` branch as default, and follow [Git-Flow](https://es.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
+This repository uses `develop` branch as default, please create your own branch to work on the PR.
 
 I WILL NOT accept Pull Request with a base branch `master`or `develop`, you should create ONE branch per feature.
 

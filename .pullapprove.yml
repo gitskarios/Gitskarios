@@ -1,0 +1,15 @@
+approve_by_comment: true
+approve_regex: '^:\+1:'
+reject_regex: ^Rejected
+reset_on_push: false
+reviewers:
+  members:
+  - alorma
+  name: pullapprove
+  required: 1
+always_pending:
+  title_regex: '(WIP|wip)'
+  labels:
+    - wip
+  # custom message that will be used for the GitHub status
+  explanation: 'Still a work in progress...'
