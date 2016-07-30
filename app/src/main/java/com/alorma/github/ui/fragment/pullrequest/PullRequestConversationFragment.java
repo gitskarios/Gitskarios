@@ -415,7 +415,7 @@ public class PullRequestConversationFragment extends BaseFragment
   @Override
   public void onContentEditRequest(IssueStoryComment issueStoryComment) {
     if (getActivity() != null) {
-      Toast.makeText(getActivity(), "Edit comment: " + issueStoryComment.comment.id, Toast.LENGTH_SHORT).show();
+      Toast.makeText(getActivity(), "Not ready yet", Toast.LENGTH_SHORT).show();
     }
   }
 
