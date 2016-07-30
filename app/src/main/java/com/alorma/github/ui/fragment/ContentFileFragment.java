@@ -85,6 +85,8 @@ public class ContentFileFragment extends BaseFragment {
 
       if (fileInfo.name.endsWith(".xml")) {
         webView.setHighlightLanguage(Language.XML);
+      } else if (fileInfo.content != null && fileInfo.content.startsWith("@@")) {
+        webView.setHighlightLanguage(Language.DIFF);
       }
 
       new IntentsManager(getActivity()).manageUrls(webView);

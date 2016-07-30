@@ -55,7 +55,6 @@ import rx.schedulers.Schedulers;
 
 public class RepoAboutFragment extends BaseFragment implements TitleProvider, BranchManager, BackManager {
 
-  public static final int PLACEHOLDER_ICON_SIZE = 20;
   private static final String REPO_INFO = "REPO_INFO";
   private Integer futureSubscribersCount;
   private Integer futureStarredCount;
@@ -316,13 +315,12 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
           Intent intent = new IntentsManager(getActivity()).checkUri(Uri.parse(url));
           if (intent != null) {
             startActivity(intent);
-            return true;
           } else {
             Intent intent1 = new Intent(Intent.ACTION_VIEW);
             intent1.setData(Uri.parse(url));
             startActivity(intent1);
-            return false;
           }
+          return true;
         }
       });
 
