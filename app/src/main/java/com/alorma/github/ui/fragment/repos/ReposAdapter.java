@@ -44,7 +44,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       }
     }
 
-    if (showOwnerNameExtra) {
+    if (showOwnerNameExtra && repo.getOwner() != null) {
       holder.textOwnerName.setText(repo.getOwner().getLogin());
     } else {
       holder.textOwnerName.setText("");

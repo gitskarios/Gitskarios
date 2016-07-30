@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/gapMedium"
         card_view:cardElevation="4dp"
         tools:layout_height="120dp"
-        app:cardBackgroundColor="?attr/gitskarios_card_background"
+        app:cardBackgroundColor="?gitskarios_card_background"
         >
 
       <LinearLayout
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:fontFamily="sans-serif-light"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?colorAccent"
             android:padding="@dimen/gapMedium"
             android:text="@string/user_resume_about"
             android:textSize="24sp"
@@ -45,7 +45,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?attr/colorAccent"
+            android:background="?colorAccent"
             />
       </LinearLayout>
 
@@ -57,7 +57,7 @@
         android:layout_marginTop="@dimen/gapMedium"
         card_view:cardElevation="4dp"
         tools:layout_height="120dp"
-        app:cardBackgroundColor="?attr/gitskarios_card_background"
+        app:cardBackgroundColor="?gitskarios_card_background"
         >
 
       <LinearLayout
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:fontFamily="sans-serif-light"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?colorAccent"
             android:padding="@dimen/gapMedium"
             android:text="@string/user_resume_contributions"
             android:textSize="24sp"
@@ -82,14 +82,18 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?attr/colorAccent"
+            android:background="?colorAccent"
             />
 
         <com.github.javierugarte.GitHubContributionsView
             android:id="@+id/github_contributions_view"
+            app:lastWeeks="50"
+            app:baseColor="?colorAccent"
+            app:backgroundBaseColor="?gitskarios_card_background"
+            app:textColor="?colorAccent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/gapMedium"
+            android:layout_height="100dp"
+            android:layout_margin="@dimen/gapLarge"
             />
 
       </LinearLayout>
@@ -103,7 +107,7 @@
         android:layout_marginTop="@dimen/gapMedium"
         card_view:cardElevation="4dp"
         tools:layout_height="120dp"
-        app:cardBackgroundColor="?attr/gitskarios_card_background"
+        app:cardBackgroundColor="?gitskarios_card_background"
         >
 
       <LinearLayout
@@ -122,13 +126,13 @@
             android:padding="@dimen/gapMedium"
             android:text="@string/user_resume_github"
             android:textSize="24sp"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?colorAccent"
             />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?attr/colorAccent"
+            android:background="?colorAccent"
             />
       </LinearLayout>
 

@@ -260,7 +260,7 @@ dependencies {
     compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
     compile 'com.github.chrisbanes:PhotoView:1.2.6'
-    compile 'com.github.javierugarte:githubcontributionsview:1.0.1'
+    compile 'com.github.javierugarte:githubcontributionsview:1.2.0'
 }
 
 play {
