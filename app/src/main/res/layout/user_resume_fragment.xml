@@ -87,13 +87,14 @@
 
         <com.github.javierugarte.GitHubContributionsView
             android:id="@+id/github_contributions_view"
-            app:lastWeeks="50"
-            app:baseColor="?colorAccent"
-            app:backgroundBaseColor="?gitskarios_card_background"
-            app:textColor="?colorAccent"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_margin="@dimen/gapLarge"
+            app:backgroundBaseColor="?gitskarios_card_background"
+            app:baseColor="?colorAccent"
+            app:displayMonth="true"
+            app:lastWeeks="50"
+            app:textColor="?colorAccent"
             />
 
       </LinearLayout>

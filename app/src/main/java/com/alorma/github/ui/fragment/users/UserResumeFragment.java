@@ -121,7 +121,6 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
     if (user != null && user.login != null && getView() != null) {
       GitHubContributionsView contributionsView = (GitHubContributionsView)
               getView().findViewById(R.id.github_contributions_view);
-      contributionsView.displayMonth(true);
       contributionsView.loadUserName(user.login);
     }
   }
