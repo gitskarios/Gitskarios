@@ -169,7 +169,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   }
 
   public Drawable getPageTitle(IIcon icon) {
-    return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.white);
+    return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.repo_detail_tab_icon);
   }
 
   @Override
