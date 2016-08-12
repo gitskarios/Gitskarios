@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   protected static final String USERNAME = "USERNAME";
   protected FloatingActionButton fab;
   protected RecyclerView recyclerView;
+  protected Toolbar extraToolbar;
   protected boolean fromRetry = false;
   protected boolean refreshing;
   private SwipeRefreshLayout swipe;
@@ -57,6 +59,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+    extraToolbar = (Toolbar) view.findViewById(R.id.extraToolbar);
 
     loadingView = view.findViewById(R.id.loading_view);
 
@@ -87,6 +90,14 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
       }
       executeRequest();
     }
+  }
+
+  protected void showExtraToolbar() {
+    extraToolbar.setVisibility(View.VISIBLE);
+  }
+
+  protected void hideExtraToolbar() {
+    extraToolbar.setVisibility(View.GONE);
   }
 
   protected RecyclerView.LayoutManager getLayoutManager() {

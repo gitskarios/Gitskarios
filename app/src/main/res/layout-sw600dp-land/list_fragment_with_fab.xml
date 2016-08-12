@@ -22,16 +22,6 @@
         />
   </android.support.v4.widget.SwipeRefreshLayout>
 
-  <android.support.v7.widget.Toolbar
-      android:layout_width="match_parent"
-      android:layout_height="?actionBarSize"
-      android:id="@+id/extraToolbar"
-      android:layout_gravity="bottom"
-      android:visibility="gone"
-      tools:visibility="visible"
-      android:background="@color/md_grey_200"
-      />
-
   <tr.xip.errorview.ErrorView xmlns:errorview="http://schemas.android.com/apk/res-auto"
                               android:id="@+id/error_view"
                               android:layout_width="wrap_content"
@@ -50,6 +40,7 @@
       android:layout_gravity="bottom|right|end"
       android:layout_margin="@dimen/gapLarge"
       android:visibility="gone"
+      tools:visibility="visible"
       />
 
   <ProgressBar
@@ -63,4 +54,16 @@
       tools:visibility="visible"
       />
 
+  <android.support.v7.widget.Toolbar
+      android:layout_width="320dp"
+      android:layout_height="?actionBarSize"
+      android:id="@+id/extraToolbar"
+      android:layout_gravity="bottom|right"
+      android:layout_marginRight="96dp"
+      android:layout_marginBottom="16dp"
+      android:visibility="gone"
+      tools:visibility="visible"
+      android:elevation="8dp"
+      android:background="@drawable/extra_toolbar_background"
+      />
 </FrameLayout>

@@ -17,6 +17,7 @@ import com.alorma.github.sdk.services.repo.CompareCommitsClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.compare.CompareCommitsListFragment;
 import com.alorma.github.ui.fragment.compare.CompareFilesListFragment;
+import com.alorma.github.utils.AttributesUtils;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
@@ -28,7 +29,6 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
   private static final String REPO_INFO = "REPO_INFO";
   private static final String BASE = "BASE";
   private static final String HEAD = "HEAD";
-  private List<Fragment> listFragments;
   private CompareCommitsListFragment commitsFragment;
   private CompareFilesListFragment filesFragment;
 
@@ -47,8 +47,12 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_compare_commits);
 
+    if (getToolbar() != null) {
+      getToolbar().setBackgroundColor(AttributesUtils.getPrimaryColor(this));
+    }
+
     if (getIntent().getExtras() != null) {
-      RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
+      RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
       String base = getIntent().getExtras().getString(BASE);
       String head = getIntent().getExtras().getString(HEAD);
 
@@ -84,7 +88,7 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
 
       final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-      listFragments = new ArrayList<>();
+      List<Fragment> listFragments = new ArrayList<>();
       commitsFragment = CompareCommitsListFragment.newInstance(repoInfo);
       listFragments.add(commitsFragment);
       filesFragment = CompareFilesListFragment.newInstance(repoInfo);
@@ -108,6 +112,16 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
     } else {
       finish();
     }
+  }
+
+  @Override
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Repository;
   }
 
   private class NavigationPagerAdapter extends FragmentPagerAdapter {

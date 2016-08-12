@@ -4,15 +4,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-import com.afollestad.materialcab.MaterialCab;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
@@ -29,6 +26,7 @@ import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.listeners.TitleProvider;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -46,7 +44,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
-    implements TitleProvider, BranchManager, PermissionsManager, BackManager, CommitsAdapter.CommitsAdapterListener, MaterialCab.Callback,
+    implements TitleProvider, BranchManager, PermissionsManager, BackManager, CommitsAdapter.CommitsAdapterListener,
     Observer<List<Commit>> {
 
   private static final String REPO_INFO = "REPO_INFO";
@@ -57,7 +55,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   private boolean isInCompareMode = false;
   private String baseCompare = null;
   private String headCompare = null;
-  private MaterialCab cab;
 
   public static CommitsListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -210,8 +207,10 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
   @Override
   public boolean onBackPressed() {
-    if (cab != null && cab.isActive()) {
-      cab.finish();
+    if (extraToolbar != null && extraToolbar.getVisibility() == View.VISIBLE) {
+      hideExtraToolbar();
+      isInCompareMode = false;
+      checkFAB();
       return false;
     } else {
       return true;
@@ -252,31 +251,47 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   protected void fabClick() {
     isInCompareMode = !isInCompareMode;
     checkFAB();
-    if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
-      if (getActivity().findViewById(R.id.cab_stub) != null) {
-        cab = new MaterialCab((AppCompatActivity) getActivity(), R.id.cab_stub).setTitle(":base ... :head")
-            .setMenu(R.menu.menu_commits_compare)
-            .start(this);
-
-        if (cab.getMenu() != null) {
-          MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
-
-          if (itemCompare != null) {
-            IconicsDrawable iconicsDrawable =
-                new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(Color.WHITE);
-            itemCompare.setIcon(iconicsDrawable);
-            itemCompare.setEnabled(false);
-          }
-
-          MenuItem itemChangeBranch = cab.getMenu().findItem(R.id.action_repo_change_branch);
-
-          if (itemChangeBranch != null) {
-            IconicsDrawable iconicsDrawable =
-                new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_branch).actionBar().color(Color.WHITE);
-            itemChangeBranch.setIcon(iconicsDrawable);
-          }
-        }
+    if (getActivity() != null) {
+      showExtraToolbar();
+      extraToolbar.setTitle(":base ... :head");
+      Menu menu = extraToolbar.getMenu();
+      if (menu != null) {
+        menu.clear();
       }
+      extraToolbar.inflateMenu(R.menu.menu_commits_compare);
+
+      extraToolbar.setOnMenuItemClickListener(this::onExtraMenuItemSelected);
+
+      if (extraToolbar.getMenu() != null) {
+        prepareCompareMenu(extraToolbar.getMenu());
+      }
+    }
+  }
+
+  private boolean onExtraMenuItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.action_compare_commits) {
+      isInCompareMode = false;
+      if (extraToolbar.getVisibility() == View.VISIBLE) {
+        hideExtraToolbar();
+        checkFAB();
+      }
+      Intent intent = CompareRepositoryCommitsActivity.launcherIntent(getActivity(), repoInfo, baseCompare, headCompare);
+      startActivity(intent);
+      baseCompare = null;
+      headCompare = null;
+    }
+    return false;
+  }
+
+  private void prepareCompareMenu(Menu menu) {
+    int primaryColor = AttributesUtils.getPrimaryColor(getActivity());
+
+    MenuItem itemCompare = menu.findItem(R.id.action_compare_commits);
+
+    if (itemCompare != null) {
+      IconicsDrawable iconicsDrawable = new IconicsDrawable(getActivity(), Octicons.Icon.oct_git_compare).actionBar().color(primaryColor);
+      itemCompare.setIcon(iconicsDrawable);
+      itemCompare.setEnabled(false);
     }
   }
 
@@ -306,13 +321,13 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     } else if (headCompare == null) {
       checkFAB();
       headCompare = commit.shortSha();
-      cab.setTitle(headCompare + " ... :head");
+      extraToolbar.setTitle(headCompare + " ... :head");
     } else if (baseCompare == null) {
       checkFAB();
       baseCompare = commit.shortSha();
-      cab.setTitle(headCompare + " ... " + baseCompare);
-      if (cab.getMenu() != null) {
-        MenuItem itemCompare = cab.getMenu().findItem(R.id.action_compare_commits);
+      extraToolbar.setTitle(headCompare + " ... " + baseCompare);
+      if (extraToolbar.getMenu() != null) {
+        MenuItem itemCompare = extraToolbar.getMenu().findItem(R.id.action_compare_commits);
 
         if (itemCompare != null) {
           itemCompare.setEnabled(true);
@@ -334,28 +349,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     clipboard.setPrimaryClip(clip);
   }
 
-  @Override
-  public boolean onCabCreated(MaterialCab materialCab, Menu menu) {
-    return true;
-  }
-
-  @Override
-  public boolean onCabItemClicked(MenuItem menuItem) {
-    if (menuItem.getItemId() == R.id.action_compare_commits) {
-      isInCompareMode = false;
-      if (cab.isActive()) {
-        cab.finish();
-      }
-      Intent intent = CompareRepositoryCommitsActivity.launcherIntent(getActivity(), repoInfo, baseCompare, headCompare);
-      startActivity(intent);
-      baseCompare = null;
-      headCompare = null;
-    } else if (menuItem.getItemId() == R.id.action_repo_change_branch) {
-      changeBranch();
-    }
-    return false;
-  }
-
   private void changeBranch() {
     GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
     repoBranchesClient.observable()
@@ -372,12 +365,5 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
 
           }
         });
-  }
-
-  @Override
-  public boolean onCabFinished(MaterialCab materialCab) {
-    isInCompareMode = false;
-    checkFAB();
-    return true;
   }
 }
