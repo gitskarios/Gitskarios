@@ -135,4 +135,14 @@ public class GistsFragment extends LoadingListFragment<GistsAdapter> implements 
   public boolean onBackPressed() {
     return false;
   }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Gists;
+  }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Gists;
+  }
 }

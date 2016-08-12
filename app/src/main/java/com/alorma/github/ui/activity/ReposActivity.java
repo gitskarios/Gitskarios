@@ -25,7 +25,7 @@ public class ReposActivity extends RepositoryThemeActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
 
     String user = getIntent().getStringExtra(USER);
     String userType = getIntent().getStringExtra(USER_TYPE);

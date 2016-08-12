@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/gapMedium"
+    card_view:cardElevation="4dp"
+    tools:layout_height="120dp"
+    app:cardBackgroundColor="?gitskarios_card_background"
+    tools:showIn="@layout/user_resume_fragment"
+    >
+
+  <LinearLayout
+      android:id="@+id/cardContributions"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        style="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="?colorAccent"
+        android:padding="@dimen/gapMedium"
+        android:text="@string/user_resume_contributions"
+        android:textSize="24sp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?colorAccent"
+        />
+
+    <com.github.javierugarte.GitHubContributionsView
+        android:id="@+id/github_contributions_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="@dimen/gapLarge"
+        app:backgroundBaseColor="?gitskarios_card_background"
+        app:baseColor="?colorAccent"
+        app:displayMonth="true"
+        app:lastWeeks="50"
+        app:textColor="?colorAccent"
+        />
+
+  </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -25,9 +25,9 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@drawable/big_card_bg"
-      android:layout_marginLeft="120dp"
-      android:layout_marginRight="120dp"
-      android:layout_marginTop="96dp"
+      android:layout_marginLeft="160dp"
+      android:layout_marginRight="160dp"
+      android:layout_marginTop="128dp"
       >
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"

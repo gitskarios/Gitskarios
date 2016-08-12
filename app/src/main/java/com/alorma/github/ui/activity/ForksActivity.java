@@ -8,6 +8,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.repos.ListForksFragment;
+import com.alorma.github.utils.AttributesUtils;
 
 public class ForksActivity extends RepositoryThemeActivity {
 
@@ -22,7 +23,11 @@ public class ForksActivity extends RepositoryThemeActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
+
+    if (getToolbar() != null) {
+      getToolbar().setBackgroundColor(AttributesUtils.getPrimaryColor(this));
+    }
 
     if (getIntent() != null && getIntent().getExtras() != null) {
       RepoInfo info = (RepoInfo) getIntent().getParcelableExtra(REPO_INFO);

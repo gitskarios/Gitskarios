@@ -28,7 +28,7 @@ public class StatusActivity extends BackActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
       IssueInfo issueInfo = (IssueInfo) getIntent().getParcelableExtra(ISSUE_INFO);

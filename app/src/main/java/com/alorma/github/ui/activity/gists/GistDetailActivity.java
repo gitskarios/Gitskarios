@@ -41,7 +41,7 @@ public class GistDetailActivity extends BackActivity implements GistDetailFragme
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
 
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);

@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.base.BackActivity;
 import com.alorma.github.ui.fragment.gists.GistsFragment;
+import com.alorma.github.utils.AttributesUtils;
 
 public class GistsMainActivity extends BackActivity {
 
@@ -20,10 +21,12 @@ public class GistsMainActivity extends BackActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
 
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
+    if (getToolbar() != null) {
+      getToolbar().setBackgroundColor(AttributesUtils.getPrimaryColor(this));
+    }
+
     setTitle(R.string.title_gists);
 
     String username = getIntent().getExtras().getString("username");
@@ -37,5 +40,15 @@ public class GistsMainActivity extends BackActivity {
     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     ft.replace(R.id.content, gistsFragment);
     ft.commit();
+  }
+
+  @Override
+  protected int getAppDarkTheme() {
+    return R.style.AppTheme_Dark_Gists;
+  }
+
+  @Override
+  protected int getAppLightTheme() {
+    return R.style.AppTheme_Gists;
   }
 }

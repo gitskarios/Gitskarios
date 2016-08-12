@@ -27,7 +27,7 @@ public class FileActivity extends RepositoryThemeActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
 
     FileInfo info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
     boolean fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
