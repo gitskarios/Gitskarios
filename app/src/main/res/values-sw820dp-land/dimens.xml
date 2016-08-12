@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="responsive_ly_margin_horizontal">120dp</dimen>
+  <dimen name="responsive_ly_margin_vertical">96dp</dimen>
+</resources>

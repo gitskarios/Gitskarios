@@ -10,6 +10,7 @@
       android:layout_width="match_parent"
       android:layout_height="260dp"
       android:background="?colorPrimary"
+      android:id="@+id/toolbarBg"
       >
     <android.support.v7.widget.Toolbar
         android:id="@id/toolbar"
@@ -29,9 +30,9 @@
       android:layout_height="match_parent"
       android:orientation="vertical"
       android:background="@drawable/big_card_bg"
-      android:layout_marginLeft="120dp"
-      android:layout_marginRight="120dp"
-      android:layout_marginTop="96dp"
+      android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
+      android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
+      android:layout_marginTop="@dimen/responsive_ly_margin_vertical"
       />
 
 </FrameLayout>

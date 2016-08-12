@@ -102,4 +102,6 @@
   <dimen name="image_final_width">32dp</dimen>
   <dimen name="reaction_size">20dp</dimen>
   <dimen name="repo_about_icon">20dp</dimen>
+  <dimen name="responsive_ly_margin_horizontal">160dp</dimen>
+  <dimen name="responsive_ly_margin_vertical">128dp</dimen>
 </resources>

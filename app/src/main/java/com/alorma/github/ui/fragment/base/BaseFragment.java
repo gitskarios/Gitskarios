@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
@@ -62,7 +63,7 @@ public class BaseFragment extends Fragment {
     colorize();
   }
 
-  protected void colorize() {
+  private void colorize() {
     if (getActivity() != null) {
       AppCompatActivity activity = (AppCompatActivity) getActivity();
       ActionBar actionBar = activity.getSupportActionBar();
@@ -71,6 +72,11 @@ public class BaseFragment extends Fragment {
 
         ColorDrawable colorDrawable = new ColorDrawable(color);
         actionBar.setBackgroundDrawable(colorDrawable);
+
+        View toolbarBg = getActivity().findViewById(R.id.toolbarBg);
+        if (toolbarBg != null) {
+          toolbarBg.setBackgroundColor(color);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
           int colorDark = AttributesUtils.getPrimaryDarkColor(getContext());

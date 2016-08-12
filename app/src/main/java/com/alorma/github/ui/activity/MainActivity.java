@@ -112,7 +112,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
       getSupportFragmentManager().beginTransaction().add(donateFragment, "donate").commit();
     }
 
-    setContentView(R.layout.generic_toolbar);
+    setContentView(R.layout.generic_toolbar_responsive);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
