@@ -11,7 +11,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.CompareCommit;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.CompareCommitsClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
@@ -20,7 +19,6 @@ import com.alorma.github.ui.fragment.compare.CompareFilesListFragment;
 import com.alorma.github.utils.AttributesUtils;
 import java.util.ArrayList;
 import java.util.List;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -59,30 +57,14 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
       setTitle(base + " ... " + head);
 
       CompareCommitsClient compareCommitsClient = new CompareCommitsClient(repoInfo, base, head);
-      compareCommitsClient.observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<CompareCommit>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(CompareCommit compareCommit) {
-              if (commitsFragment != null) {
-                commitsFragment.setCommits(compareCommit.commits);
-              }
-              if (filesFragment != null) {
-                filesFragment.setFiles(compareCommit.files);
-              }
-            }
-          });
+      compareCommitsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(compareCommit -> {
+        if (commitsFragment != null) {
+          commitsFragment.setCommits(compareCommit.commits);
+        }
+        if (filesFragment != null) {
+          filesFragment.setFiles(compareCommit.files);
+        }
+      }, Throwable::printStackTrace);
 
       final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
 

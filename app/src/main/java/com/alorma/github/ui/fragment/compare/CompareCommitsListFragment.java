@@ -5,6 +5,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +26,6 @@ import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapter> implements CommitsAdapter.CommitsAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
@@ -87,7 +86,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
 
   @Override
   protected void loadArguments() {
-    repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+    repoInfo = getArguments().getParcelable(REPO_INFO);
   }
 
   @Override
