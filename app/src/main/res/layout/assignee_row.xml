@@ -22,6 +22,8 @@
       android:id="@+id/text"
       android:layout_marginLeft="8dp"
       android:layout_marginRight="8dp"
+      android:textColor="@color/md_grey_600"
+      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
       tools:text="Alorma"
       />
 

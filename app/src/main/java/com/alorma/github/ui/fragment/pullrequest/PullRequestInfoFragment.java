@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,10 +37,12 @@ import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.view.LabelView;
+import com.alorma.github.ui.view.issue.AssigneesAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.wefika.flowlayout.FlowLayout;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -56,7 +60,7 @@ public class PullRequestInfoFragment extends BaseFragment {
   @BindView(R.id.labels) ViewGroup labelsView;
   @BindView(R.id.milestone) TextView milestoneView;
   @BindView(R.id.progressMilestone) ProgressBar progressMilestone;
-  @BindView(R.id.assignee) TextView assigneeView;
+  @BindView(R.id.assignees) RecyclerView assigneesView;
   @BindView(R.id.branch_head) TextView branchHeadView;
   @BindView(R.id.branch_base) TextView branchBaseView;
   @BindView(R.id.toolbar_labels_title) Toolbar toolbarLabels;
@@ -124,7 +128,7 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   private void showPullRequest(PullRequest pullRequest) {
     if (getActivity() != null && pullRequest != null) {
-      showAssignee(pullRequest.assignee);
+      showAssignees(pullRequest.assignees, pullRequest.assignee);
       showMilestone(pullRequest.milestone);
       showLabels(pullRequest.labels);
       showBranches(pullRequest);
@@ -152,16 +156,25 @@ public class PullRequestInfoFragment extends BaseFragment {
     }
   }
 
-  private void showAssignee(User assignee) {
-    if (assignee != null) {
-      assigneeView.setVisibility(View.VISIBLE);
-      assigneeView.setText(assignee.login);
-      assigneeView.setOnClickListener(v -> {
-        Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), assignee);
+  private void showAssignees(List<User> assignees, User assignee) {
+    if (assignees == null) {
+      assignees = new ArrayList<>();
+    }
+    if (assignees.isEmpty() && assignee != null) {
+      assignees.add(assignee);
+    }
+    if (!assignees.isEmpty()) {
+      AssigneesAdapter adapter = new AssigneesAdapter(LayoutInflater.from(getActivity()));
+      adapter.addAll(assignees);
+      adapter.setCallback(item -> {
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(getActivity(), item);
         startActivity(launcherIntent);
       });
+      assigneesView.setAdapter(adapter);
+      assigneesView.setLayoutManager(new LinearLayoutManager(getActivity()));
+      assigneesView.setVisibility(View.VISIBLE);
     } else {
-      assigneeView.setVisibility(View.GONE);
+      assigneesView.setVisibility(View.GONE);
     }
 
     configToolbar(toolbarAssignee, item -> {
@@ -244,7 +257,7 @@ public class PullRequestInfoFragment extends BaseFragment {
       } else if (requestCode == ASSIGNEE_EDIT && data != null) {
         User user = data.getParcelableExtra(User.class.getSimpleName());
 
-        showAssignee(user);
+        //showAssignees(user);
 
         EditIssueAssigneeRequestDTO dto = new EditIssueAssigneeRequestDTO();
         dto.assignee = user.login;

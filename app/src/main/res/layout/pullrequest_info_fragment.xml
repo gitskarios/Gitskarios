@@ -91,17 +91,12 @@
         android:id="@+id/toolbar_assignee"
         />
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/gapMedium"
-        android:textColor="@color/md_grey_600"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        android:textSize="18sp"
-        android:id="@+id/assignee"
-        tools:text="Alorma"
-        android:background="?selectableItemBackground"
+        android:padding="@dimen/gapMedium"
+        android:id="@+id/assignees"
         />
   </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
