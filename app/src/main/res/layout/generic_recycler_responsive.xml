@@ -20,6 +20,7 @@
   <android.support.v4.widget.SwipeRefreshLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_marginTop="?actionBarSize"
       android:id="@id/swipe"
       >
     <android.support.v7.widget.RecyclerView
@@ -36,6 +37,5 @@
       android:layout_gravity="bottom|right"
       android:layout_margin="16dp"
       />
-
 
 </FrameLayout>
