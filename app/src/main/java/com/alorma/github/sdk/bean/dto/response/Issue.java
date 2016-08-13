@@ -22,6 +22,7 @@ public class Issue extends GithubComment implements Parcelable {
   public String title;
   public List<Label> labels;
   public User assignee;
+  public List<User> assignees;
   public Milestone milestone;
   public int comments;
   @SerializedName("pull_request") public PullRequest pullRequest;

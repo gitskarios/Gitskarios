@@ -1,7 +1,9 @@
 package com.alorma.github.ui.adapter.issues;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -14,16 +16,17 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 
 public class PullRequestDetailAdapter extends StoryDetailAdapter<PullRequest> {
 
-  public PullRequestDetailAdapter(Context context, LayoutInflater inflater, Story<PullRequest> story, RepoInfo repoInfo,
-      IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
-    super(context, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
+  public PullRequestDetailAdapter(Context context, RecyclerView recyclerView, LayoutInflater inflater, Story<PullRequest> story,
+      RepoInfo repoInfo, IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
+    super(context, recyclerView, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
   }
 
   @Override
-  protected Holder<PullRequest> createItemHolder(Context context, Story<PullRequest> story, Permissions permissions,
-      IssueDetailRequestListener issueDetailRequestListener) {
+  protected Holder<PullRequest> createItemHolder(Context context, ViewGroup.LayoutParams params, Story<PullRequest> story,
+      Permissions permissions, IssueDetailRequestListener issueDetailRequestListener) {
 
     PullRequestDetailView detailView = new PullRequestDetailView(context);
+    detailView.setLayoutParams(params);
     return new PullRequestHolder(detailView, story, permissions,
         (PullRequestDetailView.PullRequestActionsListener) issueDetailRequestListener);
   }

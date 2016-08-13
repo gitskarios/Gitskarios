@@ -1,53 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@+id/textTitle"
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gapMedium" />
+  <TextView
+      android:id="@+id/textTitle"
+      style="@style/TextAppearance.AppCompat.Headline"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/gapMedium"
+      />
 
-    <TextView
-        android:id="@+id/textAssignee"
-        style="@style/new_issue_push_access_row"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_marginLeft="@dimen/gapLarge"
-        android:layout_marginStart="@dimen/gapLarge" />
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/assignee_issue_detail_label"
+      android:textColor="@color/md_grey_700"
+      android:layout_marginLeft="16dp"
+      />
 
-    <TextView
-        android:id="@+id/textRepository"
-        style="@style/new_issue_push_access_row"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_marginLeft="@dimen/gapLarge"
-        android:layout_marginStart="@dimen/gapLarge" />
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/assignees"
+      android:layout_width="wrap_content"
+      android:layout_height="?actionBarSize"
+      android:layout_marginLeft="@dimen/gapLarge"
+      android:layout_marginStart="@dimen/gapLarge"
+      />
 
-    <TextView
-        android:id="@+id/textMilestone"
-        style="@style/new_issue_push_access_row"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_marginLeft="@dimen/gapLarge"
-        android:layout_marginStart="@dimen/gapLarge" />
+  <TextView
+      android:id="@+id/textRepository"
+      style="@style/new_issue_push_access_row"
+      android:layout_width="match_parent"
+      android:layout_height="?actionBarSize"
+      android:layout_marginLeft="@dimen/gapLarge"
+      android:layout_marginStart="@dimen/gapLarge"
+      />
 
-    <include
-        layout="@layout/issue_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+  <TextView
+      android:id="@+id/textMilestone"
+      style="@style/new_issue_push_access_row"
+      android:layout_width="match_parent"
+      android:layout_height="?actionBarSize"
+      android:layout_marginLeft="@dimen/gapLarge"
+      android:layout_marginStart="@dimen/gapLarge"
+      />
 
-    <com.wefika.flowlayout.FlowLayout
-        android:id="@+id/labelsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/gapMedium"
-        android:layout_marginLeft="@dimen/gapLarge"
-        android:layout_marginStart="@dimen/gapLarge"
-        android:gravity="start|top"
-        tools:layout_height="20dp" />
-</merge>
+  <include
+      layout="@layout/issue_card"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+
+  <com.wefika.flowlayout.FlowLayout
+      android:id="@+id/labelsLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/gapMedium"
+      android:layout_marginLeft="@dimen/gapLarge"
+      android:layout_marginStart="@dimen/gapLarge"
+      android:gravity="start|top"
+      tools:layout_height="20dp"
+      />
+</LinearLayout>

@@ -314,7 +314,7 @@ public class PullRequestConversationFragment extends BaseFragment
     }
     getActivity().setTitle("#" + pullRequestStory.item.number + " " + status);
     adapter =
-        new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this, this);
+        new PullRequestDetailAdapter(getActivity(), recyclerView, getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     getActivity().invalidateOptionsMenu();

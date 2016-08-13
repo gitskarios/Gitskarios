@@ -38,7 +38,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
   private IssueDetailRequestListener issueDetailRequestListener;
   private IssueCommentRequestListener issueCommentRequestListener;
 
-  public StoryDetailAdapter(Context context, LayoutInflater inflater, Story<K> story, RepoInfo repoInfo,
+  public StoryDetailAdapter(Context context, RecyclerView recyclerView, LayoutInflater inflater, Story<K> story, RepoInfo repoInfo,
       IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
     this.context = context;
     this.story = story;
@@ -51,9 +51,15 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
   @Override
   public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
     ViewGroup.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    if (params.width == RecyclerView.LayoutParams.MATCH_PARENT) {
+      params.width = parent.getWidth();
+    }
+    if (params.height == RecyclerView.LayoutParams.MATCH_PARENT) {
+      params.height = parent.getHeight();
+    }
     switch (viewType) {
       case VIEW_ISSUE:
-        return createItemHolder(context, story, repoInfo.permissions, issueDetailRequestListener);
+        return createItemHolder(context, params, story, repoInfo.permissions, issueDetailRequestListener);
       case VIEW_COMMENT:
         IssueCommentView issueCommentView = new IssueCommentView(context);
         issueCommentView.setIssueCommentRequestListener(issueCommentRequestListener);
@@ -87,7 +93,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
     }
   }
 
-  protected abstract Holder<K> createItemHolder(Context context, Story<K> story, Permissions permissions,
+  protected abstract Holder<K> createItemHolder(Context context, ViewGroup.LayoutParams params, Story<K> story, Permissions permissions,
       IssueDetailRequestListener issueDetailRequestListener);
 
   @Override

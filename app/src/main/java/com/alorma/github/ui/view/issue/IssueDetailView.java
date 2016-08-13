@@ -4,9 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -33,6 +36,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IssueDetailView extends LinearLayout {
 
@@ -45,7 +50,7 @@ public class IssueDetailView extends LinearLayout {
   private TextView profileName;
   private TextView createdAt;
   private TextView textMilestone;
-  private TextView textAssignee;
+  private RecyclerView assignees;
   private TextView textRepository;
   private IssueDetailRequestListener issueDetailRequestListener;
   private ReactionsView reactionsLy;
@@ -82,7 +87,7 @@ public class IssueDetailView extends LinearLayout {
     profileName = (TextView) findViewById(R.id.name);
     createdAt = (TextView) findViewById(R.id.time);
     textMilestone = (TextView) findViewById(R.id.textMilestone);
-    textAssignee = (TextView) findViewById(R.id.textAssignee);
+    assignees = (RecyclerView) findViewById(R.id.assignees);
     textRepository = (TextView) findViewById(R.id.textRepository);
     reactionsLy = (ReactionsView) findViewById(R.id.reactionsLy);
     editComment = findViewById(R.id.editComment);
@@ -125,8 +130,7 @@ public class IssueDetailView extends LinearLayout {
 
   private void checkEditable(RepoInfo repoInfo, Issue issue) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push
-        || issue.user.login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user.login.equals(credentials.getUserName())) {
       editComment.setVisibility(VISIBLE);
       OnClickListener editClickListener = v -> {
         if (issueDetailRequestListener != null) {
@@ -165,18 +169,30 @@ public class IssueDetailView extends LinearLayout {
   }
 
   private void parseAssignee(Issue issue) {
-    if (textAssignee != null) {
-      final User assignee = issue.assignee;
-      if (assignee != null) {
-        textAssignee.setCompoundDrawables(getIcon(Octicons.Icon.oct_person), null, null, null);
-        textAssignee.setText(assignee.login);
-        textAssignee.setVisibility(View.VISIBLE);
-        textAssignee.setOnClickListener(v -> {
-          Intent launcherIntent = ProfileActivity.createLauncherIntent(v.getContext(), assignee);
-          v.getContext().startActivity(launcherIntent);
+    if (assignees != null) {
+      List<User> assignees = issue.assignees;
+      if (assignees == null) {
+        assignees = new ArrayList<>();
+      }
+      if (assignees.isEmpty()) {
+        User assignee = issue.assignee;
+        if (assignee != null) {
+          assignees.add(assignee);
+        }
+      }
+
+      if (!assignees.isEmpty()) {
+        AssigneesAdapter assigneesAdapter = new AssigneesAdapter(LayoutInflater.from(getContext()));
+        assigneesAdapter.addAll(assignees);
+        this.assignees.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        this.assignees.setAdapter(assigneesAdapter);
+        this.assignees.setVisibility(View.VISIBLE);
+        assigneesAdapter.setCallback(item -> {
+          Intent launcherIntent = ProfileActivity.createLauncherIntent(getContext(), item);
+          getContext().startActivity(launcherIntent);
         });
       } else {
-        textAssignee.setVisibility(View.GONE);
+        this.assignees.setVisibility(View.GONE);
       }
     }
   }

@@ -4,70 +4,63 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/gapSmall"
+              android:layout_marginEnd="@dimen/gapMedium"
+              android:layout_marginLeft="@dimen/gapMedium"
+              android:layout_marginRight="@dimen/gapMedium"
+              android:layout_marginStart="@dimen/gapMedium"
+              android:layout_marginTop="@dimen/gapMedium"
               android:orientation="vertical"
               android:background="?selectableItemBackground"
     >
 
-  <LinearLayout
+  <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/gapSmall"
-      android:layout_marginEnd="@dimen/gapMedium"
-      android:layout_marginLeft="@dimen/gapMedium"
-      android:layout_marginRight="@dimen/gapMedium"
-      android:layout_marginStart="@dimen/gapMedium"
-      android:layout_marginTop="@dimen/gapMedium"
-      android:orientation="vertical"
+      android:padding="8dp"
       >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <com.alorma.github.ui.view.UserAvatarView
+        android:id="@+id/authorAvatar"
+        android:layout_width="@dimen/avatar_size_event_list"
+        android:layout_height="@dimen/avatar_size_event_list"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        app:timeline_lineColor="@color/md_blue_grey_500"
+        app:timeline_lineWidth="@dimen/materialize_baseline_grid_small"
+        tools:src="@color/md_blue_grey_500"
+        app:timeline_internalPadding="0dp"
+        />
+
+    <TextView
+        android:id="@+id/authorName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        >
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/materialize_baseline_grid_x2"
+        android:layout_marginStart="@dimen/materialize_baseline_grid_x2"
+        android:layout_toEndOf="@id/authorAvatar"
+        android:layout_toRightOf="@id/authorAvatar"
+        style="@style/Event.Title"
+        tools:text="Event title text"
+        />
 
-      <com.alorma.github.ui.view.UserAvatarView
-          android:id="@+id/authorAvatar"
-          android:layout_width="@dimen/avatar_size_event_list"
-          android:layout_height="@dimen/avatar_size_event_list"
-          android:layout_alignParentLeft="true"
-          android:layout_alignParentStart="true"
-          app:timeline_lineColor="@color/md_blue_grey_500"
-          app:timeline_lineWidth="@dimen/materialize_baseline_grid_small"
-          tools:src="@color/md_blue_grey_500"
-          app:timeline_internalPadding="0dp"
-          />
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/authorName"
+        android:layout_alignLeft="@+id/authorName"
+        android:layout_alignRight="@+id/authorName"
+        android:layout_alignStart="@+id/authorName"
+        android:layout_below="@+id/authorName"
+        android:layout_marginTop="@dimen/gapMedium"
+        android:textSize="@dimen/textSizeMicro"
+        style="@style/Event.Date"
+        tools:text="31/12/2016"
+        />
 
-      <TextView
-          android:id="@+id/authorName"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentEnd="true"
-          android:layout_alignParentRight="true"
-          android:layout_marginLeft="@dimen/materialize_baseline_grid_x2"
-          android:layout_marginStart="@dimen/materialize_baseline_grid_x2"
-          android:layout_toEndOf="@id/authorAvatar"
-          android:layout_toRightOf="@id/authorAvatar"
-          style="@style/Event.Title"
-          tools:text="Event title text"
-          />
+  </RelativeLayout>
 
-      <TextView
-          android:id="@+id/textDate"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignEnd="@+id/authorName"
-          android:layout_alignLeft="@+id/authorName"
-          android:layout_alignRight="@+id/authorName"
-          android:layout_alignStart="@+id/authorName"
-          android:layout_below="@+id/authorName"
-          android:layout_marginTop="@dimen/gapMedium"
-          android:textSize="@dimen/textSizeMicro"
-          style="@style/Event.Date"
-          tools:text="31/12/2016"
-          />
-
-    </RelativeLayout>
-
-  </LinearLayout>
 </LinearLayout>

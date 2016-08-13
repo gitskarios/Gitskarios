@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ProgressBar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -66,14 +64,12 @@ import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ShortcutUtils;
-import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
-import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -104,7 +100,6 @@ public class IssueDetailActivity extends BackActivity
   private IssueStory issueStory;
   private int primary;
   private int primaryDark;
-  private ProgressBar loadingView;
   private SwipeRefreshLayout swipe;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
@@ -132,7 +127,7 @@ public class IssueDetailActivity extends BackActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_issue_detail);
+    setContentView(R.layout.generic_recycler_responsive);
 
     if (getIntent().getExtras() != null) {
 
@@ -194,15 +189,12 @@ public class IssueDetailActivity extends BackActivity
     recyclerView = (RecyclerView) findViewById(R.id.recycler);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     fab = (FloatingActionButton) findViewById(R.id.fabButton);
-    loadingView = (ProgressBar) findViewById(R.id.loading_view);
     swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
     swipe.setColorSchemeResources(R.color.accent_dark);
 
     IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
 
     fab.setImageDrawable(drawable);
-
-    ViewCompat.setElevation(getToolbar(), getResources().getDimensionPixelOffset(R.dimen.gapSmall));
   }
 
   @Override
@@ -210,8 +202,6 @@ public class IssueDetailActivity extends BackActivity
     super.getContent();
 
     hideProgressDialog();
-
-    loadingView.setVisibility(View.VISIBLE);
 
     GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
     repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
@@ -270,7 +260,6 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void applyIssue() {
-    loadingView.setVisibility(View.GONE);
     changeColor(issueStory.item);
 
     fab.setVisibility(issueStory.item.locked ? View.GONE : View.VISIBLE);
@@ -281,7 +270,7 @@ public class IssueDetailActivity extends BackActivity
       status = getString(R.string.issue_status_close);
     }
     setTitle("#" + issueStory.item.number + " " + status);
-    IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
+    IssueDetailAdapter adapter = new IssueDetailAdapter(this, recyclerView, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();
@@ -293,6 +282,11 @@ public class IssueDetailActivity extends BackActivity
     if (IssueState.open == issue.state) {
       colorState = ContextCompat.getColor(this, R.color.issue_state_open);
       colorStateDark = ContextCompat.getColor(this, R.color.issue_state_open_dark);
+    }
+
+    View toolbarBg = findViewById(R.id.toolbarBg);
+    if (toolbarBg != null) {
+      toolbarBg.setBackgroundColor(colorState);
     }
 
     swipe.setColorSchemeColors(colorState);

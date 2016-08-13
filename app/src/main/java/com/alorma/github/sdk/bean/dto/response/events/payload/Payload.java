@@ -49,12 +49,14 @@ public class Payload implements Parcelable {
   public List<Commit> commits;
   public Repo forkee;
   public User member;
+  public String url;
 
   public Payload() {
   }
 
   protected Payload(Parcel in) {
     this.action = in.readString();
+    this.url = in.readString();
     this.repository = in.readParcelable(Repo.class.getClassLoader());
     this.sender = in.readParcelable(User.class.getClassLoader());
     this.number = in.readInt();
@@ -85,6 +87,7 @@ public class Payload implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(this.action);
+    dest.writeString(this.url);
     dest.writeParcelable(this.repository, 0);
     dest.writeParcelable(this.sender, 0);
     dest.writeInt(this.number);

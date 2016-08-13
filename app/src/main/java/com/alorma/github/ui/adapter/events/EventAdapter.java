@@ -49,7 +49,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
     }
   }
 
-  public String getTextForEvent(GithubEvent event) {
+  private String getTextForEvent(GithubEvent event) {
     switch (event.type) {
       case WatchEvent:
         String textRes = "watched";
@@ -156,12 +156,10 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
       authorName = (TextView) itemView.findViewById(R.id.authorName);
       textDate = (TextView) itemView.findViewById(R.id.textDate);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (eventAdapterListener != null) {
-            eventAdapterListener.onItem(getItem(getAdapterPosition()));
-          }
+      itemView.setOnClickListener(v -> {
+        if (eventAdapterListener != null) {
+          getCallback().onItemSelected(getItem(getAdapterPosition()));
+          eventAdapterListener.onItem(getItem(getAdapterPosition()));
         }
       });
     }

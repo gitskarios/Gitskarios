@@ -536,4 +536,6 @@
   <string name="write_otp_code_error">Code cannot be empty</string>
   <string name="login_button_token">Login with token</string>
   <string name="login_token">Token</string>
+  <string name="share_event">Share</string>
+  <string name="assignee_issue_detail_label">Assignees</string>
 </resources>

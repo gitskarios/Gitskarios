@@ -6,9 +6,6 @@ import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.Payload;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Bernat on 31/08/2014.
- */
 public class GithubEvent implements Parcelable {
   public static final Creator<GithubEvent> CREATOR = new Creator<GithubEvent>() {
     public GithubEvent createFromParcel(Parcel source) {
