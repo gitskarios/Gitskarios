@@ -2,6 +2,7 @@ package com.alorma.github.ui.activity.gists;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -45,6 +46,10 @@ public class GistDetailActivity extends BackActivity implements GistDetailFragme
 
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    if (findViewById(R.id.content) != null) {
+      findViewById(R.id.content).setBackgroundColor(Color.TRANSPARENT);
+    }
 
     detailFragment = GistDetailFragment.newInstance(getIntent().getStringExtra(GistDetailFragment.GIST_ID));
     detailFragment.setGistDetailListener(this);
