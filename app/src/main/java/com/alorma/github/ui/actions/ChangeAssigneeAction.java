@@ -10,18 +10,20 @@ import java.util.List;
 public class ChangeAssigneeAction extends Action<Boolean> implements ActionCallback<Pair<List<User>, List<User>>> {
 
   private final Context context;
+  private List<User> currentAssignees;
   private final IssueInfo issueInfo;
   private ApiComponent apiComponent;
 
-  public ChangeAssigneeAction(Context context, ApiComponent apiComponent, IssueInfo issueInfo) {
+  public ChangeAssigneeAction(Context context, ApiComponent apiComponent, List<User> currentAssignees, IssueInfo issueInfo) {
     this.context = context;
     this.apiComponent = apiComponent;
+    this.currentAssignees = currentAssignees;
     this.issueInfo = issueInfo;
   }
 
   @Override
   public Action<Boolean> execute() {
-    new CollaboratorsPickerAction(context, issueInfo).setCallback(this).execute();
+    new CollaboratorsPickerAction(context, currentAssignees, issueInfo).setCallback(this).execute();
     return this;
   }
 

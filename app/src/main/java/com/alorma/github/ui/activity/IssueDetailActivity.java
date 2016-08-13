@@ -436,7 +436,7 @@ public class IssueDetailActivity extends BackActivity
         editMilestone();
         break;
       case R.id.issue_edit_assignee:
-        new ChangeAssigneeAction(this, apiComponent, issueInfo).setCallback(new AssigneActionCallback()).execute();
+        new ChangeAssigneeAction(this, apiComponent, issueStory.item.assignees, issueInfo).setCallback(new AssigneActionCallback()).execute();
         break;
       case R.id.issue_edit_labels:
         openLabels();

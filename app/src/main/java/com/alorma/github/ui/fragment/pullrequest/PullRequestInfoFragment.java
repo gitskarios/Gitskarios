@@ -36,6 +36,7 @@ import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
@@ -72,6 +73,7 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   private IssueInfo issueInfo;
   private ApiComponent apiComponent;
+  private PullRequest pullRequest;
 
   public static PullRequestInfoFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -120,14 +122,14 @@ public class PullRequestInfoFragment extends BaseFragment {
 
     if (getArguments() != null) {
       issueInfo = getArguments().getParcelable(ISSUE_INFO);
-      PullRequest pr = getArguments().getParcelable(EXTRA_PULL_REQUEST);
-      showPullRequest(pr);
+      PullRequest pullRequest = getArguments().getParcelable(EXTRA_PULL_REQUEST);
+      showPullRequest(pullRequest);
     }
   }
 
   @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
-    apiComponent = DaggerApiComponent.builder().apiModule(new ApiModule()).build();
+    apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
   }
 
   public void setPullRequest(PullRequest pullRequest) {
@@ -136,6 +138,7 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   private void showPullRequest(PullRequest pullRequest) {
     if (getActivity() != null && pullRequest != null) {
+      this.pullRequest = pullRequest;
       showAssignees(pullRequest.assignees, pullRequest.assignee);
       showMilestone(pullRequest.milestone);
       showLabels(pullRequest.labels);
@@ -186,8 +189,10 @@ public class PullRequestInfoFragment extends BaseFragment {
     }
 
     configToolbar(toolbarAssignee, item -> {
-      new ChangeAssigneeAction(getActivity(), apiComponent, issueInfo).setCallback(aBoolean -> {
-
+      new ChangeAssigneeAction(getActivity(), apiComponent, pullRequest.assignees, issueInfo).setCallback(aBoolean -> {
+        Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), issueInfo);
+        startActivity(intent);
+        getActivity().finish();
       }).execute();
       return true;
     });
