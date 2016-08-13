@@ -19,7 +19,10 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneeRequestDTO;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
@@ -31,8 +34,8 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.activity.ProfileActivity;
-import com.alorma.github.ui.activity.issue.IssueAssigneesActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
@@ -55,7 +58,6 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   private static final int MILESTONE_EDIT = 1234;
   private static final int LABELS_EDIT = 1235;
-  private static final int ASSIGNEE_EDIT = 1236;
 
   @BindView(R.id.labels) ViewGroup labelsView;
   @BindView(R.id.milestone) TextView milestoneView;
@@ -69,6 +71,7 @@ public class PullRequestInfoFragment extends BaseFragment {
   @BindView(R.id.toolbar_branches) Toolbar toolbarBranches;
 
   private IssueInfo issueInfo;
+  private ApiComponent apiComponent;
 
   public static PullRequestInfoFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -120,6 +123,11 @@ public class PullRequestInfoFragment extends BaseFragment {
       PullRequest pr = getArguments().getParcelable(EXTRA_PULL_REQUEST);
       showPullRequest(pr);
     }
+  }
+
+  @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    apiComponent = DaggerApiComponent.builder().apiModule(new ApiModule()).build();
   }
 
   public void setPullRequest(PullRequest pullRequest) {
@@ -178,8 +186,9 @@ public class PullRequestInfoFragment extends BaseFragment {
     }
 
     configToolbar(toolbarAssignee, item -> {
-      Intent intent = IssueAssigneesActivity.createLauncher(getActivity(), issueInfo, true);
-      startActivityForResult(intent, ASSIGNEE_EDIT);
+      new ChangeAssigneeAction(getActivity(), apiComponent, issueInfo).setCallback(aBoolean -> {
+
+      }).execute();
       return true;
     });
   }
@@ -253,14 +262,6 @@ public class PullRequestInfoFragment extends BaseFragment {
 
         EditIssueLabelsRequestDTO dto = new EditIssueLabelsRequestDTO();
         dto.labels = labels.toArray(new String[labels.size()]);
-        executeEditIssue(dto);
-      } else if (requestCode == ASSIGNEE_EDIT && data != null) {
-        User user = data.getParcelableExtra(User.class.getSimpleName());
-
-        //showAssignees(user);
-
-        EditIssueAssigneeRequestDTO dto = new EditIssueAssigneeRequestDTO();
-        dto.assignee = user.login;
         executeEditIssue(dto);
       }
     }

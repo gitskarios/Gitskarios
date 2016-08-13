@@ -101,6 +101,7 @@ public class IssueDetailActivity extends BackActivity
   private int primary;
   private int primaryDark;
   private SwipeRefreshLayout swipe;
+  private ApiComponent apiComponent;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -161,7 +162,7 @@ public class IssueDetailActivity extends BackActivity
   protected void injectComponents(ApplicationComponent applicationComponent) {
     super.injectComponents(applicationComponent);
 
-    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
     apiComponent.inject(this);
   }
 
@@ -270,7 +271,8 @@ public class IssueDetailActivity extends BackActivity
       status = getString(R.string.issue_status_close);
     }
     setTitle("#" + issueStory.item.number + " " + status);
-    IssueDetailAdapter adapter = new IssueDetailAdapter(this, recyclerView, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
+    IssueDetailAdapter adapter =
+        new IssueDetailAdapter(this, recyclerView, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();
@@ -346,19 +348,8 @@ public class IssueDetailActivity extends BackActivity
     builder.content(getString(R.string.issue_detail_error, issueInfo.toString()));
     builder.positiveText(R.string.retry);
     builder.negativeText(R.string.accept);
-    builder.callback(new MaterialDialog.ButtonCallback() {
-      @Override
-      public void onPositive(MaterialDialog dialog) {
-        super.onPositive(dialog);
-        getContent();
-      }
-
-      @Override
-      public void onNegative(MaterialDialog dialog) {
-        super.onNegative(dialog);
-        finish();
-      }
-    });
+    builder.onPositive((dialog1, which) -> getContent());
+    builder.onNegative((dialog1, which) -> finish());
     dialog = builder.show();
   }
 
@@ -445,7 +436,7 @@ public class IssueDetailActivity extends BackActivity
         editMilestone();
         break;
       case R.id.issue_edit_assignee:
-        new ChangeAssigneeAction(this, issueInfo).setCallback(new AssigneActionCallback()).execute();
+        new ChangeAssigneeAction(this, apiComponent, issueInfo).setCallback(new AssigneActionCallback()).execute();
         break;
       case R.id.issue_edit_labels:
         openLabels();

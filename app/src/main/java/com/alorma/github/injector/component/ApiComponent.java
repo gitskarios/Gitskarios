@@ -3,6 +3,7 @@ package com.alorma.github.injector.component;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.sdk.core.ApiClient;
+import com.alorma.github.ui.actions.AssigneeAction;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
@@ -36,4 +37,6 @@ public interface ApiComponent {
   void inject(MembershipReposFragment membershipReposFragment);
 
   void inject(IssueDetailActivity issueDetailActivity);
+
+  void inject(AssigneeAction assigneeAction);
 }

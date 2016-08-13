@@ -11,23 +11,25 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
-import com.afollestad.materialdialogs.MaterialDialog;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.alorma.github.R;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.android.vending.billing.IInAppBillingService;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by a557114 on 25/07/2015.
- */
 public class DonateFragment extends BaseFragment {
 
   private static final String SKU_BASE_DONATE = "com.alorma.github.donate";
@@ -68,15 +70,17 @@ public class DonateFragment extends BaseFragment {
   }
 
   public void launchDonate() {
+    DonateItemsAdapter adapter = new DonateItemsAdapter(LayoutInflater.from(getActivity()));
+    adapter.addAll(skuList);
+    adapter.setCallback(item -> {
+      if (dialog != null) {
+        dialog.dismiss();
+      }
+      buy(item.getSku());
+    });
     dialog = new DialogUtils().builder(getActivity())
         .title(R.string.support_development)
-        .adapter(new DonateItemsAdapter(getActivity(), skuList), new MaterialDialog.ListCallback() {
-          @Override
-          public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-            materialDialog.dismiss();
-            buy(skuList.get(i).getSku());
-          }
-        })
+        .adapter(adapter, new LinearLayoutManager(getActivity()))
         .show();
   }
 
@@ -134,10 +138,28 @@ public class DonateFragment extends BaseFragment {
     return true;
   }
 
-  private class DonateItemsAdapter extends ArrayAdapter<DonateItem> {
+  public class DonateItemsAdapter extends RecyclerArrayAdapter<DonateItem, DonateItemsAdapter.Holder> {
 
-    public DonateItemsAdapter(Context context, List<DonateItem> objects) {
-      super(context, android.R.layout.simple_list_item_1, objects);
+    public DonateItemsAdapter(LayoutInflater inflater) {
+      super(inflater);
+    }
+
+    @Override
+    protected void onBindViewHolder(Holder holder, DonateItem donateItem) {
+      holder.textView.setText(donateItem.toString());
+    }
+
+    @Override
+    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+      return new Holder(getInflater().inflate(android.R.layout.simple_list_item_1, parent, false));
+    }
+
+    public class Holder extends RecyclerView.ViewHolder {
+      @BindView(android.R.id.text1) TextView textView;
+      public Holder(View itemView) {
+        super(itemView);
+        ButterKnife.bind(this, itemView);
+      }
     }
   }
 }

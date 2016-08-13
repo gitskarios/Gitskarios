@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -372,22 +373,19 @@ public class NewIssueActivity extends RepositoryThemeActivity {
     }
 
     Collections.reverse(users);
-    UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(NewIssueActivity.this, users);
-
-    MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this);
-    builder.adapter(assigneesAdapter, (materialDialog, view, i, charSequence) -> {
-      User user = users.get(i);
-      setAssigneeUser(user);
-      materialDialog.dismiss();
-    });
-    builder.negativeText(R.string.no_assignee);
-    builder.callback(new MaterialDialog.ButtonCallback() {
-      @Override
-      public void onNegative(MaterialDialog dialog) {
-        super.onNegative(dialog);
-        setAssigneeUser(null);
+    UsersAdapterSpinner assigneesAdapter = new UsersAdapterSpinner(getLayoutInflater());
+    assigneesAdapter.addAll(users);
+    assigneesAdapter.setCallback(item -> {
+      if (dialog != null) {
+        dialog.dismiss();
+        setAssigneeUser(item);
       }
     });
+
+    MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this);
+    builder.adapter(assigneesAdapter, new LinearLayoutManager(this));
+    builder.negativeText(R.string.no_assignee);
+    builder.onNegative((dialog1, which) -> setAssigneeUser(null));
     dialog = builder.show();
   }
 
@@ -439,7 +437,8 @@ public class NewIssueActivity extends RepositoryThemeActivity {
         itemsMilestones[i] = milestones.get(i).title;
       }
 
-      MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this).title(R.string.select_milestone)
+      MaterialDialog.Builder builder = new DialogUtils().builder(NewIssueActivity.this)
+          .title(R.string.select_milestone)
           .items(itemsMilestones)
           .itemsCallbackSingleChoice(-1, (materialDialog, view, i, text) -> {
             addMilestone(milestones.get(i));

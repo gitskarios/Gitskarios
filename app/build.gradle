@@ -173,12 +173,9 @@ dependencies {
         transitive = true
         exclude group: 'com.mikepenz', module: 'iconics-core'
     }
-    compile('com.github.afollestad.material-dialogs:core:0.8.6.1@aar') {
-        transitive = true
-    }
-    compile('com.github.afollestad.material-dialogs:commons:0.8.6.1@aar') {
-        transitive = true
-    }
+    compile 'com.afollestad.material-dialogs:core:0.9.0.1'
+    compile 'com.afollestad.material-dialogs:commons:0.9.0.1'
+
     compile('com.crashlytics.sdk.android:answers:1.3.7@aar') {
         transitive = true;
     }

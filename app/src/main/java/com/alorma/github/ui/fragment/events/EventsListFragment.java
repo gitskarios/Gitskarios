@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.IntentsManager;
@@ -21,7 +18,6 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
@@ -33,10 +29,10 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.utils.DialogUtils;
-import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.gitskarios.core.Pair;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
@@ -373,22 +369,19 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   }
 
   private void showCommitsDialog(List<Commit> commits) {
-    final CommitsAdapter adapter = new CommitsAdapter(getActivity(), commits);
+    CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true);
+    adapter.addAll(commits);
+    adapter.setCallback(item -> startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url))));
     MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
     builder.title(R.string.event_select_commit);
-    builder.adapter(adapter, (materialDialog, view, i, charSequence) -> {
-      Commit item = adapter.getItem(i);
-
-      startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url)));
-    });
+    builder.adapter(adapter, new LinearLayoutManager(getActivity()));
     builder.show();
   }
 
   private void showReposDialogDialog(final String... repos) {
-
     MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
     builder.title(R.string.event_select_repository);
-    builder.items(repos);
+    builder.items(Arrays.asList(repos));
     builder.alwaysCallSingleChoiceCallback();
     builder.itemsCallbackSingleChoice(-1, (materialDialog, view, i, charSequence) -> {
       String repoSelected = repos[i];
@@ -424,96 +417,6 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
 
     public ArrayIntegers() {
 
-    }
-  }
-
-  private class CommitsAdapter extends ArrayAdapter<Commit> {
-
-    private final LayoutInflater mInflater;
-
-    public CommitsAdapter(Context context, List<Commit> objects) {
-      super(context, 0, objects);
-      this.mInflater = LayoutInflater.from(context);
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-      View view = mInflater.inflate(R.layout.row_commit, parent, false);
-
-      ViewHolder holder = new ViewHolder(view);
-
-      Commit commit = getItem(position);
-
-      User author = commit.author;
-
-      if (author == null) {
-        author = commit.commit.author;
-      }
-
-      if (author == null) {
-        author = commit.commit.committer;
-      }
-
-      if (author != null) {
-
-        holder.avatar.setUser(author);
-
-        if (author.login != null) {
-          holder.user.setText(author.login);
-        } else if (author.name != null) {
-          holder.user.setText(author.name);
-        } else if (author.email != null) {
-          holder.user.setText(author.email);
-        }
-      }
-
-      String message = commit.shortMessage();
-      if (commit.commit != null && commit.commit.shortMessage() != null) {
-        message = commit.commit.shortMessage();
-      }
-
-      holder.title.setText(message);
-
-      if (commit.sha != null) {
-        holder.sha.setText(commit.shortSha());
-      }
-
-      if (commit.files != null && commit.files.size() > 0) {
-        holder.numFiles.setVisibility(View.VISIBLE);
-        holder.numFiles.setText(holder.itemView.getContext().getString(R.string.num_of_files, commit.files.size()));
-      } else {
-        holder.numFiles.setVisibility(View.GONE);
-      }
-
-      bindVerification(holder, commit);
-
-      return view;
-    }
-
-    private void bindVerification(ViewHolder holder, Commit commit) {
-      boolean verifiedCommit = commit.isCommitVerified();
-      holder.verifiedCommit.setVisibility(verifiedCommit ? View.VISIBLE : View.GONE);
-    }
-
-    public class ViewHolder {
-
-      private final TextView title;
-      private final TextView user;
-      private final TextView sha;
-      private final TextView numFiles;
-      private final UserAvatarView avatar;
-      private final ImageView verifiedCommit;
-      private View itemView;
-
-      public ViewHolder(final View itemView) {
-        this.itemView = itemView;
-        title = (TextView) itemView.findViewById(R.id.title);
-        user = (TextView) itemView.findViewById(R.id.user);
-        sha = (TextView) itemView.findViewById(R.id.sha);
-        numFiles = (TextView) itemView.findViewById(R.id.numFiles);
-        avatar = (UserAvatarView) itemView.findViewById(R.id.avatarAuthor);
-        verifiedCommit = (ImageView) itemView.findViewById(R.id.verifiedCommit);
-      }
     }
   }
 }

@@ -1,19 +1,21 @@
 package com.alorma.github.ui.actions;
 
 import android.content.Context;
+import android.support.v4.util.Pair;
+import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import java.util.List;
 
-/**
- * Created by Bernat on 12/10/2015.
- */
-public class ChangeAssigneeAction extends Action<Boolean> implements ActionCallback<User> {
+public class ChangeAssigneeAction extends Action<Boolean> implements ActionCallback<Pair<List<User>, List<User>>> {
 
   private final Context context;
   private final IssueInfo issueInfo;
+  private ApiComponent apiComponent;
 
-  public ChangeAssigneeAction(Context context, IssueInfo issueInfo) {
+  public ChangeAssigneeAction(Context context, ApiComponent apiComponent, IssueInfo issueInfo) {
     this.context = context;
+    this.apiComponent = apiComponent;
     this.issueInfo = issueInfo;
   }
 
@@ -24,13 +26,16 @@ public class ChangeAssigneeAction extends Action<Boolean> implements ActionCallb
   }
 
   @Override
-  public void onResult(User user) {
-    new AssigneeAction(context, issueInfo, user).setCallback(new ActionCallback<Boolean>() {
-      @Override
-      public void onResult(Boolean aBoolean) {
-        if (getCallback() != null) {
-          getCallback().onResult(aBoolean);
-        }
+  public void onResult(Pair<List<User>, List<User>> users) {
+    Action<Boolean> action;
+    if (users == null) {
+      action = new ClearAssigneesAction(context, issueInfo);
+    } else {
+      action = new AssigneeAction(context, apiComponent, issueInfo, users.first, users.second);
+    }
+    action.setCallback(aBoolean -> {
+      if (getCallback() != null) {
+        getCallback().onResult(aBoolean);
       }
     }).execute();
   }
