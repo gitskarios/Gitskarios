@@ -14,17 +14,6 @@ Join the beta here: https://play.google.com/apps/testing/com.alorma.github
 
 Gitskarios is an Android Application that allows you to access GitHub, see your profile, search people, star repositories, and more!
 
-## TOKEN
-
-```
-TokenProvider.setTokenProviderInstance(new TokenProviderInterface() {
-    @Override
-    public String getToken() {
-            return ...;
-        }
-    });
-```
-
 ## CONTRIBUTING ##
 
 Follow the instructions that describe how to fork this project : [Fork this project](FORK.md)
