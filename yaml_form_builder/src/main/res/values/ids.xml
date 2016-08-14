@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <item name="form_big_text_item_emojis"
+        type="id"/>
+  <item name="form_big_text_item_source"
+        type="id"/>
+  <item name="form_big_text_item_images"
+        type="id"/>
+</resources>

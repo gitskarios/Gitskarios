@@ -27,6 +27,7 @@ import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
+import com.alorma.github.ui.GitskariosIssueActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.GeneralPeopleFragment;
 import com.alorma.github.ui.fragment.donate.DonateFragment;
@@ -301,7 +302,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             onSettingsSelected();
             return true;
           case R.id.open_gitskarios_issue:
-            onGitsakriosIssueSelected();
+            onGitskariosIssueSelected();
             return true;
           case R.id.nav_drawer_about:
             onAboutSelected();
@@ -569,11 +570,11 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     return false;
   }
 
-  public boolean onGitsakriosIssueSelected() {
+  public boolean onGitskariosIssueSelected() {
     RepoInfo repoInfo = new RepoInfo();
     repoInfo.owner = "gitskarios";
     repoInfo.name = "gitskarios";
-    Intent intent = NewIssueActivity.createLauncherIntent(this, repoInfo);
+    Intent intent = GitskariosIssueActivity.createLauncherIntent(this, repoInfo);
     startActivity(intent);
     return false;
   }

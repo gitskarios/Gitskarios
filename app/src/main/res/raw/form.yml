@@ -1,0 +1,42 @@
+config:
+  version: 1
+form:
+ - key: "issue_type"
+   type: selector
+   label: "Type of issue"
+   params:
+     values:
+      - Enhancement
+      - Bug
+      - Feature request
+      - Crash
+     mode: simple
+ - key: "title"
+   type: textfield
+   label: "Issue title"
+   params:
+    hint: "Title"
+    max: 100
+ - key: "device"
+   type: textfield
+   label: "Device"
+   params:
+    hint: "Device"
+    max: 100
+ - key: "os_version"
+   type: selector
+   label: "Select android version"
+   params:
+     values:
+      - Android 4.3
+      - Android 4.4
+      - Android 5.0
+      - Android 6.0
+      - Android 7.0
+     mode: simple
+ - key: "content"
+   type: textfield
+   label: "Content"
+   params:
+    hint: "Content"
+    multiline: true
