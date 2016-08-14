@@ -1,26 +1,26 @@
 buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://jitpack.io" }
-        maven { url "http://dl.bintray.com/android/android-tools" }
-    }
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://jitpack.io" }
+    maven { url "http://dl.bintray.com/android/android-tools" }
+  }
 
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.21.2'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
-        classpath 'com.github.triplet.gradle:play-publisher:1.1.4'
-    }
-    // Exclude the version that the android plugin depends on.
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
+  dependencies {
+    classpath 'io.fabric.tools:gradle:1.21.2'
+    classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+    classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+    classpath 'com.github.triplet.gradle:play-publisher:1.1.4'
+  }
+  // Exclude the version that the android plugin depends on.
+  configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 apply plugin: 'com.android.application'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+  maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'me.tatarka.retrolambda'
@@ -31,276 +31,277 @@ apply plugin: 'com.neenbedankt.android-apt'
 //gradle dependencyUpdates -Drevision=release
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.1'
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionName "3.1.1"
-        versionCode 301001
-        resValue "string", "app_git_hash", getCurrentGitHash()
+  compileSdkVersion 24
+  buildToolsVersion '24.0.1'
+  dexOptions {
+    javaMaxHeapSize "4g"
+  }
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+  defaultConfig {
+    minSdkVersion 15
+    targetSdkVersion 24
+    versionName "3.1.1"
+    versionCode 301001
+    resValue "string", "app_git_hash", getCurrentGitHash()
 
-        multiDexEnabled true
-        vectorDrawables.useSupportLibrary = true
+    multiDexEnabled true
+    vectorDrawables.useSupportLibrary = true
 
-        applicationId "com.alorma.github"
-        ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
-        ext.betaDistributionNotifications = false
+    applicationId "com.alorma.github"
+    ext.betaDistributionGroupAliases = "gitskarios-alpha-testers"
+    ext.betaDistributionNotifications = false
 
-        resValue "string", "imgur_client_id", getImgurClient()
-        resValue "string", "imgur_client_secret", getImgurSecret()
-        resValue "string", "imgur_client_callback", getImgurCallback()
+    resValue "string", "imgur_client_id", getImgurClient()
+    resValue "string", "imgur_client_secret", getImgurSecret()
+    resValue "string", "imgur_client_callback", getImgurCallback()
+  }
+
+  lintOptions {
+    abortOnError false
+    warning 'InvalidPackage'
+  }
+
+  signingConfigs {
+    release {
+      storeFile file("../app.keystore.jks")
     }
+  }
 
-    lintOptions {
-        abortOnError false
-    }
+  packagingOptions {
+    exclude 'LICENSE.txt'
+    exclude 'META-INF/DEPENDENCIES'
+    exclude 'META-INF/ASL2.0'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/NOTICE.txt'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+    exclude 'META-INF/services/com.fasterxml.jackson.core.JsonFactory'
+  }
 
-    signingConfigs {
-        release {
-            storeFile file("../app.keystore.jks")
-        }
+  buildTypes {
+    debug {
+      applicationIdSuffix ".debug"
+      buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
+      buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
     }
+    release {
+      minifyEnabled false
+      signingConfig = signingConfigs.release
+      buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
+      buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
+    }
+  }
 
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
-        exclude 'META-INF/services/com.fasterxml.jackson.core.JsonFactory'
-    }
-
-    buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(false) + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(false) + "\""
-        }
-        release {
-            minifyEnabled false
-            signingConfig = signingConfigs.release
-            buildConfigField "String", "CLIENT_ID", "\"" + getGHId(true) + "\""
-            buildConfigField "String", "CLIENT_SECRET", "\"" + getGHSecret(true) + "\""
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 }
 
 // delete unaligned files
 android.applicationVariants.all { variant ->
-    variant.assemble.doLast {
-        variant.outputs.each { output ->
-            println "aligned " + output.outputFile
-            println "unaligned " + output.packageApplication.outputFile
+  variant.assemble.doLast {
+    variant.outputs.each { output ->
+      println "aligned " + output.outputFile
+      println "unaligned " + output.packageApplication.outputFile
 
-            File unaligned = output.packageApplication.outputFile;
-            File aligned = output.outputFile
-            if (!unaligned.getName().equalsIgnoreCase(aligned.getName())) {
-                println "deleting " + unaligned.getName()
-                unaligned.delete()
-            }
-        }
+      File unaligned = output.packageApplication.outputFile;
+      File aligned = output.outputFile
+      if (!unaligned.getName().equalsIgnoreCase(aligned.getName())) {
+        println "deleting " + unaligned.getName()
+        unaligned.delete()
+      }
     }
+  }
 }
 
 def getCurrentGitHash() {
-    return 'git rev-parse --short HEAD'.execute().text.trim()
+  return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
 def getGHId(pro) {
-    if (pro) {
-        return hasProperty('GH_PRO_ID') ? GH_PRO_ID : System.getenv('GH_PRO_ID')
-    } else {
-        return hasProperty('GH_DEV_ID') ? GH_DEV_ID : System.getenv('GH_DEV_ID')
-    }
+  if (pro) {
+    return hasProperty('GH_PRO_ID') ? GH_PRO_ID : System.getenv('GH_PRO_ID')
+  } else {
+    return hasProperty('GH_DEV_ID') ? GH_DEV_ID : System.getenv('GH_DEV_ID')
+  }
 }
 
 def getGHSecret(pro) {
-    if (pro) {
-        return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
-    } else {
-        return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
-    }
+  if (pro) {
+    return hasProperty('GH_PRO_SECRET') ? GH_PRO_SECRET : System.getenv('GH_PRO_SECRET')
+  } else {
+    return hasProperty('GH_DEV_SECRET') ? GH_DEV_SECRET : System.getenv('GH_DEV_SECRET')
+  }
 }
 
 def getImgurClient() {
-    return hasProperty('IMGUR_CLIENT') ? IMGUR_CLIENT : System.getenv('IMGUR_CLIENT')
+  return hasProperty('IMGUR_CLIENT') ? IMGUR_CLIENT : System.getenv('IMGUR_CLIENT')
 }
 
 def getImgurSecret() {
-    return hasProperty('IMGUR_SECRET') ? IMGUR_SECRET : System.getenv('IMGUR_SECRET')
+  return hasProperty('IMGUR_SECRET') ? IMGUR_SECRET : System.getenv('IMGUR_SECRET')
 }
 
 def getImgurCallback() {
-    return hasProperty('IMGUR_CALLBACK') ? IMGUR_CALLBACK : System.getenv('IMGUR_CALLBACK')
+  return hasProperty('IMGUR_CALLBACK') ? IMGUR_CALLBACK : System.getenv('IMGUR_CALLBACK')
 }
 
 dependencies {
-    compile project(':sdks:GithubReborn')
-    compile project(':imgur')
-    compile project(':yaml_form_builder')
+  compile project(':sdks:GithubReborn')
+  compile project(':imgur')
+  compile project(':yaml_form_builder')
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
-        transitive = true;
-    }
+  compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
+    transitive = true;
+  }
 
-    compile 'com.mikepenz:actionitembadge:3.2.6@aar'
-    compile 'com.mikepenz:octicons-typeface:3.2.0.1@aar'
-    compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
-    compile 'com.mikepenz:google-material-typeface:2.2.0.2.original@aar'
-    compile "com.mikepenz:iconics-core:2.6.7@aar"
-    compile "com.mikepenz:materialize:0.9.0@aar"
-    compile('com.mikepenz:fastadapter:1.6.0@aar') {
-        transitive = true
-    }
-    compile('com.mikepenz:aboutlibraries:5.7.1@aar') {
-        transitive = true
-        exclude group: 'com.mikepenz', module: 'iconics-core'
-    }
-    compile('com.mikepenz:materialdrawer:5.3.4@aar') {
-        transitive = true
-        exclude group: 'com.mikepenz', module: 'iconics-core'
-    }
-    compile 'com.afollestad.material-dialogs:core:0.9.0.1'
-    compile 'com.afollestad.material-dialogs:commons:0.9.0.1'
+  compile 'com.mikepenz:actionitembadge:3.2.6@aar'
+  compile 'com.mikepenz:octicons-typeface:3.2.0.1@aar'
+  compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
+  compile 'com.mikepenz:google-material-typeface:2.2.0.2.original@aar'
+  compile "com.mikepenz:iconics-core:2.6.7@aar"
+  compile "com.mikepenz:materialize:0.9.0@aar"
+  compile('com.mikepenz:fastadapter:1.6.0@aar') {
+    transitive = true
+  }
+  compile('com.mikepenz:aboutlibraries:5.7.1@aar') {
+    transitive = true
+    exclude group: 'com.mikepenz', module: 'iconics-core'
+  }
+  compile('com.mikepenz:materialdrawer:5.3.4@aar') {
+    transitive = true
+    exclude group: 'com.mikepenz', module: 'iconics-core'
+  }
+  compile 'com.afollestad.material-dialogs:core:0.9.0.1'
+  compile 'com.afollestad.material-dialogs:commons:0.9.0.1'
 
-    compile('com.crashlytics.sdk.android:answers:1.3.7@aar') {
-        transitive = true;
-    }
+  compile('com.crashlytics.sdk.android:answers:1.3.7@aar') {
+    transitive = true;
+  }
 
-    compile 'com.github.varunest:sparkbutton:1.0.0'
+  compile 'com.github.varunest:sparkbutton:1.0.0'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:1.7.0'
-    testCompile "org.mockito:mockito-core:1.10.19"
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.assertj:assertj-core:1.7.0'
+  testCompile "org.mockito:mockito-core:1.10.19"
 
-    compile 'com.maksim88:PasswordEditText:v0.8'
+  compile 'com.maksim88:PasswordEditText:v0.8'
 
-    apt "com.google.dagger:dagger-compiler:2.4"
-    compile "com.google.dagger:dagger:2.4"
+  apt "com.google.dagger:dagger-compiler:2.4"
+  compile "com.google.dagger:dagger:2.4"
 
-    compile 'com.pddstudio:highlightjs-android:1.2.0'
+  compile 'com.pddstudio:highlightjs-android:1.2.0'
 
-    compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
-        exclude group: "joda-time"
-    }
-    compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
-    compile 'com.github.xiprox.errorview:library:2.2.0'
+  compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
+    exclude group: "joda-time"
+  }
+  compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+  compile 'com.github.xiprox.errorview:library:2.2.0'
 
 
-    def supportLibVersion = '24.0.0'
-    compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:palette-v7:$supportLibVersion"
-    compile "com.android.support:recyclerview-v7:$supportLibVersion"
-    compile "com.android.support:cardview-v7:$supportLibVersion"
+  def supportLibVersion = '24.0.0'
+  compile "com.android.support:design:$supportLibVersion"
+  compile "com.android.support:appcompat-v7:$supportLibVersion"
+  compile "com.android.support:palette-v7:$supportLibVersion"
+  compile "com.android.support:recyclerview-v7:$supportLibVersion"
+  compile "com.android.support:cardview-v7:$supportLibVersion"
 
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'se.emilsjolander:stickylistheaders:2.7.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
-    compile 'com.squareup:otto:1.3.8'
-    compile 'com.wefika:flowlayout:0.4.0'
-    compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
-    compile('com.afollestad:material-cab:0.1.11@aar') {
-        transitive = true
-    }
-    compile 'com.jakewharton:butterknife:8.2.1'
-    apt 'com.jakewharton:butterknife-compiler:8.2.1'
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.fewlaps.quitnowcache:quitnow-cache:1.4'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'com.github.Musenkishi:Atelier:1.3.1'
-    compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile 'jp.wasabeef:glide-transformations:1.3.1'
-    compile 'com.github.florent37:glidepalette:1.0.4@aar'
-    compile 'cat.ereza:customactivityoncrash:1.4.0'
-    compile 'io.mola.galimatias:galimatias:0.2.0'
-    compile 'com.karumi:dexter:2.2.1'
-    compile 'com.linkedin.android.spyglass:spyglass:1.3.0'
-    compile 'com.jakewharton:process-phoenix:1.0.2'
-    compile 'com.github.alorma:timelineview:2.2.1'
-    compile 'com.roughike:bottom-bar:1.4.0.1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-    compile 'nl.littlerobots.rxlint:rxlint:1.0'
+  compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+  compile 'se.emilsjolander:stickylistheaders:2.7.0'
+  compile 'com.nineoldandroids:library:2.4.0'
+  compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
+  compile 'com.squareup:otto:1.3.8'
+  compile 'com.wefika:flowlayout:0.4.0'
+  compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
+  compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
+  compile('com.afollestad:material-cab:0.1.11@aar') {
+    transitive = true
+  }
+  compile 'com.jakewharton:butterknife:8.2.1'
+  apt 'com.jakewharton:butterknife-compiler:8.2.1'
+  compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+  compile 'com.fewlaps.quitnowcache:quitnow-cache:1.4'
+  compile 'com.android.support:multidex:1.0.1'
+  compile 'io.reactivex:rxandroid:1.0.1'
+  compile 'com.github.Musenkishi:Atelier:1.3.1'
+  compile 'com.github.bumptech.glide:glide:3.6.1'
+  compile 'jp.wasabeef:glide-transformations:1.3.1'
+  compile 'com.github.florent37:glidepalette:1.0.4@aar'
+  compile 'cat.ereza:customactivityoncrash:1.4.0'
+  compile 'io.mola.galimatias:galimatias:0.2.0'
+  compile 'com.karumi:dexter:2.2.1'
+  compile 'com.linkedin.android.spyglass:spyglass:1.3.0'
+  compile 'com.jakewharton:process-phoenix:1.0.2'
+  compile 'com.github.alorma:timelineview:2.2.1'
+  compile 'com.roughike:bottom-bar:1.4.0.1'
+  compile 'com.squareup.retrofit2:retrofit:2.0.0'
+  compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+  compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
-    def firebaseVersion = '9.2.0'
-    compile "com.google.firebase:firebase-core:$firebaseVersion"
-    compile "com.google.firebase:firebase-database:$firebaseVersion"
-    compile "com.google.firebase:firebase-ads:$firebaseVersion"
-    compile "com.google.firebase:firebase-auth:$firebaseVersion"
-    compile "com.google.firebase:firebase-invites:$firebaseVersion"
-    compile "com.google.firebase:firebase-messaging:$firebaseVersion"
-    compile "com.google.firebase:firebase-crash:$firebaseVersion"
+  def firebaseVersion = '9.2.0'
+  compile "com.google.firebase:firebase-core:$firebaseVersion"
+  compile "com.google.firebase:firebase-database:$firebaseVersion"
+  compile "com.google.firebase:firebase-ads:$firebaseVersion"
+  compile "com.google.firebase:firebase-auth:$firebaseVersion"
+  compile "com.google.firebase:firebase-invites:$firebaseVersion"
+  compile "com.google.firebase:firebase-messaging:$firebaseVersion"
+  compile "com.google.firebase:firebase-crash:$firebaseVersion"
 
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
+  compile 'com.squareup.retrofit:retrofit:1.9.0'
+  compile 'com.squareup.okhttp:okhttp:2.5.0'
+  compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
 
-    compile 'io.reactivex:rxjava:1.1.7'
+  compile 'io.reactivex:rxjava:1.1.7'
 
-    compile 'net.danlew:android.joda:2.8.2'
+  compile 'net.danlew:android.joda:2.8.2'
 
-    compile 'nl.littlerobots.rxlint:rxlint:1.0'
+  compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
-    compile 'com.github.chrisbanes:PhotoView:1.2.6'
-    compile 'com.github.javierugarte:githubcontributionsview:1.2.1'
+  compile 'com.github.chrisbanes:PhotoView:1.2.6'
+  compile 'com.github.javierugarte:githubcontributionsview:1.2.1'
 }
 
 play {
-    jsonFile = file('../gplay-secret.json')
-    track = 'production'
+  jsonFile = file('../gplay-secret.json')
+  track = 'production'
 }
 
 def (releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword) = signingConfigFromFile()
 if (releaseKeystorePassword != null && releaseKeyAlias != null && releaseKeyPassword != null) {
-    android.signingConfigs.release.storePassword = releaseKeystorePassword
-    android.signingConfigs.release.keyAlias = releaseKeyAlias
-    android.signingConfigs.release.keyPassword = releaseKeyPassword
+  android.signingConfigs.release.storePassword = releaseKeystorePassword
+  android.signingConfigs.release.keyAlias = releaseKeyAlias
+  android.signingConfigs.release.keyPassword = releaseKeyPassword
 } else {
-    println "No se han encontrado las credenciales necesarias para poder firmar el apk :("
-    android.buildTypes.release.signingConfig = null
+  println "No se han encontrado las credenciales necesarias para poder firmar el apk :("
+  android.buildTypes.release.signingConfig = null
 }
 
 def signingConfigFromFile() {
-    println '-> signingConfigFromFile'
-    def Properties props = new Properties()
-    def propFile = file('../signing.properties')
+  println '-> signingConfigFromFile'
+  def Properties props = new Properties()
+  def propFile = file('../signing.properties')
 
-    if (propFile.canRead()) {
-        props.load(new FileInputStream(propFile))
+  if (propFile.canRead()) {
+    props.load(new FileInputStream(propFile))
 
-        if (props != null && props.containsKey('STORE_PASSWORD') && props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+    if (props != null && props.containsKey('STORE_PASSWORD') && props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
 
-            def keystorePassword = props['STORE_PASSWORD']
-            def keyAlias = props['KEY_ALIAS']
-            def keyPassword = props['KEY_PASSWORD']
+      def keystorePassword = props['STORE_PASSWORD']
+      def keyAlias = props['KEY_ALIAS']
+      def keyPassword = props['KEY_PASSWORD']
 
-            return [keystorePassword, keyAlias, keyPassword]
-        } else {
-            println 'signing.properties found but some entries are missing'
-        }
+      return [keystorePassword, keyAlias, keyPassword]
     } else {
-        println 'signing.properties not found'
+      println 'signing.properties found but some entries are missing'
     }
-    return [null, null, null]
+  } else {
+    println 'signing.properties not found'
+  }
+  return [null, null, null]
 }
 
 apply plugin: 'com.google.gms.google-services'
