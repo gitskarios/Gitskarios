@@ -27,6 +27,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.sdk.services.search.IssuesSearchClient;
+import com.alorma.github.ui.GitskariosIssueActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
@@ -315,9 +316,18 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
         animateRevealFab();
       } else {
-        Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivityForResult(intent, ISSUE_REQUEST);
+        openNewIssueActivity();
       }
+    }
+  }
+
+  private void openNewIssueActivity() {
+    if (repoInfo.owner.equalsIgnoreCase("gitskarios") && repoInfo.name.equalsIgnoreCase("gitskarios")) {
+      Intent intent = GitskariosIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+      startActivity(intent);
+    } else {
+      Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+      startActivityForResult(intent, ISSUE_REQUEST);
     }
   }
 
@@ -339,8 +349,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
       @Override
       public void onAnimationEnd(Animator animator) {
-        Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivityForResult(intent, ISSUE_REQUEST);
+        openNewIssueActivity();
       }
 
       @Override

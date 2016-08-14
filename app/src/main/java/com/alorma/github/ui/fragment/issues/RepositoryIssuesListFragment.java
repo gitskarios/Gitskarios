@@ -29,6 +29,7 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.issues.GetIssuesClient;
 import com.alorma.github.sdk.services.search.IssuesSearchClient;
+import com.alorma.github.ui.GitskariosIssueActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.MilestoneIssuesActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
@@ -327,11 +328,21 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
         animateRevealFab();
       } else {
-        Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivityForResult(intent, ISSUE_REQUEST);
+        openNewIssueActivity();
       }
     }
   }
+
+  private void openNewIssueActivity() {
+    if (repoInfo.owner.equalsIgnoreCase("gitskarios") && repoInfo.name.equalsIgnoreCase("gitskarios")) {
+      Intent intent = GitskariosIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+      startActivity(intent);
+    } else {
+      Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+      startActivityForResult(intent, ISSUE_REQUEST);
+    }
+  }
+
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   private void animateRevealFab() {
@@ -351,8 +362,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
       @Override
       public void onAnimationEnd(Animator animator) {
-        Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-        startActivityForResult(intent, ISSUE_REQUEST);
+        openNewIssueActivity();
       }
 
       @Override
