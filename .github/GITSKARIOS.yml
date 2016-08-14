@@ -1,0 +1,20 @@
+- title
+  - textfield
+    - max: 100
+    - multiline: false
+    - hint: Issue title
+- device
+  - textfield
+     - max: 100
+     - multiline: false
+- android_version:
+   - selector
+      - values:
+          - android 4.3
+          - android 4.4
+          - android 5.0
+          - android 6.0
+          - android 7.0
+- content
+  - textfield
+     - max: 500
