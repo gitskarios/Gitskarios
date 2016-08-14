@@ -446,7 +446,7 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
   }
 
   private void changeStarStatus() {
-    if (repoStarred) {
+    if (repoStarred != null && repoStarred) {
       futureStarredCount = currentRepo.stargazers_count - 1;
       starAction(new UnstarRepoClient(currentRepo.owner.login, currentRepo.name));
     } else {
@@ -456,7 +456,7 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
   }
 
   private void changeWatchedStatus() {
-    if (repoWatched) {
+    if (repoWatched != null && repoWatched) {
       futureSubscribersCount = currentRepo.subscribers_count - 1;
       watchAction(new UnwatchRepoClient(currentRepo.owner.login, currentRepo.name));
     } else {
