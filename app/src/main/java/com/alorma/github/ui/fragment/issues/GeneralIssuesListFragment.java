@@ -7,6 +7,9 @@ import com.alorma.github.R;
 import com.alorma.github.ui.fragment.base.BasePagerFragment;
 import com.alorma.github.ui.fragment.base.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.issues.users.AssignedIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.users.CreatedIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.users.MentionedIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.users.SubscribedIssuesListFragment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +38,15 @@ public class GeneralIssuesListFragment extends BasePagerFragment {
   protected PagerAdapter provideAdapter(FragmentManager fm) {
     List<Fragment> fragments = new ArrayList<>();
     fragments.add(AssignedIssuesListFragment.newInstance());
+    fragments.add(CreatedIssuesListFragment.newInstance());
+    fragments.add(MentionedIssuesListFragment.newInstance());
+    fragments.add(SubscribedIssuesListFragment.newInstance());
 
     List<String> titles = new ArrayList<>();
     titles.add(getString(R.string.user_assigned_issues));
+    titles.add(getString(R.string.user_created_issues));
+    titles.add(getString(R.string.user_mentioned_issues));
+    titles.add(getString(R.string.user_subscribed_issues));
 
     return new NavigationPagerAdapter(fm, fragments, titles);
   }

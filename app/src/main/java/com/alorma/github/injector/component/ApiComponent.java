@@ -7,6 +7,9 @@ import com.alorma.github.ui.actions.AssigneeAction;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.issues.users.AssignedIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.users.CreatedIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.users.MentionedIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.users.SubscribedIssuesListFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.repos.CurrentAccountReposFragment;
 import com.alorma.github.ui.fragment.repos.MembershipReposFragment;
@@ -42,4 +45,10 @@ public interface ApiComponent {
   void inject(AssigneeAction assigneeAction);
 
   void inject(AssignedIssuesListFragment assignedIssuesListFragment);
+
+  void inject(CreatedIssuesListFragment createdIssuesListFragment);
+
+  void inject(MentionedIssuesListFragment mentionedIssuesListFragment);
+
+  void inject(SubscribedIssuesListFragment subscribedIssuesListFragment);
 }

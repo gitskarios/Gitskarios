@@ -11,10 +11,10 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 
-@PerActivity public class AssignedUserIssuesPresenter extends UserIssuesPresenter {
+@PerActivity public class CreatedUserIssuesPresenter extends UserIssuesPresenter {
 
   @Inject
-  public AssignedUserIssuesPresenter() {
+  public CreatedUserIssuesPresenter() {
     super();
   }
 
@@ -35,6 +35,6 @@ import rx.Observable;
 
   @Override
   protected CloudDataSource<Void, List<Issue>> getCloudIssuesDataSource(RestWrapper issuesRetrofit) {
-    return new CloudUsersIssuesDataSource(issuesRetrofit, "assigned");
+    return new CloudUsersIssuesDataSource(issuesRetrofit, "created");
   }
 }

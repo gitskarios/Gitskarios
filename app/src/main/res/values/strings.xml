@@ -539,4 +539,7 @@
   <string name="share_event">Share</string>
   <string name="assignee_issue_detail_label">Assignees</string>
   <string name="user_assigned_issues">Assigned</string>
+  <string name="user_mentioned_issues">Mentioned</string>
+  <string name="user_created_issues">Created</string>
+  <string name="user_subscribed_issues">Subscribed</string>
 </resources>
