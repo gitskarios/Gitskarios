@@ -1,4 +1,3 @@
 include ':app'
 include ':imgur'
-include ':yaml_form_builder'
 include ':sdks:GithubReborn'

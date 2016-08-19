@@ -156,7 +156,6 @@
     <activity android:name=".ui.activity.ForksActivity"/>
     <activity android:name=".ui.activity.issue.RepositoryMilestonesActivity"/>
     <activity android:name=".ui.activity.issue.IssueLabelsActivity"/>
-    <activity android:name=".ui.GitskariosIssueActivity"/>
     <!--<activity android:name=".ui.activity.SyncFavoritesActivity" />-->
     <activity android:name=".ui.activity.MilestoneIssuesActivity"/>
     <activity

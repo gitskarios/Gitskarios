@@ -153,7 +153,6 @@ def getImgurCallback() {
 dependencies {
   compile project(':sdks:GithubReborn')
   compile project(':imgur')
-  compile project(':yaml_form_builder')
 
   compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
     transitive = true;
@@ -203,7 +202,7 @@ dependencies {
   compile 'com.github.xiprox.errorview:library:2.2.0'
 
 
-  def supportLibVersion = '24.0.0'
+  def supportLibVersion = '24.2.0'
   compile "com.android.support:design:$supportLibVersion"
   compile "com.android.support:appcompat-v7:$supportLibVersion"
   compile "com.android.support:palette-v7:$supportLibVersion"

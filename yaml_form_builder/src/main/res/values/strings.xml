@@ -1,6 +1,0 @@
-<resources>
-  <string name="app_name">yaml_form_builder</string>
-  <string name="form_big_text_item_emojis">Emoji</string>
-  <string name="form_big_text_item_source">Source</string>
-  <string name="form_big_text_item_images">Image</string>
-</resources>
