@@ -8,7 +8,7 @@ import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.datasource.SdkItem;
 import com.alorma.github.sdk.core.issue.EditIssueCommentBodyRequest;
-import com.alorma.github.sdk.core.issue.IssuesRetrofitWrapper;
+import com.alorma.github.sdk.core.issue.IssuesCommentsRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
 import javax.inject.Inject;
 import rx.Observable;
@@ -52,7 +52,7 @@ import rx.schedulers.Schedulers;
 
   @Override
   protected RestWrapper getRest(ApiClient apiClient, String token) {
-    return new IssuesRetrofitWrapper(apiClient, token);
+    return new IssuesCommentsRetrofitWrapper(apiClient, token);
   }
 
   @Override

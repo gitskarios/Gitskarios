@@ -493,7 +493,7 @@
   <string name="write_otp_code_hint">code</string>
   <string name="external_storage_permission_request">Write permission is requested to download</string>
   <string name="external_storage_permission_request_action">Settings</string>
-  <string name="navigation_issues">Assigned issues</string>
+  <string name="navigation_issues">Issues</string>
   <string name="action_push">Enable push</string>
   <string name="unauthorized_login">Bad credentials</string>
   <string name="notifications_all">ALL</string>
@@ -538,4 +538,5 @@
   <string name="login_token">Token</string>
   <string name="share_event">Share</string>
   <string name="assignee_issue_detail_label">Assignees</string>
+  <string name="user_assigned_issues">Assigned</string>
 </resources>

@@ -33,7 +33,7 @@ import com.alorma.github.ui.fragment.donate.DonateFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserStarredGistsFragment;
-import com.alorma.github.ui.fragment.issues.GenericIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.GeneralIssuesListFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.utils.AccountUtils;
@@ -539,7 +539,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   }
 
   public boolean onIssuesSelected() {
-    setFragment(GenericIssuesListFragment.newInstance(), false);
+    setFragment(GeneralIssuesListFragment.newInstance(), false);
     return false;
   }
 

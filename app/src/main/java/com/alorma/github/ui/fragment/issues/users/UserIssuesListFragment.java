@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment.repos;
+package com.alorma.github.ui.fragment.issues.users;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,19 +15,20 @@ import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.sdk.core.repositories.Repo;
+import com.alorma.github.sdk.core.issues.Issue;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
 import java.util.List;
 
-public abstract class ReposFragment extends BaseFragment
-    implements TitleProvider, Presenter.Callback<List<Repo>>, RecyclerArrayAdapter.RecyclerAdapterContentListener {
+public abstract class UserIssuesListFragment extends BaseFragment
+    implements TitleProvider, Presenter.Callback<List<Issue>>, RecyclerArrayAdapter.RecyclerAdapterContentListener {
 
-  private ReposAdapter adapter;
   private SwipeRefreshLayout refreshLayout;
   private RecyclerView recyclerView;
+  private IssuesAdapter adapter;
 
   @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
@@ -36,16 +37,6 @@ public abstract class ReposFragment extends BaseFragment
     ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
 
     initInjectors(apiComponent);
-  }
-
-  @Override
-  protected int getLightTheme() {
-    return R.style.AppTheme_Repository;
-  }
-
-  @Override
-  protected int getDarkTheme() {
-    return R.style.AppTheme_Dark_Repository;
   }
 
   protected abstract void initInjectors(ApiComponent apiComponent);
@@ -66,7 +57,7 @@ public abstract class ReposFragment extends BaseFragment
     refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(getContext()));
 
     recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-    adapter = new ReposAdapter(LayoutInflater.from(getContext()));
+    adapter = new IssuesAdapter(LayoutInflater.from(getContext()));
     adapter.setRecyclerAdapterContentListener(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -82,29 +73,39 @@ public abstract class ReposFragment extends BaseFragment
   protected abstract void onRefresh();
 
   @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
   public void showLoading() {
     refreshLayout.post(() -> refreshLayout.setRefreshing(true));
   }
 
   @Override
-  public void onResponse(List<Repo> repos, boolean firstTime) {
+  public void onResponse(List<Issue> issues, boolean firstTime) {
     if (firstTime) {
       adapter.clear();
     }
-    adapter.addAll(repos);
+    // TODO adapter.addAll(issues);
+  }
+
+  @Override
+  public void hideLoading() {
+
   }
 
   @Override
   public void onResponseEmpty() {
     if (isResumed()) {
       if (recyclerView != null) {
-        Snackbar.make(recyclerView, R.string.empty_repos, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(recyclerView, R.string.no_issues_found, Snackbar.LENGTH_SHORT).show();
       }
     }
-  }
-
-  @Override
-  public void hideLoading() {
-    refreshLayout.post(() -> refreshLayout.setRefreshing(false));
   }
 }

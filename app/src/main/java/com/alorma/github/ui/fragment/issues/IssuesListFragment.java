@@ -321,13 +321,8 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   }
 
   private void openNewIssueActivity() {
-    if (repoInfo.owner.equalsIgnoreCase("gitskarios") && repoInfo.name.equalsIgnoreCase("gitskarios")) {
-      Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-      startActivity(intent);
-    } else {
-      Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-      startActivityForResult(intent, ISSUE_REQUEST);
-    }
+    Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
+    startActivityForResult(intent, ISSUE_REQUEST);
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
