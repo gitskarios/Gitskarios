@@ -97,14 +97,6 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
       }).show();
     }
-
-    navigationFragment = new NavigationFragment();
-
-    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    ft.add(new NavigationFragment(), "navigation");
-    ft.commit();
-
-    navigationFragment.setNavigationCallback(this);
   }
 
   private boolean checkChangeLog() {
@@ -382,6 +374,8 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
 
     accountNameProvider.setName(getNameFromAccount(account));
 
+    loadUserOrgs();
+
     StoreCredentials credentials = new StoreCredentials(MainActivity.this);
     credentials.clear();
     String authToken = AccountsHelper.getUserToken(this, account);
@@ -398,6 +392,16 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     if (changingUser) {
       lastUsedFragment = null;
     }
+  }
+
+  private void loadUserOrgs() {
+    navigationFragment = new NavigationFragment();
+
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ft.add(new NavigationFragment(), "navigation");
+    ft.commit();
+
+    navigationFragment.setNavigationCallback(this);
   }
 
   @Override

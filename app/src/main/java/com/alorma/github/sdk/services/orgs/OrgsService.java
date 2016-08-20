@@ -8,9 +8,6 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/**
- * Created by Bernat on 04/09/2014.
- */
 public interface OrgsService {
 
   //Async

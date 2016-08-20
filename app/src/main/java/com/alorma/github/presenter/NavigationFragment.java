@@ -10,6 +10,7 @@ import com.alorma.github.sdk.core.User;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import java.util.List;
 import javax.inject.Inject;
+import org.joda.time.tz.NameProvider;
 
 public class NavigationFragment extends BaseFragment implements Presenter.Callback<List<User>> {
   @Inject NavigationProfilesPresenter navigationProfilesPresenter;
@@ -21,12 +22,14 @@ public class NavigationFragment extends BaseFragment implements Presenter.Callba
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    navigationProfilesPresenter.load(null, this);
+    navigationProfilesPresenter.load(nameProvider.getName(), this);
   }
 
   @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
     super.injectComponents(applicationComponent);
+
+    applicationComponent.inject(this);
 
     ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
 

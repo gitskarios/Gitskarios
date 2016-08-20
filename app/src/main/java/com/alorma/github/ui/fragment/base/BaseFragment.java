@@ -18,6 +18,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.log.LogWrapper;
 import com.alorma.github.track.Tracker;
@@ -32,6 +33,7 @@ public class BaseFragment extends Fragment {
 
   @Inject protected Tracker tracker;
   @Inject protected LogWrapper logWrapper;
+  @Inject protected AccountNameProvider nameProvider;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {

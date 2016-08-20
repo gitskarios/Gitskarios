@@ -11,7 +11,6 @@ import com.alorma.github.sdk.core.datasource.SdkItem;
 import com.alorma.github.sdk.core.orgs.OrganizationsDataSource;
 import com.alorma.github.sdk.core.orgs.OrganizationsRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -19,9 +18,9 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@PerActivity public class NavigationProfilesPresenter extends Presenter<Void, List<User>> {
+@PerActivity public class NavigationProfilesPresenter extends Presenter<String, List<User>> {
   private Integer page;
-  private GenericRepository<Void, List<User>> genericRepository;
+  private GenericRepository<String, List<User>> genericRepository;
 
   @Inject
   public NavigationProfilesPresenter() {
@@ -29,14 +28,14 @@ import rx.schedulers.Schedulers;
   }
 
   @Override
-  public void load(Void aVoid, Callback<List<User>> listCallback) {
-    execute(config().execute(new SdkItem<>(null)), listCallback, true);
+  public void load(String aString, Callback<List<User>> listCallback) {
+    execute(config().execute(new SdkItem<>(aString)), listCallback, true);
   }
 
   @Override
-  public void loadMore(Void aVoid, Callback<List<User>> listCallback) {
+  public void loadMore(String aString, Callback<List<User>> listCallback) {
     if (page != null) {
-      execute(config().execute(new SdkItem<>(page, null)), listCallback, false);
+      execute(config().execute(new SdkItem<>(page, aString)), listCallback, false);
     }
   }
 
@@ -73,7 +72,7 @@ import rx.schedulers.Schedulers;
 
   @NonNull
   @Override
-  protected GenericRepository<Void, List<User>> configRepository(RestWrapper restWrapper) {
+  protected GenericRepository<String, List<User>> configRepository(RestWrapper restWrapper) {
     if (genericRepository == null) {
       genericRepository = new GenericRepository<>(getOrgsCacheDataSource(), getCloudOrgsDataSource(restWrapper));
     }
@@ -86,30 +85,22 @@ import rx.schedulers.Schedulers;
     return new OrganizationsRetrofitWrapper(apiClient, token);
   }
 
-  protected CacheDataSource<Void, List<User>> getOrgsCacheDataSource() {
-    return new CacheDataSource<Void, List<User>>() {
-
-      public Integer page;
-      public List<User> userList;
+  protected CacheDataSource<String, List<User>> getOrgsCacheDataSource() {
+    return new CacheDataSource<String, List<User>>() {
 
       @Override
-      public void saveData(SdkItem<Void> request, SdkItem<List<User>> data) {
-        if (this.userList == null) {
-          this.userList = new ArrayList<>();
-        }
-        this.page = data.getPage();
-        this.userList.addAll(data.getK());
+      public void saveData(SdkItem<String> request, SdkItem<List<User>> data) {
+
       }
 
       @Override
-      public Observable<SdkItem<List<User>>> getData(SdkItem<Void> request) {
-        //return Observable.just(userList).map(users -> new SdkItem<>(this.page, userList));
+      public Observable<SdkItem<List<User>>> getData(SdkItem<String> request) {
         return Observable.empty();
       }
     };
   }
 
-  protected CloudDataSource<Void, List<User>> getCloudOrgsDataSource(RestWrapper usersRetrofit) {
+  protected CloudDataSource<String, List<User>> getCloudOrgsDataSource(RestWrapper usersRetrofit) {
     return new OrganizationsDataSource(usersRetrofit);
   }
 }
