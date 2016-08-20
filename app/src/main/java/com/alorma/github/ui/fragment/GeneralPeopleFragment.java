@@ -36,12 +36,10 @@ public class GeneralPeopleFragment extends BasePagerFragment {
     List<Fragment> listFragments = new ArrayList<>();
     listFragments.add(FollowingFragment.newInstance(null));
     listFragments.add(FollowersFragment.newInstance(null));
-    listFragments.add(OrganizationsFragment.newInstance(null));
 
     List<String> titles = new ArrayList<>();
     titles.add(getString(R.string.navigation_following));
     titles.add(getString(R.string.navigation_followers));
-    titles.add(getString(R.string.menu_organizations));
     return new NavigationPagerAdapter(fm, listFragments, titles);
   }
 
