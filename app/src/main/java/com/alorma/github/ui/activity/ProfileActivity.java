@@ -39,6 +39,7 @@ import com.alorma.github.ui.activity.base.PeopleThemeActivity;
 import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.users.UserResumeFragment;
+import com.alorma.github.utils.AccountUtils;
 import com.alorma.gitskarios.core.Pair;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -154,7 +155,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
         if (getIntent().getExtras().containsKey(ACCOUNT)) {
           selectedAccount = getIntent().getParcelableExtra(ACCOUNT);
           avatar = AccountsHelper.getUserAvatar(this, selectedAccount);
-          login = selectedAccount.name;
+          login = new AccountUtils().getNameFromAccount(selectedAccount.name);
           name = AccountsHelper.getUserName(this, selectedAccount);
         }
         if (getIntent().getExtras().containsKey(USER)) {

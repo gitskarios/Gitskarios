@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -56,11 +57,12 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -76,7 +78,6 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   private Drawer resultDrawer;
   private int notificationsSizeCount = 0;
   private DonateFragment donateFragment;
-  private List<Account> accountList;
 
   public static void startActivity(Activity context) {
     Intent intent = new Intent(context, MainActivity.class);
@@ -170,10 +171,9 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     super.onStart();
 
     if (resultDrawer == null) {
-      accountList = getAccounts();
-
-      if (!accountList.isEmpty()) {
-        selectedAccount = accountList.get(0);
+      List<Account> accounts = getAccounts();
+      if (!accounts.isEmpty()) {
+        selectedAccount = accounts.get(0);
         createDrawer();
         selectAccount(selectedAccount);
         onUserEventsSelected();
@@ -207,93 +207,22 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     drawer.withToolbar(getToolbar());
     drawer.withAccountHeader(accountHeader);
 
-    drawer.addDrawerItems(new PrimaryDrawerItem().withName(R.string.menu_events)
-            .withIcon(Octicons.Icon.oct_calendar)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_events), new PrimaryDrawerItem().withName(R.string.navigation_general_repositories)
-            .withIcon(Octicons.Icon.oct_repo)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_repositories), new PrimaryDrawerItem().withName(R.string.navigation_people)
-            .withIcon(Octicons.Icon.oct_person)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_people), new PrimaryDrawerItem().withName(R.string.navigation_issues)
-            .withIcon(Octicons.Icon.oct_issue_opened)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_issues), new DividerDrawerItem()
-        /*,
+    List<IDrawerItem> userItems = getUserDrawerItems();
 
-        new SecondaryDrawerItem().withName(R.string.navigation_favorites)
-        .withIdentifier(R.id.navigation_favorites),
-        new DividerDrawerItem()
-        */, new PrimaryDrawerItem().withName(R.string.navigation_gists)
-            .withIcon(Octicons.Icon.oct_gist)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_gists), new PrimaryDrawerItem().withName(R.string.navigation_gists_starred)
-            .withIcon(Octicons.Icon.oct_star)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_gists_starred), new DividerDrawerItem(),
-        new SecondaryDrawerItem().withName(R.string.menu_enable_notifications)
-            .withIdentifier(R.id.nav_drawer_notifications)
-            .withSelectable(false)
-            .withIcon(Octicons.Icon.oct_bell)
-            .withIconColor(iconColor), new SecondaryDrawerItem().withName(R.string.navigation_settings)
-            .withIcon(Octicons.Icon.oct_gear)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.nav_drawer_settings)
-            .withIsExpanded(false)
-            .withSelectable(false), new SecondaryDrawerItem().withName(R.string.open_gitskarios_issue)
-            .withIconColor(iconColor)
-            .withIdentifier(R.id.open_gitskarios_issue)
-            .withIcon(Octicons.Icon.oct_issue_opened)
-            .withSelectable(false), new DividerDrawerItem());
-
-    if (donateFragment.enabled()) {
-      PrimaryDrawerItem donateItem = new SecondaryDrawerItem().withName(R.string.support_development)
-          .withIcon(Octicons.Icon.oct_heart)
-          .withIconColor(iconColor)
-          .withIdentifier(R.id.nav_drawer_support_development)
-          .withSelectable(false);
-
-      drawer.addDrawerItems(donateItem);
+    for (IDrawerItem userItem : userItems) {
+      drawer.addDrawerItems(userItem);
     }
 
-    drawer.addDrawerItems(new SecondaryDrawerItem().withName(R.string.navigation_invite)
-        .withIcon(Octicons.Icon.oct_organization)
-        .withIconColor(iconColor)
-        .withIdentifier(R.id.nav_drawer_invite)
-        .withSelectable(false), new SecondaryDrawerItem().withName(R.string.navigation_about)
-        .withIcon(Octicons.Icon.oct_octoface)
-        .withIconColor(iconColor)
-        .withIdentifier(R.id.nav_drawer_about)
-        .withSelectable(false), new SecondaryDrawerItem().withName(R.string.navigation_sign_out)
-        .withIcon(Octicons.Icon.oct_sign_out)
-        .withIconColor(iconColor)
-        .withIdentifier(R.id.nav_drawer_sign_out)
-        .withSelectable(false));
+    List<IDrawerItem> allProfilesItems = getAllProfilesItems();
+    for (IDrawerItem allProfilesItem : allProfilesItems) {
+      drawer.addStickyDrawerItems(allProfilesItem);
+    }
 
     drawer.withOnDrawerItemClickListener((view, position, drawerItem) -> {
       if (drawerItem != null) {
         resultDrawer.closeDrawer();
         long identifier = drawerItem.getIdentifier();
         switch ((int) identifier) {
-          case R.id.nav_drawer_events:
-            onUserEventsSelected();
-            return true;
-          case R.id.nav_drawer_repositories:
-            onReposSelected();
-            return true;
-          case R.id.nav_drawer_people:
-            onPeopleSelected();
-            return true;
-          case R.id.nav_drawer_issues:
-            onIssuesSelected();
-            return true;
-          case R.id.nav_drawer_gists:
-            onGistsSelected();
-            return true;
-          case R.id.nav_drawer_gists_starred:
-            onStarredGistsSelected();
-            return true;
           case R.id.nav_drawer_notifications:
             openNotifications();
             return false;
@@ -322,11 +251,126 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
             return true;
         }
       }
-
       return false;
     });
     resultDrawer = drawer.build();
     resultDrawer.setSelection(R.id.nav_drawer_events);
+  }
+
+  private List<IDrawerItem> getUserDrawerItems() {
+    int iconColor = ContextCompat.getColor(this, R.color.icons);
+
+    List<IDrawerItem> items = new ArrayList<>();
+
+    items.add(new PrimaryDrawerItem().withName(R.string.menu_events)
+        .withIcon(Octicons.Icon.oct_calendar)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_events)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onUserEventsSelected();
+          return false;
+        }));
+    items.add(new PrimaryDrawerItem().withName(R.string.navigation_general_repositories)
+        .withIcon(Octicons.Icon.oct_repo)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_repositories)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onReposSelected();
+          return false;
+        }));
+    items.add(new PrimaryDrawerItem().withName(R.string.navigation_people)
+        .withIcon(Octicons.Icon.oct_person)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_people)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onPeopleSelected();
+          return false;
+        }));
+    items.add(new PrimaryDrawerItem().withName(R.string.navigation_issues)
+        .withIcon(Octicons.Icon.oct_issue_opened)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_issues)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onIssuesSelected();
+          return false;
+        }));
+    items.add(new DividerDrawerItem());
+    items.add(new PrimaryDrawerItem().withName(R.string.navigation_gists)
+        .withIcon(Octicons.Icon.oct_gist)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_gists)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onGistsSelected();
+          return false;
+        }));
+    items.add(new PrimaryDrawerItem().withName(R.string.navigation_gists_starred)
+        .withIcon(Octicons.Icon.oct_star)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_gists_starred)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onStarredGistsSelected();
+          return false;
+        }));
+
+    return items;
+  }
+
+  private List<IDrawerItem> getAllProfilesItems() {
+    int iconColor = ContextCompat.getColor(this, R.color.icons);
+
+    List<IDrawerItem> items = new ArrayList<>();
+    items.add(new SecondaryDrawerItem().withName(R.string.menu_enable_notifications)
+        .withIdentifier(R.id.nav_drawer_notifications)
+        .withSelectable(false)
+        .withIcon(Octicons.Icon.oct_bell)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          openNotifications();
+          return false;
+        })
+        .withIconColor(iconColor));
+
+    items.add(new SecondaryDrawerItem().withName(R.string.navigation_settings)
+        .withIcon(Octicons.Icon.oct_gear)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_settings)
+        .withIsExpanded(false)
+        .withSelectable(false));
+    items.add(new SecondaryDrawerItem().withName(R.string.open_gitskarios_issue)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.open_gitskarios_issue)
+        .withIcon(Octicons.Icon.oct_issue_opened)
+        .withSelectable(false));
+
+    items.add(new DividerDrawerItem());
+
+    if (donateFragment.enabled()) {
+      PrimaryDrawerItem donateItem = new SecondaryDrawerItem().withName(R.string.support_development)
+          .withIcon(Octicons.Icon.oct_heart)
+          .withIconColor(iconColor)
+          .withIdentifier(R.id.nav_drawer_support_development)
+          .withSelectable(false);
+
+      items.add(donateItem);
+    }
+
+    items.add(new SecondaryDrawerItem().withName(R.string.navigation_invite)
+        .withIcon(Octicons.Icon.oct_organization)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_invite)
+        .withSelectable(false));
+
+    items.add(new SecondaryDrawerItem().withName(R.string.navigation_about)
+        .withIcon(Octicons.Icon.oct_octoface)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_about)
+        .withSelectable(false));
+    items.add(new SecondaryDrawerItem().withName(R.string.navigation_sign_out)
+        .withIcon(Octicons.Icon.oct_sign_out)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_sign_out)
+        .withSelectable(false));
+
+    return items;
   }
 
   private void openFavorites() {
@@ -345,40 +389,67 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   }
 
   private AccountHeader buildHeader() {
-
-    // Create the AccountHeader
-
     DrawerImageLoader.init(new DrawerImage());
 
     AccountHeaderBuilder headerBuilder = new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.color.md_grey_600);
 
     headerBuilder.withOnAccountHeaderListener(this);
 
-    boolean usedSelected = false;
-    if (accountList != null) {
-      for (Account account : accountList) {
-        String userAvatar = AccountsHelper.getUserAvatar(this, account);
-        ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(getNameFromAccount(account))
-            .withEmail(getUserExtraName(account))
-            .withIdentifier(account.hashCode());
-        if (!TextUtils.isEmpty(userAvatar)) {
-          profileDrawerItem.withIcon(userAvatar);
-        }
-        profileDrawerItem.withSetSelected(!usedSelected);
-        usedSelected = true;
-        headerBuilder.addProfiles(profileDrawerItem);
-      }
+    ProfileDrawerItem userDrawerItem = getUserDrawerItem();
+
+    headerBuilder.addProfiles(userDrawerItem);
+
+    List<ProfileDrawerItem> organizationsProfiles = new ArrayList<>();
+    organizationsProfiles.add(
+        getOrganizationProfileDrawerItem("Gitskarios", "https://avatars1.githubusercontent.com/u/11989662?v=3&s=200"));
+    organizationsProfiles.add(getOrganizationProfileDrawerItem("Catmobil", "https://avatars1.githubusercontent.com/u/6428632?v=3&s=200"));
+    organizationsProfiles.add(getOrganizationProfileDrawerItem("scm-spain", "https://avatars0.githubusercontent.com/u/6713142?v=3&s=200"));
+    organizationsProfiles.add(
+        getOrganizationProfileDrawerItem("FineCinnamon", "https://avatars2.githubusercontent.com/u/11597937?v=3&s=200"));
+    organizationsProfiles.add(
+        getOrganizationProfileDrawerItem("SchibstedSpain", "https://avatars1.githubusercontent.com/u/18301133?v=3&s=200"));
+
+    for (ProfileDrawerItem organizationsProfile : organizationsProfiles) {
+      headerBuilder.addProfiles(organizationsProfile);
     }
 
-    ProfileSettingDrawerItem itemAdd = new ProfileSettingDrawerItem().withName(getString(R.string.add_account))
-        .withDescription(getString(R.string.add_account_description))
-        .withIcon(
-            new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBar().paddingDp(5).colorRes(R.color.material_drawer_primary_text))
-        .withIdentifier(1101);
-
-    headerBuilder.addProfiles(itemAdd);
-
     return headerBuilder.build();
+  }
+
+  @NonNull
+  private ProfileDrawerItem getOrganizationProfileDrawerItem(String name, String avatar) {
+    ProfileDrawerItem gitskarios = new ProfileDrawerItem().withName(name).withIcon(avatar);
+
+    gitskarios.withSubItems(new PrimaryDrawerItem().withName("Events").withOnDrawerItemClickListener((view, position, drawerItem) -> {
+      onOrgEventsSelected(name);
+      return false;
+    }));
+    gitskarios.withSubItems(new PrimaryDrawerItem().withName("Repositories").withOnDrawerItemClickListener((view, position, drawerItem) -> {
+      onOrgReposSelected(name);
+      return false;
+    }));
+    gitskarios.withSubItems(new PrimaryDrawerItem().withName("People").withOnDrawerItemClickListener((view, position, drawerItem) -> {
+      onOrgPeopleSelected(name);
+      return false;
+    }));
+    gitskarios.withSubItems(new PrimaryDrawerItem().withName("Teams").withOnDrawerItemClickListener((view, position, drawerItem) -> {
+      onOrgTeamsSelected(name);
+      return false;
+    }));
+    return gitskarios;
+  }
+
+  private ProfileDrawerItem getUserDrawerItem() {
+    String userAvatar = AccountsHelper.getUserAvatar(this, selectedAccount);
+    ProfileDrawerItem userDrawerItem = new ProfileDrawerItem().withName(getUserExtraName(selectedAccount))
+        .withEmail(getNameFromAccount(selectedAccount))
+        .withNameShown(false)
+        .withSubItems(getUserDrawerItems())
+        .withIdentifier(selectedAccount.hashCode());
+    if (!TextUtils.isEmpty(userAvatar)) {
+      userDrawerItem.withIcon(userAvatar);
+    }
+    return userDrawerItem;
   }
 
   @Override
@@ -389,17 +460,22 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
         user.login = iProfile.getName().getText();
         Intent launcherIntent = ProfileActivity.createLauncherIntent(MainActivity.this, selectedAccount);
         startActivityForResult(launcherIntent, PROFILE_REQUEST_CODE);
+        return false;
       } else {
         String accountName = iProfile.getName().getText();
-        for (Account account : accountList) {
-          if (getNameFromAccount(account).equalsIgnoreCase(accountName)) {
-            selectAccount(account);
-            onUserEventsSelected();
-            break;
+        // TODO On organization selected
+
+        if (iProfile instanceof ProfileDrawerItem) {
+          List<IDrawerItem> subItems = ((ProfileDrawerItem) iProfile).getSubItems();
+          if (subItems != null) {
+            resultDrawer.removeAllItems();
+            for (IDrawerItem subItem : subItems) {
+              resultDrawer.addItems(subItem);
+            }
           }
         }
+        return true;
       }
-      return false;
     } else {
       Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -561,6 +637,22 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
       setFragment(EventsListFragment.newInstance(user), false);
     }
     return true;
+  }
+
+  public void onOrgEventsSelected(String orgName) {
+
+  }
+
+  public void onOrgReposSelected(String orgName) {
+
+  }
+
+  public void onOrgPeopleSelected(String orgName) {
+
+  }
+
+  public void onOrgTeamsSelected(String orgName) {
+
   }
 
   public boolean onSettingsSelected() {
