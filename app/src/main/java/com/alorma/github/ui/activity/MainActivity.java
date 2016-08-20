@@ -21,6 +21,7 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
+import com.alorma.github.presenter.NavigationFragment;
 import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
@@ -57,12 +58,14 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements NavigationFragment.NavigationCallback {
 
   private Account selectedAccount;
   private Fragment lastUsedFragment;
   private Drawer resultDrawer;
   private int notificationsSizeCount = 0;
+  private NavigationFragment navigationFragment;
+  private AccountHeader accountHeader;
 
   public static void startActivity(Activity context) {
     Intent intent = new Intent(context, MainActivity.class);
@@ -94,6 +97,14 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
       }).show();
     }
+
+    navigationFragment = new NavigationFragment();
+
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ft.add(new NavigationFragment(), "navigation");
+    ft.commit();
+
+    navigationFragment.setNavigationCallback(this);
   }
 
   private boolean checkChangeLog() {
@@ -124,6 +135,14 @@ public class MainActivity extends BaseActivity {
         onUserEventsSelected();
       }
     }
+
+    navigationFragment.setNavigationCallback(this);
+  }
+
+  @Override
+  protected void onStop() {
+    navigationFragment.setNavigationCallback(null);
+    super.onStop();
   }
 
   private String getUserExtraName(Account account) {
@@ -143,7 +162,7 @@ public class MainActivity extends BaseActivity {
   }
 
   private void createDrawer() {
-    AccountHeader accountHeader = buildHeader();
+    accountHeader = buildHeader();
     DrawerBuilder drawer = new DrawerBuilder();
     drawer.withActivity(this);
     drawer.withToolbar(getToolbar());
@@ -297,62 +316,48 @@ public class MainActivity extends BaseActivity {
 
     headerBuilder.addProfiles(getUserDrawerItem());
 
-    List<ProfileDrawerItem> organizationsProfiles = new ArrayList<>();
-    organizationsProfiles.add(
-        getOrganizationProfileDrawerItem("Gitskarios", "https://avatars1.githubusercontent.com/u/11989662?v=3&s=200"));
-    organizationsProfiles.add(getOrganizationProfileDrawerItem("Catmobil", "https://avatars1.githubusercontent.com/u/6428632?v=3&s=200"));
-    organizationsProfiles.add(getOrganizationProfileDrawerItem("scm-spain", "https://avatars0.githubusercontent.com/u/6713142?v=3&s=200"));
-    organizationsProfiles.add(
-        getOrganizationProfileDrawerItem("FineCinnamon", "https://avatars2.githubusercontent.com/u/11597937?v=3&s=200"));
-    organizationsProfiles.add(
-        getOrganizationProfileDrawerItem("SchibstedSpain", "https://avatars1.githubusercontent.com/u/18301133?v=3&s=200"));
-
-    for (ProfileDrawerItem organizationsProfile : organizationsProfiles) {
-      headerBuilder.addProfiles(organizationsProfile);
-    }
-
     return headerBuilder.build();
   }
 
   @NonNull
-  private ProfileDrawerItem getOrganizationProfileDrawerItem(String name, String avatar) {
+  private ProfileDrawerItem getOrganizationProfileDrawerItem(com.alorma.github.sdk.core.User user) {
     int iconColor = ContextCompat.getColor(this, R.color.icons);
 
-    ProfileDrawerItem orgProfile = new ProfileDrawerItem().withName(name).withIcon(avatar);
+    ProfileDrawerItem orgProfile = new ProfileDrawerItem().withName(user.getLogin()).withIcon(user.getAvatar());
 
     orgProfile.withSubItems(new PrimaryDrawerItem().withName("Events")
         .withIcon(Octicons.Icon.oct_calendar)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-          onOrgEventsSelected(name);
+          onOrgEventsSelected(user.getLogin());
           return false;
         }));
     orgProfile.withSubItems(new PrimaryDrawerItem().withName("Repositories")
         .withIcon(Octicons.Icon.oct_repo)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-          onOrgReposSelected(name);
+          onOrgReposSelected(user.getLogin());
           return false;
         }));
     orgProfile.withSubItems(new PrimaryDrawerItem().withName("People")
         .withIcon(Octicons.Icon.oct_organization)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-          onOrgPeopleSelected(name);
+          onOrgPeopleSelected(user.getLogin());
           return false;
         }));
     orgProfile.withSubItems(new PrimaryDrawerItem().withName("Teams")
         .withIcon(Octicons.Icon.oct_jersey)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-          onOrgTeamsSelected(name);
+          onOrgTeamsSelected(user.getLogin());
           return false;
         }));
     orgProfile.withSubItems(new PrimaryDrawerItem().withName("Issues")
         .withIcon(Octicons.Icon.oct_issue_opened)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-          onOrgIssuesSelected(name);
+          onOrgIssuesSelected(user.getLogin());
           return false;
         }));
     return orgProfile;
@@ -575,6 +580,16 @@ public class MainActivity extends BaseActivity {
         finish();
       } else if (resultDrawer != null) {
         resultDrawer.setSelection(R.id.nav_drawer_events);
+      }
+    }
+  }
+
+  @Override
+  public void onOrganizationsLoaded(List<com.alorma.github.sdk.core.User> organizations) {
+    if (accountHeader != null) {
+      for (com.alorma.github.sdk.core.User organization : organizations) {
+        ProfileDrawerItem drawerItem = getOrganizationProfileDrawerItem(organization);
+        accountHeader.addProfiles(drawerItem);
       }
     }
   }
