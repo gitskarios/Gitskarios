@@ -87,7 +87,9 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
   @NonNull
   protected IIcon getIconStateDrawable(Issue issue) {
     IIcon iconDrawable;
-    if (issue.getState() == IssueState.closed) {
+    if (issue.getPullRequest() != null) {
+      iconDrawable = Octicons.Icon.oct_git_pull_request;
+    } else if (issue.getState() == IssueState.closed) {
       iconDrawable = Octicons.Icon.oct_issue_closed;
     } else {
       iconDrawable = Octicons.Icon.oct_issue_opened;
