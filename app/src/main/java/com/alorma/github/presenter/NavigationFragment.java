@@ -21,11 +21,6 @@ public class NavigationFragment extends BaseFragment implements Presenter.Callba
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
     navigationProfilesPresenter.load(null, this);
   }
 
