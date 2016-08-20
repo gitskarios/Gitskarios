@@ -1,5 +1,6 @@
-package com.alorma.github.ui.fragment.issues.users;
+package com.alorma.github.ui.fragment.issues.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,16 +16,20 @@ import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
+import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.core.issues.Issue;
+import com.alorma.github.ui.activity.IssueDetailActivity;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
 import java.util.List;
 
 public abstract class UserIssuesListFragment extends BaseFragment
-    implements TitleProvider, Presenter.Callback<List<Issue>>, RecyclerArrayAdapter.RecyclerAdapterContentListener {
+    implements TitleProvider, Presenter.Callback<List<Issue>>, RecyclerArrayAdapter.RecyclerAdapterContentListener,
+    RecyclerArrayAdapter.ItemCallback<Issue> {
 
   private SwipeRefreshLayout refreshLayout;
   private RecyclerView recyclerView;
@@ -59,6 +64,7 @@ public abstract class UserIssuesListFragment extends BaseFragment
     recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
     adapter = new IssuesAdapter(LayoutInflater.from(getContext()));
     adapter.setRecyclerAdapterContentListener(this);
+    adapter.setCallback(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
   }
@@ -92,12 +98,12 @@ public abstract class UserIssuesListFragment extends BaseFragment
     if (firstTime) {
       adapter.clear();
     }
-    // TODO adapter.addAll(issues);
+    adapter.addAll(issues);
   }
 
   @Override
   public void hideLoading() {
-
+    refreshLayout.post(() -> refreshLayout.setRefreshing(false));
   }
 
   @Override
@@ -106,6 +112,23 @@ public abstract class UserIssuesListFragment extends BaseFragment
       if (recyclerView != null) {
         Snackbar.make(recyclerView, R.string.no_issues_found, Snackbar.LENGTH_SHORT).show();
       }
+    }
+  }
+
+  @Override
+  public void onItemSelected(Issue item) {
+    IssueInfo info = new IssueInfo();
+    info.num = item.getNumber();
+    info.repoInfo = new RepoInfo();
+    info.repoInfo.owner = item.getRepository().getOwner().getLogin();
+    info.repoInfo.name = item.getRepository().getName();
+
+    if (item.getPullRequest() != null) {
+      Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
+      startActivity(intent);
+    } else {
+      Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
+      startActivity(intent);
     }
   }
 }

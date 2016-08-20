@@ -58,4 +58,22 @@ public class LabelView extends TextView {
       }
     }
   }
+
+  public void setLabel(com.alorma.github.sdk.core.issues.Label label) {
+    if (label != null) {
+      int color = Color.parseColor("#" + label.color);
+      setTextColor(PaletteUtils.foregroundColorFromBackgroundColor(color));
+      setText(label.name);
+
+      GradientDrawable bg = new GradientDrawable();
+      bg.setColor(color);
+      bg.setCornerRadius(getResources().getDimensionPixelOffset(R.dimen.gapLarge));
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        setBackground(bg);
+      } else {
+        setBackgroundDrawable(bg);
+      }
+    }
+  }
 }

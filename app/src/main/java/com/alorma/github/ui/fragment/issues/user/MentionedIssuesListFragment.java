@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment.issues.users;
+package com.alorma.github.ui.fragment.issues.user;
 
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;

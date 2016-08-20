@@ -1,17 +1,17 @@
-package com.alorma.github.ui.fragment.issues.users;
+package com.alorma.github.ui.fragment.issues.user;
 
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
-import com.alorma.github.presenter.issue.MentionedUserIssuesPresenter;
+import com.alorma.github.presenter.issue.CreatedUserIssuesPresenter;
 import com.mikepenz.iconics.typeface.IIcon;
 import javax.inject.Inject;
 
-public class SubscribedIssuesListFragment extends UserIssuesListFragment {
+public class CreatedIssuesListFragment extends UserIssuesListFragment {
 
-  @Inject MentionedUserIssuesPresenter presenter;
+  @Inject CreatedUserIssuesPresenter presenter;
 
-  public static SubscribedIssuesListFragment newInstance() {
-    return new SubscribedIssuesListFragment();
+  public static CreatedIssuesListFragment newInstance() {
+    return new CreatedIssuesListFragment();
   }
 
   @Override
@@ -31,7 +31,7 @@ public class SubscribedIssuesListFragment extends UserIssuesListFragment {
 
   @Override
   public int getTitle() {
-    return R.string.user_subscribed_issues;
+    return R.string.user_created_issues;
   }
 
   @Override
