@@ -215,44 +215,13 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
       drawer.addStickyDrawerItems(allProfilesItem);
     }
 
-    drawer.withOnDrawerItemClickListener((view, position, drawerItem) -> {
-      if (drawerItem != null) {
-        resultDrawer.closeDrawer();
-        long identifier = drawerItem.getIdentifier();
-        switch ((int) identifier) {
-          case R.id.nav_drawer_notifications:
-            openNotifications();
-            return false;
-          case R.id.nav_drawer_settings:
-            onSettingsSelected();
-            return true;
-          case R.id.open_gitskarios_issue:
-            onGitskariosIssueSelected();
-            return true;
-          case R.id.nav_drawer_about:
-            onAboutSelected();
-            return true;
-          case R.id.nav_drawer_invite:
-            onInviteClicked();
-            return true;
-          case R.id.nav_drawer_sign_out:
-            signOut();
-            return true;
-          case R.id.navigation_favorites:
-            openFavorites();
-            return true;
-          case R.id.nav_drawer_support_development:
-            if (donateFragment != null && donateFragment.enabled()) {
-              donateFragment.launchDonate();
-            }
-            return true;
-        }
-      }
-      return false;
-    });
     resultDrawer = drawer.build();
     resultDrawer.setSelection(R.id.nav_drawer_events);
 
+    addDummyOrgs(accountHeader);
+  }
+
+  private void addDummyOrgs(AccountHeader accountHeader) {
     List<ProfileDrawerItem> organizationsProfiles = new ArrayList<>();
     organizationsProfiles.add(
         getOrganizationProfileDrawerItem("Gitskarios", "https://avatars1.githubusercontent.com/u/11989662?v=3&s=200"));
@@ -345,12 +314,20 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
         .withIconColor(iconColor)
         .withIdentifier(R.id.nav_drawer_settings)
         .withIsExpanded(false)
-        .withSelectable(false));
+        .withSelectable(false)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onSettingsSelected();
+          return false;
+        }));
     items.add(new SecondaryDrawerItem().withName(R.string.open_gitskarios_issue)
         .withIconColor(iconColor)
         .withIdentifier(R.id.open_gitskarios_issue)
         .withIcon(Octicons.Icon.oct_issue_opened)
-        .withSelectable(false));
+        .withSelectable(false)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onGitskariosIssueSelected();
+          return false;
+        }));
 
     items.add(new DividerDrawerItem());
 
@@ -359,7 +336,13 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
           .withIcon(Octicons.Icon.oct_heart)
           .withIconColor(iconColor)
           .withIdentifier(R.id.nav_drawer_support_development)
-          .withSelectable(false);
+          .withSelectable(false)
+          .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+            if (donateFragment != null && donateFragment.enabled()) {
+              donateFragment.launchDonate();
+            }
+            return false;
+          });
 
       items.add(donateItem);
     }
@@ -368,18 +351,30 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
         .withIcon(Octicons.Icon.oct_organization)
         .withIconColor(iconColor)
         .withIdentifier(R.id.nav_drawer_invite)
-        .withSelectable(false));
+        .withSelectable(false)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onInviteClicked();
+          return false;
+        }));
 
     items.add(new SecondaryDrawerItem().withName(R.string.navigation_about)
         .withIcon(Octicons.Icon.oct_octoface)
         .withIconColor(iconColor)
         .withIdentifier(R.id.nav_drawer_about)
-        .withSelectable(false));
+        .withSelectable(false)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onAboutSelected();
+          return false;
+        }));
     items.add(new SecondaryDrawerItem().withName(R.string.navigation_sign_out)
         .withIcon(Octicons.Icon.oct_sign_out)
         .withIconColor(iconColor)
         .withIdentifier(R.id.nav_drawer_sign_out)
-        .withSelectable(false));
+        .withSelectable(false)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          signOut();
+          return false;
+        }));
 
     return items;
   }
