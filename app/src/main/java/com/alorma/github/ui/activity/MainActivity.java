@@ -198,10 +198,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   }
 
   private void createDrawer() {
-    int iconColor = ContextCompat.getColor(this, R.color.icons);
-
     AccountHeader accountHeader = buildHeader();
-    //Now create your drawer and pass the AccountHeader.Result
     DrawerBuilder drawer = new DrawerBuilder();
     drawer.withActivity(this);
     drawer.withToolbar(getToolbar());
@@ -255,6 +252,20 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
     });
     resultDrawer = drawer.build();
     resultDrawer.setSelection(R.id.nav_drawer_events);
+
+    List<ProfileDrawerItem> organizationsProfiles = new ArrayList<>();
+    organizationsProfiles.add(
+        getOrganizationProfileDrawerItem("Gitskarios", "https://avatars1.githubusercontent.com/u/11989662?v=3&s=200"));
+    organizationsProfiles.add(getOrganizationProfileDrawerItem("Catmobil", "https://avatars1.githubusercontent.com/u/6428632?v=3&s=200"));
+    organizationsProfiles.add(getOrganizationProfileDrawerItem("scm-spain", "https://avatars0.githubusercontent.com/u/6713142?v=3&s=200"));
+    organizationsProfiles.add(
+        getOrganizationProfileDrawerItem("FineCinnamon", "https://avatars2.githubusercontent.com/u/11597937?v=3&s=200"));
+    organizationsProfiles.add(
+        getOrganizationProfileDrawerItem("SchibstedSpain", "https://avatars1.githubusercontent.com/u/18301133?v=3&s=200"));
+
+    for (ProfileDrawerItem organizationsProfile : organizationsProfiles) {
+      accountHeader.addProfiles(organizationsProfile);
+    }
   }
 
   private List<IDrawerItem> getUserDrawerItems() {
@@ -279,7 +290,7 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
           return false;
         }));
     items.add(new PrimaryDrawerItem().withName(R.string.navigation_people)
-        .withIcon(Octicons.Icon.oct_person)
+        .withIcon(Octicons.Icon.oct_organization)
         .withIconColor(iconColor)
         .withIdentifier(R.id.nav_drawer_people)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
@@ -399,44 +410,44 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
 
     headerBuilder.addProfiles(userDrawerItem);
 
-    List<ProfileDrawerItem> organizationsProfiles = new ArrayList<>();
-    organizationsProfiles.add(
-        getOrganizationProfileDrawerItem("Gitskarios", "https://avatars1.githubusercontent.com/u/11989662?v=3&s=200"));
-    organizationsProfiles.add(getOrganizationProfileDrawerItem("Catmobil", "https://avatars1.githubusercontent.com/u/6428632?v=3&s=200"));
-    organizationsProfiles.add(getOrganizationProfileDrawerItem("scm-spain", "https://avatars0.githubusercontent.com/u/6713142?v=3&s=200"));
-    organizationsProfiles.add(
-        getOrganizationProfileDrawerItem("FineCinnamon", "https://avatars2.githubusercontent.com/u/11597937?v=3&s=200"));
-    organizationsProfiles.add(
-        getOrganizationProfileDrawerItem("SchibstedSpain", "https://avatars1.githubusercontent.com/u/18301133?v=3&s=200"));
-
-    for (ProfileDrawerItem organizationsProfile : organizationsProfiles) {
-      headerBuilder.addProfiles(organizationsProfile);
-    }
-
     return headerBuilder.build();
   }
 
   @NonNull
   private ProfileDrawerItem getOrganizationProfileDrawerItem(String name, String avatar) {
-    ProfileDrawerItem gitskarios = new ProfileDrawerItem().withName(name).withIcon(avatar);
+    int iconColor = ContextCompat.getColor(this, R.color.icons);
 
-    gitskarios.withSubItems(new PrimaryDrawerItem().withName("Events").withOnDrawerItemClickListener((view, position, drawerItem) -> {
-      onOrgEventsSelected(name);
-      return false;
-    }));
-    gitskarios.withSubItems(new PrimaryDrawerItem().withName("Repositories").withOnDrawerItemClickListener((view, position, drawerItem) -> {
-      onOrgReposSelected(name);
-      return false;
-    }));
-    gitskarios.withSubItems(new PrimaryDrawerItem().withName("People").withOnDrawerItemClickListener((view, position, drawerItem) -> {
-      onOrgPeopleSelected(name);
-      return false;
-    }));
-    gitskarios.withSubItems(new PrimaryDrawerItem().withName("Teams").withOnDrawerItemClickListener((view, position, drawerItem) -> {
-      onOrgTeamsSelected(name);
-      return false;
-    }));
-    return gitskarios;
+    ProfileDrawerItem orgProfile = new ProfileDrawerItem().withName(name).withIcon(avatar);
+
+    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Events")
+        .withIcon(Octicons.Icon.oct_calendar)
+        .withIconColor(iconColor)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onOrgEventsSelected(name);
+          return false;
+        }));
+    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Repositories")
+        .withIcon(Octicons.Icon.oct_repo)
+        .withIconColor(iconColor)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onOrgReposSelected(name);
+          return false;
+        }));
+    orgProfile.withSubItems(new PrimaryDrawerItem().withName("People")
+        .withIcon(Octicons.Icon.oct_organization)
+        .withIconColor(iconColor)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onOrgPeopleSelected(name);
+          return false;
+        }));
+    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Teams")
+        .withIcon(Octicons.Icon.oct_jersey)
+        .withIconColor(iconColor)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onOrgTeamsSelected(name);
+          return false;
+        }));
+    return orgProfile;
   }
 
   private ProfileDrawerItem getUserDrawerItem() {
