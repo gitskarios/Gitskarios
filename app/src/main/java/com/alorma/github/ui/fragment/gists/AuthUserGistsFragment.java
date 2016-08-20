@@ -43,7 +43,7 @@ public class AuthUserGistsFragment extends LoadingListFragment<GistsAdapter> imp
   public void onResume() {
     super.onResume();
 
-    getActivity().setTitle(R.string.navigation_gists);
+    getActivity().setTitle(R.string.navigation_my_gists);
   }
 
   @Override

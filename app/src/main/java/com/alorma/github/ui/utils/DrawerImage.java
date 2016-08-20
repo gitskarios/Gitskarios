@@ -19,9 +19,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-/**
- * Created by bernat.borras on 24/10/15.
- */
 public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
 
   @Override
