@@ -35,6 +35,7 @@ import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserStarredGistsFragment;
 import com.alorma.github.ui.fragment.issues.GeneralIssuesListFragment;
+import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.utils.AccountUtils;
@@ -433,6 +434,13 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
           onOrgTeamsSelected(name);
           return false;
         }));
+    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Issues")
+        .withIcon(Octicons.Icon.oct_issue_opened)
+        .withIconColor(iconColor)
+        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+          onOrgIssuesSelected(name);
+          return false;
+        }));
     return orgProfile;
   }
 
@@ -641,7 +649,8 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   }
 
   public void onOrgReposSelected(String orgName) {
-
+    OrgsReposFragment orgsReposFragment = OrgsReposFragment.newInstance(orgName);
+    setFragment(orgsReposFragment, true);
   }
 
   public void onOrgPeopleSelected(String orgName) {
@@ -649,6 +658,10 @@ public class MainActivity extends BaseActivity implements AccountHeader.OnAccoun
   }
 
   public void onOrgTeamsSelected(String orgName) {
+
+  }
+
+  public void onOrgIssuesSelected(String orgName) {
 
   }
 
