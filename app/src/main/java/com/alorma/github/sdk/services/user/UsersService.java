@@ -22,28 +22,28 @@ public interface UsersService {
   @GET("/user/followers")
   void followers(Callback<List<User>> callback);
 
-  @GET("/users/{username}/followers")
-  void followers(@Path("username") String username, Callback<List<User>> callback);
+  @GET("/users/{orgName}/followers")
+  void followers(@Path("orgName") String username, Callback<List<User>> callback);
 
   @GET("/user/followers")
   void followers(@Query("page") int page, Callback<List<User>> callback);
 
-  @GET("/users/{username}/followers")
-  void followers(@Path("username") String username, @Query("page") int page,
+  @GET("/users/{orgName}/followers")
+  void followers(@Path("orgName") String username, @Query("page") int page,
       Callback<List<User>> callback);
 
   // Following
   @GET("/user/following")
   void following(Callback<List<User>> callback);
 
-  @GET("/users/{username}/following")
-  void following(@Path("username") String username, Callback<List<User>> callback);
+  @GET("/users/{orgName}/following")
+  void following(@Path("orgName") String username, Callback<List<User>> callback);
 
   @GET("/user/following")
   void following(@Query("page") int page, Callback<List<User>> callback);
 
-  @GET("/users/{username}/following")
-  void following(@Path("username") String username, @Query("page") int page,
+  @GET("/users/{orgName}/following")
+  void following(@Path("orgName") String username, @Query("page") int page,
       Callback<List<User>> callback);
 
   //ORGS MEMBERS
@@ -66,12 +66,12 @@ public interface UsersService {
 
   // FOLLOWING USER
 
-  @GET("/user/following/{username}")
-  Observable<Response> checkFollowing(@Path("username") String username);
+  @GET("/user/following/{orgName}")
+  Observable<Response> checkFollowing(@Path("orgName") String username);
 
-  @PUT("/user/following/{username}")
-  Observable<Response> followUser(@Body String empty, @Path("username") String username);
+  @PUT("/user/following/{orgName}")
+  Observable<Response> followUser(@Body String empty, @Path("orgName") String username);
 
-  @DELETE("/user/following/{username}")
-  Observable<Response> unfollowUser(@Path("username") String username);
+  @DELETE("/user/following/{orgName}")
+  Observable<Response> unfollowUser(@Path("orgName") String username);
 }

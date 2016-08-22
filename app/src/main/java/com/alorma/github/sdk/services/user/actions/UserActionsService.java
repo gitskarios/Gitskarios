@@ -8,7 +8,7 @@ import rx.Observable;
 public interface UserActionsService {
 
   //Sync
-  @GET("/repos/{owner}/{name}/collaborators/{username}")
+  @GET("/repos/{owner}/{name}/collaborators/{orgName}")
   Observable<Response> checkIfUserIsCollaborator(@Path("owner") String owner,
-      @Path("name") String repo, @Path("username") String username);
+      @Path("name") String repo, @Path("orgName") String username);
 }

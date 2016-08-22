@@ -13,30 +13,30 @@ import retrofit.http.Query;
 public interface EventsService {
 
   //Async
-  @GET("/users/{username}/received_events")
-  void events(@Path("username") String username, Callback<List<GithubEvent>> eventsCallback);
+  @GET("/users/{orgName}/received_events")
+  void events(@Path("orgName") String username, Callback<List<GithubEvent>> eventsCallback);
 
-  @GET("/users/{username}/received_events")
-  void events(@Path("username") String username, @Query("page") int page,
+  @GET("/users/{orgName}/received_events")
+  void events(@Path("orgName") String username, @Query("page") int page,
       Callback<List<GithubEvent>> eventsCallback);
 
-  @GET("/users/{username}/events")
-  void createdEvents(@Path("username") String username, Callback<List<GithubEvent>> eventsCallback);
+  @GET("/users/{orgName}/events")
+  void createdEvents(@Path("orgName") String username, Callback<List<GithubEvent>> eventsCallback);
 
-  @GET("/users/{username}/events")
-  void createdEvents(@Path("username") String username, @Query("page") int page,
+  @GET("/users/{orgName}/events")
+  void createdEvents(@Path("orgName") String username, @Query("page") int page,
       Callback<List<GithubEvent>> eventsCallback);
 
   //Sync
-  @GET("/users/{username}/received_events")
-  List<GithubEvent> events(@Path("username") String username);
+  @GET("/users/{orgName}/received_events")
+  List<GithubEvent> events(@Path("orgName") String username);
 
-  @GET("/users/{username}/received_events")
-  List<GithubEvent> events(@Path("username") String username, @Query("page") int page);
+  @GET("/users/{orgName}/received_events")
+  List<GithubEvent> events(@Path("orgName") String username, @Query("page") int page);
 
-  @GET("/users/{username}/events")
-  List<GithubEvent> createdEvents(@Path("username") String username);
+  @GET("/users/{orgName}/events")
+  List<GithubEvent> createdEvents(@Path("orgName") String username);
 
-  @GET("/users/{username}/events")
-  List<GithubEvent> createdEvents(@Path("username") String username, @Query("page") int page);
+  @GET("/users/{orgName}/events")
+  List<GithubEvent> createdEvents(@Path("orgName") String username, @Query("page") int page);
 }

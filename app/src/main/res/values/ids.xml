@@ -142,5 +142,7 @@
         type="id"/>
   <item name="open_gitskarios_issue"
         type="id"/>
+  <item name="nav_drawer_events_orgs"
+        type="id"/>
 
 </resources>

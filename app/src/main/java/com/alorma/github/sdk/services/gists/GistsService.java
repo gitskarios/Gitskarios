@@ -28,11 +28,11 @@ public interface GistsService {
   @GET("/gists")
   void userGistsListAsync(@Query("page") int page, Callback<List<Gist>> callback);
 
-  @GET("/users/{username}/gists")
-  void userGistsListAsync(@Path("username") String username, Callback<List<Gist>> callback);
+  @GET("/users/{orgName}/gists")
+  void userGistsListAsync(@Path("orgName") String username, Callback<List<Gist>> callback);
 
-  @GET("/users/{username}/gists")
-  void userGistsListAsync(@Path("username") String username, @Query("page") int page,
+  @GET("/users/{orgName}/gists")
+  void userGistsListAsync(@Path("orgName") String username, @Query("page") int page,
       Callback<List<Gist>> callback);
 
   @GET("/gists/starred")

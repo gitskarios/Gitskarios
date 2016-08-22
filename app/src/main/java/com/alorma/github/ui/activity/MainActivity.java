@@ -29,9 +29,11 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.GeneralPeopleFragment;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
+import com.alorma.github.ui.fragment.events.OrgsEventsListFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserStarredGistsFragment;
 import com.alorma.github.ui.fragment.issues.GeneralIssuesListFragment;
+import com.alorma.github.ui.fragment.orgs.OrgsMembersFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
@@ -301,14 +303,15 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
       } else {
         if (profile instanceof ProfileDrawerItem) {
           List<IDrawerItem> subItems = drawerItems.get(profile.getName().getText());
-          if (subItems != null) {
+          if (subItems != null && !subItems.isEmpty()) {
             resultDrawer.removeAllItems();
             for (IDrawerItem subItem : subItems) {
               resultDrawer.addItems(subItem);
             }
+            resultDrawer.setSelection(subItems.get(0), true);
           }
         }
-        return true;
+        return false;
       }
     });
 
@@ -335,6 +338,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     items.add(new PrimaryDrawerItem().withName("Events")
         .withIcon(Octicons.Icon.oct_calendar)
         .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_events)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgEventsSelected(user.getLogin());
           return false;
@@ -346,7 +350,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
           onOrgReposSelected(user.getLogin());
           return false;
         }));
-    items.add(new PrimaryDrawerItem().withName("People")
+    items.add(new PrimaryDrawerItem().withName("Members")
         .withIcon(Octicons.Icon.oct_organization)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
@@ -356,15 +360,9 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     items.add(new PrimaryDrawerItem().withName("Teams")
         .withIcon(Octicons.Icon.oct_jersey)
         .withIconColor(iconColor)
+        .withEnabled(false)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgTeamsSelected(user.getLogin());
-          return false;
-        }));
-    items.add(new PrimaryDrawerItem().withName("Issues")
-        .withIcon(Octicons.Icon.oct_issue_opened)
-        .withIconColor(iconColor)
-        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-          onOrgIssuesSelected(user.getLogin());
           return false;
         }));
     return items;
@@ -549,7 +547,8 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   }
 
   public void onOrgEventsSelected(String orgName) {
-
+    OrgsEventsListFragment orgsEventsListFragment = OrgsEventsListFragment.newInstance(orgName);
+    setFragment(orgsEventsListFragment, true);
   }
 
   public void onOrgReposSelected(String orgName) {
@@ -558,14 +557,11 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   }
 
   public void onOrgPeopleSelected(String orgName) {
-
+    OrgsMembersFragment orgsMembersFragment = OrgsMembersFragment.newInstance(orgName);
+    setFragment(orgsMembersFragment, true);
   }
 
   public void onOrgTeamsSelected(String orgName) {
-
-  }
-
-  public void onOrgIssuesSelected(String orgName) {
 
   }
 
