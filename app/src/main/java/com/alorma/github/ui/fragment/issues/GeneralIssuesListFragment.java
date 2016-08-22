@@ -31,7 +31,7 @@ public class GeneralIssuesListFragment extends BasePagerFragment {
 
   @Override
   protected int getTitle() {
-    return R.string.my_issues;
+    return R.string.navigation_issues;
   }
 
   @Override

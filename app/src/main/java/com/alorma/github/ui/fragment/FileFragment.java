@@ -41,8 +41,6 @@ public class FileFragment extends BaseFragment {
   public static final String FROM_URL = "FROM_URL";
   private static final int RESULT_EDIT = 123;
 
-  //private FloatingActionButton zoomIn;
-  //private FloatingActionButton zoomOut;
   private HighlightJsView webView;
   private Content fileContent;
   private View loadingView;
@@ -87,14 +85,6 @@ public class FileFragment extends BaseFragment {
     loadingView = view.findViewById(R.id.loading_view);
 
     webView = (HighlightJsView) view.findViewById(R.id.webview);
-    /*
-    zoomIn = (FloatingActionButton) view.findViewById(R.id.zoomIn);
-    zoomOut = (FloatingActionButton) view.findViewById(R.id.zoomOut);
-
-    zoomIn.setOnClickListener(v -> webView.zoomIn());
-    zoomOut.setOnClickListener(v -> webView.zoomOut());
-    */
-
     webView.setZoomSupportEnabled(true);
 
     webView.getSettings().setBuiltInZoomControls(true);
@@ -166,8 +156,9 @@ public class FileFragment extends BaseFragment {
 
     if (menuItem != null && fileContent != null) {
       Drawable drawable = AppCompatDrawableManager.get().getDrawable(getActivity(), R.drawable.pencil);
-      drawable = DrawableCompat.wrap(drawable);
-      drawable.setTint(Color.WHITE);
+      Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+      wrappedDrawable = wrappedDrawable.mutate();
+      DrawableCompat.setTint(wrappedDrawable, getResources().getColor(R.color.white));
       menuItem.setIcon(drawable);
       menuItem.setEnabled(fileInfo.content != null);
     }
