@@ -53,7 +53,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -66,6 +68,8 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   private int notificationsSizeCount = 0;
   private NavigationFragment navigationFragment;
   private AccountHeader accountHeader;
+  private Drawer.OnDrawerItemClickListener drawerListener;
+  private Map<String, List<IDrawerItem>> drawerItems;
 
   public static void startActivity(Activity context) {
     Intent intent = new Intent(context, MainActivity.class);
@@ -171,7 +175,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
       drawer.addStickyDrawerItems(allProfilesItem);
     }
 
-    drawer.withOnDrawerItemClickListener((view, position, drawerItem) -> {
+    drawerListener = (view, position, drawerItem) -> {
       if (drawerItem != null) {
         long identifier = drawerItem.getIdentifier();
         switch ((int) identifier) {
@@ -187,7 +191,9 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         }
       }
       return false;
-    });
+    };
+
+    drawer.withOnDrawerItemClickListener(drawerListener);
     resultDrawer = drawer.build();
     resultDrawer.setSelection(R.id.nav_drawer_events);
   }
@@ -294,7 +300,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         return true;
       } else {
         if (profile instanceof ProfileDrawerItem) {
-          List<IDrawerItem> subItems = ((ProfileDrawerItem) profile).getSubItems();
+          List<IDrawerItem> subItems = drawerItems.get(profile.getName().getText());
           if (subItems != null) {
             resultDrawer.removeAllItems();
             for (IDrawerItem subItem : subItems) {
@@ -306,53 +312,62 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
       }
     });
 
-    headerBuilder.addProfiles(getUserDrawerItem());
+    ProfileDrawerItem userDrawerItem = getUserDrawerItem();
+
+    drawerItems = new HashMap<>();
+    drawerItems.put(userDrawerItem.getName().getText(), getUserDrawerItems());
+
+    userDrawerItem.withSubItems();
+
+    headerBuilder.addProfiles(userDrawerItem);
 
     return headerBuilder.build();
   }
 
   @NonNull
   private ProfileDrawerItem getOrganizationProfileDrawerItem(com.alorma.github.sdk.core.User user) {
+    return new ProfileDrawerItem().withName(user.getLogin()).withIcon(user.getAvatar());
+  }
+
+  private List<IDrawerItem> getOrganizationProfileSubItems(com.alorma.github.sdk.core.User user) {
     int iconColor = ContextCompat.getColor(this, R.color.icons);
-
-    ProfileDrawerItem orgProfile = new ProfileDrawerItem().withName(user.getLogin()).withIcon(user.getAvatar());
-
-    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Events")
+    List<IDrawerItem> items = new ArrayList<>();
+    items.add(new PrimaryDrawerItem().withName("Events")
         .withIcon(Octicons.Icon.oct_calendar)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgEventsSelected(user.getLogin());
           return false;
         }));
-    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Repositories")
+    items.add(new PrimaryDrawerItem().withName("Repositories")
         .withIcon(Octicons.Icon.oct_repo)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgReposSelected(user.getLogin());
           return false;
         }));
-    orgProfile.withSubItems(new PrimaryDrawerItem().withName("People")
+    items.add(new PrimaryDrawerItem().withName("People")
         .withIcon(Octicons.Icon.oct_organization)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgPeopleSelected(user.getLogin());
           return false;
         }));
-    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Teams")
+    items.add(new PrimaryDrawerItem().withName("Teams")
         .withIcon(Octicons.Icon.oct_jersey)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgTeamsSelected(user.getLogin());
           return false;
         }));
-    orgProfile.withSubItems(new PrimaryDrawerItem().withName("Issues")
+    items.add(new PrimaryDrawerItem().withName("Issues")
         .withIcon(Octicons.Icon.oct_issue_opened)
         .withIconColor(iconColor)
         .withOnDrawerItemClickListener((view, position, drawerItem) -> {
           onOrgIssuesSelected(user.getLogin());
           return false;
         }));
-    return orgProfile;
+    return items;
   }
 
   private ProfileDrawerItem getUserDrawerItem() {
@@ -360,7 +375,6 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     ProfileDrawerItem userDrawerItem = new ProfileDrawerItem().withName(getUserExtraName(selectedAccount))
         .withEmail(getNameFromAccount(selectedAccount))
         .withNameShown(false)
-        .withSubItems(getUserDrawerItems())
         .withIdentifier(selectedAccount.hashCode());
     if (!TextUtils.isEmpty(userAvatar)) {
       userDrawerItem.withIcon(userAvatar);
@@ -593,6 +607,8 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     if (accountHeader != null) {
       for (com.alorma.github.sdk.core.User organization : organizations) {
         ProfileDrawerItem drawerItem = getOrganizationProfileDrawerItem(organization);
+        drawerItems.put(drawerItem.getName().getText(), getOrganizationProfileSubItems(organization));
+        drawerItem.withSubItems();
         accountHeader.addProfiles(drawerItem);
       }
     }
