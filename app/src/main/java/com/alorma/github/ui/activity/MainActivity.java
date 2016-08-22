@@ -308,7 +308,12 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
             for (IDrawerItem subItem : subItems) {
               resultDrawer.addItems(subItem);
             }
-            resultDrawer.setSelection(subItems.get(0), true);
+            try {
+              ((PrimaryDrawerItem) subItems.get(0)).getOnDrawerItemClickListener().onItemClick(null, 0, subItems.get(0));
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+            resultDrawer.setSelection(R.id.nav_drawer_events, true);
           }
         }
         return false;
