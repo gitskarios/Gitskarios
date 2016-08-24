@@ -2,21 +2,26 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.EditText;
+import android.widget.ImageView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.StackingBehavior;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
@@ -64,8 +69,6 @@ import com.alorma.github.ui.listeners.IssueDetailRequestListener;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ShortcutUtils;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.octicons_typeface_library.Octicons;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
@@ -95,12 +98,16 @@ public class IssueDetailActivity extends BackActivity
   public Repo repository;
   private boolean shouldRefreshOnBack;
   private IssueInfo issueInfo;
-  private RecyclerView recyclerView;
-  private FloatingActionButton fab;
+
+  @BindView(R.id.swipe) SwipeRefreshLayout swipe;
+  @BindView(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.addCommentEditText) EditText addCommentEditText;
+  @BindView(R.id.addCommentButton) ImageView addCommentButton;
+  @BindView(R.id.addCommentButtonExpand) ImageView addCommentButtonExpand;
+
   private IssueStory issueStory;
   private int primary;
   private int primaryDark;
-  private SwipeRefreshLayout swipe;
   private ApiComponent apiComponent;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
@@ -128,7 +135,7 @@ public class IssueDetailActivity extends BackActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_recycler_responsive);
+    setContentView(R.layout.issue_detail_activity);
 
     if (getIntent().getExtras() != null) {
 
@@ -152,7 +159,7 @@ public class IssueDetailActivity extends BackActivity
       primary = AttributesUtils.getPrimaryColor(this);
       primaryDark = ContextCompat.getColor(this, R.color.primary_dark_alpha);
 
-      findViews();
+      initViews();
 
       getContent();
     }
@@ -186,16 +193,10 @@ public class IssueDetailActivity extends BackActivity
     new DialogUtils().builder(this).title(R.string.dialog_edit_issue).content(content).positiveText(R.string.ok).show();
   }
 
-  private void findViews() {
-    recyclerView = (RecyclerView) findViewById(R.id.recycler);
+  private void initViews() {
+    ButterKnife.bind(this);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    fab = (FloatingActionButton) findViewById(R.id.fabButton);
-    swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
     swipe.setColorSchemeResources(R.color.accent_dark);
-
-    IconicsDrawable drawable = new IconicsDrawable(this, Octicons.Icon.oct_comment_discussion).color(Color.WHITE).sizeDp(24);
-
-    fab.setImageDrawable(drawable);
   }
 
   @Override
@@ -258,13 +259,42 @@ public class IssueDetailActivity extends BackActivity
 
     checkEditTitle();
     applyIssue();
+
+    addCommentEditText.setEnabled(!issueStory.item.locked);
+    addCommentButton.setEnabled(!issueStory.item.locked);
+
+    if (!issueStory.item.locked) {
+      addCommentEditText.addTextChangedListener(new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+          if (addCommentEditText.getText().toString().isEmpty()) {
+            addCommentButton.setVisibility(View.GONE);
+            addCommentButtonExpand.setVisibility(View.GONE);
+            addCommentButton.setOnClickListener(null);
+            addCommentButtonExpand.setOnClickListener(null);
+          } else {
+            addCommentButton.setVisibility(View.VISIBLE);
+            addCommentButtonExpand.setVisibility(View.VISIBLE);
+            addCommentButton.setOnClickListener(IssueDetailActivity.this);
+            addCommentButtonExpand.setOnClickListener(IssueDetailActivity.this);
+          }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+      });
+    }
   }
 
   private void applyIssue() {
     changeColor(issueStory.item);
-
-    fab.setVisibility(issueStory.item.locked ? View.GONE : View.VISIBLE);
-    fab.setOnClickListener(issueStory.item.locked ? null : this);
 
     String status = getString(R.string.issue_status_open);
     if (IssueState.closed == issueStory.item.state) {
@@ -355,10 +385,13 @@ public class IssueDetailActivity extends BackActivity
 
   @Override
   public void onClick(View view) {
-    if (view.getId() == fab.getId()) {
-      if (!issueStory.item.locked) {
-        onAddComment();
-      }
+    if (view.getId() == R.id.addCommentButton) {
+      addComment(addCommentEditText.getText().toString());
+      addCommentEditText.setText("");
+    } else {
+      String hint = getString(R.string.add_comment);
+      Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
+      startActivityForResult(intent, NEW_COMMENT_REQUEST);
     }
   }
 
@@ -405,12 +438,6 @@ public class IssueDetailActivity extends BackActivity
     return true;
   }
 
-  public void onAddComment() {
-    String hint = getString(R.string.add_comment);
-    Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
-    startActivityForResult(intent, NEW_COMMENT_REQUEST);
-  }
-
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
@@ -423,13 +450,13 @@ public class IssueDetailActivity extends BackActivity
       case R.id.action_close_issue:
         new CloseAction(this, issueInfo, R.string.closeIssue).setCallback(issue -> {
           getContent();
-          Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+          Snackbar.make(recyclerView, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
         }).execute();
         break;
       case R.id.action_reopen_issue:
         new ReopenAction(this, issueInfo, R.string.reopenIssue).setCallback(issue -> {
           getContent();
-          Snackbar.make(fab, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
+          Snackbar.make(recyclerView, R.string.issue_change, Snackbar.LENGTH_SHORT).show();
         }).execute();
         break;
       case R.id.issue_edit_milestone:
@@ -542,6 +569,14 @@ public class IssueDetailActivity extends BackActivity
     executeEditIssue(editIssueRequestDTO, R.string.issue_change_add_milestone);
   }
 
+  private void addComment(String body) {
+    showProgressDialog(R.string.adding_comment);
+    AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);
+
+    addIssueCommentAction.setAddCommentCallback(new CommentCallback(body));
+    addIssueCommentAction.execute();
+  }
+
   private void clearMilestone() {
     showProgressDialog(R.string.clear_milestone);
     EditIssueMilestoneRequestDTO editIssueRequestDTO = new EditIssueMilestoneRequestDTO();
@@ -569,7 +604,7 @@ public class IssueDetailActivity extends BackActivity
         hideProgressDialog();
         getContent();
 
-        Snackbar.make(fab, changedText, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(recyclerView, changedText, Snackbar.LENGTH_SHORT).show();
       }
     });
   }
@@ -617,13 +652,8 @@ public class IssueDetailActivity extends BackActivity
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == RESULT_OK && data != null) {
       if (requestCode == NEW_COMMENT_REQUEST) {
-        showProgressDialog(R.string.adding_comment);
         String body = data.getStringExtra(ContentEditorActivity.CONTENT);
-
-        AddIssueCommentAction addIssueCommentAction = getAddIssueCommentAction(body);
-
-        addIssueCommentAction.setAddCommentCallback(new CommentCallback(body));
-        addIssueCommentAction.execute();
+        addComment(body);
       } else if (requestCode == ISSUE_BODY_EDIT) {
         EditIssueBodyRequestDTO bodyRequestDTO = new EditIssueBodyRequestDTO();
         bodyRequestDTO.body = data.getStringExtra(ContentEditorActivity.CONTENT);
@@ -772,16 +802,15 @@ public class IssueDetailActivity extends BackActivity
         LabelsCallback.this.selectedLabels = selectedLabels.toArray(new String[selectedLabels.size()]);
 
         MaterialDialog.Builder builder = new DialogUtils().builder(IssueDetailActivity.this);
-        builder.items(items.toArray(new String[items.size()]));
+        builder.items(items);
         builder.alwaysCallMultiChoiceCallback();
         builder.itemsCallbackMultiChoice(positionsSelectedLabels.toArray(new Integer[positionsSelectedLabels.size()]),
             (materialDialog, integers, charSequences) -> {
               LabelsCallback.this.selectedLabels = charSequences;
               return true;
             });
-        builder.forceStacking(true);
+        builder.stackingBehavior(StackingBehavior.ADAPTIVE);
         builder.positiveText(R.string.ok);
-        //                builder.neutralText(R.string.add_new_label);
         builder.negativeText(R.string.clear_labels);
         builder.onPositive((dialog1, which) -> setLabels(LabelsCallback.this.selectedLabels));
         builder.onNegative((dialog1, which) -> {
@@ -812,17 +841,19 @@ public class IssueDetailActivity extends BackActivity
 
     @Override
     public void onCommentAdded() {
-      Snackbar.make(fab, R.string.add_comment_issue_ok, Snackbar.LENGTH_SHORT).show();
+      Snackbar.make(recyclerView, R.string.add_comment_issue_ok, Snackbar.LENGTH_SHORT).show();
+      addCommentEditText.setText("");
 
       getContent();
     }
 
     @Override
     public void onCommentError() {
-      Snackbar.make(fab, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT).setAction(R.string.retry, v -> {
-        AddIssueCommentAction addIssueCommentAction1 = getAddIssueCommentAction(body);
-        addIssueCommentAction1.setAddCommentCallback(CommentCallback.this);
-        addIssueCommentAction1.execute();
+      if (dialog != null) {
+        dialog.dismiss();
+      }
+      Snackbar.make(recyclerView, R.string.add_comment_issue_fail, Snackbar.LENGTH_SHORT).setAction(R.string.retry, v -> {
+        addComment(body);
       }).show();
     }
 
@@ -836,9 +867,9 @@ public class IssueDetailActivity extends BackActivity
     @Override
     public void onResult(Boolean result) {
       if (result) {
-        Snackbar.make(fab, "Assignee changed", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(recyclerView, "Assignee changed", Snackbar.LENGTH_SHORT).show();
       } else {
-        Snackbar.make(fab, "Assignee change failed", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(recyclerView, "Assignee change failed", Snackbar.LENGTH_SHORT).show();
       }
       getContent();
     }

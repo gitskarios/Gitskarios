@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:layout_gravity="bottom"
+    android:paddingLeft="8dp"
+    android:paddingStart="8dp"
+    android:paddingRight="8dp"
+    android:paddingEnd="8dp"
+    tools:showIn="@layout/issue_detail_activity"
+    >
+
+  <android.support.v7.widget.AppCompatImageView
+      android:layout_width="?actionBarSize"
+      android:layout_height="?actionBarSize"
+      android:background="?selectableItemBackgroundBorderless"
+      android:layout_gravity="right"
+      app:srcCompat="@drawable/ic_zoom_out"
+      android:tint="?colorPrimary"
+      android:id="@+id/addCommentButtonExpand"
+      android:padding="12dp"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
+
+  <EditText
+      android:layout_width="match_parent"
+      android:layout_height="?actionBarSize"
+      android:id="@+id/addCommentEditText"
+      android:layout_toLeftOf="@+id/addCommentButton"
+      android:layout_toStartOf="@+id/addCommentButton"
+      android:layout_toRightOf="@+id/addCommentButtonExpand"
+      android:layout_toEndOf="@+id/addCommentButtonExpand"
+      android:hint="@string/add_comment"
+      android:maxLines="1"
+      />
+
+  <android.support.v7.widget.AppCompatImageView
+      android:layout_width="?actionBarSize"
+      android:layout_height="?actionBarSize"
+      android:background="?selectableItemBackgroundBorderless"
+      android:layout_gravity="right"
+      app:srcCompat="@drawable/ic_send"
+      android:tint="?colorPrimary"
+      android:id="@+id/addCommentButton"
+      android:padding="12dp"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
+</RelativeLayout>
