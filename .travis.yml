@@ -36,13 +36,6 @@ deploy:
   skip_cleanup: true
   on:
     branch: develop
-- provider: releases
-  api_key:
-    secure: e8vh46Ei3Xf1KUk/+8UP0wXcIgqtuPLj2cZY3PdUCCo8C8Kc6xmtMRH6yAiNG0b02GmJf/yLn2MXJvC9spVf+vsGDtl+cqB4qBdaF9Ei5ekf1X+X3cjW9t6NR3acj85mxC4EjeIodO81PCcrJ+BZBHzEbi4Zy0HADfHuxTOHxwE=
-  file: apps/Gitskarios/app/build/outputs/apk/app-debug.apk
-  on:
-    tags: true
-    all_branches: true
 notifications:
   slack:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
