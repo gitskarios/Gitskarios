@@ -84,7 +84,7 @@ public class EventAdapter extends RecyclerArrayAdapter<GithubEvent, EventAdapter
         return " " + event.payload.action + " " + "<b>" + event.payload.member.login + "</b>" + " " + " to " + event.repo.name;
       case PublicEvent:
         if (event.repo != null) {
-          return " <b>made</b> " + event.repo.name + " <b>public</b>";
+          return " made <b>" + event.repo.name + "</b> public";
         } else {
           return "";
         }

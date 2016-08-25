@@ -19,9 +19,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-/**
- * Created by bernat.borras on 24/10/15.
- */
 public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
 
   @Override
@@ -30,14 +27,18 @@ public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
       @Override
       public void onLoadingStarted(String imageUri, View view) {
         if (imageView != null) {
-          imageView.setImageDrawable(generatePlaceHolder(imageView.getContext()));
+          imageView.setImageDrawable(generatePlaceHolder(imageView.getContext(), getUsername(imageUri)));
         }
+      }
+
+      private String getUsername(String imageUri) {
+        return Uri.parse(imageUri).getQueryParameter("username");
       }
 
       @Override
       public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
         if (imageView != null) {
-          imageView.setImageDrawable(generatePlaceHolder(imageView.getContext()));
+          imageView.setImageDrawable(generatePlaceHolder(imageView.getContext(), getUsername(imageUri)));
         }
       }
 
@@ -51,7 +52,7 @@ public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
       @Override
       public void onLoadingCancelled(String imageUri, View view) {
         if (imageView != null) {
-          imageView.setImageDrawable(generatePlaceHolder(imageView.getContext()));
+          imageView.setImageDrawable(generatePlaceHolder(imageView.getContext(), getUsername(imageUri)));
         }
       }
     });
@@ -59,21 +60,23 @@ public class DrawerImage implements DrawerImageLoader.IDrawerImageLoader {
 
   @Override
   public void cancel(ImageView imageView) {
-    imageView.setImageDrawable(generatePlaceHolder(imageView.getContext()));
+    String userName = new StoreCredentials(imageView.getContext()).getUserName();
+    imageView.setImageDrawable(generatePlaceHolder(imageView.getContext(), userName));
   }
 
   @Override
   public Drawable placeholder(Context context) {
-    return generatePlaceHolder(context);
+    String userName = new StoreCredentials(context).getUserName();
+    return generatePlaceHolder(context, userName);
   }
 
   @Override
   public Drawable placeholder(Context context, String tag) {
-    return generatePlaceHolder(context);
+    String userName = new StoreCredentials(context).getUserName();
+    return generatePlaceHolder(context, userName);
   }
 
-  private Drawable generatePlaceHolder(Context context) {
-    String userName = new StoreCredentials(context).getUserName();
+  private Drawable generatePlaceHolder(Context context, String userName) {
     if (!TextUtils.isEmpty(userName)) {
       return TextDrawable.builder()
           .beginConfig()

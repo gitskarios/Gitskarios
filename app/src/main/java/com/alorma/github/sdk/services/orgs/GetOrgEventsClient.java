@@ -7,18 +7,16 @@ import retrofit.RestAdapter;
 
 public class GetOrgEventsClient extends GithubListClient<List<GithubEvent>> {
 
-  private String username;
   private String org;
   private int page;
 
-  public GetOrgEventsClient(String username, String org) {
+  public GetOrgEventsClient(String org) {
     super();
-    this.username = username;
     this.org = org;
   }
 
-  public GetOrgEventsClient(String username, String org, int page) {
-    this(username, org);
+  public GetOrgEventsClient(String org, int page) {
+    this(org);
     this.page = page;
   }
 
@@ -29,9 +27,9 @@ public class GetOrgEventsClient extends GithubListClient<List<GithubEvent>> {
       protected void call(RestAdapter restAdapter) {
         OrgsService orgsService = restAdapter.create(OrgsService.class);
         if (page == 0) {
-          orgsService.events(username, org, this);
+          orgsService.events(org, this);
         } else {
-          orgsService.events(username, org, page, this);
+          orgsService.events(org, page, this);
         }
       }
     };

@@ -49,8 +49,8 @@ public class GetAuthUserClient extends GithubClient<Pair<User, String>> {
   public void intercept(RequestFacade request) {
     super.intercept(request);
 /*
-    if (username != null && password != null) {
-      String userCredentials = username + ":" + password;
+    if (orgName != null && password != null) {
+      String userCredentials = orgName + ":" + password;
       String basicAuth =
           "Basic " + new String(Base64.encode(userCredentials.getBytes(), Base64.DEFAULT));
 
@@ -66,7 +66,7 @@ public class GetAuthUserClient extends GithubClient<Pair<User, String>> {
 
   @Override
   protected String getToken() {
-    /*if (username != null && password != null) {
+    /*if (orgName != null && password != null) {
       return null;
     } else {
     */

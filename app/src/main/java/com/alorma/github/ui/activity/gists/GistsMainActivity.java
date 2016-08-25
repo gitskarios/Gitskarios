@@ -14,7 +14,7 @@ public class GistsMainActivity extends BackActivity {
 
   public static Intent createLauncherIntent(Context context, String username) {
     Intent intent = new Intent(context, GistsMainActivity.class);
-    intent.putExtra("username", username);
+    intent.putExtra("orgName", username);
     return intent;
   }
 
@@ -29,7 +29,7 @@ public class GistsMainActivity extends BackActivity {
 
     setTitle(R.string.title_gists);
 
-    String username = getIntent().getExtras().getString("username");
+    String username = getIntent().getExtras().getString("orgName");
 
     showGistsFragment(username);
   }

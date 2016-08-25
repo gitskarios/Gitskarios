@@ -5,7 +5,8 @@
   <string name="action_settings">Settings</string>
   <string name="action_donate">Support development</string>
   <string name="no_gist_description">No description</string>
-  <string name="navigation_gists">My gists</string>
+  <string name="navigation_gists">Gists</string>
+  <string name="navigation_my_gists">My gists</string>
   <string name="username_gists">%1$s gists</string>
   <string name="navigation_gists_starred">Starred gists</string>
   <string name="title_profile">Profile</string>
@@ -169,7 +170,7 @@
   <string name="loading_token">Loading token</string>
   <string name="loading_user">Loading user</string>
   <string name="navigation_general_repositories">Repositories</string>
-  <string name="navigation_people">People &#038; Organizations</string>
+  <string name="navigation_people">People</string>
   <string name="code_download">Source code is queued for download</string>
   <string name="action_notifications">Notifications</string>
   <string name="no_notifications">No notifications</string>
