@@ -334,7 +334,11 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
 
   @NonNull
   private ProfileDrawerItem getOrganizationProfileDrawerItem(com.alorma.github.sdk.core.User user) {
-    return new ProfileDrawerItem().withName(user.getLogin()).withIcon(user.getAvatar());
+    return new ProfileDrawerItem().withName(user.getLogin()).withIcon(getUserAvatarUrl(user.getAvatar(), user.getLogin()));
+  }
+
+  private Uri getUserAvatarUrl(String avatar, String name) {
+    return Uri.parse(avatar).buildUpon().appendQueryParameter("username", name).build();
   }
 
   private List<IDrawerItem> getOrganizationProfileSubItems(com.alorma.github.sdk.core.User user) {
@@ -374,13 +378,14 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   }
 
   private ProfileDrawerItem getUserDrawerItem() {
+    String userName = getNameFromAccount(selectedAccount);
     String userAvatar = AccountsHelper.getUserAvatar(this, selectedAccount);
     ProfileDrawerItem userDrawerItem = new ProfileDrawerItem().withName(getUserExtraName(selectedAccount))
-        .withEmail(getNameFromAccount(selectedAccount))
+        .withEmail(userName)
         .withNameShown(false)
         .withIdentifier(selectedAccount.hashCode());
     if (!TextUtils.isEmpty(userAvatar)) {
-      userDrawerItem.withIcon(userAvatar);
+      userDrawerItem.withIcon(getUserAvatarUrl(userAvatar, userName));
     }
     return userDrawerItem;
   }
