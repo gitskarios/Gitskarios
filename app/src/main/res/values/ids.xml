@@ -144,5 +144,7 @@
         type="id"/>
   <item name="nav_drawer_events_orgs"
         type="id"/>
+  <item name="nav_drawer_donate"
+        type="id"/>
 
 </resources>

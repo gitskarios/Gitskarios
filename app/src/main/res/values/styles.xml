@@ -230,4 +230,9 @@
     <item name="android:maxLines">1</item>
   </style>
 
+  <style name="SkuButtonStyle"
+         parent="Base.Widget.AppCompat.Button.Colored">
+    <item name="colorButtonNormal">@color/md_pink_300</item>
+  </style>
+
 </resources>

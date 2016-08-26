@@ -41,7 +41,6 @@ public class BaseFragment extends Fragment {
 
     injectComponents();
 
-
     tracker.trackFragment(this);
     logWrapper.i("LogWrapper", this.getClass().getName());
   }

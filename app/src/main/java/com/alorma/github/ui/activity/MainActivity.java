@@ -28,6 +28,7 @@ import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.GeneralPeopleFragment;
+import com.alorma.github.ui.fragment.donate.DonateActivity;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.events.OrgsEventsListFragment;
 import com.alorma.github.ui.fragment.gists.AuthUserGistsFragment;
@@ -187,6 +188,9 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
           case R.id.nav_drawer_settings:
             onSettingsSelected();
             break;
+          case R.id.nav_drawer_donate:
+            onDonateSelected();
+            break;
           case R.id.nav_drawer_sign_out:
             signOut();
             return true;
@@ -275,6 +279,12 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         .withIcon(Octicons.Icon.oct_gear)
         .withIconColor(iconColor)
         .withIdentifier(R.id.nav_drawer_settings)
+        .withSelectable(false));
+
+    items.add(new SecondaryDrawerItem().withName(R.string.action_donate)
+        .withIcon(Octicons.Icon.oct_heart)
+        .withIconColor(iconColor)
+        .withIdentifier(R.id.nav_drawer_donate)
         .withSelectable(false));
 
     items.add(new DividerDrawerItem());
@@ -519,6 +529,11 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     } catch (Exception e) {
       ErrorHandler.onError(this, "MainActivity.setFragment()", e);
     }
+  }
+
+  public void onDonateSelected() {
+    Intent intent = new Intent(this, DonateActivity.class);
+    startActivity(intent);
   }
 
   public boolean onReposSelected() {

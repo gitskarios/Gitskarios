@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+    >
+
+  <ImageView
+      android:layout_width="340dp"
+      android:layout_height="340dp"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="24dp"
+      android:src="@drawable/ic_launcher_web"
+      />
+
+  <android.support.v4.view.ViewPager
+      android:layout_width="500dp"
+      android:layout_height="300dp"
+      android:id="@id/pager"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingBottom="30dp"
+      android:paddingEnd="@dimen/card_padding"
+      android:paddingLeft="@dimen/card_padding"
+      android:paddingRight="@dimen/card_padding"
+      android:layout_gravity="bottom|center_horizontal"
+      android:paddingStart="@dimen/card_padding"
+      />
+
+</FrameLayout>

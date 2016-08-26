@@ -106,4 +106,5 @@
   <dimen name="responsive_ly_fab_margin_top">0dp</dimen>
   <dimen name="responsive_ly_margin_horizontal">160dp</dimen>
   <dimen name="responsive_ly_margin_vertical">128dp</dimen>
+  <dimen name="card_padding">70dp</dimen>
 </resources>
