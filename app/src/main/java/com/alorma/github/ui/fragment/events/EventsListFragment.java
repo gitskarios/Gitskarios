@@ -29,8 +29,10 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
 import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
-import com.alorma.github.ui.adapter.events.EventAdapter;
+import com.alorma.github.ui.adapter.events.EventViewHolderFactory;
+import com.alorma.github.ui.adapter.events.EventsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.gitskarios.core.Pair;
@@ -50,7 +52,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class EventsListFragment extends LoadingListFragment<EventAdapter> implements EventAdapter.EventAdapterListener {
+public class EventsListFragment extends LoadingListFragment<EventsAdapter> implements RecyclerArrayAdapter.ItemCallback<GithubEvent> {
 
   protected String username;
 
@@ -112,9 +114,9 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
     addNewAdapter();
   }
 
-  protected EventAdapter addNewAdapter() {
-    EventAdapter eventAdapter = new EventAdapter(getActivity(), LayoutInflater.from(getActivity()));
-    eventAdapter.setEventAdapterListener(this);
+  protected EventsAdapter addNewAdapter() {
+    EventsAdapter eventAdapter = new EventsAdapter(LayoutInflater.from(getActivity()), new EventViewHolderFactory(), tracker);
+    eventAdapter.setCallback(this);
     setAdapter(eventAdapter);
     return eventAdapter;
   }
@@ -308,7 +310,7 @@ public class EventsListFragment extends LoadingListFragment<EventAdapter> implem
   }
 
   @Override
-  public void onItem(GithubEvent item) {
+  public void onItemSelected(GithubEvent item) {
     EventType type = item.getType();
     Gson gson = new Gson();
     if (type == EventType.IssueCommentEvent) {

@@ -19,15 +19,13 @@ import org.ocpsoft.prettytime.units.Year;
 public class TimeUtils {
 
   public static String getDateToText(Context context, Date date, int resId) {
-    SimpleDateFormat sdf =
-        new SimpleDateFormat(context.getString(R.string.at_date_format), Locale.getDefault());
+    SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.at_date_format), Locale.getDefault());
 
     return context.getString(resId, sdf.format(date));
   }
 
   public static String getTimeAgoString(String date) {
-    DateTimeFormatter formatter =
-        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.UTC);
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.UTC);
 
     DateTime dt = formatter.parseDateTime(date);
     PrettyTime p = new PrettyTime();
