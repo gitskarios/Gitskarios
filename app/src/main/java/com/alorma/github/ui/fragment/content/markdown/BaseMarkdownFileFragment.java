@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,12 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.fragment.content.BaseFileFragment;
 import com.alorma.github.utils.AttributesUtils;
-import rx.Observable;
 
 public abstract class BaseMarkdownFileFragment extends BaseFileFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
 
   private WebView webView;
-  public String fileContent;
 
   private MarkdownFileCallback markdownFileCallback;
 
@@ -33,12 +30,6 @@ public abstract class BaseMarkdownFileFragment extends BaseFileFragment {
   @Override
   protected int getDarkTheme() {
     return R.style.AppTheme_Dark_Repository;
-  }
-
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
   }
 
   @Nullable
@@ -70,9 +61,13 @@ public abstract class BaseMarkdownFileFragment extends BaseFileFragment {
   }
 
   @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    super.onCreateOptionsMenu(menu, inflater);
-    inflater.inflate(R.menu.file_markdown, menu);
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+
+    if (fileInfo != null && fileInfo.content != null) {
+      menu.removeItem(R.id.action_show_code);
+      getActivity().getMenuInflater().inflate(R.menu.file_markdown, menu);
+    }
   }
 
   @Override
@@ -82,7 +77,7 @@ public abstract class BaseMarkdownFileFragment extends BaseFileFragment {
     switch (item.getItemId()) {
       case R.id.action_show_code:
         if (markdownFileCallback != null) {
-          markdownFileCallback.showAsContent(fileContent);
+          markdownFileCallback.showAsContent(fileInfo);
         }
         break;
     }
@@ -95,13 +90,11 @@ public abstract class BaseMarkdownFileFragment extends BaseFileFragment {
     webView.loadDataWithBaseURL(null, s, "text/html", "UTF-8", null);
   }
 
-  protected abstract Observable<String> getContentObservable(FileInfo fileInfo);
-
   public void setMarkdownFileCallback(MarkdownFileCallback markdownFileCallback) {
     this.markdownFileCallback = markdownFileCallback;
   }
 
   public interface MarkdownFileCallback {
-    void showAsContent(String content);
+    void showAsContent(FileInfo fileInfo);
   }
 }

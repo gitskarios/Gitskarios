@@ -1,10 +1,8 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -42,9 +40,6 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.varunest.sparkbutton.SparkButton;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import rx.Observer;
@@ -292,7 +287,7 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
           public void onError(Throwable e) {
             if (getActivity() != null) {
               if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
-                onReadmeLoaded(configureHtml(currentRepo.description));
+                onReadmeLoaded(currentRepo.description);
               } else {
                 loadingHtml.setVisibility(View.GONE);
               }
@@ -301,7 +296,7 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
           @Override
           public void onNext(String htmlContent) {
-            onReadmeLoaded(configureHtml(htmlContent));
+            onReadmeLoaded(htmlContent);
           }
         });
   }
@@ -333,42 +328,6 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
 
       CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
     }
-  }
-
-  private String configureHtml(String htmlContent) {
-    if (getActivity() != null) {
-      String fileName = "source_pre.html";
-      SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-      String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-      if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-        fileName = "source_pre_dark.html";
-      }
-
-      String head = getAssetFileContent(fileName);
-      String end = getAssetFileContent("source_post.html");
-
-      return head + "\n" + htmlContent + "\n" + end;
-    } else {
-      return htmlContent;
-    }
-  }
-
-  public String getAssetFileContent(String filename) {
-    StringBuilder buf = new StringBuilder();
-    try {
-      InputStream json = getActivity().getAssets().open(filename);
-      BufferedReader in = new BufferedReader(new InputStreamReader(json, "UTF-8"));
-      String str;
-
-      while ((str = in.readLine()) != null) {
-        buf.append(str);
-      }
-
-      in.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return buf.toString();
   }
 
   private void setData() {

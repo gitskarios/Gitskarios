@@ -4,8 +4,8 @@
     >
 
   <item
-      android:id="@+id/action_show_code"
-      android:title="Code"
+      android:id="@+id/action_show_markdown"
+      android:title="Render"
       app:showAsAction="always"
       />
 

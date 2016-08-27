@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment.content.source;
 import android.os.Bundle;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
+import com.alorma.github.ui.fragment.content.GithubFileDecoder;
 import rx.Observable;
 
 public class FileFragment extends TextBaseFileFragment {
@@ -17,6 +18,9 @@ public class FileFragment extends TextBaseFileFragment {
 
   @Override
   protected Observable<String> getContentObservable(FileInfo fileInfo) {
-    return new GetFileContentClient(fileInfo).observable().map(content -> content.content).map(this::decodeContent);
+    return new GetFileContentClient(fileInfo)
+        .observable()
+        .map(content -> content.content)
+        .flatMap(s -> new GithubFileDecoder(s).decode());
   }
 }

@@ -5,6 +5,7 @@ import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.services.content.GetFileContentClient;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
+import com.alorma.github.ui.fragment.content.GithubFileDecoder;
 import rx.Observable;
 
 public class MarkdownFileFragment extends BaseMarkdownFileFragment {
@@ -21,8 +22,7 @@ public class MarkdownFileFragment extends BaseMarkdownFileFragment {
   protected Observable<String> getContentObservable(FileInfo fileInfo) {
     return new GetFileContentClient(fileInfo).observable()
         .map(content -> content.content)
-        .doOnNext(s -> this.fileContent = s)
-        .map(this::decodeContent)
+        .flatMap(s -> new GithubFileDecoder(s).decode())
         .map(RequestMarkdownDTO::new)
         .flatMap(r -> new GetMarkdownClient(r).observable());
   }

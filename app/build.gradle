@@ -267,7 +267,7 @@ dependencies {
   compile 'com.github.chrisbanes:PhotoView:1.2.6'
   compile 'com.github.javierugarte:githubcontributionsview:1.2.1'
 
-  compile 'com.github.softwee:codeview-android:1.0.3'
+  compile 'io.reactivex:rxjava-string:1.1.0'
 }
 
 play {

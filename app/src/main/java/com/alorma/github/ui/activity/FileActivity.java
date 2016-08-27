@@ -15,10 +15,12 @@ import com.alorma.github.ui.fragment.content.markdown.MarkdownFileFragment;
 import com.alorma.github.ui.fragment.content.source.ContentFileFragment;
 import com.alorma.github.ui.fragment.content.source.FileFragment;
 import com.alorma.github.ui.fragment.content.source.ImageFileFragment;
+import com.alorma.github.ui.fragment.content.source.TextBaseFileFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
 
-public class FileActivity extends RepositoryThemeActivity implements BaseMarkdownFileFragment.MarkdownFileCallback {
+public class FileActivity extends RepositoryThemeActivity
+    implements BaseMarkdownFileFragment.MarkdownFileCallback, TextBaseFileFragment.FileCallback {
 
   public static Intent createLauncherIntent(Context context, FileInfo fileInfo) {
     Bundle bundle = new Bundle();
@@ -40,7 +42,7 @@ public class FileActivity extends RepositoryThemeActivity implements BaseMarkdow
       setTitle(info.name);
 
       if (ImageUtils.isImage(info.name)) {
-        setFragment(ImageFileFragment.getInstance(info));
+        setFragment(ImageFileFragment.getInstance(info), false);
       } else if (MarkdownUtils.isMarkdown(info.name)) {
         BaseMarkdownFileFragment fragment;
         if (info.content != null) {
@@ -49,30 +51,40 @@ public class FileActivity extends RepositoryThemeActivity implements BaseMarkdow
           fragment = MarkdownFileFragment.getInstance(info);
         }
         fragment.setMarkdownFileCallback(this);
+        setFragment(fragment, false);
       } else if (info.content != null) {
-        setFragment(ContentFileFragment.getInstance(info));
+        TextBaseFileFragment fileFragment = ContentFileFragment.getInstance(info);
+        fileFragment.setFileCallback(this);
+        setFragment(fileFragment, false);
       } else {
-        setFragment(FileFragment.getInstance(info));
+        TextBaseFileFragment fileFragment = FileFragment.getInstance(info);
+        fileFragment.setFileCallback(this);
+        setFragment(fileFragment, false);
       }
     }
   }
 
-  private void setFragment(Fragment fragment) {
+  private void setFragment(Fragment fragment, boolean addToBackStack) {
     fragment.setArguments(getIntent().getExtras());
     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     ft.replace(R.id.content, fragment);
+    if (addToBackStack) {
+      ft.addToBackStack(null);
+    }
     ft.commit();
   }
 
   @Override
-  protected void close(boolean navigateUp) {
-    finish();
+  public void showAsContent(FileInfo fileInfo) {
+    FileFragment fileFragment = FileFragment.getInstance(fileInfo);
+    fileFragment.setFileCallback(this);
+    setFragment(fileFragment, true);
   }
 
   @Override
-  public void showAsContent(String content) {
-    FileInfo info = new FileInfo();
-    info.content = content;
-    setFragment(ContentFileFragment.getInstance(info));
+  public void showAsMarkdown(FileInfo fileInfo) {
+    BaseMarkdownFileFragment markdownFileFragment = MarkdownFileFragment.getInstance(fileInfo);
+    markdownFileFragment.setMarkdownFileCallback(this);
+    setFragment(markdownFileFragment, true);
   }
 }
