@@ -8,16 +8,17 @@ import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.ui.fragment.content.BaseFileFragment;
+import com.alorma.github.ui.fragment.content.markdown.BaseMarkdownFileFragment;
 import com.alorma.github.ui.fragment.content.markdown.MarkdownContentFileFragment;
 import com.alorma.github.ui.fragment.content.markdown.MarkdownFileFragment;
-import com.alorma.github.ui.fragment.content.BaseFileFragment;
 import com.alorma.github.ui.fragment.content.source.ContentFileFragment;
 import com.alorma.github.ui.fragment.content.source.FileFragment;
 import com.alorma.github.ui.fragment.content.source.ImageFileFragment;
 import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
 
-public class FileActivity extends RepositoryThemeActivity {
+public class FileActivity extends RepositoryThemeActivity implements BaseMarkdownFileFragment.MarkdownFileCallback {
 
   public static Intent createLauncherIntent(Context context, FileInfo fileInfo) {
     Bundle bundle = new Bundle();
@@ -41,11 +42,13 @@ public class FileActivity extends RepositoryThemeActivity {
       if (ImageUtils.isImage(info.name)) {
         setFragment(ImageFileFragment.getInstance(info));
       } else if (MarkdownUtils.isMarkdown(info.name)) {
+        BaseMarkdownFileFragment fragment;
         if (info.content != null) {
-          setFragment(MarkdownContentFileFragment.getInstance(info));
+          fragment = MarkdownContentFileFragment.getInstance(info);
         } else {
-          setFragment(MarkdownFileFragment.getInstance(info));
+          fragment = MarkdownFileFragment.getInstance(info);
         }
+        fragment.setMarkdownFileCallback(this);
       } else if (info.content != null) {
         setFragment(ContentFileFragment.getInstance(info));
       } else {
@@ -64,5 +67,12 @@ public class FileActivity extends RepositoryThemeActivity {
   @Override
   protected void close(boolean navigateUp) {
     finish();
+  }
+
+  @Override
+  public void showAsContent(String content) {
+    FileInfo info = new FileInfo();
+    info.content = content;
+    setFragment(ContentFileFragment.getInstance(info));
   }
 }

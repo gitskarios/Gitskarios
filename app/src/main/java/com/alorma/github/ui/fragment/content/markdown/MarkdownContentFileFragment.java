@@ -16,6 +16,7 @@ public class MarkdownContentFileFragment extends BaseMarkdownFileFragment {
 
   @Override
   protected Observable<String> getContentObservable(FileInfo fileInfo) {
+    this.fileContent = fileInfo.content;
     return Observable.just(fileInfo.content);
   }
 }

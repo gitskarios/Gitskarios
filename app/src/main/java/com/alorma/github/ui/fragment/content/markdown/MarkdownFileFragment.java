@@ -21,6 +21,7 @@ public class MarkdownFileFragment extends BaseMarkdownFileFragment {
   protected Observable<String> getContentObservable(FileInfo fileInfo) {
     return new GetFileContentClient(fileInfo).observable()
         .map(content -> content.content)
+        .doOnNext(s -> this.fileContent = s)
         .map(this::decodeContent)
         .map(RequestMarkdownDTO::new)
         .flatMap(r -> new GetMarkdownClient(r).observable());

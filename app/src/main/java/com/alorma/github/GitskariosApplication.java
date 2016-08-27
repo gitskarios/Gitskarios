@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
+import io.github.kbiakov.codeview.classifier.CodeProcessor;
 import javax.inject.Inject;
 
 public class GitskariosApplication extends MultiDexApplication {
@@ -55,6 +56,8 @@ public class GitskariosApplication extends MultiDexApplication {
       CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
       CustomActivityOnCrash.setEnableAppRestart(true);
     }
+
+    CodeProcessor.init(this);
 
     Fabric.with(this, new Crashlytics());
 
