@@ -18,16 +18,12 @@ public class GetFileContentClient extends GithubClient<Content> {
   @Override
   protected Observable<Content> getApiObservable(RestAdapter restAdapter) {
     ContentService contentService = restAdapter.create(ContentService.class);
-
-    if (fileInfo.head != null) {
-      return contentService.fileContentSha(fileInfo.repoInfo.owner, fileInfo.repoInfo.name,
-          fileInfo.path, fileInfo.head);
-    } else if (fileInfo.repoInfo.branch != null) {
-      return contentService.fileContentRef(fileInfo.repoInfo.owner, fileInfo.repoInfo.name,
-          fileInfo.path, fileInfo.repoInfo.branch);
+    if (fileInfo.repoInfo.branch != null) {
+      return contentService.fileContentRef(fileInfo.repoInfo.owner, fileInfo.repoInfo.name, fileInfo.path, fileInfo.repoInfo.branch);
+    } else if (fileInfo.head != null) {
+      return contentService.fileContentSha(fileInfo.repoInfo.owner, fileInfo.repoInfo.name, fileInfo.path, fileInfo.head);
     } else {
-      return contentService.fileContent(fileInfo.repoInfo.owner, fileInfo.repoInfo.name,
-          fileInfo.path);
+      return contentService.fileContent(fileInfo.repoInfo.owner, fileInfo.repoInfo.name, fileInfo.path);
     }
   }
 }
