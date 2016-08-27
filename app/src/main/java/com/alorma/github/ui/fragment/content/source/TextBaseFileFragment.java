@@ -57,10 +57,6 @@ public abstract class TextBaseFileFragment extends BaseFileFragment {
       webView.clearSslPreferences();
       webView.setVisibility(View.VISIBLE);
 
-      if (fileInfo.name.endsWith(".xml")) {
-        webView.setHighlightLanguage(Language.XML);
-      }
-
       new IntentsManager(getActivity()).manageUrls(webView);
     }
   }
