@@ -9,20 +9,15 @@ import android.webkit.WebView;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
-import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.fragment.content.BaseFileFragment;
 import com.alorma.github.utils.AttributesUtils;
-import java.io.UnsupportedEncodingException;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
-public abstract class BaseMarkdownFileFragment extends BaseFragment {
+public abstract class BaseMarkdownFileFragment extends BaseFileFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
 
   private WebView webView;
-
-  private FileInfo fileInfo;
 
   @Nullable
   @Override
@@ -58,50 +53,20 @@ public abstract class BaseMarkdownFileFragment extends BaseFragment {
     int webviewColor = AttributesUtils.getWebviewColor(getActivity());
     webView.setBackgroundColor(webviewColor);
 
-    if (getArguments() != null) {
+    webView.clearCache(true);
+    webView.clearFormData();
+    webView.clearHistory();
+    webView.clearMatches();
+    webView.clearSslPreferences();
+    webView.setVisibility(View.VISIBLE);
 
-      fileInfo = getArguments().getParcelable(FILE_INFO);
-      if (fileInfo == null) {
-        getActivity().finish();
-      }
-
-      webView.clearCache(true);
-      webView.clearFormData();
-      webView.clearHistory();
-      webView.clearMatches();
-      webView.clearSslPreferences();
-      webView.setVisibility(View.VISIBLE);
-
-      new IntentsManager(getActivity()).manageUrls(webView);
-
-      if (fileInfo.content == null) {
-        getContent();
-      }
-    }
+    new IntentsManager(getActivity()).manageUrls(webView);
   }
 
-  private void setSourceIntoWebview(String content) {
-    webView.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
-  }
-
-  protected void getContent() {
-    if (fileInfo.repoInfo != null) {
-      getContentObservable(fileInfo).subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(this::setSourceIntoWebview, Throwable::printStackTrace);
-    }
+  @Override
+  protected void onContentLoaded(String s) {
+    webView.loadDataWithBaseURL(null, s, "text/html", "UTF-8", null);
   }
 
   protected abstract Observable<String> getContentObservable(FileInfo fileInfo);
-
-  protected String decodeContent(String encoded) {
-    String decoded = encoded;
-    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
-    try {
-      decoded = new String(data, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-    return decoded;
-  }
 }

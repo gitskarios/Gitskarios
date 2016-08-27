@@ -1,8 +1,9 @@
-package com.alorma.github.ui.fragment.content.source;
+package com.alorma.github.ui.fragment.content;
 
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import java.io.UnsupportedEncodingException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -39,6 +40,17 @@ public abstract class BaseFileFragment extends BaseFragment {
   }
 
   protected abstract Observable<String> getContentObservable(FileInfo fileInfo);
+
   protected abstract void onContentLoaded(String s);
 
+  protected String decodeContent(String encoded) {
+    String decoded = encoded;
+    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
+    try {
+      decoded = new String(data, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    return decoded;
+  }
 }

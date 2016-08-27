@@ -10,7 +10,7 @@ import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.content.markdown.MarkdownContentFileFragment;
 import com.alorma.github.ui.fragment.content.markdown.MarkdownFileFragment;
-import com.alorma.github.ui.fragment.content.source.BaseFileFragment;
+import com.alorma.github.ui.fragment.content.BaseFileFragment;
 import com.alorma.github.ui.fragment.content.source.ContentFileFragment;
 import com.alorma.github.ui.fragment.content.source.FileFragment;
 import com.alorma.github.ui.fragment.content.source.ImageFileFragment;

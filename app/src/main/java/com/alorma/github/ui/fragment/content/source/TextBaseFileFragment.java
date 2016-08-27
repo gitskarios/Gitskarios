@@ -8,17 +8,14 @@ import android.view.ViewGroup;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
+import com.alorma.github.ui.fragment.content.BaseFileFragment;
 import com.pddstudio.highlightjs.HighlightJsView;
 import com.pddstudio.highlightjs.models.Language;
 import com.pddstudio.highlightjs.models.Theme;
-import java.io.UnsupportedEncodingException;
 
 public abstract class TextBaseFileFragment extends BaseFileFragment {
 
-  public static final String FILE_INFO = "FILE_INFO";
-
   private HighlightJsView webView;
-  private FileInfo fileInfo;
 
   @Nullable
   @Override
@@ -45,7 +42,7 @@ public abstract class TextBaseFileFragment extends BaseFileFragment {
 
     if (getArguments() != null) {
 
-      fileInfo = getArguments().getParcelable(FILE_INFO);
+      FileInfo fileInfo = getArguments().getParcelable(FILE_INFO);
       if (fileInfo == null) {
         getActivity().finish();
       }
@@ -64,16 +61,5 @@ public abstract class TextBaseFileFragment extends BaseFileFragment {
   @Override
   protected void onContentLoaded(String content) {
     webView.setSource(content);
-  }
-
-  protected String decodeContent(String encoded) {
-    String decoded = encoded;
-    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
-    try {
-      decoded = new String(data, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-    return decoded;
   }
 }

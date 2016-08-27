@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.alorma.github.Base64;
 import com.alorma.github.R;
+import com.alorma.github.ui.fragment.content.BaseFileFragment;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public abstract class ImageBaseFileFragment extends BaseFileFragment {
