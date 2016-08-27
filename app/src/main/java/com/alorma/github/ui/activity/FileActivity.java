@@ -3,21 +3,25 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
-import com.alorma.github.ui.fragment.ContentFileFragment;
-import com.alorma.github.ui.fragment.FileFragment;
-import com.alorma.github.ui.fragment.ImageFileFragment;
+import com.alorma.github.ui.fragment.content.markdown.MarkdownContentFileFragment;
+import com.alorma.github.ui.fragment.content.markdown.MarkdownFileFragment;
+import com.alorma.github.ui.fragment.content.source.BaseFileFragment;
+import com.alorma.github.ui.fragment.content.source.ContentFileFragment;
+import com.alorma.github.ui.fragment.content.source.FileFragment;
+import com.alorma.github.ui.fragment.content.source.ImageFileFragment;
+import com.alorma.github.ui.utils.MarkdownUtils;
 import com.alorma.github.utils.ImageUtils;
 
 public class FileActivity extends RepositoryThemeActivity {
 
-  public static Intent createLauncherIntent(Context context, FileInfo fileInfo, boolean fromUrl) {
+  public static Intent createLauncherIntent(Context context, FileInfo fileInfo) {
     Bundle bundle = new Bundle();
-    bundle.putParcelable(FileFragment.FILE_INFO, fileInfo);
-    bundle.putBoolean(FileFragment.FROM_URL, fromUrl);
+    bundle.putParcelable(BaseFileFragment.FILE_INFO, fileInfo);
 
     Intent intent = new Intent(context, FileActivity.class);
     intent.putExtras(bundle);
@@ -29,32 +33,32 @@ public class FileActivity extends RepositoryThemeActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_toolbar_responsive);
 
-    FileInfo info = getIntent().getExtras().getParcelable(FileFragment.FILE_INFO);
-    boolean fromUrl = getIntent().getExtras().getBoolean(FileFragment.FROM_URL);
+    FileInfo info = getIntent().getExtras().getParcelable(BaseFileFragment.FILE_INFO);
 
     if (info != null) {
       setTitle(info.name);
 
       if (ImageUtils.isImage(info.name)) {
-        ImageFileFragment imageFileFragment = ImageFileFragment.getInstance(info, fromUrl);
-        imageFileFragment.setArguments(getIntent().getExtras());
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content, imageFileFragment);
-        ft.commit();
+        setFragment(ImageFileFragment.getInstance(info));
+      } else if (MarkdownUtils.isMarkdown(info.name)) {
+        if (info.content != null) {
+          setFragment(MarkdownContentFileFragment.getInstance(info));
+        } else {
+          setFragment(MarkdownFileFragment.getInstance(info));
+        }
       } else if (info.content != null) {
-        ContentFileFragment fileFragment = ContentFileFragment.getInstance(info);
-        fileFragment.setArguments(getIntent().getExtras());
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content, fileFragment);
-        ft.commit();
+        setFragment(ContentFileFragment.getInstance(info));
       } else {
-        FileFragment fileFragment = FileFragment.getInstance(info, fromUrl);
-        fileFragment.setArguments(getIntent().getExtras());
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content, fileFragment);
-        ft.commit();
+        setFragment(FileFragment.getInstance(info));
       }
     }
+  }
+
+  private void setFragment(Fragment fragment) {
+    fragment.setArguments(getIntent().getExtras());
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ft.replace(R.id.content, fragment);
+    ft.commit();
   }
 
   @Override

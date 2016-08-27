@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment;
+package com.alorma.github.ui.fragment.content.source;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,27 +8,17 @@ import android.view.ViewGroup;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.FileInfo;
-import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.pddstudio.highlightjs.HighlightJsView;
 import com.pddstudio.highlightjs.models.Language;
 import com.pddstudio.highlightjs.models.Theme;
+import java.io.UnsupportedEncodingException;
 
-public class ContentFileFragment extends BaseFragment {
+public abstract class TextBaseFileFragment extends BaseFileFragment {
 
   public static final String FILE_INFO = "FILE_INFO";
 
   private HighlightJsView webView;
-  private View loadingView;
-
   private FileInfo fileInfo;
-
-  public static ContentFileFragment getInstance(FileInfo info) {
-    ContentFileFragment fragment = new ContentFileFragment();
-    Bundle args = new Bundle();
-    args.putParcelable(FILE_INFO, info);
-    fragment.setArguments(args);
-    return fragment;
-  }
 
   @Nullable
   @Override
@@ -37,29 +27,10 @@ public class ContentFileFragment extends BaseFragment {
   }
 
   @Override
-  protected int getLightTheme() {
-    return R.style.AppTheme_Repository;
-  }
-
-  @Override
-  protected int getDarkTheme() {
-    return R.style.AppTheme_Dark_Repository;
-  }
-
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
-  }
-
-  @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    loadingView = view.findViewById(R.id.loading_view);
-
     webView = (HighlightJsView) view.findViewById(R.id.webview);
-
     webView.setZoomSupportEnabled(true);
 
     webView.getSettings().setBuiltInZoomControls(true);
@@ -75,6 +46,9 @@ public class ContentFileFragment extends BaseFragment {
     if (getArguments() != null) {
 
       fileInfo = getArguments().getParcelable(FILE_INFO);
+      if (fileInfo == null) {
+        getActivity().finish();
+      }
 
       webView.clearCache(true);
       webView.clearFormData();
@@ -85,19 +59,25 @@ public class ContentFileFragment extends BaseFragment {
 
       if (fileInfo.name.endsWith(".xml")) {
         webView.setHighlightLanguage(Language.XML);
-      } else if (fileInfo.content != null && fileInfo.content.startsWith("@@")) {
-        webView.setHighlightLanguage(Language.DIFF);
       }
 
       new IntentsManager(getActivity()).manageUrls(webView);
-
-      setSourceIntoWebview(fileInfo);
-
-      loadingView.setVisibility(View.GONE);
     }
   }
 
-  private void setSourceIntoWebview(FileInfo fileInfo) {
-    webView.setSource(fileInfo.content);
+  @Override
+  protected void onContentLoaded(String content) {
+    webView.setSource(content);
+  }
+
+  protected String decodeContent(String encoded) {
+    String decoded = encoded;
+    byte[] data = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT);
+    try {
+      decoded = new String(data, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    return decoded;
   }
 }

@@ -115,7 +115,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
     FileInfo info = new FileInfo();
     info.content = file.patch;
     info.name = file.getFileName();
-    Intent launcherIntent = FileActivity.createLauncherIntent(this, info, false);
+    Intent launcherIntent = FileActivity.createLauncherIntent(this, info);
     startActivity(launcherIntent);
   }
 

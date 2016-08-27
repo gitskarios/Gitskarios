@@ -13,9 +13,6 @@ import retrofit.mime.TypedOutput;
 import retrofit.mime.TypedString;
 import rx.Observable;
 
-/**
- * Created by Bernat on 22/07/2014.
- */
 public class GetMarkdownClient extends GithubClient<String> {
 
   private RequestMarkdownDTO readme;

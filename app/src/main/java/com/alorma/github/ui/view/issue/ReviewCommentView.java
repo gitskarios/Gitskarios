@@ -103,7 +103,7 @@ public class ReviewCommentView extends LinearLayout {
       info.content = event.diff_hunk;
       info.name = event.path;
 
-      Intent launcherIntent = FileActivity.createLauncherIntent(getContext(), info, false);
+      Intent launcherIntent = FileActivity.createLauncherIntent(getContext(), info);
       getContext().startActivity(launcherIntent);
     });
 
@@ -127,7 +127,7 @@ public class ReviewCommentView extends LinearLayout {
       info.content = event.second.get(0).diff_hunk;
       info.name = event.second.get(0).path;
 
-      Intent launcherIntent = FileActivity.createLauncherIntent(getContext(), info, false);
+      Intent launcherIntent = FileActivity.createLauncherIntent(getContext(), info);
       getContext().startActivity(launcherIntent);
     });
 

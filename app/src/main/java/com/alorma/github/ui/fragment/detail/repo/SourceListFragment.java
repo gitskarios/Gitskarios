@@ -1,7 +1,6 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -219,7 +218,7 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
       fileInfo.head = item.sha;
       fileInfo.name = item.name;
       fileInfo.path = item.path;
-      Intent intent = FileActivity.createLauncherIntent(getActivity(), fileInfo, false);
+      Intent intent = FileActivity.createLauncherIntent(getActivity(), fileInfo);
       startActivity(intent);
     }
   }

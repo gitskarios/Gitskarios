@@ -251,6 +251,6 @@ public class IntentsManager {
 
     FileInfo info = gitsakriosUriManager.getFileInfo(uri);
 
-    return FileActivity.createLauncherIntent(context, info, true);
+    return FileActivity.createLauncherIntent(context, info);
   }
 }

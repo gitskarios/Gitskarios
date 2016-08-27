@@ -100,7 +100,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
     info.content = file.patch;
     info.name = file.getFileName();
 
-    Intent launcherIntent = FileActivity.createLauncherIntent(getActivity(), info, false);
+    Intent launcherIntent = FileActivity.createLauncherIntent(getActivity(), info);
     startActivity(launcherIntent);
   }
 }
