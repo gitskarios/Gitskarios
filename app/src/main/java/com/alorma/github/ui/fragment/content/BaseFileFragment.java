@@ -40,12 +40,10 @@ public abstract class BaseFileFragment extends BaseFragment {
   }
 
   private void getContent(FileInfo fileInfo) {
-    if (fileInfo.repoInfo != null) {
-      getContentObservable(fileInfo).doOnNext(s -> {
-        fileInfo.content = s;
-        getActivity().invalidateOptionsMenu();
-      }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this::onContentLoaded, this::onError);
-    }
+    getContentObservable(fileInfo).doOnNext(s -> {
+      fileInfo.content = s;
+      getActivity().invalidateOptionsMenu();
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this::onContentLoaded, this::onError);
   }
 
   private void onError(Throwable throwable) {
