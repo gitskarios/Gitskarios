@@ -1,13 +1,19 @@
 package com.alorma.github.utils;
 
-import java.util.UUID;
-
 public class AccountUtils {
   public String getNameForAccount(String name) {
-    return name + "-" + UUID.randomUUID().toString();
+    return name;
   }
 
   public String getNameFromAccount(String name) {
-    return name.split("-")[0];
+    name = name.replaceAll("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "");
+    return removeLastCharDash(name);
+  }
+
+  private String removeLastCharDash(String str) {
+    if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == '-') {
+      str = str.substring(0, str.length() - 1);
+    }
+    return str;
   }
 }
