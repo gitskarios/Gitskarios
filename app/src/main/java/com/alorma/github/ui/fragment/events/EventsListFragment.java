@@ -17,6 +17,7 @@ import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
+import com.alorma.github.sdk.bean.dto.response.GithubPage;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
@@ -362,12 +363,40 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
           startActivity(intent);
         }
       }
+    } else if (type == EventType.GollumEvent) {
+      if (item.payload != null && item.payload.pages != null) {
+        processGollumPages(item.payload.pages);
+      }
     } else {
       // TODO manage TAGs
       if (item.repo.url != null) {
         startActivity(new IntentsManager(getActivity()).manageRepos(Uri.parse(item.repo.url)));
       }
     }
+  }
+
+  private void processGollumPages(List<GithubPage> pages) {
+    if (pages.size() == 1) {
+      launchPage(pages.get(0));
+    } else {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+      builder.title(R.string.open_wiki_page);
+      builder.items(pages);
+      builder.itemsCallback((dialog1, itemView, position, text) -> {
+        launchPage(pages.get(position));
+      });
+      builder.negativeText(R.string.cancel);
+      builder.show();
+    }
+  }
+
+  private void launchPage(GithubPage githubPage) {
+    Uri.Builder builder = new Uri.Builder();
+    builder.scheme("http");
+    builder.authority("github.com");
+    builder.path(githubPage.htmlUrl);
+    Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+    startActivity(Intent.createChooser(intent, getString(R.string.open_wiki_page)));
   }
 
   private void showCommitsDialog(List<Commit> commits) {

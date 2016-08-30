@@ -543,4 +543,5 @@
   <string name="user_mentioned_issues">Mentioned</string>
   <string name="user_created_issues">Created</string>
   <string name="user_subscribed_issues">Subscribed</string>
+  <string name="open_wiki_page">Open wiki page</string>
 </resources>

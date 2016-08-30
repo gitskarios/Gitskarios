@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
+import com.alorma.github.sdk.bean.dto.response.GithubPage;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
@@ -50,6 +51,7 @@ public class Payload implements Parcelable {
   public Repo forkee;
   public User member;
   public String url;
+  public List<GithubPage> pages;
 
   public Payload() {
   }

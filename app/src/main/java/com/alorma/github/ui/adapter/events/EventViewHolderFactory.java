@@ -13,6 +13,7 @@ import com.alorma.github.ui.adapter.events.holders.DeletedEventViewHolder;
 import com.alorma.github.ui.adapter.events.holders.EmptyEventViewHolder;
 import com.alorma.github.ui.adapter.events.holders.EventViewHolder;
 import com.alorma.github.ui.adapter.events.holders.ForkEventViewHolder;
+import com.alorma.github.ui.adapter.events.holders.GollumEventViewHolder;
 import com.alorma.github.ui.adapter.events.holders.IssueCommentEventViewHolder;
 import com.alorma.github.ui.adapter.events.holders.IssueEventViewHolder;
 import com.alorma.github.ui.adapter.events.holders.MemberEventViewHolder;
@@ -42,6 +43,7 @@ public class EventViewHolderFactory {
   private static final int EVENT_COMMIT_COMMENT = 13;
   private static final int EVENT_DELETED = 14;
   private static final int EVENT_RELEASE = 15;
+  private static final int EVENT_GOLLUM = 16;
 
   EventViewHolder getViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
     View view = inflater.inflate(R.layout.row_event, parent, false);
@@ -75,6 +77,8 @@ public class EventViewHolderFactory {
       return new DeletedEventViewHolder(view);
     } else if (viewType == EVENT_RELEASE) {
       return new ReleaseEventViewHolder(view);
+    }else if (viewType == EVENT_GOLLUM) {
+      return new GollumEventViewHolder(view);
     }
     return new EmptyEventViewHolder(view, null);
   }
@@ -112,6 +116,8 @@ public class EventViewHolderFactory {
       return EVENT_DELETED;
     } else if (event.type == EventType.ReleaseEvent) {
       return EVENT_RELEASE;
+    } else if (event.type == EventType.GollumEvent) {
+      return EVENT_GOLLUM;
     } else if (event.type == EventType.PublicEvent) {
       if (event.repo != null) {
         return EVENT_PUBLIC_REPO;
