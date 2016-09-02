@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
@@ -42,6 +43,7 @@ public class PullRequestDetailView extends LinearLayout {
   private TextView profileName;
   private TextView createdAt;
   private TextView mergeButton;
+  private Button deleteBranchButton;
   private TextView textRepository;
 
   private PullRequestActionsListener pullRequestActionsListener;
@@ -78,6 +80,7 @@ public class PullRequestDetailView extends LinearLayout {
     createdAt = (TextView) findViewById(R.id.time);
     textRepository = (TextView) findViewById(R.id.textRepository);
     mergeButton = (TextView) findViewById(R.id.mergeButton);
+    deleteBranchButton = (Button) findViewById(R.id.deleteBranch);
     reactionsLy = (ReactionsView) findViewById(R.id.reactionsLy);
   }
 
@@ -92,6 +95,7 @@ public class PullRequestDetailView extends LinearLayout {
       parseBody(repoInfo, pullRequest);
       parseRepository(pullRequest);
       parseMergeButton(pullRequest, permissions);
+      parseDeleteBranchButton(pullRequest, permissions);
       checkEditable(repoInfo, pullRequest);
     }
     Log.i("PR_time_detail", (System.currentTimeMillis() - milis) + "ms");
@@ -136,6 +140,23 @@ public class PullRequestDetailView extends LinearLayout {
         mergeButton.setVisibility(View.VISIBLE);
         mergeButton.setText(R.string.pullrequest_merge_action_invalid);
         mergeButton.setBackgroundResource(R.drawable.pull_request_merge_invalid);
+      }
+    }
+  }
+
+  private void parseDeleteBranchButton(PullRequest pullRequest, Permissions permissions) {
+    if (deleteBranchButton != null) {
+      if (pullRequest.head != null
+              && pullRequest.state == IssueState.closed
+              && pullRequest.merged
+              && permissions.admin
+              && pullRequestActionsListener.headReferenceExist()) {
+        deleteBranchButton.setVisibility(VISIBLE);
+        deleteBranchButton.setOnClickListener(v -> {
+          pullRequestActionsListener.deleteHeadReference(pullRequest.head);
+        });
+      } else {
+        deleteBranchButton.setVisibility(View.GONE);
       }
     }
   }
@@ -223,5 +244,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   public interface PullRequestActionsListener extends IssueDetailRequestListener {
     void mergeRequest(Head head, Head base);
+    boolean headReferenceExist();
+    void deleteHeadReference(Head head);
   }
 }

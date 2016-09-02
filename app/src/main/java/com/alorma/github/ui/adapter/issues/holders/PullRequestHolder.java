@@ -25,7 +25,6 @@ public class PullRequestHolder extends Holder<PullRequest> {
   @Override
   public void setIssue(RepoInfo repoInfo, PullRequest pullRequest) {
     pullRequestDetailView.setPullRequest(repoInfo, story.item, story.item.statusResponse, permissions);
-    pullRequestDetailView.setPullRequestActionsListener(pullRequestActionsListener);
   }
 
   @Override

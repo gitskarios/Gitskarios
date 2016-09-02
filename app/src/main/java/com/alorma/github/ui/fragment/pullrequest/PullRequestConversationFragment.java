@@ -25,6 +25,8 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
+import com.alorma.github.sdk.bean.dto.request.UpdateReferenceRequest;
+import com.alorma.github.sdk.bean.dto.response.GitReference;
 import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -34,6 +36,9 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.PullRequestStory;
+import com.alorma.github.sdk.services.reference.DeleteReferenceClient;
+import com.alorma.github.sdk.services.reference.GetReferenceClient;
+import com.alorma.github.sdk.services.reference.UpdateReferenceClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
@@ -50,8 +55,11 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class PullRequestConversationFragment extends BaseFragment
@@ -78,6 +86,7 @@ public class PullRequestConversationFragment extends BaseFragment
   };
   private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterfaceNull;
   private PullRequestDetailAdapter adapter;
+  private boolean headReferenceExist = false;
 
   public static PullRequestConversationFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -298,8 +307,36 @@ public class PullRequestConversationFragment extends BaseFragment
       swipe.setRefreshing(false);
       swipe.setOnRefreshListener(this);
 
+      checkHeadBranchExist();
       applyIssue();
     }
+  }
+
+  private void checkHeadBranchExist() {
+    GetReferenceClient referenceClient =
+            new GetReferenceClient(issueInfo.repoInfo, pullRequestStory.item.head.ref);
+    referenceClient
+            .observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<GitReference>() {
+              @Override
+              public void onCompleted() {
+                headReferenceExist = true;
+                adapter.notifyDataSetChanged();
+              }
+
+              @Override
+              public void onError(Throwable e) {
+                headReferenceExist = false;
+              }
+
+              @Override
+              public void onNext(GitReference reference) {
+                headReferenceExist = true;
+                adapter.notifyDataSetChanged();
+              }
+            });
   }
 
   private void applyIssue() {
@@ -379,6 +416,55 @@ public class PullRequestConversationFragment extends BaseFragment
     });
     builder.inputType(InputType.TYPE_CLASS_TEXT);
     dialog = builder.show();
+  }
+
+  @Override
+  public boolean headReferenceExist() {
+    return this.headReferenceExist;
+  }
+
+  @Override
+  public void deleteHeadReference(Head head) {
+    MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
+    builder.title(R.string.pull_request_delete_merged_branch);
+    builder.content(head.ref);
+    builder.positiveText(R.string.ok);
+    builder.onPositive((dialog1, which) -> {
+      callDeleteHeadReference(head);
+    });
+    dialog = builder.show();
+  }
+
+  private void callDeleteHeadReference(Head head) {
+    UpdateReferenceRequest updateReferenceRequest = new UpdateReferenceRequest();
+    updateReferenceRequest.sha = head.sha;
+    updateReferenceRequest.force = true;
+    String ref = head.ref;
+
+    UpdateReferenceClient updateReferenceClient =
+            new UpdateReferenceClient(repository.toInfo(), ref, updateReferenceRequest);
+    DeleteReferenceClient deleteReferenceClient =
+            new DeleteReferenceClient(repository.toInfo(), ref);
+
+    Observable<GitReference> updateReferenceObs = updateReferenceClient.observable();
+    // sequentially send requests to delete merged branch
+    updateReferenceObs.flatMap(new Func1<GitReference, Observable<Boolean>>() {
+      @Override
+      public Observable<Boolean> call(GitReference foo) {
+        return deleteReferenceClient.observable();
+      }
+    }).subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe((result) -> {
+                    if (result) {
+                      restartActivity();
+                    } else {
+                      Toast.makeText(getActivity(), "Failed to delete branch.", Toast.LENGTH_SHORT).show();
+                    }
+                }, (throwable) -> {
+                    Toast.makeText(getActivity(), "Failed to delete branch.", Toast.LENGTH_SHORT).show();
+                }
+      );
   }
 
   private void merge(String message, String sha, IssueInfo issueInfo) {
