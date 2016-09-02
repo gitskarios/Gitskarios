@@ -16,12 +16,6 @@
     <item>orgs</item>
   </string-array>
 
-  <string-array name="repoDetailNavigation">
-    <item>@string/readme</item>
-    <item>@string/source</item>
-    <item>@string/issues</item>
-  </string-array>
-
   <integer-array name="reposSort">
     <item>@string/sort_created</item>
     <item>@string/sort_updated</item>
@@ -44,11 +38,6 @@
   <string-array name="reposDownloadFileTypeValues">
     <item>@string/download_zip_value</item>
     <item>@string/download_tar_value</item>
-  </string-array>
-
-  <string-array name="screenItemsValues">
-    <item>@string/navigation_repos</item>
-    <item>@string/menu_events</item>
   </string-array>
 
   <string-array name="issues_filter">

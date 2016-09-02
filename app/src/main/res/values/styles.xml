@@ -31,31 +31,9 @@
     <item name="android:textColorSecondary">@color/accent</item>
   </style>
 
-  <style name="fab">
-    <item name="android:layout_width">56dp</item>
-    <item name="android:layout_height">56dp</item>
-    <item name="android:textSize">40sp</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:background">@drawable/fab_button</item>
-    <item name="android:gravity">center</item>
-    <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
-    <item name="android:paddingBottom">16dp</item>
-    <item name="android:layout_gravity">right|bottom</item>
-  </style>
-
-  <style name="card_row_item_text">
-    <item name="android:gravity">center_vertical</item>
-    <item name="android:textSize">15sp</item>
-  </style>
-
   <style name="user_row_item">
     <item name="android:gravity">center_vertical</item>
     <item name="android:textSize">15sp</item>
-  </style>
-
-  <style name="menu_labels_style">
-    <item name="android:background">@drawable/fab_label_background</item>
-    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="Custom.Widget.Toolbar"
@@ -108,8 +86,6 @@
     <item name="android:background">?selectableItemBackground</item>
   </style>
 
-  <string name="opening_file">Opening file</string>
-  <string name="merging">Merging</string>
   <string name="adding_comment">Adding comment</string>
   <string name="edit_repo_loading">Updating repository</string>
 
@@ -157,8 +133,6 @@
 
   <!-- Event styles -->
 
-  <style name="Event"/>
-
   <style name="Event.Title"
          parent="TextAppearance.AppCompat.Body1">
 
@@ -170,8 +144,6 @@
   </style>
 
   <!-- Repos styles -->
-
-  <style name="Repos"/>
 
   <style name="Repos.Title"
          parent="TextAppearance.AppCompat.Headline">
@@ -200,8 +172,6 @@
 
   <!-- Notifications styles -->
 
-  <style name="Notifications"/>
-
   <style name="Notifications.Title"
          parent="TextAppearance.AppCompat.Subhead">
     <item name="android:textColor">?attr/gitskarios_title</item>
@@ -212,8 +182,6 @@
   </style>
 
   <!-- Gists styles -->
-
-  <style name="Gists"/>
 
   <style name="Gists.Title"
          parent="TextAppearance.AppCompat.Headline">

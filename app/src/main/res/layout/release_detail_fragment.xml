@@ -48,7 +48,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/created"
         style="@style/repo_overview_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_drawer_item_profile"
