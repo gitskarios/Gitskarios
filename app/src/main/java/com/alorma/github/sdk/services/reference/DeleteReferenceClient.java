@@ -16,7 +16,7 @@ public class DeleteReferenceClient extends GithubClient<Boolean> {
     public DeleteReferenceClient(RepoInfo repoInfo, String ref) {
         super();
         this.info = repoInfo;
-        this.ref = "heads/" + ref;
+        this.ref = GitReferenceService.HEADS + ref;
     }
 
     @Override

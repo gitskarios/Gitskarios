@@ -13,6 +13,8 @@ import rx.Observable;
 
 public interface GitReferenceService {
 
+    String HEADS = "heads/";
+
     @GET("/repos/{owner}/{repo}/git/refs/{ref}")
     Observable<GitReference> getReference(@Path("owner") String owner, @Path("repo") String repoName,
                                           @Path("ref") String ref);

@@ -14,7 +14,7 @@ public class GetReferenceClient extends GithubClient<GitReference> {
   public GetReferenceClient(RepoInfo repoInfo, String ref) {
     super();
     this.info = repoInfo;
-    this.ref = "heads/" + ref;
+    this.ref = GitReferenceService.HEADS + ref;
   }
 
   @Override

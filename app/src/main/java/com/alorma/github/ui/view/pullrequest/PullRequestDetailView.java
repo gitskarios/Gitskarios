@@ -3,6 +3,7 @@ package com.alorma.github.ui.view.pullrequest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -147,14 +148,17 @@ public class PullRequestDetailView extends LinearLayout {
   private void parseDeleteBranchButton(PullRequest pullRequest, Permissions permissions) {
     if (deleteBranchButton != null) {
       if (pullRequest.head != null
-              && pullRequest.state == IssueState.closed
-              && pullRequest.merged
+              && (pullRequest.state == IssueState.closed || pullRequest.merged)
               && permissions.admin
               && pullRequestActionsListener.headReferenceExist()) {
         deleteBranchButton.setVisibility(VISIBLE);
         deleteBranchButton.setOnClickListener(v -> {
           pullRequestActionsListener.deleteHeadReference(pullRequest.head);
         });
+        deleteBranchButton.setBackgroundResource(
+                pullRequest.merged
+                        ? R.drawable.pull_request_merged_delete_branch
+                        : R.drawable.pull_request_closed_delete_branch);
       } else {
         deleteBranchButton.setVisibility(View.GONE);
       }

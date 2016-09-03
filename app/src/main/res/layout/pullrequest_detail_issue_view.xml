@@ -43,7 +43,7 @@
         android:layout_marginLeft="@dimen/gapLarge"
         android:layout_marginRight="@dimen/gapLarge"
         android:background="@drawable/pull_request_merged_delete_branch"
-        android:text="@string/pull_request_delete_merged_branch"
+        android:text="@string/pull_request_delete_branch"
         android:textColor="@color/white"
         android:visibility="gone"/>
 </merge>
