@@ -150,6 +150,8 @@
   <string name="pullrequest_merge_action_pending">Merge not computed</string>
   <string name="pullrequest_merge_action_valid">Merge</string>
   <string name="pullrequest_merge_action_invalid">Merge conflicts</string>
+  <string name="pull_request_delete_branch">Delete branch</string>
+  <string name="pull_request_delete_branch_question">Delete branch?</string>
   <string name="merge_message">Merge message</string>
   <string name="merge_title">Merge</string>
   <string name="commit_file_add_del"><![CDATA[<b>%1$d</b> additions and <b>%2$d</b> deletions]]></string>
