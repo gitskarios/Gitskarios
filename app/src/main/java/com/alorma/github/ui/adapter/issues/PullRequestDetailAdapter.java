@@ -26,7 +26,9 @@ public class PullRequestDetailAdapter extends StoryDetailAdapter<PullRequest> {
       Permissions permissions, IssueDetailRequestListener issueDetailRequestListener) {
 
     PullRequestDetailView detailView = new PullRequestDetailView(context);
+    detailView.setPullRequestActionsListener((PullRequestDetailView.PullRequestActionsListener) issueDetailRequestListener);
     detailView.setLayoutParams(params);
+
     return new PullRequestHolder(detailView, story, permissions,
         (PullRequestDetailView.PullRequestActionsListener) issueDetailRequestListener);
   }

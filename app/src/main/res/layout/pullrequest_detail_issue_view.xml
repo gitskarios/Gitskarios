@@ -34,4 +34,16 @@
         android:background="@drawable/pull_request_merge_pending"
         android:text="@string/pullrequest_merge_action_pending"
         android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/deleteBranch"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginBottom="@dimen/materialize_baseline_grid"
+        android:layout_marginLeft="@dimen/gapLarge"
+        android:layout_marginRight="@dimen/gapLarge"
+        android:background="@drawable/pull_request_merged_delete_branch"
+        android:text="@string/pull_request_delete_branch"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 </merge>
