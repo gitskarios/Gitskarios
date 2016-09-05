@@ -42,6 +42,7 @@ import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.reference.DeleteReferenceClient;
 import com.alorma.github.sdk.services.reference.GetReferenceClient;
+import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
@@ -56,6 +57,7 @@ import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -85,6 +87,7 @@ public class PullRequestConversationFragment extends BaseFragment
   private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterfaceNull;
   private PullRequestDetailAdapter adapter;
   private boolean headReferenceExist = false;
+  private boolean hasPushPermissionsToHead = false;
 
   public static PullRequestConversationFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -311,10 +314,18 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private void checkHeadBranchExist(PullRequestStory pullRequestStory) {
+
+    GetRepoClient getRepoClient = new GetRepoClient(pullRequestStory.item.head.repo.toInfo());
     GetReferenceClient referenceClient =
             new GetReferenceClient(issueInfo.repoInfo, pullRequestStory.item.head.ref);
-    referenceClient
+
+    getRepoClient
             .observable()
+            .map((repo) -> repo.permissions.push)
+            .flatMap((hasPushPermissions) -> {
+              hasPushPermissionsToHead = hasPushPermissions;
+              return referenceClient.observable();
+            })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Subscriber<GitReference>() {
@@ -423,8 +434,8 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   @Override
-  public boolean headReferenceExist() {
-    return this.headReferenceExist;
+  public boolean userIsAbleToDelete() {
+    return headReferenceExist && hasPushPermissionsToHead;
   }
 
   @Override
