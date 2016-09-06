@@ -2,6 +2,7 @@ package com.alorma.github.sdk.bean.dto.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.alorma.gitskarios.core.Pair;
 import java.util.List;
 
 public class Commit extends ShaUrl implements Parcelable {
@@ -26,6 +27,7 @@ public class Commit extends ShaUrl implements Parcelable {
   public GitCommitFiles files;
   public int days;
   public int comment_count;
+  public GithubStatusResponse combinedStatus;
 
   public Commit() {
   }
