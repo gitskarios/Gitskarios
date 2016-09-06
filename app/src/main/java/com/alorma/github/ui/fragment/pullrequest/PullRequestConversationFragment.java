@@ -322,7 +322,9 @@ public class PullRequestConversationFragment extends BaseFragment
     getRepoClient
             .observable()
             .flatMap((repo) -> {
-              hasPushPermissionsToHead = repo.permissions.push;
+              if (repo.permissions != null) {
+                hasPushPermissionsToHead = repo.permissions.push;
+              }
 
               return referenceClient.observable()
                       .subscribeOn(Schedulers.io())
