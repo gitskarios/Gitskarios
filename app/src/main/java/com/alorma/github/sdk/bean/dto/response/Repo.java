@@ -153,8 +153,14 @@ public class Repo extends ShaUrl implements Parcelable {
 
   public RepoInfo toInfo() {
     RepoInfo repoInfo = new RepoInfo();
-    repoInfo.owner = owner.login;
-    repoInfo.name = name;
+    if (owner != null) {
+      repoInfo.owner = owner.login;
+      repoInfo.name = name;
+    } else {
+      String[] parts = name.split("/");
+      repoInfo.owner = parts[0];
+      repoInfo.name = parts[1];
+    }
     repoInfo.permissions = permissions;
     repoInfo.branch = default_branch;
     return repoInfo;

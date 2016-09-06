@@ -18,6 +18,7 @@ import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
+import com.alorma.github.ui.fragment.commit.CommitInfoFragment;
 import com.alorma.github.ui.fragment.commit.CommitStatusFragment;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
   private CommitInfo info;
 
   private CommitFilesFragment commitFilesFragment;
+  private CommitInfoFragment commitInfoFragment;
 
   public static Intent launchIntent(Context context, CommitInfo commitInfo) {
     Bundle b = new Bundle();
@@ -59,6 +61,9 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
         List<Fragment> listFragments = new ArrayList<>();
+
+        commitInfoFragment = CommitInfoFragment.newInstance();
+        listFragments.add(commitInfoFragment);
 
         commitFilesFragment = CommitFilesFragment.newInstance(info);
         commitFilesFragment.setOnFileRequestListener(this);
@@ -103,6 +108,10 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
           getSupportActionBar().setSubtitle(commit.shortSha());
         }
 
+        if (commitInfoFragment != null) {
+          commitInfoFragment.setCommit(commit);
+        }
+
         if (commitFilesFragment != null) {
           commitFilesFragment.setFiles(commit.files);
         }
@@ -142,11 +151,11 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
     public CharSequence getPageTitle(int position) {
       switch (position) {
         case 0:
-          return getString(R.string.commits_detail_files);
+          return getString(R.string.commits_detail_infos);
         case 1:
-          return getString(R.string.commits_detail_statuses);
+          return getString(R.string.commits_detail_files);
         case 2:
-          return getString(R.string.commits_detail_comments);
+          return getString(R.string.commits_detail_statuses);
       }
       return "";
     }

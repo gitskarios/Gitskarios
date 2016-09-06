@@ -16,9 +16,11 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Commit;
+import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.GithubPage;
 import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
@@ -26,9 +28,11 @@ import com.alorma.github.sdk.bean.dto.response.events.payload.IssueEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PullRequestEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.PushEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ReleaseEventPayload;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.user.events.GetUserEventsClient;
+import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
@@ -367,6 +371,18 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
       if (item.payload != null && item.payload.pages != null) {
         processGollumPages(item.payload.pages);
       }
+    } else if (type == EventType.CommitCommentEvent) {
+      if (item.payload != null) {
+        Repo repo = item.repo;
+        CommitComment comment = item.payload.comment;
+        if (repo != null && comment != null && comment.commit_id != null) {
+          CommitInfo commitInfo = new CommitInfo();
+          commitInfo.repoInfo = repo.toInfo();
+          commitInfo.sha = comment.commit_id;
+          Intent intent = CommitDetailActivity.launchIntent(getActivity(), commitInfo);
+          startActivity(intent);
+        }
+      }
     } else {
       // TODO manage TAGs
       if (item.repo.url != null) {
@@ -382,9 +398,7 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
       MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
       builder.title(R.string.open_wiki_page);
       builder.items(pages);
-      builder.itemsCallback((dialog1, itemView, position, text) -> {
-        launchPage(pages.get(position));
-      });
+      builder.itemsCallback((dialog1, itemView, position, text) -> launchPage(pages.get(position)));
       builder.negativeText(R.string.cancel);
       builder.show();
     }

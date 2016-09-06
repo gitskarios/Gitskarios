@@ -320,4 +320,5 @@
   <string name="user_subscribed_issues">Subscribed</string>
   <string name="open_wiki_page">Open wiki page</string>
   <string name="issue_closed_simple">closed</string>
+  <string name="commits_detail_infos">Info</string>
 </resources>

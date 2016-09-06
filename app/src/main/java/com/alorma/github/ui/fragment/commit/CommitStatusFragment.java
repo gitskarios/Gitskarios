@@ -17,9 +17,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by a557114 on 06/09/2015.
- */
 public class CommitStatusFragment extends LoadingListFragment<GithubStatusAdapter> {
 
   public static final String COMMIT_INFO = "COMMIT_INFO";
