@@ -26,13 +26,13 @@ import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
+import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.core.repositories.RepoInfo;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
@@ -162,27 +162,22 @@ public class PullRequestInfoFragment extends BaseFragment {
 
   private void showBranches(PullRequest pullRequest) {
     if (pullRequest.head != null) {
-      branchHeadView.setText(pullRequest.head.label);
-      branchHeadView.setOnClickListener(v -> {
-        com.alorma.github.sdk.bean.info.RepoInfo repoInfo = new com.alorma.github.sdk.bean.info.RepoInfo();
-        repoInfo = issueInfo.repoInfo;
-        repoInfo.branch = pullRequest.head.ref;
-
-        Intent intent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
-        startActivity(intent);
-      });
+      setupBranchView(branchHeadView, pullRequest.head);
     }
     if (pullRequest.base != null) {
-      branchBaseView.setText(pullRequest.base.label);
-      branchBaseView.setOnClickListener(v -> {
-        com.alorma.github.sdk.bean.info.RepoInfo repoInfo = new com.alorma.github.sdk.bean.info.RepoInfo();
-        repoInfo = issueInfo.repoInfo;
-        repoInfo.branch = pullRequest.base.ref;
-
-        Intent intent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
-        startActivity(intent);
-      });
+      setupBranchView(branchBaseView, pullRequest.base);
     }
+  }
+
+  private void setupBranchView(TextView textView, Head head) {
+    textView.setText(head.label);
+    textView.setOnClickListener(v1 -> {
+      com.alorma.github.sdk.bean.info.RepoInfo repoInfo = head.repo.toInfo();
+      repoInfo.branch = head.ref;
+
+      Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo);
+      startActivity(intent);
+    });
   }
 
   private void showAssignees(List<User> assignees, User assignee) {
