@@ -315,16 +315,18 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void checkHeadBranchExist(PullRequestStory pullRequestStory) {
 
-    GetRepoClient getRepoClient = new GetRepoClient(pullRequestStory.item.head.repo.toInfo());
+    RepoInfo headRepoInfo = pullRequestStory.item.head.repo.toInfo();
+    GetRepoClient getRepoClient = new GetRepoClient(headRepoInfo);
     GetReferenceClient referenceClient =
-            new GetReferenceClient(issueInfo.repoInfo, pullRequestStory.item.head.ref);
-
+            new GetReferenceClient(headRepoInfo, pullRequestStory.item.head.ref);
     getRepoClient
             .observable()
-            .map((repo) -> repo.permissions.push)
-            .flatMap((hasPushPermissions) -> {
-              hasPushPermissionsToHead = hasPushPermissions;
-              return referenceClient.observable();
+            .flatMap((repo) -> {
+              hasPushPermissionsToHead = repo.permissions.push;
+
+              return referenceClient.observable()
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread());
             })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

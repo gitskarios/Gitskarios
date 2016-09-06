@@ -148,8 +148,7 @@ public class PullRequestDetailView extends LinearLayout {
     if (deleteBranchButton != null) {
       if (pullRequest.head != null
               && (pullRequest.state == IssueState.closed || pullRequest.merged)
-              && (headIsNotForkAndUserHavePushPermissions(pullRequest, permissions)
-                  || pullRequestActionsListener.userIsAbleToDelete())) {
+              && pullRequestActionsListener.userIsAbleToDelete()) {
         deleteBranchButton.setVisibility(VISIBLE);
         deleteBranchButton.setOnClickListener(v -> {
           pullRequestActionsListener.deleteHeadReference(pullRequest.head);
@@ -162,10 +161,6 @@ public class PullRequestDetailView extends LinearLayout {
         deleteBranchButton.setVisibility(View.GONE);
       }
     }
-  }
-
-  private boolean headIsNotForkAndUserHavePushPermissions(PullRequest pullRequest, Permissions permissions) {
-    return !pullRequest.head.repo.fork && permissions.push;
   }
 
   private void parseRepository(PullRequest pullRequest) {
