@@ -5,6 +5,7 @@ import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.NavigationFragment;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.ui.actions.AssigneeAction;
+import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.issues.user.AssignedIssuesListFragment;
@@ -54,4 +55,6 @@ public interface ApiComponent {
   void inject(SubscribedIssuesListFragment subscribedIssuesListFragment);
 
   void inject(NavigationFragment navigationFragment);
+
+  void inject(CommitDetailActivity commitDetailActivity);
 }

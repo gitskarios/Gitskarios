@@ -2,36 +2,55 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.presenter.CommitInfoPresenter;
+import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
+import com.alorma.github.sdk.bean.dto.response.GithubStatus;
+import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
-import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
-import com.alorma.github.ui.fragment.commit.CommitCommentsFragment;
+import com.alorma.github.ui.adapter.commit.GithubStatusAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
-import com.alorma.github.ui.fragment.commit.CommitInfoFragment;
-import com.alorma.github.ui.fragment.commit.CommitStatusFragment;
-import java.util.ArrayList;
+import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import com.alorma.github.ui.view.DrawItemSingleLineAvatar;
 import java.util.List;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import javax.inject.Inject;
 
-public class CommitDetailActivity extends RepositoryThemeActivity implements CommitFilesAdapter.OnFileRequestListener {
+public class CommitDetailActivity extends RepositoryThemeActivity
+    implements CommitFilesAdapter.OnFileRequestListener, Presenter.Callback<Commit> {
 
+  @Inject CommitInfoPresenter commitInfoPresenter;
+
+  @BindView(R.id.author) DrawItemSingleLineAvatar authorView;
+  @BindView(R.id.committer) DrawItemSingleLineAvatar committerView;
+  @BindView(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.statusesTitle) TextView statusesTextView;
+  @BindView(R.id.statusesRecycler) RecyclerView statusesRecyclerView;
+  @BindView(R.id.commit_message) TextView commitMessageTextView;
+  @BindView(R.id.commit_id) TextView commitIdTextView;
+  @BindView(R.id.commit_parent) TextView commitParentTextView;
+
+  private MaterialDialog dialog;
   private CommitInfo info;
-
-  private CommitFilesFragment commitFilesFragment;
-  private CommitInfoFragment commitInfoFragment;
 
   public static Intent launchIntent(Context context, CommitInfo commitInfo) {
     Bundle b = new Bundle();
@@ -46,7 +65,9 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.commit_activity);
+    setContentView(R.layout.commit_detail);
+
+    ButterKnife.bind(this);
 
     if (getIntent().getExtras() != null) {
       info = getIntent().getExtras().getParcelable(CommitFilesFragment.INFO);
@@ -55,32 +76,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
 
         setTitle(String.valueOf(info.repoInfo));
 
-        getContent();
-
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabStrip);
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-
-        List<Fragment> listFragments = new ArrayList<>();
-
-        commitInfoFragment = CommitInfoFragment.newInstance();
-        listFragments.add(commitInfoFragment);
-
-        commitFilesFragment = CommitFilesFragment.newInstance(info);
-        commitFilesFragment.setOnFileRequestListener(this);
-        listFragments.add(commitFilesFragment);
-
-        listFragments.add(CommitStatusFragment.newInstance(info));
-
-        CommitCommentsFragment commitCommentsFragment = CommitCommentsFragment.newInstance(info);
-        listFragments.add(commitCommentsFragment);
-
-        if (viewPager != null) {
-          viewPager.setAdapter(new NavigationPagerAdapter(getSupportFragmentManager(), listFragments));
-          viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
-          if (tabLayout != null) {
-            tabLayout.setupWithViewPager(viewPager);
-          }
-        }
+        commitInfoPresenter.load(info, this);
       } else {
         finish();
       }
@@ -88,35 +84,11 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
   }
 
   @Override
-  protected void getContent() {
-    super.getContent();
-    GetSingleCommitClient client = new GetSingleCommitClient(info);
-    client.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Commit>() {
-      @Override
-      public void onCompleted() {
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    super.injectComponents(applicationComponent);
 
-      }
-
-      @Override
-      public void onError(Throwable e) {
-
-      }
-
-      @Override
-      public void onNext(Commit commit) {
-        if (getSupportActionBar() != null) {
-          getSupportActionBar().setSubtitle(commit.shortSha());
-        }
-
-        if (commitInfoFragment != null) {
-          commitInfoFragment.setCommit(commit);
-        }
-
-        if (commitFilesFragment != null) {
-          commitFilesFragment.setFiles(commit.files);
-        }
-      }
-    });
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.inject(this);
   }
 
   @Override
@@ -128,36 +100,110 @@ public class CommitDetailActivity extends RepositoryThemeActivity implements Com
     startActivity(launcherIntent);
   }
 
-  private class NavigationPagerAdapter extends FragmentPagerAdapter {
+  @Override
+  public void showLoading() {
+    dialog = new MaterialDialog.Builder(this).progress(true, 10).content(R.string.commits_detail_loading).show();
+  }
 
-    private List<Fragment> listFragments;
+  @Override
+  public void onResponse(Commit commit, boolean firstTime) {
 
-    public NavigationPagerAdapter(FragmentManager fm, List<Fragment> listFragments) {
-      super(fm);
-      this.listFragments = listFragments;
+    if (commit.commit != null && commit.commit.message != null) {
+      commitMessageTextView.setText(Html.fromHtml(commit.commit.message));
     }
 
-    @Override
-    public Fragment getItem(int position) {
-      return listFragments.get(position);
+    User author = commit.author;
+
+    if (author != null) {
+      showUser(author, authorView);
     }
 
-    @Override
-    public int getCount() {
-      return listFragments.size();
+    User committer = commit.committer;
+
+    if (committer != null) {
+      showUser(committer, committerView);
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-      switch (position) {
-        case 0:
-          return getString(R.string.commits_detail_infos);
-        case 1:
-          return getString(R.string.commits_detail_files);
-        case 2:
-          return getString(R.string.commits_detail_statuses);
-      }
-      return "";
+    if (commit.files != null) {
+      showFiles(commit.files);
     }
+
+    if (commit.combinedStatus != null && commit.combinedStatus.statuses != null && !commit.combinedStatus.statuses.isEmpty()) {
+      showStatus(commit.combinedStatus.statuses);
+    } else {
+      statusesTextView.setVisibility(View.GONE);
+      statusesRecyclerView.setVisibility(View.GONE);
+    }
+
+    // TODO Multiple parents
+    if (commit.parents != null && !commit.parents.isEmpty() && commit.parents.get(0) != null && commit.parents.get(0).sha != null) {
+      commitParentTextView.setText(getString(R.string.parent_commit, commit.parents.get(0).sha));
+      commitParentTextView.setOnClickListener(v -> {
+        CommitInfo request = new CommitInfo();
+        request.repoInfo = info.repoInfo;
+        request.sha = commit.parents.get(0).sha;
+        Intent intent = CommitDetailActivity.launchIntent(v.getContext(), request);
+        startActivity(intent);
+      });
+    }
+
+    if (commit.sha != null) {
+      commitIdTextView.setText(commit.sha);
+    }
+  }
+
+  private void showUser(User user, DrawItemSingleLineAvatar userView) {
+    ImageView imageView = userView.getImageView();
+    if (imageView != null) {
+      UniversalImageLoaderUtils.loadUserAvatar(imageView, user);
+    }
+
+    TextView textView = userView.getTextView();
+    if (textView != null) {
+      textView.setText(user.login);
+    }
+
+    userView.setOnClickListener(v -> {
+      Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
+      startActivity(intent);
+    });
+  }
+
+  private void showFiles(List<CommitFile> files) {
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    recyclerView.setNestedScrollingEnabled(false);
+
+    CommitFilesAdapter adapter = new CommitFilesAdapter(getLayoutInflater());
+    recyclerView.setAdapter(adapter);
+
+    adapter.addAll(files);
+
+    adapter.setOnFileRequestListener(this);
+  }
+
+  private void showStatus(List<GithubStatus> statuses) {
+    statusesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    statusesRecyclerView.setNestedScrollingEnabled(false);
+
+    GithubStatusAdapter adapter = new GithubStatusAdapter(getLayoutInflater());
+    statusesRecyclerView.setAdapter(adapter);
+    adapter.setCallback(item -> {
+      Intent intent = new Intent(Intent.ACTION_VIEW);
+      intent.setData(Uri.parse(item.target_url));
+      startActivity(intent);
+    });
+    adapter.addAll(statuses);
+  }
+
+  @Override
+  public void hideLoading() {
+    if (dialog != null) {
+      dialog.dismiss();
+    }
+  }
+
+  @Override
+  public void onResponseEmpty() {
+
   }
 }

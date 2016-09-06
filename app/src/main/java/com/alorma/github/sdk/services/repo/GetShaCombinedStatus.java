@@ -5,9 +5,6 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import retrofit.RestAdapter;
 
-/**
- * Created by a557114 on 06/09/2015.
- */
 public class GetShaCombinedStatus extends GithubListClient<GithubStatusResponse> {
 
   private final RepoInfo repoInfo;

@@ -4,9 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.ArrayList;
 
-/**
- * Created by Bernat on 22/12/2014.
- */
 public class GitCommitFiles extends ArrayList<CommitFile> implements Parcelable {
 
   public static final Creator<GitCommitFiles> CREATOR = new Creator<GitCommitFiles>() {

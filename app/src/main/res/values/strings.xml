@@ -321,4 +321,9 @@
   <string name="open_wiki_page">Open wiki page</string>
   <string name="issue_closed_simple">closed</string>
   <string name="commits_detail_infos">Info</string>
+  <string name="commit_author">Author</string>
+  <string name="commit_committer">Committer</string>
+  <string name="commit_status">Status</string>
+  <string name="commits_detail_loading">Loading commit</string>
+  <string name="parent_commit">Parent: %s</string>
 </resources>

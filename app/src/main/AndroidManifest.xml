@@ -99,7 +99,6 @@
     <activity android:name=".ui.activity.LanguagesActivity"/>
     <activity android:name=".ui.activity.gists.GistEditorActivity"/>
     <activity android:name=".ui.activity.CompareRepositoryCommitsActivity"/>
-    <activity android:name=".ui.activity.StatusActivity"/>
     <activity
         android:name=".ui.activity.ManageRepositoryActivity"
         android:label="@string/repository_settings"
