@@ -118,6 +118,7 @@
   <string name="issue_self_assigned">%1$s self assigned</string>
   <string name="issue_self_unassigned">%1$s removed their assignment</string>
   <string name="issue_closed">closed in %s</string>
+  <string name="head_ref_deleted">deleted the <b>%s</b> branch</string>
 
   <string name="no_contributors">No contributors</string>
   <string name="contributors_fragment_title">Contributors</string>
@@ -318,4 +319,5 @@
   <string name="user_created_issues">Created</string>
   <string name="user_subscribed_issues">Subscribed</string>
   <string name="open_wiki_page">Open wiki page</string>
+  <string name="issue_closed_simple">closed</string>
 </resources>

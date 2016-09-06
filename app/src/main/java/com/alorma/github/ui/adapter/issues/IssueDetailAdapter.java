@@ -16,9 +16,9 @@ import com.alorma.github.ui.view.issue.IssueDetailView;
 
 public class IssueDetailAdapter extends StoryDetailAdapter<Issue> {
 
-  public IssueDetailAdapter(Context context, RecyclerView recyclerView, LayoutInflater inflater, Story<Issue> story, RepoInfo repoInfo,
+  public IssueDetailAdapter(Context context, LayoutInflater inflater, Story<Issue> story, RepoInfo repoInfo,
       IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
-    super(context, recyclerView, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
+    super(context, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
   }
 
   @Override
