@@ -3,6 +3,7 @@ body {
   padding: 0;
   padding-top: 8px;
   color: #fff;
+  display: block;
 }
 .CodeMirror {
   height: auto;
@@ -14,7 +15,7 @@ body {
 pre {
 	color: #AAAAAA;
 	background-color: #222;
-	display: inline-block;
+	display: block;
 }
 a {
   color: #CCC;

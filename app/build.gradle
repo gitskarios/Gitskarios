@@ -42,8 +42,8 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 24
-    versionName "4.3.0"
-    versionCode 403000
+    versionName "4.4.1"
+    versionCode 404001
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -54,8 +54,6 @@ android {
     ext.betaDistributionNotifications = false
 
     resValue "string", "imgur_client_id", getImgurClient()
-    resValue "string", "imgur_client_secret", getImgurSecret()
-    resValue "string", "imgur_client_callback", getImgurCallback()
   }
 
   lintOptions {

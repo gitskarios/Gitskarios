@@ -188,12 +188,15 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     if (repo != null) {
       this.currentRepo = repo;
 
-      requestRepoInfo.branch = repo.default_branch;
       requestRepoInfo.permissions = repo.permissions;
+      setTitle(currentRepo.name);
+
+      if (requestRepoInfo.branch == null) {
+        requestRepoInfo.branch = repo.default_branch;
+      }
 
       invalidateOptionsMenu();
 
-      setTitle(currentRepo.name);
       if (getSupportActionBar() != null) {
         getSupportActionBar().setSubtitle(requestRepoInfo.branch);
       }
@@ -431,7 +434,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
 
     if (requestCode == EDIT_REPO) {
       if (resultCode == RESULT_OK && data != null) {
-        RepoRequestDTO repoRequestDTO = (RepoRequestDTO) data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+        RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
         showProgressDialog(R.string.edit_repo_loading);
         EditRepoClient editRepositoryClient = new EditRepoClient(requestRepoInfo, repoRequestDTO);
         editRepositoryClient.observable()

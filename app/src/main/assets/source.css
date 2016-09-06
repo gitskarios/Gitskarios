@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   padding: 8px;
+  display: block;
 }
 .CodeMirror {
   height: auto;
@@ -13,5 +14,5 @@ body {
 pre {
 	color: #222;
 	background-color: #DDD;
-	display: inline-block;
+	display: block;
 }

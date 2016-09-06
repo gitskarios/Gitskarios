@@ -3,6 +3,7 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -88,7 +89,7 @@ public class NewIssueActivity extends RepositoryThemeActivity {
     setContentView(R.layout.activity_new_issue);
 
     if (getIntent().getExtras() != null) {
-      repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
+      repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
       findViews();
 
       setTitle(getString(R.string.new_issue_title, repoInfo.name));
@@ -98,6 +99,10 @@ public class NewIssueActivity extends RepositoryThemeActivity {
         setupFromCache(issueRequest);
       } else {
         issueRequest = new IssueRequest();
+      }
+
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(AttributesUtils.getPrimaryColor(this)));
       }
     } else {
       finish();

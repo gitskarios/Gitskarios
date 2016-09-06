@@ -21,11 +21,11 @@
   <item android:state_enabled="false">
     <bitmap android:src="@drawable/btn_check_to_on_mtrl_000"/>
   </item>
-  <item android:id="@+id/on"
-        android:state_checked="true">
+  <item
+      android:state_checked="true">
     <bitmap android:src="@drawable/btn_check_to_on_mtrl_015"/>
   </item>
-  <item android:id="@+id/off">
+  <item>
     <bitmap android:src="@drawable/btn_check_to_on_mtrl_000"/>
   </item>
 

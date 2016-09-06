@@ -102,6 +102,9 @@ public class IssueCommentView extends LinearLayout {
           issueCommentRequestListener.onContentEditRequest(issueStoryComment);
         }
       });
+    } else {
+      editComment.setVisibility(GONE);
+      editComment.setOnClickListener(null);
     }
   }
 

@@ -32,11 +32,13 @@ import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import com.alorma.github.sdk.core.repositories.RepoInfo;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
+import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
@@ -161,9 +163,25 @@ public class PullRequestInfoFragment extends BaseFragment {
   private void showBranches(PullRequest pullRequest) {
     if (pullRequest.head != null) {
       branchHeadView.setText(pullRequest.head.label);
+      branchHeadView.setOnClickListener(v -> {
+        com.alorma.github.sdk.bean.info.RepoInfo repoInfo = new com.alorma.github.sdk.bean.info.RepoInfo();
+        repoInfo = issueInfo.repoInfo;
+        repoInfo.branch = pullRequest.head.ref;
+
+        Intent intent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
+        startActivity(intent);
+      });
     }
     if (pullRequest.base != null) {
       branchBaseView.setText(pullRequest.base.label);
+      branchBaseView.setOnClickListener(v -> {
+        com.alorma.github.sdk.bean.info.RepoInfo repoInfo = new com.alorma.github.sdk.bean.info.RepoInfo();
+        repoInfo = issueInfo.repoInfo;
+        repoInfo.branch = pullRequest.base.ref;
+
+        Intent intent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo);
+        startActivity(intent);
+      });
     }
   }
 

@@ -23,9 +23,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-/**
- * Created by Bernat on 17/07/2014.
- */
 public interface RepoService {
 
   @GET("/repos/{owner}/{name}/contents")

@@ -22,7 +22,7 @@
       android:layout_height="match_parent"
       android:layout_marginTop="?actionBarSize"
       android:layout_marginBottom="?actionBarSize"
-      android:id="@id/swipe"
+      android:id="@+id/swipe"
       >
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"

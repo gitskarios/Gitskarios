@@ -27,6 +27,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:textSize="18sp"
         android:id="@+id/branch_base"
+        android:background="?selectableItemBackground"
         tools:text="alorma:master"
         />
 
@@ -38,6 +39,7 @@
         android:textColor="@color/md_grey_600"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:textSize="18sp"
+        android:background="?selectableItemBackground"
         android:id="@+id/branch_head"
         tools:text="alorma:patch-1"
         />

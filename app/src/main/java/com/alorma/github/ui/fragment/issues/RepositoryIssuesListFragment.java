@@ -1,20 +1,15 @@
 package com.alorma.github.ui.fragment.issues;
 
-import android.animation.Animator;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -59,7 +54,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   private static final String REPO_INFO = "REPO_INFO";
   private static final String FROM_SEARCH = "FROM_SEARCH";
 
-  private static final int ISSUE_REQUEST = 1234;
+  private static final int NEW_ISSUE_REQUEST = 1234;
   private static final int MILESTONES_REQUEST = 1212;
 
   private RepoInfo repoInfo;
@@ -68,7 +63,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   private SearchClientRequest searchClientRequest;
 
   private int currentFilter = 0;
-  private View revealView;
 
   public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
     Bundle bundle = new Bundle();
@@ -94,8 +88,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
-    revealView = view.findViewById(R.id.revealView);
 
     Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
     String[] items = getResources().getStringArray(R.array.issues_filter);
@@ -135,15 +127,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   private void showMilestones() {
     Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, true);
     startActivityForResult(intent, MILESTONES_REQUEST);
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-
-    if (revealView != null) {
-      revealView.setVisibility(View.INVISIBLE);
-    }
   }
 
   @Override
@@ -324,51 +307,13 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   protected void fabClick() {
     super.fabClick();
     if (repoInfo.permissions != null) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
-        animateRevealFab();
-      } else {
-        openNewIssueActivity();
-      }
+      openNewIssueActivity();
     }
   }
 
   private void openNewIssueActivity() {
     Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-    startActivityForResult(intent, ISSUE_REQUEST);
-  }
-
-  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  private void animateRevealFab() {
-    float x = fab.getX() + (fab.getWidth() / 2);
-    float y = fab.getY() + (fab.getHeight() / 2);
-
-    int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
-    Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
-    revealView.setVisibility(View.VISIBLE);
-    anim.setDuration(600);
-    anim.setInterpolator(new AccelerateInterpolator());
-    anim.addListener(new Animator.AnimatorListener() {
-      @Override
-      public void onAnimationStart(Animator animator) {
-
-      }
-
-      @Override
-      public void onAnimationEnd(Animator animator) {
-        openNewIssueActivity();
-      }
-
-      @Override
-      public void onAnimationCancel(Animator animator) {
-
-      }
-
-      @Override
-      public void onAnimationRepeat(Animator animator) {
-
-      }
-    });
-    anim.start();
+    startActivityForResult(intent, NEW_ISSUE_REQUEST);
   }
 
   @Override
@@ -377,7 +322,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     if (resultCode == Activity.RESULT_FIRST_USER) {
       invalidate();
     } else if (resultCode == Activity.RESULT_OK) {
-      if (requestCode == ISSUE_REQUEST) {
+      if (requestCode == NEW_ISSUE_REQUEST) {
         invalidate();
       } else if (requestCode == MILESTONES_REQUEST) {
         Milestone milestone = data.getParcelableExtra(Milestone.class.getSimpleName());
@@ -400,7 +345,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
       if (item.pullRequest == null) {
         Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-        startActivityForResult(intent, ISSUE_REQUEST);
+        startActivity(intent);
       }
     }
   }

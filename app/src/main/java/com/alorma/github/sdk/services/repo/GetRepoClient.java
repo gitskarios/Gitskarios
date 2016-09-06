@@ -5,9 +5,6 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by Bernat on 17/07/2014.
- */
 public class GetRepoClient extends GithubRepoClient<Repo> {
 
   public GetRepoClient(RepoInfo repoInfo) {
