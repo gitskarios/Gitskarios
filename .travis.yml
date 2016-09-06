@@ -1,4 +1,11 @@
 language: android
+
+branches:
+  only:
+    - develop
+    - /^v\.\d+\.\d+\.\d+$/
+    - /^v\.\d+\.\d+\.\d+.\d+$/
+
 cache:
   directories:
   - $HOME/.m2
