@@ -473,7 +473,7 @@ public class PullRequestConversationFragment extends BaseFragment
     String ref = head.ref;
 
     DeleteReferenceClient deleteReferenceClient =
-            new DeleteReferenceClient(repository.toInfo(), ref);
+            new DeleteReferenceClient(head.repo.toInfo(), ref);
     deleteReferenceClient.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
