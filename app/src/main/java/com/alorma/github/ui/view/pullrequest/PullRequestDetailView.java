@@ -3,7 +3,6 @@ package com.alorma.github.ui.view.pullrequest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -149,8 +148,7 @@ public class PullRequestDetailView extends LinearLayout {
     if (deleteBranchButton != null) {
       if (pullRequest.head != null
               && (pullRequest.state == IssueState.closed || pullRequest.merged)
-              && permissions.admin
-              && pullRequestActionsListener.headReferenceExist()) {
+              && pullRequestActionsListener.userIsAbleToDelete()) {
         deleteBranchButton.setVisibility(VISIBLE);
         deleteBranchButton.setOnClickListener(v -> {
           pullRequestActionsListener.deleteHeadReference(pullRequest.head);
@@ -248,7 +246,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   public interface PullRequestActionsListener extends IssueDetailRequestListener {
     void mergeRequest(Head head, Head base);
-    boolean headReferenceExist();
+    boolean userIsAbleToDelete();
     void deleteHeadReference(Head head);
   }
 }
