@@ -120,10 +120,12 @@ public class BaseActivity extends AppCompatActivity {
 
   @Override
   public void setTitle(int titleId) {
-    if (toolbar != null) {
-      toolbar.setTitle(titleId);
+    if (titleId != 0) {
+      if (toolbar != null) {
+        toolbar.setTitle(titleId);
+      }
+      super.setTitle(titleId);
     }
-    super.setTitle(titleId);
   }
 
   @NonNull
@@ -133,10 +135,6 @@ public class BaseActivity extends AppCompatActivity {
 
   protected void removeAccount(Account selectedAccount, final AccountsManager.RemoveAccountCallback removeAccountCallback) {
     accountsManager.removeAccount(this, selectedAccount, removeAccountCallback);
-  }
-
-  public void reload() {
-    getContent();
   }
 
   protected void getContent() {

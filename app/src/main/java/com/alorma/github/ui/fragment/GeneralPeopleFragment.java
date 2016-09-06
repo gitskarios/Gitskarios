@@ -44,7 +44,7 @@ public class GeneralPeopleFragment extends BasePagerFragment {
   }
 
   @Override
-  protected int getTitle() {
+  public int getTitle() {
     return R.string.navigation_people;
   }
 }

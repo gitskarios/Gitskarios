@@ -47,6 +47,7 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -71,7 +72,6 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   private int notificationsSizeCount = 0;
   private NavigationFragment navigationFragment;
   private AccountHeader accountHeader;
-  private Drawer.OnDrawerItemClickListener drawerListener;
   private Map<String, List<IDrawerItem>> drawerItems;
 
   public static void startActivity(Activity context) {
@@ -178,7 +178,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
       drawer.addStickyDrawerItems(allProfilesItem);
     }
 
-    drawerListener = (view, position, drawerItem) -> {
+    Drawer.OnDrawerItemClickListener drawerListener = (view, position, drawerItem) -> {
       if (drawerItem != null) {
         long identifier = drawerItem.getIdentifier();
         switch ((int) identifier) {
@@ -521,7 +521,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         if (ft != null) {
           ft.replace(R.id.content, fragment);
           if (addToBackStack) {
-            ft.addToBackStack(null);
+            ft.addToBackStack("navigation");
           }
           ft.commit();
         }
@@ -615,10 +615,21 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     if (resultDrawer != null && resultDrawer.isDrawerOpen()) {
       resultDrawer.closeDrawer();
     } else {
-      if (lastUsedFragment instanceof EventsListFragment) {
+      if (lastUsedFragment instanceof EventsListFragment || lastUsedFragment instanceof OrgsEventsListFragment) {
         finish();
       } else if (resultDrawer != null) {
-        resultDrawer.setSelection(R.id.nav_drawer_events);
+        StringHolder name = accountHeader.getActiveProfile().getEmail();
+        if (name == null) {
+          name = accountHeader.getActiveProfile().getName();
+        }
+
+        String nameForAccount = new AccountUtils().getNameFromAccount(selectedAccount.name);
+        boolean isCurrentUser = nameForAccount != null && nameForAccount.equals(name.getText());
+        if (isCurrentUser) {
+          onUserEventsSelected();
+        } else {
+          onOrgEventsSelected(name.getText());
+        }
       }
     }
   }

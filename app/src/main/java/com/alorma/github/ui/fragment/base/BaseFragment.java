@@ -61,7 +61,13 @@ public class BaseFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
+
+    getActivity().setTitle(getTitle());
     colorize();
+  }
+
+  public int getTitle() {
+    return 0;
   }
 
   private void colorize() {
