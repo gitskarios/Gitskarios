@@ -204,7 +204,7 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void checkEditTitle() {
     if (getActivity() != null) {
-      if (issueInfo != null && pullRequestStory != null && pullRequestStory.item != null) {
+      if (issueInfo != null && pullRequestStoryItemExist()) {
 
         StoreCredentials credentials = new StoreCredentials(getActivity());
 
@@ -351,11 +351,19 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void notifyHeadOfAdapter(boolean headReferenceExist) {
     // refresh head only if pull request is closed or merged
-    if (pullRequestStory.item.state == IssueState.closed
-            || pullRequestStory.item.merged) {
+    if (pullRequestStoryItemExist() && pullRequestClosedOrMerged()) {
       this.headReferenceExist = headReferenceExist;
       adapter.notifyItemChanged(0);
     }
+  }
+
+  private boolean pullRequestClosedOrMerged() {
+    return pullRequestStory.item.state == IssueState.closed
+    || pullRequestStory.item.merged;
+  }
+
+  private boolean pullRequestStoryItemExist() {
+    return pullRequestStory != null && pullRequestStory.item != null;
   }
 
   private void applyIssue() {
