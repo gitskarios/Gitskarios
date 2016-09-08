@@ -40,13 +40,13 @@ public class GeneralIssuesListFragment extends BasePagerFragment {
     fragments.add(AssignedIssuesListFragment.newInstance());
     fragments.add(CreatedIssuesListFragment.newInstance());
     fragments.add(MentionedIssuesListFragment.newInstance());
-    fragments.add(SubscribedIssuesListFragment.newInstance());
+    //fragments.add(SubscribedIssuesListFragment.newInstance());
 
     List<String> titles = new ArrayList<>();
     titles.add(getString(R.string.user_assigned_issues));
     titles.add(getString(R.string.user_created_issues));
     titles.add(getString(R.string.user_mentioned_issues));
-    titles.add(getString(R.string.user_subscribed_issues));
+    //titles.add(getString(R.string.user_subscribed_issues));
 
     return new NavigationPagerAdapter(fm, fragments, titles);
   }
