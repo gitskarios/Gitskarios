@@ -31,7 +31,7 @@ import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.adapter.commit.GithubStatusAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
-import com.alorma.github.ui.view.DrawItemSingleLineAvatar;
+import com.alorma.github.ui.view.ItemSingleLineAvatar;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -40,8 +40,8 @@ public class CommitDetailActivity extends RepositoryThemeActivity
 
   @Inject CommitInfoPresenter commitInfoPresenter;
 
-  @BindView(R.id.author) DrawItemSingleLineAvatar authorView;
-  @BindView(R.id.committer) DrawItemSingleLineAvatar committerView;
+  @BindView(R.id.author) ItemSingleLineAvatar authorView;
+  @BindView(R.id.committer) ItemSingleLineAvatar committerView;
   @BindView(R.id.recycler) RecyclerView recyclerView;
   @BindView(R.id.statusesTitle) TextView statusesTextView;
   @BindView(R.id.statusesRecycler) RecyclerView statusesRecyclerView;
@@ -152,7 +152,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
     }
   }
 
-  private void showUser(User user, DrawItemSingleLineAvatar userView) {
+  private void showUser(User user, ItemSingleLineAvatar userView) {
     ImageView imageView = userView.getImageView();
     if (imageView != null) {
       UniversalImageLoaderUtils.loadUserAvatar(imageView, user);

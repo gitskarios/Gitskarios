@@ -31,7 +31,7 @@
         android:textSize="14sp"
         />
 
-    <com.alorma.github.ui.view.DrawItemSingleLineAvatar
+    <com.alorma.github.ui.view.ItemSingleLineAvatar
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:id="@+id/author"
@@ -47,7 +47,7 @@
         android:textSize="14sp"
         />
 
-    <com.alorma.github.ui.view.DrawItemSingleLineAvatar
+    <com.alorma.github.ui.view.ItemSingleLineAvatar
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:id="@+id/committer"

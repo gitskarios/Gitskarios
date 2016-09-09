@@ -11,27 +11,27 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 
-public class DrawItemSingleLineAvatar extends RelativeLayout {
+public class ItemSingleLineAvatar extends RelativeLayout {
   @BindView(R.id.image) ImageView imageView;
   @BindView(R.id.text) TextView textView;
 
-  public DrawItemSingleLineAvatar(Context context) {
+  public ItemSingleLineAvatar(Context context) {
     super(context);
     init();
   }
 
-  public DrawItemSingleLineAvatar(Context context, AttributeSet attrs) {
+  public ItemSingleLineAvatar(Context context, AttributeSet attrs) {
     super(context, attrs);
     init();
   }
 
-  public DrawItemSingleLineAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
+  public ItemSingleLineAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init();
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  public DrawItemSingleLineAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+  public ItemSingleLineAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     init();
   }
