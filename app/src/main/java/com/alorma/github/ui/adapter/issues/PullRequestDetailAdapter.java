@@ -16,9 +16,9 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 
 public class PullRequestDetailAdapter extends StoryDetailAdapter<PullRequest> {
 
-  public PullRequestDetailAdapter(Context context, RecyclerView recyclerView, LayoutInflater inflater, Story<PullRequest> story,
-      RepoInfo repoInfo, IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
-    super(context, recyclerView, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
+  public PullRequestDetailAdapter(Context context, LayoutInflater inflater, Story<PullRequest> story, RepoInfo repoInfo,
+      IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
+    super(context, inflater, story, repoInfo, issueDetailRequestListener, issueCommentRequestListener);
   }
 
   @Override

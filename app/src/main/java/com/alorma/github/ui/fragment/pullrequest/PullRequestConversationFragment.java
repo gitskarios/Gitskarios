@@ -42,6 +42,7 @@ import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.reference.DeleteReferenceClient;
 import com.alorma.github.sdk.services.reference.GetReferenceClient;
+import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
@@ -56,6 +57,7 @@ import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -85,6 +87,7 @@ public class PullRequestConversationFragment extends BaseFragment
   private PullRequestStoryLoaderInterface pullRequestStoryLoaderInterface = pullRequestStoryLoaderInterfaceNull;
   private PullRequestDetailAdapter adapter;
   private boolean headReferenceExist = false;
+  private boolean hasPushPermissionsToHead = false;
 
   public static PullRequestConversationFragment newInstance(IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -201,7 +204,7 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void checkEditTitle() {
     if (getActivity() != null) {
-      if (issueInfo != null && pullRequestStory != null && pullRequestStory.item != null) {
+      if (issueInfo != null && pullRequestStoryItemExist()) {
 
         StoreCredentials credentials = new StoreCredentials(getActivity());
 
@@ -311,10 +314,22 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private void checkHeadBranchExist(PullRequestStory pullRequestStory) {
+
+    RepoInfo headRepoInfo = pullRequestStory.item.head.repo.toInfo();
+    GetRepoClient getRepoClient = new GetRepoClient(headRepoInfo);
     GetReferenceClient referenceClient =
-            new GetReferenceClient(issueInfo.repoInfo, pullRequestStory.item.head.ref);
-    referenceClient
+            new GetReferenceClient(headRepoInfo, pullRequestStory.item.head.ref);
+    getRepoClient
             .observable()
+            .flatMap((repo) -> {
+              if (repo.permissions != null) {
+                hasPushPermissionsToHead = repo.permissions.push;
+              }
+
+              return referenceClient.observable()
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread());
+            })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Subscriber<GitReference>() {
@@ -336,11 +351,19 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void notifyHeadOfAdapter(boolean headReferenceExist) {
     // refresh head only if pull request is closed or merged
-    if (pullRequestStory.item.state == IssueState.closed
-            || pullRequestStory.item.merged) {
+    if (pullRequestStoryItemExist() && pullRequestClosedOrMerged()) {
       this.headReferenceExist = headReferenceExist;
       adapter.notifyItemChanged(0);
     }
+  }
+
+  private boolean pullRequestClosedOrMerged() {
+    return pullRequestStory.item.state == IssueState.closed
+    || pullRequestStory.item.merged;
+  }
+
+  private boolean pullRequestStoryItemExist() {
+    return pullRequestStory != null && pullRequestStory.item != null;
   }
 
   private void applyIssue() {
@@ -355,7 +378,7 @@ public class PullRequestConversationFragment extends BaseFragment
     }
     getActivity().setTitle("#" + pullRequestStory.item.number + " " + status);
     adapter =
-        new PullRequestDetailAdapter(getActivity(), recyclerView, getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this, this);
+        new PullRequestDetailAdapter(getActivity(), getActivity().getLayoutInflater(), pullRequestStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     getActivity().invalidateOptionsMenu();
@@ -423,8 +446,8 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   @Override
-  public boolean headReferenceExist() {
-    return this.headReferenceExist;
+  public boolean userIsAbleToDelete() {
+    return headReferenceExist && hasPushPermissionsToHead;
   }
 
   @Override
@@ -450,7 +473,7 @@ public class PullRequestConversationFragment extends BaseFragment
     String ref = head.ref;
 
     DeleteReferenceClient deleteReferenceClient =
-            new DeleteReferenceClient(repository.toInfo(), ref);
+            new DeleteReferenceClient(head.repo.toInfo(), ref);
     deleteReferenceClient.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

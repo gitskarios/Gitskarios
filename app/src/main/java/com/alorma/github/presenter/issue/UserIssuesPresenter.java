@@ -1,6 +1,7 @@
 package com.alorma.github.presenter.issue;
 
 import android.support.annotation.NonNull;
+import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.datasource.CacheDataSource;
@@ -12,12 +13,14 @@ import com.alorma.github.sdk.core.issues.IssuesRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public abstract class UserIssuesPresenter extends Presenter<Void, List<Issue>> {
 
+  @Inject AccountNameProvider accountNameProvider;
   private Integer page;
   private GenericRepository<Void, List<Issue>> genericRepository;
 

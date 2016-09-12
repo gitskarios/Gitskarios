@@ -4,9 +4,6 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-/**
- * Created by Bernat on 08/08/2014.
- */
 public abstract class GithubSearchClient<Search, K> extends GithubListClient<K> {
   protected String query;
   private int page = 0;

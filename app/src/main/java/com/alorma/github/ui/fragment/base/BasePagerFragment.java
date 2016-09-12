@@ -34,13 +34,4 @@ public abstract class BasePagerFragment extends BaseFragment {
   }
 
   protected abstract PagerAdapter provideAdapter(FragmentManager fm);
-
-  @Override
-  public void onResume() {
-    super.onResume();
-
-    getActivity().setTitle(getTitle());
-  }
-
-  protected abstract int getTitle();
 }

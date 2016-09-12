@@ -302,7 +302,7 @@ public class IssueDetailActivity extends BackActivity
     }
     setTitle("#" + issueStory.item.number + " " + status);
     IssueDetailAdapter adapter =
-        new IssueDetailAdapter(this, recyclerView, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
+        new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();

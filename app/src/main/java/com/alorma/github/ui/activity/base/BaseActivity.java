@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -18,6 +19,7 @@ import com.alorma.github.log.LogWrapper;
 import com.alorma.github.track.Tracker;
 import com.alorma.github.ui.activity.AccountsManager;
 import com.alorma.github.ui.fragment.preference.GitskariosPreferenceFragment;
+import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.KeyboardUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -93,6 +95,8 @@ public class BaseActivity extends AppCompatActivity {
       if (toolbar != null) {
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
+
+        toolbar.setBackgroundColor(AttributesUtils.getPrimaryColor(this));
       }
     }
   }
@@ -120,10 +124,12 @@ public class BaseActivity extends AppCompatActivity {
 
   @Override
   public void setTitle(int titleId) {
-    if (toolbar != null) {
-      toolbar.setTitle(titleId);
+    if (titleId != 0) {
+      if (toolbar != null) {
+        toolbar.setTitle(titleId);
+      }
+      super.setTitle(titleId);
     }
-    super.setTitle(titleId);
   }
 
   @NonNull
@@ -133,10 +139,6 @@ public class BaseActivity extends AppCompatActivity {
 
   protected void removeAccount(Account selectedAccount, final AccountsManager.RemoveAccountCallback removeAccountCallback) {
     accountsManager.removeAccount(this, selectedAccount, removeAccountCallback);
-  }
-
-  public void reload() {
-    getContent();
   }
 
   protected void getContent() {

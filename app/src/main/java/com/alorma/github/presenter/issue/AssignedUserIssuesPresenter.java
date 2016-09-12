@@ -35,6 +35,6 @@ import rx.Observable;
 
   @Override
   protected CloudDataSource<Void, List<Issue>> getCloudIssuesDataSource(RestWrapper issuesRetrofit) {
-    return new CloudUsersIssuesDataSource(issuesRetrofit, "assigned");
+    return new CloudUsersIssuesDataSource(issuesRetrofit, "assignee", accountNameProvider.getName());
   }
 }

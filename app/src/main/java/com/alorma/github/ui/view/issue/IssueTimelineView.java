@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import com.alorma.github.R;
+import com.alorma.github.sdk.bean.dto.response.Head;
+import com.alorma.github.sdk.bean.dto.response.Issue;
+import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.Rename;
 import com.alorma.github.sdk.core.ShaUtils;
@@ -55,9 +58,8 @@ public class IssueTimelineView extends TextView {
     setGravity(Gravity.CENTER_VERTICAL);
   }
 
-  public void setIssueEvent(IssueStoryEvent issueEvent) {
+  public void setIssueEvent(Issue issue, IssueStoryEvent issueEvent) {
     long milis = System.currentTimeMillis();
-    //applyGenericIssueStory(issueEvent);
 
     setText("");
 
@@ -118,11 +120,36 @@ public class IssueTimelineView extends TextView {
       String to = getResources().getString(R.string.issue_renamed_to, rename.to);
       setText(Html.fromHtml(actor + " " + from + "<br/>" + to));
     } else if (eventType.equals("closed")) {
-      setIcon(Octicons.Icon.oct_x);
+      IconicsDrawable drawable = new IconicsDrawable(getContext());
+      drawable.backgroundColorRes(R.color.md_red_500);
+      drawable.color(Color.WHITE);
+      drawable.roundedCornersDp(ICON_ROUNDED_CORNER_DP);
+      drawable.sizeDp(ICON_SIZE);
+      drawable.paddingDp(ICON_PADDING);
+      setCompoundDrawables(drawable.icon(Octicons.Icon.oct_stop), null, null, null);
       String commitId = issueEvent.event.commit_id;
       if (commitId != null) {
         String text = getResources().getString(R.string.issue_closed, commitId.substring(0, 8));
         setText(String.format("%s %s", actor, text));
+      } else {
+        String text = getResources().getString(R.string.issue_closed_simple);
+        setText(String.format("%s %s", actor, text));
+      }
+    } else if (eventType.equals("head_ref_deleted")) {
+      if (issue instanceof PullRequest) {
+        Head head = ((PullRequest) issue).head;
+        if (head != null) {
+          IconicsDrawable drawable = new IconicsDrawable(getContext());
+          drawable.backgroundColorRes(R.color.md_grey_600);
+          drawable.color(Color.WHITE);
+          drawable.roundedCornersDp(ICON_ROUNDED_CORNER_DP);
+          drawable.sizeDp(ICON_SIZE);
+          drawable.paddingDp(ICON_PADDING);
+          setCompoundDrawables(drawable.icon(Octicons.Icon.oct_repo_forked), null, null, null);
+
+          String text = getResources().getString(R.string.head_ref_deleted, head.ref);
+          setText(String.format("%s %s", actor, Html.fromHtml(text)));
+        }
       }
     } else {
       setIcon(Octicons.Icon.oct_octoface);

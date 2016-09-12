@@ -51,6 +51,11 @@ public class OrgsMembersFragment extends BaseUsersListFragment {
   }
 
   @Override
+  public int getTitle() {
+    return R.string.navigation_people;
+  }
+
+  @Override
   protected int getNoDataText() {
     return R.string.org_no_members;
   }

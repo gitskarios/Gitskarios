@@ -38,7 +38,7 @@ public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.A
   private IssueDetailRequestListener issueDetailRequestListener;
   private IssueCommentRequestListener issueCommentRequestListener;
 
-  public StoryDetailAdapter(Context context, RecyclerView recyclerView, LayoutInflater inflater, Story<K> story, RepoInfo repoInfo,
+  public StoryDetailAdapter(Context context, LayoutInflater inflater, Story<K> story, RepoInfo repoInfo,
       IssueDetailRequestListener issueDetailRequestListener, IssueCommentRequestListener issueCommentRequestListener) {
     this.context = context;
     this.story = story;

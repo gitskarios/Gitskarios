@@ -161,12 +161,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
     hideEmpty();
     if (swipe != null && (fromRetry || fromPaginated)) {
       fromRetry = false;
-      swipe.post(new Runnable() {
-        @Override
-        public void run() {
-          swipe.setRefreshing(true);
-        }
-      });
+      swipe.post(() -> swipe.setRefreshing(true));
     }
 
     if (!fromPaginated && loadingView != null && (getAdapter() == null || getAdapter().getItemCount() == 0)) {

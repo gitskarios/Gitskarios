@@ -62,7 +62,7 @@ public class OrgsReposFragment extends ReposFragment {
 
   @Override
   public int getTitle() {
-    return R.string.navigation_repos;
+    return R.string.navigation_general_repositories;
   }
 
   @Override

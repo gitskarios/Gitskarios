@@ -8,6 +8,7 @@ import com.alorma.github.ui.view.issue.IssueTimelineView;
 
 public class TimelineHolder extends Holder<Issue> {
   private final IssueTimelineView issueTimelineView;
+  private Issue issue;
 
   public TimelineHolder(IssueTimelineView itemView) {
     super(itemView);
@@ -17,12 +18,13 @@ public class TimelineHolder extends Holder<Issue> {
   @Override
   public void setIssue(RepoInfo repoInfo, Issue issue) {
 
+    this.issue = issue;
   }
 
   @Override
   public void setDetail(IssueStoryDetail detail) {
     if (detail instanceof IssueStoryEvent) {
-      issueTimelineView.setIssueEvent((IssueStoryEvent) detail);
+      issueTimelineView.setIssueEvent(issue, (IssueStoryEvent) detail);
     }
   }
 }

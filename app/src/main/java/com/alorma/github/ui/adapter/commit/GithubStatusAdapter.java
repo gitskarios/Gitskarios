@@ -1,7 +1,5 @@
 package com.alorma.github.ui.adapter.commit;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +9,10 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubStatus;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-/**
- * Created by a557114 on 06/09/2015.
- */
 public class GithubStatusAdapter extends RecyclerArrayAdapter<GithubStatus, GithubStatusAdapter.ViewHolder> {
 
   public GithubStatusAdapter(LayoutInflater inflater) {
@@ -51,26 +45,20 @@ public class GithubStatusAdapter extends RecyclerArrayAdapter<GithubStatus, Gith
 
     holder.name.setText(githubStatus.description);
 
-    holder.description.setText(TimeUtils.getTimeAgoString(githubStatus.updated_at));
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
     private final ImageView icon;
     private final TextView name;
-    private final TextView description;
 
     public ViewHolder(View itemView) {
       super(itemView);
       icon = (ImageView) itemView.findViewById(R.id.icon);
       name = (TextView) itemView.findViewById(R.id.name);
-      description = (TextView) itemView.findViewById(R.id.description);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          Intent intent = new Intent(Intent.ACTION_VIEW);
-          intent.setData(Uri.parse(getItem(getAdapterPosition()).target_url));
-          v.getContext().startActivity(intent);
+      itemView.setOnClickListener(v -> {
+        if (getCallback() != null) {
+          getCallback().onItemSelected(getItem(getAdapterPosition()));
         }
       });
     }
