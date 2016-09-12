@@ -28,14 +28,12 @@ public class CreatedEventsListFragment extends EventsListFragment implements Tit
 
   @Override
   protected void executeRequest() {
-    super.executeRequest();
     GetUserCreatedEventsClient client = new GetUserCreatedEventsClient(username);
     executeClient(client);
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
     GetUserCreatedEventsClient client = new GetUserCreatedEventsClient(username, page);
     executeClient(client);
   }
