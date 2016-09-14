@@ -64,24 +64,18 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsPare
       name.setTextColor(Color.GRAY);
     }
 
-    name.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (notificationsAdapterListener != null) {
-          notificationsAdapterListener.onNotificationClick(noti);
-        }
+    name.setOnClickListener(v -> {
+      if (notificationsAdapterListener != null) {
+        notificationsAdapterListener.onNotificationClick(noti);
       }
     });
 
     ImageView overflow = (ImageView) view.findViewById(R.id.overflow);
-    overflow.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        popupMenu.inflate(noti.unread ? R.menu.notifications_row_menu_unread : R.menu.notifications_row_menu_read);
-        popupMenu.setOnMenuItemClickListener(new MenuListener(noti));
-        popupMenu.show();
-      }
+    overflow.setOnClickListener(v -> {
+      PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+      popupMenu.inflate(noti.unread ? R.menu.notifications_row_menu_unread : R.menu.notifications_row_menu_read);
+      popupMenu.setOnMenuItemClickListener(new MenuListener(noti));
+      popupMenu.show();
     });
   }
 
@@ -140,23 +134,17 @@ public class NotificationsAdapter extends RecyclerArrayAdapter<NotificationsPare
       clear_all_repo = (ImageView) itemView.findViewById(R.id.clear_all_repo);
       notificationsPlaceHolder = (ViewGroup) itemView.findViewById(R.id.notificationsPlaceHolder);
 
-      text_repo.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (notificationsAdapterListener != null) {
-            NotificationsParent item = getItem(getAdapterPosition());
-            notificationsAdapterListener.requestRepo(item);
-          }
+      text_repo.setOnClickListener(v -> {
+        if (notificationsAdapterListener != null) {
+          NotificationsParent item = getItem(getAdapterPosition());
+          notificationsAdapterListener.requestRepo(item);
         }
       });
 
-      clear_all_repo.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (notificationsAdapterListener != null) {
-            NotificationsParent item = getItem(getAdapterPosition());
-            notificationsAdapterListener.clearRepoNotifications(item);
-          }
+      clear_all_repo.setOnClickListener(v -> {
+        if (notificationsAdapterListener != null) {
+          NotificationsParent item = getItem(getAdapterPosition());
+          notificationsAdapterListener.clearRepoNotifications(item);
         }
       });
     }

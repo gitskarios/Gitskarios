@@ -18,6 +18,7 @@ import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.notifications.NotificationsPresenter;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.core.notifications.Notification;
 import com.alorma.github.sdk.core.notifications.NotificationsRequest;
@@ -25,6 +26,7 @@ import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.notifications.MarkNotificationAsRead;
 import com.alorma.github.sdk.services.notifications.MarkRepoNotificationsRead;
 import com.alorma.github.sdk.services.notifications.UnsubscribeThread;
+import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.RepoDetailActivity;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.adapter.NotificationsAdapter;
@@ -163,12 +165,26 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
 
     String type = notification.subject.type;
 
-    Uri uri = null;
     if (type.equalsIgnoreCase("Issue") || type.equalsIgnoreCase("PullRequest") || type.equalsIgnoreCase("Release")) {
-      uri = Uri.parse(notification.subject.url);
+      Uri uri = Uri.parse(notification.subject.url);
+      launchUri(uri);
+    } else if (type.equalsIgnoreCase("Commit")) {
+      Uri uri = Uri.parse(notification.subject.url);
+      String commit = uri.getLastPathSegment();
+      CommitInfo info = new CommitInfo();
+      info.repoInfo = new RepoInfo();
+      info.repoInfo.owner = notification.repository.owner.getLogin();
+      info.repoInfo.name = notification.repository.name;
+      info.sha = commit;
+      Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
+      startActivity(intent);
     } else {
-      uri = Uri.parse(notification.repository.htmlUrl);
+      Uri uri = Uri.parse(notification.repository.htmlUrl);
+      launchUri(uri);
     }
+  }
+
+  private void launchUri(Uri uri) {
     Intent intent = new IntentsManager(getActivity()).checkUri(uri);
     if (intent != null) {
       startActivity(intent);
