@@ -93,6 +93,9 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   @Override
   protected void executeRequest() {
     super.executeRequest();
+    if (getAdapter() != null) {
+      getAdapter().clear();
+    }
 
     String token = TokenProvider.getInstance() != null ? TokenProvider.getInstance().getToken() : null;
     if (getArguments() != null && getArguments().containsKey(BaseActivity.EXTRA_WITH_TOKEN)) {

@@ -76,9 +76,11 @@ public class FileActivity extends RepositoryThemeActivity
 
   @Override
   public void showAsContent(FileInfo fileInfo) {
-    FileFragment fileFragment = FileFragment.getInstance(fileInfo);
-    fileFragment.setFileCallback(this);
-    setFragment(fileFragment, true);
+    if (fileInfo != null && fileInfo.repoInfo != null) {
+      FileFragment fileFragment = FileFragment.getInstance(fileInfo);
+      fileFragment.setFileCallback(this);
+      setFragment(fileFragment, true);
+    }
   }
 
   @Override
