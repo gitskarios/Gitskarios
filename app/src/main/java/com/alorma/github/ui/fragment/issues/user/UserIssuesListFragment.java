@@ -131,4 +131,9 @@ public abstract class UserIssuesListFragment extends BaseFragment
       startActivity(intent);
     }
   }
+
+  @Override
+  protected boolean showTitle() {
+    return false;
+  }
 }

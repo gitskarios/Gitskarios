@@ -62,8 +62,14 @@ public class BaseFragment extends Fragment {
   public void onResume() {
     super.onResume();
 
-    getActivity().setTitle(getTitle());
+    if (showTitle()) {
+      getActivity().setTitle(getTitle());
+    }
     colorize();
+  }
+
+  protected boolean showTitle() {
+    return true;
   }
 
   public int getTitle() {

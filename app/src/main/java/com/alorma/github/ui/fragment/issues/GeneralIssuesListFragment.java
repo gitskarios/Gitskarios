@@ -9,7 +9,6 @@ import com.alorma.github.ui.fragment.base.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.issues.user.AssignedIssuesListFragment;
 import com.alorma.github.ui.fragment.issues.user.CreatedIssuesListFragment;
 import com.alorma.github.ui.fragment.issues.user.MentionedIssuesListFragment;
-import com.alorma.github.ui.fragment.issues.user.SubscribedIssuesListFragment;
 import java.util.ArrayList;
 import java.util.List;
 

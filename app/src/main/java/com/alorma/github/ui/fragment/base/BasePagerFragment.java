@@ -33,5 +33,12 @@ public abstract class BasePagerFragment extends BaseFragment {
     tabLayout.setupWithViewPager(viewPager);
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    getActivity().setTitle(getTitle());
+  }
+
   protected abstract PagerAdapter provideAdapter(FragmentManager fm);
 }
