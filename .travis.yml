@@ -17,6 +17,13 @@ cache:
   - $HOME/.gradle/caches/2.10
 jdk:
 - oraclejdk8
+
+before_script:
+  - sudo apt-get update && sudo apt-get install oracle-java8-installer
+
+before_install:
+ - chmod +x gradlew
+
 android:
   components:
   - tools
