@@ -8,7 +8,7 @@ import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 
 /**
  * Created by a557114 on 02/09/2015.

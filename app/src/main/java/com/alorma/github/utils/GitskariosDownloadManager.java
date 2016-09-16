@@ -9,9 +9,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
 import android.widget.Toast;
 import com.alorma.github.R;
 import com.karumi.dexter.Dexter;
@@ -23,7 +22,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 public class GitskariosDownloadManager {
 
-  public void download(final Context context, final String path, final String name, @Nullable final View view) {
+  public void download(final Context context, final String path, final String name, @Nullable MessageDispatcher view) {
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
       downloadFromAndroid(context, path, name);
     } else {
@@ -36,13 +35,7 @@ public class GitskariosDownloadManager {
         @Override
         public void onPermissionDenied(PermissionDeniedResponse response) {
           if (response.isPermanentlyDenied() && view != null) {
-            Snackbar snackbar = Snackbar.make(view, context.getString(R.string.external_storage_permission_request), Snackbar.LENGTH_LONG);
-
-            snackbar.setAction(context.getString(R.string.external_storage_permission_request_action), v -> {
-              openSettings(context);
-            });
-
-            snackbar.show();
+            view.showMessage(R.string.external_storage_permission_request);
           }
         }
 
@@ -70,10 +63,14 @@ public class GitskariosDownloadManager {
     Toast.makeText(context, name + " queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
   }
 
-  private void openSettings(Context context) {
+  public void openSettings(Context context) {
     Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + context.getPackageName()));
     myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
     myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(myAppSettings);
+  }
+
+  public interface MessageDispatcher {
+    void showMessage(@StringRes int text);
   }
 }

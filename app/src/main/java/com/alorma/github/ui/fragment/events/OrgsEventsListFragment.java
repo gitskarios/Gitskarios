@@ -28,7 +28,7 @@ import com.alorma.github.sdk.bean.dto.response.events.payload.ReleaseEventPayloa
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.orgs.GetOrgEventsClient;
-import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventViewHolderFactory;

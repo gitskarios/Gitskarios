@@ -33,7 +33,6 @@ import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.activity.NewContentActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.LinearBreadcrumb;
 import com.alorma.gitskarios.core.Pair;
 import com.karumi.dexter.Dexter;
@@ -43,7 +42,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.EmptyPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,7 +59,7 @@ import rx.schedulers.Schedulers;
 import static com.alorma.github.sdk.bean.dto.response.ContentType.file;
 
 public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
-    implements TitleProvider, BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
+    implements BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final int RESULT_NEW_FILE = 111;
@@ -411,16 +409,6 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
         setEmpty();
       }
     }
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.files_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_file_directory;
   }
 
   @Override

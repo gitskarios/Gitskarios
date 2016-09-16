@@ -1,10 +1,8 @@
 package com.alorma.github.ui.fragment.detail.repo;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -32,9 +30,8 @@ import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.activity.ForksActivity;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;
@@ -53,7 +50,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RepoAboutFragment extends BaseFragment implements TitleProvider, BranchManager, BackManager {
+public class RepoAboutFragment extends BaseFragment implements BranchManager, BackManager {
 
   private static final String REPO_INFO = "REPO_INFO";
   private Integer futureSubscribersCount;
@@ -232,16 +229,6 @@ public class RepoAboutFragment extends BaseFragment implements TitleProvider, Br
     });
 
     getReadmeContent();
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.overview_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_info;
   }
 
   protected void loadArguments() {

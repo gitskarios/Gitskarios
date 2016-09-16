@@ -13,6 +13,7 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.fragment.CreateRepositoryFragment;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

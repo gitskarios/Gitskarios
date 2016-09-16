@@ -25,11 +25,9 @@ import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
-    implements TitleProvider, BranchManager, PermissionsManager, BackManager, CommitsAdapter.CommitsAdapterListener,
+    implements BranchManager, PermissionsManager, BackManager, CommitsAdapter.CommitsAdapterListener,
     Observer<List<Commit>> {
 
   private static final String REPO_INFO = "REPO_INFO";
@@ -225,16 +223,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   @Override
   protected int getNoDataText() {
     return R.string.no_commits;
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.commits_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_git_commit;
   }
 
   @Override

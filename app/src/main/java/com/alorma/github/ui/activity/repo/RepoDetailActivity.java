@@ -1,16 +1,13 @@
-package com.alorma.github.ui.activity;
+package com.alorma.github.ui.activity.repo;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +31,8 @@ import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.webhooks.AddWebHookClient;
 import com.alorma.github.ui.actions.ShareAction;
 import com.alorma.github.ui.actions.ViewInAction;
+import com.alorma.github.ui.activity.MainActivity;
+import com.alorma.github.ui.activity.ManageRepositoryActivity;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
@@ -46,11 +45,9 @@ import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +69,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   private Repo currentRepo;
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
-  private ViewPager viewPager;
   private RepoAboutFragment repoAboutFragment;
+  private RepoDetailTabsNavigation navigation;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -119,17 +116,9 @@ public class RepoDetailActivity extends RepositoryThemeActivity
         }
         setTitle(requestRepoInfo.name);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) findViewById(R.id.content);
-
-        listFragments();
-
-        NavigationAdapter adapter = new NavigationAdapter(getSupportFragmentManager(), fragments);
-
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-        showTabsIcons(tabLayout);
+        navigation = new RepoDetailTabsNavigation();
+        listFragments(navigation);
+        navigation.apply(this);
 
         if (requestRepoInfo != null) {
           load();
@@ -142,6 +131,36 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     }
   }
 
+  private void listFragments(List<UiNavigation.UiItem> navigation) {
+    fragments = new ArrayList<>();
+
+    repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.overview_fragment_title, 0, repoAboutFragment));
+
+    SourceListFragment sourceListFragment = SourceListFragment.newInstance(requestRepoInfo);
+    sourceListFragment.setSourceCallback(this);
+    navigation.add(new UiNavigation.UiItem(R.string.files_fragment_title, 0, sourceListFragment));
+
+    CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.commits_fragment_title, 0, commitsListFragment));
+
+    RepositoryIssuesListFragment repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo, false);
+    navigation.add(new UiNavigation.UiItem(R.string.issues_fragment_title, 0, repositoryIssuesListFragment));
+
+    PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.pulls_fragment_title, 0, pullRequestsListFragment));
+
+    RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.releases, 0, repoReleasesFragment));
+
+    RepoContributorsFragment repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.contributors_fragment_title, 0, repoContributorsFragment));
+
+    for (UiNavigation.UiItem uiItem : navigation) {
+      fragments.add(uiItem.getFragment());
+    }
+  }
+
   @Override
   protected int getAppLightTheme() {
     return R.style.AppTheme_Repository;
@@ -150,26 +169,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   @Override
   protected int getAppDarkTheme() {
     return R.style.AppTheme_Dark_Repository;
-  }
-
-  private void showTabsIcons(TabLayout tabLayout) {
-    for (int i = 0; i < fragments.size(); i++) {
-      Fragment fragment = fragments.get(i);
-      if (fragment instanceof TitleProvider) {
-        TabLayout.Tab tab = tabLayout.getTabAt(i);
-        if (tab != null) {
-          IIcon iicon = ((TitleProvider) fragment).getTitleIcon();
-          if (iicon != null) {
-            Drawable icon = getPageTitle(iicon);
-            tab.setIcon(icon);
-          }
-        }
-      }
-    }
-  }
-
-  public Drawable getPageTitle(IIcon icon) {
-    return new IconicsDrawable(this, icon).sizeDp(14).colorRes(R.color.repo_detail_tab_icon);
   }
 
   @Override
@@ -233,20 +232,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   @Override
   public void onResponseEmpty() {
 
-  }
-
-  private void listFragments() {
-    fragments = new ArrayList<>();
-    repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
-    fragments.add(repoAboutFragment);
-    SourceListFragment sourceListFragment = SourceListFragment.newInstance(requestRepoInfo);
-    sourceListFragment.setSourceCallback(this);
-    fragments.add(sourceListFragment);
-    fragments.add(CommitsListFragment.newInstance(requestRepoInfo));
-    fragments.add(RepositoryIssuesListFragment.newInstance(requestRepoInfo, false));
-    fragments.add(PullRequestsListFragment.newInstance(requestRepoInfo));
-    fragments.add(RepoReleasesFragment.newInstance(requestRepoInfo));
-    fragments.add(RepoContributorsFragment.newInstance(requestRepoInfo));
   }
 
   @Override
@@ -466,7 +451,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   protected void close(boolean navigateUp) {
     if (fragments != null) {
       boolean fromUrl = getIntent().getExtras().getBoolean(FROM_URL, false);
-      Fragment currentFragment = fragments.get(viewPager.getCurrentItem());
+      Fragment currentFragment = fragments.get(navigation.getCurrentItem());
       if (navigateUp && fromUrl) {
         Intent upIntent = new Intent(this, MainActivity.class);
         TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
@@ -493,8 +478,16 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     archive_url = archive_url.replace("{archive_format}", fileType);
     archive_url = archive_url.replace("{/ref}", "/" + currentRepo.default_branch);
 
-    new GitskariosDownloadManager().download(this, archive_url,
-        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(fileType), viewPager);
+    GitskariosDownloadManager gitskariosDownloadManager = new GitskariosDownloadManager();
+    gitskariosDownloadManager.download(this, archive_url,
+        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(fileType), text -> {
+          Snackbar snackbar = Snackbar.make(getToolbar(), getString(text), Snackbar.LENGTH_LONG);
+
+          snackbar.setAction(getString(R.string.external_storage_permission_request_action),
+              v -> gitskariosDownloadManager.openSettings(RepoDetailActivity.this));
+
+          snackbar.show();
+        });
   }
 
   private String getExtensionFromFileType(String fileType) {
@@ -504,25 +497,5 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       return "tar.gz";
     }
     return null;
-  }
-
-  private class NavigationAdapter extends FragmentPagerAdapter {
-
-    private List<Fragment> fragments;
-
-    public NavigationAdapter(FragmentManager fm, List<Fragment> fragments) {
-      super(fm);
-      this.fragments = fragments;
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-      return fragments.get(position);
-    }
-
-    @Override
-    public int getCount() {
-      return fragments != null ? fragments.size() : 0;
-    }
   }
 }

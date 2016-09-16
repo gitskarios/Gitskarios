@@ -9,9 +9,7 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.repo.GetRepoReleasesClient;
 import com.alorma.github.ui.adapter.ReleasesAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.gitskarios.core.Pair;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 import rx.Observer;
@@ -19,7 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> implements TitleProvider, Observer<List<Release>> {
+public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> implements Observer<List<Release>> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
@@ -125,15 +123,5 @@ public class RepoReleasesFragment extends LoadingListFragment<ReleasesAdapter> i
   @Override
   protected int getNoDataText() {
     return R.string.no_releases;
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.releases;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_package;
   }
 }

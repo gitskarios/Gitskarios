@@ -25,9 +25,7 @@ import com.alorma.github.ui.adapter.issues.PullRequestsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.gitskarios.core.Pair;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.List;
 import rx.Observer;
@@ -35,11 +33,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Bernat on 22/08/2014.
- */
 public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAdapter>
-    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener,
+    implements View.OnClickListener, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener,
     Observer<List<PullRequest>> {
 
   private static final String REPO_INFO = "REPO_INFO";
@@ -221,16 +216,6 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
     if (this.repoInfo != null) {
       this.repoInfo.permissions = permissions;
     }
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.pulls_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_git_pull_request;
   }
 
   public void clear() {
