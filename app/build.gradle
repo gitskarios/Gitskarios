@@ -103,6 +103,10 @@ android {
   }
 }
 
+retrolambda {
+  oldJdk System.getenv("JAVA7_HOME")
+}
+
 // delete unaligned files
 android.applicationVariants.all { variant ->
   variant.assemble.doLast {
