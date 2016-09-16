@@ -1,4 +1,4 @@
-package com.alorma.github.ui.activity.repo;
+package com.alorma.github.ui.navigation;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;

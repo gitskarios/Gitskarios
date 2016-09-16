@@ -45,6 +45,8 @@ import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
 import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
+import com.alorma.github.ui.navigation.TabsNavigation;
+import com.alorma.github.ui.navigation.UiNavigation;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -70,7 +72,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private RepoAboutFragment repoAboutFragment;
-  private RepoDetailTabsNavigation navigation;
+  private TabsNavigation navigation;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -116,7 +118,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
         }
         setTitle(requestRepoInfo.name);
 
-        navigation = new RepoDetailTabsNavigation();
+        navigation = new TabsNavigation();
         listFragments(navigation);
         navigation.apply(this);
 
@@ -135,26 +137,26 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     fragments = new ArrayList<>();
 
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.overview_fragment_title, 0, repoAboutFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.overview_fragment_title, R.drawable.ic_home, repoAboutFragment));
 
     SourceListFragment sourceListFragment = SourceListFragment.newInstance(requestRepoInfo);
     sourceListFragment.setSourceCallback(this);
-    navigation.add(new UiNavigation.UiItem(R.string.files_fragment_title, 0, sourceListFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.files_fragment_title, R.drawable.ic_file_directory, sourceListFragment));
 
     CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.commits_fragment_title, 0, commitsListFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.commits_fragment_title, R.drawable.ic_git_commit, commitsListFragment));
 
     RepositoryIssuesListFragment repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo, false);
-    navigation.add(new UiNavigation.UiItem(R.string.issues_fragment_title, 0, repositoryIssuesListFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.issues_fragment_title, R.drawable.ic_issue_opened, repositoryIssuesListFragment));
 
     PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.pulls_fragment_title, 0, pullRequestsListFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.pulls_fragment_title, R.drawable.ic_git_pull_request, pullRequestsListFragment));
 
     RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.releases, 0, repoReleasesFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.releases, R.drawable.ic_package, repoReleasesFragment));
 
     RepoContributorsFragment repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.contributors_fragment_title, 0, repoContributorsFragment));
+    navigation.add(new UiNavigation.UiItem(R.string.contributors_fragment_title, R.drawable.ic_person, repoContributorsFragment));
 
     for (UiNavigation.UiItem uiItem : navigation) {
       fragments.add(uiItem.getFragment());
