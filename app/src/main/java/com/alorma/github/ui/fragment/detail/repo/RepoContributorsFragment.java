@@ -12,17 +12,14 @@ import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
-import com.alorma.github.ui.listeners.TitleProvider;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> implements TitleProvider {
+public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private RepoInfo repoInfo;
@@ -50,15 +47,12 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
         .subscribeOn(Schedulers.io())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .map(new Func1<List<Contributor>, List<User>>() {
-          @Override
-          public List<User> call(List<Contributor> contributors) {
-            List<User> users = new ArrayList<User>();
-            for (Contributor contributor : contributors) {
-              users.add(contributor.author);
-            }
-            return users;
+        .map(contributors -> {
+          List<User> users = new ArrayList<User>();
+          for (Contributor contributor : contributors) {
+            users.add(contributor.author);
           }
+          return users;
         })
         .subscribe(new Subscriber<List<User>>() {
           @Override
@@ -105,16 +99,6 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
   @Override
   protected int getDarkTheme() {
     return R.style.AppTheme_Dark_Repository;
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.contributors_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_person;
   }
 
   @Override

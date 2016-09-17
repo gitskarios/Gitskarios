@@ -107,4 +107,9 @@ public abstract class ReposFragment extends BaseFragment
   public void hideLoading() {
     refreshLayout.post(() -> refreshLayout.setRefreshing(false));
   }
+
+  @Override
+  protected boolean showTitle() {
+    return false;
+  }
 }

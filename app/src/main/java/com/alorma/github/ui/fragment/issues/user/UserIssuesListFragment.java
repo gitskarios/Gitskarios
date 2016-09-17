@@ -11,13 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.R;
+import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.issue.UserIssuesPresenter;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.core.issue.IssuesSearchRequest;
 import com.alorma.github.sdk.core.issues.Issue;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
@@ -25,11 +28,16 @@ import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
+import com.mikepenz.iconics.typeface.IIcon;
 import java.util.List;
+import javax.inject.Inject;
 
 public abstract class UserIssuesListFragment extends BaseFragment
     implements TitleProvider, Presenter.Callback<List<Issue>>, RecyclerArrayAdapter.RecyclerAdapterContentListener,
     RecyclerArrayAdapter.ItemCallback<Issue> {
+
+  @Inject UserIssuesPresenter presenter;
+  @Inject AccountNameProvider accountNameProvider;
 
   private SwipeRefreshLayout refreshLayout;
   private RecyclerView recyclerView;
@@ -41,10 +49,8 @@ public abstract class UserIssuesListFragment extends BaseFragment
 
     ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
 
-    initInjectors(apiComponent);
+    apiComponent.inject(this);
   }
-
-  protected abstract void initInjectors(ApiComponent apiComponent);
 
   @Nullable
   @Override
@@ -58,7 +64,7 @@ public abstract class UserIssuesListFragment extends BaseFragment
     super.onViewCreated(view, savedInstanceState);
 
     refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
-    refreshLayout.setOnRefreshListener(this::onRefresh);
+    refreshLayout.setOnRefreshListener(this::loadItems);
     refreshLayout.setColorSchemeColors(AttributesUtils.getAccentColor(getContext()));
 
     recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
@@ -73,10 +79,24 @@ public abstract class UserIssuesListFragment extends BaseFragment
   public void onStart() {
     super.onStart();
     showLoading();
-    onRefresh();
+    loadItems();
   }
 
-  protected abstract void onRefresh();
+  private void loadItems() {
+    presenter.load(buildIssueSearchRequest(), this);
+  }
+
+  private IssuesSearchRequest buildIssueSearchRequest() {
+    return new IssuesSearchRequest.Builder().setAction(getAction())
+        .setAuthor(accountNameProvider.getName())
+        .setIsOpen(true)
+        .build();
+  }
+
+  @Override
+  public void loadMoreItems() {
+    presenter.loadMore(null, this);
+  }
 
   @Override
   protected int getLightTheme() {
@@ -130,5 +150,17 @@ public abstract class UserIssuesListFragment extends BaseFragment
       Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
       startActivity(intent);
     }
+  }
+
+  @Override
+  protected boolean showTitle() {
+    return false;
+  }
+
+  protected abstract String getAction();
+
+  @Override
+  public IIcon getTitleIcon() {
+    return null;
   }
 }

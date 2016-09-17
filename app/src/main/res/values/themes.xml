@@ -1,353 +1,369 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Base.AppTheme" />
+  <style name="AppTheme"
+         parent="Base.AppTheme"/>
 
   <style name="AppTheme.Dark"
          parent="Base.AppTheme.Dark">
     <item name="md_dark_theme">true</item>
   </style>
 
-  <style name="AppTheme.Search" parent="Base.AppTheme.Search" />
-
-    <style name="AppTheme.Dark.Search" parent="Base.AppTheme.Dark.Search" />
-
-    <style name="Base.AppTheme" parent="AppTheme.AppCompat.Default">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorControlNormal">@color/accent</item>
-        <item name="colorControlActivated">@color/accent_dark</item>
-        <item name="colorControlHighlight">@color/accent_dark</item>
-
-        <item name="gitskarios_divider">@color/divider</item>
-        <item name="gitskarios_primary_text">@color/primary_text</item>
-        <item name="gitskarios_secondary_text">@color/secondary_text</item>
-        <item name="gitskarios_primary_light">@color/primary_light</item>
-        <item name="gitskarios_icons">@color/icons</item>
-        <item name="gitskarios_title">@color/primary_dark</item>
-        <item name="gitskarios_webview">@android:color/transparent</item>
-        <item name="gitskarios_card_background">@color/white</item>
-
-        <item name="diff_addition_text_color">@color/black</item>
-        <item name="diff_deletion_text_color">@color/black</item>
-        <item name="diff_info_text_color">@color/black</item>
-
-        <item name="material_drawer_background">@color/material_drawer_background</item>
-        <item name="material_drawer_primary_text">@color/material_drawer_primary_text</item>
-        <item name="material_drawer_primary_icon">@color/material_drawer_primary_icon</item>
-        <item name="material_drawer_secondary_text">@color/material_drawer_secondary_text</item>
-        <item name="material_drawer_hint_text">@color/material_drawer_hint_text</item>
-        <item name="material_drawer_divider">@color/material_drawer_divider</item>
-        <item name="material_drawer_selected">@color/material_drawer_selected</item>
-        <item name="material_drawer_selected_text">@color/primary</item>
-        <item name="material_drawer_header_selection_text">
-            @color/material_drawer_header_selection_text
-        </item>
-
-    </style>
-
-    <style name="Base.AppTheme.Dark" parent="AppTheme.AppCompat.Dark.Default">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorControlNormal">@color/gray_github_medium</item>
-        <item name="colorControlActivated">@color/accent_dark</item>
-        <item name="colorControlHighlight">@color/accent_dark</item>
-
-        <item name="gitskarios_divider">@color/divider</item>
-        <item name="gitskarios_primary_text">@color/primary_text</item>
-        <item name="gitskarios_secondary_text">@color/secondary_text</item>
-        <item name="gitskarios_primary_light">@color/primary_light</item>
-        <item name="gitskarios_icons">@color/gray_github_light</item>
-        <item name="gitskarios_title">@color/accent</item>
-        <item name="gitskarios_webview">@color/md_grey_900</item>
-        <item name="gitskarios_card_background">@color/md_grey_800</item>
-
-        <item name="diff_addition_text_color">@color/black</item>
-        <item name="diff_deletion_text_color">@color/black</item>
-        <item name="diff_info_text_color">@color/black</item>
-
-        <item name="material_drawer_background">@color/material_drawer_dark_background</item>
-        <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>
-        <item name="material_drawer_primary_icon">@color/material_drawer_dark_primary_icon</item>
-        <item name="material_drawer_secondary_text">@color/material_drawer_dark_secondary_text
-        </item>
-        <item name="material_drawer_hint_text">@color/material_drawer_dark_hint_text</item>
-        <item name="material_drawer_divider">@color/material_drawer_dark_divider</item>
-        <item name="material_drawer_selected">@color/material_drawer_dark_selected</item>
-        <item name="material_drawer_selected_text">@color/accent</item>
-        <item name="material_drawer_header_selection_text">
-            @color/material_drawer_dark_header_selection_text
-        </item>
-
-      <item name="md_dark_theme">true</item>
-
-    </style>
-
-    <style name="Base.AppTheme.Search" parent="AppTheme.AppCompat.Default">
-        <item name="windowActionModeOverlay">false</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/gray_github_dark</item>
-        <item name="colorAccent">@color/gray_github_dark</item>
-        <item name="colorControlNormal">@color/gray_github_medium</item>
-        <item name="colorControlActivated">@color/gray_github_dark</item>
-        <item name="colorControlHighlight">@color/gray_github_dark</item>
-
-        <item name="gitskarios_divider">@color/divider</item>
-        <item name="gitskarios_primary_text">@color/primary_text</item>
-        <item name="gitskarios_secondary_text">@color/secondary_text</item>
-        <item name="gitskarios_primary_light">@color/gray_github_light</item>
-        <item name="gitskarios_icons">@color/icons</item>
-        <item name="gitskarios_title">@color/accent</item>
-        <item name="gitskarios_webview">@android:color/transparent</item>
-    </style>
-
-    <style name="Base.AppTheme.Dark.Search" parent="AppTheme.AppCompat.Dark.Default">
-        <item name="windowActionModeOverlay">false</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
-        <item name="colorPrimary">@color/md_grey_900</item>
-        <item name="colorPrimaryDark">@color/md_grey_700</item>
-        <item name="colorAccent">@color/gray_github_dark</item>
-        <item name="colorControlNormal">@color/gray_github_medium</item>
-        <item name="colorControlActivated">@color/gray_github_dark</item>
-        <item name="colorControlHighlight">@color/gray_github_dark</item>
+  <style name="AppTheme.Search"
+         parent="Base.AppTheme.Search"/>
+
+  <style name="AppTheme.Dark.Search"
+         parent="Base.AppTheme.Dark.Search"/>
+
+  <style name="Base.AppTheme"
+         parent="AppTheme.AppCompat.Default">
+    <item name="windowActionModeOverlay">true</item>
+    <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="colorAccent">@color/accent</item>
+    <item name="colorControlNormal">@color/accent</item>
+    <item name="colorControlActivated">@color/accent_dark</item>
+    <item name="colorControlHighlight">@color/accent_dark</item>
+
+    <item name="gitskarios_divider">@color/divider</item>
+    <item name="gitskarios_primary_text">@color/primary_text</item>
+    <item name="gitskarios_secondary_text">@color/secondary_text</item>
+    <item name="gitskarios_primary_light">@color/primary_light</item>
+    <item name="gitskarios_icons">@color/icons</item>
+    <item name="gitskarios_title">@color/primary_dark</item>
+    <item name="gitskarios_webview">@android:color/transparent</item>
+    <item name="gitskarios_card_background">@color/white</item>
+
+    <item name="diff_addition_text_color">@color/black</item>
+    <item name="diff_deletion_text_color">@color/black</item>
+    <item name="diff_info_text_color">@color/black</item>
+
+    <item name="material_drawer_background">@color/material_drawer_background</item>
+    <item name="material_drawer_primary_text">@color/material_drawer_primary_text</item>
+    <item name="material_drawer_primary_icon">@color/material_drawer_primary_icon</item>
+    <item name="material_drawer_secondary_text">@color/material_drawer_secondary_text</item>
+    <item name="material_drawer_hint_text">@color/material_drawer_hint_text</item>
+    <item name="material_drawer_divider">@color/material_drawer_divider</item>
+    <item name="material_drawer_selected">@color/material_drawer_selected</item>
+    <item name="material_drawer_selected_text">@color/primary</item>
+    <item name="material_drawer_header_selection_text">
+      @color/material_drawer_header_selection_text
+    </item>
+
+  </style>
+
+  <style name="Base.AppTheme.Dark"
+         parent="AppTheme.AppCompat.Dark.Default">
+    <item name="windowActionModeOverlay">true</item>
+    <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="colorAccent">@color/accent</item>
+    <item name="colorControlNormal">@color/gray_github_medium</item>
+    <item name="colorControlActivated">@color/accent_dark</item>
+    <item name="colorControlHighlight">@color/accent_dark</item>
+
+    <item name="gitskarios_divider">@color/divider</item>
+    <item name="gitskarios_primary_text">@color/primary_text</item>
+    <item name="gitskarios_secondary_text">@color/secondary_text</item>
+    <item name="gitskarios_primary_light">@color/primary_light</item>
+    <item name="gitskarios_icons">@color/gray_github_light</item>
+    <item name="gitskarios_title">@color/accent</item>
+    <item name="gitskarios_webview">@color/md_grey_900</item>
+    <item name="gitskarios_card_background">@color/md_grey_800</item>
+
+    <item name="diff_addition_text_color">@color/black</item>
+    <item name="diff_deletion_text_color">@color/black</item>
+    <item name="diff_info_text_color">@color/black</item>
+
+    <item name="material_drawer_background">@color/material_drawer_dark_background</item>
+    <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>
+    <item name="material_drawer_primary_icon">@color/material_drawer_dark_primary_icon</item>
+    <item name="material_drawer_secondary_text">@color/material_drawer_dark_secondary_text
+    </item>
+    <item name="material_drawer_hint_text">@color/material_drawer_dark_hint_text</item>
+    <item name="material_drawer_divider">@color/material_drawer_dark_divider</item>
+    <item name="material_drawer_selected">@color/material_drawer_dark_selected</item>
+    <item name="material_drawer_selected_text">@color/accent</item>
+    <item name="material_drawer_header_selection_text">
+      @color/material_drawer_dark_header_selection_text
+    </item>
+
+    <item name="md_dark_theme">true</item>
+
+  </style>
+
+  <style name="Base.AppTheme.Search"
+         parent="AppTheme.AppCompat.Default">
+    <item name="windowActionModeOverlay">false</item>
+    <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
+    <item name="colorPrimary">@color/white</item>
+    <item name="colorPrimaryDark">@color/gray_github_dark</item>
+    <item name="colorAccent">@color/gray_github_dark</item>
+    <item name="colorControlNormal">@color/gray_github_medium</item>
+    <item name="colorControlActivated">@color/gray_github_dark</item>
+    <item name="colorControlHighlight">@color/gray_github_dark</item>
+
+    <item name="gitskarios_divider">@color/divider</item>
+    <item name="gitskarios_primary_text">@color/primary_text</item>
+    <item name="gitskarios_secondary_text">@color/secondary_text</item>
+    <item name="gitskarios_primary_light">@color/gray_github_light</item>
+    <item name="gitskarios_icons">@color/icons</item>
+    <item name="gitskarios_title">@color/accent</item>
+    <item name="gitskarios_webview">@android:color/transparent</item>
+  </style>
 
-        <item name="gitskarios_divider">@color/divider</item>
-        <item name="gitskarios_primary_text">@color/primary_text</item>
-        <item name="gitskarios_secondary_text">@color/secondary_text</item>
-        <item name="gitskarios_primary_light">@color/gray_github_light</item>
-        <item name="gitskarios_icons">@color/icons</item>
-        <item name="gitskarios_title">@color/accent</item>
-        <item name="gitskarios_webview">@color/md_grey_900</item>
-        <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
-    </style>
+  <style name="Base.AppTheme.Dark.Search"
+         parent="AppTheme.AppCompat.Dark.Default">
+    <item name="windowActionModeOverlay">false</item>
+    <item name="drawerArrowStyle">@style/DrawerArrowStyleGray</item>
+    <item name="colorPrimary">@color/md_grey_900</item>
+    <item name="colorPrimaryDark">@color/md_grey_700</item>
+    <item name="colorAccent">@color/gray_github_dark</item>
+    <item name="colorControlNormal">@color/gray_github_medium</item>
+    <item name="colorControlActivated">@color/gray_github_dark</item>
+    <item name="colorControlHighlight">@color/gray_github_dark</item>
 
-    <!-- Default application theme. -->
-    <style name="AppTheme.AppCompat.Default" parent="MaterialDrawerTheme.Light">
+    <item name="gitskarios_divider">@color/divider</item>
+    <item name="gitskarios_primary_text">@color/primary_text</item>
+    <item name="gitskarios_secondary_text">@color/secondary_text</item>
+    <item name="gitskarios_primary_light">@color/gray_github_light</item>
+    <item name="gitskarios_icons">@color/icons</item>
+    <item name="gitskarios_title">@color/accent</item>
+    <item name="gitskarios_webview">@color/md_grey_900</item>
+    <item name="gitskarios_card_background">@color/material_drawer_dark_divider</item>
+  </style>
 
-        <item name="windowActionModeOverlay">true</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+  <!-- Default application theme. -->
+  <style name="AppTheme.AppCompat.Default"
+         parent="MaterialDrawerTheme.Light">
 
-    </style>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
 
-    <style name="AppTheme.AppCompat.Dark.Default" parent="Theme.AppCompat.NoActionBar">
+  </style>
 
-        <item name="windowActionModeOverlay">true</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+  <style name="AppTheme.AppCompat.Dark.Default"
+         parent="Theme.AppCompat.NoActionBar">
 
-    </style>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
 
+  </style>
 
-    <style name="Toolbar.AppCompat.Default" parent="AppTheme.AppCompat.Default">
 
+  <style name="Toolbar.AppCompat.Default"
+         parent="AppTheme.AppCompat.Default">
 
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
 
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
 
-    </style>
 
+  </style>
 
-    <!-- Responsive application theme. -->
-    <style name="AppTheme.AppCompat.Responsive" parent="Theme.AppCompat.Light.NoActionBar">
 
+  <!-- Responsive application theme. -->
+  <style name="AppTheme.AppCompat.Responsive"
+         parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="windowActionModeOverlay">true</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
 
+    <item name="windowActionModeOverlay">true</item>
+    <item name="colorAccent">@color/accent</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
 
-        <!-- Actionbar styles -->
-        <item name="actionBarStyle">@style/Custom.Widget.Actionbar</item>
 
+    <!-- Actionbar styles -->
+    <item name="actionBarStyle">@style/Custom.Widget.Actionbar</item>
 
-        <!-- Action Mode styles -->
-        <item name="actionModeStyle">@style/Custom.Widget.ActionMode</item>
-        <item name="actionModeBackground">@color/primary_dark</item>
-        <item name="actionModeCloseButtonStyle">@style/Custom.Widget.ActionButton.CloseMode</item>
 
+    <!-- Action Mode styles -->
+    <item name="actionModeStyle">@style/Custom.Widget.ActionMode</item>
+    <item name="actionModeBackground">@color/primary_dark</item>
+    <item name="actionModeCloseButtonStyle">@style/Custom.Widget.ActionButton.CloseMode</item>
 
-        <!-- Toolbar styles -->
-        <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
-        <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation
-        </item>
-        <item name="actionOverflowButtonStyle">@style/Custom.Widget.ActionButton.Overflow</item>
 
+    <!-- Toolbar styles -->
+    <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
+    <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation
+    </item>
+    <item name="actionOverflowButtonStyle">@style/Custom.Widget.ActionButton.Overflow</item>
 
-    </style>
 
-    <style name="Toolbar.AppCompat.Responsive" parent="AppTheme.AppCompat.Responsive">
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
+  </style>
 
+  <style name="Toolbar.AppCompat.Responsive"
+         parent="AppTheme.AppCompat.Responsive">
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
 
-    </style>
 
-    <style name="Toolbar.AppCompat.Responsive.Transparent" parent="AppTheme.AppCompat.Responsive">
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
-        <item name="colorPrimary">@android:color/transparent</item>
-    </style>
+  </style>
 
+  <style name="Toolbar.AppCompat.Responsive.Transparent"
+         parent="AppTheme.AppCompat.Responsive">
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
+    <item name="colorPrimary">@android:color/transparent</item>
+  </style>
 
-    <style name="Toolbar.AppCompat.Light.Responsive" parent="AppTheme.AppCompat.Responsive">
-
-        <item name="android:background">@color/gray_github_light</item>
-        <item name="android:textColorPrimary">@color/gray_github_dark</item>
-        <item name="android:textColorSecondary">@color/gray_github_dark</item>
-        <item name="colorControlHighlight">@color/gray_github_medium</item>
-
-
-    </style>
-
-    <style name="Toolbar.Popup.AppCompat" parent="Theme.AppCompat.Light" />
-
-    <style name="AppTheme.Welcome" parent="Base.AppTheme.Welcome" />
-
-    <style name="Base.AppTheme.Welcome">
-        <item name="colorAccent">@color/md_grey_600</item>
-        <item name="colorControlNormal">@color/md_grey_600</item>
-        <item name="colorControlActivated">@color/md_grey_600</item>
-        <item name="colorControlHighlight">@color/md_grey_600</item>
-        <item name="colorButtonNormal">@color/accent</item>
-        <item name="android:windowBackground">@color/md_grey_300</item>
-    </style>
-
-    <style name="AppTheme.ColoredButton">
-        <item name="colorButtonNormal">?attr/colorPrimary</item>
-    </style>
-
-    <!-- APP Themes -->
-
-    <!-- Events themes -->
-
-    <style name="AppTheme.Events">
-        <item name="colorPrimary">@color/md_indigo_400</item>
-        <item name="colorPrimaryDark">@color/md_indigo_600</item>
-        <item name="colorAccent">@color/md_amber_700</item>
-        <item name="colorControlNormal">@color/md_red_400</item>
-        <item name="colorControlActivated">@color/md_red_600</item>
-        <item name="colorControlHighlight">@color/md_red_600</item>
-    </style>
-
-    <style name="AppTheme.Dark.Events">
-        <item name="colorPrimary">@color/md_indigo_600</item>
-        <item name="colorPrimaryDark">@color/md_indigo_800</item>
-        <item name="colorAccent">@color/md_amber_800</item>
-        <item name="colorControlNormal">@color/md_red_900</item>
-        <item name="colorControlActivated">@color/md_red_900</item>
-        <item name="colorControlHighlight">@color/md_red_900</item>
-    </style>
-
-    <!-- Repositories themes -->
-
-    <style name="AppTheme.Repository">
-        <item name="colorPrimary">@color/md_teal_600</item>
-        <item name="colorPrimaryDark">@color/md_teal_800</item>
-        <item name="colorAccent">@color/md_amber_700</item>
-        <item name="colorControlNormal">@color/md_amber_700</item>
-        <item name="colorControlActivated">@color/md_amber_800</item>
-        <item name="colorControlHighlight">@color/md_amber_800</item>
-    </style>
-
-    <style name="AppTheme.Dark.Repository">
-        <item name="colorPrimary">@color/md_teal_600</item>
-        <item name="colorPrimaryDark">@color/md_teal_800</item>
-        <item name="colorAccent">@color/md_amber_600</item>
-        <item name="colorControlNormal">@color/md_amber_600</item>
-        <item name="colorControlActivated">@color/md_amber_700</item>
-        <item name="colorControlHighlight">@color/md_amber_700</item>
-    </style>
-
-    <!-- People themes -->
-
-    <style name="AppTheme.People">
-        <item name="colorPrimary">@color/md_amber_600</item>
-        <item name="colorPrimaryDark">@color/md_amber_700</item>
-        <item name="colorAccent">@color/md_deep_orange_600</item>
-        <item name="colorControlNormal">@color/md_deep_orange_600</item>
-        <item name="colorControlActivated">@color/md_deep_orange_800</item>
-        <item name="colorControlHighlight">@color/md_deep_orange_800</item>
-    </style>
-
-    <style name="AppTheme.Dark.People">
-        <item name="colorPrimary">@color/md_amber_600</item>
-        <item name="colorPrimaryDark">@color/md_amber_700</item>
-        <item name="colorAccent">@color/md_deep_orange_600</item>
-        <item name="colorControlNormal">@color/md_deep_orange_600</item>
-        <item name="colorControlActivated">@color/md_deep_orange_800</item>
-        <item name="colorControlHighlight">@color/md_deep_orange_800</item>
-    </style>
-
-    <!-- Profile themes -->
-
-    <style name="AppTheme.Profile">
-        <item name="colorPrimary">@color/md_grey_600</item>
-        <item name="colorPrimaryDark">@color/md_grey_700</item>
-        <item name="colorAccent">@color/md_indigo_500</item>
-        <item name="colorControlNormal">@color/md_indigo_500</item>
-        <item name="colorControlActivated">@color/md_indigo_800</item>
-        <item name="colorControlHighlight">@color/md_indigo_800</item>
-    </style>
-
-    <style name="AppTheme.Dark.Profile">
-        <item name="colorPrimary">@color/md_grey_600</item>
-        <item name="colorPrimaryDark">@color/md_grey_700</item>
-        <item name="colorAccent">@color/md_indigo_200</item>
-        <item name="colorControlNormal">@color/md_indigo_300</item>
-        <item name="colorControlActivated">@color/md_indigo_400</item>
-        <item name="colorControlHighlight">@color/md_indigo_400</item>
-    </style>
-
-    <!-- Gists themes -->
-
-    <style name="AppTheme.Gists">
-        <item name="colorPrimary">@color/md_brown_400</item>
-        <item name="colorPrimaryDark">@color/md_brown_500</item>
-        <item name="colorAccent">@color/md_deep_orange_600</item>
-        <item name="colorControlNormal">@color/md_deep_orange_600</item>
-        <item name="colorControlActivated">@color/md_deep_orange_800</item>
-        <item name="colorControlHighlight">@color/md_deep_orange_800</item>
-    </style>
-
-    <style name="AppTheme.Dark.Gists">
-        <item name="colorPrimary">@color/md_brown_400</item>
-        <item name="colorPrimaryDark">@color/md_brown_500</item>
-        <item name="colorAccent">@color/md_deep_orange_600</item>
-        <item name="colorControlNormal">@color/md_deep_orange_600</item>
-        <item name="colorControlActivated">@color/md_deep_orange_800</item>
-        <item name="colorControlHighlight">@color/md_deep_orange_800</item>
-    </style>
-
-    <!-- Notifications themes -->
-
-    <style name="AppTheme.Notifications">
-        <item name="colorPrimary">@color/md_red_400</item>
-        <item name="colorPrimaryDark">@color/md_red_600</item>
-        <item name="colorAccent">@color/md_blue_600</item>
-        <item name="colorControlNormal">@color/md_blue_600</item>
-        <item name="colorControlActivated">@color/md_blue_800</item>
-        <item name="colorControlHighlight">@color/md_blue_800</item>
-    </style>
-
-    <style name="AppTheme.Dark.Notifications">
-        <item name="colorPrimary">@color/md_red_600</item>
-        <item name="colorPrimaryDark">@color/md_red_900</item>
-        <item name="colorAccent">@color/md_blue_900</item>
-        <item name="colorControlNormal">@color/md_blue_800</item>
-        <item name="colorControlActivated">@color/md_blue_800</item>
-        <item name="colorControlHighlight">@color/md_blue_900</item>
-    </style>
+
+  <style name="Toolbar.AppCompat.Light.Responsive"
+         parent="AppTheme.AppCompat.Responsive">
+
+    <item name="android:background">@color/gray_github_light</item>
+    <item name="android:textColorPrimary">@color/gray_github_dark</item>
+    <item name="android:textColorSecondary">@color/gray_github_dark</item>
+    <item name="colorControlHighlight">@color/gray_github_medium</item>
+
+
+  </style>
+
+  <style name="Toolbar.Popup.AppCompat"
+         parent="Theme.AppCompat.Light"/>
+
+  <style name="AppTheme.Welcome"
+         parent="Base.AppTheme.Welcome"/>
+
+  <style name="Base.AppTheme.Welcome">
+    <item name="colorAccent">@color/md_grey_600</item>
+    <item name="colorControlNormal">@color/md_grey_600</item>
+    <item name="colorControlActivated">@color/md_grey_600</item>
+    <item name="colorControlHighlight">@color/md_grey_600</item>
+    <item name="colorButtonNormal">@color/accent</item>
+    <item name="android:windowBackground">@color/md_grey_300</item>
+  </style>
+
+  <style name="AppTheme.ColoredButton">
+    <item name="colorButtonNormal">?attr/colorPrimary</item>
+  </style>
+
+  <!-- APP Themes -->
+
+  <!-- Events themes -->
+
+  <style name="AppTheme.Events">
+    <item name="colorPrimary">@color/md_indigo_400</item>
+    <item name="colorPrimaryDark">@color/md_indigo_600</item>
+    <item name="colorAccent">@color/md_amber_700</item>
+    <item name="colorControlNormal">@color/md_red_400</item>
+    <item name="colorControlActivated">@color/md_red_600</item>
+    <item name="colorControlHighlight">@color/md_red_600</item>
+  </style>
+
+  <style name="AppTheme.Dark.Events">
+    <item name="colorPrimary">@color/md_indigo_600</item>
+    <item name="colorPrimaryDark">@color/md_indigo_800</item>
+    <item name="colorAccent">@color/md_amber_800</item>
+    <item name="colorControlNormal">@color/md_red_900</item>
+    <item name="colorControlActivated">@color/md_red_900</item>
+    <item name="colorControlHighlight">@color/md_red_900</item>
+  </style>
+
+  <!-- Repositories themes -->
+
+  <style name="AppTheme.Repository">
+    <item name="colorPrimary">@color/md_teal_600</item>
+    <item name="colorPrimaryDark">@color/md_teal_800</item>
+    <item name="colorAccent">@color/md_amber_700</item>
+    <item name="colorControlNormal">@color/md_amber_700</item>
+    <item name="colorControlActivated">@color/md_amber_800</item>
+    <item name="colorControlHighlight">@color/md_amber_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Repository">
+    <item name="colorPrimary">@color/md_teal_600</item>
+    <item name="colorPrimaryDark">@color/md_teal_800</item>
+    <item name="colorAccent">@color/md_amber_600</item>
+    <item name="colorControlNormal">@color/md_amber_600</item>
+    <item name="colorControlActivated">@color/md_amber_700</item>
+    <item name="colorControlHighlight">@color/md_amber_700</item>
+  </style>
+
+  <!-- People themes -->
+
+  <style name="AppTheme.People">
+    <item name="colorPrimary">@color/md_amber_600</item>
+    <item name="colorPrimaryDark">@color/md_amber_700</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.People">
+    <item name="colorPrimary">@color/md_amber_600</item>
+    <item name="colorPrimaryDark">@color/md_amber_700</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <!-- Profile themes -->
+
+  <style name="AppTheme.Profile">
+    <item name="colorPrimary">@color/md_grey_600</item>
+    <item name="colorPrimaryDark">@color/md_grey_700</item>
+    <item name="colorAccent">@color/md_indigo_500</item>
+    <item name="colorControlNormal">@color/md_indigo_500</item>
+    <item name="colorControlActivated">@color/md_indigo_800</item>
+    <item name="colorControlHighlight">@color/md_indigo_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Profile">
+    <item name="colorPrimary">@color/md_grey_600</item>
+    <item name="colorPrimaryDark">@color/md_grey_700</item>
+    <item name="colorAccent">@color/md_indigo_200</item>
+    <item name="colorControlNormal">@color/md_indigo_300</item>
+    <item name="colorControlActivated">@color/md_indigo_400</item>
+    <item name="colorControlHighlight">@color/md_indigo_400</item>
+  </style>
+
+  <!-- Gists themes -->
+
+  <style name="AppTheme.Gists">
+    <item name="colorPrimary">@color/md_brown_400</item>
+    <item name="colorPrimaryDark">@color/md_brown_500</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Gists">
+    <item name="colorPrimary">@color/md_brown_400</item>
+    <item name="colorPrimaryDark">@color/md_brown_500</item>
+    <item name="colorAccent">@color/md_deep_orange_600</item>
+    <item name="colorControlNormal">@color/md_deep_orange_600</item>
+    <item name="colorControlActivated">@color/md_deep_orange_800</item>
+    <item name="colorControlHighlight">@color/md_deep_orange_800</item>
+  </style>
+
+  <!-- Notifications themes -->
+
+  <style name="AppTheme.Notifications">
+    <item name="colorPrimary">@color/md_red_400</item>
+    <item name="colorPrimaryDark">@color/md_red_600</item>
+    <item name="colorAccent">@color/md_blue_600</item>
+    <item name="colorControlNormal">@color/md_blue_600</item>
+    <item name="colorControlActivated">@color/md_blue_800</item>
+    <item name="colorControlHighlight">@color/md_blue_800</item>
+  </style>
+
+  <style name="AppTheme.Dark.Notifications">
+    <item name="colorPrimary">@color/md_red_600</item>
+    <item name="colorPrimaryDark">@color/md_red_900</item>
+    <item name="colorAccent">@color/md_blue_900</item>
+    <item name="colorControlNormal">@color/md_blue_800</item>
+    <item name="colorControlActivated">@color/md_blue_800</item>
+    <item name="colorControlHighlight">@color/md_blue_900</item>
+  </style>
 </resources>

@@ -33,11 +33,9 @@ import com.alorma.github.ui.adapter.issues.IssuesAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +47,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdapter>
-    implements View.OnClickListener, TitleProvider, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
+    implements View.OnClickListener, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String FROM_SEARCH = "FROM_SEARCH";
@@ -360,16 +358,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   @Override
   protected Octicons.Icon getFABGithubIcon() {
     return Octicons.Icon.oct_bug;
-  }
-
-  @Override
-  public int getTitle() {
-    return R.string.issues_fragment_title;
-  }
-
-  @Override
-  public IIcon getTitleIcon() {
-    return Octicons.Icon.oct_issue_opened;
   }
 
   public void clear() {

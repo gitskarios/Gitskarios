@@ -38,7 +38,7 @@ import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.ChangeAssigneeAction;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.activity.issue.IssueLabelsActivity;
 import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;

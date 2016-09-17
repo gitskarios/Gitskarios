@@ -8,6 +8,8 @@ import com.alorma.github.sdk.core.datasource.CacheDataSource;
 import com.alorma.github.sdk.core.datasource.CloudDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.datasource.SdkItem;
+import com.alorma.github.sdk.core.issue.IssuesSearchRequest;
+import com.alorma.github.sdk.core.issues.CloudUsersIssuesDataSource;
 import com.alorma.github.sdk.core.issues.Issue;
 import com.alorma.github.sdk.core.issues.IssuesRetrofitWrapper;
 import com.alorma.github.sdk.core.repository.GenericRepository;
@@ -18,25 +20,25 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public abstract class UserIssuesPresenter extends Presenter<Void, List<Issue>> {
+public class UserIssuesPresenter extends Presenter<IssuesSearchRequest, List<Issue>> {
 
-  @Inject AccountNameProvider accountNameProvider;
   private Integer page;
-  private GenericRepository<Void, List<Issue>> genericRepository;
+  private GenericRepository<IssuesSearchRequest, List<Issue>> genericRepository;
 
+  @Inject
   public UserIssuesPresenter() {
 
   }
 
   @Override
-  public void load(Void aVoid, Callback<List<Issue>> listCallback) {
-    execute(config().execute(new SdkItem<>(null)), listCallback, true);
+  public void load(IssuesSearchRequest issuesSearchRequest, Callback<List<Issue>> listCallback) {
+    execute(config().execute(new SdkItem<>(issuesSearchRequest)), listCallback, true);
   }
 
   @Override
-  public void loadMore(Void aVoid, Callback<List<Issue>> listCallback) {
+  public void loadMore(IssuesSearchRequest issuesSearchRequest, Callback<List<Issue>> listCallback) {
     if (page != null) {
-      execute(config().execute(new SdkItem<>(page, null)), listCallback, false);
+      execute(config().execute(new SdkItem<>(page, issuesSearchRequest)), listCallback, false);
     }
   }
 
@@ -73,7 +75,7 @@ public abstract class UserIssuesPresenter extends Presenter<Void, List<Issue>> {
 
   @NonNull
   @Override
-  protected GenericRepository<Void, List<Issue>> configRepository(RestWrapper restWrapper) {
+  protected GenericRepository<IssuesSearchRequest, List<Issue>> configRepository(RestWrapper restWrapper) {
     if (genericRepository == null) {
       genericRepository = new GenericRepository<>(getUserIssuesCacheDataSource(), getCloudIssuesDataSource(restWrapper));
     }
@@ -86,7 +88,21 @@ public abstract class UserIssuesPresenter extends Presenter<Void, List<Issue>> {
     return new IssuesRetrofitWrapper(apiClient, token);
   }
 
-  protected abstract CacheDataSource<Void, List<Issue>> getUserIssuesCacheDataSource();
+  protected CacheDataSource<IssuesSearchRequest, List<Issue>> getUserIssuesCacheDataSource() {
+    return new CacheDataSource<IssuesSearchRequest, List<Issue>>() {
+      @Override
+      public void saveData(SdkItem<IssuesSearchRequest> request, SdkItem<List<Issue>> data) {
 
-  protected abstract CloudDataSource<Void, List<Issue>> getCloudIssuesDataSource(RestWrapper issuesRetrofit);
+      }
+
+      @Override
+      public Observable<SdkItem<List<Issue>>> getData(SdkItem<IssuesSearchRequest> request) {
+        return null;
+      }
+    };
+  }
+
+  protected CloudDataSource<IssuesSearchRequest, List<Issue>> getCloudIssuesDataSource(RestWrapper issuesRetrofit) {
+    return new CloudUsersIssuesDataSource(issuesRetrofit);
+  }
 }

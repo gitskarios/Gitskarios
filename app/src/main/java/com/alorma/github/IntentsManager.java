@@ -20,7 +20,7 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
-import com.alorma.github.ui.activity.RepoDetailActivity;
+import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 

@@ -3,6 +3,7 @@ package com.alorma.github.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -136,6 +137,14 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
 
   @Override
   public void onReleaseDownloadRequest(final ReleaseAsset asset) {
-    new GitskariosDownloadManager().download(this, asset.browser_download_url, asset.name, viewPager);
+    GitskariosDownloadManager gitskariosDownloadManager = new GitskariosDownloadManager();
+    gitskariosDownloadManager.download(this, asset.browser_download_url, asset.name, text -> {
+      Snackbar snackbar = Snackbar.make(getToolbar(), getString(text), Snackbar.LENGTH_LONG);
+
+      snackbar.setAction(getString(R.string.external_storage_permission_request_action),
+          v -> gitskariosDownloadManager.openSettings(ReleaseDetailActivity.this));
+
+      snackbar.show();
+    });
   }
 }
