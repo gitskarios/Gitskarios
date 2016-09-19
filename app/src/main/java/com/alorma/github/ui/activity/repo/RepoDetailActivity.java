@@ -44,7 +44,7 @@ import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
-import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
+import com.alorma.github.ui.fragment.releases.RepositoryTagsFragment;
 import com.alorma.github.ui.navigation.TabsNavigation;
 import com.alorma.github.ui.navigation.UiNavigation;
 import com.alorma.github.utils.GitskariosDownloadManager;
@@ -152,8 +152,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(requestRepoInfo);
     navigation.add(new UiNavigation.UiItem(R.string.pulls_fragment_title, R.drawable.ic_git_pull_request, pullRequestsListFragment));
 
-    RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.releases, R.drawable.ic_package, repoReleasesFragment));
+    RepositoryTagsFragment tagsFragment = RepositoryTagsFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.tags, R.drawable.ic_package, tagsFragment));
 
     RepoContributorsFragment repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
     navigation.add(new UiNavigation.UiItem(R.string.contributors_fragment_title, R.drawable.ic_person, repoContributorsFragment));

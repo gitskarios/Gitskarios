@@ -10,6 +10,7 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.issues.user.UserIssuesListFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
+import com.alorma.github.ui.fragment.releases.RepositoryTagsFragment;
 import com.alorma.github.ui.fragment.repos.CurrentAccountReposFragment;
 import com.alorma.github.ui.fragment.repos.MembershipReposFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragmentFromOrgs;
@@ -48,4 +49,6 @@ public interface ApiComponent {
   void inject(CommitDetailActivity commitDetailActivity);
 
   void inject(UserIssuesListFragment userIssuesListFragment);
+
+  void inject(RepositoryTagsFragment repositoryTagsFragment);
 }

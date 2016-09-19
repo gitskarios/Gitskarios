@@ -45,4 +45,13 @@ public class Permissions implements Parcelable {
     dest.writeByte(push ? (byte) 1 : (byte) 0);
     dest.writeByte(pull ? (byte) 1 : (byte) 0);
   }
+
+  public com.alorma.github.sdk.core.repositories.Permissions toCorePermissions() {
+    com.alorma.github.sdk.core.repositories.Permissions permissions =
+            new com.alorma.github.sdk.core.repositories.Permissions();
+    permissions.admin = admin;
+    permissions.push = push;
+    permissions.pull = pull;
+    return permissions;
+  }
 }

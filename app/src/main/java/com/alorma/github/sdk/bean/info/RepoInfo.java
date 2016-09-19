@@ -50,4 +50,13 @@ public class RepoInfo implements Parcelable {
     dest.writeString(this.branch);
     dest.writeParcelable(this.permissions, 0);
   }
+
+  public com.alorma.github.sdk.core.repositories.RepoInfo toCoreRepoInfo() {
+    com.alorma.github.sdk.core.repositories.RepoInfo repoInfo = new com.alorma.github.sdk.core.repositories.RepoInfo();
+    repoInfo.branch = branch;
+    repoInfo.name = name;
+    repoInfo.owner = owner;
+    repoInfo.permissions = permissions.toCorePermissions();
+    return repoInfo;
+  }
 }

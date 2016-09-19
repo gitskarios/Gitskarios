@@ -38,6 +38,7 @@
   <color name="privateGist">#a1882b</color>
   <color name="black_semi_transparent">#B2000000</color>
   <color name="release_prerelease">#9aff0000</color>
+  <color name="release">#199619</color>
 
   <color name="github_status_green">#13b413</color>
   <color name="github_status_yellow">#e9c645</color>

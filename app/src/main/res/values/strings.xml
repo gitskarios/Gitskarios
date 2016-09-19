@@ -201,8 +201,8 @@
   <string name="aissue_detail_removed_labels">Removed labels %s</string>
   <string name="navigation_member_repos">Contributed</string>
   <string name="thanks_for_donate">Thank you so much!</string>
-  <string name="no_releases">No releases on this repository</string>
-  <string name="releases">Releases</string>
+  <string name="no_tags">No tags on this repository</string>
+  <string name="tags">Tags</string>
   <string name="repo_release_fragment_detail_title">Info</string>
   <string name="repo_release_fragment_assets_title">Assets</string>
   <string name="release_asset_zip">Source code (zip)</string>

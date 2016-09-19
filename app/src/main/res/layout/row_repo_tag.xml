@@ -20,7 +20,7 @@
       >
 
     <ImageView
-        android:id="@+id/releaseState"
+        android:id="@+id/state"
         android:layout_width="@dimen/avatar_size_list"
         android:layout_height="@dimen/avatar_size_list"
         android:layout_alignParentLeft="true"
@@ -32,28 +32,28 @@
         />
 
     <TextView
-        android:id="@+id/releaseName"
+        android:id="@+id/tagName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="@dimen/gapMedium"
         android:layout_marginStart="@dimen/gapMedium"
-        android:layout_toEndOf="@id/releaseState"
-        android:layout_toRightOf="@id/releaseState"
+        android:layout_toEndOf="@id/state"
+        android:layout_toRightOf="@id/state"
         android:fontFamily="sans-serif-condensed"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
 
     <TextView
-        android:id="@+id/filesRelease"
+        android:id="@+id/tagFiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/releaseName"
-        android:layout_alignLeft="@+id/releaseName"
-        android:layout_alignRight="@+id/releaseName"
-        android:layout_alignStart="@+id/releaseName"
-        android:layout_below="@+id/releaseName"
+        android:layout_alignEnd="@+id/tagName"
+        android:layout_alignLeft="@+id/tagName"
+        android:layout_alignRight="@+id/tagName"
+        android:layout_alignStart="@+id/tagName"
+        android:layout_below="@+id/tagName"
         android:layout_marginTop="@dimen/gapMedium"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="@dimen/textSizeSmall"

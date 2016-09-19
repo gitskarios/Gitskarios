@@ -3,6 +3,8 @@ package com.alorma.github.sdk.bean.dto.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.alorma.github.sdk.core.repositories.releases.Asset;
+
 /**
  * Created by a557114 on 29/07/2015.
  */
@@ -32,6 +34,21 @@ public class ReleaseAsset implements Parcelable {
   public User uploader;
 
   public ReleaseAsset() {
+  }
+
+  public ReleaseAsset(Asset asset) {
+    this.url = asset.getUrl();
+    this.browser_download_url = asset.getBrowserDownloadUrl();
+    this.id = asset.getId();
+    this.name = asset.getName();
+    this.labnel = asset.getLabel();
+    this.state = asset.getState();
+    this.content_type = asset.getContentType();
+    this.size = asset.getSize();
+    this.download_count = asset.getDownloadCount();
+    this.created_at = asset.getCreatedAt().toString();
+    this.updated_at = asset.getUpdatedAt().toString();
+    this.uploader = new User(asset.getUser());
   }
 
   protected ReleaseAsset(Parcel in) {
