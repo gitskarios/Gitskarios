@@ -1,72 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
 
     <LinearLayout
-        android:id="@+id/author"
-        style="@style/repo_overview_item"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/material_drawer_item_profile"
-        >
+        android:layout_height="wrap_content">
 
-        <com.alorma.github.ui.view.UserAvatarView
-            android:id="@+id/profileIcon"
-            android:layout_width="@dimen/material_drawer_item_profile_icon"
-            android:layout_height="@dimen/material_drawer_item_profile_icon"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-            />
-
-        <TextView
-            android:id="@+id/authorName"
+        <LinearLayout
+            android:id="@+id/author"
+            style="@style/repo_overview_item"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical|start"
-            android:maxLines="1"
-            android:textSize="@dimen/material_drawer_item_profile_text"
-            tools:text="Author name"
-            />
+            android:layout_height="60dp">
 
+            <com.alorma.github.ui.view.UserAvatarView
+                android:id="@+id/profileIcon"
+                android:layout_width="@dimen/material_drawer_item_profile_icon"
+                android:layout_height="@dimen/material_drawer_item_profile_icon"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/authorName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical|start"
+                android:maxLines="1"
+                android:textSize="@dimen/material_drawer_item_profile_text"
+                tools:text="Author name"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/repo_overview_item"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@null"
+            android:clickable="false">
+
+            <ImageView
+                android:id="@+id/createdIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="4dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:clickable="false"/>
+
+            <TextView
+                android:id="@+id/createdAt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical|start"
+                android:maxLines="1"
+                android:textSize="@dimen/material_drawer_item_profile_text"
+                tools:text="Created at"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/repo_overview_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:clickable="false">
+
+            <Button
+                android:id="@+id/downloadZip"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_gray"
+                android:text="@string/download_zip_archive"
+                android:textColor="@color/white"
+                android:layout_weight="2"/>
+
+            <Button
+                android:id="@+id/downloadTar"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_gray"
+                android:text="@string/download_tar_archive"
+                android:textColor="@color/white"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        style="@style/repo_overview_item"
+    <FrameLayout
+        android:id="@+id/progressBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/material_drawer_item_profile"
-        android:background="@null"
-        android:clickable="false"
-        >
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/createdIcon"
-            android:layout_width="@dimen/material_drawer_item_profile_icon"
-            android:layout_height="@dimen/material_drawer_item_profile_icon"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
-            android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
-            android:clickable="false"
-            />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
-        <TextView
-            android:id="@+id/createdAt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical|start"
-            android:maxLines="1"
-            android:textSize="@dimen/material_drawer_item_profile_text"
-            tools:text="Created at"
-            />
-
-    </LinearLayout>
-
-</LinearLayout>
+    </FrameLayout>
+</FrameLayout>

@@ -14,7 +14,7 @@ public class TagsCacheDataSource extends AbstractCacheDataSource<RepoInfo, List<
     @Override
     protected String getCacheKey(RepoInfo repoInfo, Integer page) {
         String cacheKey =
-                String.format(Locale.getDefault(), KEY, repoInfo.name, page);
+                String.format(Locale.getDefault(), KEY, repoInfo.owner + "_" + repoInfo.name, page);
         return cacheKey;
     }
 

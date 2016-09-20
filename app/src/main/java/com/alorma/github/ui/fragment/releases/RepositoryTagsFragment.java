@@ -8,6 +8,7 @@ import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -26,6 +27,7 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
   private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
 
   @Inject RepositoryTagsPresenter tagsPresenter;
+  @Inject CommitInfoPresenter commitPresenter;
   private RepoInfo repoInfo;
 
   public static RepositoryTagsFragment newInstance(RepoInfo info) {
@@ -80,10 +82,12 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
 
   @Override
   public void onResponse(List<Tag> tags, boolean firstTime) {
+    if(getActivity() == null) return;
+
     if (tags.size() > 0) {
       hideEmpty();
       if (refreshing || getAdapter() == null) {
-        TagsAdapter adapter = new TagsAdapter(LayoutInflater.from(getActivity()), repoInfo);
+        TagsAdapter adapter = new TagsAdapter(LayoutInflater.from(getActivity()), repoInfo, commitPresenter);
         adapter.addAll(tags);
         setAdapter(adapter);
       } else {
