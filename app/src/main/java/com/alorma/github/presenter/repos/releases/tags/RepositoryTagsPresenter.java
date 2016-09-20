@@ -1,5 +1,6 @@
 package com.alorma.github.presenter.repos.releases.tags;
 
+import com.alorma.github.injector.named.SortOrder;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.core.ApiClient;
@@ -25,6 +26,8 @@ import rx.schedulers.Schedulers;
  * commits and releases. Release could be null in Tag object.
  */
 @PerActivity public class RepositoryTagsPresenter extends Presenter<RepoInfo, List<Tag>> {
+    @Inject @SortOrder
+    String sortOrder;
     private Integer page;
     GenericRepository<RepoInfo, List<Tag>> genericRepository;
 
@@ -69,7 +72,7 @@ import rx.schedulers.Schedulers;
     protected GenericRepository<RepoInfo, List<Tag>> configRepository(RestWrapper restWrapper) {
         if (genericRepository == null) {
             genericRepository =
-                    new GenericRepository<RepoInfo, List<Tag>>(new TagsCacheDataSource(), new TagsCloudDataSource(restWrapper));
+                    new GenericRepository<RepoInfo, List<Tag>>(new TagsCacheDataSource(), new TagsCloudDataSource(restWrapper, sortOrder));
         }
         return genericRepository;
     }

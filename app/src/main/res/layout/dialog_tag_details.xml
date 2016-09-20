@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/author"
+        style="@style/repo_overview_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_drawer_item_profile"
+        >
+
+        <com.alorma.github.ui.view.UserAvatarView
+            android:id="@+id/profileIcon"
+            android:layout_width="@dimen/material_drawer_item_profile_icon"
+            android:layout_height="@dimen/material_drawer_item_profile_icon"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+            />
+
+        <TextView
+            android:id="@+id/authorName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:textSize="@dimen/material_drawer_item_profile_text"
+            tools:text="Author name"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/repo_overview_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_drawer_item_profile"
+        android:background="@null"
+        android:clickable="false"
+        >
+
+        <ImageView
+            android:id="@+id/createdIcon"
+            android:layout_width="@dimen/material_drawer_item_profile_icon"
+            android:layout_height="@dimen/material_drawer_item_profile_icon"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginEnd="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginRight="@dimen/material_drawer_item_profile_icon_padding"
+            android:layout_marginTop="@dimen/material_drawer_item_profile_icon_padding"
+            android:clickable="false"
+            />
+
+        <TextView
+            android:id="@+id/createdAt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:textSize="@dimen/material_drawer_item_profile_text"
+            tools:text="Created at"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

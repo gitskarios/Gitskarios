@@ -1,5 +1,6 @@
 package com.alorma.github.ui.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -9,12 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.core.repositories.releases.Release;
 import com.alorma.github.sdk.core.repositories.releases.tags.Tag;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import com.alorma.github.ui.utils.DialogUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -115,6 +118,19 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
                     new com.alorma.github.sdk.bean.dto.response.Release(release);
             Intent intent = ReleaseDetailActivity.launchIntent(v.getContext(), dto, repoInfo);
             v.getContext().startActivity(intent);
+          } else {
+            LayoutInflater inflater =
+                    (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(R.layout.dialog_tag_details, null, false);
+
+            MaterialDialog.Builder builder = new DialogUtils().builder(v.getContext());
+            builder.title("Tag details")
+                   .negativeText(R.string.cancel)
+                   .onNegative(((dialog, which) -> dialog.dismiss()))
+                   .customView(tagsView, true)
+                   .autoDismiss(false)
+                   .build().show();
+
           }
         }
       });
