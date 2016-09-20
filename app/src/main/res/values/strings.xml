@@ -326,4 +326,6 @@
   <string name="commit_status">Status</string>
   <string name="commits_detail_loading">Loading commit</string>
   <string name="parent_commit">Parent: %s</string>
+  <string name="download_zip_archive">Download zip</string>
+  <string name="download_tar_archive">Download tar</string>
 </resources>
