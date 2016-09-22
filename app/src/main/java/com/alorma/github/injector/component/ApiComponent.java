@@ -12,13 +12,13 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.fragment.NotificationsFragment;
 import com.alorma.github.ui.fragment.issues.user.UserIssuesListFragment;
 import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
-import com.alorma.github.ui.fragment.releases.RepositoryTagsFragment;
 import com.alorma.github.ui.fragment.repos.CurrentAccountReposFragment;
 import com.alorma.github.ui.fragment.repos.MembershipReposFragment;
 import com.alorma.github.ui.fragment.repos.ReposFragmentFromOrgs;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
+
 import dagger.Component;
 
 @PerActivity @Component(dependencies = ApplicationComponent.class, modules = ApiModule.class)

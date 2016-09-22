@@ -6,6 +6,7 @@ import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.presenter.repos.releases.tags.TagsCacheDataSource;
 import com.alorma.github.sdk.core.datasource.RestWrapper;
 import com.alorma.github.sdk.core.repositories.releases.tags.TagsCloudDataSource;
+import com.alorma.github.sdk.core.repositories.releases.tags.TagsRetrofitWrapper;
 
 import org.mockito.Mockito;
 
@@ -23,8 +24,8 @@ import rx.schedulers.Schedulers;
 
     @Provides
     @Singleton
-    RestWrapper provideTagsRetrofitWrapper(){
-        return Mockito.mock(RestWrapper.class);
+    TagsRetrofitWrapper provideTagsRetrofitWrapper(){
+        return Mockito.mock(TagsRetrofitWrapper.class);
     }
 
     @Provides
@@ -49,7 +50,11 @@ import rx.schedulers.Schedulers;
 
     @Provides
     @Singleton
-    RepositoryTagsPresenter provideRepositoryTagsPresenter() {
-        return new RepositoryTagsPresenter();
+    RepositoryTagsPresenter provideRepositoryTagsPresenter(@IOScheduler Scheduler ioScheduler,
+                                                           @MainScheduler Scheduler mainScheduler,
+                                                           TagsCacheDataSource tagsCacheDataSource,
+                                                           TagsCloudDataSource tagsCloudDataSource,
+                                                           TagsRetrofitWrapper tagsRetrofitWrapper) {
+        return new RepositoryTagsPresenter(ioScheduler, mainScheduler, tagsCacheDataSource, tagsCloudDataSource, tagsRetrofitWrapper);
     }
 }

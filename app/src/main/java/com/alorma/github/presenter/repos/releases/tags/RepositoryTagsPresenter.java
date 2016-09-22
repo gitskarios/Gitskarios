@@ -28,17 +28,27 @@ import rx.schedulers.Schedulers;
  * Combines repository Tags with Commits and Releases. Callback receives list of tag with fetched
  * commits and releases. Release could be null in Tag object.
  */
-@PerActivity public class RepositoryTagsPresenter extends Presenter<RepoInfo, List<Tag>> {
-    @Inject @IOScheduler Scheduler ioScheduler;
-    @Inject @MainScheduler Scheduler mainScheduler;
-    @Inject TagsCacheDataSource tagsCacheDataSource;
-    @Inject TagsCloudDataSource tagsCloudDataSource;
-    @Inject TagsRetrofitWrapper tagsRetrofitWrapper;
+public class RepositoryTagsPresenter extends Presenter<RepoInfo, List<Tag>> {
+    private final Scheduler ioScheduler;
+    private final Scheduler mainScheduler;
+    private final TagsCacheDataSource tagsCacheDataSource;
+    private final TagsCloudDataSource tagsCloudDataSource;
+    private final TagsRetrofitWrapper tagsRetrofitWrapper;
 
     private Integer page;
     GenericRepository<RepoInfo, List<Tag>> genericRepository;
 
-    @Inject public RepositoryTagsPresenter(){}
+    public RepositoryTagsPresenter(@IOScheduler Scheduler ioScheduler,
+                                   @MainScheduler Scheduler mainScheduler,
+                                   TagsCacheDataSource tagsCacheDataSource,
+                                   TagsCloudDataSource tagsCloudDataSource,
+                                   TagsRetrofitWrapper tagsRetrofitWrapper){
+        this.ioScheduler = ioScheduler;
+        this.mainScheduler = mainScheduler;
+        this.tagsCacheDataSource = tagsCacheDataSource;
+        this.tagsCloudDataSource = tagsCloudDataSource;
+        this.tagsRetrofitWrapper = tagsRetrofitWrapper;
+    }
 
     @Override
     public void load(RepoInfo repository, Callback<List<Tag>> callback) {
@@ -68,18 +78,19 @@ import rx.schedulers.Schedulers;
                 .observeOn(mainScheduler)
                 .doOnSubscribe(callback::showLoading)
                 .doOnCompleted(callback::hideLoading)
-                .subscribe(tags -> action(tags, callback, firstTime), throwable -> {
-                    callback.onResponseEmpty();
-                    callback.hideLoading();
-                    throwable.printStackTrace();
-                });
+                .subscribe(tags -> action(tags, callback, firstTime),
+                           throwable -> {
+                            callback.onResponseEmpty();
+                            callback.hideLoading();
+                            throwable.printStackTrace();
+                          });
     }
 
     @Override
     protected GenericRepository<RepoInfo, List<Tag>> configRepository(RestWrapper restWrapper) {
         if (genericRepository == null) {
             genericRepository =
-                    new GenericRepository<RepoInfo, List<Tag>>(tagsCacheDataSource, tagsCloudDataSource);
+                    new GenericRepository<>(tagsCacheDataSource, tagsCloudDataSource);
         }
         return genericRepository;
     }

@@ -1,6 +1,7 @@
 package com.alorma.github.injector.module.tags;
 
-import com.alorma.github.injector.module.BaseModule;
+import com.alorma.github.injector.named.IOScheduler;
+import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.SortOrder;
 import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.scope.PerActivity;
@@ -10,13 +11,12 @@ import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.sdk.core.repositories.releases.tags.TagsCloudDataSource;
 import com.alorma.github.sdk.core.repositories.releases.tags.TagsRetrofitWrapper;
 
-import javax.inject.Inject;
-
 import dagger.Module;
 import dagger.Provides;
+import rx.Scheduler;
 
 @Module
-public class RepositoryTagsModule extends BaseModule {
+public class RepositoryTagsModule {
 
     @Provides
     @PerActivity
@@ -38,8 +38,11 @@ public class RepositoryTagsModule extends BaseModule {
 
     @Provides
     @PerActivity
-    @Inject
-    RepositoryTagsPresenter provideRepositoryTagsPresenter(){
-        return new RepositoryTagsPresenter();
+    RepositoryTagsPresenter provideRepositoryTagsPresenter(@IOScheduler Scheduler ioScheduler,
+                                                           @MainScheduler Scheduler mainScheduler,
+                                                           TagsCacheDataSource tagsCacheDataSource,
+                                                           TagsCloudDataSource tagsCloudDataSource,
+                                                           TagsRetrofitWrapper tagsRetrofitWrapper){
+        return new RepositoryTagsPresenter(ioScheduler, mainScheduler, tagsCacheDataSource, tagsCloudDataSource, tagsRetrofitWrapper);
     }
 }
