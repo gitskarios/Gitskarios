@@ -8,6 +8,7 @@ import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.tags.RepositoryTagsModule;
 import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
@@ -49,7 +50,9 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
                     .applicationComponent(applicationComponent)
                     .apiModule(new ApiModule())
                     .build();
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new RepositoryTagsModule())
+            .inject(this);
   }
 
   @Override

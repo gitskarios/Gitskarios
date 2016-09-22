@@ -1,6 +1,7 @@
 package com.alorma.github.injector.module;
 
 import android.content.Context;
+
 import com.alorma.github.BuildConfig;
 import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.named.SortOrder;
@@ -9,11 +10,12 @@ import com.alorma.github.track.Tracker;
 import com.alorma.github.utils.RepoUtils;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.services.common.Crash;
-import javax.inject.Singleton;
 
 @Module public class ApplicationModule {
 
@@ -35,6 +37,7 @@ import javax.inject.Singleton;
   String getReposSortOrder(Context context) {
     return RepoUtils.sortOrder(context);
   }
+
 
   @Provides
   @Singleton
