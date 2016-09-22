@@ -1,5 +1,7 @@
 package com.alorma.github.presenter.repos.releases.tags;
 
+import com.alorma.github.injector.named.IOScheduler;
+import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.SortOrder;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.Presenter;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -26,8 +29,12 @@ import rx.schedulers.Schedulers;
  * commits and releases. Release could be null in Tag object.
  */
 @PerActivity public class RepositoryTagsPresenter extends Presenter<RepoInfo, List<Tag>> {
-    @Inject @SortOrder
-    String sortOrder;
+    @Inject @IOScheduler Scheduler ioScheduler;
+    @Inject @MainScheduler Scheduler mainScheduler;
+    @Inject TagsCacheDataSource tagsCacheDataSource;
+    @Inject TagsCloudDataSource tagsCloudDataSource;
+    @Inject TagsRetrofitWrapper tagsRetrofitWrapper;
+
     private Integer page;
     GenericRepository<RepoInfo, List<Tag>> genericRepository;
 
@@ -49,7 +56,7 @@ import rx.schedulers.Schedulers;
                          Callback<List<Tag>> callback, boolean firstTime) {
         observable
                 .timeout(20, TimeUnit.SECONDS)
-                .retry(3).subscribeOn(Schedulers.io())
+                .retry(3).subscribeOn(ioScheduler)
                 .map(sdkItem -> {
                     if (sdkItem.getPage() != null && sdkItem.getPage() > 0) {
                         this.page = sdkItem.getPage();
@@ -58,7 +65,7 @@ import rx.schedulers.Schedulers;
                     }
                     return sdkItem.getK();
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(mainScheduler)
                 .doOnSubscribe(callback::showLoading)
                 .doOnCompleted(callback::hideLoading)
                 .subscribe(tags -> action(tags, callback, firstTime), throwable -> {
@@ -72,14 +79,14 @@ import rx.schedulers.Schedulers;
     protected GenericRepository<RepoInfo, List<Tag>> configRepository(RestWrapper restWrapper) {
         if (genericRepository == null) {
             genericRepository =
-                    new GenericRepository<RepoInfo, List<Tag>>(new TagsCacheDataSource(), new TagsCloudDataSource(restWrapper, sortOrder));
+                    new GenericRepository<RepoInfo, List<Tag>>(tagsCacheDataSource, tagsCloudDataSource);
         }
         return genericRepository;
     }
 
     @Override
     protected TagsRetrofitWrapper getRest(ApiClient apiClient, String token) {
-        return new TagsRetrofitWrapper(apiClient, token);
+        return tagsRetrofitWrapper;
     }
 
     @Override

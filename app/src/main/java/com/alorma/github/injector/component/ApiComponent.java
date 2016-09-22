@@ -1,6 +1,8 @@
 package com.alorma.github.injector.component;
 
+import com.alorma.github.injector.component.tags.RepositoryTagsComponent;
 import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.tags.RepositoryTagsModule;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.NavigationFragment;
 import com.alorma.github.sdk.core.ApiClient;
@@ -50,5 +52,6 @@ public interface ApiComponent {
 
   void inject(UserIssuesListFragment userIssuesListFragment);
 
-  void inject(RepositoryTagsFragment repositoryTagsFragment);
+  // next components with its own tree
+  RepositoryTagsComponent plus(RepositoryTagsModule module);
 }
