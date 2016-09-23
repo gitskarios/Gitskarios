@@ -7,10 +7,8 @@ import com.alorma.github.R;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
-import com.alorma.gitskarios.core.Pair;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -66,7 +64,7 @@ public class SearchReposFragment extends BaseReposListFragment implements TitleP
             .subscribeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext((Action1<Pair<List<Repo>, Integer>>) listIntegerPair -> {
+            .doOnNext(listIntegerPair -> {
               if (getAdapter() != null) {
                 getAdapter().clear();
               }

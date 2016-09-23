@@ -1,9 +1,10 @@
 package com.alorma.github.sdk.core;
 
-import com.alorma.github.sdk.core.repositories.Permissions;
-import com.alorma.github.sdk.core.repositories.RepoInfo;
-import com.alorma.github.sdk.core.repositories.releases.Release;
-import com.alorma.github.sdk.core.repositories.releases.tags.Tag;
+import com.alorma.github.sdk.bean.info.RepoInfo;
+import core.Sha;
+import core.repositories.Permissions;
+import core.repositories.releases.Release;
+import core.repositories.releases.tags.Tag;
 
 import static java.lang.Boolean.FALSE;
 

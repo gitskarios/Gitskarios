@@ -95,7 +95,7 @@ public class ReviewCommentView extends LinearLayout {
     textDiff.setText(splitDiffHunk(event.diff_hunk));
     textDiffFileTitle.setText(event.path);
     setIcon(Octicons.Icon.oct_code);
-    userLogin.setText(reviewComment.user().login);
+    userLogin.setText(reviewComment.user().getLogin());
     createdAt.setText(getTime(reviewComment.created_at));
 
     textDiff.setOnClickListener(v -> {
@@ -115,7 +115,7 @@ public class ReviewCommentView extends LinearLayout {
 
     Pair<String, List<ReviewComment>> event = reviewComments.event;
 
-    userLogin.setText(reviewComments.user().login);
+    userLogin.setText(reviewComments.user().getLogin());
     createdAt.setText(getTime(reviewComments.createdAt()));
 
     textDiff.setText(splitDiffHunk(event.first));
@@ -135,7 +135,7 @@ public class ReviewCommentView extends LinearLayout {
 
     for (ReviewComment reviewComment : event.second) {
       builder.append("<b>");
-      builder.append(reviewComment.user.login);
+      builder.append(reviewComment.user.getLogin());
       builder.append(":");
       builder.append("</b>");
       builder.append("<br />");

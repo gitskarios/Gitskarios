@@ -4,11 +4,9 @@ import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.di.tags.TagsTestComponent;
 import com.alorma.github.di.tags.TagsTestModule;
 import com.alorma.github.injector.named.SortOrder;
-import com.alorma.github.sdk.core.ApiClient;
-
-import javax.inject.Singleton;
-
+import core.ApiClient;
 import dagger.Component;
+import javax.inject.Singleton;
 import rx.Scheduler;
 
 /**
@@ -16,15 +14,14 @@ import rx.Scheduler;
  */
 @Singleton @Component(modules = TestModule.class) public interface TestComponent {
 
-    @SortOrder
-    String provideReposSortOrder();
+  @SortOrder
+  String provideReposSortOrder();
 
-    AccountNameProvider provideAccountName();
+  AccountNameProvider provideAccountName();
 
-    Scheduler provideScheduler();
+  Scheduler provideScheduler();
 
-    ApiClient providesGithubApi();
+  ApiClient providesGithubApi();
 
-    TagsTestComponent plus(TagsTestModule module);
-
+  TagsTestComponent plus(TagsTestModule module);
 }

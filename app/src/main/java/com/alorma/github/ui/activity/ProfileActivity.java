@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
@@ -39,7 +38,6 @@ import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.users.UserResumeFragment;
 import com.alorma.github.utils.AccountUtils;
-import com.alorma.gitskarios.core.Pair;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
@@ -51,7 +49,6 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class ProfileActivity extends PeopleThemeActivity implements UserResumeFragment.UserResumeCallback {
@@ -89,7 +86,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
   public static Intent createLauncherIntent(Context context, User user) {
     Bundle extras = new Bundle();
     if (user != null) {
-      extras.putSerializable(USER, user);
+      extras.putParcelable(USER, user);
 
       StoreCredentials settings = new StoreCredentials(context);
       if (user.getLogin() != null) {
@@ -207,12 +204,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       invalidateOptionsMenu();
 
       Observable<Integer> organizations =
-          new GetOrgsClient(login).observable().subscribeOn(Schedulers.io()).map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
-            @Override
-            public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
-              return listIntegerPair.first.size();
-            }
-          });
+          new GetOrgsClient(login).observable().subscribeOn(Schedulers.io()).map(listIntegerPair -> listIntegerPair.first.size());
 
       Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()), organizations, (user1, organizations1) -> {
         user1.setOrganizationsNum(organizations1);

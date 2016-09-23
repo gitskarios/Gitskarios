@@ -269,7 +269,6 @@ dependencies {
   compile 'com.github.javierugarte:githubcontributionsview:1.2.1'
 
   compile 'io.reactivex:rxjava-string:1.1.0'
-  testCompile 'com.sergiandreplace.testabean:testabean:1.0.1'
 }
 
 play {

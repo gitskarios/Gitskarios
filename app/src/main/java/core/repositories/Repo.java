@@ -1,13 +1,16 @@
 package core.repositories;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.google.gson.annotations.SerializedName;
 import core.ShaUrl;
 import core.User;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Repo extends ShaUrl {
+public class Repo extends ShaUrl implements Parcelable {
 
   @SerializedName("private") public boolean privateRepo;
   @SerializedName("created_at")  public Date createdAt;
@@ -332,4 +335,98 @@ public class Repo extends ShaUrl {
     repoInfo.branch = defaultBranch;
     return repoInfo;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeByte(this.privateRepo ? (byte) 1 : (byte) 0);
+    dest.writeLong(this.createdAt != null ? this.createdAt.getTime() : -1);
+    dest.writeLong(this.pushedAt != null ? this.pushedAt.getTime() : -1);
+    dest.writeLong(this.updatedAt != null ? this.updatedAt.getTime() : -1);
+    dest.writeInt(this.forks_count);
+    dest.writeLong(this.id);
+    dest.writeParcelable(this.parent, flags);
+    dest.writeParcelable(this.source, flags);
+    dest.writeString(this.cloneUrl);
+    dest.writeString(this.description);
+    dest.writeString(this.homepage);
+    dest.writeString(this.gitUrl);
+    dest.writeString(this.language);
+    dest.writeString(this.defaultBranch);
+    dest.writeString(this.mirrorUrl);
+    dest.writeString(this.name);
+    dest.writeString(this.fullName);
+    dest.writeString(this.ssh_url);
+    dest.writeString(this.svn_url);
+    dest.writeParcelable(this.owner, flags);
+    dest.writeInt(this.stargazersCount);
+    dest.writeInt(this.subscribersCount);
+    dest.writeInt(this.networkCount);
+    dest.writeInt(this.watchersCount);
+    dest.writeInt(this.size);
+    dest.writeInt(this.openIssuesCount);
+    dest.writeByte(this.hasIssues ? (byte) 1 : (byte) 0);
+    dest.writeByte(this.hasDownloads ? (byte) 1 : (byte) 0);
+    dest.writeByte(this.hasWiki ? (byte) 1 : (byte) 0);
+    dest.writeSerializable(this.permissions);
+    dest.writeParcelable(this.license, flags);
+    dest.writeList(this.branches);
+    dest.writeString(this.archiveUrl);
+  }
+
+  protected Repo(Parcel in) {
+    this.privateRepo = in.readByte() != 0;
+    long tmpCreatedAt = in.readLong();
+    this.createdAt = tmpCreatedAt == -1 ? null : new Date(tmpCreatedAt);
+    long tmpPushedAt = in.readLong();
+    this.pushedAt = tmpPushedAt == -1 ? null : new Date(tmpPushedAt);
+    long tmpUpdatedAt = in.readLong();
+    this.updatedAt = tmpUpdatedAt == -1 ? null : new Date(tmpUpdatedAt);
+    this.forks_count = in.readInt();
+    this.id = in.readLong();
+    this.parent = in.readParcelable(Repo.class.getClassLoader());
+    this.source = in.readParcelable(Repo.class.getClassLoader());
+    this.cloneUrl = in.readString();
+    this.description = in.readString();
+    this.homepage = in.readString();
+    this.gitUrl = in.readString();
+    this.language = in.readString();
+    this.defaultBranch = in.readString();
+    this.mirrorUrl = in.readString();
+    this.name = in.readString();
+    this.fullName = in.readString();
+    this.ssh_url = in.readString();
+    this.svn_url = in.readString();
+    this.owner = in.readParcelable(User.class.getClassLoader());
+    this.stargazersCount = in.readInt();
+    this.subscribersCount = in.readInt();
+    this.networkCount = in.readInt();
+    this.watchersCount = in.readInt();
+    this.size = in.readInt();
+    this.openIssuesCount = in.readInt();
+    this.hasIssues = in.readByte() != 0;
+    this.hasDownloads = in.readByte() != 0;
+    this.hasWiki = in.readByte() != 0;
+    this.permissions = (Permissions) in.readSerializable();
+    this.license = in.readParcelable(License.class.getClassLoader());
+    this.branches = new ArrayList<Branch>();
+    in.readList(this.branches, Branch.class.getClassLoader());
+    this.archiveUrl = in.readString();
+  }
+
+  public static final Parcelable.Creator<Repo> CREATOR = new Parcelable.Creator<Repo>() {
+    @Override
+    public Repo createFromParcel(Parcel source) {
+      return new Repo(source);
+    }
+
+    @Override
+    public Repo[] newArray(int size) {
+      return new Repo[size];
+    }
+  };
 }

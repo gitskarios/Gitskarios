@@ -4,13 +4,12 @@ import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.dto.response.GithubPage;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
-import com.alorma.github.sdk.bean.dto.response.Release;
 import com.alorma.github.sdk.bean.dto.response.Team;
 import com.google.gson.annotations.SerializedName;
 import core.User;
 import core.repositories.Repo;
+import core.repositories.releases.Release;
 import java.util.List;
 
 public class Payload {
@@ -21,7 +20,7 @@ public class Payload {
   public int number;
   public PullRequest pull_request;
   @SerializedName("public") public boolean is_public;
-  public Organization org;
+  public User org;
   public String created_at;
   public Issue issue;
   public CommitComment comment;

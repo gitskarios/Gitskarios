@@ -1,8 +1,8 @@
 package com.alorma.github.sdk.bean.dto.response.events.payload;
 
-import com.alorma.github.sdk.bean.dto.response.Release;
 import core.User;
 import core.repositories.Repo;
+import core.repositories.releases.Release;
 
 public class ReleaseEventPayload extends GithubEventPayload {
   public String action;

@@ -348,7 +348,7 @@ public class OrgsEventsListFragment extends LoadingListFragment<EventsAdapter> i
       ForkEventPayload forkEventPayload = gson.fromJson(payload, ForkEventPayload.class);
       if (forkEventPayload != null) {
         String parentRepo = item.repo.name;
-        String forkeeRepo = forkEventPayload.forkee.full_name;
+        String forkeeRepo = forkEventPayload.forkee.getFullName();
 
         showReposDialogDialog(parentRepo, forkeeRepo);
       }

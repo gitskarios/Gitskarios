@@ -33,6 +33,9 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
+import core.User;
+import core.issues.Label;
+import core.repositories.Repo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +114,7 @@ public class IssueDetailView extends LinearLayout {
 
   private void parseUser(Issue issue) {
     if (issue.user != null) {
-      profileName.setText(issue.user.login);
+      profileName.setText(issue.user.getLogin());
       createdAt.setText(TimeUtils.getTimeAgoString(issue.created_at));
 
       profileIcon.setUser(issue.user);
@@ -127,7 +130,7 @@ public class IssueDetailView extends LinearLayout {
 
   private void checkEditable(RepoInfo repoInfo, Issue issue) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user.login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push || issue.user.getLogin().equals(credentials.getUserName())) {
       editComment.setVisibility(VISIBLE);
       OnClickListener editClickListener = v -> {
         if (issueDetailRequestListener != null) {
@@ -150,11 +153,11 @@ public class IssueDetailView extends LinearLayout {
       final Repo repo = issue.repository;
       if (repo != null) {
         textRepository.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo), null, null, null);
-        textRepository.setText(repo.full_name);
+        textRepository.setText(repo.getFullName());
         textRepository.setVisibility(View.VISIBLE);
         textRepository.setOnClickListener(v -> {
           RepoInfo repoInfo1 = new RepoInfo();
-          repoInfo1.owner = repo.owner.login;
+          repoInfo1.owner = repo.getOwner().getLogin();
           repoInfo1.name = repo.name;
           Intent launcherIntent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo1);
           v.getContext().startActivity(launcherIntent);

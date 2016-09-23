@@ -1,10 +1,11 @@
 package core;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
+import java.util.Date;
 
-public class User extends ShaUrl implements Serializable {
-  public static final String UIL = "";
+public class User extends ShaUrl implements Parcelable {
 
   @SerializedName("name") private String name;
   @SerializedName("login") private String login;
@@ -25,6 +26,12 @@ public class User extends ShaUrl implements Serializable {
   private Integer organizationsNum;
   public String date;
   private String email;
+  @SerializedName("created_at") private Date createdAt;
+  private String company;
+  private String location;
+  private String blog;
+  @SerializedName("public_repos") private int publicRepos;
+  @SerializedName("public_gists") private int public_gists;
 
   public User() {
   }
@@ -161,7 +168,7 @@ public class User extends ShaUrl implements Serializable {
     this.organizationsNum = organizationsNum;
   }
 
-  public Integer getOrganizationsNum() {
+  public Integer getOrganizationsCount() {
     return organizationsNum;
   }
 
@@ -171,5 +178,118 @@ public class User extends ShaUrl implements Serializable {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.name);
+    dest.writeString(this.login);
+    dest.writeValue(this.id);
+    dest.writeString(this.avatar);
+    dest.writeString(this.gravatarId);
+    dest.writeString(this.followersUrl);
+    dest.writeString(this.followingUrl);
+    dest.writeString(this.gistsUrl);
+    dest.writeString(this.starredUrl);
+    dest.writeString(this.subscriptionsUrl);
+    dest.writeString(this.organizationsUrl);
+    dest.writeString(this.reposUrl);
+    dest.writeString(this.eventsUrl);
+    dest.writeString(this.receivedEventsUrl);
+    dest.writeString(this.type);
+    dest.writeValue(this.siteAdmin);
+    dest.writeValue(this.organizationsNum);
+    dest.writeString(this.date);
+    dest.writeString(this.email);
+    dest.writeLong(this.createdAt != null ? this.createdAt.getTime() : -1);
+  }
+
+  protected User(Parcel in) {
+    this.name = in.readString();
+    this.login = in.readString();
+    this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.avatar = in.readString();
+    this.gravatarId = in.readString();
+    this.followersUrl = in.readString();
+    this.followingUrl = in.readString();
+    this.gistsUrl = in.readString();
+    this.starredUrl = in.readString();
+    this.subscriptionsUrl = in.readString();
+    this.organizationsUrl = in.readString();
+    this.reposUrl = in.readString();
+    this.eventsUrl = in.readString();
+    this.receivedEventsUrl = in.readString();
+    this.type = in.readString();
+    this.siteAdmin = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    this.organizationsNum = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.date = in.readString();
+    this.email = in.readString();
+    long tmpCreatedAt = in.readLong();
+    this.createdAt = tmpCreatedAt == -1 ? null : new Date(tmpCreatedAt);
+  }
+
+  public static final Creator<User> CREATOR = new Creator<User>() {
+    @Override
+    public User createFromParcel(Parcel source) {
+      return new User(source);
+    }
+
+    @Override
+    public User[] newArray(int size) {
+      return new User[size];
+    }
+  };
+
+  public String getCompany() {
+    return company;
+  }
+
+  public void setCompany(String company) {
+    this.company = company;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public String getBlog() {
+    return blog;
+  }
+
+  public void setBlog(String blog) {
+    this.blog = blog;
+  }
+
+  public int getPublicRepos() {
+    return publicRepos;
+  }
+
+  public void setPublicRepos(int publicRepos) {
+    this.publicRepos = publicRepos;
+  }
+
+  public int getPublicGists() {
+    return public_gists;
+  }
+
+  public void setPublic_gists(int public_gists) {
+    this.public_gists = public_gists;
   }
 }

@@ -21,6 +21,7 @@ import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.crashlytics.android.Crashlytics;
+import core.User;
 import io.fabric.sdk.android.Fabric;
 
 public class IntentsManager {

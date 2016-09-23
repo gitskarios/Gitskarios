@@ -12,9 +12,11 @@ import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
 import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -107,7 +109,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+      repoInfo = getArguments().getParcelable(REPO_INFO);
     }
   }
 

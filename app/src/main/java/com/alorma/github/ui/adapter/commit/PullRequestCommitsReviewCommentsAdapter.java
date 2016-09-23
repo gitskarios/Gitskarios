@@ -27,6 +27,7 @@ import com.alorma.github.ui.view.issue.ReviewCommentView;
 import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
 import java.io.IOException;
 
 public class PullRequestCommitsReviewCommentsAdapter
@@ -84,12 +85,12 @@ public class PullRequestCommitsReviewCommentsAdapter
 
       holder.avatar.setUser(author);
 
-      if (author.login != null) {
-        holder.user.setText(author.login);
-      } else if (author.name != null) {
-        holder.user.setText(author.name);
-      } else if (author.email != null) {
-        holder.user.setText(author.email);
+      if (author.getLogin() != null) {
+        holder.user.setText(author.getLogin());
+      } else if (author.getName() != null) {
+        holder.user.setText(author.getName());
+      } else if (author.getEmail() != null) {
+        holder.user.setText(author.getEmail());
       }
     }
 

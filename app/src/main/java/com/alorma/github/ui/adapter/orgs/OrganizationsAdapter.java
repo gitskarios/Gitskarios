@@ -7,15 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import core.User;
 
-/**
- * Created by Bernat on 04/09/2014.
- */
-public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, OrganizationsAdapter.ViewHolder> {
+public class OrganizationsAdapter extends RecyclerArrayAdapter<User, OrganizationsAdapter.ViewHolder> {
 
   public OrganizationsAdapter(LayoutInflater inflater) {
     super(inflater);
@@ -31,9 +28,9 @@ public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, Org
   }
 
   @Override
-  protected void onBindViewHolder(final ViewHolder holder, Organization organization) {
+  protected void onBindViewHolder(final ViewHolder holder, User organization) {
     UniversalImageLoaderUtils.loadUserAvatarSquare(holder.avatar, organization);
-    holder.text.setText(organization.login);
+    holder.text.setText(organization.getLogin());
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
@@ -45,12 +42,9 @@ public class OrganizationsAdapter extends RecyclerArrayAdapter<Organization, Org
       avatar = (ImageView) itemView.findViewById(R.id.avatarAuthorImage);
       text = (TextView) itemView.findViewById(R.id.textAuthorLogin);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          Organization organization = getItem(getAdapterPosition());
-          v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), organization.login));
-        }
+      itemView.setOnClickListener(v -> {
+        User organization = getItem(getAdapterPosition());
+        v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), organization.getLogin()));
       });
     }
   }

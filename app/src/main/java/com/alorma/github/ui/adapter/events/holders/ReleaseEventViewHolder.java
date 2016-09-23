@@ -39,7 +39,7 @@ public class ReleaseEventViewHolder extends EventViewHolder {
         + event.payload.action
         + " "
         + "<b>"
-        + event.payload.release.tag_name
+        + event.payload.release.getTagName()
         + "</b>"
         + " "
         + "at"

@@ -3,9 +3,6 @@ package com.alorma.github;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by Bernat on 26/09/2014.
- */
 public class PreferencesHelper {
   private static final String FILE_NAME = "gitskarios.settings";
   private final SharedPreferences preferences;

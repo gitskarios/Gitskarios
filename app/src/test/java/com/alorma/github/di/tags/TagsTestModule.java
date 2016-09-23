@@ -4,10 +4,9 @@ import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.presenter.repos.releases.tags.TagsCacheDataSource;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repositories.releases.tags.TagsCloudDataSource;
-import com.alorma.github.sdk.core.repositories.releases.tags.TagsRetrofitWrapper;
 
+import core.repositories.releases.tags.TagsCloudDataSource;
+import core.repositories.releases.tags.TagsRetrofitWrapper;
 import org.mockito.Mockito;
 
 import javax.inject.Singleton;

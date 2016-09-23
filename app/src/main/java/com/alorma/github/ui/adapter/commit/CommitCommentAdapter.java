@@ -15,9 +15,6 @@ import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
 
-/**
- * Created by Bernat on 23/06/2015.
- */
 public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, CommitCommentAdapter.ViewHolder> {
 
   private RepoInfo repoInfo;
@@ -36,7 +33,7 @@ public class CommitCommentAdapter extends RecyclerArrayAdapter<CommitComment, Co
   protected void onBindViewHolder(ViewHolder holder, CommitComment commitComment) {
     if (commitComment.user != null) {
 
-      holder.textAuthor.setText(commitComment.user.login);
+      holder.textAuthor.setText(commitComment.user.getLogin());
 
       holder.imageAuthor.setUser(commitComment.user);
     }

@@ -2,8 +2,8 @@ package com.alorma.github.di;
 
 import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.named.SortOrder;
-import com.alorma.github.sdk.core.ApiClient;
 
+import core.ApiClient;
 import org.mockito.Mockito;
 
 import javax.inject.Singleton;

@@ -1,5 +1,6 @@
 package com.alorma.github.sdk.core;
 
+import core.ShaUtils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

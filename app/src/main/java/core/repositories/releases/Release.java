@@ -1,5 +1,7 @@
 package core.repositories.releases;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import core.ShaUrl;
 import core.User;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Release extends ShaUrl {
+public class Release extends ShaUrl implements Parcelable {
     @SerializedName("assets_url") private String assetsUrl;
     @SerializedName("upload_url") private String uploadUrl;
     @SerializedName("tarball_url") private String tarballUrl;
@@ -143,4 +145,64 @@ public class Release extends ShaUrl {
     public void setAssets(List<Asset> assets) {
         this.assets = assets;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.assetsUrl);
+        dest.writeString(this.uploadUrl);
+        dest.writeString(this.tarballUrl);
+        dest.writeString(this.zipballUrl);
+        dest.writeValue(this.id);
+        dest.writeString(this.tagName);
+        dest.writeString(this.targetCommitish);
+        dest.writeString(this.name);
+        dest.writeString(this.body);
+        dest.writeValue(this.draft);
+        dest.writeValue(this.prerelease);
+        dest.writeLong(this.createdAt != null ? this.createdAt.getTime() : -1);
+        dest.writeLong(this.publishedAt != null ? this.publishedAt.getTime() : -1);
+        dest.writeParcelable(this.author, flags);
+        dest.writeList(this.assets);
+    }
+
+    public Release() {
+    }
+
+    protected Release(Parcel in) {
+        this.assetsUrl = in.readString();
+        this.uploadUrl = in.readString();
+        this.tarballUrl = in.readString();
+        this.zipballUrl = in.readString();
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.tagName = in.readString();
+        this.targetCommitish = in.readString();
+        this.name = in.readString();
+        this.body = in.readString();
+        this.draft = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.prerelease = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        long tmpCreatedAt = in.readLong();
+        this.createdAt = tmpCreatedAt == -1 ? null : new Date(tmpCreatedAt);
+        long tmpPublishedAt = in.readLong();
+        this.publishedAt = tmpPublishedAt == -1 ? null : new Date(tmpPublishedAt);
+        this.author = in.readParcelable(User.class.getClassLoader());
+        this.assets = new ArrayList<Asset>();
+        in.readList(this.assets, Asset.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Release> CREATOR = new Parcelable.Creator<Release>() {
+        @Override
+        public Release createFromParcel(Parcel source) {
+            return new Release(source);
+        }
+
+        @Override
+        public Release[] newArray(int size) {
+            return new Release[size];
+        }
+    };
 }

@@ -4,20 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.List;
 
-/**
- * Created by a557114 on 31/07/2015.
- */
 public class CompareCommit implements Parcelable {
-  public static final Parcelable.Creator<CompareCommit> CREATOR =
-      new Parcelable.Creator<CompareCommit>() {
-        public CompareCommit createFromParcel(Parcel source) {
-          return new CompareCommit(source);
-        }
 
-        public CompareCommit[] newArray(int size) {
-          return new CompareCommit[size];
-        }
-      };
   public String url;
   public String html_url;
   public String permalink_url;
@@ -33,6 +21,28 @@ public class CompareCommit implements Parcelable {
   public List<CommitFile> files;
 
   public CompareCommit() {
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.url);
+    dest.writeString(this.html_url);
+    dest.writeString(this.permalink_url);
+    dest.writeString(this.diff_url);
+    dest.writeString(this.patch_url);
+    dest.writeParcelable(this.base_commit, flags);
+    dest.writeParcelable(this.merge_base_commit, flags);
+    dest.writeString(this.status);
+    dest.writeInt(this.ahead_by);
+    dest.writeInt(this.behind_by);
+    dest.writeInt(this.total_commits);
+    dest.writeTypedList(this.commits);
+    dest.writeTypedList(this.files);
   }
 
   protected CompareCommit(Parcel in) {
@@ -51,25 +61,15 @@ public class CompareCommit implements Parcelable {
     this.files = in.createTypedArrayList(CommitFile.CREATOR);
   }
 
-  @Override
-  public int describeContents() {
-    return 0;
-  }
+  public static final Parcelable.Creator<CompareCommit> CREATOR = new Parcelable.Creator<CompareCommit>() {
+    @Override
+    public CompareCommit createFromParcel(Parcel source) {
+      return new CompareCommit(source);
+    }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeString(this.url);
-    dest.writeString(this.html_url);
-    dest.writeString(this.permalink_url);
-    dest.writeString(this.diff_url);
-    dest.writeString(this.patch_url);
-    dest.writeParcelable(this.base_commit, 0);
-    dest.writeParcelable(this.merge_base_commit, 0);
-    dest.writeString(this.status);
-    dest.writeInt(this.ahead_by);
-    dest.writeInt(this.behind_by);
-    dest.writeInt(this.total_commits);
-    dest.writeTypedList(commits);
-    dest.writeTypedList(files);
-  }
+    @Override
+    public CompareCommit[] newArray(int size) {
+      return new CompareCommit[size];
+    }
+  };
 }

@@ -2,6 +2,7 @@ package com.alorma.github.sdk.bean.dto.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import core.User;
 
 /**
  * Created by Bernat on 17/05/2015.
@@ -26,7 +27,7 @@ public class Team implements Parcelable {
   public String repositories_url;
   public int members_count;
   public int repos_count;
-  public Organization organization;
+  public User organization;
 
   public Team() {
   }
@@ -42,7 +43,7 @@ public class Team implements Parcelable {
     this.repositories_url = in.readString();
     this.members_count = in.readInt();
     this.repos_count = in.readInt();
-    this.organization = in.readParcelable(Organization.class.getClassLoader());
+    this.organization = in.readParcelable(User.class.getClassLoader());
   }
 
   @Override
