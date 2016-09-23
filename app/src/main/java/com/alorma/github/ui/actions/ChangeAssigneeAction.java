@@ -3,8 +3,8 @@ package com.alorma.github.ui.actions;
 import android.content.Context;
 import android.support.v4.util.Pair;
 import com.alorma.github.injector.component.ApiComponent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
+import core.User;
 import java.util.List;
 
 public class ChangeAssigneeAction extends Action<Boolean> implements ActionCallback<Pair<List<User>, List<User>>> {

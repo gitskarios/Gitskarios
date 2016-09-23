@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Repo;
 import io.fabric.sdk.android.Fabric;
 import java.text.DecimalFormat;
 
@@ -34,7 +34,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
   protected void onBindViewHolder(ViewHolder holder, Repo repo) {
     try {
       if (repo.owner != null) {
-        holder.textTitle.setText(showOwnerName ? repo.owner.login : repo.name);
+        holder.textTitle.setText(showOwnerName ? repo.owner.getLogin() : repo.name);
       }
     } catch (NullPointerException e) {
       if (Fabric.isInitialized()) {
@@ -42,14 +42,14 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       }
     }
 
-    if (showOwnerNameExtra && repo.owner != null && repo.owner.login != null) {
-      holder.textOwnerName.setText(repo.owner.login);
+    if (showOwnerNameExtra && repo.owner != null && repo.owner.getLogin() != null) {
+      holder.textOwnerName.setText(repo.owner.getLogin());
     } else {
       holder.textOwnerName.setText("");
     }
 
     applyIcon(holder.textStarts, Octicons.Icon.oct_star);
-    holder.textStarts.setText(new DecimalFormat().format(repo.stargazers_count));
+    holder.textStarts.setText(new DecimalFormat().format(repo.getStargazersCount()));
 
     applyIcon(holder.textForks, Octicons.Icon.oct_repo_forked);
     holder.textForks.setText(new DecimalFormat().format(repo.forks_count));
@@ -61,7 +61,7 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       holder.textDescription.setVisibility(View.GONE);
     }
 
-    if (repo.isPrivate) {
+    if (repo.isPrivateRepo()) {
       holder.repoPrivate.setVisibility(View.VISIBLE);
     } else {
       holder.repoPrivate.setVisibility(View.GONE);
@@ -104,13 +104,10 @@ public class ReposAdapter extends RecyclerArrayAdapter<Repo, ReposAdapter.ViewHo
       textStarts = (TextView) itemView.findViewById(R.id.textStarts);
       textForks = (TextView) itemView.findViewById(R.id.textForks);
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          Repo item = getItem(getAdapterPosition());
-          if (item != null) {
-            v.getContext().startActivity(new IntentsManager(v.getContext()).manageRepos(Uri.parse(item.html_url)));
-          }
+      itemView.setOnClickListener(v -> {
+        Repo item = getItem(getAdapterPosition());
+        if (item != null) {
+          v.getContext().startActivity(new IntentsManager(v.getContext()).manageRepos(Uri.parse(item.getHtmlUrl())));
         }
       });
     }

@@ -1,14 +1,11 @@
 package com.alorma.github.sdk.services.repo;
 
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.client.GithubClient;
+import core.repositories.Repo;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by bernat.borras on 11/11/15.
- */
 public class CreateRepositoryClient extends GithubClient<Repo> {
 
   private RepoRequestDTO repoRequestDTO;

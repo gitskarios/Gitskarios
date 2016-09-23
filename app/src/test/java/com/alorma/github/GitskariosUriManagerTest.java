@@ -1,7 +1,7 @@
 package com.alorma.github;
 
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import core.User;
 import io.mola.galimatias.GalimatiasParseException;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +41,9 @@ public class GitskariosUriManagerTest {
     User user = urisManager.getUser(uri);
 
     //then
-    assertEquals(user.login, "alorma");
+    assertEquals(user.getLogin(), "alorma");
   }
+
   @Test
   public void shouldGiveRepositoryNull_whenParsingGitskariosNotificationsUrl() throws GalimatiasParseException {
     // given
@@ -186,6 +187,7 @@ public class GitskariosUriManagerTest {
     //then
     assertTrue(isProtected);
   }
+
   @Test
   public void shouldGiveTrue_whenParsingGithubOrgsUrl() throws GalimatiasParseException {
     // given

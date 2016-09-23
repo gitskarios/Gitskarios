@@ -2,7 +2,7 @@ package com.alorma.github.sdk.bean.issue;
 
 import android.util.Pair;
 import com.alorma.github.sdk.bean.dto.response.ReviewComment;
-import com.alorma.github.sdk.bean.dto.response.User;
+import core.User;
 import java.util.List;
 
 public class IssueStoryReviewComments implements IssueStoryDetail {

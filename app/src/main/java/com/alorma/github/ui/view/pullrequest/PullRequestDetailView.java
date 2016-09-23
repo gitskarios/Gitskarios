@@ -16,9 +16,7 @@ import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.activity.repo.RepoDetailActivity;
@@ -32,6 +30,8 @@ import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Permissions;
+import core.repositories.Repo;
 
 public class PullRequestDetailView extends LinearLayout {
 
@@ -103,7 +103,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   private void checkEditable(RepoInfo repoInfo, PullRequest pullRequest) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push || pullRequest.user.login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push || pullRequest.user.getLogin().equals(credentials.getUserName())) {
       OnClickListener editClickListener = v -> {
         if (pullRequestActionsListener != null) {
           if (v.getId() == R.id.textTitle) {
@@ -147,16 +147,14 @@ public class PullRequestDetailView extends LinearLayout {
   private void parseDeleteBranchButton(PullRequest pullRequest, Permissions permissions) {
     if (deleteBranchButton != null) {
       if (pullRequest.head != null
-              && (pullRequest.state == IssueState.closed || pullRequest.merged)
-              && pullRequestActionsListener.userIsAbleToDelete()) {
+          && (pullRequest.state == IssueState.closed || pullRequest.merged)
+          && pullRequestActionsListener.userIsAbleToDelete()) {
         deleteBranchButton.setVisibility(VISIBLE);
         deleteBranchButton.setOnClickListener(v -> {
           pullRequestActionsListener.deleteHeadReference(pullRequest.head);
         });
         deleteBranchButton.setBackgroundResource(
-                pullRequest.merged
-                        ? R.drawable.pull_request_merged_delete_branch
-                        : R.drawable.pull_request_closed_delete_branch);
+            pullRequest.merged ? R.drawable.pull_request_merged_delete_branch : R.drawable.pull_request_closed_delete_branch);
       } else {
         deleteBranchButton.setVisibility(View.GONE);
       }
@@ -168,12 +166,12 @@ public class PullRequestDetailView extends LinearLayout {
       final Repo repo = pullRequest.repository;
       if (repo != null) {
         textRepository.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo), null, null, null);
-        textRepository.setText(repo.full_name);
+        textRepository.setText(repo.getFullName());
         textRepository.setVisibility(View.VISIBLE);
         textRepository.setOnClickListener(v -> {
           RepoInfo repoInfo1 = new RepoInfo();
-          repoInfo1.owner = repo.owner.login;
-          repoInfo1.name = repo.name;
+          repoInfo1.owner = repo.getOwner().getLogin();
+          repoInfo1.name = repo.getName();
           Intent launcherIntent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo1);
           v.getContext().startActivity(launcherIntent);
         });
@@ -197,7 +195,7 @@ public class PullRequestDetailView extends LinearLayout {
 
   private void parseUser(PullRequest pullRequest) {
     if (pullRequest.user != null) {
-      profileName.setText(pullRequest.user.login);
+      profileName.setText(pullRequest.user.getLogin());
       createdAt.setText(TimeUtils.getTimeAgoString(pullRequest.created_at));
 
       profileIcon.setUser(pullRequest.user);
@@ -246,7 +244,9 @@ public class PullRequestDetailView extends LinearLayout {
 
   public interface PullRequestActionsListener extends IssueDetailRequestListener {
     void mergeRequest(Head head, Head base);
+
     boolean userIsAbleToDelete();
+
     void deleteHeadReference(Head head);
   }
 }

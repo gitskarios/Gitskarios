@@ -8,8 +8,8 @@ import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.GithubPage;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 import java.util.List;
 
 public class GollumEventViewHolder extends EventViewHolder {
@@ -37,10 +37,10 @@ public class GollumEventViewHolder extends EventViewHolder {
     if (event.payload.pages != null) {
       List<GithubPage> pages = event.payload.pages;
       if (pages.size() == 1) {
-        String text = "<b>" + event.actor.login + "</b>" + " " + pages.get(0).action + " the <b>" + event.repo.name + "</b> wiki";
+        String text = "<b>" + event.actor.getLogin() + "</b>" + " " + pages.get(0).action + " the <b>" + event.repo.name + "</b> wiki";
         authorName.setText(Html.fromHtml(text));
       } else {
-        String text = "<b>" + event.actor.login + "</b>" + " updated the <b>" + event.repo.name + "</b> wiki";
+        String text = "<b>" + event.actor.getLogin() + "</b>" + " updated the <b>" + event.repo.name + "</b> wiki";
         authorName.setText(Html.fromHtml(text));
       }
     }

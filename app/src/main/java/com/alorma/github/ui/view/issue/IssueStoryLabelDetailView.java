@@ -8,12 +8,12 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Label;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.issue.IssueStoryLabelList;
 import com.alorma.github.sdk.bean.issue.IssueStoryUnlabelList;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TimeUtils;
+import core.User;
+import core.issues.Label;
 import java.util.List;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -68,7 +68,7 @@ public class IssueStoryLabelDetailView extends LinearLayout {
   }
 
   private void printLabelsEvent(boolean added, long created_at, User user, List<Label> labels) {
-    userText.setText(user.login);
+    userText.setText(user.getLogin());
 
     profileIcon.setUser(user);
     labelsView.setLabels(labels);

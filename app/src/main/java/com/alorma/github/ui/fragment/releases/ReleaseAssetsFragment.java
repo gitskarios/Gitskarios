@@ -9,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.releases.Asset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
   private static final String RELEASE_ASSETS = "RELEASE_ASSETS";
   private ReleaseAssetCallback releaseAssetCallback;
 
-  public static ReleaseAssetsFragment newInstance(List<ReleaseAsset> releaseAssets) {
+  public static ReleaseAssetsFragment newInstance(List<Asset> releaseAssets) {
     ReleaseAssetsFragment releaseAssetsFragment = new ReleaseAssetsFragment();
 
     Bundle args = new Bundle();
@@ -56,7 +56,7 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
     RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-    List<ReleaseAsset> assets = getArguments().getParcelableArrayList(RELEASE_ASSETS);
+    List<Asset> assets = getArguments().getParcelableArrayList(RELEASE_ASSETS);
 
     if (assets != null) {
       ReleaseAssetsAdapter releaseAssetsAdapter = new ReleaseAssetsAdapter(getActivity().getLayoutInflater());
@@ -67,7 +67,7 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
   }
 
   @Override
-  public void onReleaseAssetCLicked(ReleaseAsset asset) {
+  public void onReleaseAssetCLicked(Asset asset) {
     if (releaseAssetCallback != null) {
       releaseAssetCallback.onReleaseDownloadRequest(asset);
     }
@@ -88,6 +88,6 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
   }
 
   public interface ReleaseAssetCallback {
-    void onReleaseDownloadRequest(ReleaseAsset asset);
+    void onReleaseDownloadRequest(Asset asset);
   }
 }

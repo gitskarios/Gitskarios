@@ -1,14 +1,11 @@
 package com.alorma.github.sdk.services.notifications;
 
-import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.sdk.services.client.GithubClient;
+import core.notifications.Notification;
 import java.util.List;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by Bernat on 18/02/2015.
- */
 public class GetNotificationsClient extends GithubClient<List<Notification>> {
 
   private String token;

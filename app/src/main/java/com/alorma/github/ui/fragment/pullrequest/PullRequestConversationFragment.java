@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
@@ -32,7 +31,6 @@ import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
@@ -42,7 +40,6 @@ import com.alorma.github.sdk.services.pullrequest.MergePullRequestClient;
 import com.alorma.github.sdk.services.pullrequest.story.PullRequestStoryLoader;
 import com.alorma.github.sdk.services.reference.DeleteReferenceClient;
 import com.alorma.github.sdk.services.reference.GetReferenceClient;
-import com.alorma.github.sdk.services.repo.CreateRepositoryClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.actions.AddIssueCommentAction;
@@ -56,8 +53,7 @@ import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
 import com.alorma.github.utils.IssueUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
-import rx.Observable;
+import core.repositories.Repo;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -212,7 +208,7 @@ public class PullRequestConversationFragment extends BaseFragment
         if (settings.shouldShowDialogEditIssue()) {
           if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
             showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
-          } else if (pullRequestStory.item.user.login.equals(credentials.getUserName())) {
+          } else if (pullRequestStory.item.user.getLogin().equals(credentials.getUserName())) {
             showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
           }
         }
@@ -317,36 +313,28 @@ public class PullRequestConversationFragment extends BaseFragment
 
     RepoInfo headRepoInfo = pullRequestStory.item.head.repo.toInfo();
     GetRepoClient getRepoClient = new GetRepoClient(headRepoInfo);
-    GetReferenceClient referenceClient =
-            new GetReferenceClient(headRepoInfo, pullRequestStory.item.head.ref);
-    getRepoClient
-            .observable()
-            .flatMap((repo) -> {
-              if (repo.permissions != null) {
-                hasPushPermissionsToHead = repo.permissions.push;
-              }
+    GetReferenceClient referenceClient = new GetReferenceClient(headRepoInfo, pullRequestStory.item.head.ref);
+    getRepoClient.observable().flatMap((repo) -> {
+      if (repo.permissions != null) {
+        hasPushPermissionsToHead = repo.permissions.push;
+      }
 
-              return referenceClient.observable()
-                      .subscribeOn(Schedulers.io())
-                      .observeOn(AndroidSchedulers.mainThread());
-            })
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<GitReference>() {
-              @Override
-              public void onCompleted() {
-              }
+      return referenceClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GitReference>() {
+      @Override
+      public void onCompleted() {
+      }
 
-              @Override
-              public void onError(Throwable e) {
-                notifyHeadOfAdapter(false);
-              }
+      @Override
+      public void onError(Throwable e) {
+        notifyHeadOfAdapter(false);
+      }
 
-              @Override
-              public void onNext(GitReference reference) {
-                notifyHeadOfAdapter(true);
-              }
-            });
+      @Override
+      public void onNext(GitReference reference) {
+        notifyHeadOfAdapter(true);
+      }
+    });
   }
 
   private void notifyHeadOfAdapter(boolean headReferenceExist) {
@@ -358,8 +346,7 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private boolean pullRequestClosedOrMerged() {
-    return pullRequestStory.item.state == IssueState.closed
-    || pullRequestStory.item.merged;
+    return pullRequestStory.item.state == IssueState.closed || pullRequestStory.item.merged;
   }
 
   private boolean pullRequestStoryItemExist() {
@@ -472,21 +459,16 @@ public class PullRequestConversationFragment extends BaseFragment
     updateReferenceRequest.force = true;
     String ref = head.ref;
 
-    DeleteReferenceClient deleteReferenceClient =
-            new DeleteReferenceClient(head.repo.toInfo(), ref);
-    deleteReferenceClient.observable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe((result) -> {
-                      if (result) {
-                        restartActivity();
-                      } else {
-                        Toast.makeText(getActivity(), "Failed to delete branch.", Toast.LENGTH_SHORT).show();
-                      }
-                    }, (throwable) -> {
-                      Toast.makeText(getActivity(), "Failed to delete branch.", Toast.LENGTH_SHORT).show();
-                    }
-            );
+    DeleteReferenceClient deleteReferenceClient = new DeleteReferenceClient(head.repo.toInfo(), ref);
+    deleteReferenceClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe((result) -> {
+      if (result) {
+        restartActivity();
+      } else {
+        Toast.makeText(getActivity(), "Failed to delete branch.", Toast.LENGTH_SHORT).show();
+      }
+    }, (throwable) -> {
+      Toast.makeText(getActivity(), "Failed to delete branch.", Toast.LENGTH_SHORT).show();
+    });
   }
 
   private void merge(String message, String sha, IssueInfo issueInfo) {

@@ -1,12 +1,12 @@
 package com.alorma.github.ui.activity.issue;
 
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repository.GenericRepository;
 import com.alorma.github.sdk.services.issues.GithubIssueLabelsClient;
+import core.ApiClient;
+import core.datasource.RestWrapper;
+import core.issues.Label;
+import core.repository.GenericRepository;
 import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

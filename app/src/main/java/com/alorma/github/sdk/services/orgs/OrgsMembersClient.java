@@ -1,14 +1,11 @@
 package com.alorma.github.sdk.services.orgs;
 
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.user.UsersService;
+import core.User;
 import java.util.List;
 import retrofit.RestAdapter;
 
-/**
- * Created by Bernat on 22/02/2015.
- */
 public class OrgsMembersClient extends GithubListClient<List<User>> {
 
   private final String org;

@@ -9,7 +9,6 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.CreateAuthorization;
 import com.alorma.github.sdk.bean.dto.response.GithubAuthorization;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.login.CreateAuthorizationClient;
 import com.alorma.github.sdk.services.user.GetAuthUserClient;
 import com.alorma.github.sdk.services.user.TwoFactorAppException;
@@ -17,6 +16,7 @@ import com.alorma.github.sdk.services.user.TwoFactorAuthException;
 import com.alorma.github.sdk.services.user.UnauthorizedException;
 import com.alorma.github.utils.AccountUtils;
 import com.alorma.gitskarios.core.Pair;
+import core.User;
 import java.lang.ref.WeakReference;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -106,9 +106,9 @@ public class WelcomePresenter {
 
   private void addAccount(User user, String accessToken) {
     if (accessToken != null && accountAuthenticatorActivity != null && accountAuthenticatorActivity.get() != null) {
-      Account account = new Account(new AccountUtils().getNameForAccount(user.login),
+      Account account = new Account(new AccountUtils().getNameForAccount(user.getLogin()),
           accountAuthenticatorActivity.get().getString(R.string.account_type));
-      Bundle userData = AccountsHelper.buildBundle(user.name, user.email, user.avatar_url);
+      Bundle userData = AccountsHelper.buildBundle(user.getName(), user.getEmail(), user.getAvatar());
       userData.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
 
       AccountManager accountManager = AccountManager.get(accountAuthenticatorActivity.get());

@@ -22,8 +22,6 @@ import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
 import com.alorma.github.presenter.NavigationFragment;
-import com.alorma.github.sdk.bean.dto.response.Notification;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
@@ -56,6 +54,8 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
+import core.notifications.Notification;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -306,7 +306,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     headerBuilder.withOnAccountHeaderListener((view, profile, current) -> {
       if (current) {
         User user = new User();
-        user.login = profile.getName().getText();
+        user.setLogin(profile.getName().getText());
         Intent launcherIntent = ProfileActivity.createLauncherIntent(MainActivity.this, selectedAccount);
         startActivity(launcherIntent);
         return true;
@@ -343,7 +343,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   }
 
   @NonNull
-  private ProfileDrawerItem getOrganizationProfileDrawerItem(com.alorma.github.sdk.core.User user) {
+  private ProfileDrawerItem getOrganizationProfileDrawerItem(User user) {
     return new ProfileDrawerItem().withName(user.getLogin()).withIcon(getUserAvatarUrl(user.getAvatar(), user.getLogin()));
   }
 
@@ -351,7 +351,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     return Uri.parse(avatar).buildUpon().appendQueryParameter("username", name).build();
   }
 
-  private List<IDrawerItem> getOrganizationProfileSubItems(com.alorma.github.sdk.core.User user) {
+  private List<IDrawerItem> getOrganizationProfileSubItems(User user) {
     int iconColor = ContextCompat.getColor(this, R.color.icons);
     List<IDrawerItem> items = new ArrayList<>();
     items.add(new PrimaryDrawerItem().withName("Events")
@@ -635,9 +635,9 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   }
 
   @Override
-  public void onOrganizationsLoaded(List<com.alorma.github.sdk.core.User> organizations) {
+  public void onOrganizationsLoaded(List<User> organizations) {
     if (accountHeader != null) {
-      for (com.alorma.github.sdk.core.User organization : organizations) {
+      for (User organization : organizations) {
         ProfileDrawerItem drawerItem = getOrganizationProfileDrawerItem(organization);
         drawerItems.put(drawerItem.getName().getText(), getOrganizationProfileSubItems(organization));
         drawerItem.withSubItems();

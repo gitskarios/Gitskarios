@@ -1,21 +1,11 @@
 package com.alorma.github.sdk.bean.dto.response;
 
 import android.os.Parcel;
-import android.os.Parcelable;
-import com.alorma.gitskarios.core.Pair;
+import core.User;
 import java.util.List;
 
-public class Commit extends ShaUrl implements Parcelable {
+public class Commit extends ShaUrl {
 
-  public static final Creator<Commit> CREATOR = new Creator<Commit>() {
-    public Commit createFromParcel(Parcel source) {
-      return new Commit(source);
-    }
-
-    public Commit[] newArray(int size) {
-      return new Commit[size];
-    }
-  };
   private static final int MAX_COMMIT_LENGHT = 80;
   public GitCommit commit;
   public User author;
@@ -30,20 +20,6 @@ public class Commit extends ShaUrl implements Parcelable {
   public GithubStatusResponse combinedStatus;
 
   public Commit() {
-  }
-
-  protected Commit(Parcel in) {
-    super(in);
-    this.commit = in.readParcelable(GitCommit.class.getClassLoader());
-    this.author = in.readParcelable(User.class.getClassLoader());
-    this.parents = in.createTypedArrayList(ShaUrl.CREATOR);
-    this.stats = in.readParcelable(GitChangeStatus.class.getClassLoader());
-    this.committer = in.readParcelable(User.class.getClassLoader());
-    this.message = in.readString();
-    this.distinct = in.readByte() != 0;
-    this.files = in.readParcelable(GitCommitFiles.class.getClassLoader());
-    this.days = in.readInt();
-    this.comment_count = in.readInt();
   }
 
   @Override
@@ -61,6 +37,14 @@ public class Commit extends ShaUrl implements Parcelable {
     return null;
   }
 
+  public boolean isCommitVerified() {
+    if (commit != null) {
+      GitCommitVerification verification = commit.verification;
+      return verification != null && verification.verified;
+    }
+    return false;
+  }
+
   @Override
   public int describeContents() {
     return 0;
@@ -69,23 +53,43 @@ public class Commit extends ShaUrl implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     super.writeToParcel(dest, flags);
-    dest.writeParcelable(this.commit, 0);
-    dest.writeParcelable(this.author, 0);
-    dest.writeTypedList(parents);
-    dest.writeParcelable(this.stats, 0);
-    dest.writeParcelable(this.committer, 0);
+    dest.writeParcelable(this.commit, flags);
+    dest.writeParcelable(this.author, flags);
+    dest.writeTypedList(this.parents);
+    dest.writeParcelable(this.stats, flags);
+    dest.writeParcelable(this.committer, flags);
     dest.writeString(this.message);
-    dest.writeByte(distinct ? (byte) 1 : (byte) 0);
-    dest.writeParcelable(this.files, 0);
+    dest.writeByte(this.distinct ? (byte) 1 : (byte) 0);
+    dest.writeParcelable(this.files, flags);
     dest.writeInt(this.days);
     dest.writeInt(this.comment_count);
+    dest.writeParcelable(this.combinedStatus, flags);
   }
 
-  public boolean isCommitVerified() {
-    if (commit != null) {
-      GitCommitVerification verification = commit.verification;
-      return verification != null && verification.verified;
-    }
-    return false;
+  protected Commit(Parcel in) {
+    super(in);
+    this.commit = in.readParcelable(GitCommit.class.getClassLoader());
+    this.author = in.readParcelable(User.class.getClassLoader());
+    this.parents = in.createTypedArrayList(ShaUrl.CREATOR);
+    this.stats = in.readParcelable(GitChangeStatus.class.getClassLoader());
+    this.committer = in.readParcelable(User.class.getClassLoader());
+    this.message = in.readString();
+    this.distinct = in.readByte() != 0;
+    this.files = in.readParcelable(GitCommitFiles.class.getClassLoader());
+    this.days = in.readInt();
+    this.comment_count = in.readInt();
+    this.combinedStatus = in.readParcelable(GithubStatusResponse.class.getClassLoader());
   }
+
+  public static final Creator<Commit> CREATOR = new Creator<Commit>() {
+    @Override
+    public Commit createFromParcel(Parcel source) {
+      return new Commit(source);
+    }
+
+    @Override
+    public Commit[] newArray(int size) {
+      return new Commit[size];
+    }
+  };
 }

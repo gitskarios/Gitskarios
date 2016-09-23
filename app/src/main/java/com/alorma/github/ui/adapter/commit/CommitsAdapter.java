@@ -12,12 +12,12 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.TextUtils;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
+import core.User;
 import java.io.IOException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -98,12 +98,12 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
     if (author != null) {
       holder.avatar.setUser(author);
 
-      if (author.login != null) {
-        holder.user.setText(author.login);
-      } else if (author.name != null) {
-        holder.user.setText(author.name);
-      } else if (author.email != null) {
-        holder.user.setText(author.email);
+      if (author.getLogin() != null) {
+        holder.user.setText(author.getLogin());
+      } else if (author.getName() != null) {
+        holder.user.setText(author.getName());
+      } else if (author.getEmail() != null) {
+        holder.user.setText(author.getEmail());
       }
     }
   }

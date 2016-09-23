@@ -9,10 +9,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
+import core.repositories.releases.Asset;
 
-public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<ReleaseAsset, ReleaseAssetsAdapter.Holder> {
+public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<Asset, ReleaseAssetsAdapter.Holder> {
 
   private OnReleaseAssetClicked onReleaseAssetClicked;
 
@@ -21,10 +21,10 @@ public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<ReleaseAsset, Rel
   }
 
   @Override
-  protected void onBindViewHolder(Holder holder, ReleaseAsset releaseAsset) {
-    holder.releaseAssetName.setText(releaseAsset.name);
-    if (releaseAsset.size > 0) {
-      String size = Formatter.formatShortFileSize(holder.releaseAssetSize.getContext(), releaseAsset.size);
+  protected void onBindViewHolder(Holder holder, Asset releaseAsset) {
+    holder.releaseAssetName.setText(releaseAsset.getName());
+    if (releaseAsset.getSize() > 0) {
+      String size = Formatter.formatShortFileSize(holder.releaseAssetSize.getContext(), releaseAsset.getSize());
       holder.releaseAssetSize.setText(size);
       holder.releaseAssetSize.setVisibility(View.VISIBLE);
     } else {
@@ -58,6 +58,6 @@ public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<ReleaseAsset, Rel
   }
 
   public interface OnReleaseAssetClicked {
-    void onReleaseAssetCLicked(ReleaseAsset asset);
+    void onReleaseAssetCLicked(Asset asset);
   }
 }

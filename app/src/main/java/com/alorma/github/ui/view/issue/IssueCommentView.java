@@ -95,7 +95,7 @@ public class IssueCommentView extends LinearLayout {
 
   private void checkEditable(RepoInfo repoInfo, IssueStoryComment issueStoryComment) {
     StoreCredentials credentials = new StoreCredentials(getContext());
-    if (repoInfo.permissions != null && repoInfo.permissions.push || issueStoryComment.user().login.equals(credentials.getUserName())) {
+    if (repoInfo.permissions != null && repoInfo.permissions.push || issueStoryComment.user().getLogin().equals(credentials.getUserName())) {
       editComment.setVisibility(VISIBLE);
       editComment.setOnClickListener(view -> {
         if (issueCommentRequestListener != null) {
@@ -109,7 +109,7 @@ public class IssueCommentView extends LinearLayout {
   }
 
   private void applyGenericIssueStory(IssueStoryDetail storyEvent) {
-    userText.setText(storyEvent.user().login);
+    userText.setText(storyEvent.user().getLogin());
     profileIcon.setUser(storyEvent.user());
     setTime(storyEvent.createdAt());
   }

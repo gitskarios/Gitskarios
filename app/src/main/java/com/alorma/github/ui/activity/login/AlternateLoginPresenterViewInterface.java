@@ -1,6 +1,6 @@
 package com.alorma.github.ui.activity.login;
 
-import com.alorma.github.sdk.bean.dto.response.User;
+import core.User;
 
 public interface AlternateLoginPresenterViewInterface {
 

@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
+import core.User;
 
 public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHolder> {
 
@@ -31,7 +31,7 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
 
     UniversalImageLoaderUtils.loadUserAvatarSquare(holder.avatar, user);
 
-    holder.text.setText(user.login);
+    holder.text.setText(user.getLogin());
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,8 +50,8 @@ public class UsersAdapter extends RecyclerArrayAdapter<User, UsersAdapter.ViewHo
         if (isReturnResult()) {
           getCallback().onItemSelected(user);
         } else {
-          if (user.type == UserType.Organization) {
-            v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
+          if (user.getType().equals(UserType.Organization.name())) {
+            v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.getLogin()));
           } else {
             final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
             if (textRootView.getTag() != null) {

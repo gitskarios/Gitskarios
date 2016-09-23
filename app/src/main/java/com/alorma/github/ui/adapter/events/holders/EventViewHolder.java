@@ -5,10 +5,10 @@ import android.util.Log;
 import android.view.View;
 import com.alorma.github.BuildConfig;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.track.Tracker;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.utils.TimeUtils;
+import core.User;
 
 public abstract class EventViewHolder extends RecyclerView.ViewHolder {
   private RecyclerArrayAdapter.ItemCallback<GithubEvent> callback;

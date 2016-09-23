@@ -27,16 +27,4 @@ public class SearchBase implements Parcelable {
     this.totalCount = in.readInt();
     this.incompleteResults = in.readByte() != 0;
   }
-
-  public static final Creator<SearchBase> CREATOR = new Creator<SearchBase>() {
-    @Override
-    public SearchBase createFromParcel(Parcel source) {
-      return new SearchBase(source);
-    }
-
-    @Override
-    public SearchBase[] newArray(int size) {
-      return new SearchBase[size];
-    }
-  };
 }

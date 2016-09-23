@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.R;
 import com.alorma.github.bean.ProfileItem;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.OrganizationsActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
@@ -22,6 +21,7 @@ import com.alorma.github.utils.TimeUtils;
 import com.github.javierugarte.GitHubContributionsView;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,47 +81,46 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
   }
 
   private void fillCardBio(User user) {
-    if (user.created_at != null) {
+    if (user.getCreatedAt() != null) {
       ProfileItem profileUserCreated =
-          new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(getActivity(), user.created_at, R.string.joined_at), null);
+          new ProfileItem(Octicons.Icon.oct_clock, TimeUtils.getDateToText(getActivity(), user.getCreatedAt(), R.string.joined_at), null);
       addItem(profileUserCreated, cardAbout);
     }
-    if (!TextUtils.isEmpty(user.company)) {
+    if (!TextUtils.isEmpty(user.getCompany())) {
       Intent intent = new Intent(Intent.ACTION_SEARCH);
-      intent.putExtra(SearchManager.QUERY, user.company);
-      ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.company, intent);
+      intent.putExtra(SearchManager.QUERY, user.getCompany());
+      ProfileItem profileUserOrganization = new ProfileItem(Octicons.Icon.oct_organization, user.getCompany(), intent);
       addItem(profileUserOrganization, cardAbout);
     }
-    if (!TextUtils.isEmpty(user.location)) {
+    if (!TextUtils.isEmpty(user.getLocation())) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
-      Uri geo = Uri.parse("geo:0,0?q=" + user.location);
+      Uri geo = Uri.parse("geo:0,0?q=" + user.getLocation());
       intent.setData(geo);
-      ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.location, intent);
+      ProfileItem profileUserLocation = new ProfileItem(Octicons.Icon.oct_location, user.getLocation(), intent);
       addItem(profileUserLocation, cardAbout);
     }
-    if (!TextUtils.isEmpty(user.email)) {
+    if (!TextUtils.isEmpty(user.getEmail())) {
       Intent intent = new Intent(Intent.ACTION_SENDTO);
       intent.setData(Uri.parse("mailto:"));
-      intent.putExtra(Intent.EXTRA_EMAIL, new String[] { user.email });
-      ProfileItem profileUserEmail = new ProfileItem(Octicons.Icon.oct_mail, user.email, intent);
+      intent.putExtra(Intent.EXTRA_EMAIL, new String[] { user.getEmail() });
+      ProfileItem profileUserEmail = new ProfileItem(Octicons.Icon.oct_mail, user.getEmail(), intent);
       addItem(profileUserEmail, cardAbout);
     }
-    if (!TextUtils.isEmpty(user.blog)) {
+    if (!TextUtils.isEmpty(user.getBlog())) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
-      if (!user.blog.startsWith("http://") && !user.blog.startsWith("https://")) {
-        user.blog = "http://" + user.blog;
+      if (!user.getBlog().startsWith("http://") && !user.getBlog().startsWith("https://")) {
+        user.setBlog("http://" + user.getBlog());
       }
-      intent.setData(Uri.parse(user.blog));
-      ProfileItem profileUserBlog = new ProfileItem(Octicons.Icon.oct_link, user.blog, intent);
+      intent.setData(Uri.parse(user.getBlog()));
+      ProfileItem profileUserBlog = new ProfileItem(Octicons.Icon.oct_link, user.getBlog(), intent);
       addItem(profileUserBlog, cardAbout);
     }
   }
 
   private void fillCardContributions(User user) {
-    if (user != null && user.login != null && getView() != null) {
-      GitHubContributionsView contributionsView = (GitHubContributionsView)
-              getView().findViewById(R.id.github_contributions_view);
-      contributionsView.loadUserName(user.login);
+    if (user != null && user.getLogin() != null && getView() != null) {
+      GitHubContributionsView contributionsView = (GitHubContributionsView) getView().findViewById(R.id.github_contributions_view);
+      contributionsView.loadUserName(user.getLogin());
     }
   }
 
@@ -148,22 +147,22 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
   }
 
   private void fillCardGithubData(User user) {
-    if (user.organizations > 0) {
-      Intent intent = OrganizationsActivity.launchIntent(getActivity(), user.login);
+    if (user.getOrganizationsCount() > 0) {
+      Intent intent = OrganizationsActivity.launchIntent(getActivity(), user.getLogin());
       final ProfileItem profileItemOrgs = new ProfileItem(Octicons.Icon.oct_organization, getString(R.string.orgs_num_empty), intent);
       addItem(profileItemOrgs, cardGithub);
     }
 
-    if (user.public_repos > 0) {
-      String text = getString(R.string.repos_num, user.public_repos);
+    if (user.getPublicRepos() > 0) {
+      String text = getString(R.string.repos_num, user.getPublicRepos());
       ProfileItem profileItemRepos = new ProfileItem(Octicons.Icon.oct_repo, text, null);
       profileItemRepos.setCallback(id -> notifyOpenRepos());
       addItem(profileItemRepos, cardGithub);
     }
 
-    if (user.public_gists > 0) {
-      String text = getString(R.string.gists_num, user.public_gists);
-      Intent intent = GistsMainActivity.createLauncherIntent(getActivity(), user.login);
+    if (user.getPublicGists() > 0) {
+      String text = getString(R.string.gists_num, user.getPublicGists());
+      Intent intent = GistsMainActivity.createLauncherIntent(getActivity(), user.getLogin());
       ProfileItem profileItemGists = new ProfileItem(Octicons.Icon.oct_gist, text, intent);
       addItem(profileItemGists, cardGithub);
     }
@@ -171,7 +170,7 @@ public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
   private void notifyOpenRepos() {
     if (userResumeCallback != null) {
-      userResumeCallback.openRepos(user.login);
+      userResumeCallback.openRepos(user.getLogin());
     }
   }
 

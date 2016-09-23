@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.utils.AttributesUtils;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -26,6 +25,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import core.User;
 
 /**
  * Created by Bernat on 15/07/2014.
@@ -61,7 +61,7 @@ public class UniversalImageLoaderUtils {
     return bitmap;
   }
 
-  public static void loadUserAvatar(final ImageView imageView, Organization actor) {
+  public static void loadUserAvatar(final ImageView imageView, User actor) {
     final int defaultProfileColor = AttributesUtils.getPrimaryColor(imageView.getContext());
 
     int avatarSize = imageView.getResources().getDimensionPixelOffset(R.dimen.avatar_size);
@@ -70,7 +70,7 @@ public class UniversalImageLoaderUtils {
       avatarSize = Math.min(imageView.getWidth(), imageView.getHeight());
     }
 
-    if (!TextUtils.isEmpty(actor.login)) {
+    if (!TextUtils.isEmpty(actor.getLogin())) {
       ColorGenerator generator = ColorGenerator.MATERIAL;
 
       TextDrawable drawable = TextDrawable.builder()
@@ -78,11 +78,11 @@ public class UniversalImageLoaderUtils {
           .width(avatarSize)
           .height(avatarSize)
           .endConfig()
-          .buildRound(actor.login.substring(0, 1), generator.getColor(actor.login.substring(0, 1)));
+          .buildRound(actor.getLogin().substring(0, 1), generator.getColor(actor.getLogin().substring(0, 1)));
       imageView.setImageDrawable(drawable);
     }
 
-    String avatarUrl = actor.avatar_url;
+    String avatarUrl = actor.getAvatar();
 
     ImageLoader.getInstance().cancelDisplayTask(imageView);
     DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
@@ -108,12 +108,7 @@ public class UniversalImageLoaderUtils {
         Atelier.with(context, imageUri)
             .load(loadedImage)
             .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-            .listener(new Atelier.OnPaletteRenderedListener() {
-              @Override
-              public void onRendered(Palette palette) {
-                imageView.setTag(palette.getVibrantColor(defaultProfileColor));
-              }
-            });
+            .listener(palette -> imageView.setTag(palette.getVibrantColor(defaultProfileColor)));
       }
 
       @Override
@@ -123,7 +118,7 @@ public class UniversalImageLoaderUtils {
     });
   }
 
-  public static void loadUserAvatarSquare(final ImageView imageView, Organization actor) {
+  public static void loadUserAvatarSquare(final ImageView imageView, User actor) {
     final int defaultProfileColor = AttributesUtils.getPrimaryColor(imageView.getContext());
 
     int avatarSize = imageView.getResources().getDimensionPixelOffset(R.dimen.avatar_size);
@@ -132,7 +127,7 @@ public class UniversalImageLoaderUtils {
       avatarSize = Math.min(imageView.getWidth(), imageView.getHeight());
     }
 
-    if (!TextUtils.isEmpty(actor.login)) {
+    if (!TextUtils.isEmpty(actor.getLogin())) {
       ColorGenerator generator = ColorGenerator.MATERIAL;
 
       TextDrawable drawable = TextDrawable.builder()
@@ -140,11 +135,11 @@ public class UniversalImageLoaderUtils {
           .width(avatarSize)
           .height(avatarSize)
           .endConfig()
-          .buildRect(actor.login.substring(0, 1), generator.getColor(actor.login.substring(0, 1)));
+          .buildRect(actor.getLogin().substring(0, 1), generator.getColor(actor.getLogin().substring(0, 1)));
       imageView.setImageDrawable(drawable);
     }
 
-    String avatarUrl = actor.avatar_url;
+    String avatarUrl = actor.getAvatar();
 
     ImageLoader.getInstance().cancelDisplayTask(imageView);
     DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)

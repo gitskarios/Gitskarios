@@ -3,9 +3,6 @@ package com.alorma.github.sdk.bean.info;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Bernat on 06/09/2014.
- */
 public class ReleaseInfo implements Parcelable {
 
   public static final Creator<ReleaseInfo> CREATOR = new Creator<ReleaseInfo>() {

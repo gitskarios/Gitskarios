@@ -42,8 +42,8 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 24
-    versionName "4.4.3"
-    versionCode 404003
+    versionName "4.4.4"
+    versionCode 404004
     resValue "string", "app_git_hash", getCurrentGitHash()
 
     multiDexEnabled true
@@ -157,9 +157,6 @@ def getImgurCallback() {
 }
 
 dependencies {
-  compile project(':sdks:GithubReborn')
-  compile project(':imgur')
-
   compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
     transitive = true;
   }
@@ -193,6 +190,8 @@ dependencies {
   testCompile 'junit:junit:4.12'
   testCompile 'org.assertj:assertj-core:1.7.0'
   testCompile "org.mockito:mockito-core:1.10.19"
+  testCompile 'com.google.dagger:dagger-compiler:2.4'
+  androidTestApt 'com.google.dagger:dagger-compiler:2.4'
 
   compile 'com.maksim88:PasswordEditText:v0.8'
 
@@ -207,7 +206,7 @@ dependencies {
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
   compile 'com.github.xiprox.errorview:library:2.2.0'
 
-  def supportLibVersion = '24.2.0'
+  def supportLibVersion = '24.2.1'
   compile "com.android.support:design:$supportLibVersion"
   compile "com.android.support:appcompat-v7:$supportLibVersion"
   compile "com.android.support:palette-v7:$supportLibVersion"
@@ -243,7 +242,9 @@ dependencies {
   compile 'com.jakewharton:process-phoenix:1.0.2'
   compile 'com.github.alorma:timelineview:2.2.1'
   compile 'com.roughike:bottom-bar:1.4.0.1'
+
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
+
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
@@ -274,7 +275,8 @@ dependencies {
 
 play {
   jsonFile = file('../gplay-secret.json')
-  track = 'production'
+  track = 'rollout'
+  userFraction = 0.2
 }
 
 def (releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword) = signingConfigFromFile()

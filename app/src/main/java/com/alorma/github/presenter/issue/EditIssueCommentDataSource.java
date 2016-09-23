@@ -1,11 +1,11 @@
 package com.alorma.github.presenter.issue;
 
-import com.alorma.github.sdk.core.GithubComment;
-import com.alorma.github.sdk.core.datasource.CloudDataSource;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.datasource.SdkItem;
-import com.alorma.github.sdk.core.issue.EditIssueCommentBodyRequest;
-import com.alorma.github.sdk.core.issue.IssueCommentsRetrofit;
+import core.GithubComment;
+import core.datasource.CloudDataSource;
+import core.datasource.RestWrapper;
+import core.datasource.SdkItem;
+import core.issue.EditIssueCommentBodyRequest;
+import core.issue.IssueCommentsRetrofit;
 import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;

@@ -1,13 +1,10 @@
 package com.alorma.github.sdk.services.user;
 
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.GithubListClient;
+import core.User;
 import java.util.List;
 import retrofit.RestAdapter;
 
-/**
- * Created by Bernat on 14/07/2014.
- */
 public class UserFollowersClient extends GithubListClient<List<User>> {
 
   private String username;

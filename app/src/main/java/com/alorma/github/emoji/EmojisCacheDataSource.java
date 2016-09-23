@@ -1,8 +1,8 @@
 package com.alorma.github.emoji;
 
 import com.alorma.github.cache.CacheWrapper;
-import com.alorma.github.sdk.core.datasource.CacheDataSource;
-import com.alorma.github.sdk.core.datasource.SdkItem;
+import core.datasource.CacheDataSource;
+import core.datasource.SdkItem;
 import java.util.List;
 import rx.Observable;
 

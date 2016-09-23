@@ -1,6 +1,6 @@
 package com.alorma.gitskarios.core.client;
 
-import com.alorma.gitskarios.core.ApiClient;
+import core.ApiClient;
 import java.util.concurrent.TimeUnit;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -9,7 +9,6 @@ import retrofit.client.Client;
 import retrofit.client.Response;
 import retrofit.converter.Converter;
 import rx.Observable;
-import rx.functions.Func2;
 
 public abstract class BaseClient<K> implements RequestInterceptor, RestAdapter.Log {
 

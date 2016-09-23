@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.request.RequestMarkdownDTO;
-import com.alorma.github.sdk.bean.dto.response.Release;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.content.GetMarkdownClient;
@@ -28,6 +26,8 @@ import com.github.mobile.util.HttpImageGetter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
+import core.repositories.releases.Release;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -84,22 +84,22 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
     final Release release = getArguments().getParcelable(RELEASE);
 
     if (release != null) {
-      User owner = release.author;
+      User owner = release.getAuthor();
       profileIcon.setUser(owner);
-      authorName.setText(owner.login);
+      authorName.setText(owner.getLogin());
 
       createdIcon.setImageDrawable(
           new IconicsDrawable(getActivity(), Octicons.Icon.oct_clock).color(AttributesUtils.getAccentColor(getActivity())).actionBar());
-      if (release.created_at != null) {
-        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.created_at, R.string.created_at));
+      if (release.getCreatedAt() != null) {
+        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), release.getCreatedAt(), R.string.created_at));
       }
 
       final RepoInfo repoInfo = getArguments().getParcelable(REPO_INFO);
 
-      if (repoInfo != null && release.body != null && htmlContentView != null) {
+      if (repoInfo != null && release.getBody() != null && htmlContentView != null) {
 
         RequestMarkdownDTO requestMarkdownDTO = new RequestMarkdownDTO();
-        requestMarkdownDTO.text = release.body;
+        requestMarkdownDTO.text = release.getBody();
         GetMarkdownClient markdownClient = new GetMarkdownClient(requestMarkdownDTO);
         markdownClient.observable()
             .subscribeOn(Schedulers.io())
@@ -129,17 +129,14 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
             });
       }
 
-      author.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (release.author != null) {
-            if (release.author.type == UserType.User) {
-              Intent intent = ProfileActivity.createLauncherIntent(getActivity(), release.author);
-              startActivity(intent);
-            } else if (release.author.type == UserType.Organization) {
-              Intent intent = OrganizationActivity.launchIntent(getActivity(), release.author.login);
-              startActivity(intent);
-            }
+      author.setOnClickListener(v -> {
+        if (release.getAuthor() != null) {
+          if (release.getAuthor().getType().equals(UserType.User.name())) {
+            Intent intent = ProfileActivity.createLauncherIntent(getActivity(), release.getAuthor());
+            startActivity(intent);
+          } else if (release.getAuthor().getType().equals(UserType.Organization.name())) {
+            Intent intent = OrganizationActivity.launchIntent(getActivity(), release.getAuthor().getLogin());
+            startActivity(intent);
           }
         }
       });

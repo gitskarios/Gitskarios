@@ -1,15 +1,12 @@
 package com.alorma.github.sdk.services.search;
 
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.search.ReposSearch;
+import core.repositories.Repo;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 
-/**
- * Created by Bernat on 08/08/2014.
- */
 public class RepoSearchClient extends GithubSearchClient<ReposSearch, List<Repo>> {
 
   public RepoSearchClient(String query) {

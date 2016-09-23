@@ -22,9 +22,6 @@ import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
 import com.alorma.github.sdk.bean.dto.request.WebHookRequest;
-import com.alorma.github.sdk.bean.dto.response.Branch;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.EditRepoClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
@@ -44,13 +41,16 @@ import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
-import com.alorma.github.ui.fragment.releases.RepoReleasesFragment;
+import com.alorma.github.ui.fragment.releases.RepositoryTagsFragment;
 import com.alorma.github.ui.navigation.TabsNavigation;
 import com.alorma.github.ui.navigation.UiNavigation;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Branch;
+import core.repositories.Permissions;
+import core.repositories.Repo;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
@@ -152,8 +152,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(requestRepoInfo);
     navigation.add(new UiNavigation.UiItem(R.string.pulls_fragment_title, R.drawable.ic_git_pull_request, pullRequestsListFragment));
 
-    RepoReleasesFragment repoReleasesFragment = RepoReleasesFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.releases, R.drawable.ic_package, repoReleasesFragment));
+    RepositoryTagsFragment tagsFragment = RepositoryTagsFragment.newInstance(requestRepoInfo);
+    navigation.add(new UiNavigation.UiItem(R.string.tags, R.drawable.ic_package, tagsFragment));
 
     RepoContributorsFragment repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
     navigation.add(new UiNavigation.UiItem(R.string.contributors_fragment_title, R.drawable.ic_person, repoContributorsFragment));
@@ -193,7 +193,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       setTitle(currentRepo.name);
 
       if (requestRepoInfo.branch == null) {
-        requestRepoInfo.branch = repo.default_branch;
+        requestRepoInfo.branch = repo.getDefaultBranch();
       }
 
       invalidateOptionsMenu();
@@ -218,7 +218,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
               ((PermissionsManager) fragment).setPermissions(permissions.admin, permissions.push, permissions.pull);
             }
             if (fragment instanceof BranchManager) {
-              ((BranchManager) fragment).setCurrentBranch(currentRepo.default_branch);
+              ((BranchManager) fragment).setCurrentBranch(currentRepo.getDefaultBranch());
             }
           }
         }
@@ -291,14 +291,14 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       finish();
     } else if (item.getItemId() == R.id.share_repo) {
       if (currentRepo != null) {
-        String title = currentRepo.full_name;
+        String title = currentRepo.getFullName();
         String url = currentRepo.svn_url;
 
         new ShareAction(this, title, url).setType("Repository").execute();
       }
     } else if (item.getItemId() == R.id.action_open_in_browser) {
       if (currentRepo != null) {
-        new ViewInAction(this, currentRepo.html_url).setType("Repository").execute();
+        new ViewInAction(this, currentRepo.getHtmlUrl()).setType("Repository").execute();
       }
     } else if (item.getItemId() == R.id.action_repo_change_branch) {
       changeBranch();
@@ -336,13 +336,13 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   private RepoRequestDTO createRepoRequest() {
     RepoRequestDTO dto = new RepoRequestDTO();
 
-    dto.isPrivate = currentRepo.isPrivate;
+    dto.isPrivate = currentRepo.isPrivateRepo();
     dto.name = currentRepo.name;
     dto.description = currentRepo.description;
-    dto.default_branch = currentRepo.default_branch;
-    dto.has_downloads = currentRepo.has_downloads;
-    dto.has_wiki = currentRepo.has_wiki;
-    dto.has_issues = currentRepo.has_issues;
+    dto.default_branch = currentRepo.getDefaultBranch();
+    dto.has_downloads = currentRepo.hasDownloads;
+    dto.has_wiki = currentRepo.hasWiki;
+    dto.has_issues = currentRepo.hasIssues;
     dto.homepage = currentRepo.homepage;
 
     return dto;
@@ -391,7 +391,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       protected void onBranchSelected(String branch) {
         requestRepoInfo.branch = branch;
         if (currentRepo != null) {
-          currentRepo.default_branch = branch;
+          currentRepo.setDefaultBranch(branch);
         }
         if (getSupportActionBar() != null) {
           getSupportActionBar().setSubtitle(branch);
@@ -472,17 +472,17 @@ public class RepoDetailActivity extends RepositoryThemeActivity
 
   @Override
   public void onSourceDownload() {
-    String archive_url = currentRepo.archive_url;
+    String archive_url = currentRepo.getArchiveUrl();
     GitskariosSettings settings = new GitskariosSettings(this);
     String zipBall = getString(R.string.download_zip_value);
     String fileType = settings.getDownloadFileType(zipBall);
 
     archive_url = archive_url.replace("{archive_format}", fileType);
-    archive_url = archive_url.replace("{/ref}", "/" + currentRepo.default_branch);
+    archive_url = archive_url.replace("{/ref}", "/" + currentRepo.getDefaultBranch());
 
     GitskariosDownloadManager gitskariosDownloadManager = new GitskariosDownloadManager();
     gitskariosDownloadManager.download(this, archive_url,
-        currentRepo.name + "_" + currentRepo.default_branch + "." + getExtensionFromFileType(fileType), text -> {
+        currentRepo.name + "_" + currentRepo.getDefaultBranch() + "." + getExtensionFromFileType(fileType), text -> {
           Snackbar snackbar = Snackbar.make(getToolbar(), getString(text), Snackbar.LENGTH_LONG);
 
           snackbar.setAction(getString(R.string.external_storage_permission_request_action),

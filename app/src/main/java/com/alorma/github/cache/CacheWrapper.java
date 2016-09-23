@@ -2,10 +2,10 @@ package com.alorma.github.cache;
 
 import com.alorma.github.emoji.Emoji;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.fewlaps.quitnowcache.QNCache;
 import com.fewlaps.quitnowcache.QNCacheBuilder;
+import core.repositories.Repo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

@@ -9,9 +9,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 
 public class UsersAdapterSpinner extends RecyclerArrayAdapter<User, UsersAdapterSpinner.Holder> {
 
@@ -54,15 +54,15 @@ public class UsersAdapterSpinner extends RecyclerArrayAdapter<User, UsersAdapter
       if (authorLogin != null) {
         this.authorLogin.setVisibility(View.VISIBLE);
 
-        if (!TextUtils.isEmpty(user.login)) {
-          authorLogin.setText(user.login);
+        if (!TextUtils.isEmpty(user.getLogin())) {
+          authorLogin.setText(user.getLogin());
         }
       }
 
       if (authorEmail != null) {
         this.authorEmail.setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(user.login)) {
-          authorEmail.setText(user.email);
+        if (!TextUtils.isEmpty(user.getLogin())) {
+          authorEmail.setText(user.getEmail());
         }
       }
     }

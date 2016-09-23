@@ -1,11 +1,11 @@
 package com.alorma.github.ui.adapter.issues.holders;
 
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.Story;
 import com.alorma.github.ui.view.pullrequest.PullRequestDetailView;
+import core.repositories.Permissions;
 
 public class PullRequestHolder extends Holder<PullRequest> {
   private final PullRequestDetailView pullRequestDetailView;

@@ -1,12 +1,13 @@
 package com.alorma.github.sdk.services.client;
 
-import com.alorma.github.sdk.security.GitHub;
 import com.alorma.github.sdk.security.InterceptingListOkClient;
-import com.alorma.gitskarios.core.ApiClient;
 import com.alorma.gitskarios.core.client.BaseListClient;
 import com.alorma.gitskarios.core.client.LogProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.squareup.okhttp.OkHttpClient;
+import core.ApiClient;
+import core.Github;
+import core.GithubEnterprise;
 
 public abstract class GithubListClient<K> extends BaseListClient<K> {
 
@@ -16,10 +17,14 @@ public abstract class GithubListClient<K> extends BaseListClient<K> {
 
   private static ApiClient getApiClient() {
     if (UrlProvider.getInstance() == null) {
-      return new GitHub();
+      return new Github();
     } else {
       String url = UrlProvider.getInstance().getUrl();
-      return new GitHub(url);
+      if (url == null) {
+        return new Github();
+      } else {
+        return new GithubEnterprise(url);
+      }
     }
   }
 

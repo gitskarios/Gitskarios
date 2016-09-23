@@ -1,7 +1,7 @@
 package com.alorma.github.ui.activity.issue;
 
 import android.widget.Checkable;
-import com.alorma.github.sdk.bean.dto.response.Label;
+import core.issues.Label;
 
 public class LabelUiModel implements Checkable {
   public Label label;

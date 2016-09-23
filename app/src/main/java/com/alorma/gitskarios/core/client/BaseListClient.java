@@ -1,7 +1,7 @@
 package com.alorma.gitskarios.core.client;
 
-import com.alorma.gitskarios.core.ApiClient;
 import com.alorma.gitskarios.core.Pair;
+import core.ApiClient;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;

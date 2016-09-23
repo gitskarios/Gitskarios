@@ -9,8 +9,8 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.ui.utils.PaletteUtils;
+import core.issues.Label;
 
 public class LabelView extends TextView {
   public LabelView(Context context) {
@@ -42,24 +42,6 @@ public class LabelView extends TextView {
   }
 
   public void setLabel(Label label) {
-    if (label != null) {
-      int color = Color.parseColor("#" + label.color);
-      setTextColor(PaletteUtils.foregroundColorFromBackgroundColor(color));
-      setText(label.name);
-
-      GradientDrawable bg = new GradientDrawable();
-      bg.setColor(color);
-      bg.setCornerRadius(getResources().getDimensionPixelOffset(R.dimen.gapLarge));
-
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-        setBackground(bg);
-      } else {
-        setBackgroundDrawable(bg);
-      }
-    }
-  }
-
-  public void setLabel(com.alorma.github.sdk.core.issues.Label label) {
     if (label != null) {
       int color = Color.parseColor("#" + label.color);
       setTextColor(PaletteUtils.foregroundColorFromBackgroundColor(color));

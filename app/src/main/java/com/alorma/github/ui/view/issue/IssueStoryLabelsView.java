@@ -3,14 +3,11 @@ package com.alorma.github.ui.view.issue;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.ui.view.LabelView;
 import com.wefika.flowlayout.FlowLayout;
+import core.issues.Label;
 import java.util.List;
 
-/**
- * Created by Bernat on 18/07/2015.
- */
 public class IssueStoryLabelsView extends FlowLayout {
   public IssueStoryLabelsView(Context context) {
     super(context);

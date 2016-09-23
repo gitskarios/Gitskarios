@@ -3,34 +3,16 @@ package com.alorma.github.sdk.bean.issue;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.alorma.github.sdk.bean.dto.response.GithubComment;
-import com.alorma.github.sdk.bean.dto.response.User;
+import core.User;
 
-/**
- * Created by Bernat on 07/04/2015.
- */
 public class IssueStoryComment implements IssueStoryDetail, Parcelable {
 
-  public static final Parcelable.Creator<IssueStoryComment> CREATOR =
-      new Parcelable.Creator<IssueStoryComment>() {
-        public IssueStoryComment createFromParcel(Parcel source) {
-          return new IssueStoryComment(source);
-        }
-
-        public IssueStoryComment[] newArray(int size) {
-          return new IssueStoryComment[size];
-        }
-      };
   public GithubComment comment;
   public long created_at;
 
   public IssueStoryComment(GithubComment comment) {
 
     this.comment = comment;
-  }
-
-  protected IssueStoryComment(Parcel in) {
-    this.comment = in.readParcelable(GithubComment.class.getClassLoader());
-    this.created_at = in.readLong();
   }
 
   @Override
@@ -60,7 +42,24 @@ public class IssueStoryComment implements IssueStoryDetail, Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
-    dest.writeParcelable(this.comment, 0);
+    dest.writeParcelable(this.comment, flags);
     dest.writeLong(this.created_at);
   }
+
+  protected IssueStoryComment(Parcel in) {
+    this.comment = in.readParcelable(GithubComment.class.getClassLoader());
+    this.created_at = in.readLong();
+  }
+
+  public static final Parcelable.Creator<IssueStoryComment> CREATOR = new Parcelable.Creator<IssueStoryComment>() {
+    @Override
+    public IssueStoryComment createFromParcel(Parcel source) {
+      return new IssueStoryComment(source);
+    }
+
+    @Override
+    public IssueStoryComment[] newArray(int size) {
+      return new IssueStoryComment[size];
+    }
+  };
 }

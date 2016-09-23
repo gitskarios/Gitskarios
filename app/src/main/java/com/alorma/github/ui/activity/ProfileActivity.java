@@ -25,8 +25,6 @@ import butterknife.ButterKnife;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
-import com.alorma.github.sdk.bean.dto.response.Organization;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.orgs.GetOrgsClient;
@@ -40,18 +38,17 @@ import com.alorma.github.ui.fragment.events.CreatedEventsListFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.users.UserResumeFragment;
 import com.alorma.github.utils.AccountUtils;
-import com.alorma.gitskarios.core.Pair;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import core.User;
 import java.util.ArrayList;
 import java.util.List;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class ProfileActivity extends PeopleThemeActivity implements UserResumeFragment.UserResumeCallback {
@@ -92,8 +89,8 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       extras.putParcelable(USER, user);
 
       StoreCredentials settings = new StoreCredentials(context);
-      if (user.login != null) {
-        extras.putBoolean(AUTHENTICATED_USER, user.login.equalsIgnoreCase(settings.getUserName()));
+      if (user.getLogin() != null) {
+        extras.putBoolean(AUTHENTICATED_USER, user.getLogin().equalsIgnoreCase(settings.getUserName()));
       }
     }
     Intent intent = new Intent(context, ProfileActivity.class);
@@ -160,9 +157,9 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
         }
         if (getIntent().getExtras().containsKey(USER)) {
           user = getIntent().getParcelableExtra(USER);
-          avatar = user.avatar_url;
-          login = user.login;
-          name = user.name;
+          avatar = user.getAvatar();
+          login = user.getLogin();
+          name = user.getName();
         }
       }
 
@@ -192,12 +189,12 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       StoreCredentials settings = new StoreCredentials(this);
 
       if (user != null) {
-        if (user.login != null && settings.getUserName() != null &&
-            user.login.equalsIgnoreCase(settings.getUserName())) {
+        if (user.getLogin() != null && settings.getUserName() != null &&
+            user.getLogin().equalsIgnoreCase(settings.getUserName())) {
           requestClient = getGetAuthUserClient();
           updateProfile = true;
         } else {
-          requestClient = new RequestUserClient(user.login).observable();
+          requestClient = new RequestUserClient(user.getLogin()).observable();
         }
       } else {
         requestClient = getGetAuthUserClient();
@@ -207,15 +204,10 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       invalidateOptionsMenu();
 
       Observable<Integer> organizations =
-          new GetOrgsClient(login).observable().subscribeOn(Schedulers.io()).map(new Func1<Pair<List<Organization>, Integer>, Integer>() {
-            @Override
-            public Integer call(Pair<List<Organization>, Integer> listIntegerPair) {
-              return listIntegerPair.first.size();
-            }
-          });
+          new GetOrgsClient(login).observable().subscribeOn(Schedulers.io()).map(listIntegerPair -> listIntegerPair.first.size());
 
       Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()), organizations, (user1, organizations1) -> {
-        user1.organizations = organizations1;
+        user1.setOrganizationsNum(organizations1);
         return user1;
       }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
         @Override
@@ -269,7 +261,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
       StoreCredentials settings = new StoreCredentials(this);
 
-      if (user != null && !settings.getUserName().equals(user.login) && user.type == UserType.User) {
+      if (user != null && !settings.getUserName().equals(user.getLogin()) && user.getType().equals(UserType.User.name())) {
         MenuItem item;
         if (followingUser) {
           item = menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);
@@ -288,9 +280,9 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
     if (item.getItemId() == R.id.action_menu_follow_user) {
-      followUserAction(new FollowUserClient(user.login));
+      followUserAction(new FollowUserClient(user.getLogin()));
     } else if (item.getItemId() == R.id.action_menu_unfollow_user) {
-      followUserAction(new UnfollowUserClient(user.login));
+      followUserAction(new UnfollowUserClient(user.getLogin()));
     }
 
     item.setEnabled(false);
@@ -322,9 +314,9 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
     this.user = user;
     invalidateOptionsMenu();
 
-    loadAvatar(user.login, user.avatar_url);
+    loadAvatar(user.getLogin(), user.getAvatar());
 
-    userName.setText(user.name);
+    userName.setText(user.getName());
 
     StoreCredentials settings = new StoreCredentials(this);
 
@@ -332,13 +324,13 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
     if (updateProfile && selectedAccount != null) {
       AccountManager accountManager = AccountManager.get(this);
-      accountManager.setUserData(selectedAccount, AccountsHelper.USER_PIC, user.avatar_url);
+      accountManager.setUserData(selectedAccount, AccountsHelper.USER_PIC, user.getAvatar());
       ImageLoader.getInstance().clearMemoryCache();
       ImageLoader.getInstance().clearDiskCache();
     }
 
-    if (!user.login.equalsIgnoreCase(settings.getUserName())) {
-      followUserAction(new CheckFollowingUser(user.login));
+    if (!user.getLogin().equalsIgnoreCase(settings.getUserName())) {
+      followUserAction(new CheckFollowingUser(user.getLogin()));
     }
 
     userResumeFragment.fill(user);
@@ -349,7 +341,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
     if (user != null && updateProfile) {
       Intent intent = new Intent();
       Bundle extras = new Bundle();
-      extras.putString(URL_PROFILE, user.avatar_url);
+      extras.putString(URL_PROFILE, user.getAvatar());
       intent.putExtras(extras);
       setResult(selectedAccount != null ? RESULT_FIRST_USER : RESULT_OK, intent);
     }

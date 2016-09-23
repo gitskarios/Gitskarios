@@ -1,10 +1,10 @@
 package com.alorma.github.presenter;
 
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repository.GenericRepository;
-import com.alorma.github.sdk.core.usecase.GenericUseCase;
 import com.alorma.gitskarios.core.client.TokenProvider;
+import core.ApiClient;
+import core.datasource.RestWrapper;
+import core.repository.GenericRepository;
+import core.usecase.GenericUseCase;
 import javax.inject.Inject;
 
 public abstract class Presenter<Request, Response> {

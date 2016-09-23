@@ -1,15 +1,12 @@
 package com.alorma.github.sdk.services.orgs;
 
-import com.alorma.github.sdk.bean.dto.response.Organization;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.gitskarios.core.client.UsernameProvider;
+import core.User;
 import java.util.List;
 import retrofit.RestAdapter;
 
-/**
- * Created by Bernat on 04/09/2014.
- */
-public class GetOrgsClient extends GithubListClient<List<Organization>> {
+public class GetOrgsClient extends GithubListClient<List<User>> {
   private String username;
   private int page = -1;
 

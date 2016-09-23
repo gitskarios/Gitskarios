@@ -6,11 +6,10 @@ import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
-import com.alorma.github.sdk.core.User;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import core.User;
 import java.util.List;
 import javax.inject.Inject;
-import org.joda.time.tz.NameProvider;
 
 public class NavigationFragment extends BaseFragment implements Presenter.Callback<List<User>> {
   @Inject NavigationProfilesPresenter navigationProfilesPresenter;

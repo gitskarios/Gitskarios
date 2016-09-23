@@ -9,8 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Release;
-import com.alorma.github.sdk.bean.dto.response.ReleaseAsset;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetReleaseClient;
@@ -19,6 +17,8 @@ import com.alorma.github.ui.adapter.viewpager.NavigationPagerAdapter;
 import com.alorma.github.ui.fragment.releases.ReleaseAboutFragment;
 import com.alorma.github.ui.fragment.releases.ReleaseAssetsFragment;
 import com.alorma.github.utils.GitskariosDownloadManager;
+import core.repositories.releases.Asset;
+import core.repositories.releases.Release;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observer;
@@ -82,27 +82,27 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
 
   private void showRelease(Release release, RepoInfo repoInfo) {
     if (release != null) {
-      String name = release.name;
+      String name = release.getName();
       if (TextUtils.isEmpty(name)) {
-        name = release.tag_name;
+        name = release.getTagName();
       }
       setTitle(name);
 
       List<Fragment> listFragments = new ArrayList<>();
       listFragments.add(ReleaseAboutFragment.newInstance(release, repoInfo));
 
-      List<ReleaseAsset> assets = new ArrayList<>();
+      List<Asset> assets = new ArrayList<>();
 
-      assets.addAll(release.assets);
+      assets.addAll(release.getAssets());
 
-      ReleaseAsset zipAsset = new ReleaseAsset();
-      zipAsset.name = getString(R.string.release_asset_zip);
-      zipAsset.browser_download_url = release.zipball_url;
+      Asset zipAsset = new Asset();
+      zipAsset.setName(getString(R.string.release_asset_zip));
+      zipAsset.setBrowserDownloadUrl(release.getZipballUrl());
       assets.add(zipAsset);
 
-      ReleaseAsset tarAsset = new ReleaseAsset();
-      tarAsset.name = getString(R.string.release_asset_tar);
-      tarAsset.browser_download_url = release.tarball_url;
+      Asset tarAsset = new Asset();
+      tarAsset.setName(getString(R.string.release_asset_tar));
+      zipAsset.setBrowserDownloadUrl(release.getTarballUrl());
       assets.add(tarAsset);
 
       ReleaseAssetsFragment releaseAssetsFragment = ReleaseAssetsFragment.newInstance(assets);
@@ -136,9 +136,9 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
-  public void onReleaseDownloadRequest(final ReleaseAsset asset) {
+  public void onReleaseDownloadRequest(final Asset asset) {
     GitskariosDownloadManager gitskariosDownloadManager = new GitskariosDownloadManager();
-    gitskariosDownloadManager.download(this, asset.browser_download_url, asset.name, text -> {
+    gitskariosDownloadManager.download(this, asset.getBrowserDownloadUrl(), asset.getName(), text -> {
       Snackbar snackbar = Snackbar.make(getToolbar(), getString(text), Snackbar.LENGTH_LONG);
 
       snackbar.setAction(getString(R.string.external_storage_permission_request_action),

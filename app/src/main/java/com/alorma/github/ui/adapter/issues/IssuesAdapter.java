@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.LabelView;
@@ -20,6 +19,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
+import core.issues.Label;
 
 public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
 
@@ -39,7 +39,7 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
     holder.title.setText(issue.title);
 
     String timeAgo = TimeUtils.getTimeAgoString(issue.created_at);
-    String info = holder.info.getContext().getResources().getString(R.string.issue_info, issue.number, timeAgo, issue.user.login);
+    String info = holder.info.getContext().getResources().getString(R.string.issue_info, issue.number, timeAgo, issue.user.getLogin());
 
     holder.info.setText(info);
 

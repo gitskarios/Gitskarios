@@ -8,7 +8,7 @@ public class CacheWrapper {
 
   private static QNCache qnCacheRepos;
 
-  public static QNCache reposCache() {
+  public static QNCache cache() {
     if (qnCacheRepos == null) {
       qnCacheRepos = new QNCacheBuilder().setDefaultKeepaliveInMillis(TimeUnit.MINUTES.toMillis(10))
           .createQNCache();

@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.core.issues.Issue;
-import com.alorma.github.sdk.core.issues.IssueState;
-import com.alorma.github.sdk.core.issues.Label;
-import com.alorma.github.sdk.core.issues.Milestone;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.LabelView;
 import com.alorma.github.utils.TextUtils;
@@ -20,6 +16,10 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
+import core.issues.Issue;
+import core.issues.IssueState;
+import core.issues.Label;
+import core.issues.Milestone;
 
 public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
 

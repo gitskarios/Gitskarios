@@ -1,6 +1,6 @@
 package com.alorma.github.ui.activity;
 
-import com.alorma.github.sdk.bean.dto.response.User;
+import core.User;
 
 public interface WelcomePresenterViewInterface {
 

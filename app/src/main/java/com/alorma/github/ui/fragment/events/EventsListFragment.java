@@ -20,7 +20,6 @@ import com.alorma.github.sdk.bean.dto.response.CommitComment;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.GithubPage;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.dto.response.events.EventType;
 import com.alorma.github.sdk.bean.dto.response.events.payload.ForkEventPayload;
 import com.alorma.github.sdk.bean.dto.response.events.payload.IssueCommentEventPayload;
@@ -47,6 +46,7 @@ import com.google.gson.Gson;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Repo;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -353,7 +353,7 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
       ForkEventPayload forkEventPayload = gson.fromJson(payload, ForkEventPayload.class);
       if (forkEventPayload != null) {
         String parentRepo = item.repo.name;
-        String forkeeRepo = forkEventPayload.forkee.full_name;
+        String forkeeRepo = forkEventPayload.forkee.getFullName();
 
         showReposDialogDialog(parentRepo, forkeeRepo);
       }

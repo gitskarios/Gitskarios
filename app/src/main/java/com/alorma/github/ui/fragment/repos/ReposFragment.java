@@ -15,11 +15,11 @@ import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.presenter.Presenter;
-import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
+import core.repositories.Repo;
 import java.util.List;
 
 public abstract class ReposFragment extends BaseFragment

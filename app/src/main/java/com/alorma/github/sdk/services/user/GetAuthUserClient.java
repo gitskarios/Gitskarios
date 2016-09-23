@@ -1,9 +1,9 @@
 package com.alorma.github.sdk.services.user;
 
 import android.util.Log;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.gitskarios.core.Pair;
+import core.User;
 import java.util.List;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

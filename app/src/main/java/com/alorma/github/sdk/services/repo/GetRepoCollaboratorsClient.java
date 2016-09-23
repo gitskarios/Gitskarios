@@ -1,16 +1,13 @@
 package com.alorma.github.sdk.services.repo;
 
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseInfiniteCallback;
 import com.alorma.github.sdk.services.client.GithubClient;
+import core.User;
 import java.util.List;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
 public class GetRepoCollaboratorsClient extends GithubClient<List<User>> {
 
   private final RepoInfo repoInfo;
