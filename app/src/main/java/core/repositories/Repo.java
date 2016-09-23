@@ -372,7 +372,7 @@ public class Repo extends ShaUrl implements Parcelable {
     dest.writeByte(this.hasIssues ? (byte) 1 : (byte) 0);
     dest.writeByte(this.hasDownloads ? (byte) 1 : (byte) 0);
     dest.writeByte(this.hasWiki ? (byte) 1 : (byte) 0);
-    dest.writeSerializable(this.permissions);
+    dest.writeParcelable(this.permissions, flags);
     dest.writeParcelable(this.license, flags);
     dest.writeList(this.branches);
     dest.writeString(this.archiveUrl);
@@ -411,14 +411,14 @@ public class Repo extends ShaUrl implements Parcelable {
     this.hasIssues = in.readByte() != 0;
     this.hasDownloads = in.readByte() != 0;
     this.hasWiki = in.readByte() != 0;
-    this.permissions = (Permissions) in.readSerializable();
+    this.permissions = in.readParcelable(Permissions.class.getClassLoader());
     this.license = in.readParcelable(License.class.getClassLoader());
     this.branches = new ArrayList<Branch>();
     in.readList(this.branches, Branch.class.getClassLoader());
     this.archiveUrl = in.readString();
   }
 
-  public static final Parcelable.Creator<Repo> CREATOR = new Parcelable.Creator<Repo>() {
+  public static final Creator<Repo> CREATOR = new Creator<Repo>() {
     @Override
     public Repo createFromParcel(Parcel source) {
       return new Repo(source);

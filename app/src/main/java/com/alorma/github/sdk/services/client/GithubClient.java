@@ -18,7 +18,11 @@ public abstract class GithubClient<K> extends BaseClient<K> {
       return new Github();
     } else {
       String url = UrlProvider.getInstance().getUrl();
-      return new GithubEnterprise(url);
+      if (url == null) {
+        return new Github();
+      } else {
+        return new GithubEnterprise(url);
+      }
     }
   }
 
