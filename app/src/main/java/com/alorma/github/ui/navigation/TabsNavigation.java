@@ -3,7 +3,6 @@ package com.alorma.github.ui.navigation;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.support.annotation.ColorInt;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,16 +28,15 @@ public class TabsNavigation extends UiNavigation {
     tabLayout.setupWithViewPager(viewPager);
     showTabsIcons(tabLayout);
 
-    int iconsColor = AttributesUtils.getAccentColor(tabLayout.getContext());
     tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
       public void onTabSelected(TabLayout.Tab tab) {
-        setTabColor(tab, iconsColor);
+        setTabColorSelected(tabLayout.getContext(), tab);
       }
 
       @Override
       public void onTabUnselected(TabLayout.Tab tab) {
-        setTabColor(tab, Color.WHITE);
+        setTabColorUnSelected(tab);
       }
 
       @Override
@@ -61,15 +59,26 @@ public class TabsNavigation extends UiNavigation {
         int icon = get(i).getIcon();
         if (icon != 0) {
           tab.setIcon(icon);
-          setTabColor(tab, Color.WHITE);
+          setTabColorUnSelected(tab);
         }
       }
     }
+    TabLayout.Tab firstTab = tabLayout.getTabAt(0);
+    if (firstTab != null) {
+      setTabColorSelected(tabLayout.getContext(), firstTab);
+    }
   }
 
-  private void setTabColor(TabLayout.Tab tab, @ColorInt int color) {
+  private void setTabColorSelected(Context context, TabLayout.Tab tab) {
     if (tab.getIcon() != null) {
-      tab.getIcon().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+      int iconsColor = AttributesUtils.getAccentColor(context);
+      tab.getIcon().setColorFilter(iconsColor, PorterDuff.Mode.SRC_IN);
+    }
+  }
+
+  private void setTabColorUnSelected(TabLayout.Tab tab) {
+    if (tab.getIcon() != null) {
+      tab.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
     }
   }
 
