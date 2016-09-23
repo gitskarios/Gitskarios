@@ -2,6 +2,10 @@ package com.alorma.github.sdk.bean.dto.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.alorma.github.sdk.core.repositories.releases.Asset;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +45,35 @@ public class Release implements Parcelable {
 
   public Release() {
 
+  }
+
+  public Release(com.alorma.github.sdk.core.repositories.releases.Release release) {
+    body = release.getBody();
+    upload_url = release.getUploadUrl();
+    assets_url = release.getAssetsUrl();
+    tag_name = release.getTagName();
+    url = release.getUrl();
+    published_at = release.getPublishedAt().toString();
+    html_url = release.getHtmlUrl();
+    id = release.getId().toString();
+    target_commitish = release.getTargetCommitish();
+    assets = createAssets(release.getAssets());
+    draft = release.getDraft();
+    author = new User(release.getAuthor());
+    zipball_url = release.getZipballUrl();
+    prerelease = release.isPreRelease();
+    tarball_url = release.getTarballUrl();
+    name = release.getName();
+    created_at = release.getCreatedAt();
+  }
+
+  private List<ReleaseAsset> createAssets(List<Asset> assets) {
+    List<ReleaseAsset> result = new ArrayList<>(assets.size());
+    for (Asset asset : assets) {
+      ReleaseAsset releaseAsset = new ReleaseAsset(asset);
+      result.add(releaseAsset);
+    }
+    return result;
   }
 
   protected Release(Parcel in) {

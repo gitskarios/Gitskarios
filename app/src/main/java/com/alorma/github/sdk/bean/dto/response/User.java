@@ -3,6 +3,8 @@ package com.alorma.github.sdk.bean.dto.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 public class User extends Organization implements Parcelable {
 
   public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -36,6 +38,47 @@ public class User extends Organization implements Parcelable {
   public int organizations;
 
   public User() {
+  }
+
+  public User(com.alorma.github.sdk.core.User user) {
+    this.hireable = false;
+    this.date = "";
+    this.followers_url = user.getFollowersUrl();
+    this.following_url = user.getFollowingUrl();
+    this.gists_url = user.getGistsUrl();
+    this.starred_url = user.getStarredUrl();
+    this.subscriptions_url = user.getSubscriptionsUrl();
+    this.organizations_url = user.getOrganizationsUrl();
+    this.repos_url = user.getReposUrl();
+    this.events_url = user.getEventsUrl();
+    this.received_events_url = user.getReceivedEventsUrl();
+    this.private_gists = 0;
+    this.owned_public_repos = 0;
+    this.owned_private_repos = 0;
+    this.total_public_repos = 0;
+    this.total_private_repos = 0;
+    this.collaborators = 0;
+    this.disk_usage = 0;
+    this.plan = null;
+    this.organizations = 0;
+    this.id = user.getId();
+    this.login = user.getLogin();
+    this.name = "";
+    this.company = "";
+    this.created_at = null;
+    this.updated_at = null;
+    this.avatar_url = user.getAvatar();
+    this.gravatar_id = user.getGravatarId();
+    this.blog = "";
+    this.bio = "";
+    this.email = "";
+    this.location = "";
+    this.type = UserType.valueOf(user.getType());
+    this.site_admin = user.isSiteAdmin();
+    this.public_repos = -1;
+    this.public_gists = -1;
+    this.followers = -1;
+    this.following = -1;
   }
 
   protected User(Parcel in) {
