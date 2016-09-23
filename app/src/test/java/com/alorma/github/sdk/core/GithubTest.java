@@ -1,5 +1,7 @@
 package com.alorma.github.sdk.core;
 
+import core.ApiClient;
+import core.Github;
 import org.junit.Before;
 import org.junit.Test;
 

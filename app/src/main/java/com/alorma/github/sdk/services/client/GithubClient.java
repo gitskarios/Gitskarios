@@ -1,10 +1,11 @@
 package com.alorma.github.sdk.services.client;
 
-import com.alorma.github.sdk.security.GitHub;
-import com.alorma.gitskarios.core.ApiClient;
 import com.alorma.gitskarios.core.client.BaseClient;
 import com.alorma.gitskarios.core.client.LogProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
+import core.ApiClient;
+import core.Github;
+import core.GithubEnterprise;
 
 public abstract class GithubClient<K> extends BaseClient<K> {
 
@@ -14,10 +15,10 @@ public abstract class GithubClient<K> extends BaseClient<K> {
 
   private static ApiClient getApiClient() {
     if (UrlProvider.getInstance() == null) {
-      return new GitHub();
+      return new Github();
     } else {
       String url = UrlProvider.getInstance().getUrl();
-      return new GitHub(url);
+      return new GithubEnterprise(url);
     }
   }
 

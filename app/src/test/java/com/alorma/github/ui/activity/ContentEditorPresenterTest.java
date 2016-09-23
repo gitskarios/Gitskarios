@@ -1,15 +1,13 @@
 package com.alorma.github.ui.activity;
 
-import akiniyalocts.imgurapiexample.imgurmodel.ImageResponse;
-import akiniyalocts.imgurapiexample.imgurmodel.Upload;
-import akiniyalocts.imgurapiexample.services.ImgurUpload;
+import imgurapiexample.imgurmodel.ImageResponse;
+import imgurapiexample.imgurmodel.Upload;
+import imgurapiexample.services.ImgurUpload;
 import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
 import rx.Observable;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;

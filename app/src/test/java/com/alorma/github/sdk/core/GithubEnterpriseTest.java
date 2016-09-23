@@ -1,5 +1,7 @@
 package com.alorma.github.sdk.core;
 
+import core.ApiClient;
+import core.GithubEnterprise;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
