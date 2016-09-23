@@ -2,11 +2,11 @@ package com.alorma.github.presenter.repos;
 
 import android.support.annotation.NonNull;
 import com.alorma.github.injector.scope.PerActivity;
-import com.alorma.github.sdk.core.datasource.CacheDataSource;
-import com.alorma.github.sdk.core.datasource.CloudDataSource;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repositories.CloudUserRepositoriesDataSource;
-import com.alorma.github.sdk.core.repositories.Repo;
+import core.datasource.CacheDataSource;
+import core.datasource.CloudDataSource;
+import core.datasource.RestWrapper;
+import core.repositories.CloudUserRepositoriesDataSource;
+import core.repositories.Repo;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -23,8 +23,7 @@ import javax.inject.Inject;
   }
 
   @NonNull
-  protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
-      RestWrapper reposRetrofit, String sortOrder) {
+  protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(RestWrapper reposRetrofit, String sortOrder) {
     return new CloudUserRepositoriesDataSource(reposRetrofit, sortOrder);
   }
 }

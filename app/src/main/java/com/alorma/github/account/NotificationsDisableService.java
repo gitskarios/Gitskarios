@@ -4,12 +4,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import com.alorma.github.sdk.bean.dto.response.Notification;
 import com.alorma.github.utils.NotificationsHelper;
+import core.notifications.Notification;
 
-/**
- * Created by Bernat on 07/06/2015.
- */
 public class NotificationsDisableService extends Service {
 
   public static final String EXTRA_NOTIFICATION_ID = "EXTRA_NOTIFICATION_ID";

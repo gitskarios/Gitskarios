@@ -1,9 +1,9 @@
 package com.alorma.github.emoji;
 
-import com.alorma.github.sdk.core.datasource.CloudDataSource;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.datasource.SdkItem;
 import com.alorma.github.sdk.services.emojis.EmojisClient;
+import core.datasource.CloudDataSource;
+import core.datasource.RestWrapper;
+import core.datasource.SdkItem;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;

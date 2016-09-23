@@ -1,7 +1,7 @@
 package com.alorma.github.sdk.services.repo.actions;
 
 import com.alorma.github.sdk.bean.dto.request.WatchBodyRequest;
-import com.alorma.github.sdk.bean.dto.response.Repo;
+import core.repositories.Repo;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -13,9 +13,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-/**
- * Created by Bernat on 07/08/2014.
- */
 public interface RepoActionsService {
 
   @Headers("Content-Length: 0")

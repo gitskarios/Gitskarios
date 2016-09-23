@@ -22,10 +22,8 @@ import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
@@ -41,6 +39,8 @@ import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
+import core.issues.Label;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -366,14 +366,14 @@ public class NewIssueActivity extends RepositoryThemeActivity {
     boolean exist = false;
     if (contributors != null) {
       for (Contributor contributor : contributors) {
-        exist = contributor.author.login.equals(owner);
+        exist = contributor.author.getLogin().equals(owner);
         users.add(contributor.author);
       }
     }
 
     if (!exist) {
       User user = new User();
-      user.login = owner;
+      user.setLogin(owner);
       users.add(user);
     }
 
@@ -397,8 +397,8 @@ public class NewIssueActivity extends RepositoryThemeActivity {
   private void setAssigneeUser(User user) {
     if (userTextView != null) {
       if (user != null) {
-        issueRequest.assignee = user.login;
-        userTextView.setText(user.login);
+        issueRequest.assignee = user.getLogin();
+        userTextView.setText(user.getLogin());
       } else {
         userTextView.setText(null);
       }

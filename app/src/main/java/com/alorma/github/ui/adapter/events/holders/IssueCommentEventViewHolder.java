@@ -7,8 +7,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 
 public class IssueCommentEventViewHolder extends EventViewHolder {
 
@@ -34,7 +34,7 @@ public class IssueCommentEventViewHolder extends EventViewHolder {
   protected void populateContent(GithubEvent event) {
     String type = event.payload.issue.pullRequest == null ? "issue" : "pull request";
     String text = "<b>"
-        + event.actor.login
+        + event.actor.getLogin()
         + "</b>"
         + " "
         + "commented on "

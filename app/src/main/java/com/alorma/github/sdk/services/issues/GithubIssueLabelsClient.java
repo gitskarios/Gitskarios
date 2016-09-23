@@ -1,9 +1,9 @@
 package com.alorma.github.sdk.services.issues;
 
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.BaseInfiniteCallback;
 import com.alorma.github.sdk.services.client.GithubClient;
+import core.issues.Label;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -11,9 +11,6 @@ import retrofit.RestAdapter;
 import rx.Observable;
 import rx.functions.Func1;
 
-/**
- * Created by Bernat on 10/05/2015.
- */
 public class GithubIssueLabelsClient extends GithubClient<List<Label>> {
   private RepoInfo repoInfo;
   private boolean sortAlphabetic = false;

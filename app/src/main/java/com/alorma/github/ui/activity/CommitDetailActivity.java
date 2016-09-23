@@ -23,7 +23,6 @@ import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.GithubStatus;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
@@ -32,6 +31,7 @@ import com.alorma.github.ui.adapter.commit.GithubStatusAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.ItemSingleLineAvatar;
+import core.User;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -160,7 +160,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
 
     TextView textView = userView.getTextView();
     if (textView != null) {
-      textView.setText(user.login);
+      textView.setText(user.getLogin());
     }
 
     userView.setOnClickListener(v -> {

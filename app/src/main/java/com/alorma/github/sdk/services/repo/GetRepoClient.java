@@ -1,7 +1,7 @@
 package com.alorma.github.sdk.services.repo;
 
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import core.repositories.Repo;
 import retrofit.RestAdapter;
 import rx.Observable;
 

@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubClient;
 import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;

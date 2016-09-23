@@ -1,6 +1,5 @@
 package com.alorma.github;
 
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import io.mola.galimatias.GalimatiasParseException;
 import org.junit.Before;

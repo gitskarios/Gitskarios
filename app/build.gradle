@@ -157,9 +157,6 @@ def getImgurCallback() {
 }
 
 dependencies {
-  compile project(':sdks:GithubReborn')
-  compile project(':imgur')
-
   compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
     transitive = true;
   }
@@ -272,6 +269,7 @@ dependencies {
   compile 'com.github.javierugarte:githubcontributionsview:1.2.1'
 
   compile 'io.reactivex:rxjava-string:1.1.0'
+  testCompile 'com.sergiandreplace.testabean:testabean:1.0.1'
 }
 
 play {

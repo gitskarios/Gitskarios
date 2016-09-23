@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.R;
 import com.alorma.github.bean.ProfileItem;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.OrganizationsActivity;
 import com.alorma.github.ui.activity.gists.GistsMainActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
@@ -22,6 +21,7 @@ import com.alorma.github.utils.TimeUtils;
 import com.github.javierugarte.GitHubContributionsView;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.User;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -4,15 +4,12 @@ import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.scope.PerActivity;
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.Github;
-import com.alorma.github.sdk.core.GithubEnterprise;
 import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UrlProviderInterface;
-
-import javax.inject.Singleton;
-
+import core.ApiClient;
+import core.Github;
+import core.GithubEnterprise;
 import dagger.Module;
 import dagger.Provides;
 import rx.Scheduler;

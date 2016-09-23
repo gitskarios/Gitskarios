@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;

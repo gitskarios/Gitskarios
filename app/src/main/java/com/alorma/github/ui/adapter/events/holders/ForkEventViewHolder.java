@@ -7,8 +7,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 
 public class ForkEventViewHolder extends EventViewHolder {
 
@@ -33,7 +33,7 @@ public class ForkEventViewHolder extends EventViewHolder {
   @Override
   protected void populateContent(GithubEvent event) {
     String text = "<b>"
-        + event.actor.login
+        + event.actor.getLogin()
         + "</b>"
         + " "
         + "forked"
@@ -44,7 +44,7 @@ public class ForkEventViewHolder extends EventViewHolder {
         + "to"
         + " "
         + "<b>"
-        + event.payload.forkee.full_name
+        + event.payload.forkee.getFullName()
         + "</b>";
     authorName.setText(Html.fromHtml(text));
   }

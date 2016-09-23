@@ -7,8 +7,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 
 public class ReleaseEventViewHolder extends EventViewHolder {
 
@@ -33,7 +33,7 @@ public class ReleaseEventViewHolder extends EventViewHolder {
   @Override
   protected void populateContent(GithubEvent event) {
     String text = "<b>"
-        + event.actor.login
+        + event.actor.getLogin()
         + "</b>"
         + " "
         + event.payload.action

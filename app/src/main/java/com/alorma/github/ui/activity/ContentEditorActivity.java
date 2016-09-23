@@ -1,6 +1,5 @@
 package com.alorma.github.ui.activity;
 
-import akiniyalocts.imgurapiexample.services.ImgurUpload;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,45 +22,34 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
-import com.alorma.github.bean.SearchableUser;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.emoji.Emoji;
 import com.alorma.github.emoji.EmojisActivity;
-import com.alorma.github.sdk.bean.dto.response.Contributor;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.GetRepoContributorsClient;
-import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.utils.ContentEditorText;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.github.ui.utils.IntentHelper;
 import com.alorma.github.ui.utils.uris.UriUtils;
 import com.alorma.github.utils.AttributesUtils;
-import com.alorma.gitskarios.core.Pair;
 import com.github.mobile.util.HtmlUtils;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.single.EmptyPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.linkedin.android.spyglass.mentions.MentionsEditable;
-import com.linkedin.android.spyglass.suggestions.SuggestionsResult;
 import com.linkedin.android.spyglass.tokenization.QueryToken;
 import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver;
 import com.linkedin.android.spyglass.ui.RichEditorView;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import imgurapiexample.services.ImgurUpload;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class ContentEditorActivity extends RepositoryThemeActivity
@@ -437,6 +425,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
   @Override
   public List<String> onQueryReceived(@NonNull final QueryToken queryToken) {
+    /* TODO
     if (!queryToken.getKeywords().startsWith("@")) {
       final List<String> buckets = new ArrayList<>();
       buckets.add("github");
@@ -465,7 +454,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
             Observable<List<User>> contributors = new GetRepoContributorsClient(issueInfo.repoInfo).observable().map(contributors1 -> {
               List<User> users = new ArrayList<>();
               for (Contributor contributor : contributors1) {
-                if (contributor.author.login.contains(s)) {
+                if (contributor.author.getLogin().contains(s)) {
                   users.add(contributor.author);
                 }
               }
@@ -494,6 +483,7 @@ public class ContentEditorActivity extends RepositoryThemeActivity
 
       return buckets;
     }
+    */
     return Collections.emptyList();
   }
 

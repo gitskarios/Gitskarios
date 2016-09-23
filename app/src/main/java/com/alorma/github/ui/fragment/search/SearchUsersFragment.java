@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.os.Bundle;
 import android.view.View;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;

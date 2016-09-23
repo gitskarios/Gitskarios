@@ -2,12 +2,12 @@ package com.alorma.github;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import core.User;
 import io.mola.galimatias.GalimatiasParseException;
 import io.mola.galimatias.URL;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class GitskariosUriManager {
     }
     User user = new User();
     URL parsedUrl = URL.parse(url);
-    user.login = parsedUrl.pathSegments().get(0);
+    user.setLogin(parsedUrl.pathSegments().get(0));
     return user;
   }
 

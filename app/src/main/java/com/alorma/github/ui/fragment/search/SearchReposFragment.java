@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.os.Bundle;
 import android.view.View;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.search.RepoSearchClient;
 import com.alorma.github.ui.fragment.repos.BaseReposListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;

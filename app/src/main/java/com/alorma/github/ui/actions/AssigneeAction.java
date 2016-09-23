@@ -8,15 +8,15 @@ import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneesRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.datasource.CloudDataSource;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.datasource.RetrofitWrapper;
-import com.alorma.github.sdk.core.datasource.SdkItem;
 import com.alorma.github.ui.utils.DialogUtils;
 import com.alorma.gitskarios.core.client.TokenProvider;
+import core.ApiClient;
+import core.User;
+import core.datasource.CloudDataSource;
+import core.datasource.RestWrapper;
+import core.datasource.RetrofitWrapper;
+import core.datasource.SdkItem;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -87,7 +87,7 @@ public class AssigneeAction extends Action<Boolean> {
     EditIssueAssigneesRequestDTO dto = new EditIssueAssigneesRequestDTO();
     dto.assignees = new ArrayList<>();
     for (User us : users) {
-      dto.assignees.add(us.login);
+      dto.assignees.add(us.getLogin());
     }
     return dto;
   }

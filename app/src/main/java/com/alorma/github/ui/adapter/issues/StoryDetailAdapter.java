@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
 import com.alorma.github.sdk.bean.issue.Story;
@@ -20,6 +19,7 @@ import com.alorma.github.ui.view.issue.IssueCommentView;
 import com.alorma.github.ui.view.issue.IssueStoryLabelDetailView;
 import com.alorma.github.ui.view.issue.IssueTimelineView;
 import com.alorma.github.ui.view.issue.ReviewCommentView;
+import core.repositories.Permissions;
 
 public abstract class StoryDetailAdapter<K extends Issue> extends RecyclerView.Adapter<Holder<K>> {
 

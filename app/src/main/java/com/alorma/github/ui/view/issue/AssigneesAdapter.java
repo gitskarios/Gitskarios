@@ -9,9 +9,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.bumptech.glide.Glide;
+import core.User;
 
 public class AssigneesAdapter extends RecyclerArrayAdapter<User, AssigneesAdapter.AssigneeHolder> {
   public AssigneesAdapter(LayoutInflater layoutInflater) {
@@ -20,8 +20,8 @@ public class AssigneesAdapter extends RecyclerArrayAdapter<User, AssigneesAdapte
 
   @Override
   protected void onBindViewHolder(AssigneeHolder holder, User user) {
-    Glide.with(holder.imageView.getContext()).load(user.avatar_url).into(holder.imageView);
-    holder.textView.setText(user.login);
+    Glide.with(holder.imageView.getContext()).load(user.getAvatar()).into(holder.imageView);
+    holder.textView.setText(user.getLogin());
   }
 
   @Override

@@ -2,11 +2,8 @@ package com.alorma.github.sdk.bean.info;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
+import core.repositories.Permissions;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class RepoInfo implements Parcelable {
 
   public static final Creator<RepoInfo> CREATOR = new Creator<RepoInfo>() {
@@ -48,15 +45,15 @@ public class RepoInfo implements Parcelable {
     dest.writeString(this.owner);
     dest.writeString(this.name);
     dest.writeString(this.branch);
-    dest.writeParcelable(this.permissions, 0);
+    dest.writeSerializable(this.permissions);
   }
 
-  public com.alorma.github.sdk.core.repositories.RepoInfo toCoreRepoInfo() {
-    com.alorma.github.sdk.core.repositories.RepoInfo repoInfo = new com.alorma.github.sdk.core.repositories.RepoInfo();
+  public RepoInfo toCoreRepoInfo() {
+    RepoInfo repoInfo = new RepoInfo();
     repoInfo.branch = branch;
     repoInfo.name = name;
     repoInfo.owner = owner;
-    repoInfo.permissions = permissions.toCorePermissions();
+    repoInfo.permissions = permissions;
     return repoInfo;
   }
 }

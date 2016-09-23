@@ -6,10 +6,10 @@ import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.repos.UserRepositoriesPresenter;
-import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Repo;
 import java.util.List;
 import javax.inject.Inject;
 

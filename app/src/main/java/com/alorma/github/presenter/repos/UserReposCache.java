@@ -1,16 +1,10 @@
 package com.alorma.github.presenter.repos;
 
 import com.alorma.github.presenter.AbstractCacheDataSource;
-import com.alorma.github.presenter.CacheWrapper;
-import com.alorma.github.sdk.core.datasource.CacheDataSource;
-import com.alorma.github.sdk.core.datasource.SdkItem;
-import com.alorma.github.sdk.core.repositories.Repo;
-import com.alorma.github.sdk.core.repositories.releases.tags.Tag;
-
+import core.datasource.SdkItem;
+import core.repositories.Repo;
 import java.util.List;
 import java.util.Locale;
-
-import rx.Observable;
 
 public class UserReposCache extends AbstractCacheDataSource<String,List<Repo>> {
 

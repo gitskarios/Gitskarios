@@ -1,9 +1,9 @@
 package com.alorma.github.ui.activity;
 
-import akiniyalocts.imgurapiexample.imgurmodel.ImageResponse;
-import akiniyalocts.imgurapiexample.imgurmodel.Upload;
-import akiniyalocts.imgurapiexample.services.ImgurUpload;
 import com.alorma.github.ui.utils.ContentEditorText;
+import imgurapiexample.imgurmodel.ImageResponse;
+import imgurapiexample.imgurmodel.Upload;
+import imgurapiexample.services.ImgurUpload;
 import java.io.File;
 import rx.Scheduler;
 

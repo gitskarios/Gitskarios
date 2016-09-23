@@ -39,16 +39,12 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStory;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
-import com.alorma.github.sdk.core.GithubComment;
-import com.alorma.github.sdk.core.issue.EditIssueCommentBodyRequest;
 import com.alorma.github.sdk.services.issues.CreateMilestoneClient;
 import com.alorma.github.sdk.services.issues.EditIssueClient;
 import com.alorma.github.sdk.services.issues.GetMilestonesClient;
@@ -73,6 +69,10 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
+import core.GithubComment;
+import core.issue.EditIssueCommentBodyRequest;
+import core.issues.Label;
+import core.repositories.Repo;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -182,7 +182,7 @@ public class IssueDetailActivity extends BackActivity
       if (settings.shouldShowDialogEditIssue()) {
         if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push) {
           showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_owner);
-        } else if (issueStory.item.user.login.equals(credentials.getUserName())) {
+        } else if (issueStory.item.user.getLogin().equals(credentials.getUserName())) {
           showEditDialog(R.string.dialog_edit_issue_edit_title_and_body_by_author);
         }
       }
@@ -301,8 +301,7 @@ public class IssueDetailActivity extends BackActivity
       status = getString(R.string.issue_status_close);
     }
     setTitle("#" + issueStory.item.number + " " + status);
-    IssueDetailAdapter adapter =
-        new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
+    IssueDetailAdapter adapter = new IssueDetailAdapter(this, getLayoutInflater(), issueStory, issueInfo.repoInfo, this, this);
     recyclerView.setAdapter(adapter);
 
     invalidateOptionsMenu();
@@ -417,7 +416,7 @@ public class IssueDetailActivity extends BackActivity
     if (this.issueStory != null) {
 
       if (issueInfo.repoInfo.permissions != null && issueInfo.repoInfo.permissions.push || (accountNameProvider.getName() != null
-          && accountNameProvider.getName().equals(issueStory.item.user.login))) {
+          && accountNameProvider.getName().equals(issueStory.item.user.getLogin()))) {
         if (menu.findItem(R.id.action_close_issue) != null) {
           menu.removeItem(R.id.action_close_issue);
         }
@@ -687,7 +686,7 @@ public class IssueDetailActivity extends BackActivity
   }
 
   private void editComment(IssueStoryComment issueStoryComment, String string) {
-    com.alorma.github.sdk.core.repositories.RepoInfo repoInfo = new com.alorma.github.sdk.core.repositories.RepoInfo();
+    RepoInfo repoInfo = new RepoInfo();
     repoInfo.name = issueInfo.repoInfo.name;
     repoInfo.owner = issueInfo.repoInfo.owner;
     EditIssueCommentBodyRequest edit = new EditIssueCommentBodyRequest(repoInfo, issueStoryComment.comment.id, string);

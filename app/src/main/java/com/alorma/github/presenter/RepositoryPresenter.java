@@ -2,14 +2,14 @@ package com.alorma.github.presenter;
 
 import android.support.annotation.NonNull;
 import com.alorma.github.cache.CacheWrapper;
-import com.alorma.github.sdk.bean.dto.response.Branch;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.datasource.RestWrapper;
-import com.alorma.github.sdk.core.repository.GenericRepository;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
+import core.ApiClient;
+import core.datasource.RestWrapper;
+import core.repositories.Branch;
+import core.repositories.Repo;
+import core.repository.GenericRepository;
 import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
@@ -48,7 +48,7 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
             branchesClient, (repo, branches) -> {
               repo.branches = branches;
               if (branches.size() == 1) {
-                repo.default_branch = branches.get(0).name;
+                repo.setDefaultBranch(branches.get(0).name);
               }
               return repo;
             });

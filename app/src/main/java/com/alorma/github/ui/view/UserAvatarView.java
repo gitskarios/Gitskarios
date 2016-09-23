@@ -9,7 +9,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
@@ -17,6 +16,7 @@ import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.timeline.RoundTimelineView;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import core.User;
 import io.fabric.sdk.android.Fabric;
 
 public class UserAvatarView extends RoundTimelineView implements View.OnClickListener {
@@ -74,8 +74,8 @@ public class UserAvatarView extends RoundTimelineView implements View.OnClickLis
       Answers.getInstance().logContentView(new ContentViewEvent().putContentName("UserAvatarViewClick"));
     }
 
-    if (user.type == UserType.Organization) {
-      v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.login));
+    if (user.getType().equals(UserType.Organization.name())) {
+      v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.getLogin()));
     } else {
       final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);
       if (getTag() != null) {

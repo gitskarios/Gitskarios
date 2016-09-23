@@ -1,10 +1,10 @@
 package com.alorma.github.emoji;
 
-import com.alorma.github.sdk.core.datasource.CacheDataSource;
-import com.alorma.github.sdk.core.datasource.CloudDataSource;
-import com.alorma.github.sdk.core.datasource.SdkItem;
-import com.alorma.github.sdk.core.repository.GenericRepository;
-import com.alorma.github.sdk.core.usecase.GenericUseCase;
+import core.datasource.CacheDataSource;
+import core.datasource.CloudDataSource;
+import core.datasource.SdkItem;
+import core.repository.GenericRepository;
+import core.usecase.GenericUseCase;
 import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

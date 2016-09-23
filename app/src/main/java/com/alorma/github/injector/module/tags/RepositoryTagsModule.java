@@ -7,10 +7,10 @@ import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.presenter.repos.releases.tags.TagsCacheDataSource;
-import com.alorma.github.sdk.core.ApiClient;
-import com.alorma.github.sdk.core.repositories.releases.tags.TagsCloudDataSource;
-import com.alorma.github.sdk.core.repositories.releases.tags.TagsRetrofitWrapper;
 
+import core.ApiClient;
+import core.repositories.releases.tags.TagsCloudDataSource;
+import core.repositories.releases.tags.TagsRetrofitWrapper;
 import dagger.Module;
 import dagger.Provides;
 import rx.Scheduler;

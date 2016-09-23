@@ -13,11 +13,11 @@ import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.core.repositories.releases.tags.Tag;
 import com.alorma.github.ui.adapter.TagsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import core.repositories.releases.tags.Tag;
 import java.util.List;
 
 import javax.inject.Inject;

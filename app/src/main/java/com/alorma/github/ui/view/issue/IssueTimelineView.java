@@ -16,11 +16,11 @@ import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.issue.IssueStoryEvent;
 import com.alorma.github.sdk.bean.issue.Rename;
-import com.alorma.github.sdk.core.ShaUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.materialize.color.Material;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.ShaUtils;
 import tk.zielony.naturaldateformat.NaturalDateFormat;
 import tk.zielony.naturaldateformat.RelativeDateFormat;
 
@@ -63,22 +63,22 @@ public class IssueTimelineView extends TextView {
 
     setText("");
 
-    String actor = issueEvent.user().login;
+    String actor = issueEvent.user().getLogin();
 
     String eventType = issueEvent.event.event;
     if (eventType.equals("assigned")) {
       setIcon(Octicons.Icon.oct_person);
-      if (actor.equalsIgnoreCase(issueEvent.event.assignee.login)) {
+      if (actor.equalsIgnoreCase(issueEvent.event.assignee.getLogin())) {
         setText(getResources().getString(R.string.issue_self_assigned, actor));
       } else {
-        setText(getResources().getString(R.string.issue_assigned, actor, issueEvent.event.assignee.login));
+        setText(getResources().getString(R.string.issue_assigned, actor, issueEvent.event.assignee.getLogin()));
       }
     } else if (eventType.equals("unassigned")) {
       setIcon(Octicons.Icon.oct_person);
-      if (actor.equalsIgnoreCase(issueEvent.event.assignee.login)) {
+      if (actor.equalsIgnoreCase(issueEvent.event.assignee.getLogin())) {
         setText(getResources().getString(R.string.issue_self_unassigned, actor));
       } else {
-        setText(getResources().getString(R.string.issue_unassigned, actor, issueEvent.event.assignee.login));
+        setText(getResources().getString(R.string.issue_unassigned, actor, issueEvent.event.assignee.getLogin()));
       }
     } else if (eventType.equals("milestoned")) {
       setIcon(Octicons.Icon.oct_milestone);
@@ -153,7 +153,7 @@ public class IssueTimelineView extends TextView {
       }
     } else {
       setIcon(Octicons.Icon.oct_octoface);
-      String text = issueEvent.event.actor.login + " " + eventType + " ";
+      String text = issueEvent.event.actor.getLogin() + " " + eventType + " ";
       setText(text);
     }
 

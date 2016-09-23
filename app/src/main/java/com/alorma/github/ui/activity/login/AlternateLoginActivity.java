@@ -13,9 +13,9 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.utils.KeyboardUtils;
+import core.User;
 
 public class AlternateLoginActivity extends AccountAuthenticatorActivity implements AlternateLoginPresenterViewInterface {
 

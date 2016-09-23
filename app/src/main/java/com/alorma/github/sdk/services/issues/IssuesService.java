@@ -2,15 +2,14 @@ package com.alorma.github.sdk.services.issues;
 
 import com.alorma.github.sdk.bean.dto.request.CommentRequest;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
-import com.alorma.github.sdk.bean.dto.request.EditIssueAssigneesRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
 import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.Label;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
-import com.alorma.github.sdk.bean.dto.response.User;
+import core.User;
+import core.issues.Label;
 import java.util.List;
 import java.util.Map;
 import retrofit.Callback;

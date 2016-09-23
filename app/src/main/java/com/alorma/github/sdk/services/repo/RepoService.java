@@ -1,15 +1,15 @@
 package com.alorma.github.sdk.services.repo;
 
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
-import com.alorma.github.sdk.bean.dto.response.Branch;
 import com.alorma.github.sdk.bean.dto.response.CompareCommit;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.dto.response.Contributor;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.dto.response.Release;
-import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.bean.dto.response.User;
+import core.User;
+import core.repositories.Branch;
+import core.repositories.Repo;
 import java.util.List;
 import java.util.Map;
 import retrofit.Callback;

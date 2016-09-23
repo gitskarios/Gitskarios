@@ -1,30 +1,13 @@
 package com.alorma.github.sdk.bean.dto.response;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.alorma.github.sdk.core.repositories.releases.Asset;
-
+import core.User;
+import core.repositories.releases.Asset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Bernat on 20/07/2014.
- */
-public class Release implements Parcelable {
+public class Release {
 
-  public static final Creator<Release> CREATOR = new Creator<Release>() {
-    @Override
-    public Release createFromParcel(Parcel in) {
-      return new Release(in);
-    }
-
-    @Override
-    public Release[] newArray(int size) {
-      return new Release[size];
-    }
-  };
   public String body;
   public String upload_url;
   public String assets_url;
@@ -47,26 +30,6 @@ public class Release implements Parcelable {
 
   }
 
-  public Release(com.alorma.github.sdk.core.repositories.releases.Release release) {
-    body = release.getBody();
-    upload_url = release.getUploadUrl();
-    assets_url = release.getAssetsUrl();
-    tag_name = release.getTagName();
-    url = release.getUrl();
-    published_at = release.getPublishedAt().toString();
-    html_url = release.getHtmlUrl();
-    id = release.getId().toString();
-    target_commitish = release.getTargetCommitish();
-    assets = createAssets(release.getAssets());
-    draft = release.getDraft();
-    author = new User(release.getAuthor());
-    zipball_url = release.getZipballUrl();
-    prerelease = release.isPreRelease();
-    tarball_url = release.getTarballUrl();
-    name = release.getName();
-    created_at = release.getCreatedAt();
-  }
-
   private List<ReleaseAsset> createAssets(List<Asset> assets) {
     List<ReleaseAsset> result = new ArrayList<>(assets.size());
     for (Asset asset : assets) {
@@ -74,51 +37,5 @@ public class Release implements Parcelable {
       result.add(releaseAsset);
     }
     return result;
-  }
-
-  protected Release(Parcel in) {
-    body = in.readString();
-    upload_url = in.readString();
-    assets_url = in.readString();
-    tag_name = in.readString();
-    url = in.readString();
-    published_at = in.readString();
-    html_url = in.readString();
-    id = in.readString();
-    target_commitish = in.readString();
-    assets = in.createTypedArrayList(ReleaseAsset.CREATOR);
-    draft = in.readByte() != 0;
-    author = in.readParcelable(User.class.getClassLoader());
-    zipball_url = in.readString();
-    prerelease = in.readByte() != 0;
-    tarball_url = in.readString();
-    name = in.readString();
-    created_at = new Date(in.readLong());
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeString(body);
-    dest.writeString(upload_url);
-    dest.writeString(assets_url);
-    dest.writeString(tag_name);
-    dest.writeString(url);
-    dest.writeString(published_at);
-    dest.writeString(html_url);
-    dest.writeString(id);
-    dest.writeString(target_commitish);
-    dest.writeTypedList(assets);
-    dest.writeByte((byte) (draft ? 1 : 0));
-    dest.writeParcelable(author, flags);
-    dest.writeString(zipball_url);
-    dest.writeByte((byte) (prerelease ? 1 : 0));
-    dest.writeString(tarball_url);
-    dest.writeString(name);
-    dest.writeLong(created_at.getTime());
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
   }
 }

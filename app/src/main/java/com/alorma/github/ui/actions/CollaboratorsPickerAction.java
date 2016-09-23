@@ -7,10 +7,10 @@ import android.support.v4.util.Pair;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.repo.GetRepoCollaboratorsClient;
 import com.alorma.github.ui.utils.DialogUtils;
+import core.User;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -104,7 +104,7 @@ public class CollaboratorsPickerAction extends Action<Pair<List<User>, List<User
   private List<String> getNames(List<User> users) {
     List<String> names = new ArrayList<>(users.size());
     for (User user : users) {
-      names.add(user.login);
+      names.add(user.getLogin());
     }
     return names;
   }
@@ -116,11 +116,11 @@ public class CollaboratorsPickerAction extends Action<Pair<List<User>, List<User
       selectedIndices = new Integer[currentAssignees.size()];
       Map<Integer, Integer> mapIds = new HashMap<>();
       for (int i = 0; i < users.size(); i++) {
-        mapIds.put(users.get(i).id, i);
+        mapIds.put(users.get(i).getId(), i);
       }
 
       for (int i = 0; i < currentAssignees.size(); i++) {
-        selectedIndices[i] = mapIds.get(currentAssignees.get(i).id);
+        selectedIndices[i] = mapIds.get(currentAssignees.get(i).getId());
       }
     }
     return selectedIndices;

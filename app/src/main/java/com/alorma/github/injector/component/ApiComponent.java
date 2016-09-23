@@ -5,7 +5,6 @@ import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.tags.RepositoryTagsModule;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.NavigationFragment;
-import com.alorma.github.sdk.core.ApiClient;
 import com.alorma.github.ui.actions.AssigneeAction;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.IssueDetailActivity;
@@ -18,11 +17,10 @@ import com.alorma.github.ui.fragment.repos.ReposFragmentFromOrgs;
 import com.alorma.github.ui.fragment.repos.StarredReposFragment;
 import com.alorma.github.ui.fragment.repos.UsernameReposFragment;
 import com.alorma.github.ui.fragment.repos.WatchedReposFragment;
-
+import core.ApiClient;
 import dagger.Component;
 
-@PerActivity @Component(dependencies = ApplicationComponent.class, modules = ApiModule.class)
-public interface ApiComponent {
+@PerActivity @Component(dependencies = ApplicationComponent.class, modules = ApiModule.class) public interface ApiComponent {
 
   ApiClient getApiClient();
 

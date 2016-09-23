@@ -7,8 +7,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 
 public class PullRequestEventViewHolder extends EventViewHolder {
 
@@ -39,7 +39,7 @@ public class PullRequestEventViewHolder extends EventViewHolder {
     }
 
     String text = "<b>"
-        + event.actor.login
+        + event.actor.getLogin()
         + "</b>"
         + " "
         + action

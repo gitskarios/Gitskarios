@@ -1,7 +1,7 @@
 package com.alorma.github.sdk.services.notifications;
 
 import com.alorma.github.sdk.bean.dto.request.LastDate;
-import com.alorma.github.sdk.bean.dto.response.Notification;
+import core.notifications.Notification;
 import java.util.List;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -13,9 +13,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-/**
- * Created by Bernat on 18/02/2015.
- */
 public interface NotificationsService {
 
   //obs

@@ -7,14 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.core.repositories.Repo;
 import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Permissions;
+import core.repositories.Repo;
 import io.fabric.sdk.android.Fabric;
 import java.text.DecimalFormat;
 

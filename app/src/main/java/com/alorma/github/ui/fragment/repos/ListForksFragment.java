@@ -2,10 +2,10 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetForksClient;
 import com.alorma.gitskarios.core.Pair;
+import core.repositories.Repo;
 import java.util.List;
 
 /**

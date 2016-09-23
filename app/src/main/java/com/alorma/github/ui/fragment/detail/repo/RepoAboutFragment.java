@@ -15,8 +15,6 @@ import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.gcm.GcmTopicsHelper;
-import com.alorma.github.sdk.bean.dto.response.Repo;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubClient;
@@ -39,6 +37,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.varunest.sparkbutton.SparkButton;
+import core.User;
+import core.repositories.Repo;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -205,10 +205,10 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     fork.setOnClickListener(v -> {
       if (currentRepo != null && currentRepo.parent != null) {
         RepoInfo repoInfo1 = new RepoInfo();
-        repoInfo1.owner = currentRepo.parent.owner.login;
+        repoInfo1.owner = currentRepo.parent.owner.getLogin();
         repoInfo1.name = currentRepo.parent.name;
-        if (!TextUtils.isEmpty(currentRepo.default_branch)) {
-          repoInfo1.branch = currentRepo.default_branch;
+        if (!TextUtils.isEmpty(currentRepo.getDefaultBranch())) {
+          repoInfo1.branch = currentRepo.getDefaultBranch();
         }
 
         Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo1);
@@ -218,11 +218,11 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
 
     author.setOnClickListener(v -> {
       if (currentRepo != null && currentRepo.owner != null) {
-        if (currentRepo.owner.type == UserType.User) {
+        if (currentRepo.owner.getType().equals(UserType.User.name())) {
           Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
           startActivity(intent);
-        } else if (currentRepo.owner.type == UserType.Organization) {
-          Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.login);
+        } else if (currentRepo.owner.getType().equals(UserType.Organization.name())) {
+          Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.getLogin());
           startActivity(intent);
         }
       }
@@ -357,31 +357,30 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     return buf.toString();
   }
 
-
   private void setData() {
     if (getActivity() != null) {
       if (this.currentRepo != null) {
         User owner = this.currentRepo.owner;
         profileIcon.setUser(owner);
-        authorName.setText(owner.login);
+        authorName.setText(owner.getLogin());
 
         forkedPlaceholder.setChecked(this.currentRepo.parent != null);
 
         if (this.currentRepo.parent != null) {
           fork.setVisibility(View.VISIBLE);
           forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
-          forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.login, this.currentRepo.parent.name));
+          forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.getLogin(), this.currentRepo.parent.name));
         }
 
         createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
-        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.created_at, R.string.created_at));
+        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.getCreatedAt(), R.string.created_at));
 
         changeStarView();
         changeWatchView();
 
-        setStarsCount(currentRepo.stargazers_count);
+        setStarsCount(currentRepo.getStargazersCount());
 
-        setWatchersCount(currentRepo.subscribers_count);
+        setWatchersCount(currentRepo.getSubscribersCount());
 
         forkedTextView.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
       }
@@ -427,29 +426,29 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   }
 
   protected void getStarWatchData() {
-    starAction(new CheckRepoStarredClient(currentRepo.owner.login, currentRepo.name));
+    starAction(new CheckRepoStarredClient(currentRepo.owner.getLogin(), currentRepo.name));
 
-    watchAction(new CheckRepoWatchedClient(currentRepo.owner.login, currentRepo.name));
+    watchAction(new CheckRepoWatchedClient(currentRepo.owner.getLogin(), currentRepo.name));
   }
 
   private void changeStarStatus() {
     if (repoStarred != null && repoStarred) {
-      futureStarredCount = currentRepo.stargazers_count - 1;
-      starAction(new UnstarRepoClient(currentRepo.owner.login, currentRepo.name));
+      futureStarredCount = currentRepo.getStargazersCount() - 1;
+      starAction(new UnstarRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
     } else {
-      futureStarredCount = currentRepo.stargazers_count + 1;
-      starAction(new StarRepoClient(currentRepo.owner.login, currentRepo.name));
+      futureStarredCount = currentRepo.getStargazersCount() + 1;
+      starAction(new StarRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
     }
   }
 
   private void changeWatchedStatus() {
     if (repoWatched != null && repoWatched) {
-      futureSubscribersCount = currentRepo.subscribers_count - 1;
-      watchAction(new UnwatchRepoClient(currentRepo.owner.login, currentRepo.name));
+      futureSubscribersCount = currentRepo.getSubscribersCount() - 1;
+      watchAction(new UnwatchRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
     } else {
-      futureSubscribersCount = currentRepo.subscribers_count + 1;
-      watchAction(new WatchRepoClient(currentRepo.owner.login, currentRepo.name));
-      watchAction(new WatchRepoClient(currentRepo.owner.login, currentRepo.name));
+      futureSubscribersCount = currentRepo.getSubscribersCount() + 1;
+      watchAction(new WatchRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
+      watchAction(new WatchRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
     }
   }
 
@@ -459,7 +458,7 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
 
       if (futureStarredCount != null) {
         setStarsCount(futureStarredCount);
-        currentRepo.stargazers_count = futureStarredCount;
+        currentRepo.setStargazersCount(futureStarredCount);
       }
     }
   }
@@ -472,7 +471,7 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
 
       if (futureSubscribersCount != null) {
         setWatchersCount(futureSubscribersCount);
-        currentRepo.subscribers_count = futureSubscribersCount;
+        currentRepo.setSubscribersCount(futureSubscribersCount);
       }
     }
   }

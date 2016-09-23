@@ -7,8 +7,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.GithubEvent;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.ui.view.UserAvatarView;
+import core.User;
 
 public class CreatedRepositoryEventViewHolder extends EventViewHolder {
 
@@ -32,7 +32,7 @@ public class CreatedRepositoryEventViewHolder extends EventViewHolder {
 
   @Override
   protected void populateContent(GithubEvent event) {
-    String text = "<b>" + event.actor.login + "</b>" + " " + "created repository" + " " + "<b>" + event.repo.name + "</b>";
+    String text = "<b>" + event.actor.getLogin() + "</b>" + " " + "created repository" + " " + "<b>" + event.repo.name + "</b>";
     authorName.setText(Html.fromHtml(text));
   }
 

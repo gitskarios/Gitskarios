@@ -1,8 +1,6 @@
 package com.alorma.github.utils;
 
 import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.Permissions;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import org.junit.Before;
 import org.junit.Test;
 

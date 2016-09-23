@@ -15,8 +15,6 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Notification;
-import com.alorma.github.sdk.bean.dto.response.Repo;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.activity.NotificationsActivity;
 import com.alorma.github.utils.AccountUtils;
@@ -24,6 +22,8 @@ import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.NotificationsHelper;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import core.notifications.Notification;
+import core.repositories.Repo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -133,12 +133,12 @@ public class GetNotificationsService extends Service {
     int shape_notifications_avatar = this.getResources().getDimensionPixelOffset(R.dimen.shape_notifications_avatar);
 
     NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-    builder.setContentTitle(repository.full_name);
+    builder.setContentTitle(repository.getFullName());
     builder.setSmallIcon(R.drawable.ic_stat_name);
     builder.setSubText(account);
 
     try {
-      String owner = String.valueOf(repository.owner.login.charAt(0));
+      String owner = String.valueOf(repository.owner.getLogin().charAt(0));
       String repo = String.valueOf(repository.name.charAt(0));
 
       String key = owner + repo;
@@ -187,7 +187,7 @@ public class GetNotificationsService extends Service {
       PendingIntent cancelIntent =
           PendingIntent.getService(this, (int) githubNotification.id, intentDisableService, PendingIntent.FLAG_ONE_SHOT);
 
-      NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.repository, account, pendingIntent, cancelIntent);
+      NotificationCompat.Builder builder = createNotificationBuilder(githubNotification.getRepository(), account, pendingIntent, cancelIntent);
 
       StringBuilder stringBuilder = new StringBuilder().append("<b>")
           .append("[")
@@ -210,7 +210,7 @@ public class GetNotificationsService extends Service {
 
       PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-      NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).repository, account, pendingIntent, null);
+      NotificationCompat.Builder builder = createNotificationBuilder(notifications.get(0).getRepository(), account, pendingIntent, null);
 
       builder.setContentText(notifications.size() + " notifications");
 
@@ -230,7 +230,7 @@ public class GetNotificationsService extends Service {
 
       if (notifications.size() > MAX_LINES_NOTIFICATION) {
         inboxStyle.addLine("...");
-        inboxStyle.setBigContentTitle(notifications.get(0).repository.full_name);
+        inboxStyle.setBigContentTitle(notifications.get(0).repository.getFullName());
         inboxStyle.setSummaryText(" +" + (notifications.size() - MAX_LINES_NOTIFICATION) + " more");
       }
 

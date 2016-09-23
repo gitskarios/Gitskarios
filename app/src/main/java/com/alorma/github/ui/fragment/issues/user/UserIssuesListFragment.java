@@ -20,8 +20,6 @@ import com.alorma.github.presenter.Presenter;
 import com.alorma.github.presenter.issue.UserIssuesPresenter;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.core.issue.IssuesSearchRequest;
-import com.alorma.github.sdk.core.issues.Issue;
 import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
@@ -29,6 +27,8 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.typeface.IIcon;
+import core.issue.IssuesSearchRequest;
+import core.issues.Issue;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -87,10 +87,7 @@ public abstract class UserIssuesListFragment extends BaseFragment
   }
 
   private IssuesSearchRequest buildIssueSearchRequest() {
-    return new IssuesSearchRequest.Builder().setAction(getAction())
-        .setAuthor(accountNameProvider.getName())
-        .setIsOpen(true)
-        .build();
+    return new IssuesSearchRequest.Builder().setAction(getAction()).setAuthor(accountNameProvider.getName()).setIsOpen(true).build();
   }
 
   @Override

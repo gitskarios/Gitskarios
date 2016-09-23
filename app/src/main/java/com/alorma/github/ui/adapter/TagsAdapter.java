@@ -11,17 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.User;
 import com.alorma.github.sdk.bean.info.CommitInfo;
+import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.core.repositories.releases.Release;
-import com.alorma.github.sdk.core.repositories.releases.tags.Tag;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.utils.DialogUtils;
@@ -31,20 +28,18 @@ import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
+import core.User;
+import core.repositories.releases.Release;
+import core.repositories.releases.tags.Tag;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Created by a557114 on 29/07/2015.
- */
 public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
 
   private RepoInfo repoInfo;
   private final CommitInfoPresenter comitPresenter;
   private GitskariosDownloadManager gitskariosDownloadManager;
-
 
   public TagsAdapter(LayoutInflater inflater, RepoInfo repoInfo, CommitInfoPresenter commitPresenter) {
     super(inflater);
@@ -76,15 +71,10 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
   private void fillTag(Holder holder, Tag tag) {
     holder.name.setText(tag.getName());
     IconicsDrawable tagDrawable =
-            new IconicsDrawable(holder.itemView.getContext())
-                    .icon(Octicons.Icon.oct_tag)
-                    .colorRes(R.color.md_grey_500)
-                    .sizeDp(40);
+        new IconicsDrawable(holder.itemView.getContext()).icon(Octicons.Icon.oct_tag).colorRes(R.color.md_grey_500).sizeDp(40);
     holder.imageState.setImageDrawable(tagDrawable);
     int size = 2;
-    String numFilesString = holder.files.getContext()
-            .getResources()
-            .getQuantityString(R.plurals.repo_release_num_files, size, size);
+    String numFilesString = holder.files.getContext().getResources().getQuantityString(R.plurals.repo_release_num_files, size, size);
     holder.files.setText(numFilesString);
   }
 
@@ -95,10 +85,7 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
     }
     holder.name.setText(name);
 
-    IconicsDrawable imageDrawable =
-            new IconicsDrawable(holder.itemView.getContext())
-                    .icon(Octicons.Icon.oct_bookmark)
-                    .sizeDp(40);
+    IconicsDrawable imageDrawable = new IconicsDrawable(holder.itemView.getContext()).icon(Octicons.Icon.oct_bookmark).sizeDp(40);
     if (release.isPreRelease()) {
       imageDrawable.colorRes(R.color.release_prerelease);
     } else {
@@ -115,9 +102,7 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
       if (!TextUtils.isEmpty(release.getTarballUrl())) {
         size = size + 1;
       }
-      String numFilesString = holder.files.getContext()
-              .getResources()
-              .getQuantityString(R.plurals.repo_release_num_files, size, size);
+      String numFilesString = holder.files.getContext().getResources().getQuantityString(R.plurals.repo_release_num_files, size, size);
       holder.files.setText(numFilesString);
     }
   }
@@ -143,9 +128,9 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
         Release release = tag.release;
         Context context = itemView.getContext();
         if (release != null) {
-          com.alorma.github.sdk.bean.dto.response.Release dto =
-                  new com.alorma.github.sdk.bean.dto.response.Release(release);
-          Intent intent = ReleaseDetailActivity.launchIntent(context, dto, repoInfo);
+          ReleaseInfo dto = new ReleaseInfo(repoInfo);
+          dto.num = release.getId();
+          Intent intent = ReleaseDetailActivity.launchIntent(context, dto);
           context.startActivity(intent);
         } else {
           LayoutInflater inflater = getInflater();
@@ -153,11 +138,12 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
 
           MaterialDialog.Builder builder = new DialogUtils().builder(context);
           builder.title(tag.getName())
-                  .negativeText(R.string.cancel)
-                  .onNegative(((dialog, which) -> dialog.dismiss()))
-                  .customView(tagDetailsView, true)
-                  .autoDismiss(false)
-                  .build().show();
+              .negativeText(R.string.cancel)
+              .onNegative(((dialog, which) -> dialog.dismiss()))
+              .customView(tagDetailsView, true)
+              .autoDismiss(false)
+              .build()
+              .show();
 
           CommitInfo commitInfo = new CommitInfo();
           commitInfo.repoInfo = repoInfo;
@@ -179,9 +165,9 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
             }
 
             @Override
-            public void onResponseEmpty() {}
+            public void onResponseEmpty() {
+            }
           });
-
         }
       }
     };
@@ -193,12 +179,11 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
       userAvatar.setUser(owner);
 
       TextView authorName = (TextView) tagDetailsView.findViewById(R.id.authorName);
-      authorName.setText(commit.author.login);
+      authorName.setText(commit.author.getLogin());
 
       ImageView dateIcon = (ImageView) tagDetailsView.findViewById(R.id.createdIcon);
-      IconicsDrawable icon = new IconicsDrawable(context, Octicons.Icon.oct_clock)
-              .sizeDp(34)
-              .color(AttributesUtils.getAccentColor(context));
+      IconicsDrawable icon =
+          new IconicsDrawable(context, Octicons.Icon.oct_clock).sizeDp(34).color(AttributesUtils.getAccentColor(context));
       dateIcon.setImageDrawable(icon);
 
       TextView date = (TextView) tagDetailsView.findViewById(R.id.createdAt);
@@ -209,22 +194,22 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
       Button downloadZip = (Button) tagDetailsView.findViewById(R.id.downloadZip);
       downloadZip.setOnClickListener(view -> {
         gitskariosDownloadManager.download(context, tag.getZipballUrl(),
-                context.getString(R.string.download_zip_archive) + " file for tag " + tag.getName(),
-                text -> showSnackbar(tagDetailsView, context, text));
+            context.getString(R.string.download_zip_archive) + " file for tag " + tag.getName(),
+            text -> showSnackbar(tagDetailsView, context, text));
       });
 
       Button downloadTar = (Button) tagDetailsView.findViewById(R.id.downloadTar);
       downloadTar.setOnClickListener(view -> {
         gitskariosDownloadManager.download(context, tag.getZipballUrl(),
-                context.getString(R.string.download_tar_archive) + " file for tag " + tag.getName(),
-                text -> showSnackbar(tagDetailsView, context, text));
+            context.getString(R.string.download_tar_archive) + " file for tag " + tag.getName(),
+            text -> showSnackbar(tagDetailsView, context, text));
       });
     }
 
     private void showSnackbar(View tagDetailsView, Context context, int text) {
       Snackbar snackbar = Snackbar.make(tagDetailsView, context.getString(text), Snackbar.LENGTH_LONG);
       snackbar.setAction(context.getString(R.string.external_storage_permission_request_action),
-              v -> gitskariosDownloadManager.openSettings(context));
+          v -> gitskariosDownloadManager.openSettings(context));
       snackbar.show();
     }
   }
