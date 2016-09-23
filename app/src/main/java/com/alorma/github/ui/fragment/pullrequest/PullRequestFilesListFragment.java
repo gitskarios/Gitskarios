@@ -26,7 +26,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
 
   public static final String INFO = "INFO";
   private RecyclerView recyclerView;
-  private IssueInfo info;
+  private IssueInfo issueInfo;
   private CommitFilesAdapter adapter;
 
   public static PullRequestFilesListFragment newInstance(IssueInfo info) {
@@ -60,7 +60,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
 
       adapter = new CommitFilesAdapter(LayoutInflater.from(getActivity()));
 
-      info = (IssueInfo) getArguments().getParcelable(INFO);
+      issueInfo = (IssueInfo) getArguments().getParcelable(INFO);
       recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
       getContent();
@@ -68,7 +68,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
   }
 
   private void getContent() {
-    GetPullRequestFiles getPullRequestFiles = new GetPullRequestFiles(info);
+    GetPullRequestFiles getPullRequestFiles = new GetPullRequestFiles(issueInfo);
     getPullRequestFiles.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -99,6 +99,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
     FileInfo info = new FileInfo();
     info.content = file.patch;
     info.name = file.getFileName();
+    info.repoInfo = issueInfo.repoInfo;
 
     Intent launcherIntent = FileActivity.createLauncherIntent(getActivity(), info);
     startActivity(launcherIntent);
