@@ -10,16 +10,15 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.CommitDetailModule;
 import com.alorma.github.presenter.CommitInfoPresenter;
-import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.GithubStatus;
@@ -31,12 +30,17 @@ import com.alorma.github.ui.adapter.commit.GithubStatusAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.ItemSingleLineAvatar;
-import core.User;
+
 import java.util.List;
+
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import core.User;
+
 public class CommitDetailActivity extends RepositoryThemeActivity
-    implements CommitFilesAdapter.OnFileRequestListener, Presenter.Callback<Commit> {
+    implements CommitFilesAdapter.OnFileRequestListener, com.alorma.github.presenter.View<Commit> {
 
   @Inject CommitInfoPresenter commitInfoPresenter;
 
@@ -66,6 +70,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.commit_detail);
+    commitInfoPresenter.attachView(this);
 
     ButterKnife.bind(this);
 
@@ -76,7 +81,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
 
         setTitle(String.valueOf(info.repoInfo));
 
-        commitInfoPresenter.load(info, this);
+        commitInfoPresenter.execute(info);
       } else {
         finish();
       }
@@ -84,11 +89,23 @@ public class CommitDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    commitInfoPresenter.detachView();
+  }
+
+  @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
     super.injectComponents(applicationComponent);
 
-    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
-    apiComponent.inject(this);
+    ApiComponent apiComponent =
+            DaggerApiComponent.builder()
+                    .applicationComponent(applicationComponent)
+                    .apiModule(new ApiModule())
+                    .build();
+    apiComponent
+            .plus(new CommitDetailModule())
+            .inject(this);
   }
 
   @Override
@@ -106,7 +123,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
-  public void onResponse(Commit commit, boolean firstTime) {
+  public void onDataReceived(Commit commit, boolean isFromPaginated) {
 
     if (commit.commit != null && commit.commit.message != null) {
       commitMessageTextView.setText(Html.fromHtml(commit.commit.message));
@@ -203,7 +220,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
-  public void onResponseEmpty() {
+  public void showError(Throwable throwable) {
 
   }
 }

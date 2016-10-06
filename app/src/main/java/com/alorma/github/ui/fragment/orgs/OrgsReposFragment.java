@@ -2,12 +2,15 @@ package com.alorma.github.ui.fragment.orgs;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.module.repository.OrganizationRepositoriesModule;
 import com.alorma.github.presenter.repos.OrganizationRepositoriesPresenter;
 import com.alorma.github.ui.fragment.repos.ReposFragment;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
 import javax.inject.Inject;
 
 public class OrgsReposFragment extends ReposFragment {
@@ -51,13 +54,28 @@ public class OrgsReposFragment extends ReposFragment {
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    presenter.attachView(this);
+    onRefresh();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    presenter.detachView();
+  }
+
+  @Override
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new OrganizationRepositoriesModule())
+            .inject(this);
   }
 
   @Override
   protected void onRefresh() {
-    presenter.load(orgName, this);
+    presenter.execute(orgName);
   }
 
   @Override
@@ -72,6 +90,6 @@ public class OrgsReposFragment extends ReposFragment {
 
   @Override
   public void loadMoreItems() {
-    presenter.loadMore(orgName, this);
+    presenter.executePaginated(orgName);
   }
 }

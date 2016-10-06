@@ -1,46 +1,41 @@
 package com.alorma.github.presenter.notifications;
 
 import com.alorma.github.bean.NotificationsParent;
-import com.alorma.github.injector.scope.PerActivity;
-import com.alorma.github.presenter.Presenter;
-import core.ApiClient;
-import core.datasource.CloudDataSource;
-import core.datasource.RestWrapper;
-import core.datasource.SdkItem;
-import core.notifications.CloudNotificationsDataSource;
-import core.notifications.Notification;
-import core.notifications.NotificationsRequest;
-import core.notifications.NotificationsRetrofitWrapper;
-import core.repository.GenericRepository;
-import core.usecase.GenericUseCase;
+import com.alorma.github.presenter.BaseRxPresenter;
+import com.alorma.github.presenter.View;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
+
+import core.datasource.SdkItem;
+import core.notifications.Notification;
+import core.notifications.NotificationsRequest;
+import core.repository.GenericRepository;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@PerActivity public class NotificationsPresenter extends Presenter<NotificationsRequest, List<NotificationsParent>> {
-  GenericUseCase<NotificationsRequest, List<Notification>> useCase;
+public class NotificationsPresenter
+        extends BaseRxPresenter<NotificationsRequest, List<NotificationsParent>, View<List<NotificationsParent>>> {
 
-  @Inject
-  public NotificationsPresenter() {
+  private GenericRepository<NotificationsRequest, List<Notification>> repository;
 
+  public NotificationsPresenter(
+          Scheduler mainScheduler, Scheduler ioScheduler,
+          GenericRepository<NotificationsRequest, List<Notification>> repository) {
+    super(mainScheduler, ioScheduler, null);
+    this.repository = repository;
   }
 
   @Override
-  public void load(final NotificationsRequest request, final Callback<List<NotificationsParent>> listCallback) {
+  public void execute(final NotificationsRequest request) {
+    if(!isViewAttached()) return;
 
-    RestWrapper wrapper = new NotificationsRetrofitWrapper(apiClient, request.getToken());
-
-    CloudDataSource<NotificationsRequest, List<Notification>> cloud = new CloudNotificationsDataSource(wrapper);
-    GenericRepository<NotificationsRequest, List<Notification>> repository = new GenericRepository<>(null, cloud);
-    useCase = new GenericUseCase<>(repository);
-
-    useCase.execute(new SdkItem<>(request)).map(SdkItem::getK).map(notifications -> {
+    repository.execute(new SdkItem<>(request)).map(SdkItem::getK).map(notifications -> {
       Map<Long, NotificationsParent> parents = new HashMap<>();
       for (Notification notification : notifications) {
         if (parents.get(notification.repository.getId()) == null) {
@@ -57,37 +52,19 @@ import rx.schedulers.Schedulers;
       Collections.reverse(notificationsParents);
 
       return notificationsParents;
-    }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).doOnSubscribe(() -> {
-      if (listCallback != null) {
-        listCallback.showLoading();
+    }).subscribeOn(ioScheduler).observeOn(mainScheduler).doOnSubscribe(() -> {
+      if (isViewAttached()) {
+        getView().showLoading();
       }
     }).subscribe(notifications -> {
-      if (listCallback != null) {
-        listCallback.hideLoading();
-        listCallback.onResponse(notifications, true);
+      if (isViewAttached()) {
+        getView().hideLoading();
+        getView().onDataReceived(notifications, false);
       }
     }, throwable -> {
-
+      if (isViewAttached()) {
+        getView().showError(throwable);
+      }
     });
-  }
-
-  @Override
-  public void loadMore(NotificationsRequest notificationsRequest, Callback<List<NotificationsParent>> listCallback) {
-
-  }
-
-  @Override
-  protected GenericRepository<NotificationsRequest, List<NotificationsParent>> configRepository(RestWrapper restWrapper) {
-    return null;
-  }
-
-  @Override
-  protected RestWrapper getRest(ApiClient apiClient, String token) {
-    return null;
-  }
-
-  @Override
-  public void action(List<NotificationsParent> notificationsParents, Callback<List<NotificationsParent>> listCallback, boolean firstTime) {
-
   }
 }

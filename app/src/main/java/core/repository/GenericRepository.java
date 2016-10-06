@@ -7,7 +7,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 public class GenericRepository<Request, Data> {
-
+  private static final String TAG = GenericRepository.class.getSimpleName();
   private CacheDataSource<Request, Data> cache;
   private CloudDataSource<Request, Data> cloud;
 
@@ -17,6 +17,8 @@ public class GenericRepository<Request, Data> {
   }
 
   public Observable<SdkItem<Data>> execute(final SdkItem<Request> request) {
+    checkRequest(request);
+
     Observable<SdkItem<Data>> cacheObs = Observable.empty();
     Observable<SdkItem<Data>> cloudObs = Observable.empty();
     if (cache != null) {
@@ -41,6 +43,12 @@ public class GenericRepository<Request, Data> {
           }
         });
     return Observable.concat(cacheObs, cloudObs).first();
+  }
+
+  private void checkRequest(SdkItem<Request> request) {
+    if (request == null) {
+      throw new IllegalArgumentException(TAG + " SdkItem<Request> request item could not be null");
+    }
   }
 
   protected Observable<SdkItem<Data>> fallbackApi() {

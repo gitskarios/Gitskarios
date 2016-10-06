@@ -1,30 +1,20 @@
 package com.alorma.github.presenter.repos;
 
-import android.support.annotation.NonNull;
-import com.alorma.github.injector.scope.PerActivity;
-import core.datasource.CacheDataSource;
-import core.datasource.CloudDataSource;
-import core.datasource.RestWrapper;
-import core.repositories.CloudOrgsRepositoriesDataSource;
-import core.repositories.Repo;
+import com.alorma.github.presenter.BaseRxPresenter;
+import com.alorma.github.presenter.View;
+
 import java.util.List;
-import javax.inject.Inject;
 
-@PerActivity public class AuthOrgsRepositoriesPresenter extends RepositoriesPresenter {
+import core.repositories.Repo;
+import core.repository.GenericRepository;
+import rx.Scheduler;
 
-  @Inject
-  public AuthOrgsRepositoriesPresenter() {
-    super();
-  }
+public class AuthOrgsRepositoriesPresenter
+        extends BaseRxPresenter<String, List<Repo>, View<List<Repo>>> {
 
-  @NonNull
-  protected CacheDataSource<String, List<Repo>> getUserReposCacheDataSource() {
-    return new AuthUserReposCache("auth_orgs_repos");
-  }
-
-  @NonNull
-  protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
-      RestWrapper reposRetrofit, String sortOrder) {
-    return new CloudOrgsRepositoriesDataSource(reposRetrofit, sortOrder);
+  public AuthOrgsRepositoriesPresenter(
+          Scheduler mainScheduler, Scheduler ioScheduler,
+          GenericRepository<String, List<Repo>> repository) {
+    super(mainScheduler, ioScheduler, repository);
   }
 }

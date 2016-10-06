@@ -8,7 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
-import com.alorma.github.presenter.Presenter;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.repository.RepositoryMilestonesModule;
+import com.alorma.github.presenter.View;
 import com.alorma.github.sdk.bean.dto.response.Milestone;
 import com.alorma.github.sdk.bean.dto.response.MilestoneState;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -18,8 +23,10 @@ import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.NaturalTimeFormatter;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class RepositoryMilestonesActivity extends RepositoryThemeActivity
-    implements Presenter.Callback<List<Milestone>>, RecyclerArrayAdapter.ItemCallback<Milestone> {
+    implements View<List<Milestone>>, RecyclerArrayAdapter.ItemCallback<Milestone> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String RETURN = "RETURN";
@@ -28,6 +35,7 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
   @BindView(R.id.recycler) RecyclerView recyclerView;
   private MilestonesAdapter adapter;
   private boolean returnResult;
+  @Inject IssueMilestonePresenter presenter;
 
   public static Intent createLauncher(Context context, RepoInfo repoInfo, boolean returnResult) {
     Intent intent = new Intent(context, RepositoryMilestonesActivity.class);
@@ -46,19 +54,30 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
   }
 
   @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    ApiComponent apiComponent =
+            DaggerApiComponent.builder()
+                    .applicationComponent(applicationComponent)
+                    .apiModule(new ApiModule())
+                    .build();
+    apiComponent
+            .plus(new RepositoryMilestonesModule(buildMilestoneState()))
+            .inject(this);
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.generic_recyclerview);
     ButterKnife.bind(this);
+    presenter.attachView(this);
+    presenter.execute(buildRepoInfo());
 
     if (getToolbar() != null) {
       getToolbar().setBackgroundColor(AttributesUtils.getPrimaryColor(this));
     }
 
     setTitle(R.string.milestones);
-
-    RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
-    MilestoneState state = (MilestoneState) getIntent().getExtras().getSerializable(STATE);
 
     returnResult = getIntent().getExtras().getBoolean(RETURN, false);
 
@@ -67,9 +86,21 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
     adapter.setTimeFormatter(new NaturalTimeFormatter(this));
     adapter.setCallback(this);
     recyclerView.setAdapter(adapter);
+  }
 
-    IssueMilestonePresenter presenter = new IssueMilestonePresenter(state);
-    presenter.load(repoInfo, this);
+  private MilestoneState buildMilestoneState() {
+    return (MilestoneState) getIntent().getExtras().getSerializable(STATE);
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    presenter.detachView();
+  }
+
+  private RepoInfo buildRepoInfo() {
+    RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+    return repoInfo;
   }
 
   @Override
@@ -88,8 +119,8 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
   }
 
   @Override
-  public void onResponse(List<Milestone> milestones, boolean firstTime) {
-    if (firstTime) {
+  public void onDataReceived(List<Milestone> milestones, boolean isFromPaginated) {
+    if (!isFromPaginated) {
       adapter.clear();
     }
     adapter.addAll(milestones);
@@ -101,7 +132,7 @@ public class RepositoryMilestonesActivity extends RepositoryThemeActivity
   }
 
   @Override
-  public void onResponseEmpty() {
+  public void showError(Throwable throwable) {
 
   }
 

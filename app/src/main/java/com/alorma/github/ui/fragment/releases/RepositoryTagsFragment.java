@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.releases;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -8,21 +9,22 @@ import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
-import com.alorma.github.injector.module.tags.RepositoryTagsModule;
+import com.alorma.github.injector.module.repository.tags.RepositoryTagsModule;
 import com.alorma.github.presenter.CommitInfoPresenter;
-import com.alorma.github.presenter.Presenter;
+import com.alorma.github.presenter.View;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.TagsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-import core.repositories.releases.tags.Tag;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> implements Presenter.Callback<List<Tag>> {
+import core.repositories.releases.tags.Tag;
+
+public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> implements View<List<Tag>> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
@@ -53,6 +55,14 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
     apiComponent
             .plus(new RepositoryTagsModule())
             .inject(this);
+    tagsPresenter.attachView(this);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    tagsPresenter.detachView();
+    commitPresenter.detachView();
   }
 
   @Override
@@ -68,14 +78,13 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
       getAdapter().clear();
     }
 
-    tagsPresenter.load(repoInfo.toCoreRepoInfo(), this);
+    tagsPresenter.execute(repoInfo.toCoreRepoInfo());
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-
-    tagsPresenter.loadMore(repoInfo.toCoreRepoInfo(), this);
+    tagsPresenter.executePaginated(repoInfo.toCoreRepoInfo());
   }
 
   @Override
@@ -84,7 +93,7 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
   }
 
   @Override
-  public void onResponse(List<Tag> tags, boolean firstTime) {
+  public void onDataReceived(List<Tag> tags, boolean isFromPaginated) {
     if(getActivity() == null) return;
 
     if (tags.size() > 0) {
@@ -111,7 +120,7 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
   }
 
   @Override
-  public void onResponseEmpty() {
+  public void showError(Throwable throwable) {
     stopRefresh();
     if (getAdapter() == null || getAdapter().getItemCount() == 0) {
       setEmpty();

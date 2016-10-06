@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.module.repository.WatchedRepositoriesModule;
 import com.alorma.github.presenter.repos.AuthWatchedRepositoriesPresenter;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -39,16 +40,29 @@ public class WatchedReposFragment extends ReposFragment {
     }
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    presenter.attachView(this);
+    onRefresh();
+  }
 
+  @Override
+  public void onPause() {
+    super.onPause();
+    presenter.detachView();
+  }
 
   @Override
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new WatchedRepositoriesModule())
+            .inject(this);
   }
 
   @Override
   protected void onRefresh() {
-    presenter.load(username, this);
+    presenter.execute(username);
   }
 
   @Override
@@ -63,6 +77,6 @@ public class WatchedReposFragment extends ReposFragment {
 
   @Override
   public void loadMoreItems() {
-    presenter.loadMore(username, this);
+    presenter.executePaginated(username);
   }
 }

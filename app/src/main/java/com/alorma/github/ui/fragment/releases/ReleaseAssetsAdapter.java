@@ -23,7 +23,7 @@ public class ReleaseAssetsAdapter extends RecyclerArrayAdapter<Asset, ReleaseAss
   @Override
   protected void onBindViewHolder(Holder holder, Asset releaseAsset) {
     holder.releaseAssetName.setText(releaseAsset.getName());
-    if (releaseAsset.getSize() > 0) {
+    if (releaseAsset.getSize() != null && releaseAsset.getSize() > 0) {
       String size = Formatter.formatShortFileSize(holder.releaseAssetSize.getContext(), releaseAsset.getSize());
       holder.releaseAssetSize.setText(size);
       holder.releaseAssetSize.setVisibility(View.VISIBLE);

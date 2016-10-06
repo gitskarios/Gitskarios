@@ -1,30 +1,20 @@
 package com.alorma.github.presenter.repos;
 
-import android.support.annotation.NonNull;
-import com.alorma.github.injector.scope.PerActivity;
-import core.datasource.CacheDataSource;
-import core.datasource.CloudDataSource;
-import core.datasource.RestWrapper;
-import core.repositories.CloudMembershipRepositoriesDataSource;
-import core.repositories.Repo;
+import com.alorma.github.presenter.BaseRxPresenter;
+import com.alorma.github.presenter.View;
+
 import java.util.List;
-import javax.inject.Inject;
 
-@PerActivity public class AuthMembershipRepositoriesPresenter extends RepositoriesPresenter {
+import core.repositories.Repo;
+import core.repository.GenericRepository;
+import rx.Scheduler;
 
-  @Inject
-  public AuthMembershipRepositoriesPresenter() {
-    super();
-  }
+public class AuthMembershipRepositoriesPresenter
+        extends BaseRxPresenter<String, List<Repo>, View<List<Repo>>> {
 
-  @NonNull
-  protected CacheDataSource<String, List<Repo>> getUserReposCacheDataSource() {
-    return new AuthUserReposCache("auth_membership");
-  }
-
-  @NonNull
-  protected CloudDataSource<String, List<Repo>> getCloudRepositoriesDataSource(
-      RestWrapper reposRetrofit, String sortOrder) {
-    return new CloudMembershipRepositoriesDataSource(reposRetrofit, sortOrder);
+  public AuthMembershipRepositoriesPresenter(
+          Scheduler mainScheduler, Scheduler ioScheduler,
+          GenericRepository<String, List<Repo>> repository) {
+    super(mainScheduler, ioScheduler, repository);
   }
 }

@@ -2,11 +2,14 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.module.repository.MembershipRepositoriesModule;
 import com.alorma.github.presenter.repos.AuthMembershipRepositoriesPresenter;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
 import javax.inject.Inject;
 
 public class MembershipReposFragment extends ReposFragment {
@@ -40,13 +43,28 @@ public class MembershipReposFragment extends ReposFragment {
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    presenter.attachView(this);
+    onRefresh();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    presenter.detachView();
+  }
+
+  @Override
   protected void onRefresh() {
-    presenter.load(username, this);
+    presenter.execute(username);
   }
 
   @Override
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new MembershipRepositoriesModule())
+            .inject(this);
   }
 
   @Override
@@ -61,6 +79,6 @@ public class MembershipReposFragment extends ReposFragment {
 
   @Override
   public void loadMoreItems() {
-    presenter.loadMore(username, this);
+    presenter.executePaginated(username);
   }
 }

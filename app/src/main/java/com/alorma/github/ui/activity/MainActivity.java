@@ -21,7 +21,7 @@ import com.alorma.github.BuildConfig;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
-import com.alorma.github.presenter.NavigationFragment;
+import com.alorma.github.ui.fragment.NavigationFragment;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
@@ -639,9 +639,11 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     if (accountHeader != null) {
       for (User organization : organizations) {
         ProfileDrawerItem drawerItem = getOrganizationProfileDrawerItem(organization);
-        drawerItems.put(drawerItem.getName().getText(), getOrganizationProfileSubItems(organization));
-        drawerItem.withSubItems();
-        accountHeader.addProfiles(drawerItem);
+        if (!drawerItems.containsKey(drawerItem.getName().getText())) {
+          drawerItems.put(drawerItem.getName().getText(), getOrganizationProfileSubItems(organization));
+          drawerItem.withSubItems();
+          accountHeader.addProfiles(drawerItem);
+        }
       }
     }
   }

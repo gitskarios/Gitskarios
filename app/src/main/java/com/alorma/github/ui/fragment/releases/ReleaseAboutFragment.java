@@ -107,12 +107,12 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
             .subscribe(new Subscriber<String>() {
               @Override
               public void onCompleted() {
-
+                progressBar.setVisibility(View.GONE);
               }
 
               @Override
               public void onError(Throwable e) {
-
+                progressBar.setVisibility(View.GONE);
               }
 
               @Override
@@ -124,9 +124,10 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
                 imageGetter.bind(htmlContentView, htmlCode, repoInfo.hashCode());
 
                 htmlContentView.setMovementMethod(UiUtils.CHECKING_LINK_METHOD);
-                progressBar.setVisibility(View.GONE);
               }
             });
+      } else {
+        progressBar.setVisibility(View.GONE);
       }
 
       author.setOnClickListener(v -> {
