@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.presenter.CommitInfoPresenter;
-import com.alorma.github.presenter.Presenter;
 import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
-import com.alorma.github.sdk.bean.info.ReleaseInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.ReleaseDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
@@ -28,12 +27,14 @@ import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.TimeUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import core.User;
-import core.repositories.releases.Release;
-import core.repositories.releases.tags.Tag;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import core.User;
+import core.repositories.releases.Release;
+import core.repositories.releases.tags.Tag;
 
 public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
 
@@ -122,15 +123,15 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
     }
 
     private final View.OnClickListener ITEM_ON_CLICK_LISTENER = new View.OnClickListener() {
+      private com.alorma.github.presenter.View<Commit> view;
+
       @Override
       public void onClick(View v) {
         Tag tag = getItem(getAdapterPosition());
         Release release = tag.release;
         Context context = itemView.getContext();
         if (release != null) {
-          ReleaseInfo dto = new ReleaseInfo(repoInfo);
-          dto.num = release.getId();
-          Intent intent = ReleaseDetailActivity.launchIntent(context, dto);
+          Intent intent = ReleaseDetailActivity.launchIntent(context, release, repoInfo);
           context.startActivity(intent);
         } else {
           LayoutInflater inflater = getInflater();
@@ -148,15 +149,10 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
           CommitInfo commitInfo = new CommitInfo();
           commitInfo.repoInfo = repoInfo;
           commitInfo.sha = tag.getSha().getSha();
-          comitPresenter.load(commitInfo, new Presenter.Callback<Commit>() {
+          view = new com.alorma.github.presenter.View<Commit>() {
             @Override
             public void showLoading() {
               tagDetailsView.findViewById(R.id.progressBarLayout).setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onResponse(Commit commit, boolean firstTime) {
-              fillTagDetailsView(tagDetailsView, tag, commit);
             }
 
             @Override
@@ -165,9 +161,17 @@ public class TagsAdapter extends RecyclerArrayAdapter<Tag, TagsAdapter.Holder> {
             }
 
             @Override
-            public void onResponseEmpty() {
+            public void onDataReceived(Commit commit, boolean isFromPaginated) {
+              fillTagDetailsView(tagDetailsView, tag, commit);
             }
-          });
+
+            @Override
+            public void showError(Throwable throwable) {
+
+            }
+          };
+          comitPresenter.attachView(view);
+          comitPresenter.execute(commitInfo);
         }
       }
     };

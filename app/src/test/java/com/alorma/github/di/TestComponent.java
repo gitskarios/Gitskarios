@@ -3,6 +3,8 @@ package com.alorma.github.di;
 import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.di.tags.TagsTestComponent;
 import com.alorma.github.di.tags.TagsTestModule;
+import com.alorma.github.injector.named.IOScheduler;
+import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.SortOrder;
 import core.ApiClient;
 import dagger.Component;
@@ -19,7 +21,11 @@ import rx.Scheduler;
 
   AccountNameProvider provideAccountName();
 
-  Scheduler provideScheduler();
+  @MainScheduler
+  Scheduler provideMainScheduler();
+
+  @IOScheduler
+  Scheduler provideIOScheduler();
 
   ApiClient providesGithubApi();
 

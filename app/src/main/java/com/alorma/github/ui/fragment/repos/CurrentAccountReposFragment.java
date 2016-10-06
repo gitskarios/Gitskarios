@@ -2,9 +2,11 @@ package com.alorma.github.ui.fragment.repos;
 
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.module.repository.CurrentAccountRepositoriesModule;
 import com.alorma.github.presenter.repos.AuthUserRepositoriesPresenter;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
 import javax.inject.Inject;
 
 public class CurrentAccountReposFragment extends ReposFragment {
@@ -17,12 +19,27 @@ public class CurrentAccountReposFragment extends ReposFragment {
 
   @Override
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new CurrentAccountRepositoriesModule())
+            .inject(this);
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    presenter.attachView(this);
+    onRefresh();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    presenter.detachView();
   }
 
   @Override
   protected void onRefresh() {
-    presenter.load(null, this);
+    presenter.execute(null);
   }
 
   @Override
@@ -37,6 +54,6 @@ public class CurrentAccountReposFragment extends ReposFragment {
 
   @Override
   public void loadMoreItems() {
-    presenter.loadMore(null, this);
+    presenter.executePaginated(null);
   }
 }

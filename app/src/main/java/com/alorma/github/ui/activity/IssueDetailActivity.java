@@ -29,8 +29,8 @@ import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
-import com.alorma.github.presenter.Presenter;
-import com.alorma.github.presenter.issue.IssueCommentPresenter;
+import com.alorma.github.injector.module.issues.IssueDetailModule;
+import com.alorma.github.presenter.issue.IssueCommentBaseRxPresenter;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
@@ -82,9 +82,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class IssueDetailActivity extends BackActivity
-    implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener {
+    implements View.OnClickListener, IssueDetailRequestListener,
+        SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener,
+        com.alorma.github.presenter.View<GithubComment> {
 
-  @Inject IssueCommentPresenter issueCommentPresenter;
+  @Inject IssueCommentBaseRxPresenter issueCommentPresenter;
 
   public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
@@ -136,6 +138,7 @@ public class IssueDetailActivity extends BackActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.issue_detail_activity);
+    issueCommentPresenter.attachView(this);
 
     if (getIntent().getExtras() != null) {
 
@@ -166,11 +169,19 @@ public class IssueDetailActivity extends BackActivity
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    issueCommentPresenter.detachView();
+  }
+
+  @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
     super.injectComponents(applicationComponent);
 
     apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new IssueDetailModule())
+            .inject(this);
   }
 
   private void checkEditTitle() {
@@ -690,27 +701,25 @@ public class IssueDetailActivity extends BackActivity
     repoInfo.name = issueInfo.repoInfo.name;
     repoInfo.owner = issueInfo.repoInfo.owner;
     EditIssueCommentBodyRequest edit = new EditIssueCommentBodyRequest(repoInfo, issueStoryComment.comment.id, string);
-    issueCommentPresenter.load(edit, new Presenter.Callback<GithubComment>() {
-      @Override
-      public void showLoading() {
+    issueCommentPresenter.execute(edit);
+  }
 
-      }
+  @Override
+  public void showLoading() {
+  }
 
-      @Override
-      public void onResponse(GithubComment githubComment, boolean firstTime) {
-        getContent();
-      }
+  @Override
+  public void hideLoading() {
+  }
 
-      @Override
-      public void hideLoading() {
+  @Override
+  public void onDataReceived(GithubComment data, boolean isFromPaginated) {
+    getContent();
+  }
 
-      }
+  @Override
+  public void showError(Throwable throwable) {
 
-      @Override
-      public void onResponseEmpty() {
-
-      }
-    });
   }
 
   private class MilestonesCallback implements Observer<List<Milestone>> {

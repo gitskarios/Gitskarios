@@ -1,6 +1,8 @@
 package com.alorma.github.di;
 
 import com.alorma.github.account.AccountNameProvider;
+import com.alorma.github.injector.named.IOScheduler;
+import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.SortOrder;
 
 import core.ApiClient;
@@ -35,13 +37,17 @@ import rx.schedulers.Schedulers;
 
     @Provides
     @Singleton
-    Scheduler provideScheduler() {
+    ApiClient providesGithubApi() {
+        return Mockito.mock(ApiClient.class);
+    }
+
+    @Provides @Singleton @MainScheduler
+    Scheduler provideMainScheduler(){
         return Schedulers.immediate();
     }
 
-    @Provides
-    @Singleton
-    ApiClient providesGithubApi() {
-        return Mockito.mock(ApiClient.class);
+    @Provides @Singleton @IOScheduler
+    Scheduler provideIOScheduler() {
+        return Schedulers.immediate();
     }
 }

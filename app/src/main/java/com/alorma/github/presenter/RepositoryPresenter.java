@@ -1,28 +1,31 @@
 package com.alorma.github.presenter;
 
 import android.support.annotation.NonNull;
+
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
-import core.ApiClient;
-import core.datasource.RestWrapper;
+
+import java.util.List;
+
 import core.repositories.Branch;
 import core.repositories.Repo;
-import core.repository.GenericRepository;
-import java.util.List;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
+public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Repo>> {
 
-  public RepositoryPresenter() {
+  public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler) {
+      super(mainScheduler, ioScheduler, null);
   }
 
   @Override
-  public void load(@NonNull final RepoInfo repoInfo, @NonNull final Callback<Repo> repoCallback) {
+  public void execute(@NonNull final RepoInfo repoInfo) {
+    if(!isViewAttached()) return;
 
     GetRepoClient repoClient = new GetRepoClient(repoInfo);
 
@@ -41,10 +44,10 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
     });
 
     Observable<List<Branch>> branchesClient =
-        new GetRepoBranchesClient(repoInfo).observable().subscribeOn(Schedulers.newThread());
+        new GetRepoBranchesClient(repoInfo).observable().subscribeOn(ioScheduler);
 
     Observable<Repo> combinedWithBranches =
-        Observable.combineLatest(repoClient.observable().subscribeOn(Schedulers.newThread()),
+        Observable.combineLatest(repoClient.observable().subscribeOn(ioScheduler),
             branchesClient, (repo, branches) -> {
               repo.branches = branches;
               if (branches.size() == 1) {
@@ -56,12 +59,12 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
     Observable<Repo> repoObservable = combinedWithBranches.doOnNext(CacheWrapper::setRepository);
 
     Observable.concat(memory, repoObservable)
-        .observeOn(AndroidSchedulers.mainThread())
+        .observeOn(mainScheduler)
         .subscribe(new Subscriber<Repo>() {
 
           @Override
           public void onNext(Repo repo) {
-            repoCallback.onResponse(repo, true);
+            getView().onDataReceived(repo, false);
           }
 
           @Override
@@ -74,25 +77,5 @@ public class RepositoryPresenter extends Presenter<RepoInfo, Repo> {
 
           }
         });
-  }
-
-  @Override
-  public void loadMore(RepoInfo repoInfo, Callback<Repo> repoCallback) {
-
-  }
-
-  @Override
-  protected GenericRepository<RepoInfo, Repo> configRepository(RestWrapper restWrapper) {
-    return null;
-  }
-
-  @Override
-  protected RestWrapper getRest(ApiClient apiClient, String token) {
-    return null;
-  }
-
-  @Override
-  public void action(Repo repo, Callback<Repo> repoCallback, boolean firstTime) {
-
   }
 }

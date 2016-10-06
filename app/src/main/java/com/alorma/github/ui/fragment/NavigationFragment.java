@@ -1,27 +1,39 @@
-package com.alorma.github.presenter;
+package com.alorma.github.ui.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.NavigationModule;
+import com.alorma.github.presenter.NavigationProfilesPresenter;
+import com.alorma.github.presenter.View;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import core.User;
+
 import java.util.List;
+
 import javax.inject.Inject;
 
-public class NavigationFragment extends BaseFragment implements Presenter.Callback<List<User>> {
-  @Inject NavigationProfilesPresenter navigationProfilesPresenter;
+import core.User;
+
+public class NavigationFragment extends BaseFragment implements View<List<User>> {
+  @Inject
+  NavigationProfilesPresenter navigationProfilesPresenter;
 
   private NavigationCallback navigationCallbackNull = organizations -> {
   };
   private NavigationCallback navigationCallback;
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    navigationProfilesPresenter.load(nameProvider.getName(), this);
+  public void onResume() {
+    super.onResume();
+    navigationProfilesPresenter.attachView(this);
+    navigationProfilesPresenter.execute(nameProvider.getName());
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    navigationProfilesPresenter.detachView();
   }
 
   @Override
@@ -30,13 +42,19 @@ public class NavigationFragment extends BaseFragment implements Presenter.Callba
 
     applicationComponent.inject(this);
 
-    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    ApiComponent apiComponent =
+            DaggerApiComponent.builder()
+                    .applicationComponent(applicationComponent)
+                    .apiModule(new ApiModule())
+                    .build();
 
     initInjectors(apiComponent);
   }
 
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new NavigationModule())
+            .inject(this);
   }
 
   @Override
@@ -45,7 +63,7 @@ public class NavigationFragment extends BaseFragment implements Presenter.Callba
   }
 
   @Override
-  public void onResponse(List<User> users, boolean firstTime) {
+  public void onDataReceived(List<User> users, boolean isFromPaginated) {
     if (getActivity() instanceof NavigationCallback) {
       navigationCallback = (NavigationCallback) getActivity();
     }
@@ -58,7 +76,7 @@ public class NavigationFragment extends BaseFragment implements Presenter.Callba
   }
 
   @Override
-  public void onResponseEmpty() {
+  public void showError(Throwable throwable) {
 
   }
 

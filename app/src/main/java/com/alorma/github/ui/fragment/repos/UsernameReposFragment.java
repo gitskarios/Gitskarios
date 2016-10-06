@@ -2,20 +2,20 @@ package com.alorma.github.ui.fragment.repos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
-import com.alorma.github.presenter.Presenter;
+import com.alorma.github.injector.module.repository.UsernameRepositoriesModule;
 import com.alorma.github.presenter.repos.UserRepositoriesPresenter;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import core.repositories.Repo;
-import java.util.List;
+
 import javax.inject.Inject;
 
-public class UsernameReposFragment extends ReposFragment implements TitleProvider, Presenter.Callback<List<Repo>> {
+public class UsernameReposFragment extends ReposFragment implements TitleProvider {
 
-  @Inject UserRepositoriesPresenter userRepositoriesPresenter;
+  @Inject UserRepositoriesPresenter presenter;
   private String username;
 
   public static UsernameReposFragment newInstance(String username) {
@@ -31,7 +31,9 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
 
   @Override
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent.inject(this);
+    apiComponent
+            .plus(new UsernameRepositoriesModule())
+            .inject(this);
   }
 
   @Override
@@ -44,13 +46,26 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    presenter.attachView(this);
+    onRefresh();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    presenter.detachView();
+  }
+
+  @Override
   public void onStart() {
     super.onStart();
   }
 
   @Override
   protected void onRefresh() {
-    userRepositoriesPresenter.load(username, this);
+    presenter.execute(username);
   }
 
   @Override
@@ -65,7 +80,7 @@ public class UsernameReposFragment extends ReposFragment implements TitleProvide
 
   @Override
   public void loadMoreItems() {
-    userRepositoriesPresenter.loadMore(username, this);
+    presenter.executePaginated(username);
   }
 
   @Override

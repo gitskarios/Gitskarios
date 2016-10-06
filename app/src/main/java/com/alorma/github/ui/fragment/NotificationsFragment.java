@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import com.alorma.github.bean.NotificationsParent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
-import com.alorma.github.presenter.Presenter;
+import com.alorma.github.injector.module.UserNotificationsModule;
 import com.alorma.github.presenter.notifications.NotificationsPresenter;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -40,7 +41,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NotificationsFragment extends LoadingListFragment<NotificationsAdapter>
-    implements NotificationsAdapter.NotificationsAdapterListener, Presenter.Callback<List<NotificationsParent>> {
+    implements NotificationsAdapter.NotificationsAdapterListener,
+        com.alorma.github.presenter.View<List<NotificationsParent>> {
 
   @Inject NotificationsPresenter presenter;
   private boolean isShowingAllNotifications = false;
@@ -65,7 +67,18 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
     GitskariosApplication application = (GitskariosApplication) getActivity().getApplication();
     ApplicationComponent component = application.getApplicationComponent();
 
-    DaggerApiComponent.builder().applicationComponent(component).apiModule(new ApiModule()).build().inject(this);
+    DaggerApiComponent.builder().applicationComponent(component)
+            .apiModule(new ApiModule())
+            .build()
+            .plus(new UserNotificationsModule())
+            .inject(this);
+    presenter.attachView(this);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    presenter.detachView();
   }
 
   @Override
@@ -108,7 +121,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
       request.setToken(token);
       request.setAllNotifications(isShowingAllNotifications);
 
-      presenter.load(request, this);
+      presenter.execute(request);
     }
   }
 
@@ -265,7 +278,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   }
 
   @Override
-  public void onResponse(List<NotificationsParent> notifications, boolean firstTime) {
+  public void onDataReceived(List<NotificationsParent> notifications, boolean isFromPaginated) {
     if (notifications != null && notifications.size() > 0) {
       if (notifications.size() > 0) {
         if (getAdapter() != null && getAdapter().getItemCount() > 0) {
@@ -291,7 +304,7 @@ public class NotificationsFragment extends LoadingListFragment<NotificationsAdap
   }
 
   @Override
-  public void onResponseEmpty() {
+  public void showError(Throwable throwable) {
 
   }
 }

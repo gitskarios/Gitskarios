@@ -13,11 +13,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.gcm.GcmTopicsHelper;
-import com.alorma.github.presenter.Presenter;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.dto.request.RepoRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
@@ -48,18 +53,25 @@ import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import core.repositories.Branch;
 import core.repositories.Permissions;
 import core.repositories.Repo;
-import java.util.ArrayList;
-import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class RepoDetailActivity extends RepositoryThemeActivity
-    implements AdapterView.OnItemSelectedListener, Presenter.Callback<Repo>, SourceListFragment.SourceCallback {
+    implements AdapterView.OnItemSelectedListener,
+        com.alorma.github.presenter.View<Repo>, SourceListFragment.SourceCallback {
+
+  @Inject RepositoryPresenter presenter;
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -94,8 +106,21 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    ApiComponent apiComponent =
+            DaggerApiComponent.builder()
+                    .applicationComponent(applicationComponent)
+                    .apiModule(new ApiModule())
+                    .build();
+    apiComponent
+            .plus(new RepoDetailModule())
+            .inject(this);
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    presenter.attachView(this);
     setContentView(R.layout.activity_repo_detail);
 
     if (getIntent().getExtras() != null) {
@@ -131,6 +156,12 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     } else {
       finish();
     }
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    presenter.detachView();
   }
 
   private void listFragments(List<UiNavigation.UiItem> navigation) {
@@ -179,12 +210,11 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   }
 
   private void load() {
-    RepositoryPresenter repositoryPresenter = new RepositoryPresenter();
-    repositoryPresenter.load(requestRepoInfo, this);
+    presenter.execute(requestRepoInfo);
   }
 
   @Override
-  public void onResponse(Repo repo, boolean firstTime) {
+  public void onDataReceived(Repo repo, boolean isFromPaginated) {
     hideProgressDialog();
     if (repo != null) {
       this.currentRepo = repo;
@@ -228,12 +258,10 @@ public class RepoDetailActivity extends RepositoryThemeActivity
 
   @Override
   public void hideLoading() {
-
   }
 
   @Override
-  public void onResponseEmpty() {
-
+  public void showError(Throwable throwable) {
   }
 
   @Override
@@ -440,7 +468,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
 
               @Override
               public void onNext(Repo repo) {
-                onResponse(repo, true);
+                onDataReceived(repo, false);
               }
             });
       } else if (resultCode == RESULT_CANCELED) {

@@ -5,16 +5,16 @@ import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.presenter.repos.releases.tags.TagsCacheDataSource;
 
-import core.repositories.releases.tags.TagsCloudDataSource;
-import core.repositories.releases.tags.TagsRetrofitWrapper;
 import org.mockito.Mockito;
 
 import javax.inject.Singleton;
 
+import core.repositories.releases.tags.TagsCloudDataSource;
+import core.repositories.releases.tags.TagsRetrofitWrapper;
+import core.repository.GenericRepository;
 import dagger.Module;
 import dagger.Provides;
 import rx.Scheduler;
-import rx.schedulers.Schedulers;
 
 @Module public class TagsTestModule {
 
@@ -39,21 +39,15 @@ import rx.schedulers.Schedulers;
         return Mockito.mock(TagsCacheDataSource.class);
     }
 
-    @Provides @Singleton @MainScheduler Scheduler provideMainScheduler(){
-        return Schedulers.immediate();
-    }
-
-    @Provides @Singleton @IOScheduler Scheduler provideIOScheduler() {
-        return Schedulers.immediate();
-    }
-
     @Provides
     @Singleton
-    RepositoryTagsPresenter provideRepositoryTagsPresenter(@IOScheduler Scheduler ioScheduler,
-                                                           @MainScheduler Scheduler mainScheduler,
-                                                           TagsCacheDataSource tagsCacheDataSource,
-                                                           TagsCloudDataSource tagsCloudDataSource,
-                                                           TagsRetrofitWrapper tagsRetrofitWrapper) {
-        return new RepositoryTagsPresenter(ioScheduler, mainScheduler, tagsCacheDataSource, tagsCloudDataSource, tagsRetrofitWrapper);
+    RepositoryTagsPresenter provideRepositoryTagsPresenter(
+            @MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
+            TagsCacheDataSource tagsCacheDataSource,
+            TagsCloudDataSource tagsCloudDataSource) {
+
+        return new RepositoryTagsPresenter(
+                mainScheduler, ioScheduler,
+                new GenericRepository<>(tagsCacheDataSource, tagsCloudDataSource));
     }
 }
