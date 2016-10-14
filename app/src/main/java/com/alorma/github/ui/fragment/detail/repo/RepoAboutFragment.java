@@ -114,9 +114,9 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     public void onNext(Boolean aBoolean) {
       repoWatched = aBoolean;
       if (aBoolean) {
-        GcmTopicsHelper.registerInTopic(getActivity(), repoInfo);
+        GcmTopicsHelper.registerInTopic(repoInfo);
       } else {
-        GcmTopicsHelper.unregisterInTopic(getActivity(), repoInfo);
+        GcmTopicsHelper.unregisterInTopic(repoInfo);
       }
       changeWatchView();
     }

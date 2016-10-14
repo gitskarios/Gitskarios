@@ -352,7 +352,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe(webHookResponse -> {
-            GcmTopicsHelper.registerInTopic(RepoDetailActivity.this, requestRepoInfo);
+            GcmTopicsHelper.registerInTopic(requestRepoInfo);
           }, throwable -> {
 
           });
