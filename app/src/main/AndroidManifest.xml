@@ -197,20 +197,19 @@
     <!-- [START gcm_listener] -->
     <service
         android:name=".gcm.GitskariosGcmListenerService"
-        android:exported="false"
+        android:exported="true"
+        android:enabled="true"
         >
       <intent-filter>
-        <action android:name="com.google.firebase.MESSAGING_EVENT."/>
-      </intent-filter>
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+        <action android:name="com.google.firebase.MESSAGING_EVENT"/>
       </intent-filter>
     </service>
     <!-- [END gcm_listener] -->
     <!-- [START instanceId_listener] -->
     <service
         android:name=".gcm.GitskariosInstanceIDListenerService"
-        android:exported="false"
+        android:exported="true"
+        android:enabled="true"
         >
       <intent-filter>
         <action android:name="com.google.firebase.INSTANCEID_EVENT"/>
