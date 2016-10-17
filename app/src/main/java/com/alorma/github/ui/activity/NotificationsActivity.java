@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.widget.Switch;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
+import com.alorma.github.account.GetNotificationsService;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerNotificationsComponent;
 import com.alorma.github.injector.component.NotificationsComponent;
@@ -40,6 +41,8 @@ public class NotificationsActivity extends BackActivity {
     setContentView(R.layout.notifications_activity);
 
     injectComponent();
+
+    startService(new Intent(this, GetNotificationsService.class));
 
     notificationsSwitch = (Switch) findViewById(R.id.notificationsSwitch);
 

@@ -3,13 +3,10 @@ package com.alorma.github.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by a557114 on 14/09/2015.
- */
 public class NotificationsHelper {
 
   private static String PREFERENCE_FILE = "NOTIFICATIONS_FILE";
-  private static String PREFERENCE_NOT_FIRE_KEY = "NOT_FIRE_KEY";
+  private static String PREFERENCE_NOT_FIRE_KEY = "NOT_FIRE_NOTIFICATION_KEY";
 
   public static void addNotFireNotification(Context context, long notificationId) {
     SharedPreferences preferences =
