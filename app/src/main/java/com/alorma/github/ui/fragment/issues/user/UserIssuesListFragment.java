@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.alorma.github.R;
 import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.component.ApiComponent;
@@ -28,18 +27,14 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.typeface.IIcon;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import core.issue.IssuesSearchRequest;
 import core.issues.Issue;
+import java.util.List;
+import javax.inject.Inject;
 
-public abstract class UserIssuesListFragment extends BaseFragment implements
-        TitleProvider, com.alorma.github.presenter.View<List<Issue>>,
-        RecyclerArrayAdapter.RecyclerAdapterContentListener,
-        RecyclerArrayAdapter.ItemCallback<Issue> {
+public abstract class UserIssuesListFragment extends BaseFragment
+    implements TitleProvider, com.alorma.github.presenter.View<List<Issue>>, RecyclerArrayAdapter.RecyclerAdapterContentListener,
+    RecyclerArrayAdapter.ItemCallback<Issue> {
 
   @Inject UserIssuesBaseRxPresenter presenter;
   @Inject AccountNameProvider accountNameProvider;
@@ -52,14 +47,10 @@ public abstract class UserIssuesListFragment extends BaseFragment implements
   protected void injectComponents(ApplicationComponent applicationComponent) {
     super.injectComponents(applicationComponent);
 
-    ApiComponent apiComponent =
-            DaggerApiComponent.builder()
-                    .applicationComponent(applicationComponent)
-                    .apiModule(new ApiModule()).build();
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
 
-    apiComponent
-            .plus(new UserIssuesModule())
-            .inject(this);
+    apiComponent.plus(new UserIssuesModule()).inject(this);
+    presenter.attachView(this);
   }
 
   @Nullable
@@ -90,12 +81,6 @@ public abstract class UserIssuesListFragment extends BaseFragment implements
     super.onStart();
     showLoading();
     loadItems();
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    presenter.attachView(this);
   }
 
   @Override

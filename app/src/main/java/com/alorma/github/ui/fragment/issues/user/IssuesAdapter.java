@@ -1,5 +1,6 @@
 package com.alorma.github.ui.fragment.issues.user;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,11 +35,11 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, Issue issue) {
-    holder.title.setText(issue.getTitle());
+    holder.title.setText("[" + issue.getRepository().getName() + "] " +  issue.getTitle());
 
     String timeAgo = TimeUtils.getTimeAgoString(issue.getCreatedAt());
-    String info =
-        holder.info.getContext().getResources().getString(R.string.issue_info, issue.getNumber(), timeAgo, issue.getUser().getLogin());
+    Resources resources = holder.info.getContext().getResources();
+    String info = resources.getString(R.string.issue_info, issue.getNumber(), timeAgo, issue.getUser().getLogin());
     holder.info.setText(info);
 
     int colorState = getColorState(issue);

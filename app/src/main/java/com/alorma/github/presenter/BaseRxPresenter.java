@@ -1,14 +1,11 @@
 package com.alorma.github.presenter;
 
 import android.support.annotation.Nullable;
-
 import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
-
-import java.util.concurrent.TimeUnit;
-
 import core.datasource.SdkItem;
 import core.repository.GenericRepository;
+import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -16,12 +13,8 @@ import rx.Subscriber;
 /**
  * Represents base RxJava presenter.
  * Just only one Observable could be subscribed to it.
- * @param <REQUEST>
- * @param <RESPONSE>
- * @param <VIEW>
  */
-public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPONSE>>
-        extends BasePresenter<VIEW> {
+public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPONSE>> extends BasePresenter<VIEW> {
 
   protected final Scheduler mainScheduler;
   protected final Scheduler ioScheduler;
@@ -30,7 +23,7 @@ public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPO
   private Integer page;
 
   public BaseRxPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-                         GenericRepository<REQUEST, RESPONSE> genericRepository) {
+      GenericRepository<REQUEST, RESPONSE> genericRepository) {
     this.mainScheduler = mainScheduler;
     this.ioScheduler = ioScheduler;
     this.genericRepository = genericRepository;
@@ -38,11 +31,12 @@ public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPO
 
   /**
    * Executes request doesn't assign page to request.
+   *
    * @param request item to execute
    * @see #executePaginated(Object)
    */
   public void execute(REQUEST request) {
-    if(!isViewAttached()) return;
+    if (!isViewAttached()) return;
 
     SdkItem<REQUEST> sdkItem = new SdkItem<>(request);
     subscribe(genericRepository.execute(sdkItem), false);
@@ -50,11 +44,12 @@ public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPO
 
   /**
    * Executes paginated request, automagically assigns next page if is requested more than one time.
+   *
    * @param request item to execute
    * @see #execute(Object)
    */
   public void executePaginated(REQUEST request) {
-    if(!isViewAttached() || page == null || page <= 0) return;
+    if (!isViewAttached() || page == null || page <= 0) return;
 
     SdkItem<REQUEST> sdkItem = new SdkItem<>(request);
     sdkItem.setPage(page);
@@ -64,11 +59,12 @@ public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPO
 
   /**
    * Creates internal subscriber and attaches it to observable argument.
+   *
    * @param observable the object to subscribe
    * @param isFromPaginated indicates that request is paginated or not
    */
   protected void subscribe(Observable<SdkItem<RESPONSE>> observable, boolean isFromPaginated) {
-    if(!isViewAttached()) return;
+    if (!isViewAttached()) return;
 
     getView().showLoading();
 
@@ -91,20 +87,14 @@ public abstract class BaseRxPresenter<REQUEST, RESPONSE, VIEW extends View<RESPO
       }
     };
 
-    observable
-            .subscribeOn(ioScheduler)
-            .observeOn(mainScheduler)
-            .timeout(20, TimeUnit.SECONDS)
-            .retry(3)
-            .map(obs -> {
-              if (obs.getPage() != null && obs.getPage() > 0) {
-                this.page = obs.getPage();
-              } else {
-                this.page = null;
-              }
-              return obs.getK();
-            })
-            .subscribe(subscriber);
+    observable.subscribeOn(ioScheduler).observeOn(mainScheduler).timeout(20, TimeUnit.SECONDS).retry(3).map(obs -> {
+      if (obs.getPage() != null && obs.getPage() > 0) {
+        this.page = obs.getPage();
+      } else {
+        this.page = null;
+      }
+      return obs.getK();
+    }).subscribe(subscriber);
   }
 
   /**
