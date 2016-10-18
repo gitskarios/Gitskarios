@@ -5,5 +5,5 @@ import core.notifications.Notification;
 import java.util.List;
 
 public interface NotificationBuilder {
-  void fire(NotificationManager manager, List<Notification> notification);
+  void fire(NotificationManager manager, List<Notification> notifications);
 }

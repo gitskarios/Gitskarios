@@ -6,11 +6,15 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
 import com.alorma.github.account.view.BundledNotificationsBuilder;
+import com.alorma.github.account.view.InboxStyleNotificationBuilder;
+import com.alorma.github.account.view.NotificationBuilder;
+import com.alorma.github.account.view.SimpleNotificationBuilder;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.utils.AccountUtils;
 import com.alorma.github.utils.NotificationsHelper;
@@ -18,7 +22,6 @@ import core.notifications.Notification;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class GetNotificationsService extends Service {
@@ -61,7 +64,7 @@ public class GetNotificationsService extends Service {
       subscription = notificationsClient.observable()
           .subscribeOn(Schedulers.io())
           .observeOn(Schedulers.io())
-          .subscribe(notifications -> onNotificationsReceived(notifications, name, token), Throwable::printStackTrace);
+          .subscribe(this::onNotificationsReceived, Throwable::printStackTrace);
     }
   }
 
@@ -73,23 +76,31 @@ public class GetNotificationsService extends Service {
     super.onDestroy();
   }
 
-  private void onNotificationsReceived(List<Notification> notifications, String name, String token) {
+  private void onNotificationsReceived(List<Notification> notifications,) {
 
     if (notifications != null) {
       List<Notification> newNotifications = new ArrayList<>();
 
       for (Notification notification : notifications) {
         boolean showNotification = NotificationsHelper.checkNotFireNotification(this, notification.id);
-        //if (showNotification) {
-        newNotifications.add(notification);
-        //}
+        if (showNotification) {
+          newNotifications.add(notification);
+        }
       }
       notifications = newNotifications;
 
       NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      BundledNotificationsBuilder builder = new BundledNotificationsBuilder(this);
+      if (notifications.size() > 1) {
+        NotificationBuilder builder = new InboxStyleNotificationBuilder(this);
 
-      builder.fire(manager, notifications);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+          builder = new BundledNotificationsBuilder(this);
+        }
+
+        builder.fire(manager, notifications);
+      } else if (notifications.size() == 1) {
+        new SimpleNotificationBuilder(this).fireSimple(manager, notifications.get(0));
+      }
     }
   }
 
