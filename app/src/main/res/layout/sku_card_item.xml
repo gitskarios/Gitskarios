@@ -29,14 +29,14 @@
           android:layout_height="wrap_content"
           tools:text="Card title"
           android:id="@+id/skuPrice"
-          android:textSize="48sp"
+          android:textSize="40sp"
           />
 
       <Button
           style="@style/SkuButtonStyle"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="24dp"
+          android:layout_marginTop="16dp"
           android:id="@+id/button"
           android:text="DONATE"
           />
