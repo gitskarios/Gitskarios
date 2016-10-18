@@ -11,7 +11,6 @@ import com.alorma.github.R;
 import com.alorma.github.account.GetNotificationsService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
 import core.User;
 import core.issues.Issue;
 import core.repositories.Repo;
@@ -32,6 +31,9 @@ public class GitskariosGcmListenerService extends FirebaseMessagingService {
 
     if (remoteMessage.getFrom().startsWith("/topics/")) {
 
+      defaultNotifications();
+
+      /*
       if (remoteMessage.getData() != null) {
         String action = remoteMessage.getData().get("action");
         if (action != null) {
@@ -49,6 +51,7 @@ public class GitskariosGcmListenerService extends FirebaseMessagingService {
           defaultNotifications();
         }
       }
+      */
     }
   }
 
