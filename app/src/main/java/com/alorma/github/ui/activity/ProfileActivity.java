@@ -261,7 +261,8 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
       StoreCredentials settings = new StoreCredentials(this);
 
-      if (user != null && !settings.getUserName().equals(user.getLogin()) && user.getType().equals(UserType.User.name())) {
+      if (user != null && !settings.getUserName().equals(user.getLogin())
+          && UserType.User.name().equals(user.getType())) {
         MenuItem item;
         if (followingUser) {
           item = menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);

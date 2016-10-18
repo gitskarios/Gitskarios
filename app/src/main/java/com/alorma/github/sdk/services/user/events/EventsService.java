@@ -7,9 +7,6 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/**
- * Created by Bernat on 03/10/2014.
- */
 public interface EventsService {
 
   //Async

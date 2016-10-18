@@ -74,7 +74,7 @@ public class UserAvatarView extends RoundTimelineView implements View.OnClickLis
       Answers.getInstance().logContentView(new ContentViewEvent().putContentName("UserAvatarViewClick"));
     }
 
-    if (user.getType().equals(UserType.Organization.name())) {
+    if (UserType.Organization.name().equals(user.getType())) {
       v.getContext().startActivity(OrganizationActivity.launchIntent(v.getContext(), user.getLogin()));
     } else {
       final Intent intent = ProfileActivity.createLauncherIntent(v.getContext(), user);

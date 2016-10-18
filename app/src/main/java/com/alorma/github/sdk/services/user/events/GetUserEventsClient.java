@@ -5,9 +5,6 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import java.util.List;
 import retrofit.RestAdapter;
 
-/**
- * Created by Bernat on 03/10/2014.
- */
 public class GetUserEventsClient extends GithubListClient<List<GithubEvent>> {
   private String username;
   private int page = 0;
