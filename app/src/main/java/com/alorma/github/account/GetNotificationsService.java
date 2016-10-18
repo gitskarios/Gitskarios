@@ -76,7 +76,7 @@ public class GetNotificationsService extends Service {
     super.onDestroy();
   }
 
-  private void onNotificationsReceived(List<Notification> notifications,) {
+  private void onNotificationsReceived(List<Notification> notifications) {
 
     if (notifications != null) {
       List<Notification> newNotifications = new ArrayList<>();
