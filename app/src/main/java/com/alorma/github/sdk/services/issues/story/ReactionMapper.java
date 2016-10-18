@@ -1,8 +1,8 @@
 package com.alorma.github.sdk.services.issues.story;
 
-import com.alorma.github.sdk.bean.dto.response.GithubCommentReactions;
-import com.alorma.github.sdk.services.issues.reactions.GithubReaction;
-import com.alorma.github.sdk.services.issues.reactions.GithubReactionType;
+import core.GithubCommentReactions;
+import core.GithubReaction;
+import core.GithubReactionType;
 
 public class ReactionMapper {
 

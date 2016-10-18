@@ -1,7 +1,7 @@
 package com.alorma.github.sdk.services.gists;
 
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.services.client.GithubListClient;
+import core.GithubComment;
 import java.util.List;
 import retrofit.RestAdapter;
 

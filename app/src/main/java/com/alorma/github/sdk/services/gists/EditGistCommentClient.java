@@ -1,8 +1,8 @@
 package com.alorma.github.sdk.services.gists;
 
 import com.alorma.github.sdk.bean.dto.request.CommentRequest;
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.services.client.GithubClient;
+import core.GithubComment;
 import retrofit.RestAdapter;
 import rx.Observable;
 

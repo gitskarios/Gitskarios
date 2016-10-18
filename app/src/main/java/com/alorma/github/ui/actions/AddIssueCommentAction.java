@@ -1,8 +1,8 @@
 package com.alorma.github.ui.actions;
 
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.issues.NewIssueCommentClient;
+import core.GithubComment;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 

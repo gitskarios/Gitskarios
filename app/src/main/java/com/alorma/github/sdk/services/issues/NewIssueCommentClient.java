@@ -1,14 +1,11 @@
 package com.alorma.github.sdk.services.issues;
 
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.GithubClient;
+import core.GithubComment;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by Bernat on 06/09/2014.
- */
 public class NewIssueCommentClient extends GithubClient<GithubComment> {
   private String body;
   private String owner;

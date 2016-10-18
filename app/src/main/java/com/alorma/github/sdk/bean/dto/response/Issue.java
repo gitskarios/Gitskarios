@@ -2,6 +2,7 @@ package com.alorma.github.sdk.bean.dto.response;
 
 import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
+import core.GithubComment;
 import core.User;
 import core.issues.Label;
 import core.repositories.Repo;

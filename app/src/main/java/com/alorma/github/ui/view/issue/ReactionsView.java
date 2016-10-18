@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.GithubCommentReactions;
-import com.alorma.github.sdk.services.issues.reactions.GithubReaction;
+import core.GithubCommentReactions;
+import core.GithubReaction;
 import java.util.List;
 
 public class ReactionsView extends LinearLayout {

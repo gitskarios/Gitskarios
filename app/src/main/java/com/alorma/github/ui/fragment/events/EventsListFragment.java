@@ -323,7 +323,7 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
       IssueCommentEventPayload payload = gson.fromJson(s, IssueCommentEventPayload.class);
       Issue issue = payload.issue;
       if (issue != null) {
-        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(issue.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(issue.getHtmlUrl())));
       }
     } else if (type == EventType.PushEvent) {
       String payload = gson.toJson(item.payload);
@@ -340,13 +340,13 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
       String payload = gson.toJson(item.payload);
       IssueEventPayload issueEventPayload = gson.fromJson(payload, IssueEventPayload.class);
       if (issueEventPayload != null) {
-        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(issueEventPayload.issue.getHtmlUrl())));
       }
     } else if (type == EventType.PullRequestEvent) {
       String payload = gson.toJson(item.payload);
       PullRequestEventPayload pullRequestEventPayload = gson.fromJson(payload, PullRequestEventPayload.class);
       if (pullRequestEventPayload != null) {
-        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(pullRequestEventPayload.pull_request.html_url)));
+        startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(pullRequestEventPayload.pull_request.getHtmlUrl())));
       }
     } else if (type == EventType.ForkEvent) {
       String payload = gson.toJson(item.payload);

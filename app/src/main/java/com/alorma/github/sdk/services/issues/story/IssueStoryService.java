@@ -1,14 +1,12 @@
 package com.alorma.github.sdk.services.issues.story;
 
 import com.alorma.github.sdk.bean.dto.request.IssueRequest;
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.issue.IssueEvent;
 import com.alorma.github.sdk.bean.issue.IssueStory;
-
+import core.GithubComment;
 import core.issues.Label;
 import java.util.List;
-
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;

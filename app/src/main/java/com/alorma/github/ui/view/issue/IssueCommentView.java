@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.bean.issue.IssueStoryComment;
 import com.alorma.github.sdk.bean.issue.IssueStoryDetail;
@@ -20,6 +19,7 @@ import com.alorma.github.utils.TimeUtils;
 import com.gh4a.utils.UiUtils;
 import com.github.mobile.util.HtmlUtils;
 import com.github.mobile.util.HttpImageGetter;
+import core.GithubComment;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 

@@ -1,7 +1,6 @@
 package com.alorma.github.sdk.services.issues.story;
 
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
-
+import core.GithubComment;
 import rx.functions.Func1;
 
 public class GithubCommentReactionsIssueMapper implements Func1<GithubComment, GithubComment> {

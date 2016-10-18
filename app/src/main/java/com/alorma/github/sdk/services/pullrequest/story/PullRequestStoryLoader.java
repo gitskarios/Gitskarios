@@ -2,7 +2,6 @@ package com.alorma.github.sdk.services.pullrequest.story;
 
 import android.util.Pair;
 
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.ReviewComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
@@ -20,6 +19,7 @@ import com.alorma.github.sdk.services.issues.story.GithubPRReactionsIssueMapper;
 import com.alorma.github.sdk.services.issues.story.IssueStoryService;
 import com.alorma.github.sdk.services.pullrequest.PullRequestsService;
 
+import core.GithubComment;
 import core.issues.Label;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

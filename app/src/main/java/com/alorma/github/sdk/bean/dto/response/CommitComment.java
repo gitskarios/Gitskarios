@@ -2,10 +2,8 @@ package com.alorma.github.sdk.bean.dto.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import core.GithubComment;
 
-/**
- * Created by Bernat on 30/05/2015.
- */
 public class CommitComment extends GithubComment implements Parcelable {
 
   public static final Creator<CommitComment> CREATOR = new Creator<CommitComment>() {

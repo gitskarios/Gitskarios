@@ -2,7 +2,7 @@ package com.alorma.github.sdk.bean.issue;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
+import core.GithubComment;
 import core.User;
 
 public class IssueStoryComment implements IssueStoryDetail, Parcelable {

@@ -1,14 +1,11 @@
 package com.alorma.github.sdk.services.issues;
 
-import com.alorma.github.sdk.bean.dto.response.GithubComment;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
+import core.GithubComment;
 import java.util.List;
 import retrofit.RestAdapter;
 
-/**
- * Created by Bernat on 23/08/2014.
- */
 public class GetIssueComments extends GithubListClient<List<GithubComment>> {
 
   private IssueInfo issueInfo;

@@ -483,7 +483,7 @@ public class IssueDetailActivity extends BackActivity
         if (issueStory != null && issueStory.item != null) {
 
           String title = issueInfo.toString();
-          String url = issueStory.item.html_url;
+          String url = issueStory.item.getHtmlUrl();
 
           new ShareAction(this, title, url).setType("Issue").execute();
         }
