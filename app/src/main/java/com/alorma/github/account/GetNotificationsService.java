@@ -83,9 +83,9 @@ public class GetNotificationsService extends Service {
 
       for (Notification notification : notifications) {
         boolean showNotification = NotificationsHelper.checkNotFireNotification(this, notification.id);
-        if (showNotification) {
+        //if (showNotification) {
           newNotifications.add(notification);
-        }
+        //}
       }
       notifications = newNotifications;
 

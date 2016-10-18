@@ -38,7 +38,6 @@ import java.util.List;
 public class PullRequestDetailActivity extends RepositoryThemeActivity
     implements PullRequestConversationFragment.PullRequestStoryLoaderInterface {
 
-  public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
   public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";
   public static final String ISSUE_INFO_NUMBER = "ISSUE_INFO_NUMBER";
@@ -53,7 +52,9 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
 
-    bundle.putParcelable(ISSUE_INFO, issueInfo);
+    bundle.putString(ISSUE_INFO_REPO_NAME, issueInfo.repoInfo.name);
+    bundle.putString(ISSUE_INFO_REPO_OWNER, issueInfo.repoInfo.owner);
+    bundle.putInt(ISSUE_INFO_NUMBER, issueInfo.num);
 
     Intent intent = new Intent(context, PullRequestDetailActivity.class);
     intent.putExtras(bundle);
@@ -79,22 +80,18 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
 
     if (getIntent().getExtras() != null) {
 
-      issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+      String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
+      String owner = getIntent().getExtras().getString(ISSUE_INFO_REPO_OWNER);
 
-      if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
-        String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
-        String owner = getIntent().getExtras().getString(ISSUE_INFO_REPO_OWNER);
+      RepoInfo repoInfo = new RepoInfo();
+      repoInfo.name = name;
+      repoInfo.owner = owner;
 
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.name = name;
-        repoInfo.owner = owner;
+      int num = getIntent().getExtras().getInt(ISSUE_INFO_NUMBER);
 
-        int num = getIntent().getExtras().getInt(ISSUE_INFO_NUMBER);
-
-        issueInfo = new IssueInfo();
-        issueInfo.repoInfo = repoInfo;
-        issueInfo.num = num;
-      }
+      issueInfo = new IssueInfo();
+      issueInfo.repoInfo = repoInfo;
+      issueInfo.num = num;
 
       createBottom(savedInstanceState);
     }

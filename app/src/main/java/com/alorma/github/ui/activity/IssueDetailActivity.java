@@ -77,18 +77,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class IssueDetailActivity extends BackActivity
-    implements View.OnClickListener, IssueDetailRequestListener,
-        SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener,
-        com.alorma.github.presenter.View<GithubComment> {
+    implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener,
+    com.alorma.github.presenter.View<GithubComment> {
 
   @Inject IssueCommentBaseRxPresenter issueCommentPresenter;
 
-  public static final String ISSUE_INFO = "ISSUE_INFO";
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
   public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";
   public static final String ISSUE_INFO_NUMBER = "ISSUE_INFO_NUMBER";
@@ -115,7 +112,9 @@ public class IssueDetailActivity extends BackActivity
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
 
-    bundle.putParcelable(ISSUE_INFO, issueInfo);
+    bundle.putString(ISSUE_INFO_REPO_NAME, issueInfo.repoInfo.name);
+    bundle.putString(ISSUE_INFO_REPO_OWNER, issueInfo.repoInfo.owner);
+    bundle.putInt(ISSUE_INFO_NUMBER, issueInfo.num);
 
     Intent intent = new Intent(context, IssueDetailActivity.class);
     intent.putExtras(bundle);
@@ -142,22 +141,18 @@ public class IssueDetailActivity extends BackActivity
 
     if (getIntent().getExtras() != null) {
 
-      issueInfo = getIntent().getExtras().getParcelable(ISSUE_INFO);
+      String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
+      String owner = getIntent().getExtras().getString(ISSUE_INFO_REPO_OWNER);
 
-      if (issueInfo == null && getIntent().getExtras().containsKey(ISSUE_INFO_NUMBER)) {
-        String name = getIntent().getExtras().getString(ISSUE_INFO_REPO_NAME);
-        String owner = getIntent().getExtras().getString(ISSUE_INFO_REPO_OWNER);
+      RepoInfo repoInfo = new RepoInfo();
+      repoInfo.name = name;
+      repoInfo.owner = owner;
 
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.name = name;
-        repoInfo.owner = owner;
+      int num = getIntent().getExtras().getInt(ISSUE_INFO_NUMBER);
 
-        int num = getIntent().getExtras().getInt(ISSUE_INFO_NUMBER);
-
-        issueInfo = new IssueInfo();
-        issueInfo.repoInfo = repoInfo;
-        issueInfo.num = num;
-      }
+      issueInfo = new IssueInfo();
+      issueInfo.repoInfo = repoInfo;
+      issueInfo.num = num;
 
       primary = AttributesUtils.getPrimaryColor(this);
       primaryDark = ContextCompat.getColor(this, R.color.primary_dark_alpha);
@@ -179,9 +174,7 @@ public class IssueDetailActivity extends BackActivity
     super.injectComponents(applicationComponent);
 
     apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
-    apiComponent
-            .plus(new IssueDetailModule())
-            .inject(this);
+    apiComponent.plus(new IssueDetailModule()).inject(this);
   }
 
   private void checkEditTitle() {
@@ -217,24 +210,11 @@ public class IssueDetailActivity extends BackActivity
     hideProgressDialog();
 
     GetRepoClient repoClient = new GetRepoClient(issueInfo.repoInfo);
-    repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
-      @Override
-      public void onCompleted() {
-
-      }
-
-      @Override
-      public void onError(Throwable e) {
-
-      }
-
-      @Override
-      public void onNext(Repo repo) {
-        issueInfo.repoInfo.permissions = repo.permissions;
-        repository = repo;
-        loadIssue();
-      }
-    });
+    repoClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(repo -> {
+      issueInfo.repoInfo.permissions = repo.permissions;
+      repository = repo;
+      loadIssue();
+    }, Throwable::printStackTrace);
   }
 
   private void loadIssue() {
@@ -242,23 +222,7 @@ public class IssueDetailActivity extends BackActivity
     issueStoryLoader.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<IssueStory>() {
-          @Override
-          public void onCompleted() {
-
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            showError();
-            tracker.trackError(e);
-          }
-
-          @Override
-          public void onNext(IssueStory issueStory) {
-            onResponseOk(issueStory);
-          }
-        });
+        .subscribe(this::onResponseOk, Throwable::printStackTrace);
   }
 
   public void onResponseOk(IssueStory issueStory) {
