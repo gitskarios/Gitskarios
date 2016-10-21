@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.alorma.github.AccountsHelper;
 import com.alorma.github.R;
 import com.alorma.github.account.view.BundledNotificationsBuilder;
+import com.alorma.github.account.view.InboxStyleByRepositoryNotificationBuilder;
 import com.alorma.github.account.view.InboxStyleNotificationBuilder;
 import com.alorma.github.account.view.NotificationBuilder;
 import com.alorma.github.account.view.SimpleNotificationBuilder;
@@ -83,18 +84,22 @@ public class GetNotificationsService extends Service {
 
       for (Notification notification : notifications) {
         boolean showNotification = NotificationsHelper.checkNotFireNotification(this, notification.id);
-        //if (showNotification) {
+        if (showNotification) {
           newNotifications.add(notification);
-        //}
+        }
       }
       notifications = newNotifications;
 
       NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       if (notifications.size() > 1) {
-        NotificationBuilder builder = new InboxStyleNotificationBuilder(this);
+        NotificationBuilder builder = new InboxStyleByRepositoryNotificationBuilder(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
           builder = new BundledNotificationsBuilder(this);
+        }
+
+        if (notifications.size() > 8) {
+          builder = new InboxStyleNotificationBuilder(this);
         }
 
         builder.fire(manager, notifications);

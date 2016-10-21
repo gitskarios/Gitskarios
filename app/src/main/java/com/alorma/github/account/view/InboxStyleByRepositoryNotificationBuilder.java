@@ -8,37 +8,53 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.NotificationsActivity;
-import com.alorma.github.utils.AttributesUtils;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import core.notifications.Notification;
+import core.repositories.Repo;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class InboxStyleNotificationBuilder implements NotificationBuilder {
+public class InboxStyleByRepositoryNotificationBuilder implements NotificationBuilder {
 
   private Context context;
   private static final int MAX_LINES_NOTIFICATION = 5;
-  public static final int NOTIFICATIONS_INBOX = 1101;
 
-  public InboxStyleNotificationBuilder(Context context) {
+  public InboxStyleByRepositoryNotificationBuilder(Context context) {
     this.context = context;
   }
 
   @Override
   public void fire(NotificationManager manager, List<Notification> notifications) {
-    fireNotificationByRepository(manager, notifications);
+
+    Map<Long, RepositoryBundle> repositoryBundleMap = new HashMap<>();
+
+    for (Notification notification : notifications) {
+      Repo repository = notification.getRepository();
+      if (repositoryBundleMap.get(repository.getId()) == null) {
+        repositoryBundleMap.put(repository.getId(), new RepositoryBundle(repository));
+      }
+      repositoryBundleMap.get(repository.getId()).add(notification);
+    }
+
+    for (Long id : repositoryBundleMap.keySet()) {
+      RepositoryBundle repositoryBundle = repositoryBundleMap.get(id);
+      fireNotificationByRepository(manager, repositoryBundle.getRepository(), repositoryBundle);
+    }
   }
 
-  private void fireNotificationByRepository(NotificationManager manager, List<Notification> notifications) {
+  private void fireNotificationByRepository(NotificationManager manager, Repo repository, List<Notification> notifications) {
     if (notifications != null && notifications.size() > 0) {
       Intent intent = NotificationsActivity.launchIntent(context);
 
-      PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+      PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) repository.getId(), intent, 0);
 
-      int primaryColor = AttributesUtils.getPrimaryColor(context);
-      NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setColor(primaryColor)
+      NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setColor(getColor(repository.getFullName()))
           .setSmallIcon(R.drawable.ic_stat_name)
           .setShowWhen(false)
           .setLocalOnly(true)
-          .setContentTitle(notifications.size() + " Notifications")
+          .setContentTitle(repository.getFullName())
           .setOnlyAlertOnce(true)
           .setContentIntent(pendingIntent);
 
@@ -68,7 +84,25 @@ public class InboxStyleNotificationBuilder implements NotificationBuilder {
 
       android.app.Notification notification = builder.build();
 
-      manager.notify(NOTIFICATIONS_INBOX, notification);
+      manager.notify((int) repository.getId(), notification);
+    }
+  }
+
+  private int getColor(String repoName) {
+    return ColorGenerator.MATERIAL.getColor(repoName);
+  }
+
+  private class RepositoryBundle extends ArrayList<Notification> {
+
+    private final Repo repository;
+
+    public RepositoryBundle(Repo repository) {
+
+      this.repository = repository;
+    }
+
+    public Repo getRepository() {
+      return repository;
     }
   }
 }

@@ -37,7 +37,7 @@ public class BundledNotificationsBuilder implements NotificationBuilder {
 
     Intent intent = NotificationsActivity.launchIntent(context);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    PendingIntent pendingIntent = PendingIntent.getActivity(context, 11, intent, 0);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) repoId, intent, 0);
 
     NotificationCompat.Builder summary = new NotificationCompat.Builder(context).setColor(getColor(repoName))
         .setSmallIcon(R.drawable.ic_stat_name)

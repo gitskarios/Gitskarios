@@ -83,7 +83,7 @@ public class SimpleNotificationBuilder {
     }
 
     if (intent != null) {
-      return PendingIntent.getActivity(context, 1234, intent, 0);
+      return PendingIntent.getActivity(context, (int) notification.getId(), intent, 0);
     }
 
     return null;
