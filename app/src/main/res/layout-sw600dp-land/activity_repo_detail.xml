@@ -33,12 +33,32 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        android:visibility="gone"
         />
-    <android.support.v4.view.ViewPager
-        android:id="@+id/content"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        />
+        android:orientation="horizontal"
+        >
+      <com.roughike.bottombar.BottomBar
+          android:id="@+id/bottomBar"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_gravity="left|start"
+          app:bb_tabXmlResource="@xml/tabs_pullrequest"
+          app:bb_tabletMode="true"
+          app:bb_activeTabColor="@color/white"
+          app:bb_inActiveTabColor="@color/white"
+          app:bb_activeTabAlpha="1"
+          app:bb_inActiveTabAlpha="0.8"
+          />
+      <android.support.v4.view.ViewPager
+          android:id="@+id/content"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          />
+
+    </LinearLayout>
+
   </FrameLayout>
 </FrameLayout>
