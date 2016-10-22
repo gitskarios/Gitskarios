@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical"
+                                                 android:fitsSystemWindows="true"
+                                                 android:id="@+id/coordinator"
+    >
+
+  <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="?actionBarSize"
+      android:background="?colorPrimary"
+      >
+    <android.support.v7.widget.Toolbar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupTheme="@style/Toolbar.Popup.AppCompat"
+        app:theme="@style/Toolbar.AppCompat.Responsive"
+        />
+  </android.support.design.widget.AppBarLayout>
+
+  <FrameLayout
+      android:id="@+id/content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      />
+
+  <com.roughike.bottombar.BottomBar
+      android:id="@+id/bottomBar"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:layout_gravity="bottom"
+      app:bb_tabXmlResource="@xml/tabs_pullrequest"
+      app:bb_behavior="shy"
+      app:bb_tabletMode="false"
+      />
+</android.support.design.widget.CoordinatorLayout>

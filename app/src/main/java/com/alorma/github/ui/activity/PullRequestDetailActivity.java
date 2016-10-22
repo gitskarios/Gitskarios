@@ -2,15 +2,17 @@ package com.alorma.github.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.annotation.ColorRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -22,18 +24,12 @@ import com.alorma.github.ui.fragment.pullrequest.PullRequestCommitsListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestConversationFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestFilesListFragment;
 import com.alorma.github.ui.fragment.pullrequest.PullRequestInfoFragment;
-import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
-import com.mikepenz.octicons_typeface_library.Octicons;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
-import com.roughike.bottombar.OnTabClickListener;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PullRequestDetailActivity extends RepositoryThemeActivity
     implements PullRequestConversationFragment.PullRequestStoryLoaderInterface {
@@ -42,12 +38,13 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
   public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";
   public static final String ISSUE_INFO_NUMBER = "ISSUE_INFO_NUMBER";
 
+  @BindView(R.id.bottomBar) BottomBar mBottomBar;
   private IssueInfo issueInfo;
-  private BottomBar mBottomBar;
-  private BottomBarBadge badgeFiles;
-  private BottomBarBadge badgeCommits;
-  private PullRequestInfoFragment infoFragment;
+  private PullRequestInfoFragment pullRequestInfoFragment;
   private PullRequestStory story;
+  private PullRequestConversationFragment pullRequestConversationFragment;
+  private PullRequestFilesListFragment pullRequestFilesListFragment;
+  private PullRequestCommitsListFragment pullRequestCommitsListFragment;
 
   public static Intent createLauncherIntent(Context context, IssueInfo issueInfo) {
     Bundle bundle = new Bundle();
@@ -76,7 +73,9 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.generic_toolbar_coordinator);
+    setContentView(R.layout.pullrequest_activity);
+
+    ButterKnife.bind(this);
 
     if (getIntent().getExtras() != null) {
 
@@ -93,56 +92,50 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
       issueInfo.repoInfo = repoInfo;
       issueInfo.num = num;
 
-      createBottom(savedInstanceState);
+      createBottom();
     }
   }
 
-  private void createBottom(Bundle savedInstanceState) {
-    mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinator), findViewById(R.id.content), savedInstanceState);
-    mBottomBar.useOnlyStatusBarTopOffset();
+  private void createBottom() {
 
-    mBottomBar.noTabletGoodness();
+    pullRequestConversationFragment = PullRequestConversationFragment.newInstance(issueInfo);
+    pullRequestConversationFragment.setPullRequestStoryLoaderInterface(this);
 
-    final List<Fragment> fragments = new ArrayList<>();
-
-    PullRequestConversationFragment overviewFragment = PullRequestConversationFragment.newInstance(issueInfo);
-    overviewFragment.setPullRequestStoryLoaderInterface(this);
-
-    fragments.add(overviewFragment);
-
-    infoFragment = PullRequestInfoFragment.newInstance(issueInfo);
-    fragments.add(infoFragment);
-
-    fragments.add(PullRequestFilesListFragment.newInstance(issueInfo));
-    fragments.add(PullRequestCommitsListFragment.newInstance(issueInfo));
-
-    mBottomBar.setItems(new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_comment_discussion), "Conversation"),
-        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_info), "Info"),
-        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_file_code), "Files"),
-        new BottomBarTab(getBottomTabIcon(Octicons.Icon.oct_git_commit), "Commits"));
+    pullRequestInfoFragment = PullRequestInfoFragment.newInstance(issueInfo);
+    pullRequestFilesListFragment = PullRequestFilesListFragment.newInstance(issueInfo);
+    pullRequestCommitsListFragment = PullRequestCommitsListFragment.newInstance(issueInfo);
 
     mBottomBar.setDefaultTabPosition(0);
 
-    mBottomBar.setOnTabClickListener(new OnTabClickListener() {
-      @Override
-      public void onTabSelected(int position) {
-        selectItem(position);
-      }
-
-      private void selectItem(int position) {
-        selectFragment(fragments.get(position));
-      }
-
-      @Override
-      public void onTabReSelected(int position) {
-        selectItem(position);
+    mBottomBar.setOnTabSelectListener(tabId -> {
+      switch (tabId) {
+        case R.id.tab_timeline:
+          selectFragment(pullRequestConversationFragment);
+          setToolbarColor(R.color.md_teal_800);
+          break;
+        case R.id.tab_info:
+          selectFragment(pullRequestInfoFragment);
+          setToolbarColor(R.color.md_amber_800);
+          break;
+        case R.id.tab_files:
+          selectFragment(pullRequestFilesListFragment);
+          setToolbarColor(R.color.md_brown_800);
+          break;
+        case R.id.tab_commits:
+          selectFragment(pullRequestCommitsListFragment);
+          setToolbarColor(R.color.md_deep_orange_800);
+          break;
       }
     });
+  }
 
-    SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    String pref_theme = defaultSharedPreferences.getString("pref_theme", getString(R.string.theme_light));
-    if ("theme_dark".equalsIgnoreCase(pref_theme)) {
-      mBottomBar.useDarkTheme();
+  private void setToolbarColor(@ColorRes int color) {
+    if (getToolbar() != null) {
+      getToolbar().setBackgroundResource(color);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, color));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, color));
+      }
     }
   }
 
@@ -192,30 +185,25 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
   }
 
   @Override
-  protected void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    mBottomBar.onSaveInstanceState(outState);
-  }
-
-  @Override
   public void onStoryLoaded(PullRequestStory story) {
     this.story = story;
     invalidateOptionsMenu();
     if (mBottomBar != null && story != null) {
-      if (badgeFiles == null) {
-        badgeFiles = mBottomBar.makeBadgeForTabAt(2, AttributesUtils.getAccentColor(this), story.item.changed_files);
-      }
-      badgeFiles.setCount(story.item.changed_files);
-      badgeFiles.setAutoShowAfterUnSelection(true);
 
-      if (badgeCommits == null) {
-        badgeCommits = mBottomBar.makeBadgeForTabAt(3, AttributesUtils.getAccentColor(this), story.item.commits);
-      }
-      badgeCommits.setCount(story.item.commits);
-      badgeCommits.setAutoShowAfterUnSelection(true);
+      BottomBarTab tabFiles = mBottomBar.getTabWithId(R.id.tab_files);
 
-      if (infoFragment != null) {
-        infoFragment.setArguments(PullRequestInfoFragment.newArguments(issueInfo, story.item));
+      if (tabFiles != null) {
+        tabFiles.setBadgeCount(story.item.changed_files);
+      }
+
+      BottomBarTab tabCommits = mBottomBar.getTabWithId(R.id.tab_commits);
+
+      if (tabCommits != null) {
+        tabCommits.setBadgeCount(story.item.commits);
+      }
+
+      if (pullRequestInfoFragment != null) {
+        pullRequestInfoFragment.setArguments(PullRequestInfoFragment.newArguments(issueInfo, story.item));
       }
     }
   }

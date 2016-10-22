@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+  <tab
+      id="@+id/tab_timeline"
+      icon="@drawable/ic_comment_discussion"
+      title="Conversation"
+      barColorWhenSelected="@color/md_teal_800"
+      />
+  <tab
+      id="@+id/tab_info"
+      icon="@drawable/ic_info"
+      title="Info"
+      barColorWhenSelected="@color/md_amber_800"
+      />
+  <tab
+      id="@+id/tab_files"
+      icon="@drawable/ic_gist"
+      title="Files"
+      barColorWhenSelected="@color/md_brown_800"
+      />
+  <tab
+      id="@+id/tab_commits"
+      icon="@drawable/ic_git_commit"
+      title="Commits"
+      barColorWhenSelected="@color/md_deep_orange_800"
+      />
+</tabs>
