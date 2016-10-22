@@ -81,7 +81,7 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   Observer<Boolean> startObserver = new Observer<Boolean>() {
     @Override
     public void onCompleted() {
-
+      com.alorma.github.presenter.CacheWrapper.cache().removeAll();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   Observer<Boolean> watchObserver = new Observer<Boolean>() {
     @Override
     public void onCompleted() {
-
+      com.alorma.github.presenter.CacheWrapper.cache().removeAll();
     }
 
     @Override

@@ -16,9 +16,7 @@ public class AuthUserReposCache extends AbstractCacheDataSource<String, List<Rep
 
   @Override
   protected String getCacheKey(String request, Integer page) {
-    String cacheKey =
-            String.format(Locale.getDefault(), key, page == null ? 0 : page);
-    return cacheKey;
+    return String.format(Locale.getDefault(), key, page == null ? 0 : page);
   }
 
   @Override
