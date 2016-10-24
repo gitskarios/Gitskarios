@@ -68,5 +68,9 @@
   </item>
   <item name="nav_drawer_donate"
         type="id"/>
+  <item name="tab_code"
+        type="id"/>
+  <item name="tab_releases"
+        type="id"/>
 
 </resources>

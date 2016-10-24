@@ -328,4 +328,5 @@
   <string name="parent_commit">Parent: %s</string>
   <string name="download_zip_archive">Download zip</string>
   <string name="download_tar_archive">Download tar</string>
+  <string name="content_fragment_title">Content</string>
 </resources>

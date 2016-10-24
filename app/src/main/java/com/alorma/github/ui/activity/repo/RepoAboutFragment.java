@@ -1,4 +1,4 @@
-package com.alorma.github.ui.fragment.detail.repo;
+package com.alorma.github.ui.activity.repo;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -28,8 +28,9 @@ import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.activity.ForksActivity;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
-import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.fragment.detail.repo.BackManager;
+import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.AttributesUtils;
 import com.alorma.github.utils.TimeUtils;

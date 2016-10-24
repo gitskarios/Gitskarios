@@ -45,14 +45,14 @@
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_gravity="left|start"
-          app:bb_tabXmlResource="@xml/tabs_pullrequest"
+          app:bb_tabXmlResource="@xml/tabs_repository"
           app:bb_tabletMode="true"
           app:bb_activeTabColor="@color/white"
           app:bb_inActiveTabColor="@color/white"
           app:bb_activeTabAlpha="1"
           app:bb_inActiveTabAlpha="0.8"
           />
-      <android.support.v4.view.ViewPager
+      <FrameLayout
           android:id="@+id/content"
           android:layout_width="match_parent"
           android:layout_height="match_parent"

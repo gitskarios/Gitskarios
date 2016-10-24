@@ -7,13 +7,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
@@ -37,31 +40,23 @@ import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.activity.ManageRepositoryActivity;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
-import com.alorma.github.ui.fragment.commit.CommitsListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.github.ui.fragment.detail.repo.RepoAboutFragment;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
-import com.alorma.github.ui.fragment.issues.PullRequestsListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
-import com.alorma.github.ui.fragment.releases.RepositoryTagsFragment;
-import com.alorma.github.ui.navigation.TabsNavigation;
-import com.alorma.github.ui.navigation.UiNavigation;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import com.roughike.bottombar.BottomBar;
 import core.repositories.Branch;
 import core.repositories.Permissions;
 import core.repositories.Repo;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -72,6 +67,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
         com.alorma.github.presenter.View<Repo>, SourceListFragment.SourceCallback {
 
   @Inject RepositoryPresenter presenter;
+  @BindView(R.id.bottomBar) BottomBar bottomBar;
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -84,7 +80,9 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private RepoAboutFragment repoAboutFragment;
-  private TabsNavigation navigation;
+  private RepoContentFragment repoContentFragment;
+  private RepositoryIssuesListFragment repositoryIssuesListFragment;
+  private RepoContributorsFragment repoContributorsFragment;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -123,6 +121,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     presenter.attachView(this);
     setContentView(R.layout.activity_repo_detail);
 
+    ButterKnife.bind(this);
+
     if (getIntent().getExtras() != null) {
       requestRepoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
@@ -143,9 +143,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
         }
         setTitle(requestRepoInfo.name);
 
-        navigation = new TabsNavigation();
-        listFragments(navigation);
-        navigation.apply(this);
+        listFragments();
 
         if (requestRepoInfo != null) {
           load();
@@ -164,34 +162,45 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     presenter.detachView();
   }
 
-  private void listFragments(List<UiNavigation.UiItem> navigation) {
+  private void listFragments() {
     fragments = new ArrayList<>();
 
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.overview_fragment_title, R.drawable.ic_home, repoAboutFragment));
+    fragments.add(repoAboutFragment);
 
-    SourceListFragment sourceListFragment = SourceListFragment.newInstance(requestRepoInfo);
-    sourceListFragment.setSourceCallback(this);
-    navigation.add(new UiNavigation.UiItem(R.string.files_fragment_title, R.drawable.ic_file_directory, sourceListFragment));
+    repoContentFragment = RepoContentFragment.newInstance(requestRepoInfo);
+    fragments.add(repoContentFragment);
 
-    CommitsListFragment commitsListFragment = CommitsListFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.commits_fragment_title, R.drawable.ic_git_commit, commitsListFragment));
+    repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo, false);
+    fragments.add(repositoryIssuesListFragment);
 
-    RepositoryIssuesListFragment repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo, false);
-    navigation.add(new UiNavigation.UiItem(R.string.issues_fragment_title, R.drawable.ic_issue_opened, repositoryIssuesListFragment));
+    repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
+    fragments.add(repoContributorsFragment);
 
-    PullRequestsListFragment pullRequestsListFragment = PullRequestsListFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.pulls_fragment_title, R.drawable.ic_git_pull_request, pullRequestsListFragment));
+    bottomBar.setOnTabSelectListener(tabId -> {
+      switch (tabId) {
+        case R.id.tab_about:
+          setFragment(repoAboutFragment);
+          break;
+        case R.id.tab_content:
+          setFragment(repoContentFragment);
+          break;
+        case R.id.tab_issues:
+          setFragment(repositoryIssuesListFragment);
+          break;
+        case R.id.tab_people:
+          setFragment(repoContributorsFragment);
+          break;
+      }
+    });
 
-    RepositoryTagsFragment tagsFragment = RepositoryTagsFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.tags, R.drawable.ic_package, tagsFragment));
+    bottomBar.selectTabWithId(R.id.tab_about);
+  }
 
-    RepoContributorsFragment repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
-    navigation.add(new UiNavigation.UiItem(R.string.contributors_fragment_title, R.drawable.ic_person, repoContributorsFragment));
-
-    for (UiNavigation.UiItem uiItem : navigation) {
-      fragments.add(uiItem.getFragment());
-    }
+  private void setFragment(Fragment fragment) {
+    FragmentTransaction fm = getSupportFragmentManager().beginTransaction();
+    fm.replace(R.id.content, fragment);
+    fm.commit();
   }
 
   @Override
@@ -481,7 +490,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   protected void close(boolean navigateUp) {
     if (fragments != null) {
       boolean fromUrl = getIntent().getExtras().getBoolean(FROM_URL, false);
-      Fragment currentFragment = fragments.get(navigation.getCurrentItem());
+      Fragment currentFragment = fragments.get(bottomBar.getCurrentTabPosition());
       if (navigateUp && fromUrl) {
         Intent upIntent = new Intent(this, MainActivity.class);
         TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();

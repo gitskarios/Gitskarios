@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+  <tab
+      id="@+id/tab_about"
+      icon="@drawable/ic_home"
+      title="About"
+      barColorWhenSelected="@color/md_teal_800"
+      />
+  <tab
+      id="@+id/tab_content"
+      icon="@drawable/ic_circuit_board"
+      title="Content"
+      barColorWhenSelected="@color/md_deep_orange_800"
+      />
+  <tab
+      id="@+id/tab_issues"
+      icon="@drawable/ic_issue_opened"
+      title="Issues"
+      barColorWhenSelected="@color/md_brown_500"
+      />
+  <tab
+      id="@+id/tab_people"
+      icon="@drawable/ic_person"
+      title="Contributors"
+      barColorWhenSelected="@color/md_amber_800"
+      />
+</tabs>

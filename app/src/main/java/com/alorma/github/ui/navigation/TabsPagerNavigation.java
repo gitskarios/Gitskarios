@@ -13,7 +13,7 @@ import com.alorma.github.R;
 import com.alorma.github.utils.AttributesUtils;
 import java.util.List;
 
-public class TabsNavigation extends UiNavigation {
+public class TabsPagerNavigation extends UiNavigation {
 
   private ViewPager viewPager;
 
