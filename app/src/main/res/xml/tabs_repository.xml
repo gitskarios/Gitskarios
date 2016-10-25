@@ -8,7 +8,7 @@
       />
   <tab
       id="@+id/tab_readme"
-      icon="@drawable/ic_circuit_board"
+      icon="@drawable/ic_file"
       title="Readme"
       barColorWhenSelected="@color/md_deep_orange_400"
       />
