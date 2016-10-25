@@ -63,8 +63,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class RepoDetailActivity extends RepositoryThemeActivity
-    implements AdapterView.OnItemSelectedListener,
-        com.alorma.github.presenter.View<Repo>, SourceListFragment.SourceCallback {
+    implements AdapterView.OnItemSelectedListener, com.alorma.github.presenter.View<Repo>, SourceListFragment.SourceCallback {
 
   @Inject RepositoryPresenter presenter;
   @BindView(R.id.bottomBar) BottomBar bottomBar;
@@ -106,14 +105,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity
 
   @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
-    ApiComponent apiComponent =
-            DaggerApiComponent.builder()
-                    .applicationComponent(applicationComponent)
-                    .apiModule(new ApiModule())
-                    .build();
-    apiComponent
-            .plus(new RepoDetailModule())
-            .inject(this);
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.plus(new RepoDetailModule()).inject(this);
   }
 
   @Override
@@ -238,7 +231,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity
       requestRepoInfo.permissions = repo.permissions;
       setTitle(currentRepo.name);
 
-      if (requestRepoInfo.branch == null) {
+      if (requestRepoInfo.branch == null || !requestRepoInfo.branch.equals(repo.getDefaultBranch())) {
         requestRepoInfo.branch = repo.getDefaultBranch();
       }
 
