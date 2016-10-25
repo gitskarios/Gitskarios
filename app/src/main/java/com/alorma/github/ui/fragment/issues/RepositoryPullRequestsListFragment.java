@@ -33,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAdapter>
+public class RepositoryPullRequestsListFragment extends LoadingListFragment<PullRequestsAdapter>
     implements View.OnClickListener, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener,
     Observer<List<PullRequest>> {
 
@@ -46,11 +46,11 @@ public class PullRequestsListFragment extends LoadingListFragment<PullRequestsAd
 
   private int currentFilter = 0;
 
-  public static PullRequestsListFragment newInstance(RepoInfo repoInfo) {
+  public static RepositoryPullRequestsListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
 
-    PullRequestsListFragment fragment = new PullRequestsListFragment();
+    RepositoryPullRequestsListFragment fragment = new RepositoryPullRequestsListFragment();
     fragment.setArguments(bundle);
     return fragment;
   }

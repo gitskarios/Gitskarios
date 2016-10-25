@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
@@ -46,6 +45,7 @@ import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.detail.repo.SourceListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
+import com.alorma.github.ui.fragment.issues.RepositoryPullRequestsListFragment;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.ShortcutUtils;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -80,9 +80,10 @@ public class RepoDetailActivity extends RepositoryThemeActivity
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private RepoAboutFragment repoAboutFragment;
-  private RepoContentFragment repoContentFragment;
+  private RepoReadmeFragment repoReadmeFragment;
   private RepositoryIssuesListFragment repositoryIssuesListFragment;
   private RepoContributorsFragment repoContributorsFragment;
+  private RepositoryPullRequestsListFragment repositoryPullRequestsListFragment;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -168,8 +169,11 @@ public class RepoDetailActivity extends RepositoryThemeActivity
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
     fragments.add(repoAboutFragment);
 
-    repoContentFragment = RepoContentFragment.newInstance(requestRepoInfo);
-    fragments.add(repoContentFragment);
+    repoReadmeFragment = RepoReadmeFragment.newInstance(requestRepoInfo);
+    fragments.add(repoReadmeFragment);
+
+    repositoryPullRequestsListFragment = RepositoryPullRequestsListFragment.newInstance(requestRepoInfo);
+    fragments.add(repositoryPullRequestsListFragment);
 
     repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo, false);
     fragments.add(repositoryIssuesListFragment);
@@ -182,11 +186,14 @@ public class RepoDetailActivity extends RepositoryThemeActivity
         case R.id.tab_about:
           setFragment(repoAboutFragment);
           break;
-        case R.id.tab_content:
-          setFragment(repoContentFragment);
+        case R.id.tab_readme:
+          setFragment(repoReadmeFragment);
           break;
         case R.id.tab_issues:
           setFragment(repositoryIssuesListFragment);
+          break;
+        case R.id.tab_pulls:
+          setFragment(repositoryPullRequestsListFragment);
           break;
         case R.id.tab_people:
           setFragment(repoContributorsFragment);

@@ -12,20 +12,5 @@
       >
 
     <include layout="@layout/repo_overview_numbers"/>
-
-    <ProgressBar
-        android:id="@+id/htmlLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        />
-
-    <WebView
-        android:id="@+id/htmlContentView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/gapMedium"
-        android:padding="@dimen/gapMedium"
-        />
   </LinearLayout>
 </ScrollView>

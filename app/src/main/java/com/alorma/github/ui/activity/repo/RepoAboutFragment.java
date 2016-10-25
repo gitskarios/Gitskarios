@@ -1,24 +1,18 @@
 package com.alorma.github.ui.activity.repo;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
-import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
-import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.gcm.GcmTopicsHelper;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubClient;
-import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
 import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
@@ -40,13 +34,9 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import com.varunest.sparkbutton.SparkButton;
 import core.User;
 import core.repositories.Repo;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -59,7 +49,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
 
   private RepoInfo repoInfo;
   private Repo currentRepo;
-  private WebView htmlContentView;
   private UserAvatarView profileIcon;
 
   private SparkButton starredPlaceholder;
@@ -75,8 +64,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   private View fork;
   private TextView forkOfTextView;
   private TextView createdAtTextView;
-
-  private View loadingHtml;
 
   private Boolean repoStarred = null;
   Observer<Boolean> startObserver = new Observer<Boolean>() {
@@ -122,7 +109,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
       changeWatchView();
     }
   };
-  private Subscription readmeSubscriber;
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -158,9 +144,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     View author = view.findViewById(R.id.author);
     profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
     authorName = (TextView) author.findViewById(R.id.authorName);
-    loadingHtml = view.findViewById(R.id.htmlLoading);
-
-    htmlContentView = (WebView) view.findViewById(R.id.htmlContentView);
 
     fork = view.findViewById(R.id.fork);
     forkOfTextView = (TextView) fork.findViewById(R.id.forkOf);
@@ -241,7 +224,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   public void setRepository(Repo repository) {
     this.currentRepo = repository;
     if (isAdded()) {
-      getReadme();
       getStarWatchData();
       setData();
       getReadmeContent();
@@ -252,110 +234,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     if (repoInfo == null) {
       loadArguments();
     }
-
-    String cachedReadme = CacheWrapper.getReadme(repoInfo.toString());
-    if (cachedReadme != null) {
-      onReadmeLoaded(cachedReadme);
-    }
-    getReadme();
-  }
-
-  private void getReadme() {
-    loadReadme(new GetReadmeContentsClient(repoInfo));
-  }
-
-  private void loadReadme(GetReadmeContentsClient repoMarkdownClient) {
-    readmeSubscriber = repoMarkdownClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<String>() {
-          @Override
-          public void onCompleted() {
-            if (currentRepo != null) {
-              setData();
-            }
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            if (getActivity() != null) {
-              if (currentRepo != null && !TextUtils.isEmpty(currentRepo.description)) {
-                onReadmeLoaded(configureHtml(currentRepo.description));
-              } else {
-                loadingHtml.setVisibility(View.GONE);
-              }
-            }
-          }
-
-          @Override
-          public void onNext(String htmlContent) {
-            onReadmeLoaded(configureHtml(htmlContent));
-          }
-        });
-  }
-
-  private void onReadmeLoaded(String htmlContent) {
-    if (htmlContent != null && htmlContentView != null) {
-      htmlContentView.getSettings().setUseWideViewPort(false);
-      htmlContentView.setWebViewClient(new WebViewClient() {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-          Intent intent = new IntentsManager(getActivity()).checkUri(Uri.parse(url));
-          if (intent != null) {
-            startActivity(intent);
-          } else {
-            Intent intent1 = new Intent(Intent.ACTION_VIEW);
-            intent1.setData(Uri.parse(url));
-            startActivity(intent1);
-          }
-          return true;
-        }
-      });
-
-      int webviewColor = AttributesUtils.getWebviewColor(getActivity());
-      htmlContentView.setBackgroundColor(webviewColor);
-
-      htmlContentView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
-
-      loadingHtml.setVisibility(View.GONE);
-
-      CacheWrapper.setReadme(repoInfo.toString(), htmlContent);
-    }
-  }
-
-  private String configureHtml(String htmlContent) {
-    if (getActivity() != null) {
-      String fileName = "source_pre.html";
-
-      if (isDarkTheme()) {
-        fileName = "source_pre_dark.html";
-      }
-
-      String head = getAssetFileContent(fileName);
-      String end = getAssetFileContent("source_post.html");
-
-      return head + "\n" + htmlContent + "\n" + end;
-    } else {
-      return htmlContent;
-    }
-  }
-
-  public String getAssetFileContent(String filename) {
-    StringBuilder buf = new StringBuilder();
-    try {
-      InputStream stream = getActivity().getAssets().open(filename);
-      BufferedReader in = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-      String str;
-
-      while ((str = in.readLine()) != null) {
-        buf.append(str);
-      }
-
-      in.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return buf.toString();
   }
 
   private void setData() {
@@ -409,7 +287,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   public void setCurrentBranch(String branch) {
     if (getActivity() != null) {
       repoInfo.branch = branch;
-      loadReadme(new GetReadmeContentsClient(repoInfo));
     }
   }
 
@@ -475,13 +352,5 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
         currentRepo.setSubscribersCount(futureSubscribersCount);
       }
     }
-  }
-
-  @Override
-  public void onStop() {
-    if (readmeSubscriber != null) {
-      readmeSubscriber.unsubscribe();
-    }
-    super.onStop();
   }
 }
