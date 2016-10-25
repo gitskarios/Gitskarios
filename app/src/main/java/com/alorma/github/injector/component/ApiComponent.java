@@ -9,6 +9,7 @@ import com.alorma.github.injector.component.repository.MembershipRepositoriesCom
 import com.alorma.github.injector.component.repository.OrganizationRepositoriesComponent;
 import com.alorma.github.injector.component.repository.RepoDetailComponent;
 import com.alorma.github.injector.component.repository.RepositoryMilestonesComponent;
+import com.alorma.github.injector.component.repository.RepositoryReadmeComponent;
 import com.alorma.github.injector.component.repository.StarredRepositoriesComponent;
 import com.alorma.github.injector.component.repository.UsernameRepositoriesComponent;
 import com.alorma.github.injector.component.repository.WatchedRepositoriesComponent;
@@ -26,6 +27,7 @@ import com.alorma.github.injector.module.repository.MembershipRepositoriesModule
 import com.alorma.github.injector.module.repository.OrganizationRepositoriesModule;
 import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.injector.module.repository.RepositoryMilestonesModule;
+import com.alorma.github.injector.module.repository.RepositoryReadmeModule;
 import com.alorma.github.injector.module.repository.StarredRepositoriesModule;
 import com.alorma.github.injector.module.repository.UsernameRepositoriesModule;
 import com.alorma.github.injector.module.repository.WatchedRepositoriesModule;
@@ -86,4 +88,5 @@ public interface ApiComponent {
 
   RepositoryMilestonesComponent plus(RepositoryMilestonesModule module);
 
+  RepositoryReadmeComponent plus(RepositoryReadmeModule module);
 }

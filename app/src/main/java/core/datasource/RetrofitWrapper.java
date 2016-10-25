@@ -1,5 +1,6 @@
 package core.datasource;
 
+import android.support.annotation.NonNull;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -41,33 +42,35 @@ public abstract class RetrofitWrapper extends RestWrapper {
 
     Gson gson = gsonBuilder.setLenient().create();
     Retrofit retrofit = new Retrofit.Builder().baseUrl(apiClient.getApiEndpoint())
-        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addConverterFactory(getConverterFactory(gson))
         .client(getClient())
         .build();
 
     return get(retrofit);
   }
 
+  @NonNull
+  protected GsonConverterFactory getConverterFactory(Gson gson) {
+    return GsonConverterFactory.create(gson);
+  }
+
   protected abstract <T> T get(Retrofit retrofit);
 
-  private OkHttpClient getClient() {
+  protected OkHttpClient getClient() {
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
-    builder.addInterceptor(new Interceptor() {
-      @Override
-      public Response intercept(Chain chain) throws IOException {
-        Request original = chain.request();
+    builder.addInterceptor(chain -> {
+      Request original = chain.request();
 
-        Request.Builder builder = original.newBuilder();
+      Request.Builder builder1 = original.newBuilder();
 
-        if (token != null) {
-          builder.addHeader("Authorization", "token " + token);
-        }
-        builder.addHeader("User-Agent", "Gitskarios");
-        builder.addHeader("Accept", "application/vnd.github.v3.json");
-        builder.method(original.method(), original.body());
-
-        return chain.proceed(builder.build());
+      if (token != null) {
+        builder1.addHeader("Authorization", "token " + token);
       }
+      builder1.addHeader("User-Agent", "Gitskarios");
+      builder1.addHeader("Accept", "application/vnd.github.v3.json");
+      builder1.method(original.method(), original.body());
+
+      return chain.proceed(builder1.build());
     });
 
     return builder.build();

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import butterknife.BindView;
@@ -14,22 +15,28 @@ import butterknife.ButterKnife;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.R;
 import com.alorma.github.cache.CacheWrapper;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.repository.RepositoryReadmeModule;
+import com.alorma.github.presenter.RepositoryReadmePresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.GetReadmeContentsClient;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.AttributesUtils;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
-public class RepoReadmeFragment extends BaseFragment {
+public class RepoReadmeFragment extends BaseFragment implements com.alorma.github.presenter.View<String> {
 
   private static final String REPO_INFO = "REPO_INFO";
   private Subscription subscribe;
   private RepoInfo repoInfo;
+
+  @Inject RepositoryReadmePresenter readmePresenter;
 
   @BindView(R.id.webview) WebView webView;
   @BindView(R.id.htmlLoading) View loadingView;
@@ -57,11 +64,15 @@ public class RepoReadmeFragment extends BaseFragment {
 
     if (getArguments() != null) {
       repoInfo = getArguments().getParcelable(REPO_INFO);
-      subscribe = new GetReadmeContentsClient(repoInfo).observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(this::onReadmeLoaded, Throwable::printStackTrace);
+      readmePresenter.execute(repoInfo);
     }
+  }
+
+  @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.plus(new RepositoryReadmeModule()).inject(this);
+    readmePresenter.attachView(this);
   }
 
   private void onReadmeLoaded(String htmlContent) {
@@ -78,6 +89,21 @@ public class RepoReadmeFragment extends BaseFragment {
             Intent intent1 = new Intent(Intent.ACTION_VIEW);
             intent1.setData(Uri.parse(url));
             startActivity(intent1);
+          }
+          return true;
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Intent intent = new IntentsManager(getActivity()).checkUri(request.getUrl());
+            if (intent != null) {
+              startActivity(intent);
+            } else {
+              Intent intent1 = new Intent(Intent.ACTION_VIEW);
+              intent1.setData(request.getUrl());
+              startActivity(intent1);
+            }
           }
           return true;
         }
@@ -145,5 +171,25 @@ public class RepoReadmeFragment extends BaseFragment {
   @Override
   protected int getDarkTheme() {
     return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
+  public void showLoading() {
+    loadingView.setVisibility(View.VISIBLE);
+  }
+
+  @Override
+  public void hideLoading() {
+    loadingView.setVisibility(View.GONE);
+  }
+
+  @Override
+  public void onDataReceived(String data, boolean isFromPaginated) {
+    onReadmeLoaded(data);
+  }
+
+  @Override
+  public void showError(Throwable throwable) {
+
   }
 }

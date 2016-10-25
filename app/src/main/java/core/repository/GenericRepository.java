@@ -4,7 +4,6 @@ import core.datasource.CacheDataSource;
 import core.datasource.CloudDataSource;
 import core.datasource.SdkItem;
 import rx.Observable;
-import rx.functions.Action1;
 
 public class GenericRepository<Request, Data> {
   private static final String TAG = GenericRepository.class.getSimpleName();
@@ -33,13 +32,10 @@ public class GenericRepository<Request, Data> {
     if (cloudObs == null) {
       cloudObs = Observable.empty();
     }
-    cloudObs = cloudObs.onErrorResumeNext(fallbackApi() != null ? fallbackApi() : Observable.<SdkItem<Data>>empty())
-        .doOnNext(new Action1<SdkItem<Data>>() {
-          @Override
-          public void call(SdkItem<Data> dataSdkItem) {
-            if (cache != null) {
-              cache.saveData(request, dataSdkItem);
-            }
+    cloudObs =
+        cloudObs.onErrorResumeNext(fallbackApi() != null ? fallbackApi() : Observable.<SdkItem<Data>>empty()).doOnNext(dataSdkItem -> {
+          if (cache != null) {
+            cache.saveData(request, dataSdkItem);
           }
         });
     return Observable.concat(cacheObs, cloudObs).first();
