@@ -1,58 +1,49 @@
 package com.alorma.github.presenter;
 
-import android.support.annotation.NonNull;
-import com.alorma.github.cache.CacheWrapper;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
-import com.alorma.github.sdk.services.repo.GetRepoClient;
+import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
+import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
+import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Repo;
+import core.repository.GenericRepository;
 import java.util.List;
 import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
 
 public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Repo>> {
 
-  public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler) {
+  private final GenericRepository<RepoInfo, Repo> repoGenericRepository;
+
+  public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler, GenericRepository<RepoInfo, Repo> repoGenericRepository) {
     super(mainScheduler, ioScheduler, null);
+    this.repoGenericRepository = repoGenericRepository;
   }
 
   @Override
-  public void execute(@NonNull final RepoInfo repoInfo) {
-    if (!isViewAttached()) return;
+  public void execute(final RepoInfo repoInfo) {
+    if (isViewAttached() && repoInfo != null) {
 
-    GetRepoClient repoClient = new GetRepoClient(repoInfo);
+      Observable<Repo> repoObservable = repoGenericRepository.execute(new SdkItem<>(repoInfo)).map(SdkItem::getK);
+      Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo).observable();
+      Observable<Boolean> starredObservable = new CheckRepoStarredClient(repoInfo.owner, repoInfo.name).observable();
+      Observable<Boolean> watchedObservable = new CheckRepoWatchedClient(repoInfo.owner, repoInfo.name).observable();
 
-    Observable<Repo> memory = Observable.create(new Observable.OnSubscribe<Repo>() {
-      @Override
-      public void call(Subscriber<? super Repo> subscriber) {
-        try {
-          if (!subscriber.isUnsubscribed()) {
-            subscriber.onNext(CacheWrapper.getRepository(repoInfo));
-            subscriber.onCompleted();
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    });
+      Observable<Repo> observable =
+          Observable.zip(repoObservable, branchesClient, starredObservable, watchedObservable, (repo, branches, starred, watched) -> {
 
-    Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo).observable().subscribeOn(ioScheduler);
+            repo.branches = branches;
+            if (repo.defaultBranch == null && branches != null && branches.size() > 0) {
+              repo.defaultBranch = branches.get(0).name;
+            }
 
-    Observable<Repo> combinedWithBranches =
-        Observable.combineLatest(repoClient.observable().subscribeOn(ioScheduler), branchesClient, (repo, branches) -> {
-          repo.branches = branches;
-          if (branches.size() == 1) {
-            repo.setDefaultBranch(branches.get(0).name);
-          }
-          return repo;
-        });
+            repo.setStarred(starred);
+            repo.setWatched(starred);
 
-    Observable<Repo> repoObservable = combinedWithBranches.doOnNext(CacheWrapper::setRepository);
-
-    Observable.concat(memory, repoObservable).observeOn(mainScheduler).subscribe(repo -> {
-      getView().onDataReceived(repo, false);
-    }, Throwable::printStackTrace);
+            return repo;
+          });
+      subscribe(observable.map(SdkItem::new), false);
+    }
   }
 }

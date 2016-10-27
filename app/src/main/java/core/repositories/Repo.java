@@ -60,6 +60,9 @@ public class Repo extends ShaUrl implements Parcelable {
   @SerializedName("archive_url")
   public String archiveUrl;
 
+  private Boolean starred;
+  private Boolean watched;
+
   public Repo() {
     super();
   }
@@ -429,4 +432,20 @@ public class Repo extends ShaUrl implements Parcelable {
       return new Repo[size];
     }
   };
+
+  public void setStarred(Boolean starred) {
+    this.starred = starred;
+  }
+
+  public Boolean isStarred() {
+    return starred;
+  }
+
+  public void setWatched(Boolean watched) {
+    this.watched = watched;
+  }
+
+  public Boolean isWatched() {
+    return watched;
+  }
 }

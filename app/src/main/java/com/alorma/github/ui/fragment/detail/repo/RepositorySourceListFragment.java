@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.dto.response.Content;
 import com.alorma.github.sdk.bean.info.FileInfo;
@@ -34,6 +36,7 @@ import com.alorma.github.ui.activity.NewContentActivity;
 import com.alorma.github.ui.adapter.detail.repo.RepoSourceAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.view.LinearBreadcrumb;
+import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.gitskarios.core.Pair;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -58,24 +61,23 @@ import rx.schedulers.Schedulers;
 
 import static com.alorma.github.sdk.bean.dto.response.ContentType.file;
 
-public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
+public class RepositorySourceListFragment extends LoadingListFragment<RepoSourceAdapter>
     implements BranchManager, LinearBreadcrumb.SelectionCallback, BackManager, RepoSourceAdapter.SourceAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final int RESULT_NEW_FILE = 111;
 
   private RepoInfo repoInfo;
-  private SourceCallback sourceCallback;
 
   private LinearBreadcrumb breadCrumbs;
   private String currentPath;
   private Observer<Pair<List<Content>, Integer>> subscriber;
 
-  public static SourceListFragment newInstance(RepoInfo repoInfo) {
+  public static RepositorySourceListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
 
-    SourceListFragment f = new SourceListFragment();
+    RepositorySourceListFragment f = new RepositorySourceListFragment();
     f.setArguments(bundle);
     return f;
   }
@@ -251,13 +253,44 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_content_download:
-        if (sourceCallback != null) {
-          sourceCallback.onSourceDownload();
-        }
+        downloadRepo();
         return true;
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  private void downloadRepo() {
+    Toast.makeText(getContext(), "Not implemented", Toast.LENGTH_SHORT).show();
+    /*
+    String archive_url = currentRepo.getArchiveUrl();
+    GitskariosSettings settings = new GitskariosSettings(getContext());
+    String zipBall = getString(R.string.download_zip_value);
+    String fileType = settings.getDownloadFileType(zipBall);
+
+    archive_url = archive_url.replace("{archive_format}", fileType);
+    archive_url = archive_url.replace("{/ref}", "/" + currentRepo.getDefaultBranch());
+
+    GitskariosDownloadManager gitskariosDownloadManager = new GitskariosDownloadManager();
+    gitskariosDownloadManager.download(this, archive_url,
+        currentRepo.name + "_" + currentRepo.getDefaultBranch() + "." + getExtensionFromFileType(fileType), text -> {
+          Snackbar snackbar = Snackbar.make(recyclerView, getString(text), Snackbar.LENGTH_LONG);
+
+          snackbar.setAction(getString(R.string.external_storage_permission_request_action),
+              v -> gitskariosDownloadManager.openSettings(getContext()));
+
+          snackbar.show();
+        });
+        */
+  }
+
+  private String getExtensionFromFileType(String fileType) {
+    if ("zipball".equals(fileType)) {
+      return "zip";
+    } else if ("tarball".equals(fileType)) {
+      return "tar.gz";
+    }
+    return null;
   }
 
   @Override
@@ -546,13 +579,5 @@ public class SourceListFragment extends LoadingListFragment<RepoSourceAdapter>
       navigateUp();
       return false;
     }
-  }
-
-  public void setSourceCallback(SourceCallback sourceCallback) {
-    this.sourceCallback = sourceCallback;
-  }
-
-  public interface SourceCallback {
-    void onSourceDownload();
   }
 }

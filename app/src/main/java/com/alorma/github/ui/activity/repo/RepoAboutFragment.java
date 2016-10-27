@@ -5,20 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.gcm.GcmTopicsHelper;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.repository.RepoDetailModule;
+import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.GithubClient;
-import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
-import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
-import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
-import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
-import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
-import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import com.alorma.github.ui.activity.ForksActivity;
 import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
@@ -36,16 +37,14 @@ import core.User;
 import core.repositories.Repo;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import javax.inject.Inject;
 
-public class RepoAboutFragment extends BaseFragment implements BranchManager, BackManager {
+public class RepoAboutFragment extends BaseFragment implements BranchManager, BackManager, com.alorma.github.presenter.View<Repo> {
 
+  private static final int EDIT_REPO = 464;
   private static final String REPO_INFO = "REPO_INFO";
-  private Integer futureSubscribersCount;
-  private Integer futureStarredCount;
+
+  @Inject RepositoryPresenter presenter;
 
   private RepoInfo repoInfo;
   private Repo currentRepo;
@@ -65,51 +64,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   private TextView forkOfTextView;
   private TextView createdAtTextView;
 
-  private Boolean repoStarred = null;
-  Observer<Boolean> startObserver = new Observer<Boolean>() {
-    @Override
-    public void onCompleted() {
-      com.alorma.github.presenter.CacheWrapper.cache().removeAll();
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      repoStarred = false;
-      changeStarView();
-    }
-
-    @Override
-    public void onNext(Boolean aBoolean) {
-      repoStarred = aBoolean;
-      changeStarView();
-    }
-  };
-
-  private Boolean repoWatched = null;
-  Observer<Boolean> watchObserver = new Observer<Boolean>() {
-    @Override
-    public void onCompleted() {
-      com.alorma.github.presenter.CacheWrapper.cache().removeAll();
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      repoWatched = false;
-      changeWatchView();
-    }
-
-    @Override
-    public void onNext(Boolean aBoolean) {
-      repoWatched = aBoolean;
-      if (aBoolean) {
-        GcmTopicsHelper.registerInTopic(repoInfo);
-      } else {
-        GcmTopicsHelper.unregisterInTopic(repoInfo);
-      }
-      changeWatchView();
-    }
-  };
-
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
@@ -127,6 +81,27 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   @Override
   protected int getDarkTheme() {
     return R.style.AppTheme_Dark_Repository;
+  }
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    setHasOptionsMenu(true);
+    presenter.attachView(this);
+  }
+
+  @Override
+  public void onDestroy() {
+    presenter.detachView();
+    super.onDestroy();
+  }
+
+  @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    super.injectComponents(applicationComponent);
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.plus(new RepoDetailModule()).inject(this);
   }
 
   @Nullable
@@ -159,25 +134,10 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     forkedPlaceholder = (SparkButton) view.findViewById(R.id.forkedPlaceholder);
     forkedTextView = (TextView) view.findViewById(R.id.forkedTextView);
 
-    starredPlaceholder.setEventListener((button, buttonState) -> {
-      starredPlaceholder.playAnimation();
-      if (repoStarred != null) {
-        changeStarStatus();
-      }
-    });
-    starredTextView.setOnClickListener(v -> {
-      if (repoStarred != null) {
-        changeStarStatus();
-      }
-    });
-
-    watchedTextView.setOnClickListener(view1 -> {
-      watchedPlaceholder.playAnimation();
-      if (repoWatched != null) {
-        changeWatchedStatus();
-      }
-    });
+    starredPlaceholder.setEventListener((button, buttonState) -> changeStarStatus());
     watchedPlaceholder.setEventListener((button, buttonState) -> changeWatchedStatus());
+    starredTextView.setOnClickListener(v -> changeStarStatus());
+    watchedTextView.setOnClickListener(v -> changeWatchedStatus());
 
     forkedTextView.setOnClickListener(v -> {
       if (repoInfo != null) {
@@ -212,7 +172,8 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
       }
     });
 
-    getReadmeContent();
+    loadArguments();
+    presenter.execute(repoInfo);
   }
 
   protected void loadArguments() {
@@ -221,19 +182,214 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     }
   }
 
-  public void setRepository(Repo repository) {
-    this.currentRepo = repository;
-    if (isAdded()) {
-      getStarWatchData();
-      setData();
-      getReadmeContent();
-    }
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+
+    /*
+    getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
+     */
   }
 
-  private void getReadmeContent() {
-    if (repoInfo == null) {
-      loadArguments();
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+
+    /*
+    if (menu != null) {
+      if (currentRepo != null && currentRepo.permissions != null) {
+        if (currentRepo.permissions.admin) {
+          if (menu.findItem(R.id.action_manage_repo) == null) {
+            getMenuInflater().inflate(R.menu.repo_detail_activity_permissions, menu);
+          }
+          if (menu.findItem(R.id.action_subscribe_push) == null) {
+            getMenuInflater().inflate(R.menu.repo_detail_activity_push, menu);
+          }
+        }
+      }
+
+      MenuItem item = menu.findItem(R.id.share_repo);
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
+      } else {
+        item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
+      }
+
+      MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
+
+      if (menuChangeBranch != null) {
+        if (currentRepo != null && currentRepo.branches != null && currentRepo.branches.size() > 1) {
+          Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
+
+          menuChangeBranch.setIcon(changeBranch);
+        } else {
+          menu.removeItem(R.id.action_repo_change_branch);
+        }
+      }
     }
+     */
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    /*
+
+    if (item.getItemId() == android.R.id.home) {
+      finish();
+    } else if (item.getItemId() == R.id.share_repo) {
+      if (currentRepo != null) {
+        String title = currentRepo.getFullName();
+        String url = currentRepo.svn_url;
+
+        new ShareAction(this, title, url).setType("Repository").execute();
+      }
+    } else if (item.getItemId() == R.id.action_open_in_browser) {
+      if (currentRepo != null) {
+        new ViewInAction(this, currentRepo.getHtmlUrl()).setType("Repository").execute();
+      }
+    } else if (item.getItemId() == R.id.action_repo_change_branch) {
+      changeBranch();
+    } else if (item.getItemId() == R.id.action_manage_repo) {
+      if (currentRepo != null) {
+        Intent intent = ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
+        startActivityForResult(intent, EDIT_REPO);
+      }
+    } else if (item.getItemId() == R.id.action_add_shortcut) {
+      ShortcutUtils.addShortcut(this, requestRepoInfo);
+    } else if (item.getItemId() == R.id.action_subscribe_push) {
+      WebHookRequest webhook = new WebHookRequest();
+      webhook.name = "web";
+      webhook.active = true;
+      webhook.events = new String[] {
+          "issues"
+      };
+      webhook.config = new WebHookConfigRequest();
+      webhook.config.content_type = "json";
+      webhook.config.url = "https://cryptic-ravine-97684.herokuapp.com/message";
+
+      new AddWebHookClient(requestRepoInfo.owner, requestRepoInfo.name, webhook).observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(webHookResponse -> {
+            GcmTopicsHelper.registerInTopic(requestRepoInfo);
+          }, throwable -> {
+
+          });
+    }
+     */
+    return super.onOptionsItemSelected(item);
+  }
+
+  /*
+  private RepoRequestDTO createRepoRequest() {
+    RepoRequestDTO dto = new RepoRequestDTO();
+
+    dto.isPrivate = currentRepo.isPrivateRepo();
+    dto.name = currentRepo.name;
+    dto.description = currentRepo.description;
+    dto.default_branch = currentRepo.getDefaultBranch();
+    dto.has_downloads = currentRepo.hasDownloads;
+    dto.has_wiki = currentRepo.hasWiki;
+    dto.has_issues = currentRepo.hasIssues;
+    dto.homepage = currentRepo.homepage;
+
+    return dto;
+  }
+
+  private void changeBranch() {
+    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(requestRepoInfo);
+    Observable<List<Branch>> apiObservable = repoBranchesClient.observable()
+        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext(branches -> {
+          if (currentRepo != null) {
+            if (currentRepo.branches != null) {
+              currentRepo.branches.addAll(branches);
+            } else {
+              currentRepo.branches = branches;
+            }
+            CacheWrapper.setRepository(currentRepo);
+          }
+        });
+
+    Observable<List<Branch>> memCacheObservable = Observable.create(new Observable.OnSubscribe<List<Branch>>() {
+      @Override
+      public void call(Subscriber<? super List<Branch>> subscriber) {
+        try {
+          if (!subscriber.isUnsubscribed()) {
+            if (currentRepo != null && currentRepo.branches != null) {
+              subscriber.onNext(currentRepo.branches);
+            }
+          }
+          subscriber.onCompleted();
+        } catch (Exception e) {
+          subscriber.onError(e);
+        }
+      }
+    });
+
+    Observable.concat(memCacheObservable, apiObservable).first().subscribe(new DialogBranchesSubscriber(this, requestRepoInfo) {
+      @Override
+      protected void onNoBranches() {
+
+      }
+
+      @Override
+      protected void onBranchSelected(String branch) {
+        requestRepoInfo.branch = branch;
+        if (currentRepo != null) {
+          currentRepo.setDefaultBranch(branch);
+        }
+        if (getSupportActionBar() != null) {
+          getSupportActionBar().setSubtitle(branch);
+        }
+        for (Fragment fragment : fragments) {
+          if (fragment instanceof BranchManager) {
+            ((BranchManager) fragment).setCurrentBranch(branch);
+          }
+        }
+      }
+    });
+  }
+   */
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    /*
+
+    if (requestCode == EDIT_REPO) {
+      if (resultCode == RESULT_OK && data != null) {
+        RepoRequestDTO repoRequestDTO = data.getParcelableExtra(ManageRepositoryActivity.CONTENT);
+        showProgressDialog(R.string.edit_repo_loading);
+        EditRepoClient editRepositoryClient = new EditRepoClient(requestRepoInfo, repoRequestDTO);
+        editRepositoryClient.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<Repo>() {
+              @Override
+              public void onCompleted() {
+
+              }
+
+              @Override
+              public void onError(Throwable e) {
+
+              }
+
+              @Override
+              public void onNext(Repo repo) {
+                onDataReceived(repo, false);
+              }
+            });
+      } else if (resultCode == RESULT_CANCELED) {
+        finish();
+      }
+    }
+     */
   }
 
   private void setData() {
@@ -295,62 +451,50 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
     return true;
   }
 
-  private void starAction(GithubClient<Boolean> starClient) {
-    starClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(startObserver);
-  }
-
-  private void watchAction(GithubClient<Boolean> starClient) {
-    starClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(watchObserver);
-  }
-
-  protected void getStarWatchData() {
-    starAction(new CheckRepoStarredClient(currentRepo.owner.getLogin(), currentRepo.name));
-
-    watchAction(new CheckRepoWatchedClient(currentRepo.owner.getLogin(), currentRepo.name));
-  }
-
   private void changeStarStatus() {
-    if (repoStarred != null && repoStarred) {
-      futureStarredCount = currentRepo.getStargazersCount() - 1;
-      starAction(new UnstarRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
-    } else {
-      futureStarredCount = currentRepo.getStargazersCount() + 1;
-      starAction(new StarRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
-    }
+    //presenter.changeStarredState();
   }
 
   private void changeWatchedStatus() {
-    if (repoWatched != null && repoWatched) {
-      futureSubscribersCount = currentRepo.getSubscribersCount() - 1;
-      watchAction(new UnwatchRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
-    } else {
-      futureSubscribersCount = currentRepo.getSubscribersCount() + 1;
-      watchAction(new WatchRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
-      watchAction(new WatchRepoClient(currentRepo.owner.getLogin(), currentRepo.name));
-    }
+    //presenter.changeWatchedState();
   }
 
   private void changeStarView() {
     if (getActivity() != null) {
-      starredPlaceholder.setChecked(repoStarred != null && repoStarred);
+      starredPlaceholder.setChecked(!currentRepo.isStarred());
 
-      if (futureStarredCount != null) {
-        setStarsCount(futureStarredCount);
-        currentRepo.setStargazersCount(futureStarredCount);
-      }
+      starredPlaceholder.invalidate();
     }
   }
 
   private void changeWatchView() {
     if (getActivity() != null) {
-      watchedPlaceholder.setChecked(repoWatched != null && repoWatched);
+      watchedPlaceholder.setChecked(!currentRepo.isStarred());
 
       watchedPlaceholder.invalidate();
-
-      if (futureSubscribersCount != null) {
-        setWatchersCount(futureSubscribersCount);
-        currentRepo.setSubscribersCount(futureSubscribersCount);
-      }
     }
+  }
+
+  @Override
+  public void showLoading() {
+
+  }
+
+  @Override
+  public void hideLoading() {
+
+  }
+
+  @Override
+  public void onDataReceived(Repo data, boolean isFromPaginated) {
+    this.currentRepo = data;
+    if (isAdded()) {
+      setData();
+    }
+  }
+
+  @Override
+  public void showError(Throwable throwable) {
+
   }
 }

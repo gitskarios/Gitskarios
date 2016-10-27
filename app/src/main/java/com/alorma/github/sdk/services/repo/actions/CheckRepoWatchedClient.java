@@ -7,9 +7,6 @@ import retrofit.client.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
-/**
- * Created by Bernat on 07/08/2014.
- */
 public class CheckRepoWatchedClient extends GithubClient<Boolean> {
   private String repo;
   private String owner;
