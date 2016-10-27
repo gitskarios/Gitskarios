@@ -43,7 +43,11 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
 
             return repo;
           });
-      subscribe(observable.map(SdkItem::new), false);
+
+      observable = observable.doOnNext(repo -> repoGenericRepository.save(repoInfo, repo));
+      Observable<SdkItem<Repo>> rObservable = observable.map(SdkItem::new);
+
+      subscribe(rObservable, false);
     }
   }
 }

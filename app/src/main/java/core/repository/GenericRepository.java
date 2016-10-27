@@ -41,6 +41,12 @@ public class GenericRepository<Request, Data> {
     return Observable.concat(cacheObs, cloudObs).first();
   }
 
+  public void save(final Request request, Data dataSdkItem) {
+    if (cache != null) {
+      cache.saveData(new SdkItem<>(request), new SdkItem<>(dataSdkItem));
+    }
+  }
+
   private void checkRequest(SdkItem<Request> request) {
     if (request == null) {
       throw new IllegalArgumentException(TAG + " SdkItem<Request> request item could not be null");
