@@ -3,4 +3,5 @@
   <dimen name="responsive_ly_margin_horizontal">120dp</dimen>
   <dimen name="responsive_ly_margin_vertical">96dp</dimen>
   <dimen name="responive_toolbar_height">240dp</dimen>
+  <dimen name="responive_toolbar_height_extra">200dp</dimen>
 </resources>

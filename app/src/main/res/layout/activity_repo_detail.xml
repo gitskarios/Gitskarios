@@ -1,48 +1,66 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical"
+             android:background="@color/md_grey_300"
     >
-
-  <android.support.design.widget.AppBarLayout
+  <View
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:fitsSystemWindows="true"
-      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      >
+      android:layout_height="200dp"
+      android:background="?colorPrimary"
+      />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorPrimary"
-        android:minHeight="?actionBarSize"
-        app:contentInsetStart="@dimen/second_keyline"
-        app:layout_scrollFlags="scroll|enterAlways"
-        />
-
-  </android.support.design.widget.AppBarLayout>
-
-  <FrameLayout
-      android:id="@+id/content"
+  <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      />
+      >
 
-  <com.roughike.bottombar.BottomBar
-      android:id="@+id/bottomBar"
-      android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:layout_gravity="bottom"
-      app:bb_tabXmlResource="@xml/tabs_repository"
-      app:bb_tabletMode="false"
-      app:bb_activeTabColor="@color/white"
-      app:bb_inActiveTabColor="@color/white"
-      app:bb_activeTabAlpha="1"
-      app:bb_inActiveTabAlpha="0.8"
-      app:bb_behavior="shifting|shy"
-      />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:id="@+id/appBarLayout"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        >
+      <android.support.v7.widget.Toolbar
+          android:id="@id/toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?colorPrimary"
+          android:minHeight="?actionBarSize"
+          app:contentInsetStart="@dimen/second_keyline"
+          android:layout_gravity="top"
+          />
+      <android.support.design.widget.TabLayout
+          android:id="@+id/tabLayout"
+          android:layout_width="match_parent"
+          android:layout_height="?actionBarSize"
+          android:layout_marginTop="16dp"
+          android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
+          android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
+          />
+    </android.support.design.widget.AppBarLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/big_card_bg"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
+        android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/appBarLayout"
+        >
+      <FrameLayout
+          android:id="@+id/content"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          />
+    </FrameLayout>
+
+  </RelativeLayout>
+</FrameLayout>

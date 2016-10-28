@@ -3,6 +3,7 @@ package com.alorma.github.ui.activity.repo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
@@ -18,12 +19,11 @@ import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryPullRequestsListFragment;
-import com.roughike.bottombar.BottomBar;
 import java.util.ArrayList;
 
 public class RepoDetailActivity extends RepositoryThemeActivity {
 
-  @BindView(R.id.bottomBar) BottomBar bottomBar;
+  @BindView(R.id.tabLayout) TabLayout tabLayout;
 
   public static final String FROM_URL = "FROM_URL";
   public static final String REPO_INFO = "REPO_INFO";
@@ -91,6 +91,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
         setTitle(requestRepoInfo.name);
 
         listFragments();
+        setupTabs();
       } else {
         finish();
       }
@@ -116,28 +117,48 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
     repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
     fragments.add(repoContributorsFragment);
+  }
 
-    bottomBar.setOnTabSelectListener(tabId -> {
-      switch (tabId) {
-        case R.id.tab_about:
-          setFragment(repoAboutFragment);
-          break;
-        case R.id.tab_readme:
-          setFragment(repoReadmeFragment);
-          break;
-        case R.id.tab_issues:
-          setFragment(repositoryIssuesListFragment);
-          break;
-        case R.id.tab_pulls:
-          setFragment(repositoryPullRequestsListFragment);
-          break;
-        case R.id.tab_people:
-          setFragment(repoContributorsFragment);
-          break;
+  private void setupTabs() {
+
+    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home).setText(""), true);
+    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_file).setText(""), false);
+    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_issue_opened).setText(""), false);
+    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_git_pull_request).setText(""), false);
+    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_person).setText(""), false);
+
+    tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+      @Override
+      public void onTabSelected(TabLayout.Tab tab) {
+        switch (tab.getPosition()) {
+          case 0:
+            setFragment(repoAboutFragment);
+            break;
+          case 1:
+            setFragment(repoReadmeFragment);
+            break;
+          case 2:
+            setFragment(repositoryIssuesListFragment);
+            break;
+          case 3:
+            setFragment(repositoryPullRequestsListFragment);
+            break;
+          case 4:
+            setFragment(repoContributorsFragment);
+            break;
+        }
+      }
+
+      @Override
+      public void onTabUnselected(TabLayout.Tab tab) {
+
+      }
+
+      @Override
+      public void onTabReselected(TabLayout.Tab tab) {
+
       }
     });
-
-    bottomBar.selectTabWithId(R.id.tab_about);
   }
 
   private void setFragment(Fragment fragment) {
@@ -160,7 +181,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
   protected void close(boolean navigateUp) {
     if (fragments != null) {
       boolean fromUrl = getIntent().getExtras().getBoolean(FROM_URL, false);
-      Fragment currentFragment = fragments.get(bottomBar.getCurrentTabPosition());
+      Fragment currentFragment = fragments.get(tabLayout.getSelectedTabPosition());
       if (navigateUp && fromUrl) {
         Intent upIntent = new Intent(this, MainActivity.class);
         TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();

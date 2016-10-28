@@ -2,63 +2,64 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:orientation="vertical"
+             android:background="@color/md_grey_300"
     >
   <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="260dp"
       android:background="?colorPrimary"
       >
-    <android.support.v7.widget.Toolbar
-        android:id="@id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorPrimary"
-        android:minHeight="?actionBarSize"
-        app:contentInsetStart="@dimen/second_keyline"
-        android:layout_gravity="top"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        />
   </FrameLayout>
 
-  <FrameLayout
+  <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@drawable/big_card_bg"
-      android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
-      android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
-      android:layout_marginTop="@dimen/responsive_ly_margin_vertical"
       >
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabLayout"
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:visibility="gone"
-        />
-    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/appBarLayout"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        >
+      <android.support.v7.widget.Toolbar
+          android:id="@id/toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?colorPrimary"
+          android:minHeight="?actionBarSize"
+          app:contentInsetStart="@dimen/second_keyline"
+          android:layout_gravity="top"
+          />
+      <android.support.design.widget.TabLayout
+          android:id="@+id/tabLayout"
+          android:layout_width="match_parent"
+          android:layout_height="?actionBarSize"
+          android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
+          android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
+          />
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:background="@drawable/big_card_bg"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
+        android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/appBarLayout"
         >
-      <com.roughike.bottombar.BottomBar
-          android:id="@+id/bottomBar"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:layout_gravity="left|start"
-          app:bb_tabXmlResource="@xml/tabs_repository"
-          app:bb_tabletMode="true"
-          app:bb_activeTabColor="@color/white"
-          app:bb_inActiveTabColor="@color/white"
-          app:bb_activeTabAlpha="1"
-          app:bb_inActiveTabAlpha="0.8"
-          />
       <FrameLayout
           android:id="@+id/content"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           />
+    </FrameLayout>
 
-    </LinearLayout>
-
-  </FrameLayout>
+  </RelativeLayout>
 </FrameLayout>
