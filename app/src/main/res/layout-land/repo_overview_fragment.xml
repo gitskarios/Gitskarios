@@ -20,32 +20,4 @@
       <include layout="@layout/repo_overview_numbers"/>
     </LinearLayout>
   </ScrollView>
-
-  <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      >
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
-      <ProgressBar
-          android:id="@+id/htmlLoading"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal|top"
-          />
-
-      <WebView
-          android:id="@+id/htmlContentView"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/gapMedium"
-          android:padding="@dimen/gapMedium"
-          />
-    </FrameLayout>
-  </ScrollView>
 </LinearLayout>

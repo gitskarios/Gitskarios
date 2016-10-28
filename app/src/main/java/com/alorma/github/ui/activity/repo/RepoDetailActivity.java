@@ -3,6 +3,9 @@ package com.alorma.github.ui.activity.repo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -121,11 +124,11 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
   private void setupTabs() {
 
-    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home).setText(""), true);
-    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_file).setText(""), false);
-    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_issue_opened).setText(""), false);
-    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_git_pull_request).setText(""), false);
-    tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_person).setText(""), false);
+    tabLayout.addTab(getTab(R.drawable.ic_home, R.string.repo_detail_home), true);
+    tabLayout.addTab(getTab(R.drawable.ic_file, R.string.repo_detail_readme), false);
+    tabLayout.addTab(getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues), false);
+    tabLayout.addTab(getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls), false);
+    tabLayout.addTab(getTab(R.drawable.ic_person, R.string.repo_detail_contributors), false);
 
     tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
@@ -159,6 +162,20 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
       }
     });
+
+    setFragment(repoAboutFragment);
+  }
+
+  @NonNull
+  private TabLayout.Tab getTab(@DrawableRes int drawable, @StringRes int text) {
+    boolean tabletMode = getResources().getBoolean(R.bool.md_is_tablet);
+    TabLayout.Tab tab = tabLayout.newTab();
+    if (tabletMode) {
+      tab.setText(text);
+    } else {
+      tab.setIcon(drawable).setText("");
+    }
+    return tab;
   }
 
   private void setFragment(Fragment fragment) {

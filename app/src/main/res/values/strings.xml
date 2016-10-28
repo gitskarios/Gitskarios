@@ -329,4 +329,9 @@
   <string name="download_zip_archive">Download zip</string>
   <string name="download_tar_archive">Download tar</string>
   <string name="content_fragment_title">Content</string>
+  <string name="repo_detail_home">HOME</string>
+  <string name="repo_detail_readme">README</string>
+  <string name="repo_detail_issues">ISSUES</string>
+  <string name="repo_detail_pulls">PULL REQUESTS</string>
+  <string name="repo_detail_contributors">CONTRIBUTORS</string>
 </resources>
