@@ -3,14 +3,17 @@ package com.alorma.github.ui.activity.repo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
@@ -18,28 +21,14 @@ import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.presenter.RepositoryPresenter;
-import com.alorma.github.sdk.bean.dto.response.UserType;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.ForksActivity;
-import com.alorma.github.ui.activity.OrganizationActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-import com.alorma.github.ui.fragment.detail.repo.BackManager;
-import com.alorma.github.ui.fragment.detail.repo.BranchManager;
-import com.alorma.github.ui.view.UserAvatarView;
-import com.alorma.github.utils.AttributesUtils;
-import com.alorma.github.utils.TimeUtils;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.iconics.typeface.IIcon;
-import com.mikepenz.octicons_typeface_library.Octicons;
-import com.varunest.sparkbutton.SparkButton;
-import core.User;
 import core.repositories.Repo;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.util.List;
 import javax.inject.Inject;
 
-public class RepoAboutFragment extends BaseFragment implements BranchManager, BackManager, com.alorma.github.presenter.View<Repo> {
+public class RepoAboutFragment extends BaseFragment implements RepositoryPresenter.RepositoryView {
 
   private static final int EDIT_REPO = 464;
   private static final String REPO_INFO = "REPO_INFO";
@@ -48,21 +37,22 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
 
   private RepoInfo repoInfo;
   private Repo currentRepo;
-  private UserAvatarView profileIcon;
 
+  @BindView(R.id.recycler) RecyclerView recyclerView;
+
+  /*
+  private UserAvatarView profileIcon;
   private SparkButton starredPlaceholder;
   private TextView starredTextView;
-
   private SparkButton watchedPlaceholder;
   private TextView watchedTextView;
-
   private SparkButton forkedPlaceholder;
   private TextView forkedTextView;
-
   private TextView authorName;
   private View fork;
   private TextView forkOfTextView;
   private TextView createdAtTextView;
+  */
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -115,6 +105,11 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    ButterKnife.bind(this, view);
+
+    buildRecyclerView();
+    /*
 
     View author = view.findViewById(R.id.author);
     profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
@@ -171,9 +166,22 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
         }
       }
     });
+    */
 
     loadArguments();
     presenter.execute(repoInfo);
+  }
+
+  private void buildRecyclerView() {
+    RecyclerView.LayoutManager layoutManager = null;
+    boolean isTablet = getResources().getBoolean(R.bool.md_is_tablet);
+    if (isTablet) {
+      layoutManager = new GridLayoutManager(getActivity(), 2);
+    } else {
+      layoutManager = new LinearLayoutManager(getActivity());
+    }
+
+    recyclerView.setLayoutManager(layoutManager);
   }
 
   protected void loadArguments() {
@@ -392,89 +400,6 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
      */
   }
 
-  private void setData() {
-    if (getActivity() != null) {
-      if (this.currentRepo != null) {
-        User owner = this.currentRepo.owner;
-        profileIcon.setUser(owner);
-        authorName.setText(owner.getLogin());
-
-        forkedPlaceholder.setChecked(this.currentRepo.parent != null);
-
-        if (this.currentRepo.parent != null) {
-          fork.setVisibility(View.VISIBLE);
-          forkOfTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_repo_forked, 24), null, null, null);
-          forkOfTextView.setText(String.format("%s/%s", this.currentRepo.parent.owner.getLogin(), this.currentRepo.parent.name));
-        }
-
-        createdAtTextView.setCompoundDrawables(getIcon(Octicons.Icon.oct_clock, 24), null, null, null);
-        createdAtTextView.setText(TimeUtils.getDateToText(getActivity(), this.currentRepo.getCreatedAt(), R.string.created_at));
-
-        changeStarView();
-        changeWatchView();
-
-        setStarsCount(currentRepo.getStargazersCount());
-
-        setWatchersCount(currentRepo.getSubscribersCount());
-
-        forkedTextView.setText(String.valueOf(placeHolderNum(this.currentRepo.forks_count)));
-      }
-    }
-  }
-
-  private void setStarsCount(int stargazers_count) {
-    starredTextView.setText(String.valueOf(placeHolderNum(stargazers_count)));
-  }
-
-  private void setWatchersCount(int subscribers_count) {
-    watchedTextView.setText(String.valueOf(placeHolderNum(subscribers_count)));
-  }
-
-  private String placeHolderNum(int value) {
-    NumberFormat decimalFormat = new DecimalFormat();
-    return decimalFormat.format(value);
-  }
-
-  private IconicsDrawable getIcon(IIcon icon, int sizeDp) {
-    return new IconicsDrawable(getActivity(), icon).color(AttributesUtils.getAccentColor(getActivity())).sizeDp(sizeDp);
-  }
-
-  @Override
-  public void setCurrentBranch(String branch) {
-    if (getActivity() != null) {
-      repoInfo.branch = branch;
-    }
-  }
-
-  @Override
-  public boolean onBackPressed() {
-    return true;
-  }
-
-  private void changeStarStatus() {
-    //presenter.changeStarredState();
-  }
-
-  private void changeWatchedStatus() {
-    //presenter.changeWatchedState();
-  }
-
-  private void changeStarView() {
-    if (getActivity() != null) {
-      starredPlaceholder.setChecked(!currentRepo.isStarred());
-
-      starredPlaceholder.invalidate();
-    }
-  }
-
-  private void changeWatchView() {
-    if (getActivity() != null) {
-      watchedPlaceholder.setChecked(!currentRepo.isStarred());
-
-      watchedPlaceholder.invalidate();
-    }
-  }
-
   @Override
   public void showLoading() {
 
@@ -488,8 +413,25 @@ public class RepoAboutFragment extends BaseFragment implements BranchManager, Ba
   @Override
   public void onDataReceived(Repo data, boolean isFromPaginated) {
     this.currentRepo = data;
-    if (isAdded()) {
-      setData();
+  }
+
+  @Override
+  public void onRepositoryItemsReceived(List<RepoItem> items) {
+    RepositoryItemAdapter adapter = new RepositoryItemAdapter(getActivity().getLayoutInflater());
+    recyclerView.setAdapter(adapter);
+    adapter.setCallback(this::onRepoItemSelected);
+    adapter.addAll(items);
+  }
+
+  private void onRepoItemSelected(RepoItem item) {
+    switch (item.getId()) {
+      case R.id.repo_about_item_owner:
+        Intent launcherIntent = ProfileActivity.createLauncherIntent(getContext(), item.getContent());
+        startActivity(launcherIntent);
+        break;
+      default:
+
+        break;
     }
   }
 

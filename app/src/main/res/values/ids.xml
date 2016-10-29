@@ -72,5 +72,9 @@
         type="id"/>
   <item name="tab_releases"
         type="id"/>
+  <item name="repo_about_item_description"
+        type="id"/>
+  <item name="repo_about_item_owner"
+        type="id"/>
 
 </resources>

@@ -61,7 +61,7 @@ public class UniversalImageLoaderUtils {
     return bitmap;
   }
 
-  public static void loadUserAvatar(final ImageView imageView, User actor) {
+  public static void loadUserAvatar(final ImageView imageView, String actor, String avatarUrl) {
     final int defaultProfileColor = AttributesUtils.getPrimaryColor(imageView.getContext());
 
     int avatarSize = imageView.getResources().getDimensionPixelOffset(R.dimen.avatar_size);
@@ -70,7 +70,7 @@ public class UniversalImageLoaderUtils {
       avatarSize = Math.min(imageView.getWidth(), imageView.getHeight());
     }
 
-    if (!TextUtils.isEmpty(actor.getLogin())) {
+    if (!TextUtils.isEmpty(actor)) {
       ColorGenerator generator = ColorGenerator.MATERIAL;
 
       TextDrawable drawable = TextDrawable.builder()
@@ -78,11 +78,9 @@ public class UniversalImageLoaderUtils {
           .width(avatarSize)
           .height(avatarSize)
           .endConfig()
-          .buildRound(actor.getLogin().substring(0, 1), generator.getColor(actor.getLogin().substring(0, 1)));
+          .buildRound(actor.substring(0, 1), generator.getColor(actor.substring(0, 1)));
       imageView.setImageDrawable(drawable);
     }
-
-    String avatarUrl = actor.getAvatar();
 
     ImageLoader.getInstance().cancelDisplayTask(imageView);
     DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
@@ -118,7 +116,11 @@ public class UniversalImageLoaderUtils {
     });
   }
 
-  public static void loadUserAvatarSquare(final ImageView imageView, User actor) {
+  public static void loadUserAvatar(final ImageView imageView, User actor) {
+    loadUserAvatar(imageView, actor.getLogin(), actor.getAvatar());
+  }
+
+  public static void loadUserAvatarSquare(final ImageView imageView, String actor, String avatarUrl) {
     final int defaultProfileColor = AttributesUtils.getPrimaryColor(imageView.getContext());
 
     int avatarSize = imageView.getResources().getDimensionPixelOffset(R.dimen.avatar_size);
@@ -127,7 +129,7 @@ public class UniversalImageLoaderUtils {
       avatarSize = Math.min(imageView.getWidth(), imageView.getHeight());
     }
 
-    if (!TextUtils.isEmpty(actor.getLogin())) {
+    if (!TextUtils.isEmpty(actor)) {
       ColorGenerator generator = ColorGenerator.MATERIAL;
 
       TextDrawable drawable = TextDrawable.builder()
@@ -135,11 +137,9 @@ public class UniversalImageLoaderUtils {
           .width(avatarSize)
           .height(avatarSize)
           .endConfig()
-          .buildRect(actor.getLogin().substring(0, 1), generator.getColor(actor.getLogin().substring(0, 1)));
+          .buildRect(actor.substring(0, 1), generator.getColor(actor.substring(0, 1)));
       imageView.setImageDrawable(drawable);
     }
-
-    String avatarUrl = actor.getAvatar();
 
     ImageLoader.getInstance().cancelDisplayTask(imageView);
     DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
@@ -178,5 +178,9 @@ public class UniversalImageLoaderUtils {
 
       }
     });
+  }
+
+  public static void loadUserAvatarSquare(final ImageView imageView, User actor) {
+    loadUserAvatarSquare(imageView, actor.getLogin(), actor.getAvatar());
   }
 }

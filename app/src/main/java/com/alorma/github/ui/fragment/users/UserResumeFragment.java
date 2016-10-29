@@ -25,9 +25,6 @@ import core.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by bernat.borras on 13/12/15.
- */
 public class UserResumeFragment extends BaseFragment implements TitleProvider {
 
   ViewGroup cardAbout;

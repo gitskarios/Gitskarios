@@ -58,6 +58,8 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
   private static final String USER = "USER";
   private static final String ACCOUNT = "ACCOUNT";
   private static final String AUTHENTICATED_USER = "AUTHENTICATED_USER";
+  private static final String USER_LOGIN = "USER_LOGIN";
+
   @BindView(R.id.coordinator) CoordinatorLayout coordinatorLayout;
   @BindView(R.id.appbarLayout) AppBarLayout appBarLayout;
   @BindView(R.id.toolbar) Toolbar toolbar;
@@ -92,6 +94,19 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       if (user.getLogin() != null) {
         extras.putBoolean(AUTHENTICATED_USER, user.getLogin().equalsIgnoreCase(settings.getUserName()));
       }
+    }
+    Intent intent = new Intent(context, ProfileActivity.class);
+    intent.putExtras(extras);
+    return intent;
+  }
+
+  public static Intent createLauncherIntent(Context context, String user) {
+    Bundle extras = new Bundle();
+    if (user != null) {
+      extras.putString(USER_LOGIN, user);
+
+      StoreCredentials settings = new StoreCredentials(context);
+      extras.putBoolean(AUTHENTICATED_USER, user.equalsIgnoreCase(settings.getUserName()));
     }
     Intent intent = new Intent(context, ProfileActivity.class);
     intent.putExtras(extras);
@@ -154,12 +169,15 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
           avatar = AccountsHelper.getUserAvatar(this, selectedAccount);
           login = new AccountUtils().getNameFromAccount(selectedAccount.name);
           name = AccountsHelper.getUserName(this, selectedAccount);
-        }
-        if (getIntent().getExtras().containsKey(USER)) {
+        } else if (getIntent().getExtras().containsKey(USER)) {
           user = getIntent().getParcelableExtra(USER);
           avatar = user.getAvatar();
           login = user.getLogin();
           name = user.getName();
+        } else if (getIntent().getExtras().containsKey(USER_LOGIN)) {
+          login = getIntent().getStringExtra(USER_LOGIN);
+          user = new User();
+          user.setLogin(login);
         }
       }
 
@@ -209,22 +227,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
       Observable.combineLatest(requestClient.subscribeOn(Schedulers.io()), organizations, (user1, organizations1) -> {
         user1.setOrganizationsNum(organizations1);
         return user1;
-      }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(User user) {
-          onUserLoaded(user);
-        }
-      });
+      }).observeOn(AndroidSchedulers.mainThread()).subscribe(this::onUserLoaded, Throwable::printStackTrace);
     }
   }
 
@@ -261,8 +264,7 @@ public class ProfileActivity extends PeopleThemeActivity implements UserResumeFr
 
       StoreCredentials settings = new StoreCredentials(this);
 
-      if (user != null && !settings.getUserName().equals(user.getLogin())
-          && UserType.User.name().equals(user.getType())) {
+      if (user != null && !settings.getUserName().equals(user.getLogin()) && UserType.User.name().equals(user.getType())) {
         MenuItem item;
         if (followingUser) {
           item = menu.add(0, R.id.action_menu_unfollow_user, 0, R.string.action_menu_unfollow_user);

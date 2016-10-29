@@ -1,16 +1,12 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:fitsSystemWindows="true"
+             android:orientation="vertical"
     >
-
-  <LinearLayout
+  <android.support.v7.widget.RecyclerView
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical"
-      >
-
-    <include layout="@layout/repo_overview_numbers"/>
-  </LinearLayout>
-</ScrollView>
+      android:layout_height="wrap_content"
+      android:id="@id/recycler"
+      />
+</FrameLayout>
