@@ -76,5 +76,7 @@
         type="id"/>
   <item name="repo_about_item_owner"
         type="id"/>
+  <item name="repo_about_item_default_branch"
+        type="id"/>
 
 </resources>

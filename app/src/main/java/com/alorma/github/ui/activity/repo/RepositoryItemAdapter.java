@@ -24,11 +24,9 @@ public class RepositoryItemAdapter extends RecyclerArrayAdapter<RepoItem, Reposi
   @Override
   public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
     switch (viewType) {
-      /*
       case EXPANDABLE_ITEM:
         return new ExpandableViewHolder(getInflater().inflate(R.layout.repo_about_item_expandable, parent, false));
       case DEFAULT_ITEM:
-      */
       default:
         return new SimpleViewHolder(getInflater().inflate(R.layout.repo_about_item_simple, parent, false));
     }
@@ -45,6 +43,27 @@ public class RepositoryItemAdapter extends RecyclerArrayAdapter<RepoItem, Reposi
       return EXPANDABLE_ITEM;
     }
     return DEFAULT_ITEM;
+  }
+
+  public class ExpandableViewHolder extends Holder {
+    @BindView(R.id.image) ImageView image;
+    @BindView(R.id.text) TextView text;
+    @BindView(R.id.expandable_icon) ImageView expandableIcon;
+
+    public ExpandableViewHolder(View itemView) {
+      super(itemView);
+      ButterKnife.bind(this, itemView);
+    }
+
+    @Override
+    public void populate(RepoItem repoItem) {
+      if (repoItem.getAvatar() == null) {
+        image.setImageResource(repoItem.getIcon());
+      } else {
+        UniversalImageLoaderUtils.loadUserAvatar(image, repoItem.getContent(), repoItem.getAvatar());
+      }
+      text.setText(repoItem.getContent());
+    }
   }
 
   public class SimpleViewHolder extends Holder {

@@ -1,5 +1,6 @@
 package com.alorma.github.presenter;
 
+import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -53,29 +54,41 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
 
       observable = observable.doOnNext(repo -> repoGenericRepository.save(repoInfo, repo));
 
-      observable.map(repo -> {
-        List<RepoItem> repoItems = new ArrayList<>();
-
-        if (repo.description != null) {
-          repoItems.add(new RepoItem().withId(R.id.repo_about_item_description)
-              .withContent(repo.description)
-              .withExpandable(true)
-              .withIcon(R.drawable.ic_quote));
-        }
-
-        User owner = repo.getOwner();
-        if (owner != null) {
-          repoItems.add(new RepoItem().withId(R.id.repo_about_item_owner).withContent(owner.getLogin()).withAvatar(owner.getAvatar()));
-        }
-
-        return new Pair<>(repo, repoItems);
-      }).subscribeOn(ioScheduler).observeOn(mainScheduler).subscribe(repoListPair -> {
-        getView().onDataReceived(repoListPair.first, false);
-        if (getView() instanceof RepositoryView) {
-          ((RepositoryView) getView()).onRepositoryItemsReceived(repoListPair.second);
-        }
-      }, getView()::showError);
+      observable.map(repo -> new Pair<>(repo, getRepoItems(repo)))
+          .subscribeOn(ioScheduler)
+          .observeOn(mainScheduler)
+          .subscribe(repoListPair -> {
+            getView().onDataReceived(repoListPair.first, false);
+            if (getView() instanceof RepositoryView) {
+              ((RepositoryView) getView()).onRepositoryItemsReceived(repoListPair.second);
+            }
+          }, getView()::showError);
     }
+  }
+
+  @NonNull
+  private List<RepoItem> getRepoItems(Repo repo) {
+    List<RepoItem> repoItems = new ArrayList<>();
+
+    if (repo.description != null) {
+      repoItems.add(new RepoItem().withId(R.id.repo_about_item_description)
+          .withContent(repo.description)
+          .withExpandable(true)
+          .withIcon(R.drawable.ic_quote));
+    }
+
+    User owner = repo.getOwner();
+    if (owner != null) {
+      repoItems.add(new RepoItem().withId(R.id.repo_about_item_owner).withContent(owner.getLogin()).withAvatar(owner.getAvatar()));
+    }
+
+    if (repo.getDefaultBranch() != null) {
+      repoItems.add(new RepoItem().withIcon(R.id.repo_about_item_default_branch)
+          .withContent(repo.getDefaultBranch())
+          .withExpandable(repo.getBranches() != null && repo.getBranches().size() > 1)
+          .withIcon(R.drawable.ic_git_branch));
+    }
+    return repoItems;
   }
 
   public interface RepositoryView extends View<Repo> {
