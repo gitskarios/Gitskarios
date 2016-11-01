@@ -449,7 +449,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   }
 
   private void openBranchCode(Branch branch) {
-    Intent intent = RepositorySourceActivity.launcherIntent(getContext(), branch);
+    Intent intent = RepositorySourceActivity.launcherIntent(getContext(), currentRepo, branch);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     startActivity(intent);
   }

@@ -63,4 +63,9 @@ public class Branch implements Parcelable {
       return new Branch[size];
     }
   };
+
+  @Override
+  public String toString() {
+    return name;
+  }
 }
