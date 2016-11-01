@@ -1,17 +1,21 @@
 package com.alorma.github.ui.activity.repo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ListPopupWindow;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.R;
@@ -22,13 +26,13 @@ import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.ProfileActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import core.repositories.Branch;
 import core.repositories.Repo;
 import java.util.List;
 import javax.inject.Inject;
 
-public class RepoAboutFragment extends BaseFragment implements RepositoryPresenter.RepositoryView {
+public class RepoAboutFragment extends BaseFragment implements com.alorma.github.presenter.View<Repo> {
 
   private static final int EDIT_REPO = 464;
   private static final String REPO_INFO = "REPO_INFO";
@@ -38,21 +42,11 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
   private RepoInfo repoInfo;
   private Repo currentRepo;
 
-  @BindView(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.repoDescriptionTextView) TextView repoDescriptionTextView;
 
-  /*
-  private UserAvatarView profileIcon;
-  private SparkButton starredPlaceholder;
-  private TextView starredTextView;
-  private SparkButton watchedPlaceholder;
-  private TextView watchedTextView;
-  private SparkButton forkedPlaceholder;
-  private TextView forkedTextView;
-  private TextView authorName;
-  private View fork;
-  private TextView forkOfTextView;
-  private TextView createdAtTextView;
-  */
+  @BindView(R.id.repoDetailBranchesLayout) View repoDetailBranchesLayout;
+  @BindView(R.id.repoDefaultBranchTextView) TextView repoDefaultBranchTextView;
+  @BindView(R.id.repoDefaultBranchExpandableIcon) ImageView repoDefaultBranchExpandableIcon;
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -108,7 +102,6 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
 
     ButterKnife.bind(this, view);
 
-    buildRecyclerView();
     /*
 
     View author = view.findViewById(R.id.author);
@@ -170,18 +163,6 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
 
     loadArguments();
     presenter.execute(repoInfo);
-  }
-
-  private void buildRecyclerView() {
-    RecyclerView.LayoutManager layoutManager = null;
-    boolean isTablet = getResources().getBoolean(R.bool.md_is_tablet);
-    if (isTablet) {
-      layoutManager = new GridLayoutManager(getActivity(), 2);
-    } else {
-      layoutManager = new LinearLayoutManager(getActivity());
-    }
-
-    recyclerView.setLayoutManager(layoutManager);
   }
 
   protected void loadArguments() {
@@ -411,32 +392,73 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
   }
 
   @Override
-  public void onDataReceived(Repo data, boolean isFromPaginated) {
-    this.currentRepo = data;
+  public void onDataReceived(Repo repo, boolean isFromPaginated) {
+    this.currentRepo = repo;
+
+    populateDescription(repo.getDescription(), repo.getHomepage());
+    populateBranches(repo.getDefaultBranch(), repo.getBranches());
   }
 
-  @Override
-  public void onRepositoryItemsReceived(List<RepoItem> items) {
-    RepositoryItemAdapter adapter = new RepositoryItemAdapter(getActivity().getLayoutInflater());
-    recyclerView.setAdapter(adapter);
-    adapter.setCallback(this::onRepoItemSelected);
-    adapter.addAll(items);
+  private void populateDescription(String description, String homepage) {
+    if (!TextUtils.isEmpty(description) && !TextUtils.isEmpty(homepage)) {
+      repoDescriptionTextView.setText(description + " - " + homepage);
+    } else if (!TextUtils.isEmpty(description)) {
+      repoDescriptionTextView.setText(description);
+    } else if (!TextUtils.isEmpty(homepage)) {
+      repoDescriptionTextView.setText(homepage);
+    } else {
+      repoDescriptionTextView.setVisibility(View.GONE);
+    }
   }
 
-  private void onRepoItemSelected(RepoItem item) {
-    switch (item.getId()) {
-      case R.id.repo_about_item_owner:
-        Intent launcherIntent = ProfileActivity.createLauncherIntent(getContext(), item.getContent());
-        startActivity(launcherIntent);
-        break;
-      default:
+  private void populateBranches(String defaultBranch, List<Branch> branches) {
+    if (!TextUtils.isEmpty(defaultBranch)) {
+      repoDetailBranchesLayout.setVisibility(View.VISIBLE);
+      repoDefaultBranchTextView.setText(defaultBranch);
 
-        break;
+      if (branches != null && branches.size() > 1) {
+        repoDefaultBranchExpandableIcon.setVisibility(View.VISIBLE);
+        repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(branches));
+      } else {
+        repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
+      }
+    } else {
+      repoDetailBranchesLayout.setVisibility(View.GONE);
+    }
+  }
+
+  private void showBranchSelector(List<Branch> branches) {
+    if (branches.size() > 1) {
+      // TODO Show max to 5 branches, or "open all branches"
+      ListPopupWindow listPopupWindow = new ListPopupWindow(getContext());
+      BranchesAdpter branchesAdpter = new BranchesAdpter(getContext());
+      branchesAdpter.addAll(branches);
+      listPopupWindow.setAdapter(branchesAdpter);
+      listPopupWindow.setAnchorView(repoDefaultBranchTextView);
+      listPopupWindow.show();
     }
   }
 
   @Override
   public void showError(Throwable throwable) {
 
+  }
+
+  private class BranchesAdpter extends ArrayAdapter<Branch> {
+    private final LayoutInflater inflater;
+
+    public BranchesAdpter(Context context) {
+      super(context, 0);
+      inflater = LayoutInflater.from(context);
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+      View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+      TextView text = (TextView) view.findViewById(android.R.id.text1);
+      text.setText(getItem(position).name);
+      return view;
+    }
   }
 }

@@ -1,7 +1,6 @@
 package com.alorma.github.presenter;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
@@ -54,15 +53,7 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
 
       observable = observable.doOnNext(repo -> repoGenericRepository.save(repoInfo, repo));
 
-      observable.map(repo -> new Pair<>(repo, getRepoItems(repo)))
-          .subscribeOn(ioScheduler)
-          .observeOn(mainScheduler)
-          .subscribe(repoListPair -> {
-            getView().onDataReceived(repoListPair.first, false);
-            if (getView() instanceof RepositoryView) {
-              ((RepositoryView) getView()).onRepositoryItemsReceived(repoListPair.second);
-            }
-          }, getView()::showError);
+      subscribe(observable.map(SdkItem::new), false);
     }
   }
 
@@ -89,9 +80,5 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
           .withIcon(R.drawable.ic_git_branch));
     }
     return repoItems;
-  }
-
-  public interface RepositoryView extends View<Repo> {
-    void onRepositoryItemsReceived(List<RepoItem> items);
   }
 }
