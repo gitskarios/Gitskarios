@@ -14,7 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -43,14 +45,16 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @Inject RepositoryPresenter presenter;
 
   private RepoInfo repoInfo;
-  private Repo currentRepo;
 
   @BindView(R.id.repoDescriptionTextView) TextView repoDescriptionTextView;
 
   @BindView(R.id.repoDetailBranchesLayout) View repoDetailBranchesLayout;
   @BindView(R.id.repoDefaultBranchTextView) TextView repoDefaultBranchTextView;
   @BindView(R.id.repoDefaultBranchInfo) TextView repoDefaultBranchInfo;
+  @BindView(R.id.repoDefaultBranchCodeButton) Button repoDefaultBranchCodeButton;
   @BindView(R.id.repoDefaultBranchExpandableIcon) ImageView repoDefaultBranchExpandableIcon;
+
+  private Repo currentRepo;
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -398,7 +402,6 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @Override
   public void onDataReceived(Repo repo, boolean isFromPaginated) {
     this.currentRepo = repo;
-
     populateDescription(repo.getDescription(), repo.getHomepage());
     populateBranches(repo.getDefaultBranchObject(), repo.getBranches());
   }
@@ -422,6 +425,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
       String timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
       String time = getResources().getString(R.string.commit_time_ago, defaultBranch.name, timeAgoString);
       repoDefaultBranchInfo.setText(Html.fromHtml(time));
+      repoDefaultBranchCodeButton.setOnClickListener(v -> openBranchCode(defaultBranch));
 
       if (branches != null) {
         List<Branch> visibleBranches = new ArrayList<>();
@@ -432,7 +436,9 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
         }
         if (visibleBranches.size() > 1) {
           repoDefaultBranchExpandableIcon.setVisibility(View.VISIBLE);
-          repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(branches));
+          repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(visibleBranches));
+        } else {
+          repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
         }
       } else {
         repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
@@ -440,6 +446,12 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     } else {
       repoDetailBranchesLayout.setVisibility(View.GONE);
     }
+  }
+
+  private void openBranchCode(Branch branch) {
+    Intent intent = RepositorySourceActivity.launcherIntent(getContext(), branch);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(intent);
   }
 
   private void showBranchSelector(List<Branch> branches) {
@@ -450,6 +462,10 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
       branchesAdpter.addAll(branches);
       listPopupWindow.setAdapter(branchesAdpter);
       listPopupWindow.setAnchorView(repoDefaultBranchTextView);
+      listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+        openBranchCode(branches.get(position));
+        listPopupWindow.dismiss();
+      });
       listPopupWindow.show();
     }
   }

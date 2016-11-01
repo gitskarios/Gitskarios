@@ -1,9 +1,11 @@
 package core.repositories;
 
+import android.os.Parcel;
 import com.alorma.github.sdk.bean.dto.response.GitCommitVerification;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import core.ShaUrl;
 import core.User;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Commit extends ShaUrl {
@@ -130,4 +132,50 @@ public class Commit extends ShaUrl {
     }
     return false;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    super.writeToParcel(dest, flags);
+    dest.writeParcelable(this.commit, flags);
+    dest.writeParcelable(this.author, flags);
+    dest.writeTypedList(this.parents);
+    dest.writeParcelable(this.stats, flags);
+    dest.writeParcelable(this.committer, flags);
+    dest.writeString(this.message);
+    dest.writeByte(this.distinct ? (byte) 1 : (byte) 0);
+    dest.writeInt(this.days);
+    dest.writeInt(this.comment_count);
+    dest.writeParcelable(this.combinedStatus, flags);
+  }
+
+  protected Commit(Parcel in) {
+    super(in);
+    this.commit = in.readParcelable(GitCommit.class.getClassLoader());
+    this.author = in.readParcelable(User.class.getClassLoader());
+    this.parents = in.createTypedArrayList(ShaUrl.CREATOR);
+    this.stats = in.readParcelable(GitChangeStatus.class.getClassLoader());
+    this.committer = in.readParcelable(User.class.getClassLoader());
+    this.message = in.readString();
+    this.distinct = in.readByte() != 0;
+    this.days = in.readInt();
+    this.comment_count = in.readInt();
+    this.combinedStatus = in.readParcelable(GithubStatusResponse.class.getClassLoader());
+  }
+
+  public static final Creator<Commit> CREATOR = new Creator<Commit>() {
+    @Override
+    public Commit createFromParcel(Parcel source) {
+      return new Commit(source);
+    }
+
+    @Override
+    public Commit[] newArray(int size) {
+      return new Commit[size];
+    }
+  };
 }

@@ -59,6 +59,7 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
           }).toList();
 
       observable = Observable.zip(observable, branchObservable, (repo, branches) -> {
+        repo.setBranches(branches);
         if (branches != null && branches.size() > 0) {
           if (repo.defaultBranch == null) {
             repo.defaultBranch = branches.get(0).name;
