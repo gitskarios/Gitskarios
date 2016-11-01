@@ -62,11 +62,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
   }
 
   @Override
-  protected void injectComponents(ApplicationComponent applicationComponent) {
-
-  }
-
-  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_repo_detail);

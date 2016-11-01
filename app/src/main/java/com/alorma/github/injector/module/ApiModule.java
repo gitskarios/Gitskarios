@@ -1,5 +1,6 @@
 package com.alorma.github.injector.module;
 
+import com.alorma.github.injector.named.ComputationScheduler;
 import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.Token;
@@ -29,17 +30,30 @@ import rx.schedulers.Schedulers;
     }
   }
 
-  @Provides @PerActivity @MainScheduler
-  Scheduler provideMainScheduler(){
+  @Provides
+  @PerActivity
+  @MainScheduler
+  Scheduler provideMainScheduler() {
     return AndroidSchedulers.mainThread();
   }
 
-  @Provides @PerActivity @IOScheduler
-  Scheduler provideIOScheduler(){
+  @Provides
+  @PerActivity
+  @IOScheduler
+  Scheduler provideIOScheduler() {
     return Schedulers.io();
   }
 
-  @Provides @PerActivity @Token
+  @Provides
+  @PerActivity
+  @ComputationScheduler
+  Scheduler provideComputationScheduler() {
+    return Schedulers.computation();
+  }
+
+  @Provides
+  @PerActivity
+  @Token
   String getToken() {
     return TokenProvider.getInstance().getToken();
   }

@@ -17,6 +17,7 @@ import com.alorma.github.injector.component.repository.tags.RepositoryTagsCompon
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.CommitDetailModule;
 import com.alorma.github.injector.module.NavigationModule;
+import com.alorma.github.injector.module.RepositorySourceModule;
 import com.alorma.github.injector.module.UserNotificationsModule;
 import com.alorma.github.injector.module.issues.IssueDetailModule;
 import com.alorma.github.injector.module.issues.IssueLabelsModule;
@@ -36,14 +37,11 @@ import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.ui.actions.AssigneeAction;
-
 import core.ApiClient;
 import dagger.Component;
 import rx.Scheduler;
 
-@PerActivity
-@Component(dependencies = ApplicationComponent.class, modules = ApiModule.class)
-public interface ApiComponent {
+@PerActivity @Component(dependencies = ApplicationComponent.class, modules = ApiModule.class) public interface ApiComponent {
 
   ApiClient getApiClient();
 
@@ -75,6 +73,8 @@ public interface ApiComponent {
   WatchedRepositoriesComponent plus(WatchedRepositoriesModule module);
 
   IssueDetailComponent plus(IssueDetailModule module);
+
+  RepositorySourceComponent plus(RepositorySourceModule module);
 
   UserNotificationsComponent plus(UserNotificationsModule module);
 
