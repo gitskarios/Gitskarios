@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.ListPopupWindow;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,9 +33,11 @@ import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.utils.RoundedBackgroundSpan;
 import com.alorma.github.utils.TimeUtils;
 import core.repositories.Branch;
 import core.repositories.Repo;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -45,6 +50,10 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @Inject RepositoryPresenter presenter;
 
   private RepoInfo repoInfo;
+
+  @BindView(R.id.repoDetailNumbersLayout) View repoDetailNumbersLayout;
+  @BindView(R.id.repoDetailNumbersStar) Button repoDetailNumbersStar;
+  @BindView(R.id.repoDetailNumbersWatch) Button repoDetailNumbersWatch;
 
   @BindView(R.id.repoDescriptionTextView) TextView repoDescriptionTextView;
 
@@ -402,8 +411,13 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @Override
   public void onDataReceived(Repo repo, boolean isFromPaginated) {
     this.currentRepo = repo;
+
+    repoDetailNumbersLayout.setVisibility(View.VISIBLE);
+
     populateDescription(repo.getDescription(), repo.getHomepage());
     populateBranches(repo.getDefaultBranchObject(), repo.getBranches());
+    populateStar(repo.isStarred(), repo.getSubscribersCount());
+    populateWatch(repo.isWatched(), repo.getWatchersCount());
   }
 
   private void populateDescription(String description, String homepage) {
@@ -458,9 +472,9 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     if (branches.size() > 1) {
       // TODO Show max to 5 branches, or "open all branches"
       ListPopupWindow listPopupWindow = new ListPopupWindow(getContext());
-      BranchesAdpter branchesAdpter = new BranchesAdpter(getContext());
-      branchesAdpter.addAll(branches);
-      listPopupWindow.setAdapter(branchesAdpter);
+      BranchesAdapter branchesAdapter = new BranchesAdapter(getContext());
+      branchesAdapter.addAll(branches);
+      listPopupWindow.setAdapter(branchesAdapter);
       listPopupWindow.setAnchorView(repoDefaultBranchTextView);
       listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
         openBranchCode(branches.get(position));
@@ -470,15 +484,71 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     }
   }
 
+  private void populateStar(boolean starred, int stargazersCount) {
+    if (stargazersCount > 0) {
+      @StringRes int text = R.string.repo_detail_starred;
+      if (starred) {
+        text = R.string.repo_detail_no_starred;
+      }
+      String format = " " + DecimalFormat.getNumberInstance().format(stargazersCount) + " ";
+      String textStr = getString(text, format);
+
+      int backgroundColor = ContextCompat.getColor(getContext(), R.color.md_grey_400);
+      int textColor = ContextCompat.getColor(getContext(), R.color.md_grey_800);
+      float radius = getResources().getDimension(R.dimen.materialize_baseline_grid_small);
+
+      RoundedBackgroundSpan span = new RoundedBackgroundSpan(backgroundColor, textColor, radius);
+
+      SpannableStringBuilder builder = new SpannableStringBuilder(textStr);
+      builder.setSpan(span, textStr.indexOf(format), textStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+      repoDetailNumbersStar.setText(builder);
+    } else {
+      @StringRes int text = R.string.repo_detail_starred_no_number;
+      if (starred) {
+        text = R.string.repo_detail_no_starred_no_number;
+      }
+      repoDetailNumbersStar.setText(text);
+    }
+  }
+
+  private void populateWatch(boolean watched, int watchedCount) {
+    if (watchedCount > 0) {
+      @StringRes int text = R.string.repo_detail_watched;
+      if (watched) {
+        text = R.string.repo_detail_no_watched;
+      }
+      String format = " " + DecimalFormat.getNumberInstance().format(watchedCount) + " ";
+      String textStr = getString(text, format);
+
+      int backgroundColor = ContextCompat.getColor(getContext(), R.color.md_grey_400);
+      int textColor = ContextCompat.getColor(getContext(), R.color.md_grey_800);
+      float radius = getResources().getDimension(R.dimen.materialize_baseline_grid_small);
+
+      RoundedBackgroundSpan span = new RoundedBackgroundSpan(backgroundColor, textColor, radius);
+
+      SpannableStringBuilder builder = new SpannableStringBuilder(textStr);
+      builder.setSpan(span, textStr.indexOf(format), textStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+      repoDetailNumbersWatch.setText(builder);
+    } else {
+      @StringRes int text = R.string.repo_detail_watched_no_number;
+      if (watched) {
+        text = R.string.repo_detail_no_watched_no_number;
+      }
+      repoDetailNumbersWatch.setText(text);
+    }
+  }
+
   @Override
   public void showError(Throwable throwable) {
 
   }
 
-  private class BranchesAdpter extends ArrayAdapter<Branch> {
+  private class BranchesAdapter extends ArrayAdapter<Branch> {
     private final LayoutInflater inflater;
 
-    public BranchesAdpter(Context context) {
+    public BranchesAdapter(Context context) {
       super(context, 0);
       inflater = LayoutInflater.from(context);
     }

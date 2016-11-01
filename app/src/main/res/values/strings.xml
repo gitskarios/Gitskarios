@@ -335,4 +335,12 @@
   <string name="repo_detail_pulls">PULL REQUESTS</string>
   <string name="repo_detail_contributors">CONTRIBUTORS</string>
   <string name="commit_time_ago"><![CDATA[Last commit on <b>%1$s</b> %2$s]]></string>
+  <string name="repo_detail_starred">Unstar %1$s</string>
+  <string name="repo_detail_no_starred">Star %1$s</string>
+  <string name="repo_detail_watched">Unwatch %1$s</string>
+  <string name="repo_detail_no_watched">Watch %1$s</string>
+  <string name="repo_detail_starred_no_number">Unstar</string>
+  <string name="repo_detail_no_starred_no_number">Star</string>
+  <string name="repo_detail_watched_no_number">Unwatch</string>
+  <string name="repo_detail_no_watched_no_number">Watch</string>
 </resources>

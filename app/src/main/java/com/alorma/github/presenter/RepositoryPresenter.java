@@ -41,7 +41,7 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
 
       Observable<Repo> observable = Observable.zip(repoObservable, starredObservable, watchedObservable, (repo, starred, watched) -> {
         repo.setStarred(starred);
-        repo.setWatched(starred);
+        repo.setWatched(watched);
         return repo;
       });
 

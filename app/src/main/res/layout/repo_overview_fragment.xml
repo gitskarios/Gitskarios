@@ -13,16 +13,57 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
       >
-
     <TextView
         android:id="@+id/repoDescriptionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
         tools:text="Repo description"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:autoLink="all"
         />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@drawable/countorn"
+        android:id="@+id/repoDetailNumbersLayout"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:divider="@drawable/divider_vertical"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        >
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/repoDetailNumbersStar"
+          android:layout_weight="1"
+          android:background="?selectableItemBackground"
+          android:paddingLeft="16dp"
+          android:drawablePadding="-16dp"
+          android:drawableLeft="@drawable/ic_star_vector"
+          tools:text="@string/repo_detail_no_starred"
+          android:textSize="12sp"
+          android:textAllCaps="false"
+          />
+
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/repoDetailNumbersWatch"
+          android:layout_weight="1"
+          android:background="?selectableItemBackground"
+          android:paddingLeft="16dp"
+          android:drawablePadding="-16dp"
+          android:drawableLeft="@drawable/ic_eye"
+          android:text="UNWATCH"
+          android:textSize="12sp"
+          android:textAllCaps="false"
+          />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
