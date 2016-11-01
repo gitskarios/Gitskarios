@@ -38,4 +38,16 @@ public class TimeUtils {
 
     return p.format(new Date(dt.getMillis()));
   }
+
+  public static String getLongTimeAgoString(String date) {
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.UTC);
+
+    DateTime dt = formatter.parseDateTime(date);
+    PrettyTime p = new PrettyTime();
+
+    p.removeUnit(Millennium.class);
+    p.removeUnit(Century.class);
+
+    return p.format(new Date(dt.getMillis()));
+  }
 }

@@ -1,23 +1,10 @@
 package com.alorma.github.sdk.bean.dto.response.events.payload;
 
-import android.os.Parcel;
 import android.os.Parcelable;
-import com.alorma.github.sdk.bean.dto.response.Commit;
+import core.repositories.Commit;
 import java.util.List;
 
-/**
- * Created by Bernat on 03/10/2014.
- */
 public class PushEventPayload extends GithubEventPayload implements Parcelable {
-  public static final Creator<PushEventPayload> CREATOR = new Creator<PushEventPayload>() {
-    public PushEventPayload createFromParcel(Parcel source) {
-      return new PushEventPayload(source);
-    }
-
-    public PushEventPayload[] newArray(int size) {
-      return new PushEventPayload[size];
-    }
-  };
   public long push_id;
   public int size;
   public int distinct_size;
@@ -29,31 +16,59 @@ public class PushEventPayload extends GithubEventPayload implements Parcelable {
   public PushEventPayload() {
   }
 
-  protected PushEventPayload(Parcel in) {
-    super(in);
-    this.push_id = in.readLong();
-    this.size = in.readInt();
-    this.distinct_size = in.readInt();
-    this.ref = in.readString();
-    this.head = in.readString();
-    this.before = in.readString();
-    this.commits = in.createTypedArrayList(Commit.CREATOR);
+  public long getPush_id() {
+    return push_id;
   }
 
-  @Override
-  public int describeContents() {
-    return 0;
+  public void setPush_id(long push_id) {
+    this.push_id = push_id;
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    super.writeToParcel(dest, flags);
-    dest.writeLong(this.push_id);
-    dest.writeInt(this.size);
-    dest.writeInt(this.distinct_size);
-    dest.writeString(this.ref);
-    dest.writeString(this.head);
-    dest.writeString(this.before);
-    dest.writeTypedList(commits);
+  public int getSize() {
+    return size;
+  }
+
+  public void setSize(int size) {
+    this.size = size;
+  }
+
+  public int getDistinct_size() {
+    return distinct_size;
+  }
+
+  public void setDistinct_size(int distinct_size) {
+    this.distinct_size = distinct_size;
+  }
+
+  public String getRef() {
+    return ref;
+  }
+
+  public void setRef(String ref) {
+    this.ref = ref;
+  }
+
+  public String getHead() {
+    return head;
+  }
+
+  public void setHead(String head) {
+    this.head = head;
+  }
+
+  public String getBefore() {
+    return before;
+  }
+
+  public void setBefore(String before) {
+    this.before = before;
+  }
+
+  public List<Commit> getCommits() {
+    return commits;
+  }
+
+  public void setCommits(List<Commit> commits) {
+    this.commits = commits;
   }
 }

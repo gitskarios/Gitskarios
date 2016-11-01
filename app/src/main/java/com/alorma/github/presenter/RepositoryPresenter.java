@@ -1,18 +1,14 @@
 package com.alorma.github.presenter;
 
-import android.support.annotation.NonNull;
-import com.alorma.github.R;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
 import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
-import com.alorma.github.ui.activity.repo.RepoItem;
-import core.User;
 import core.datasource.SdkItem;
 import core.repositories.Branch;
+import core.repositories.Commit;
 import core.repositories.Repo;
 import core.repository.GenericRepository;
-import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.Scheduler;
@@ -20,10 +16,15 @@ import rx.Scheduler;
 public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Repo>> {
 
   private final GenericRepository<RepoInfo, Repo> repoGenericRepository;
+  private final GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository;
+  private final GenericRepository<CommitInfo, Commit> commitGenericRepository;
 
-  public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler, GenericRepository<RepoInfo, Repo> repoGenericRepository) {
+  public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler, GenericRepository<RepoInfo, Repo> repoGenericRepository,
+      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository) {
     super(mainScheduler, ioScheduler, null);
     this.repoGenericRepository = repoGenericRepository;
+    this.branchesGenericRepository = branchesGenericRepository;
+    this.commitGenericRepository = commitGenericRepository;
   }
 
   @Override
@@ -32,53 +33,51 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
 
       getView().showLoading();
 
-      Observable<Repo> repoObservable = repoGenericRepository.execute(new SdkItem<>(repoInfo)).map(SdkItem::getK);
-      Observable<List<Branch>> branchesClient = new GetRepoBranchesClient(repoInfo).observable();
+      SdkItem<RepoInfo> repoInfoSdkItem = new SdkItem<>(repoInfo);
+
+      Observable<Repo> repoObservable = repoGenericRepository.execute(repoInfoSdkItem).map(SdkItem::getK);
       Observable<Boolean> starredObservable = new CheckRepoStarredClient(repoInfo.owner, repoInfo.name).observable();
       Observable<Boolean> watchedObservable = new CheckRepoWatchedClient(repoInfo.owner, repoInfo.name).observable();
 
-      Observable<Repo> observable =
-          Observable.zip(repoObservable, branchesClient, starredObservable, watchedObservable, (repo, branches, starred, watched) -> {
+      Observable<Repo> observable = Observable.zip(repoObservable, starredObservable, watchedObservable, (repo, starred, watched) -> {
+        repo.setStarred(starred);
+        repo.setWatched(starred);
+        return repo;
+      });
 
-            repo.branches = branches;
-            if (repo.defaultBranch == null && branches != null && branches.size() > 0) {
-              repo.defaultBranch = branches.get(0).name;
+      Observable<List<Branch>> branchObservable =
+          branchesGenericRepository.execute(repoInfoSdkItem).map(SdkItem::getK).flatMap(Observable::from).flatMap((branch) -> {
+            CommitInfo info = new CommitInfo();
+            info.repoInfo = repoInfo;
+            info.sha = branch.commit.sha;
+            return commitGenericRepository.execute(new SdkItem<>(info)).map(SdkItem::getK);
+          }, (branch, commit) -> {
+            if (branch.commit.sha.equals(commit.sha)) {
+              branch.commit = commit;
             }
+            return branch;
+          }).toList();
 
-            repo.setStarred(starred);
-            repo.setWatched(starred);
+      observable = Observable.zip(observable, branchObservable, (repo, branches) -> {
+        if (branches != null && branches.size() > 0) {
+          if (repo.defaultBranch == null) {
+            repo.defaultBranch = branches.get(0).name;
+            repo.defaultBranchObject = branches.get(0);
+          } else {
+            for (Branch branch : branches) {
+              if (repo.defaultBranch.equals(branch.name)) {
+                repo.defaultBranchObject = branch;
+              }
+            }
+          }
+        }
 
-            return repo;
-          });
+        return repo;
+      });
 
       observable = observable.doOnNext(repo -> repoGenericRepository.save(repoInfo, repo));
 
       subscribe(observable.map(SdkItem::new), false);
     }
-  }
-
-  @NonNull
-  private List<RepoItem> getRepoItems(Repo repo) {
-    List<RepoItem> repoItems = new ArrayList<>();
-
-    if (repo.description != null) {
-      repoItems.add(new RepoItem().withId(R.id.repo_about_item_description)
-          .withContent(repo.description)
-          .withExpandable(true)
-          .withIcon(R.drawable.ic_quote));
-    }
-
-    User owner = repo.getOwner();
-    if (owner != null) {
-      repoItems.add(new RepoItem().withId(R.id.repo_about_item_owner).withContent(owner.getLogin()).withAvatar(owner.getAvatar()));
-    }
-
-    if (repo.getDefaultBranch() != null) {
-      repoItems.add(new RepoItem().withIcon(R.id.repo_about_item_default_branch)
-          .withContent(repo.getDefaultBranch())
-          .withExpandable(repo.getBranches() != null && repo.getBranches().size() > 1)
-          .withIcon(R.drawable.ic_git_branch));
-    }
-    return repoItems;
   }
 }

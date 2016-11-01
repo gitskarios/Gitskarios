@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GitCommitVerification;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -28,6 +27,7 @@ import com.alorma.github.utils.TextUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import core.User;
+import core.repositories.Commit;
 import java.io.IOException;
 
 public class PullRequestCommitsReviewCommentsAdapter

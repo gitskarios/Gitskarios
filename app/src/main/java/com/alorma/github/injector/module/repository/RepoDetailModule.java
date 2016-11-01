@@ -5,16 +5,22 @@ import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.AbstractCacheDataSource;
 import com.alorma.github.presenter.RepositoryPresenter;
+import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
+import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
 import core.datasource.CacheDataSource;
 import core.datasource.CloudDataSource;
 import core.datasource.RestWrapper;
 import core.datasource.SdkItem;
+import core.repositories.Branch;
+import core.repositories.Commit;
 import core.repositories.Repo;
 import core.repository.GenericRepository;
 import dagger.Module;
 import dagger.Provides;
+import java.util.List;
 import rx.Observable;
 import rx.Scheduler;
 
@@ -44,14 +50,49 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
+  CloudDataSource<RepoInfo, List<Branch>> providesBranchesApi() {
+    return new CloudDataSource<RepoInfo, List<Branch>>(null) {
+      @Override
+      protected Observable<SdkItem<List<Branch>>> execute(SdkItem<RepoInfo> request, RestWrapper service) {
+        return new GetRepoBranchesClient(request.getK()).observable().map(SdkItem::new);
+      }
+    };
+  }
+
+  @Provides
+  @PerActivity
+  CloudDataSource<CommitInfo, core.repositories.Commit> providesCommitApi() {
+    return new CloudDataSource<CommitInfo, Commit>(null) {
+      @Override
+      protected Observable<SdkItem<Commit>> execute(SdkItem<CommitInfo> request, RestWrapper service) {
+        return new GetSingleCommitClient(request.getK()).observable().map(SdkItem::new);
+      }
+    };
+  }
+
+  @Provides
+  @PerActivity
   GenericRepository<RepoInfo, Repo> providesRepository(CacheDataSource<RepoInfo, Repo> cache, CloudDataSource<RepoInfo, Repo> api) {
     return new GenericRepository<>(cache, api);
   }
 
   @Provides
   @PerActivity
+  GenericRepository<RepoInfo, List<Branch>> providesBranchesRepository(CloudDataSource<RepoInfo, List<Branch>> api) {
+    return new GenericRepository<>(null, api);
+  }
+
+  @Provides
+  @PerActivity
+  GenericRepository<CommitInfo, Commit> providesCommitRepository(CloudDataSource<CommitInfo, Commit> api) {
+    return new GenericRepository<>(null, api);
+  }
+
+  @Provides
+  @PerActivity
   RepositoryPresenter provideRepositoryPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-      GenericRepository<RepoInfo, Repo> repoGenericRepository) {
-    return new RepositoryPresenter(mainScheduler, ioScheduler, repoGenericRepository);
+      GenericRepository<RepoInfo, Repo> repoGenericRepository, GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository,
+      GenericRepository<CommitInfo, Commit> commitGenericRepository) {
+    return new RepositoryPresenter(mainScheduler, ioScheduler, repoGenericRepository, branchesGenericRepository, commitGenericRepository);
   }
 }

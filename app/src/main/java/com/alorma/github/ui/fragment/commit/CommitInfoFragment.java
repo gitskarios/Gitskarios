@@ -1,8 +1,8 @@
 package com.alorma.github.ui.fragment.commit;
 
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import core.repositories.Commit;
 
 public class CommitInfoFragment extends BaseFragment {
 

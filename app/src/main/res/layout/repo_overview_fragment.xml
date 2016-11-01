@@ -92,9 +92,11 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="48dp"
-          android:text="Last commit on "
+          android:id="@+id/repoDefaultBranchInfo"
+          tools:text="Last commit on "
           android:gravity="center_vertical"
           android:paddingLeft="22dp"
+          android:paddingRight="22dp"
           />
 
       <LinearLayout
@@ -122,7 +124,7 @@
             android:background="?selectableItemBackground"
             android:paddingLeft="16dp"
             android:drawablePadding="-16dp"
-            android:drawableLeft="@drawable/ic_search"
+            android:drawableLeft="@drawable/ic_search_selector"
             android:text="Jump to file"
             android:textSize="12sp"
             android:enabled="false"

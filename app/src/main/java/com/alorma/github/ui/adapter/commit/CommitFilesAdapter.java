@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.view.DiffTextView;
 import com.alorma.github.utils.TextUtils;
+import core.repositories.CommitFile;
 import java.io.IOException;
 
 public class CommitFilesAdapter extends RecyclerArrayAdapter<CommitFile, CommitFilesAdapter.FileVH> {
@@ -29,7 +29,7 @@ public class CommitFilesAdapter extends RecyclerArrayAdapter<CommitFile, CommitF
 
   @Override
   protected void onBindViewHolder(FileVH holder, CommitFile commitFile) {
-    String fileName = commitFile.getFileName();
+    String fileName = commitFile.getFilename();
 
     if (fileName != null) {
       holder.fileName.setText(fileName);

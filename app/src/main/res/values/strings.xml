@@ -334,4 +334,5 @@
   <string name="repo_detail_issues">ISSUES</string>
   <string name="repo_detail_pulls">PULL REQUESTS</string>
   <string name="repo_detail_contributors">CONTRIBUTORS</string>
+  <string name="commit_time_ago"><![CDATA[Last commit on <b>%1$s</b> %2$s]]></string>
 </resources>

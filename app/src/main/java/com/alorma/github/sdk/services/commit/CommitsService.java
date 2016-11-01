@@ -1,8 +1,8 @@
 package com.alorma.github.sdk.services.commit;
 
 import com.alorma.github.sdk.bean.dto.request.CommitCommentRequest;
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.CommitComment;
+import core.repositories.Commit;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -12,9 +12,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public interface CommitsService {
 
   //Async

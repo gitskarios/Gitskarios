@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.ListPopupWindow;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,8 +28,10 @@ import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.presenter.RepositoryPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.utils.TimeUtils;
 import core.repositories.Branch;
 import core.repositories.Repo;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -46,6 +49,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
   @BindView(R.id.repoDetailBranchesLayout) View repoDetailBranchesLayout;
   @BindView(R.id.repoDefaultBranchTextView) TextView repoDefaultBranchTextView;
+  @BindView(R.id.repoDefaultBranchInfo) TextView repoDefaultBranchInfo;
   @BindView(R.id.repoDefaultBranchExpandableIcon) ImageView repoDefaultBranchExpandableIcon;
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
@@ -396,7 +400,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     this.currentRepo = repo;
 
     populateDescription(repo.getDescription(), repo.getHomepage());
-    populateBranches(repo.getDefaultBranch(), repo.getBranches());
+    populateBranches(repo.getDefaultBranchObject(), repo.getBranches());
   }
 
   private void populateDescription(String description, String homepage) {
@@ -411,14 +415,25 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     }
   }
 
-  private void populateBranches(String defaultBranch, List<Branch> branches) {
-    if (!TextUtils.isEmpty(defaultBranch)) {
+  private void populateBranches(Branch defaultBranch, List<Branch> branches) {
+    if (defaultBranch != null) {
       repoDetailBranchesLayout.setVisibility(View.VISIBLE);
-      repoDefaultBranchTextView.setText(defaultBranch);
+      repoDefaultBranchTextView.setText(defaultBranch.name);
+      String timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
+      String time = getResources().getString(R.string.commit_time_ago, defaultBranch.name, timeAgoString);
+      repoDefaultBranchInfo.setText(Html.fromHtml(time));
 
-      if (branches != null && branches.size() > 1) {
-        repoDefaultBranchExpandableIcon.setVisibility(View.VISIBLE);
-        repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(branches));
+      if (branches != null) {
+        List<Branch> visibleBranches = new ArrayList<>();
+        for (Branch branch : branches) {
+          if (!defaultBranch.name.equals(branch.name)) {
+            visibleBranches.add(branch);
+          }
+        }
+        if (visibleBranches.size() > 1) {
+          repoDefaultBranchExpandableIcon.setVisibility(View.VISIBLE);
+          repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(branches));
+        }
       } else {
         repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
       }

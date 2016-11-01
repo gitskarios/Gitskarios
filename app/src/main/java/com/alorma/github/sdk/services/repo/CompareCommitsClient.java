@@ -6,9 +6,6 @@ import com.alorma.github.sdk.services.client.GithubClient;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by a557114 on 31/07/2015.
- */
 public class CompareCommitsClient extends GithubClient<CompareCommit> {
   private final RepoInfo repoInfo;
   private final String base;

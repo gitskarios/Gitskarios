@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.FileInfo;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.services.pullrequest.GetPullRequestFiles;
@@ -17,6 +16,7 @@ import com.alorma.github.ui.activity.FileActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.gitskarios.core.Pair;
+import core.repositories.CommitFile;
 import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -98,7 +98,7 @@ public class PullRequestFilesListFragment extends BaseFragment implements Commit
   public void onFileRequest(CommitFile file) {
     FileInfo info = new FileInfo();
     info.content = file.patch;
-    info.name = file.getFileName();
+    info.name = file.getFilename();
     info.repoInfo = issueInfo.repoInfo;
 
     Intent launcherIntent = FileActivity.createLauncherIntent(getActivity(), info);

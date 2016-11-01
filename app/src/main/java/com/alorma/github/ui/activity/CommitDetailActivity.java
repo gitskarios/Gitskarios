@@ -10,7 +10,8 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
@@ -19,8 +20,6 @@ import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.CommitDetailModule;
 import com.alorma.github.presenter.CommitInfoPresenter;
-import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.GithubStatus;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.FileInfo;
@@ -30,14 +29,12 @@ import com.alorma.github.ui.adapter.commit.GithubStatusAdapter;
 import com.alorma.github.ui.fragment.commit.CommitFilesFragment;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.ItemSingleLineAvatar;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import core.User;
+import core.repositories.Commit;
+import core.repositories.CommitFile;
+import core.repositories.GitCommitFiles;
+import java.util.List;
+import javax.inject.Inject;
 
 public class CommitDetailActivity extends RepositoryThemeActivity
     implements CommitFilesAdapter.OnFileRequestListener, com.alorma.github.presenter.View<Commit> {
@@ -98,21 +95,15 @@ public class CommitDetailActivity extends RepositoryThemeActivity
   protected void injectComponents(ApplicationComponent applicationComponent) {
     super.injectComponents(applicationComponent);
 
-    ApiComponent apiComponent =
-            DaggerApiComponent.builder()
-                    .applicationComponent(applicationComponent)
-                    .apiModule(new ApiModule())
-                    .build();
-    apiComponent
-            .plus(new CommitDetailModule())
-            .inject(this);
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.plus(new CommitDetailModule()).inject(this);
   }
 
   @Override
   public void onFileRequest(CommitFile file) {
     FileInfo info = new FileInfo();
     info.content = file.patch;
-    info.name = file.getFileName();
+    info.name = file.getFilename();
     Intent launcherIntent = FileActivity.createLauncherIntent(this, info);
     startActivity(launcherIntent);
   }
@@ -142,11 +133,13 @@ public class CommitDetailActivity extends RepositoryThemeActivity
     }
 
     if (commit.files != null) {
-      showFiles(commit.files);
+      showFiles(commit.getFiles());
     }
 
-    if (commit.combinedStatus != null && commit.combinedStatus.statuses != null && !commit.combinedStatus.statuses.isEmpty()) {
-      showStatus(commit.combinedStatus.statuses);
+    if (commit.getCombinedStatus() != null
+        && commit.getCombinedStatus().statuses != null
+        && !commit.getCombinedStatus().statuses.isEmpty()) {
+      showStatus(commit.getCombinedStatus().statuses);
     } else {
       statusesTextView.setVisibility(View.GONE);
       statusesRecyclerView.setVisibility(View.GONE);
@@ -186,7 +179,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
     });
   }
 
-  private void showFiles(List<CommitFile> files) {
+  private void showFiles(GitCommitFiles files) {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setNestedScrollingEnabled(false);
 

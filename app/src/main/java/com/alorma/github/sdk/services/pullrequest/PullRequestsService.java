@@ -1,11 +1,11 @@
 package com.alorma.github.sdk.services.pullrequest;
 
 import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
-import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.dto.response.MergeButtonResponse;
 import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.alorma.github.sdk.bean.dto.response.ReviewComment;
+import core.repositories.Commit;
+import core.repositories.CommitFile;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -15,9 +15,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-/**
- * Created by Bernat on 22/08/2014.
- */
 public interface PullRequestsService {
 
   //Async

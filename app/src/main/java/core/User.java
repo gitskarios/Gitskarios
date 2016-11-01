@@ -292,4 +292,8 @@ public class User extends ShaUrl implements Parcelable {
   public void setPublic_gists(int public_gists) {
     this.public_gists = public_gists;
   }
+
+  public String getDate() {
+    return date;
+  }
 }

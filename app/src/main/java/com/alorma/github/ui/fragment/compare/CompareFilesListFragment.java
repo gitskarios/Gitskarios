@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Commit;
-import com.alorma.github.sdk.bean.dto.response.CommitFile;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.CommitDetailActivity;
@@ -19,11 +17,10 @@ import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.repositories.Commit;
+import core.repositories.CommitFile;
 import java.util.List;
 
-/**
- * Created by Bernat on 07/09/2014.
- */
 public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAdapter> implements CommitsAdapter.CommitsAdapterListener {
 
   private static final String REPO_INFO = "REPO_INFO";

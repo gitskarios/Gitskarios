@@ -1,7 +1,7 @@
 package com.alorma.github.sdk.bean.issue;
 
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import core.User;
+import core.repositories.Commit;
 
 public class PullRequestStoryCommit implements IssueStoryDetail {
 

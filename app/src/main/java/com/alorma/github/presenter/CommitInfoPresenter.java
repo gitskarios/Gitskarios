@@ -1,15 +1,12 @@
 package com.alorma.github.presenter;
 
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.dto.response.GithubStatusResponse;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
 import com.alorma.github.sdk.services.repo.GetShaCombinedStatus;
-
+import core.repositories.Commit;
 import rx.Observable;
 import rx.Scheduler;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class CommitInfoPresenter extends BaseRxPresenter<CommitInfo, Commit, View<Commit>> {
 
@@ -28,7 +25,7 @@ public class CommitInfoPresenter extends BaseRxPresenter<CommitInfo, Commit, Vie
         .map(o -> o.first);
 
     Observable<Commit> zip = Observable.zip(singleCommitClient, shaCombinedStatus, (commit, status) -> {
-      commit.combinedStatus = status;
+      commit.setCombinedStatus(status);
       return commit;
     });
 

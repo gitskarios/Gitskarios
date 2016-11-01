@@ -27,8 +27,11 @@ public class Repo extends ShaUrl implements Parcelable {
   @SerializedName("gitUrl")
   public String gitUrl;
   public String language;
+
+  @Deprecated
   @SerializedName("default_branch")
   public String defaultBranch;
+
   @SerializedName("mirror_url")
   public String mirrorUrl;
   public String name;
@@ -62,6 +65,8 @@ public class Repo extends ShaUrl implements Parcelable {
 
   private Boolean starred;
   private Boolean watched;
+
+  public Branch defaultBranchObject;
 
   public Repo() {
     super();
@@ -173,6 +178,10 @@ public class Repo extends ShaUrl implements Parcelable {
 
   public String getDefaultBranch() {
     return defaultBranch;
+  }
+
+  public Branch getDefaultBranchObject() {
+    return defaultBranchObject;
   }
 
   public void setDefaultBranch(String defaultBranch) {

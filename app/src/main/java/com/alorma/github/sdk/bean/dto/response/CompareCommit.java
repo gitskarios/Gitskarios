@@ -1,10 +1,10 @@
 package com.alorma.github.sdk.bean.dto.response;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import core.repositories.Commit;
+import core.repositories.CommitFile;
 import java.util.List;
 
-public class CompareCommit implements Parcelable {
+public class CompareCommit {
 
   public String url;
   public String html_url;
@@ -23,53 +23,107 @@ public class CompareCommit implements Parcelable {
   public CompareCommit() {
   }
 
-  @Override
-  public int describeContents() {
-    return 0;
+  public String getUrl() {
+    return url;
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeString(this.url);
-    dest.writeString(this.html_url);
-    dest.writeString(this.permalink_url);
-    dest.writeString(this.diff_url);
-    dest.writeString(this.patch_url);
-    dest.writeParcelable(this.base_commit, flags);
-    dest.writeParcelable(this.merge_base_commit, flags);
-    dest.writeString(this.status);
-    dest.writeInt(this.ahead_by);
-    dest.writeInt(this.behind_by);
-    dest.writeInt(this.total_commits);
-    dest.writeTypedList(this.commits);
-    dest.writeTypedList(this.files);
+  public void setUrl(String url) {
+    this.url = url;
   }
 
-  protected CompareCommit(Parcel in) {
-    this.url = in.readString();
-    this.html_url = in.readString();
-    this.permalink_url = in.readString();
-    this.diff_url = in.readString();
-    this.patch_url = in.readString();
-    this.base_commit = in.readParcelable(Commit.class.getClassLoader());
-    this.merge_base_commit = in.readParcelable(Commit.class.getClassLoader());
-    this.status = in.readString();
-    this.ahead_by = in.readInt();
-    this.behind_by = in.readInt();
-    this.total_commits = in.readInt();
-    this.commits = in.createTypedArrayList(Commit.CREATOR);
-    this.files = in.createTypedArrayList(CommitFile.CREATOR);
+  public String getHtml_url() {
+    return html_url;
   }
 
-  public static final Parcelable.Creator<CompareCommit> CREATOR = new Parcelable.Creator<CompareCommit>() {
-    @Override
-    public CompareCommit createFromParcel(Parcel source) {
-      return new CompareCommit(source);
-    }
+  public void setHtml_url(String html_url) {
+    this.html_url = html_url;
+  }
 
-    @Override
-    public CompareCommit[] newArray(int size) {
-      return new CompareCommit[size];
-    }
-  };
+  public String getPermalink_url() {
+    return permalink_url;
+  }
+
+  public void setPermalink_url(String permalink_url) {
+    this.permalink_url = permalink_url;
+  }
+
+  public String getDiff_url() {
+    return diff_url;
+  }
+
+  public void setDiff_url(String diff_url) {
+    this.diff_url = diff_url;
+  }
+
+  public String getPatch_url() {
+    return patch_url;
+  }
+
+  public void setPatch_url(String patch_url) {
+    this.patch_url = patch_url;
+  }
+
+  public Commit getBase_commit() {
+    return base_commit;
+  }
+
+  public void setBase_commit(Commit base_commit) {
+    this.base_commit = base_commit;
+  }
+
+  public Commit getMerge_base_commit() {
+    return merge_base_commit;
+  }
+
+  public void setMerge_base_commit(Commit merge_base_commit) {
+    this.merge_base_commit = merge_base_commit;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public int getAhead_by() {
+    return ahead_by;
+  }
+
+  public void setAhead_by(int ahead_by) {
+    this.ahead_by = ahead_by;
+  }
+
+  public int getBehind_by() {
+    return behind_by;
+  }
+
+  public void setBehind_by(int behind_by) {
+    this.behind_by = behind_by;
+  }
+
+  public int getTotal_commits() {
+    return total_commits;
+  }
+
+  public void setTotal_commits(int total_commits) {
+    this.total_commits = total_commits;
+  }
+
+  public List<Commit> getCommits() {
+    return commits;
+  }
+
+  public void setCommits(List<Commit> commits) {
+    this.commits = commits;
+  }
+
+  public List<CommitFile> getFiles() {
+    return files;
+  }
+
+  public void setFiles(List<CommitFile> files) {
+    this.files = files;
+  }
 }

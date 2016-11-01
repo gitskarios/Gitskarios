@@ -1,8 +1,8 @@
 package com.alorma.github.sdk.services.commit;
 
-import com.alorma.github.sdk.bean.dto.response.Commit;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
+import core.repositories.Commit;
 import java.util.List;
 import retrofit.RestAdapter;
 
