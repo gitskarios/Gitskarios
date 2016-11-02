@@ -302,63 +302,6 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
     return dto;
   }
-
-  private void changeBranch() {
-    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(requestRepoInfo);
-    Observable<List<Branch>> apiObservable = repoBranchesClient.observable()
-        .subscribeOn(Schedulers.io())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnNext(branches -> {
-          if (currentRepo != null) {
-            if (currentRepo.branches != null) {
-              currentRepo.branches.addAll(branches);
-            } else {
-              currentRepo.branches = branches;
-            }
-            CacheWrapper.setRepository(currentRepo);
-          }
-        });
-
-    Observable<List<Branch>> memCacheObservable = Observable.create(new Observable.OnSubscribe<List<Branch>>() {
-      @Override
-      public void call(Subscriber<? super List<Branch>> subscriber) {
-        try {
-          if (!subscriber.isUnsubscribed()) {
-            if (currentRepo != null && currentRepo.branches != null) {
-              subscriber.onNext(currentRepo.branches);
-            }
-          }
-          subscriber.onCompleted();
-        } catch (Exception e) {
-          subscriber.onError(e);
-        }
-      }
-    });
-
-    Observable.concat(memCacheObservable, apiObservable).first().subscribe(new DialogBranchesSubscriber(this, requestRepoInfo) {
-      @Override
-      protected void onNoBranches() {
-
-      }
-
-      @Override
-      protected void onBranchSelected(String branch) {
-        requestRepoInfo.branch = branch;
-        if (currentRepo != null) {
-          currentRepo.setDefaultBranch(branch);
-        }
-        if (getSupportActionBar() != null) {
-          getSupportActionBar().setSubtitle(branch);
-        }
-        for (Fragment fragment : fragments) {
-          if (fragment instanceof BranchManager) {
-            ((BranchManager) fragment).setCurrentBranch(branch);
-          }
-        }
-      }
-    });
-  }
    */
 
   @Override
@@ -414,8 +357,8 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
     populateDescription(repo.getDescription(), repo.getHomepage());
     populateBranches(repo.getDefaultBranchObject(), repo.getBranches());
-    populateStar(repo.isStarred(), repo.getSubscribersCount());
-    populateWatch(repo.isWatched(), repo.getWatchersCount());
+    populateStar(repo.isStarred(), repo.getStargazersCount());
+    populateWatch(repo.isWatched(), repo.getSubscribersCount());
   }
 
   private void populateDescription(String description, String homepage) {
@@ -434,8 +377,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     if (defaultBranch != null) {
       repoDefaultBranchTextView.setText(defaultBranch.name);
       String timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
-      String time = getResources().getString(R.string.commit_time_ago, defaultBranch.commit.author.getLogin()
-          , timeAgoString);
+      String time = getResources().getString(R.string.commit_time_ago, defaultBranch.commit.author.getLogin(), timeAgoString);
       repoDefaultBranchInfo.setText(Html.fromHtml(time));
       repoDefaultBranchCodeButton.setOnClickListener(v -> openBranchCode(defaultBranch));
 
@@ -483,9 +425,9 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
   private void populateStar(boolean starred, int stargazersCount) {
     if (stargazersCount > 0) {
-      @StringRes int text = R.string.repo_detail_starred;
+      @StringRes int text = R.string.repo_detail_no_starred;
       if (starred) {
-        text = R.string.repo_detail_no_starred;
+        text = R.string.repo_detail_starred;
       }
       String format = " " + DecimalFormat.getNumberInstance().format(stargazersCount) + " ";
       String textStr = getString(text, format);
@@ -507,13 +449,15 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
       }
       repoDetailNumbersStar.setText(text);
     }
+
+    repoDetailNumbersStar.setOnClickListener(v -> presenter.toggleStar());
   }
 
   private void populateWatch(boolean watched, int watchedCount) {
     if (watchedCount > 0) {
-      @StringRes int text = R.string.repo_detail_watched;
+      @StringRes int text = R.string.repo_detail_no_watched;
       if (watched) {
-        text = R.string.repo_detail_no_watched;
+        text = R.string.repo_detail_watched;
       }
       String format = " " + DecimalFormat.getNumberInstance().format(watchedCount) + " ";
       String textStr = getString(text, format);
@@ -535,6 +479,8 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
       }
       repoDetailNumbersWatch.setText(text);
     }
+
+    repoDetailNumbersWatch.setOnClickListener(v -> presenter.toggleWatch());
   }
 
   @Override
