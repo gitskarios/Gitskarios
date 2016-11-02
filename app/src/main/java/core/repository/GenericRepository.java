@@ -16,8 +16,11 @@ public class GenericRepository<Request, Data> {
   }
 
   public Observable<SdkItem<Data>> execute(final SdkItem<Request> request) {
-    checkRequest(request);
+    return execute(request, false);
+  }
 
+  public Observable<SdkItem<Data>> execute(final SdkItem<Request> request, boolean refresh) {
+    checkRequest(request);
     Observable<SdkItem<Data>> cacheObs = Observable.empty();
     Observable<SdkItem<Data>> cloudObs = Observable.empty();
     if (cache != null) {
@@ -32,13 +35,16 @@ public class GenericRepository<Request, Data> {
     if (cloudObs == null) {
       cloudObs = Observable.empty();
     }
-    cloudObs =
-        cloudObs.onErrorResumeNext(fallbackApi() != null ? fallbackApi() : Observable.<SdkItem<Data>>empty()).doOnNext(dataSdkItem -> {
-          if (cache != null) {
-            cache.saveData(request, dataSdkItem);
-          }
-        });
-    return Observable.concat(cacheObs, cloudObs).first();
+    cloudObs = cloudObs.onErrorResumeNext(fallbackApi() != null ? fallbackApi() : Observable.empty()).doOnNext(dataSdkItem -> {
+      if (cache != null) {
+        cache.saveData(request, dataSdkItem);
+      }
+    });
+    if (refresh) {
+      return cloudObs;
+    } else {
+      return Observable.concat(cacheObs, cloudObs).first();
+    }
   }
 
   public void save(final Request request, Data dataSdkItem) {

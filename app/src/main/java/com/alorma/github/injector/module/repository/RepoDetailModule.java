@@ -17,6 +17,8 @@ import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Commit;
 import core.repositories.Repo;
+import core.repository.ChangeRepositoryStarRepository;
+import core.repository.ChangeRepositoryWatchRepository;
 import core.repository.GenericRepository;
 import dagger.Module;
 import dagger.Provides;
@@ -90,9 +92,23 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
+  ChangeRepositoryStarRepository provideChangeRepositoryStarRepository() {
+    return new ChangeRepositoryStarRepository();
+  }
+
+  @Provides
+  @PerActivity
+  ChangeRepositoryWatchRepository provideChangeRepositoryWatchRepository() {
+    return new ChangeRepositoryWatchRepository();
+  }
+
+  @Provides
+  @PerActivity
   RepositoryPresenter provideRepositoryPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
       GenericRepository<RepoInfo, Repo> repoGenericRepository, GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository,
-      GenericRepository<CommitInfo, Commit> commitGenericRepository) {
-    return new RepositoryPresenter(mainScheduler, ioScheduler, repoGenericRepository, branchesGenericRepository, commitGenericRepository);
+      GenericRepository<CommitInfo, Commit> commitGenericRepository, ChangeRepositoryStarRepository changeRepositoryStarRepository,
+      ChangeRepositoryWatchRepository changeRepositoryWatchRepository) {
+    return new RepositoryPresenter(mainScheduler, ioScheduler, repoGenericRepository, branchesGenericRepository, commitGenericRepository,
+        changeRepositoryStarRepository, changeRepositoryWatchRepository);
   }
 }
