@@ -412,8 +412,6 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   public void onDataReceived(Repo repo, boolean isFromPaginated) {
     this.currentRepo = repo;
 
-    repoDetailNumbersLayout.setVisibility(View.VISIBLE);
-
     populateDescription(repo.getDescription(), repo.getHomepage());
     populateBranches(repo.getDefaultBranchObject(), repo.getBranches());
     populateStar(repo.isStarred(), repo.getSubscribersCount());
@@ -434,10 +432,10 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
   private void populateBranches(Branch defaultBranch, List<Branch> branches) {
     if (defaultBranch != null) {
-      repoDetailBranchesLayout.setVisibility(View.VISIBLE);
       repoDefaultBranchTextView.setText(defaultBranch.name);
       String timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
-      String time = getResources().getString(R.string.commit_time_ago, defaultBranch.name, timeAgoString);
+      String time = getResources().getString(R.string.commit_time_ago, defaultBranch.commit.author.getLogin()
+          , timeAgoString);
       repoDefaultBranchInfo.setText(Html.fromHtml(time));
       repoDefaultBranchCodeButton.setOnClickListener(v -> openBranchCode(defaultBranch));
 
@@ -449,7 +447,6 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
           }
         }
         if (visibleBranches.size() > 1) {
-          repoDefaultBranchExpandableIcon.setVisibility(View.VISIBLE);
           repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(visibleBranches));
         } else {
           repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
