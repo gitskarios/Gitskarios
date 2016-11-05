@@ -59,6 +59,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        style="@style/repo_detail_button_bar"
+        >
+
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_weight="1"
+          android:id="@+id/repoDetailTagsCount"
+          android:drawableLeft="@drawable/ic_file_directory"
+          tools:text="@string/repo_detail_tags"
+          style="@style/repo_detail_button"
+          android:textAllCaps="false"
+          />
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_weight="1"
+          android:id="@+id/repoDetailLicense"
+          android:drawableLeft="@drawable/ic_law"
+          tools:text="MIT"
+          style="@style/repo_detail_button"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/repoDetailBranchesLayout"
         android:orientation="vertical"
         android:divider="@drawable/divider_horizontal"
@@ -221,36 +250,6 @@
           android:id="@+id/repoDefaultOpenReadme"
           android:text="Show README"
           android:textAllCaps="false"
-          style="@style/repo_detail_button"
-          />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="horizontal"
-        style="@style/repo_detail_button_bar"
-        >
-
-      <Button
-          android:layout_width="match_parent"
-          android:layout_height="48dp"
-          android:layout_weight="1"
-          android:id="@+id/repoDetailTagsCount"
-          android:drawableLeft="@drawable/ic_file_directory"
-          tools:text="@string/repo_detail_tags"
-          style="@style/repo_detail_button"
-          android:textAllCaps="false"
-          />
-      <Button
-          android:layout_width="match_parent"
-          android:layout_height="48dp"
-          android:layout_weight="1"
-          android:id="@+id/repoDetailLicense"
-          android:drawableLeft="@drawable/ic_law"
-          tools:text="MIT"
           style="@style/repo_detail_button"
           />
     </LinearLayout>
