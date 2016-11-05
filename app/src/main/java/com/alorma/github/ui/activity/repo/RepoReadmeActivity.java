@@ -25,6 +25,7 @@ public class RepoReadmeActivity extends RepositoryThemeActivity {
 
     RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
     if (repoInfo != null) {
+      setTitle(repoInfo.toString());
       RepoReadmeFragment fragment = RepoReadmeFragment.newInstance(repoInfo);
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.replace(R.id.content, fragment);

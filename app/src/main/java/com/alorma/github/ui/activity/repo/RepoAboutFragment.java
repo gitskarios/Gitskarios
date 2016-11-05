@@ -2,12 +2,16 @@ package com.alorma.github.ui.activity.repo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -33,8 +37,11 @@ import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.repository.RepoDetailModule;
 import com.alorma.github.presenter.repo.RepositoryPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.actions.ShareAction;
+import com.alorma.github.ui.actions.ViewInAction;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.RoundedBackgroundSpan;
+import com.alorma.github.utils.ShortcutUtils;
 import com.alorma.github.utils.TimeUtils;
 import core.repositories.Branch;
 import core.repositories.Repo;
@@ -45,7 +52,6 @@ import javax.inject.Inject;
 
 public class RepoAboutFragment extends BaseFragment implements com.alorma.github.presenter.View<Repo> {
 
-  private static final int EDIT_REPO = 464;
   private static final String REPO_INFO = "REPO_INFO";
 
   @Inject RepositoryPresenter presenter;
@@ -122,72 +128,13 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
     ButterKnife.bind(this, view);
 
-    /*
-
-    View author = view.findViewById(R.id.author);
-    profileIcon = (UserAvatarView) author.findViewById(R.id.profileIcon);
-    authorName = (TextView) author.findViewById(R.id.authorName);
-
-    fork = view.findViewById(R.id.fork);
-    forkOfTextView = (TextView) fork.findViewById(R.id.forkOf);
-
-    createdAtTextView = (TextView) view.findViewById(R.id.createdAt);
-
-    starredPlaceholder = (SparkButton) view.findViewById(R.id.starredPlaceholder);
-    starredTextView = (TextView) view.findViewById(R.id.starredTextView);
-
-    watchedPlaceholder = (SparkButton) view.findViewById(R.id.watchedPlaceHolder);
-    watchedTextView = (TextView) view.findViewById(R.id.watchedTextView);
-
-    forkedPlaceholder = (SparkButton) view.findViewById(R.id.forkedPlaceholder);
-    forkedTextView = (TextView) view.findViewById(R.id.forkedTextView);
-
-    starredPlaceholder.setEventListener((button, buttonState) -> changeStarStatus());
-    watchedPlaceholder.setEventListener((button, buttonState) -> changeWatchedStatus());
-    starredTextView.setOnClickListener(v -> changeStarStatus());
-    watchedTextView.setOnClickListener(v -> changeWatchedStatus());
-
-    forkedTextView.setOnClickListener(v -> {
-      if (repoInfo != null) {
-        Intent intent = ForksActivity.launchIntent(v.getContext(), repoInfo);
-        startActivity(intent);
-      }
-    });
-
-    fork.setOnClickListener(v -> {
-      if (currentRepo != null && currentRepo.parent != null) {
-        RepoInfo repoInfo1 = new RepoInfo();
-        repoInfo1.owner = currentRepo.parent.owner.getLogin();
-        repoInfo1.name = currentRepo.parent.name;
-        if (!TextUtils.isEmpty(currentRepo.getDefaultBranch())) {
-          repoInfo1.branch = currentRepo.getDefaultBranch();
-        }
-
-        Intent intent = RepoDetailActivity.createLauncherIntent(getActivity(), repoInfo1);
-        startActivity(intent);
-      }
-    });
-
-    author.setOnClickListener(v -> {
-      if (currentRepo != null && currentRepo.owner != null) {
-        if (currentRepo.owner.getType().equals(UserType.User.name())) {
-          Intent intent = ProfileActivity.createLauncherIntent(getActivity(), currentRepo.owner);
-          startActivity(intent);
-        } else if (currentRepo.owner.getType().equals(UserType.Organization.name())) {
-          Intent intent = OrganizationActivity.launchIntent(getActivity(), currentRepo.owner.getLogin());
-          startActivity(intent);
-        }
-      }
-    });
-    */
-
     loadArguments();
     presenter.execute(repoInfo);
   }
 
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+      repoInfo = getArguments().getParcelable(REPO_INFO);
     }
   }
 
@@ -195,17 +142,29 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
 
-    /*
-    getMenuInflater().inflate(R.menu.repo_detail_activity, menu);
-     */
+    inflater.inflate(R.menu.repo_detail, menu);
   }
 
   @Override
   public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
 
+    MenuItem shareItem = menu.findItem(R.id.share_repo);
+    if (shareItem != null) {
+      Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_share_mtrl_alpha);
+      shareItem.setIcon(icon);
+    }
+
+    MenuItem openItem = menu.findItem(R.id.action_open_in_browser);
+
+    if (openItem != null) {
+      Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.ic_globe);
+      drawable = DrawableCompat.wrap(drawable);
+      DrawableCompat.setTint(drawable, Color.WHITE);
+      openItem.setIcon(drawable);
+    }
+
     /*
-    if (menu != null) {
       if (currentRepo != null && currentRepo.permissions != null) {
         if (currentRepo.permissions.admin) {
           if (menu.findItem(R.id.action_manage_repo) == null) {
@@ -216,73 +175,31 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
           }
         }
       }
-
-      MenuItem item = menu.findItem(R.id.share_repo);
-
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha, getTheme()));
-      } else {
-        item.setIcon(getResources().getDrawable(R.drawable.ic_menu_share_mtrl_alpha));
-      }
-
-      MenuItem menuChangeBranch = menu.findItem(R.id.action_repo_change_branch);
-
-      if (menuChangeBranch != null) {
-        if (currentRepo != null && currentRepo.branches != null && currentRepo.branches.size() > 1) {
-          Drawable changeBranch = new IconicsDrawable(this, Octicons.Icon.oct_git_branch).actionBar().colorRes(R.color.white);
-
-          menuChangeBranch.setIcon(changeBranch);
-        } else {
-          menu.removeItem(R.id.action_repo_change_branch);
-        }
-      }
-    }
      */
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    /*
-
-   if (item.getItemId() == R.id.share_repo) {
-      if (currentRepo != null) {
+    if (currentRepo != null) {
+      if (item.getItemId() == R.id.share_repo) {
         String title = currentRepo.getFullName();
         String url = currentRepo.svn_url;
+        new ShareAction(getContext(), title, url).setType("Repository").execute();
+      } else if (item.getItemId() == R.id.action_open_in_browser) {
+        new ViewInAction(getContext(), currentRepo.getHtmlUrl()).setType("Repository").execute();
+      } else if (item.getItemId() == R.id.action_add_shortcut) {
+        ShortcutUtils.addShortcut(getContext(), repoInfo);
+      }
+    }
+    /*
 
-        new ShareAction(this, title, url).setType("Repository").execute();
-      }
-    } else if (item.getItemId() == R.id.action_open_in_browser) {
-      if (currentRepo != null) {
-        new ViewInAction(this, currentRepo.getHtmlUrl()).setType("Repository").execute();
-      }
-    } else if (item.getItemId() == R.id.action_repo_change_branch) {
-      changeBranch();
-    } else if (item.getItemId() == R.id.action_manage_repo) {
+   if (item.getItemId() == R.id.action_manage_repo) {
       if (currentRepo != null) {
         Intent intent = ManageRepositoryActivity.createIntent(this, requestRepoInfo, createRepoRequest());
         startActivityForResult(intent, EDIT_REPO);
       }
-    } else if (item.getItemId() == R.id.action_add_shortcut) {
-      ShortcutUtils.addShortcut(this, requestRepoInfo);
     } else if (item.getItemId() == R.id.action_subscribe_push) {
-      WebHookRequest webhook = new WebHookRequest();
-      webhook.name = "web";
-      webhook.active = true;
-      webhook.events = new String[] {
-          "issues"
-      };
-      webhook.config = new WebHookConfigRequest();
-      webhook.config.content_type = "json";
-      webhook.config.url = "https://cryptic-ravine-97684.herokuapp.com/message";
 
-      new AddWebHookClient(requestRepoInfo.owner, requestRepoInfo.name, webhook).observable()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(webHookResponse -> {
-            GcmTopicsHelper.registerInTopic(requestRepoInfo);
-          }, throwable -> {
-
-          });
     }
      */
     return super.onOptionsItemSelected(item);

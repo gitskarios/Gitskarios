@@ -10,9 +10,6 @@ import com.alorma.github.ui.activity.IssueDetailActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 
-/**
- * Created by a557114 on 02/09/2015.
- */
 public class ShortcutUtils {
 
   public static void addShortcut(Context context, RepoInfo repoInfo) {
