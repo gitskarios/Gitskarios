@@ -56,11 +56,10 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
           return users;
         })
         .subscribe(this::showUsers, throwable -> {
-          stopRefresh();
           if (getAdapter() == null || getAdapter().getItemCount() == 0) {
             setEmpty();
           }
-        }, this::stopRefresh);
+        });
   }
 
   private void showUsers(List<User> users) {

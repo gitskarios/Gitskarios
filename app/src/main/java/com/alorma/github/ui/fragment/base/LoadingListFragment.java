@@ -237,6 +237,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
 
   public void hideEmpty() {
     if (getContext() != null) {
+      stopRefresh();
       if (error_view != null) {
         error_view.setVisibility(View.GONE);
       }
