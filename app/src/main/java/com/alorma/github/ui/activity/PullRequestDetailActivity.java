@@ -150,10 +150,6 @@ public class PullRequestDetailActivity extends RepositoryThemeActivity
     ft.commit();
   }
 
-  private IconicsDrawable getBottomTabIcon(IIcon icon) {
-    return new IconicsDrawable(this).icon(icon).sizeDp(20);
-  }
-
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     menu.clear();

@@ -26,7 +26,6 @@ import com.alorma.github.sdk.bean.dto.request.EditIssueRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueTitleRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.MergeButtonRequest;
 import com.alorma.github.sdk.bean.dto.request.UpdateReferenceRequest;
-import com.alorma.github.sdk.bean.dto.response.GitReference;
 import com.alorma.github.sdk.bean.dto.response.Head;
 import com.alorma.github.sdk.bean.dto.response.Issue;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
@@ -259,29 +258,13 @@ public class PullRequestConversationFragment extends BaseFragment
 
   private void loadPullRequest() {
     PullRequestStoryLoader pullRequestStoryLoader = new PullRequestStoryLoader(issueInfo);
-    pullRequestStoryLoader.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<PullRequestStory>() {
-          @Override
-          public void onCompleted() {
-
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            showError();
-          }
-
-          @Override
-          public void onNext(PullRequestStory pullRequestStory) {
-            checkHeadBranchExist(pullRequestStory);
-            onResponseOk(pullRequestStory);
-          }
-        });
+    pullRequestStoryLoader.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(story -> {
+      checkHeadBranchExist(story);
+      onResponseOk(story);
+    }, this::showError);
   }
 
-  private void showError() {
+  private void showError(Throwable throwable) {
     MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
     builder.title(R.string.ups);
     builder.content(getString(R.string.issue_detail_error, issueInfo.toString()));
@@ -310,31 +293,26 @@ public class PullRequestConversationFragment extends BaseFragment
   }
 
   private void checkHeadBranchExist(PullRequestStory pullRequestStory) {
+    Head head = pullRequestStory.item.head;
+    if (head.repo != null) {
+      RepoInfo headRepoInfo = head.repo.toInfo();
+      GetRepoClient getRepoClient = new GetRepoClient(headRepoInfo);
+      GetReferenceClient referenceClient = new GetReferenceClient(headRepoInfo, head.ref);
+      getRepoClient.observable()
+          .flatMap((repo) -> {
+            if (repo.permissions != null) {
+              hasPushPermissionsToHead = repo.permissions.push;
+            }
 
-    RepoInfo headRepoInfo = pullRequestStory.item.head.repo.toInfo();
-    GetRepoClient getRepoClient = new GetRepoClient(headRepoInfo);
-    GetReferenceClient referenceClient = new GetReferenceClient(headRepoInfo, pullRequestStory.item.head.ref);
-    getRepoClient.observable().flatMap((repo) -> {
-      if (repo.permissions != null) {
-        hasPushPermissionsToHead = repo.permissions.push;
-      }
-
-      return referenceClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<GitReference>() {
-      @Override
-      public void onCompleted() {
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        notifyHeadOfAdapter(false);
-      }
-
-      @Override
-      public void onNext(GitReference reference) {
-        notifyHeadOfAdapter(true);
-      }
-    });
+            return referenceClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+          })
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(gitReference -> notifyHeadOfAdapter(true), throwable -> notifyHeadOfAdapter(false));
+    } else {
+      hasPushPermissionsToHead = false;
+      notifyHeadOfAdapter(false);
+    }
   }
 
   private void notifyHeadOfAdapter(boolean headReferenceExist) {
