@@ -15,7 +15,6 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import core.User;
 import java.util.ArrayList;
 import java.util.List;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,6 +23,7 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   private static final String REPO_INFO = "REPO_INFO";
   private RepoInfo repoInfo;
+  private Subscription subscribe;
 
   public static RepoContributorsFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -44,52 +44,43 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
 
   private void setAction(GithubClient<List<Contributor>> client) {
     startRefresh();
-    client.observable()
+    subscribe = client.observable()
         .subscribeOn(Schedulers.io())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .map(contributors -> {
-          List<User> users = new ArrayList<User>();
+          List<User> users = new ArrayList<>();
           for (Contributor contributor : contributors) {
             users.add(contributor.author);
           }
           return users;
         })
-        .subscribe(new Subscriber<List<User>>() {
-          @Override
-          public void onCompleted() {
-            stopRefresh();
+        .subscribe(this::showUsers, throwable -> {
+          stopRefresh();
+          if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+            setEmpty();
           }
+        }, this::stopRefresh);
+  }
 
-          @Override
-          public void onError(Throwable e) {
-            stopRefresh();
-            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-              setEmpty();
-            }
-          }
-
-          @Override
-          public void onNext(List<User> users) {
-            if (getActivity() != null) {
-              if (users.size() > 0) {
-                hideEmpty();
-                if (refreshing || getAdapter() == null) {
-                  UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
-                  adapter.addAll(users);
-                  setAdapter(adapter);
-                } else {
-                  getAdapter().addAll(users);
-                }
-              } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-                setEmpty();
-              } else {
-                getAdapter().clear();
-                setEmpty();
-              }
-            }
-          }
-        });
+  private void showUsers(List<User> users) {
+    if (getActivity() != null) {
+      if (users.size() > 0) {
+        hideEmpty();
+        if (refreshing || getAdapter() == null) {
+          UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+          adapter.addAll(users);
+          setAdapter(adapter);
+        } else {
+          getAdapter().addAll(users);
+        }
+      } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+        setEmpty();
+      } else {
+        getAdapter().clear();
+        setEmpty();
+      }
+    }
   }
 
   @Override
@@ -121,5 +112,13 @@ public class RepoContributorsFragment extends LoadingListFragment<UsersAdapter> 
   @Override
   protected int getNoDataText() {
     return R.string.no_contributors;
+  }
+
+  @Override
+  public void onStop() {
+    if (subscribe != null) {
+      subscribe.unsubscribe();
+    }
+    super.onStop();
   }
 }

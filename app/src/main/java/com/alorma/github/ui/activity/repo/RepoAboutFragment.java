@@ -244,9 +244,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   public boolean onOptionsItemSelected(MenuItem item) {
     /*
 
-    if (item.getItemId() == android.R.id.home) {
-      finish();
-    } else if (item.getItemId() == R.id.share_repo) {
+   if (item.getItemId() == R.id.share_repo) {
       if (currentRepo != null) {
         String title = currentRepo.getFullName();
         String url = currentRepo.svn_url;

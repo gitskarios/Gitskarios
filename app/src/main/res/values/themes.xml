@@ -17,6 +17,7 @@
 
   <style name="Base.AppTheme"
          parent="AppTheme.AppCompat.Default">
+    <item name="android:windowBackground">@color/md_grey_300</item>
     <item name="windowActionModeOverlay">true</item>
     <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     <item name="colorPrimary">@color/primary</item>
@@ -55,6 +56,7 @@
 
   <style name="Base.AppTheme.Dark"
          parent="AppTheme.AppCompat.Dark.Default">
+    <item name="android:windowBackground">@color/md_grey_900</item>
     <item name="windowActionModeOverlay">true</item>
     <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     <item name="colorPrimary">@color/primary</item>

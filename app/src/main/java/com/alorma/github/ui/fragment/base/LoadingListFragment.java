@@ -204,19 +204,21 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   }
 
   public void setEmpty() {
-    stopRefresh();
-    if (getContext() != null) {
-      if (error_view != null) {
-        error_view.setVisibility(View.VISIBLE);
-        error_view.setTitle(getNoDataText());
-        error_view.showRetryButton(true);
-        error_view.setOnRetryListener(this);
+    if (getActivity() != null && isAdded()) {
+      stopRefresh();
+      if (getContext() != null) {
+        if (error_view != null) {
+          error_view.setVisibility(View.VISIBLE);
+          error_view.setTitle(getNoDataText());
+          error_view.showRetryButton(true);
+          error_view.setOnRetryListener(this);
+        }
       }
-    }
 
-    if (recyclerView != null) {
-      recyclerView.setLayoutManager(getLayoutManager());
-      recyclerView.setItemAnimator(getItemAnimator());
+      if (recyclerView != null) {
+        recyclerView.setLayoutManager(getLayoutManager());
+        recyclerView.setItemAnimator(getItemAnimator());
+      }
     }
   }
 
