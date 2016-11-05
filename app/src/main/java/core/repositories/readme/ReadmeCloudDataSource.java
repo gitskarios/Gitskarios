@@ -52,14 +52,14 @@ public class ReadmeCloudDataSource extends CloudDataSource<ReadmeInfo, String> {
     }
 
     StringBuilder sb = new StringBuilder(string);
-    int actualLength = length - 3;
-    if (sb.length() > actualLength) {
+    if (sb.length() > length) {
       // -3 because we add 3 dots at the end. Returned string length has to be length including the dots.
+      String substring = sb.substring(0, length);
       if (!soft) {
-        return sb.insert(actualLength, "...").substring(0, actualLength + 3);
+        return substring;
       } else {
-        int endIndex = sb.indexOf(" ", actualLength);
-        return sb.insert(endIndex, "...").substring(0, endIndex + 3);
+        int endIndex = substring.lastIndexOf(" ");
+        return sb.substring(0, endIndex);
       }
     }
     return string;
