@@ -6,6 +6,7 @@ import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.RepositoryReadmePresenter;
 import com.alorma.github.presenter.repos.ReadmeCacheDataSource;
+import com.alorma.github.sdk.bean.ReadmeInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import core.ApiClient;
 import core.repositories.markdown.MarkdownCloudDataSource;
@@ -52,7 +53,7 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
-  GenericRepository<RepoInfo, String> providesRepository(ReadmeCacheDataSource readmeCacheDataSource,
+  GenericRepository<ReadmeInfo, String> providesRepository(ReadmeCacheDataSource readmeCacheDataSource,
       ReadmeCloudDataSource readmeCloudDataSource, MarkdownCloudDataSource markdownCloudDataSource) {
     return new RepoReadmeRepository(readmeCacheDataSource, readmeCloudDataSource, markdownCloudDataSource);
   }
@@ -60,7 +61,7 @@ import rx.Scheduler;
   @Provides
   @PerActivity
   RepositoryReadmePresenter provideRepositoryTagsPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-      GenericRepository<RepoInfo, String> repository) {
+      GenericRepository<ReadmeInfo, String> repository) {
     return new RepositoryReadmePresenter(mainScheduler, ioScheduler, repository);
   }
 }

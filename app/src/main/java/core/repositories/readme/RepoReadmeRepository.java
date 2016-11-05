@@ -1,19 +1,19 @@
 package core.repositories.readme;
 
-import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.sdk.bean.ReadmeInfo;
 import core.datasource.CacheDataSource;
 import core.datasource.CloudDataSource;
 import core.datasource.SdkItem;
 import core.repository.GenericRepository;
 import rx.Observable;
 
-public class RepoReadmeRepository extends GenericRepository<RepoInfo, String> {
+public class RepoReadmeRepository extends GenericRepository<ReadmeInfo, String> {
 
-  private CacheDataSource<RepoInfo, String> cache;
-  private CloudDataSource<RepoInfo, String> cloud;
+  private CacheDataSource<ReadmeInfo, String> cache;
+  private CloudDataSource<ReadmeInfo, String> cloud;
   private final CloudDataSource<String, String> githubMarkdwonCloud;
 
-  public RepoReadmeRepository(CacheDataSource<RepoInfo, String> cache, CloudDataSource<RepoInfo, String> cloud,
+  public RepoReadmeRepository(CacheDataSource<ReadmeInfo, String> cache, CloudDataSource<ReadmeInfo, String> cloud,
       CloudDataSource<String, String> githubMarkdwonCloud) {
     super(cache, cloud);
     this.cache = cache;
@@ -22,7 +22,7 @@ public class RepoReadmeRepository extends GenericRepository<RepoInfo, String> {
   }
 
   @Override
-  public Observable<SdkItem<String>> execute(SdkItem<RepoInfo> request) {
+  public Observable<SdkItem<String>> execute(SdkItem<ReadmeInfo> request) {
 
     Observable<SdkItem<String>> cacheObs = Observable.empty();
     Observable<SdkItem<String>> cloudObs = Observable.empty();

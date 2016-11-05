@@ -37,7 +37,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
   private RepoInfo requestRepoInfo;
   private ArrayList<Fragment> fragments;
   private RepoAboutFragment repoAboutFragment;
-  private RepoReadmeFragment repoReadmeFragment;
   private RepositoryIssuesListFragment repositoryIssuesListFragment;
   private RepoContributorsFragment repoContributorsFragment;
   private RepositoryPullRequestsListFragment repositoryPullRequestsListFragment;
@@ -104,9 +103,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
     fragments.add(repoAboutFragment);
 
-    repoReadmeFragment = RepoReadmeFragment.newInstance(requestRepoInfo);
-    fragments.add(repoReadmeFragment);
-
     repositoryPullRequestsListFragment = RepositoryPullRequestsListFragment.newInstance(requestRepoInfo);
     fragments.add(repositoryPullRequestsListFragment);
 
@@ -120,7 +116,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
   private void setupTabs() {
 
     tabLayout.addTab(getTab(R.drawable.ic_home, R.string.repo_detail_home), true);
-    tabLayout.addTab(getTab(R.drawable.ic_file, R.string.repo_detail_readme), false);
     tabLayout.addTab(getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues), false);
     tabLayout.addTab(getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls), false);
     tabLayout.addTab(getTab(R.drawable.ic_person, R.string.repo_detail_contributors), false);
@@ -133,15 +128,12 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
             setFragment(repoAboutFragment);
             break;
           case 1:
-            setFragment(repoReadmeFragment);
-            break;
-          case 2:
             setFragment(repositoryIssuesListFragment);
             break;
-          case 3:
+          case 2:
             setFragment(repositoryPullRequestsListFragment);
             break;
-          case 4:
+          case 3:
             setFragment(repoContributorsFragment);
             break;
         }

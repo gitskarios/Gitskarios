@@ -57,7 +57,7 @@
           android:paddingLeft="16dp"
           android:drawablePadding="-16dp"
           android:drawableLeft="@drawable/ic_eye"
-          android:text="UNWATCH"
+          tools:text="@string/repo_detail_no_watched"
           android:textSize="12sp"
           android:textAllCaps="false"
           />
@@ -174,7 +174,73 @@
 
 
       </LinearLayout>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/repoDetailReadme"
+        android:orientation="vertical"
+        android:divider="@drawable/divider_horizontal"
+        android:background="@drawable/countorn"
+        android:showDividers="middle"
+        android:layout_margin="8dp"
+        >
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:background="@drawable/rounded_grey"
+          android:paddingLeft="8dp"
+          android:paddingStart="8dp"
+          android:paddingRight="8dp"
+          android:paddingEnd="8dp"
+          android:layout_margin="1dp"
+          >
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_file"
+            tools:src="@mipmap/ic_launcher"
+            android:tint="#666666"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="56dp"
+            android:layout_marginStart="56dp"
+            android:textStyle="bold"
+            android:text="Readme"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="16sp"
+            />
+
+      </RelativeLayout>
+      <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="8dp"
+          android:id="@+id/repoDetailReadmeContent"
+          />
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:id="@+id/repoDefaultOpenReadme"
+          android:background="?selectableItemBackground"
+          android:paddingLeft="16dp"
+          android:drawablePadding="-16dp"
+          android:text="Show README"
+          android:textAllCaps="false"
+          android:textSize="12sp"
+          />
     </LinearLayout>
   </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

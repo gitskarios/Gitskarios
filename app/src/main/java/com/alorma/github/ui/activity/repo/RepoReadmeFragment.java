@@ -21,6 +21,7 @@ import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.repository.RepositoryReadmeModule;
 import com.alorma.github.presenter.RepositoryReadmePresenter;
+import com.alorma.github.sdk.bean.ReadmeInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.AttributesUtils;
@@ -28,13 +29,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import javax.inject.Inject;
-import rx.Subscription;
 
 public class RepoReadmeFragment extends BaseFragment implements com.alorma.github.presenter.View<String> {
 
   private static final String REPO_INFO = "REPO_INFO";
-  private Subscription subscribe;
+  private static final String SOFT_WRAP = "SOFT_WRAP";
+
   private RepoInfo repoInfo;
+  private boolean softWrap;
 
   @Inject RepositoryReadmePresenter readmePresenter;
 
@@ -42,8 +44,13 @@ public class RepoReadmeFragment extends BaseFragment implements com.alorma.githu
   @BindView(R.id.htmlLoading) View loadingView;
 
   public static RepoReadmeFragment newInstance(RepoInfo repoInfo) {
+    return newInstance(repoInfo, false);
+  }
+
+  public static RepoReadmeFragment newInstance(RepoInfo repoInfo, boolean softWrap) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
+    bundle.putBoolean(SOFT_WRAP, softWrap);
 
     RepoReadmeFragment f = new RepoReadmeFragment();
     f.setArguments(bundle);
@@ -64,7 +71,11 @@ public class RepoReadmeFragment extends BaseFragment implements com.alorma.githu
 
     if (getArguments() != null) {
       repoInfo = getArguments().getParcelable(REPO_INFO);
-      readmePresenter.execute(repoInfo);
+      softWrap = getArguments().getBoolean(SOFT_WRAP, false);
+      ReadmeInfo readmeInfo = new ReadmeInfo();
+      readmeInfo.setRepoInfo(repoInfo);
+      readmeInfo.setTruncate(softWrap);
+      readmePresenter.execute(readmeInfo);
     }
   }
 
@@ -153,14 +164,6 @@ public class RepoReadmeFragment extends BaseFragment implements com.alorma.githu
       e.printStackTrace();
     }
     return buf.toString();
-  }
-
-  @Override
-  public void onStop() {
-    if (subscribe != null) {
-      subscribe.unsubscribe();
-    }
-    super.onStop();
   }
 
   @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.ListPopupWindow;
 import android.text.Html;
@@ -359,6 +360,14 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     populateBranches(repo.getDefaultBranchObject(), repo.getBranches());
     populateStar(repo.isStarred(), repo.getStargazersCount());
     populateWatch(repo.isWatched(), repo.getSubscribersCount());
+    populateReadme();
+  }
+
+  private void populateReadme() {
+    RepoReadmeFragment repoReadmeFragment = RepoReadmeFragment.newInstance(repoInfo, true);
+    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+    ft.replace(R.id.repoDetailReadmeContent, repoReadmeFragment);
+    ft.commit();
   }
 
   private void populateDescription(String description, String homepage) {
