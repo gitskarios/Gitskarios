@@ -376,11 +376,22 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
         Repo repo = item.repo;
         CommitComment comment = item.payload.comment;
         if (repo != null && comment != null && comment.commit_id != null) {
-          CommitInfo commitInfo = new CommitInfo();
-          commitInfo.repoInfo = repo.toInfo();
-          commitInfo.sha = comment.commit_id;
-          Intent intent = CommitDetailActivity.launchIntent(getActivity(), commitInfo);
-          startActivity(intent);
+          CommitInfo commitInfo = null;
+          if (repo.getOwner() != null) {
+            commitInfo = new CommitInfo();
+            commitInfo.repoInfo = repo.toInfo();
+          } else if (repo.getFullName() != null){
+            commitInfo = new CommitInfo();
+            commitInfo.repoInfo = new RepoInfo();
+            String[] split = repo.getFullName().split("/");
+            commitInfo.repoInfo.owner = split[0];
+            commitInfo.repoInfo.name = split[1];
+          }
+          if (commitInfo != null) {
+            commitInfo.sha = comment.commit_id;
+            Intent intent = CommitDetailActivity.launchIntent(getActivity(), commitInfo);
+            startActivity(intent);
+          }
         }
       }
     } else {
