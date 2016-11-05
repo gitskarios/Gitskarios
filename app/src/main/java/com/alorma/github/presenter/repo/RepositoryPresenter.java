@@ -3,6 +3,7 @@ package com.alorma.github.presenter.repo;
 import com.alorma.github.gcm.GcmTopicsHelper;
 import com.alorma.github.presenter.BaseRxPresenter;
 import com.alorma.github.presenter.View;
+import com.alorma.github.presenter.repo.tags.GetTagsCountUseCase;
 import com.alorma.github.sdk.bean.dto.request.WebHookConfigRequest;
 import com.alorma.github.sdk.bean.dto.request.WebHookRequest;
 import com.alorma.github.sdk.bean.dto.request.WebHookResponse;
@@ -20,14 +21,17 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
   private final GetRepositoryUseCase getRepositoryUseCase;
   private final ChangeRepositoryStarUseCase changeRepositoryStarUseCase;
   private final ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase;
+  private final GetTagsCountUseCase getTagsCountUseCase;
   private Repo currentRepo;
 
   public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler, GetRepositoryUseCase getRepositoryUseCase,
-      ChangeRepositoryStarUseCase changeRepositoryStarUseCase, ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase) {
+      ChangeRepositoryStarUseCase changeRepositoryStarUseCase, ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase,
+      GetTagsCountUseCase getTagsCountUseCase) {
     super(mainScheduler, ioScheduler, null);
     this.getRepositoryUseCase = getRepositoryUseCase;
     this.changeRepositoryStarUseCase = changeRepositoryStarUseCase;
     this.changeRepositoryWatchUseCase = changeRepositoryWatchUseCase;
+    this.getTagsCountUseCase = getTagsCountUseCase;
   }
 
   @Override
@@ -37,6 +41,18 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
       getView().showLoading();
 
       subscribe(getRepositoryUseCase.getRepository(repoInfo), false);
+
+      getTagsCountUseCase.getTagsCount(repoInfo)
+          .map(SdkItem::getK)
+          .subscribeOn(ioScheduler)
+          .observeOn(mainScheduler)
+          .subscribe(this::showReleases, throwable -> showReleases(0));
+    }
+  }
+
+  private void showReleases(Integer integer) {
+    if (isViewAttached() && getView() != null && getView() instanceof RepoView) {
+      ((RepoView) getView()).showTagsCount(integer != null ? integer : 0);
     }
   }
 
@@ -113,5 +129,9 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
     }, throwable -> {
 
     });
+  }
+
+  public interface RepoView extends View<Repo> {
+    void showTagsCount(int tagsCount);
   }
 }

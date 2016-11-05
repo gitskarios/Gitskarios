@@ -3,8 +3,11 @@ package core.repositories.releases.tags;
 import core.repositories.Commit;
 import core.repositories.releases.Release;
 import java.util.List;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -23,4 +26,7 @@ public interface RepositoryTagsService {
 
     @GET("/repos/{owner}/{name}/releases/tags/{tag}")
     Call<Release> release(@Path("owner") String owner, @Path("name") String repo, @Path("tag") String tag);
+
+    @HEAD("/repos/{owner}/{name}/tags?per_page=1")
+    Call<Void> tagsCount(@Path("owner") String owner, @Path("name") String repo);
 }

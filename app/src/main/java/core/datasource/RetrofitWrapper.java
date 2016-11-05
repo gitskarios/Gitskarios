@@ -11,17 +11,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import core.ApiClient;
 import core.Exclude;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -36,7 +33,7 @@ public abstract class RetrofitWrapper extends RestWrapper {
 
   @Override
   protected <T> T get(ApiClient apiClient) {
-    GsonBuilder gsonBuilder =  new GsonBuilder();
+    GsonBuilder gsonBuilder = new GsonBuilder();
     gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
     gsonBuilder.setExclusionStrategies(new AnnotationExclusionStrategy());
 
@@ -108,13 +105,29 @@ public abstract class RetrofitWrapper extends RestWrapper {
     return null;
   }
 
+  @Override
+  public Integer getLastPage(retrofit2.Response response) {
+    if (isPaginated(response)) {
+      String header = response.headers().get("Link");
+      if (null != header) {
+        String[] parts = header.split(",");
+        for (String part : parts) {
+          PaginationLink bottomPaginationLink = new PaginationLink(part);
+          if (bottomPaginationLink.rel == RelType.last) {
+            return bottomPaginationLink.page;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   // date deserializer
   private class DateDeserializer implements JsonDeserializer<Date> {
     final DateFormat original = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
     @Override
-    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
+    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
       Date date = new Date();
       try {
         date = original.parse(json.getAsString());

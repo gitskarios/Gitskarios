@@ -153,4 +153,9 @@ public class ReleaseAboutFragment extends BaseFragment implements TitleProvider 
   public IIcon getTitleIcon() {
     return Octicons.Icon.oct_tag;
   }
+
+  @Override
+  protected boolean showTitle() {
+    return false;
+  }
 }

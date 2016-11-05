@@ -15,4 +15,9 @@ public class GetRepoClient extends GithubRepoClient<Repo> {
   protected Observable<Repo> getApiObservable(RestAdapter restAdapter) {
     return restAdapter.create(RepoService.class).get(getOwner(), getRepo());
   }
+
+  @Override
+  public String getAcceptHeader() {
+    return "application/vnd.github.drax-preview+json";
+  }
 }

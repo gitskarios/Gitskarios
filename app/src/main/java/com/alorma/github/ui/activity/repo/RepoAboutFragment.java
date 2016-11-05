@@ -44,13 +44,14 @@ import com.alorma.github.utils.RoundedBackgroundSpan;
 import com.alorma.github.utils.ShortcutUtils;
 import com.alorma.github.utils.TimeUtils;
 import core.repositories.Branch;
+import core.repositories.License;
 import core.repositories.Repo;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-public class RepoAboutFragment extends BaseFragment implements com.alorma.github.presenter.View<Repo> {
+public class RepoAboutFragment extends BaseFragment implements RepositoryPresenter.RepoView {
 
   private static final String REPO_INFO = "REPO_INFO";
 
@@ -71,6 +72,9 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @BindView(R.id.repoDefaultBranchExpandableIcon) ImageView repoDefaultBranchExpandableIcon;
 
   @BindView(R.id.repoDefaultOpenReadme) View repoDefaultOpenReadme;
+
+  @BindView(R.id.repoDetailTagsCount) TextView repoDetailTagsCount;
+  @BindView(R.id.repoDetailLicense) TextView repoDetailLicense;
 
   private Repo currentRepo;
 
@@ -273,6 +277,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     populateStar(repo.isStarred(), repo.getStargazersCount());
     populateWatch(repo.isWatched(), repo.getSubscribersCount());
     populateReadme();
+    populateLicense(repo.getLicense());
   }
 
   private void populateDescription(String description, String homepage) {
@@ -409,9 +414,35 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     });
   }
 
+  private void populateLicense(License license) {
+    if (license != null) {
+      repoDetailLicense.setVisibility(View.VISIBLE);
+      repoDetailLicense.setText(license.spdxId);
+      repoDetailLicense.setOnClickListener(v -> openLicense(license));
+    } else {
+      repoDetailLicense.setOnClickListener(null);
+      repoDetailLicense.setVisibility(View.INVISIBLE);
+    }
+  }
+
+  private void openLicense(License license) {
+
+  }
+
   @Override
   public void showError(Throwable throwable) {
 
+  }
+
+  @Override
+  public void showTagsCount(int tagsCount) {
+    repoDetailTagsCount.setText(getString(R.string.repo_detail_tags, tagsCount));
+    if (tagsCount > 0) {
+      repoDetailTagsCount.setOnClickListener(v -> {
+        Intent intent = RepoReleasesActivity.createIntent(getContext(), repoInfo);
+        startActivity(intent);
+      });
+    }
   }
 
   private class BranchesAdapter extends ArrayAdapter<Branch> {

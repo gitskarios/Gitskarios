@@ -202,4 +202,17 @@
     <item name="colorButtonNormal">@color/md_pink_300</item>
   </style>
 
+  <style name="repo_detail_button">
+    <item name="android:background">?selectableItemBackground</item>
+    <item name="android:paddingLeft">16dp</item>
+    <item name="android:drawablePadding">-16dp</item>
+    <item name="android:textSize">12sp</item>
+  </style>
+
+  <style name="repo_detail_button_bar">
+    <item name="android:background">@drawable/countorn</item>
+    <item name="android:divider">@drawable/divider_vertical</item>
+    <item name="android:showDividers">middle</item>
+  </style>
+
 </resources>

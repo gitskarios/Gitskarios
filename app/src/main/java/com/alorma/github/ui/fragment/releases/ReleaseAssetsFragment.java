@@ -87,6 +87,11 @@ public class ReleaseAssetsFragment extends BaseFragment implements ReleaseAssets
     this.releaseAssetCallback = releaseAssetCallback;
   }
 
+  @Override
+  protected boolean showTitle() {
+    return false;
+  }
+
   public interface ReleaseAssetCallback {
     void onReleaseDownloadRequest(Asset asset);
   }

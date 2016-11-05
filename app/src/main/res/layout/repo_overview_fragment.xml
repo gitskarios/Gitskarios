@@ -27,25 +27,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@drawable/countorn"
         android:id="@+id/repoDetailNumbersLayout"
         android:layout_margin="8dp"
         android:orientation="horizontal"
-        android:showDividers="middle"
-        android:divider="@drawable/divider_vertical"
+        style="@style/repo_detail_button_bar"
         >
       <Button
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:id="@+id/repoDetailNumbersStar"
           android:layout_weight="1"
-          android:background="?selectableItemBackground"
-          android:paddingLeft="16dp"
-          android:drawablePadding="-16dp"
           android:drawableLeft="@drawable/ic_star_vector"
           tools:text="@string/repo_detail_no_starred"
-          android:textSize="12sp"
           android:textAllCaps="false"
+          style="@style/repo_detail_button"
           />
 
       <Button
@@ -53,13 +48,10 @@
           android:layout_height="match_parent"
           android:id="@+id/repoDetailNumbersWatch"
           android:layout_weight="1"
-          android:background="?selectableItemBackground"
-          android:paddingLeft="16dp"
-          android:drawablePadding="-16dp"
           android:drawableLeft="@drawable/ic_eye"
           tools:text="@string/repo_detail_no_watched"
-          android:textSize="12sp"
           android:textAllCaps="false"
+          style="@style/repo_detail_button"
           />
 
     </LinearLayout>
@@ -151,25 +143,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/repoDefaultBranchCodeButton"
-            android:background="?selectableItemBackground"
-            android:paddingLeft="16dp"
-            android:drawablePadding="-16dp"
             android:drawableLeft="@drawable/ic_file_directory"
             android:text="View code"
-            android:textSize="12sp"
+            style="@style/repo_detail_button"
             />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:paddingLeft="16dp"
-            android:drawablePadding="-16dp"
             android:drawableLeft="@drawable/ic_search_selector"
             android:text="Jump to file"
-            android:textSize="12sp"
             android:enabled="false"
+            style="@style/repo_detail_button"
             />
 
 
@@ -233,12 +219,39 @@
           android:layout_height="match_parent"
           android:layout_weight="1"
           android:id="@+id/repoDefaultOpenReadme"
-          android:background="?selectableItemBackground"
-          android:paddingLeft="16dp"
-          android:drawablePadding="-16dp"
           android:text="Show README"
           android:textAllCaps="false"
-          android:textSize="12sp"
+          style="@style/repo_detail_button"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        style="@style/repo_detail_button_bar"
+        >
+
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_weight="1"
+          android:id="@+id/repoDetailTagsCount"
+          android:drawableLeft="@drawable/ic_file_directory"
+          tools:text="@string/repo_detail_tags"
+          style="@style/repo_detail_button"
+          android:textAllCaps="false"
+          />
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_weight="1"
+          android:id="@+id/repoDetailLicense"
+          android:drawableLeft="@drawable/ic_law"
+          tools:text="MIT"
+          style="@style/repo_detail_button"
           />
     </LinearLayout>
   </LinearLayout>

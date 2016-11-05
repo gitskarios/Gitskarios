@@ -326,4 +326,5 @@
   <string name="repo_detail_no_starred_no_number">Star</string>
   <string name="repo_detail_watched_no_number">Unwatch</string>
   <string name="repo_detail_no_watched_no_number">Watch</string>
+  <string name="repo_detail_tags">%1$d Releases</string>
 </resources>

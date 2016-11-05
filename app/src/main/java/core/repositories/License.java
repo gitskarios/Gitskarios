@@ -2,11 +2,14 @@ package core.repositories;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.SerializedName;
 
 public class License implements Parcelable {
   public String key;
   public String name;
   public String url;
+  @SerializedName("spdx_id")
+  public String spdxId;
   public boolean featured;
 
   public License() {
@@ -22,6 +25,7 @@ public class License implements Parcelable {
     dest.writeString(this.key);
     dest.writeString(this.name);
     dest.writeString(this.url);
+    dest.writeString(this.spdxId);
     dest.writeByte(this.featured ? (byte) 1 : (byte) 0);
   }
 
@@ -29,6 +33,7 @@ public class License implements Parcelable {
     this.key = in.readString();
     this.name = in.readString();
     this.url = in.readString();
+    this.spdxId = in.readString();
     this.featured = in.readByte() != 0;
   }
 

@@ -294,6 +294,11 @@ public class TagsCloudDataSourceTest {
             return 0;
         }
 
+        @Override
+        public Integer getLastPage(Response listResponse) {
+            return 3;
+        }
+
         private boolean isResponse2(Response response) {
             if (tagsResponse2.equals(response)) {
                 return true;

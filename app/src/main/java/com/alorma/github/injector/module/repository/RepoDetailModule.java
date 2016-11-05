@@ -2,16 +2,21 @@ package com.alorma.github.injector.module.repository;
 
 import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
+import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.AbstractCacheDataSource;
 import com.alorma.github.presenter.repo.GetRepositoryUseCase;
 import com.alorma.github.presenter.repo.GetRepositoryUseCaseImpl;
+import com.alorma.github.presenter.repo.tags.GetTagsCountUseCase;
+import com.alorma.github.presenter.repo.tags.GetTagsCountUseCaseImpl;
 import com.alorma.github.presenter.repo.RepositoryPresenter;
+import com.alorma.github.presenter.repo.tags.TagsCountDatasource;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
 import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
 import com.alorma.github.sdk.services.repo.GetRepoClient;
+import core.ApiClient;
 import core.datasource.CacheDataSource;
 import core.datasource.CloudDataSource;
 import core.datasource.RestWrapper;
@@ -19,6 +24,7 @@ import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Commit;
 import core.repositories.Repo;
+import core.repositories.releases.tags.TagsRetrofitWrapper;
 import core.repository.ChangeRepositoryStarUseCase;
 import core.repository.ChangeRepositoryWatchUseCase;
 import core.repository.GenericRepository;
@@ -113,10 +119,34 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
+  TagsRetrofitWrapper provideTagsRetrofitWrapper(ApiClient apiClient, @Token String token) {
+    return new TagsRetrofitWrapper(apiClient, token);
+  }
+
+  @Provides
+  @PerActivity
+  CloudDataSource<RepoInfo, Integer> providesTagsCountDatasource(TagsRetrofitWrapper tagsRetrofitWrapper) {
+    return new TagsCountDatasource(tagsRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  GenericRepository<RepoInfo, Integer> providesTagsCountRepository(CloudDataSource<RepoInfo, Integer> api) {
+    return new GenericRepository<>(null, api);
+  }
+
+  @Provides
+  @PerActivity
+  GetTagsCountUseCase providesGetTagsCount(GenericRepository<RepoInfo, Integer> genericRepository) {
+    return new GetTagsCountUseCaseImpl(genericRepository);
+  }
+
+  @Provides
+  @PerActivity
   RepositoryPresenter provideRepositoryPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
       ChangeRepositoryStarUseCase changeRepositoryStarUseCase, ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase,
-      GetRepositoryUseCase getRepositoryUseCase) {
+      GetRepositoryUseCase getRepositoryUseCase, GetTagsCountUseCase getTagsCountUseCase) {
     return new RepositoryPresenter(mainScheduler, ioScheduler, getRepositoryUseCase, changeRepositoryStarUseCase,
-        changeRepositoryWatchUseCase);
+        changeRepositoryWatchUseCase, getTagsCountUseCase);
   }
 }

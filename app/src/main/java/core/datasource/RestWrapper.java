@@ -20,4 +20,6 @@ public abstract class RestWrapper {
   public abstract boolean isPaginated(Response listResponse);
 
   public abstract Integer getPage(Response listResponse);
+
+  public abstract Integer getLastPage(Response listResponse);
 }

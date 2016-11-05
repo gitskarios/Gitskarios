@@ -69,11 +69,11 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
       viewPager = (ViewPager) findViewById(R.id.pager);
 
       if (getIntent().getExtras().containsKey(RELEASE)) {
-        Release release = (Release) getIntent().getExtras().getParcelable(RELEASE);
-        RepoInfo repoInfo = (RepoInfo) getIntent().getExtras().getParcelable(REPO_INFO);
+        Release release = getIntent().getExtras().getParcelable(RELEASE);
+        RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
         showRelease(release, repoInfo);
       } else if (getIntent().getExtras().containsKey(RELEASE_INFO)) {
-        releaseInfo = (ReleaseInfo) getIntent().getExtras().getParcelable(RELEASE_INFO);
+        releaseInfo = getIntent().getExtras().getParcelable(RELEASE_INFO);
         GetReleaseClient releaseClient = new GetReleaseClient(releaseInfo);
         releaseClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
       }
