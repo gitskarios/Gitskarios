@@ -364,7 +364,9 @@ public class IssueDetailActivity extends BackActivity
       addCommentEditText.setText("");
     } else {
       String hint = getString(R.string.add_comment);
-      Intent intent = ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, null, false, false);
+      Intent intent =
+          ContentEditorActivity.createLauncherIntent(this, issueInfo.repoInfo, issueInfo.num, hint, addCommentEditText.getText().toString(),
+              false, false);
       startActivityForResult(intent, NEW_COMMENT_REQUEST);
     }
   }
