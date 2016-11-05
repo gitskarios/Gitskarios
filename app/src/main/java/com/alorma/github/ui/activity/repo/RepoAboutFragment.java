@@ -30,7 +30,7 @@ import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.repository.RepoDetailModule;
-import com.alorma.github.presenter.RepositoryPresenter;
+import com.alorma.github.presenter.repo.RepositoryPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.utils.RoundedBackgroundSpan;

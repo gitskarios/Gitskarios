@@ -4,7 +4,9 @@ import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.AbstractCacheDataSource;
-import com.alorma.github.presenter.RepositoryPresenter;
+import com.alorma.github.presenter.repo.GetRepositoryUseCase;
+import com.alorma.github.presenter.repo.GetRepositoryUseCaseImpl;
+import com.alorma.github.presenter.repo.RepositoryPresenter;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.commit.GetSingleCommitClient;
@@ -17,8 +19,8 @@ import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Commit;
 import core.repositories.Repo;
-import core.repository.ChangeRepositoryStarRepository;
-import core.repository.ChangeRepositoryWatchRepository;
+import core.repository.ChangeRepositoryStarUseCase;
+import core.repository.ChangeRepositoryWatchUseCase;
 import core.repository.GenericRepository;
 import dagger.Module;
 import dagger.Provides;
@@ -92,23 +94,29 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
-  ChangeRepositoryStarRepository provideChangeRepositoryStarRepository() {
-    return new ChangeRepositoryStarRepository();
+  ChangeRepositoryStarUseCase provideChangeRepositoryStarRepository() {
+    return new ChangeRepositoryStarUseCase();
   }
 
   @Provides
   @PerActivity
-  ChangeRepositoryWatchRepository provideChangeRepositoryWatchRepository() {
-    return new ChangeRepositoryWatchRepository();
+  ChangeRepositoryWatchUseCase provideChangeRepositoryWatchRepository() {
+    return new ChangeRepositoryWatchUseCase();
+  }
+
+  @Provides
+  @PerActivity
+  GetRepositoryUseCase providesGetRepositoryUseCase(GenericRepository<RepoInfo, Repo> repoGenericRepository,
+      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository) {
+    return new GetRepositoryUseCaseImpl(repoGenericRepository, branchesGenericRepository, commitGenericRepository);
   }
 
   @Provides
   @PerActivity
   RepositoryPresenter provideRepositoryPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-      GenericRepository<RepoInfo, Repo> repoGenericRepository, GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository,
-      GenericRepository<CommitInfo, Commit> commitGenericRepository, ChangeRepositoryStarRepository changeRepositoryStarRepository,
-      ChangeRepositoryWatchRepository changeRepositoryWatchRepository) {
-    return new RepositoryPresenter(mainScheduler, ioScheduler, repoGenericRepository, branchesGenericRepository, commitGenericRepository,
-        changeRepositoryStarRepository, changeRepositoryWatchRepository);
+      ChangeRepositoryStarUseCase changeRepositoryStarUseCase, ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase,
+      GetRepositoryUseCase getRepositoryUseCase) {
+    return new RepositoryPresenter(mainScheduler, ioScheduler, getRepositoryUseCase, changeRepositoryStarUseCase,
+        changeRepositoryWatchUseCase);
   }
 }

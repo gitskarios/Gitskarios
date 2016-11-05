@@ -4,9 +4,9 @@ import com.alorma.github.sdk.services.repo.actions.UnwatchRepoClient;
 import com.alorma.github.sdk.services.repo.actions.WatchRepoClient;
 import rx.Observable;
 
-public class ChangeRepositoryWatchRepository {
+public class ChangeRepositoryWatchUseCase {
 
-  public ChangeRepositoryWatchRepository() {
+  public ChangeRepositoryWatchUseCase() {
 
   }
 

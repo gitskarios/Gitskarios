@@ -4,9 +4,9 @@ import com.alorma.github.sdk.services.repo.actions.StarRepoClient;
 import com.alorma.github.sdk.services.repo.actions.UnstarRepoClient;
 import rx.Observable;
 
-public class ChangeRepositoryStarRepository {
+public class ChangeRepositoryStarUseCase {
 
-  public ChangeRepositoryStarRepository() {
+  public ChangeRepositoryStarUseCase() {
 
   }
 
