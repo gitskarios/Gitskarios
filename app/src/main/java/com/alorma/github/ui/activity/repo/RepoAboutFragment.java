@@ -128,14 +128,8 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
 
     ButterKnife.bind(this, view);
 
-    loadArguments();
+    repoInfo = getArguments().getParcelable(REPO_INFO);
     presenter.execute(repoInfo);
-  }
-
-  protected void loadArguments() {
-    if (getArguments() != null) {
-      repoInfo = getArguments().getParcelable(REPO_INFO);
-    }
   }
 
   @Override
@@ -272,6 +266,7 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @Override
   public void onDataReceived(Repo repo, boolean isFromPaginated) {
     this.currentRepo = repo;
+    this.repoInfo = repo.toInfo();
 
     populateDescription(repo.getDescription(), repo.getHomepage());
     populateBranches(repo.getDefaultBranchObject(), repo.getBranches());

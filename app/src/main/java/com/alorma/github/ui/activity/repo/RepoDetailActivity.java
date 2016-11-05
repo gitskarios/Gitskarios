@@ -82,9 +82,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
       }
 
       if (requestRepoInfo != null) {
-        if (TextUtils.isEmpty(requestRepoInfo.branch)) {
-          requestRepoInfo.branch = "master";
-        }
         setTitle(requestRepoInfo.name);
 
         listFragments();

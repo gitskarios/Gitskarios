@@ -6,6 +6,7 @@ import com.alorma.github.sdk.bean.dto.response.Content;
 import core.datasource.CloudDataSource;
 import core.datasource.RestWrapper;
 import core.datasource.SdkItem;
+import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
@@ -22,7 +23,7 @@ public class ReadmeCloudDataSource extends CloudDataSource<ReadmeInfo, String> {
   protected Observable<SdkItem<String>> execute(SdkItem<ReadmeInfo> request, RestWrapper service) {
     RepositoryReadmeService repositoryReadmeService = restWrapper.get();
     ReadmeInfo readmeInfo = request.getK();
-    return Observable.fromCallable(() -> {
+    return Observable.defer(() -> {
       Call<Content> call;
       if (readmeInfo.getRepoInfo().branch == null) {
         call = repositoryReadmeService.readme(readmeInfo.getRepoInfo().owner, readmeInfo.getRepoInfo().name);
@@ -31,9 +32,16 @@ public class ReadmeCloudDataSource extends CloudDataSource<ReadmeInfo, String> {
             repositoryReadmeService.readme(readmeInfo.getRepoInfo().owner, readmeInfo.getRepoInfo().name, readmeInfo.getRepoInfo().branch);
       }
 
-      Response<Content> contentResponse = call.execute();
-
-      return contentResponse.body();
+      try {
+        Response<Content> contentResponse = call.execute();
+        if (contentResponse.isSuccessful()) {
+          return Observable.just(contentResponse.body());
+        } else {
+          return Observable.error(new Exception(contentResponse.errorBody().string()));
+        }
+      } catch (IOException e) {
+        return Observable.error(e);
+      }
     }).map(Content::getContent).flatMap(content -> Observable.fromCallable(() -> {
       byte[] data = Base64.decode(content, Base64.DEFAULT);
       return new String(data, "UTF-8");
