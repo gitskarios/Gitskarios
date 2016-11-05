@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -15,17 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import com.alorma.github.AccountsHelper;
-import com.alorma.github.BuildConfig;
-import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.StoreCredentials;
-import com.alorma.github.ui.fragment.NavigationFragment;
 import com.alorma.github.sdk.services.notifications.GetNotificationsClient;
 import com.alorma.github.ui.ErrorHandler;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.GeneralPeopleFragment;
+import com.alorma.github.ui.fragment.NavigationFragment;
 import com.alorma.github.ui.fragment.donate.DonateActivity;
 import com.alorma.github.ui.fragment.events.EventsListFragment;
 import com.alorma.github.ui.fragment.events.OrgsEventsListFragment;
@@ -96,29 +92,6 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-
-    boolean changeLog = checkChangeLog();
-    if (changeLog) {
-      View view = findViewById(R.id.content);
-      Snackbar.make(view, R.string.app_updated, Snackbar.LENGTH_LONG).setAction("Changelog", v -> {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://gitskarios.github.io")));
-      }).show();
-    }
-  }
-
-  private boolean checkChangeLog() {
-    if (getSupportFragmentManager() != null) {
-      int currentVersion = BuildConfig.VERSION_CODE;
-      GitskariosSettings settings = new GitskariosSettings(this);
-      int version = settings.getVersion(0);
-
-      if (currentVersion > version) {
-        settings.saveVersion(currentVersion);
-        return true;
-      }
-    }
-
-    return false;
   }
 
   @Override
