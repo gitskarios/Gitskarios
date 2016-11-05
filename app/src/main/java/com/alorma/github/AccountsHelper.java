@@ -24,20 +24,6 @@ public class AccountsHelper {
     return userData;
   }
 
-  public static Bundle buildBundle(String name, String mail, String avatar, String url) {
-    Bundle userData = new Bundle();
-
-    userData.putString(AccountsHelper.USER_PIC, avatar);
-    userData.putString(AccountsHelper.USER_MAIL, mail);
-    userData.putString(AccountsHelper.USER_NAME, name);
-
-    if (url != null) {
-      userData.putString(AccountsHelper.USER_URL, url);
-    }
-
-    return userData;
-  }
-
   public static String getUserAvatar(Context context, Account account) {
     AccountManager manager = AccountManager.get(context);
     return manager.getUserData(account, USER_PIC);
