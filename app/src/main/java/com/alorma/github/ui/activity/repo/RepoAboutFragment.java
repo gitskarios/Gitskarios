@@ -64,6 +64,8 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
   @BindView(R.id.repoDefaultBranchCodeButton) Button repoDefaultBranchCodeButton;
   @BindView(R.id.repoDefaultBranchExpandableIcon) ImageView repoDefaultBranchExpandableIcon;
 
+  @BindView(R.id.repoDefaultOpenReadme) View repoDefaultOpenReadme;
+
   private Repo currentRepo;
 
   public static RepoAboutFragment newInstance(RepoInfo repoInfo) {
@@ -363,13 +365,6 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     populateReadme();
   }
 
-  private void populateReadme() {
-    RepoReadmeFragment repoReadmeFragment = RepoReadmeFragment.newInstance(repoInfo, true);
-    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-    ft.replace(R.id.repoDetailReadmeContent, repoReadmeFragment);
-    ft.commit();
-  }
-
   private void populateDescription(String description, String homepage) {
     if (!TextUtils.isEmpty(description) && !TextUtils.isEmpty(homepage)) {
       repoDescriptionTextView.setText(description + " - " + homepage);
@@ -490,6 +485,18 @@ public class RepoAboutFragment extends BaseFragment implements com.alorma.github
     }
 
     repoDetailNumbersWatch.setOnClickListener(v -> presenter.toggleWatch());
+  }
+
+  private void populateReadme() {
+    RepoReadmeFragment repoReadmeFragment = RepoReadmeFragment.newInstance(repoInfo, true);
+    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+    ft.replace(R.id.repoDetailReadmeContent, repoReadmeFragment);
+    ft.commit();
+
+    repoDefaultOpenReadme.setOnClickListener(v -> {
+      Intent intent = RepoReadmeActivity.createIntent(getContext(), repoInfo);
+      startActivity(intent);
+    });
   }
 
   @Override

@@ -149,6 +149,7 @@
         android:label="@string/title_activity_settings"
         />
     <activity android:name=".ui.activity.ReposActivity"/>
+    <activity android:name=".ui.activity.repo.RepoReadmeActivity"/>
     <activity android:name=".ui.activity.StarredReposActivity"/>
     <activity android:name=".ui.activity.WatchedReposActivity"/>
     <activity android:name=".ui.activity.OrganizationsActivity"/>
