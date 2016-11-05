@@ -87,7 +87,6 @@
   </style>
 
   <string name="adding_comment">Adding comment</string>
-  <string name="edit_repo_loading">Updating repository</string>
 
   <style name="AppCompatAlertDialogStyle"
          parent="Theme.AppCompat.Light.Dialog.Alert">

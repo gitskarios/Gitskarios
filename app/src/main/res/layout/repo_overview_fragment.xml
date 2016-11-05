@@ -179,7 +179,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/repoDetailReadme"
         android:orientation="vertical"
         android:divider="@drawable/divider_horizontal"
         android:background="@drawable/countorn"
