@@ -2,9 +2,6 @@ package com.alorma.github;
 
 import android.content.Context;
 
-/**
- * Created by Bernat on 26/09/2014.
- */
 public class GitskariosSettings extends PreferencesHelper {
   public static final String KEY_REPO_SORT = "KEY_REPO_SORT";
   public static final String KEY_MARK_AS_READ = "KEY_MARK_AS_READ";
@@ -14,6 +11,7 @@ public class GitskariosSettings extends PreferencesHelper {
   private static final String KEY_SHOW_ENTERPRISE = "KEY_SHOW_ENTERPRISE";
   private static final String GCM_TOKEN = "GCM_TOKEN";
   private static final String NOTIFICATIONS = "NOTIFICATIONS";
+  private static final String FULL_README = "FULL_README";
 
   public GitskariosSettings(Context context) {
     super(context);
@@ -59,14 +57,6 @@ public class GitskariosSettings extends PreferencesHelper {
     return getBooleanSetting(KEY_MARK_AS_READ, false);
   }
 
-  public boolean getShowEnterprise() {
-    return getBooleanSetting(KEY_SHOW_ENTERPRISE, true);
-  }
-
-  public void setShowEnterpriseVisited() {
-    saveBooleanSetting(KEY_SHOW_ENTERPRISE, false);
-  }
-
   public void saveGCMToken(String token) {
     saveStringSetting(GCM_TOKEN, token);
   }
@@ -81,5 +71,13 @@ public class GitskariosSettings extends PreferencesHelper {
 
   public void setNotificationsEnabled(boolean enabled) {
     saveBooleanSetting(NOTIFICATIONS, enabled);
+  }
+
+  public boolean getFullReadme() {
+    return getBooleanSetting(FULL_README, false);
+  }
+
+  public void saveFullReadme(boolean value) {
+    saveBooleanSetting(FULL_README, value);
   }
 }

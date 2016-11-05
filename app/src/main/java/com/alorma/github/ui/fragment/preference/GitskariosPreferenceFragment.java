@@ -22,12 +22,12 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
 
   public static final String REPOS_SORT = "repos_sort";
   public static final String REPOS_FILE_TYPE = "repos_download_type";
-  public static final String REAUTHORIZE = "reauthorize";
   public static final String GITSKARIOS = "gitskarios";
   public static final String CHANGELOG = "changelog";
   public static final String PREF_THEME = "pref_theme";
   private static final String PREF_INTERCEPT = "pref_intercept";
   private static final String PREF_MARK_AS_READ = "pref_mark_as_read";
+  private static final String REPOSITORY_FULL_README = "repository_full_readme";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,9 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
 
     Preference theme = findPreference("pref_theme");
     theme.setOnPreferenceChangeListener(this);
+
+    CheckBoxPreference fullReadme = (CheckBoxPreference) findPreference(REPOSITORY_FULL_README);
+    fullReadme.setOnPreferenceChangeListener(this);
   }
 
   @Override
@@ -96,6 +99,10 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
       Intent intent = new Intent(getActivity(), MainActivity.class);
       intent.putExtra("rebirth", true);
       Toast.makeText(getActivity(), R.string.restart_app_apply_theme, Toast.LENGTH_SHORT).show();
+    } else if (preference.getKey().equals(REPOSITORY_FULL_README)) {
+      GitskariosSettings settings = new GitskariosSettings(getActivity());
+      Boolean value = (Boolean) newValue;
+      settings.saveFullReadme(value);
     }
     return true;
   }

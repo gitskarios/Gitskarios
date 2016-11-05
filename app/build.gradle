@@ -45,6 +45,7 @@ android {
     versionName "4.5.3"
     versionCode 405003
     resValue "string", "app_git_hash", getCurrentGitHash()
+    resValue "string", "app_version_number", versionName
 
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true

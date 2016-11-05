@@ -2,40 +2,55 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <CheckBoxPreference
-      android:key="pref_intercept"
-      android:title="@string/pref_gthub_link_interceptor"
-      />
+  <PreferenceCategory android:title="App">
+    <CheckBoxPreference
+        android:key="pref_intercept"
+        android:title="@string/pref_gthub_link_interceptor"
+        />
 
-  <ListPreference
-      android:defaultValue="@string/sort_pushed_value"
-      android:entries="@array/reposSort"
-      android:entryValues="@array/reposSortValues"
-      android:key="repos_sort"
-      android:title="@string/pref_repos_sor_order"
-      />
+    <ListPreference
+        android:defaultValue="@string/sort_pushed_value"
+        android:entries="@array/reposSort"
+        android:entryValues="@array/reposSortValues"
+        android:key="repos_sort"
+        android:title="@string/pref_repos_sor_order"
+        />
 
-  <ListPreference
-      android:defaultValue="@string/download_zip_value"
-      android:entries="@array/reposDownloadFileType"
-      android:entryValues="@array/reposDownloadFileTypeValues"
-      android:key="repos_download_type"
-      android:title="@string/pref_repos_download_type"
-      />
+    <ListPreference
+        android:defaultValue="@string/download_zip_value"
+        android:entries="@array/reposDownloadFileType"
+        android:entryValues="@array/reposDownloadFileTypeValues"
+        android:key="repos_download_type"
+        android:title="@string/pref_repos_download_type"
+        />
 
-  <CheckBoxPreference
-      android:key="pref_mark_as_read"
-      android:summary="@string/pref_mark_as_read_summary"
-      android:title="@string/pref_mark_as_read"
-      />
+    <CheckBoxPreference
+        android:key="pref_mark_as_read"
+        android:summary="@string/pref_mark_as_read_summary"
+        android:title="@string/pref_mark_as_read"
+        />
 
-  <ListPreference
-      android:key="pref_theme"
-      android:title="@string/app_theme_pref_title"
-      android:entryValues="@array/themes_values"
-      android:entries="@array/themes"
-      android:defaultValue="@id/theme_light"
-      />
+    <ListPreference
+        android:key="pref_theme"
+        android:title="@string/app_theme_pref_title"
+        android:entryValues="@array/themes_values"
+        android:entries="@array/themes"
+        android:defaultValue="@id/theme_light"
+        />
+  </PreferenceCategory>
+
+  <PreferenceCategory android:title="Repository settings">
+    <CheckBoxPreference
+        android:title="Readme"
+        android:key="repository_full_readme"
+        android:summaryOn="Full readme"
+        android:summaryOff="Short readme"
+        />
+    <Preference
+        android:title="Default tab"
+        android:key="repository_default_tab"
+        />
+  </PreferenceCategory>
 
   <PreferenceCategory android:title="@string/app_settings_about">
     <Preference
@@ -46,6 +61,12 @@
     <Preference
         android:key="changelog"
         android:title="@string/changelog"
+        />
+    <Preference
+        android:key="app_version"
+        android:selectable="false"
+        android:summary="@string/app_version_number"
+        android:title="@string/app_version"
         />
     <Preference
         android:key="git_hash"

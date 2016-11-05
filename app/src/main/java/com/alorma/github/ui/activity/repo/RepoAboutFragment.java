@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
@@ -403,7 +404,8 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
   }
 
   private void populateReadme() {
-    RepoReadmeFragment repoReadmeFragment = RepoReadmeFragment.newInstance(repoInfo, true);
+    boolean fullReadme = new GitskariosSettings(getContext()).getFullReadme();
+    RepoReadmeFragment repoReadmeFragment = RepoReadmeFragment.newInstance(repoInfo, !fullReadme);
     FragmentTransaction ft = getChildFragmentManager().beginTransaction();
     ft.replace(R.id.repoDetailReadmeContent, repoReadmeFragment);
     ft.commit();
