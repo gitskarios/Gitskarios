@@ -27,7 +27,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:padding="@dimen/materialize_baseline_grid"
-            android:textSize="@dimen/textSizeSmall" />
+            android:textSize="@dimen/textSizeSmall"
+            android:textIsSelectable="true"/>
 
         <com.alorma.github.ui.view.issue.ReactionsView
             android:id="@+id/reactionsLy"
