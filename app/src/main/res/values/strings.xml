@@ -328,4 +328,5 @@
   <string name="repo_detail_no_watched_no_number">Watch</string>
   <string name="repo_detail_tags">%1$d Releases</string>
   <string name="app_version">App version</string>
+  <string name="repo_settings_defalut_tab_title">Default tab</string>
 </resources>

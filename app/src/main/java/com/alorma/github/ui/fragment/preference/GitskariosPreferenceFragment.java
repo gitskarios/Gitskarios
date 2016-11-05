@@ -11,11 +11,15 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import com.afollestad.materialdialogs.prefs.MaterialListPreference;
 import com.alorma.github.GitskariosSettings;
 import com.alorma.github.IntentsManager;
 import com.alorma.github.Interceptor;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.MainActivity;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+import io.fabric.sdk.android.Fabric;
 
 public class GitskariosPreferenceFragment extends PreferenceFragment
     implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -28,6 +32,8 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
   private static final String PREF_INTERCEPT = "pref_intercept";
   private static final String PREF_MARK_AS_READ = "pref_mark_as_read";
   private static final String REPOSITORY_FULL_README = "repository_full_readme";
+  private static final String REPOSITORY_DEFAULT_TAB = "repository_default_tab";
+  private MaterialListPreference repositoryDefaultTab;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,10 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
 
     CheckBoxPreference fullReadme = (CheckBoxPreference) findPreference(REPOSITORY_FULL_README);
     fullReadme.setOnPreferenceChangeListener(this);
+
+    repositoryDefaultTab = (MaterialListPreference) findPreference(REPOSITORY_DEFAULT_TAB);
+    repositoryDefaultTab.setOnPreferenceChangeListener(this);
+    repositoryDefaultTab.setSummary(settings.getRepoDefaulTab());
   }
 
   @Override
@@ -103,6 +113,19 @@ public class GitskariosPreferenceFragment extends PreferenceFragment
       GitskariosSettings settings = new GitskariosSettings(getActivity());
       Boolean value = (Boolean) newValue;
       settings.saveFullReadme(value);
+
+      if (Fabric.isInitialized()) {
+        Answers.getInstance().logCustom(new CustomEvent("App settings").putCustomAttribute("FULL_README", String.valueOf(newValue)));
+      }
+    } else if (preference.getKey().equals(REPOSITORY_DEFAULT_TAB)) {
+      GitskariosSettings settings = new GitskariosSettings(getActivity());
+      settings.saveRepoDefaultTab(String.valueOf(newValue));
+
+      repositoryDefaultTab.setSummary(String.valueOf(newValue));
+
+      if (Fabric.isInitialized()) {
+        Answers.getInstance().logCustom(new CustomEvent("App settings").putCustomAttribute("REPO_TAB", String.valueOf(newValue)));
+      }
     }
     return true;
   }

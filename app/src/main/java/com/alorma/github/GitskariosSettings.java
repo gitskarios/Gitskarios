@@ -12,6 +12,7 @@ public class GitskariosSettings extends PreferencesHelper {
   private static final String GCM_TOKEN = "GCM_TOKEN";
   private static final String NOTIFICATIONS = "NOTIFICATIONS";
   private static final String FULL_README = "FULL_README";
+  private static final String REPO_DEFAUL_TAB = "REPO_DEFAUL_TAB";
 
   public GitskariosSettings(Context context) {
     super(context);
@@ -79,5 +80,13 @@ public class GitskariosSettings extends PreferencesHelper {
 
   public void saveFullReadme(boolean value) {
     saveBooleanSetting(FULL_README, value);
+  }
+
+  public String getRepoDefaulTab() {
+    return getStringSetting(REPO_DEFAUL_TAB, "code");
+  }
+
+  public void saveRepoDefaultTab(String defaultTab) {
+    saveStringSetting(REPO_DEFAUL_TAB, defaultTab);
   }
 }

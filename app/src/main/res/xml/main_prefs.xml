@@ -45,10 +45,13 @@
         android:key="repository_full_readme"
         android:summaryOn="Full readme"
         android:summaryOff="Short readme"
+        android:persistent="true"
         />
-    <Preference
+    <com.afollestad.materialdialogs.prefs.MaterialListPreference
         android:title="Default tab"
         android:key="repository_default_tab"
+        android:entries="@array/repo_settings_defalut_tab_items"
+        android:entryValues="@array/repo_settings_defalut_tab_values"
         />
   </PreferenceCategory>
 

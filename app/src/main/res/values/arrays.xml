@@ -60,6 +60,29 @@
     <item>@id/theme_dark</item>
   </string-array>
 
+  <string name="repo_settings_defalut_tab_items_code">Code</string>
+  <string name="repo_settings_defalut_tab_items_issues">Issues</string>
+  <string name="repo_settings_defalut_tab_items_pullrequest">PullRequests</string>
+  <string name="repo_settings_defalut_tab_items_contributors">Contributors</string>
+
+  <string name="repo_settings_defalut_tab_items_code_value">code</string>
+  <string name="repo_settings_defalut_tab_items_issues_value">issues</string>
+  <string name="repo_settings_defalut_tab_items_pullrequest_value">pullRequests</string>
+  <string name="repo_settings_defalut_tab_items_contributors_value">contributors</string>
+
+  <string-array name="repo_settings_defalut_tab_items">
+    <item>@string/repo_settings_defalut_tab_items_code</item>
+    <item>@string/repo_settings_defalut_tab_items_issues</item>
+    <item>@string/repo_settings_defalut_tab_items_pullrequest</item>
+    <item>@string/repo_settings_defalut_tab_items_contributors</item>
+  </string-array>
+
+  <string-array name="repo_settings_defalut_tab_values">
+    <item>@string/repo_settings_defalut_tab_items_code_value</item>
+    <item>@string/repo_settings_defalut_tab_items_issues_value</item>
+    <item>@string/repo_settings_defalut_tab_items_pullrequest_value</item>
+    <item>@string/repo_settings_defalut_tab_items_contributors_value</item>
+  </string-array>
 
   <string name="sort_created">Created</string>
   <string name="sort_updated">Updated</string>

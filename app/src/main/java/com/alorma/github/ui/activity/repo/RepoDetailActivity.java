@@ -2,7 +2,9 @@ package com.alorma.github.ui.activity.repo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -10,11 +12,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.TextUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.alorma.github.GitskariosSettings;
 import com.alorma.github.R;
-import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.MainActivity;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
@@ -84,6 +86,8 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
       if (requestRepoInfo != null) {
         setTitle(requestRepoInfo.name);
 
+        showNewRepoScreenDialog();
+
         listFragments();
         setupTabs();
       } else {
@@ -91,6 +95,18 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
       }
     } else {
       finish();
+    }
+  }
+
+  private void showNewRepoScreenDialog() {
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+    boolean first_time = preferences.getBoolean("repo_screen_first_time", true);
+
+    if (first_time) {
+      new MaterialDialog.Builder(this).title("Repository")
+          .content("This is the new repository screen!\n\nThere are two new settings to show full readme, and set default tab as selected.")
+          .dismissListener(dialog1 -> preferences.edit().putBoolean("repo_screen_first_time", false).apply())
+          .show();
     }
   }
 
@@ -112,10 +128,17 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
   private void setupTabs() {
 
-    tabLayout.addTab(getTab(R.drawable.ic_home, R.string.repo_detail_home), true);
-    tabLayout.addTab(getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues), false);
-    tabLayout.addTab(getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls), false);
-    tabLayout.addTab(getTab(R.drawable.ic_person, R.string.repo_detail_contributors), false);
+    TabLayout.Tab codeTab = getTab(R.drawable.ic_home, R.string.repo_detail_home);
+    tabLayout.addTab(codeTab, true);
+
+    TabLayout.Tab issuesTab = getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues);
+    tabLayout.addTab(issuesTab, false);
+
+    TabLayout.Tab pullrequestsTab = getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls);
+    tabLayout.addTab(pullrequestsTab, false);
+
+    TabLayout.Tab contributorsTab = getTab(R.drawable.ic_person, R.string.repo_detail_contributors);
+    tabLayout.addTab(contributorsTab, false);
 
     tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
@@ -147,7 +170,23 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
       }
     });
 
-    setFragment(repoAboutFragment);
+    GitskariosSettings gitskariosSettings = new GitskariosSettings(this);
+
+    String repoDefaulTab = gitskariosSettings.getRepoDefaulTab();
+
+    if (getString(R.string.repo_settings_defalut_tab_items_issues_value).equals(repoDefaulTab)) {
+      setFragment(repositoryIssuesListFragment);
+      issuesTab.select();
+    } else if (getString(R.string.repo_settings_defalut_tab_items_pullrequest_value).equals(repoDefaulTab)) {
+      setFragment(repositoryPullRequestsListFragment);
+      pullrequestsTab.select();
+    } else if (getString(R.string.repo_settings_defalut_tab_items_contributors_value).equals(repoDefaulTab)) {
+      setFragment(repoContributorsFragment);
+      contributorsTab.select();
+    } else {
+      setFragment(repoAboutFragment);
+      codeTab.select();
+    }
   }
 
   @NonNull
