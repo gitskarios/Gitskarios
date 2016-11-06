@@ -159,6 +159,7 @@ public class IssueDetailView extends LinearLayout {
           RepoInfo repoInfo1 = new RepoInfo();
           repoInfo1.owner = repo.getOwner().getLogin();
           repoInfo1.name = repo.name;
+          repoInfo1.permissions = repo.permissions;
           Intent launcherIntent = RepoDetailActivity.createLauncherIntent(v.getContext(), repoInfo1);
           v.getContext().startActivity(launcherIntent);
         });
