@@ -70,6 +70,7 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
   @BindView(R.id.repoDefaultBranchTextView) TextView repoDefaultBranchTextView;
   @BindView(R.id.repoDefaultBranchInfo) TextView repoDefaultBranchInfo;
   @BindView(R.id.repoDefaultBranchCodeButton) Button repoDefaultBranchCodeButton;
+  @BindView(R.id.repoDefaultBranchCommits) Button repoDefaultBranchCommits;
   @BindView(R.id.repoDefaultBranchExpandableIcon) ImageView repoDefaultBranchExpandableIcon;
 
   @BindView(R.id.repoDefaultOpenReadme) View repoDefaultOpenReadme;
@@ -300,6 +301,7 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
       String time = getResources().getString(R.string.commit_time_ago, defaultBranch.commit.author.getLogin(), timeAgoString);
       repoDefaultBranchInfo.setText(Html.fromHtml(time));
       repoDefaultBranchCodeButton.setOnClickListener(v -> openBranchCode(defaultBranch));
+      repoDefaultBranchCommits.setOnClickListener(v -> openBranchCommits(defaultBranch));
 
       if (branches != null) {
         List<Branch> visibleBranches = new ArrayList<>();
@@ -309,16 +311,20 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
           }
         }
         if (visibleBranches.size() > 1) {
+          repoDefaultBranchExpandableIcon.setVisibility(View.VISIBLE);
           repoDefaultBranchExpandableIcon.setOnClickListener(v -> showBranchSelector(visibleBranches));
-        } else {
-          repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
         }
-      } else {
-        repoDefaultBranchExpandableIcon.setVisibility(View.GONE);
       }
-    } else {
-      repoDetailBranchesLayout.setVisibility(View.GONE);
     }
+  }
+
+  private void openBranchCommits(Branch defaultBranch) {
+    RepoInfo repoInfo = new RepoInfo();
+    repoInfo.owner = this.repoInfo.owner;
+    repoInfo.name = this.repoInfo.name;
+    repoInfo.branch = defaultBranch.getName();
+    Intent intent = BranchCommitsActivity.createLauncherIntent(getContext(), repoInfo);
+    startActivity(intent);
   }
 
   private void openBranchCode(Branch branch) {

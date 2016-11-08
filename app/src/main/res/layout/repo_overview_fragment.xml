@@ -14,7 +14,7 @@
                 android:orientation="vertical"
       >
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <TextView
         android:id="@+id/repoDescriptionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,63 +26,71 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:id="@+id/repoDetailNumbersLayout"
-        android:layout_margin="8dp"
-        android:orientation="horizontal"
-        style="@style/repo_detail_button_bar"
-        >
-      <Button
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:id="@+id/repoDetailNumbersStar"
-          android:layout_weight="1"
-          android:drawableLeft="@drawable/ic_star_vector"
-          tools:text="@string/repo_detail_no_starred"
-          android:textAllCaps="false"
-          style="@style/repo_detail_button"
-          />
-
-      <Button
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:id="@+id/repoDetailNumbersWatch"
-          android:layout_weight="1"
-          android:drawableLeft="@drawable/ic_eye"
-          tools:text="@string/repo_detail_no_watched"
-          android:textAllCaps="false"
-          style="@style/repo_detail_button"
-          />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         style="@style/repo_detail_button_bar"
+        android:layout_margin="8dp"
         >
 
-      <Button
+      <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="48dp"
-          android:layout_weight="1"
-          android:id="@+id/repoDetailTagsCount"
-          android:drawableLeft="@drawable/ic_tag"
-          tools:text="@string/repo_detail_tags"
-          style="@style/repo_detail_button"
-          android:textAllCaps="false"
-          />
-      <Button
+          android:id="@+id/repoDetailNumbersLayout"
+          android:orientation="horizontal"
+          android:divider="@drawable/divider_vertical"
+          android:showDividers="middle"
+          >
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/repoDetailNumbersStar"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_star_vector"
+            tools:text="@string/repo_detail_no_starred"
+            android:textAllCaps="false"
+            style="@style/repo_detail_button"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/repoDetailNumbersWatch"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_eye"
+            tools:text="@string/repo_detail_no_watched"
+            android:textAllCaps="false"
+            style="@style/repo_detail_button"
+            />
+
+      </LinearLayout>
+      <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="48dp"
-          android:layout_weight="1"
-          android:id="@+id/repoDetailLicense"
-          android:drawableLeft="@drawable/ic_law"
-          tools:text="MIT"
-          style="@style/repo_detail_button"
-          />
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:divider="@drawable/divider_vertical"
+          android:showDividers="middle"
+          >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/repoDetailTagsCount"
+            android:drawableLeft="@drawable/ic_tag"
+            tools:text="@string/repo_detail_tags"
+            style="@style/repo_detail_button"
+            android:textAllCaps="false"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:id="@+id/repoDetailLicense"
+            android:drawableLeft="@drawable/ic_law"
+            tools:text="MIT"
+            style="@style/repo_detail_button"
+            />
+      </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -117,7 +125,7 @@
             android:tint="#666666"
             />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <TextView
             android:id="@+id/repoDefaultBranchTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -145,13 +153,15 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/chevron_down"
             />
 
       </RelativeLayout>
 
-      <com.elyeproj.loaderviewlibrary.LoaderTextView
+      <TextView
           android:layout_width="match_parent"
           android:layout_height="48dp"
           android:id="@+id/repoDefaultBranchInfo"
@@ -181,9 +191,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_search_selector"
-            android:text="Jump to file"
-            android:enabled="false"
+            android:drawableLeft="@drawable/ic_git_commit"
+            android:text="Commits"
+            android:id="@+id/repoDefaultBranchCommits"
             style="@style/repo_detail_button"
             />
 
