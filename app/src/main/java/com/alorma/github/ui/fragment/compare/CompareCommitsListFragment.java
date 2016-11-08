@@ -124,4 +124,14 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
     ClipData clip = ClipData.newPlainText("Gitskarios", text);
     clipboard.setPrimaryClip(clip);
   }
+
+  @Override
+  protected int getLightTheme() {
+    return R.style.AppTheme_Repository;
+  }
+
+  @Override
+  protected int getDarkTheme() {
+    return R.style.AppTheme_Dark_Repository;
+  }
 }

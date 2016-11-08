@@ -211,7 +211,7 @@
 
   <style name="repo_detail_button_bar">
     <item name="android:background">@drawable/countorn</item>
-    <item name="android:divider">@drawable/divider_vertical</item>
+    <item name="android:divider">@drawable/divider_horizontal</item>
     <item name="android:showDividers">middle</item>
   </style>
 

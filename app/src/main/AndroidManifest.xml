@@ -89,9 +89,9 @@
         />
     <activity android:name=".ui.activity.FileActivity"/>
     <activity android:name=".ui.activity.repo.RepoReleasesActivity"/>
+    <activity android:name=".ui.activity.repo.BranchCommitsActivity"/>
     <activity android:name=".ui.activity.ContentCommitsActivity"/>
-    <activity android:name=".ui.activity.OrganizationActivity"
-        />
+    <activity android:name=".ui.activity.OrganizationActivity"/>
     <activity android:name=".ui.activity.ReleaseDetailActivity"/>
     <activity android:name=".ui.activity.LanguagesActivity"/>
     <activity android:name=".ui.activity.gists.GistEditorActivity"/>
