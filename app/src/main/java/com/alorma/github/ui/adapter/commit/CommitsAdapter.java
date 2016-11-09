@@ -77,8 +77,8 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
 
   private void bindMessage(ViewHolder holder, Commit commit) {
     String message = commit.shortMessage();
-    if (commit.commit != null && commit.commit.shortMessage() != null) {
-      message = commit.commit.shortMessage();
+    if (commit.commit != null && commit.commit.getMessage() != null) {
+      message = commit.commit.getMessage();
     }
 
     if (shortMessage) {
