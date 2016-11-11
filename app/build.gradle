@@ -39,11 +39,16 @@ android {
   testOptions {
     unitTests.returnDefaultValues = true
   }
+
+  def versionMajor=getVersionMajor()
+  def versionMinor=getVersionMinor()
+  def versionPatch=getVersionPatch()
+
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion 24
-    versionName "4.5.7"
-    versionCode 405007
+    versionName "v.$versionMajor.$versionMinor.$versionPatch"
+    versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch
     resValue "string", "app_git_hash", getCurrentGitHash()
     resValue "string", "app_version_number", versionName
 
@@ -312,6 +317,36 @@ def signingConfigFromFile() {
     println 'signing.properties not found'
   }
   return [null, null, null]
+}
+
+def getVersionMajor() {
+  def content = file('../version.properties')
+
+  Properties properties = new Properties()
+  InputStream is = new ByteArrayInputStream(content.getBytes());
+  properties.load(is)
+
+  return properties['VERSION_MAJOR'].toInteger()
+}
+
+def getVersionMinor() {
+  def content = file('../version.properties')
+
+  Properties properties = new Properties()
+  InputStream is = new ByteArrayInputStream(content.getBytes());
+  properties.load(is)
+
+  return properties['VERSION_MINOR'].toInteger()
+}
+
+def getVersionPatch() {
+  def content = file('../version.properties')
+
+  Properties properties = new Properties()
+  InputStream is = new ByteArrayInputStream(content.getBytes());
+  properties.load(is)
+
+  return properties['VERSION_PATCH'].toInteger()
 }
 
 apply plugin: 'com.google.gms.google-services'
