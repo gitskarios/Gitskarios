@@ -1,11 +1,9 @@
 language: android
-
 branches:
   only:
-    - develop
-    - /^v\.\d+\.\d+\.\d+$/
-    - /^v\.\d+\.\d+\.\d+.\d+$/
-
+  - develop
+  - /^v\.\d+\.\d+\.\d+$/
+  - /^v\.\d+\.\d+\.\d+.\d+$/
 cache:
   directories:
   - $HOME/.m2
@@ -17,13 +15,13 @@ cache:
   - $HOME/.gradle/caches/2.10
 jdk:
 - oraclejdk8
-
 before_script:
-  - sudo apt-get update && sudo apt-get install oracle-java8-installer
-
+- sudo apt-get update && sudo apt-get install oracle-java8-installer
 before_install:
+ - openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
+  -in secrets.tar.enc -out secrets.tar -d
+ - tar xvf secrets.tar
  - chmod +x gradlew
-
 android:
   components:
   - tools
@@ -36,8 +34,6 @@ android:
   - extra-google-m2repository
   licenses:
   - android-sdk-license-.+
-before_script:
-- git submodule update --init
 script: ./gradlew build -PdisablePreDex
 deploy:
 - provider: script
@@ -53,7 +49,6 @@ deploy:
 notifications:
   slack:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
-before_install:
-- openssl aes-256-cbc -K $encrypted_7d926816f25e_key -iv $encrypted_7d926816f25e_iv
-  -in secrets.tar.enc -out secrets.tar -d
-- tar xvf secrets.tar
+env:
+  global:
+    secure: Y5at0dEcUFFZ2+6NUu64HCh8wEdyY8lkIE8LHfqiSbqudgJmePvPMJ/lFdZ/Yh4eXm7dnS7ZkQQbCdVkEoL9bLEHLN74t4X4ICWZhLu7i6hvOpYWEPHOj8rtdtibP3xa0Z3x3RoVSkGBlEv+ME94it9gGboloFl7CscWsNGZEXs=
