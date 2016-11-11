@@ -2,7 +2,6 @@
 
 if [ -n "$TRAVIS_TAG"]; then
 	echo "No TAG provided"
-	exit 1
 else
 	echo "         "
 	echo "-----------------------------------"
