@@ -58,6 +58,7 @@ deploy:
   file: version.properties
   on:
     tags: true
+    all_branches: true
     repo: build/outputs/apk/*.apk
 
 notifications:
