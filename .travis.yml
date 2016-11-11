@@ -55,11 +55,11 @@ deploy:
 - provider: releases
   api_key:
     secure: "qoVzFmtwPKM/Te1ggabADVSV7EY1k/wcnMwJsEsg051kskKs/POQ9XO3pk2VHQm/nWaprt2eU0lVjWoBHDwLugiqhwzIBb59AP87ZINrRyxzE//6BtVaBang0eJusIkwvS0Jnnm2VmpPPu5vveDYJHG/F91HCN3iUFCgNau3sfk="
-  file: version.properties
+  file: build/outputs/apk/*.apk
   on:
     tags: true
     all_branches: true
-    repo: build/outputs/apk/*.apk
+    repo: gitskarios/Gitskarios
 
 notifications:
   slack:
