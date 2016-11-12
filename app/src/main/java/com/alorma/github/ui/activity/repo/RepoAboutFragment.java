@@ -299,8 +299,11 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
   private void populateBranches(Branch defaultBranch, List<Branch> branches) {
     if (defaultBranch != null) {
       repoDefaultBranchTextView.setText(defaultBranch.name);
+
       String timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
-      String time = getResources().getString(R.string.commit_time_ago, defaultBranch.commit.author.getLogin(), timeAgoString);
+      String login = defaultBranch.commit.author != null ? defaultBranch.commit.author.getLogin() : "";
+      String time = getResources().getString(R.string.commit_time_ago, login, timeAgoString);
+
       repoDefaultBranchInfo.setText(Html.fromHtml(time));
       repoDefaultBranchCodeButton.setOnClickListener(v -> openBranchCode(defaultBranch));
       repoDefaultBranchCommits.setOnClickListener(v -> openBranchCommits(defaultBranch));
