@@ -32,7 +32,6 @@ import com.alorma.github.ui.view.ItemSingleLineAvatar;
 import core.User;
 import core.repositories.Commit;
 import core.repositories.CommitFile;
-import core.repositories.GitCommitFiles;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -179,7 +178,7 @@ public class CommitDetailActivity extends RepositoryThemeActivity
     });
   }
 
-  private void showFiles(GitCommitFiles files) {
+  private void showFiles(List<CommitFile> files) {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setNestedScrollingEnabled(false);
 

@@ -19,7 +19,7 @@ public class Commit extends ShaUrl {
   public User committer;
   public String message;
   public boolean distinct;
-  public GitCommitFiles files;
+  public List<CommitFile> files;
   public int days;
   public int comment_count;
   private GithubStatusResponse combinedStatus;
@@ -83,11 +83,11 @@ public class Commit extends ShaUrl {
     this.distinct = distinct;
   }
 
-  public GitCommitFiles getFiles() {
+  public List<CommitFile> getFiles() {
     return files;
   }
 
-  public void setFiles(GitCommitFiles files) {
+  public void setFiles(List<CommitFile> files) {
     this.files = files;
   }
 
@@ -148,12 +148,10 @@ public class Commit extends ShaUrl {
     dest.writeParcelable(this.committer, flags);
     dest.writeString(this.message);
     dest.writeByte(this.distinct ? (byte) 1 : (byte) 0);
+    dest.writeList(this.files);
     dest.writeInt(this.days);
     dest.writeInt(this.comment_count);
     dest.writeParcelable(this.combinedStatus, flags);
-    dest.writeString(this.htmlUrl);
-    dest.writeString(this.sha);
-    dest.writeString(this.url);
   }
 
   protected Commit(Parcel in) {
@@ -165,12 +163,11 @@ public class Commit extends ShaUrl {
     this.committer = in.readParcelable(User.class.getClassLoader());
     this.message = in.readString();
     this.distinct = in.readByte() != 0;
+    this.files = new ArrayList<>();
+    in.readList(this.files, CommitFile.class.getClassLoader());
     this.days = in.readInt();
     this.comment_count = in.readInt();
     this.combinedStatus = in.readParcelable(GithubStatusResponse.class.getClassLoader());
-    this.htmlUrl = in.readString();
-    this.sha = in.readString();
-    this.url = in.readString();
   }
 
   public static final Creator<Commit> CREATOR = new Creator<Commit>() {

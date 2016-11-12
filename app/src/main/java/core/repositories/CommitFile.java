@@ -1,5 +1,7 @@
 package core.repositories;
 
+import android.os.Parcel;
+
 public class CommitFile extends GitChangeStatus {
 
   public String filename;
@@ -59,4 +61,42 @@ public class CommitFile extends GitChangeStatus {
   public void setSha(String sha) {
     this.sha = sha;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    super.writeToParcel(dest, flags);
+    dest.writeString(this.filename);
+    dest.writeString(this.status);
+    dest.writeString(this.raw_url);
+    dest.writeString(this.blob_url);
+    dest.writeString(this.patch);
+    dest.writeString(this.sha);
+  }
+
+  protected CommitFile(Parcel in) {
+    super(in);
+    this.filename = in.readString();
+    this.status = in.readString();
+    this.raw_url = in.readString();
+    this.blob_url = in.readString();
+    this.patch = in.readString();
+    this.sha = in.readString();
+  }
+
+  public static final Creator<CommitFile> CREATOR = new Creator<CommitFile>() {
+    @Override
+    public CommitFile createFromParcel(Parcel source) {
+      return new CommitFile(source);
+    }
+
+    @Override
+    public CommitFile[] newArray(int size) {
+      return new CommitFile[size];
+    }
+  };
 }

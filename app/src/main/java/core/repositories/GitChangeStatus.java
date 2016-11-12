@@ -65,7 +65,7 @@ public class GitChangeStatus implements Parcelable {
     this.changes = in.readInt();
   }
 
-  public static final Parcelable.Creator<GitChangeStatus> CREATOR = new Parcelable.Creator<GitChangeStatus>() {
+  public static final Creator<GitChangeStatus> CREATOR = new Creator<GitChangeStatus>() {
     @Override
     public GitChangeStatus createFromParcel(Parcel source) {
       return new GitChangeStatus(source);

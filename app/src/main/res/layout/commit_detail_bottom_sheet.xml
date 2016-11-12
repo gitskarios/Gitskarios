@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              app:behavior_hideable="true"
+              app:layout_behavior="@string/bottom_sheet_behavior"
+    >
+
+  <android.support.v7.widget.Toolbar
+      android:layout_width="match_parent"
+      android:layout_height="?actionBarSize"
+      android:id="@+id/commitToolbar"
+      />
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/commit_message"
+      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+      android:padding="8dp"
+      android:textSize="14sp"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:divider="@drawable/divider_vertical"
+      android:showDividers="middle"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="?selectableItemBackground"
+        >
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+          android:text="@string/commit_author"
+          android:padding="8dp"
+          android:textSize="14sp"
+          />
+
+      <com.alorma.github.ui.view.ItemSingleLineAvatar
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:id="@+id/author"
+          android:layout_marginLeft="8dp"
+          />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="?selectableItemBackground"
+        >
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+          android:text="@string/commit_committer"
+          android:padding="8dp"
+          android:textSize="14sp"
+          />
+
+      <com.alorma.github.ui.view.ItemSingleLineAvatar
+          android:layout_width="match_parent"
+          android:layout_height="56dp"
+          android:id="@+id/committer"
+          android:layout_marginLeft="8dp"
+          />
+
+    </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

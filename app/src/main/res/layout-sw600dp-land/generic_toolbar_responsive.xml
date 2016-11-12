@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical"
     >
-
-  <FrameLayout
+  <android.support.design.widget.AppBarLayout
       android:layout_width="match_parent"
-      android:layout_height="260dp"
-      android:background="?colorPrimary"
-      android:id="@+id/toolbarBg"
+      android:layout_height="?actionBarSize"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
       >
     <android.support.v7.widget.Toolbar
         android:id="@id/toolbar"
@@ -20,10 +18,15 @@
         android:minHeight="?actionBarSize"
         app:contentInsetStart="@dimen/second_keyline"
         android:layout_gravity="top"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         />
-  </FrameLayout>
+  </android.support.design.widget.AppBarLayout>
 
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="200dp"
+      android:id="@+id/toolbarBg"
+      android:background="?colorPrimary"
+      />
   <FrameLayout
       android:id="@+id/content"
       android:layout_width="match_parent"
@@ -33,6 +36,7 @@
       android:layout_marginLeft="@dimen/responsive_ly_margin_horizontal"
       android:layout_marginRight="@dimen/responsive_ly_margin_horizontal"
       android:layout_marginTop="@dimen/responsive_ly_margin_vertical"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
       />
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

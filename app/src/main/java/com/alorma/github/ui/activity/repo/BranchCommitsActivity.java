@@ -7,11 +7,14 @@ import android.support.v4.app.FragmentTransaction;
 import com.alorma.github.R;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
+import com.alorma.github.ui.fragment.commit.CommitDetailBottomSheetFragment;
 import com.alorma.github.ui.fragment.commit.CommitsListFragment;
+import core.repositories.Commit;
 
-public class BranchCommitsActivity extends RepositoryThemeActivity {
+public class BranchCommitsActivity extends RepositoryThemeActivity implements CommitsListFragment.CommitSelectedCallback {
 
   private static final String REPO_INFO = "REPO_INFO";
+  private RepoInfo repoInfo;
 
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -29,7 +32,7 @@ public class BranchCommitsActivity extends RepositoryThemeActivity {
     setContentView(R.layout.generic_toolbar_responsive);
 
     if (getIntent() != null && getIntent().getExtras() != null) {
-      RepoInfo repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
+      repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
       if (repoInfo != null) {
         setTitle(repoInfo.toString());
 
@@ -42,5 +45,11 @@ public class BranchCommitsActivity extends RepositoryThemeActivity {
         ft.commit();
       }
     }
+  }
+
+  @Override
+  public void onCommitSelected(Commit commit) {
+    CommitDetailBottomSheetFragment fragment = CommitDetailBottomSheetFragment.newInstance(repoInfo, commit);
+    fragment.show(getSupportFragmentManager(), "");
   }
 }

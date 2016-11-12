@@ -23,7 +23,7 @@
           android:orientation="vertical"
           >
 
-        <include layout="@layout/commit_detail_info" />
+        <include layout="@layout/commit_detail_info"/>
 
       </LinearLayout>
 

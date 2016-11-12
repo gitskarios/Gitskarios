@@ -15,11 +15,8 @@ import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.commit.ListCommitsClient;
-import com.alorma.github.sdk.services.repo.GetRepoBranchesClient;
-import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.CompareRepositoryCommitsActivity;
 import com.alorma.github.ui.adapter.commit.CommitsAdapter;
-import com.alorma.github.ui.callbacks.DialogBranchesSubscriber;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.BranchManager;
@@ -53,6 +50,8 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   private boolean isInCompareMode = false;
   private String baseCompare = null;
   private String headCompare = null;
+
+  private CommitSelectedCallback commitSelectedCallback;
 
   public static CommitsListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -94,15 +93,29 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     listCommitsClient.observable()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .map(new Func1<Pair<List<Commit>, Integer>, List<Commit>>() {
-          @Override
-          public List<Commit> call(Pair<List<Commit>, Integer> listIntegerPair) {
-            setPage(listIntegerPair.second);
-            return listIntegerPair.first;
-          }
+        .map((Func1<Pair<List<Commit>, Integer>, List<Commit>>) listIntegerPair -> {
+          setPage(listIntegerPair.second);
+          return listIntegerPair.first;
         })
         .map(orderCommits())
         .subscribe(this);
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+
+    if (context instanceof CommitSelectedCallback) {
+      commitSelectedCallback = (CommitSelectedCallback) context;
+    }
+  }
+
+  @Override
+  public void onDetach() {
+    commitSelectedCallback = commit -> {
+
+    };
+    super.onDetach();
   }
 
   @Override
@@ -300,12 +313,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
   @Override
   public void onCommitClick(Commit commit) {
     if (!isInCompareMode) {
-      CommitInfo info = new CommitInfo();
-      info.repoInfo = repoInfo;
-      info.sha = commit.sha;
-
-      Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
-      startActivity(intent);
+      openCommit(commit);
     } else if (headCompare == null) {
       checkFAB();
       headCompare = commit.shortSha();
@@ -324,6 +332,10 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     }
   }
 
+  private void openCommit(Commit commit) {
+    commitSelectedCallback.onCommitSelected(commit);
+  }
+
   @Override
   public boolean onCommitLongClick(Commit commit) {
     copy(commit.shortSha());
@@ -337,21 +349,7 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     clipboard.setPrimaryClip(clip);
   }
 
-  private void changeBranch() {
-    GetRepoBranchesClient repoBranchesClient = new GetRepoBranchesClient(repoInfo);
-    repoBranchesClient.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new DialogBranchesSubscriber(getActivity(), repoInfo) {
-          @Override
-          protected void onBranchSelected(String branch) {
-            setCurrentBranch(branch);
-          }
-
-          @Override
-          protected void onNoBranches() {
-
-          }
-        });
+  public interface CommitSelectedCallback {
+    void onCommitSelected(Commit commit);
   }
 }
