@@ -35,12 +35,12 @@ public class OrgsMembersFragment extends BaseUsersListFragment {
 
   @Override
   protected void executeRequest() {
-    setAction(new OrgsMembersClient(org));
+    setAction(new OrgsMembersClient(org), true);
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
-    setAction(new OrgsMembersClient(org, page));
+    setAction(new OrgsMembersClient(org, page), true);
   }
 
   @Override

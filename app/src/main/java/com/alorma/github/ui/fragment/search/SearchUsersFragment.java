@@ -2,9 +2,11 @@ package com.alorma.github.ui.fragment.search;
 
 import android.app.SearchManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import com.alorma.github.R;
 import com.alorma.github.sdk.services.search.UsersSearchClient;
+import com.alorma.github.ui.adapter.users.UsersAdapter;
 import com.alorma.github.ui.fragment.users.BaseUsersListFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.gitskarios.core.Pair;
@@ -13,7 +15,6 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import core.User;
 import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class SearchUsersFragment extends BaseUsersListFragment implements TitleProvider {
@@ -60,15 +61,36 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
         UsersSearchClient client = new UsersSearchClient(query);
         client.observable()
             .subscribeOn(Schedulers.io())
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this);
+            .subscribe(o -> onUsersLoaded(o, true), Throwable::printStackTrace);
         query = null;
         if (getAdapter() != null) {
           getAdapter().clear();
         }
       }
     }
+  }
+
+  private void onUsersLoaded(Pair<List<User>, Integer> pair, boolean refresh) {
+    setPage(pair.second);
+    List<User> users = pair.first;
+
+    if (users.size() > 0) {
+      hideEmpty();
+      if (refresh || getAdapter() == null) {
+        UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+        adapter.addAll(users);
+        setAdapter(adapter);
+      } else {
+        getAdapter().addAll(users);
+      }
+    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
+    } else {
+      getAdapter().clear();
+      setEmpty();
+    }
+    stopRefresh();
   }
 
   @Override
@@ -79,14 +101,8 @@ public class SearchUsersFragment extends BaseUsersListFragment implements TitleP
         UsersSearchClient client = new UsersSearchClient(query, page);
         client.observable()
             .subscribeOn(Schedulers.io())
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext((Action1<Pair<List<User>, Integer>>) listIntegerPair -> {
-              if (getAdapter() != null) {
-                getAdapter().clear();
-              }
-            })
-            .subscribe(this);
+            .subscribe(o -> onUsersLoaded(o, false), Throwable::printStackTrace);
         query = null;
         if (getAdapter() != null) {
           getAdapter().clear();

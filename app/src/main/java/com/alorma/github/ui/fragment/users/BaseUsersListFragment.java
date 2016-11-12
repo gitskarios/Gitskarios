@@ -16,29 +16,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAdapter> implements Observer<Pair<List<User>, Integer>> {
-
-  @Override
-  public void onNext(Pair<List<User>, Integer> listIntegerPair) {
-    setPage(listIntegerPair.second);
-    List<User> users = listIntegerPair.first;
-
-    if (users.size() > 0) {
-      hideEmpty();
-      if (refreshing || getAdapter() == null) {
-        UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
-        adapter.addAll(users);
-        setAdapter(adapter);
-      } else {
-        getAdapter().addAll(users);
-      }
-    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-      setEmpty();
-    } else {
-      getAdapter().clear();
-      setEmpty();
-    }
-  }
+public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAdapter> {
 
   @StyleRes
   @Override
@@ -52,19 +30,32 @@ public abstract class BaseUsersListFragment extends LoadingListFragment<UsersAda
     return R.style.AppTheme_Dark_People;
   }
 
-  @Override
-  public void onError(Throwable e) {
-
-  }
-
-  @Override
-  public void onCompleted() {
-    stopRefresh();
-  }
-
-  protected void setAction(GithubListClient<List<User>> userFollowersClient) {
+  protected void setAction(GithubListClient<List<User>> userFollowersClient, boolean refresh) {
     startRefresh();
-    userFollowersClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+    userFollowersClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(pair -> onUsersLoaded(pair, refresh), throwable -> {
+    });
+  }
+
+  private void onUsersLoaded(Pair<List<User>, Integer> pair, boolean refresh) {
+    setPage(pair.second);
+    List<User> users = pair.first;
+
+    if (users.size() > 0) {
+      hideEmpty();
+      if (refresh || getAdapter() == null) {
+        UsersAdapter adapter = new UsersAdapter(LayoutInflater.from(getActivity()));
+        adapter.addAll(users);
+        setAdapter(adapter);
+      } else {
+        getAdapter().addAll(users);
+      }
+    } else if (getAdapter() == null || getAdapter().getItemCount() == 0) {
+      setEmpty();
+    } else {
+      getAdapter().clear();
+      setEmpty();
+    }
+    stopRefresh();
   }
 
   @Override

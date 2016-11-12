@@ -28,13 +28,13 @@ public class FollowersFragment extends BaseUsersListFragment {
   @Override
   protected void executeRequest() {
     super.executeRequest();
-    setAction(new UserFollowersClient(username));
+    setAction(new UserFollowersClient(username), true);
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-    setAction(new UserFollowersClient(username, page));
+    setAction(new UserFollowersClient(username, page), false);
   }
 
   @Override
