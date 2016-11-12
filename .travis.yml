@@ -37,6 +37,17 @@ android:
   - android-sdk-license-.+
 script: ./gradlew build
 deploy:
+- provider: releases
+  api_key:
+    secure: "qoVzFmtwPKM/Te1ggabADVSV7EY1k/wcnMwJsEsg051kskKs/POQ9XO3pk2VHQm/nWaprt2eU0lVjWoBHDwLugiqhwzIBb59AP87ZINrRyxzE//6BtVaBang0eJusIkwvS0Jnnm2VmpPPu5vveDYJHG/F91HCN3iUFCgNau3sfk="
+  file:
+    - "app/build/outputs/apk/app-debug.apk"
+    - "app/build/outputs/apk/app-release.apk"
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    repo: gitskarios/Gitskarios
 - provider: script
   script: ./version_push.sh
   skip_cleanup: true
@@ -52,17 +63,6 @@ deploy:
   skip_cleanup: true
   on:
     branch: develop
-- provider: releases
-  api_key:
-    secure: "qoVzFmtwPKM/Te1ggabADVSV7EY1k/wcnMwJsEsg051kskKs/POQ9XO3pk2VHQm/nWaprt2eU0lVjWoBHDwLugiqhwzIBb59AP87ZINrRyxzE//6BtVaBang0eJusIkwvS0Jnnm2VmpPPu5vveDYJHG/F91HCN3iUFCgNau3sfk="
-  file:
-    - "app/build/outputs/apk/app-debug.apk"
-    - "app/build/outputs/apk/app-release.apk"
-  skip_cleanup: true
-  on:
-    tags: true
-    all_branches: true
-    repo: gitskarios/Gitskarios
 
 notifications:
   slack:
