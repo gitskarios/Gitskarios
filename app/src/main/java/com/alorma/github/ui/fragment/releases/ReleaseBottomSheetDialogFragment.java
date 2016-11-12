@@ -100,9 +100,10 @@ public class ReleaseBottomSheetDialogFragment extends BaseBottomSheetDialogFragm
 
   private void fillToolbar(Release release) {
     toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);
-    toolbar.setSubtitle(release.getTargetCommitish() + (release.getName() == null ? " - " + release.getTagName() : ""));
     toolbar.setNavigationOnClickListener(view -> dismiss());
-    toolbar.setTitle(release.getName() != null ? release.getName() : release.getTagName());
+
+    toolbar.setTitle(TextUtils.isEmpty(release.getName()) ? release.getTagName() : release.getName());
+    toolbar.setSubtitle(release.getTargetCommitish() + (!TextUtils.isEmpty(release.getName()) ? " - " + release.getTagName() : ""));
 
     if (!TextUtils.isEmpty(release.getBody())) {
       toolbar.inflateMenu(R.menu.release_dialog_bottom);

@@ -2,8 +2,8 @@ package com.alorma.github.ui.fragment.releases;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +46,7 @@ public class TagBottomSheetDialogFragment extends BaseBottomSheetDialogFragment 
   @BindView(R.id.downloadZip) View downloadZip;
   @BindView(R.id.downloadTar) View downloadTar;
   @BindView(R.id.loading) View loadingView;
+  @BindView(R.id.toolbar) Toolbar toolbar;
 
   private Tag tag;
   private RepoInfo repoInfo;
@@ -91,6 +92,8 @@ public class TagBottomSheetDialogFragment extends BaseBottomSheetDialogFragment 
 
     if (getArguments() != null) {
       tag = getArguments().getParcelable(TAG);
+      fillToolbar(tag);
+
       repoInfo = getArguments().getParcelable(REPOINFO);
       CommitInfo commitInfo = new CommitInfo();
       commitInfo.repoInfo = repoInfo;
@@ -146,6 +149,13 @@ public class TagBottomSheetDialogFragment extends BaseBottomSheetDialogFragment 
     configButton(downloadZip, R.string.download_zip_archive, tag.getZipballUrl(), tag);
     configButton(downloadTar, R.string.download_tar_archive, tag.getTarballUrl(), tag);
   }
+
+  private void fillToolbar(Tag tag) {
+      toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);
+      toolbar.setNavigationOnClickListener(view -> dismiss());
+
+      toolbar.setTitle(tag.getName());
+    }
 
   private void configButton(View button, int title, String url, Tag tag) {
     button.setOnClickListener(view -> {

@@ -11,7 +11,14 @@
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@color/white"
       >
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/toolbar"
+        />
 
     <LinearLayout
         android:id="@+id/author"
@@ -118,6 +125,7 @@
       android:visibility="gone"
       tools:visibility="visible"
       android:background="@color/white"
+      android:layout_marginTop="?actionBarSize"
       >
 
     <ProgressBar
