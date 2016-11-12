@@ -6,7 +6,10 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -34,10 +37,13 @@ public class ReleaseBottomSheetDialogFragment extends BottomSheetDialogFragment 
   @BindView(R.id.profileIcon) UserAvatarView userAvatar;
   @BindView(R.id.authorName) TextView authorName;
   @BindView(R.id.createdAt) TextView date;
+  @BindView(R.id.releaseDescriptionLayout) View releaseDescriptionView;
+  @BindView(R.id.releaseDescription) TextView releaseDescription;
   @BindView(R.id.downloadZip) View downloadZip;
   @BindView(R.id.downloadTar) View downloadTar;
   @BindView(R.id.loading) View loadingView;
   @BindView(R.id.recycler) RecyclerView recyclerView;
+  @BindView(R.id.toolbar) Toolbar toolbar;
 
   public static ReleaseBottomSheetDialogFragment newInstance(Release release) {
     ReleaseBottomSheetDialogFragment fragment = new ReleaseBottomSheetDialogFragment();
@@ -79,6 +85,10 @@ public class ReleaseBottomSheetDialogFragment extends BottomSheetDialogFragment 
   }
 
   private void fillTagDetailsView(Release release) {
+    fillToolbar(release);
+
+    releaseDescription.setText(release.getBody());
+
     authorName.setText(release.getAuthor().getLogin());
     userAvatar.setUser(release.getAuthor());
 
@@ -87,6 +97,49 @@ public class ReleaseBottomSheetDialogFragment extends BottomSheetDialogFragment 
     fillAssets(release);
     configButton(downloadZip, R.string.download_zip_archive, release.getZipballUrl(), release);
     configButton(downloadTar, R.string.download_tar_archive, release.getTarballUrl(), release);
+  }
+
+  private void fillToolbar(Release release) {
+    toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);
+    toolbar.setSubtitle(release.getTargetCommitish() + (release.getName() == null ? " - " + release.getTagName() : ""));
+    toolbar.setNavigationOnClickListener(view -> dismiss());
+    toolbar.setTitle(release.getName() != null ? release.getName() : release.getTagName());
+
+    if (!TextUtils.isEmpty(release.getBody())) {
+      toolbar.inflateMenu(R.menu.release_dialog_bottom);
+
+      MenuItem expandItem = toolbar.getMenu().findItem(R.id.action_expand);
+      if (expandItem != null) {
+        expandItem.setIcon(R.drawable.ic_expand_more_black_24dp);
+      }
+      MenuItem collapseItem = toolbar.getMenu().findItem(R.id.action_collapse);
+      if (collapseItem != null) {
+        collapseItem.setIcon(R.drawable.ic_expand_less_black_24dp);
+        collapseItem.setVisible(false);
+      }
+
+      toolbar.setOnMenuItemClickListener(item -> {
+        if (item.getItemId() == R.id.action_expand) {
+          if (collapseItem != null) {
+            collapseItem.setVisible(true);
+          }
+          if (expandItem != null) {
+            expandItem.setVisible(false);
+          }
+          releaseDescriptionView.setVisibility(View.VISIBLE);
+        } else if (item.getItemId() == R.id.action_collapse) {
+          if (collapseItem != null) {
+            collapseItem.setVisible(false);
+          }
+          if (expandItem != null) {
+            expandItem.setVisible(true);
+          }
+          releaseDescriptionView.setVisibility(View.GONE);
+        }
+
+        return super.onOptionsItemSelected(item);
+      });
+    }
   }
 
   private void fillAssets(Release release) {

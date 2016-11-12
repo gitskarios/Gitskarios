@@ -13,6 +13,12 @@
       android:layout_height="wrap_content"
       >
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/toolbar"
+        />
+
     <LinearLayout
         android:id="@+id/author"
         style="@style/repo_overview_item"
@@ -123,6 +129,42 @@
           />
 
     </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+      style="@style/repo_overview_item"
+      android:id="@+id/releaseDescriptionLayout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clickable="false"
+      android:gravity="top"
+      android:visibility="gone"
+      android:background="@color/white"
+      android:layout_marginTop="?actionBarSize"
+      >
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="4dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        app:srcCompat="@drawable/ic_file"
+        />
+
+    <TextView
+        android:id="@+id/releaseDescription"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="top"
+        android:textSize="@dimen/material_drawer_item_profile_text"
+        tools:text="Release descripton"
+        />
+
   </LinearLayout>
   <FrameLayout
       android:id="@+id/loading"
