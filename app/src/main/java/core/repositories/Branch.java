@@ -37,6 +37,11 @@ public class Branch implements Parcelable {
   }
 
   @Override
+  public String toString() {
+    return name;
+  }
+
+  @Override
   public int describeContents() {
     return 0;
   }
@@ -45,14 +50,16 @@ public class Branch implements Parcelable {
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(this.name);
     dest.writeParcelable(this.commit, flags);
+    dest.writeParcelable(this._links, flags);
   }
 
   protected Branch(Parcel in) {
     this.name = in.readString();
     this.commit = in.readParcelable(Commit.class.getClassLoader());
+    this._links = in.readParcelable(Links.class.getClassLoader());
   }
 
-  public static final Parcelable.Creator<Branch> CREATOR = new Parcelable.Creator<Branch>() {
+  public static final Creator<Branch> CREATOR = new Creator<Branch>() {
     @Override
     public Branch createFromParcel(Parcel source) {
       return new Branch(source);
@@ -63,9 +70,4 @@ public class Branch implements Parcelable {
       return new Branch[size];
     }
   };
-
-  @Override
-  public String toString() {
-    return name;
-  }
 }

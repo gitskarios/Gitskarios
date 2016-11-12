@@ -151,6 +151,9 @@ public class Commit extends ShaUrl {
     dest.writeInt(this.days);
     dest.writeInt(this.comment_count);
     dest.writeParcelable(this.combinedStatus, flags);
+    dest.writeString(this.htmlUrl);
+    dest.writeString(this.sha);
+    dest.writeString(this.url);
   }
 
   protected Commit(Parcel in) {
@@ -165,6 +168,9 @@ public class Commit extends ShaUrl {
     this.days = in.readInt();
     this.comment_count = in.readInt();
     this.combinedStatus = in.readParcelable(GithubStatusResponse.class.getClassLoader());
+    this.htmlUrl = in.readString();
+    this.sha = in.readString();
+    this.url = in.readString();
   }
 
   public static final Creator<Commit> CREATOR = new Creator<Commit>() {

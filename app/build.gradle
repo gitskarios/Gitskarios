@@ -31,7 +31,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 //gradle dependencyUpdates -Drevision=release
 
 android {
-  compileSdkVersion 24
+  compileSdkVersion 25
   buildToolsVersion '25.0.0'
   dexOptions {
     javaMaxHeapSize "4g"
@@ -213,7 +213,7 @@ dependencies {
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
   compile 'com.github.xiprox.errorview:library:2.2.0'
 
-  def supportLibVersion = '24.2.1'
+  def supportLibVersion = '25.0.0'
   compile "com.android.support:design:$supportLibVersion"
   compile "com.android.support:appcompat-v7:$supportLibVersion"
   compile "com.android.support:palette-v7:$supportLibVersion"

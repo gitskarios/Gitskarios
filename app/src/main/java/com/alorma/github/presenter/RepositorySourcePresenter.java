@@ -6,6 +6,7 @@ import com.alorma.gitskarios.core.Pair;
 import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Repo;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.Scheduler;
@@ -23,19 +24,16 @@ public class RepositorySourcePresenter
 
       List<Branch> branches = data.first.branches;
 
-      int branchIndex = -1;
+      List<Branch> newBranches = new ArrayList<>();
+      newBranches.add(data.second);
+
       for (int i = 0; i < branches.size(); i++) {
-        if (!data.second.name.equals(branches.get(0).name)) {
-          branchIndex = i;
+        if (!data.second.name.equals(branches.get(i).name)) {
+          newBranches.add(branches.get(i));
         }
       }
 
-      if (branchIndex != -1) {
-        branches.remove(branchIndex);
-        branches.add(0, data.second);
-      }
-
-      return branches;
+      return newBranches;
     }).map(branches -> new Pair<>(branches.get(0), branches));
 
     subscribe(observable.map(SdkItem::new), false);

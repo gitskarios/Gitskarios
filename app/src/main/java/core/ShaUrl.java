@@ -27,10 +27,12 @@ public class ShaUrl extends Sha implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    super.writeToParcel(dest, flags);
     dest.writeString(this.htmlUrl);
   }
 
   protected ShaUrl(Parcel in) {
+    super(in);
     this.htmlUrl = in.readString();
   }
 
