@@ -128,9 +128,15 @@ public class TagBottomSheetDialogFragment extends BottomSheetDialogFragment impl
 
   private void fillTagDetailsView(Tag tag, Commit commit) {
     User owner = commit.author;
-    userAvatar.setUser(owner);
 
-    authorName.setText(commit.author.getLogin());
+    if (owner == null) {
+      owner = commit.commit.author;
+    }
+
+    if (owner != null) {
+      authorName.setText(owner.getLogin() != null ? owner.getLogin() : owner.getEmail());
+      userAvatar.setUser(owner);
+    }
 
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
     DateTime dt = formatter.parseDateTime(commit.commit.committer.date);
