@@ -2,7 +2,6 @@ package com.alorma.github.ui.fragment.releases;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +17,7 @@ import butterknife.ButterKnife;
 import com.alorma.github.GitskariosApplication;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.ui.fragment.BaseBottomSheetDialogFragment;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.TimeUtils;
@@ -27,10 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-public class ReleaseBottomSheetDialogFragment extends BottomSheetDialogFragment implements ReleaseAssetsAdapter.OnReleaseAssetClicked {
+public class ReleaseBottomSheetDialogFragment extends BaseBottomSheetDialogFragment implements ReleaseAssetsAdapter.OnReleaseAssetClicked {
 
   private static final String RELEASE = "RELEASE";
-  private static final String REPOINFO = "REPOINFO";
 
   @Inject GitskariosDownloadManager gitskariosDownloadManager;
 

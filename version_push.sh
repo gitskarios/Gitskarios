@@ -11,4 +11,5 @@ rev=$(git rev-parse --short HEAD)
 
 git add .
 git commit -am "From Travis Generated credentials for $TRAVIS_TAG - $rev"
+git pull --no-edit
 git push --set-upstream origin HEAD:develop

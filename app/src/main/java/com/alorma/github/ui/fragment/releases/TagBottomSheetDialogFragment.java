@@ -20,6 +20,7 @@ import com.alorma.github.injector.module.CommitDetailModule;
 import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
+import com.alorma.github.ui.fragment.BaseBottomSheetDialogFragment;
 import com.alorma.github.ui.view.UserAvatarView;
 import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.TimeUtils;
@@ -31,7 +32,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class TagBottomSheetDialogFragment extends BottomSheetDialogFragment implements com.alorma.github.presenter.View<Commit> {
+public class TagBottomSheetDialogFragment extends BaseBottomSheetDialogFragment implements com.alorma.github.presenter.View<Commit> {
 
   private static final String TAG = "TAG";
   private static final String REPOINFO = "REPOINFO";

@@ -18,6 +18,7 @@
   <dimen name="gapLarge">16dp</dimen>
   <dimen name="gapXLarge">32dp</dimen>
 
+  <dimen name="bottom_sheet_width">0dp</dimen>
 
   <!-- http://developer.android.com/design/style/typography.html -->
   <dimen name="textSizeXMicro">10sp</dimen>
