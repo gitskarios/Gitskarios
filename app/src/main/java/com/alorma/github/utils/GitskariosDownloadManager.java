@@ -63,7 +63,7 @@ public class GitskariosDownloadManager {
     Toast.makeText(context, name + " queued to download at gitskarios/", Toast.LENGTH_SHORT).show();
   }
 
-  public void openSettings(Context context) {
+  public void openAppSettings(Context context) {
     Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + context.getPackageName()));
     myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
     myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

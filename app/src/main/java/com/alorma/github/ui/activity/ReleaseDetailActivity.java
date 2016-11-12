@@ -142,7 +142,7 @@ public class ReleaseDetailActivity extends RepositoryThemeActivity
       Snackbar snackbar = Snackbar.make(getToolbar(), getString(text), Snackbar.LENGTH_LONG);
 
       snackbar.setAction(getString(R.string.external_storage_permission_request_action),
-          v -> gitskariosDownloadManager.openSettings(ReleaseDetailActivity.this));
+          v -> gitskariosDownloadManager.openAppSettings(ReleaseDetailActivity.this));
 
       snackbar.show();
     });

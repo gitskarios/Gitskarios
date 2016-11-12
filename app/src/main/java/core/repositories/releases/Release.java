@@ -146,6 +146,9 @@ public class Release extends ShaUrl implements Parcelable {
         this.assets = assets;
     }
 
+    public Release() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -153,6 +156,7 @@ public class Release extends ShaUrl implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeString(this.assetsUrl);
         dest.writeString(this.uploadUrl);
         dest.writeString(this.tarballUrl);
@@ -167,13 +171,11 @@ public class Release extends ShaUrl implements Parcelable {
         dest.writeLong(this.createdAt != null ? this.createdAt.getTime() : -1);
         dest.writeLong(this.publishedAt != null ? this.publishedAt.getTime() : -1);
         dest.writeParcelable(this.author, flags);
-        dest.writeList(this.assets);
-    }
-
-    public Release() {
+        dest.writeTypedList(this.assets);
     }
 
     protected Release(Parcel in) {
+        super(in);
         this.assetsUrl = in.readString();
         this.uploadUrl = in.readString();
         this.tarballUrl = in.readString();
@@ -190,11 +192,10 @@ public class Release extends ShaUrl implements Parcelable {
         long tmpPublishedAt = in.readLong();
         this.publishedAt = tmpPublishedAt == -1 ? null : new Date(tmpPublishedAt);
         this.author = in.readParcelable(User.class.getClassLoader());
-        this.assets = new ArrayList<Asset>();
-        in.readList(this.assets, Asset.class.getClassLoader());
+        this.assets = in.createTypedArrayList(Asset.CREATOR);
     }
 
-    public static final Parcelable.Creator<Release> CREATOR = new Parcelable.Creator<Release>() {
+    public static final Creator<Release> CREATOR = new Creator<Release>() {
         @Override
         public Release createFromParcel(Parcel source) {
             return new Release(source);

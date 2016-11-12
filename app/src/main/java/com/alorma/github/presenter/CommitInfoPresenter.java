@@ -16,11 +16,10 @@ public class CommitInfoPresenter extends BaseRxPresenter<CommitInfo, Commit, Vie
 
   @Override
   public void execute(CommitInfo commitInfo) {
-    if(!isViewAttached()) return;
+    if (!isViewAttached()) return;
 
     Observable<Commit> singleCommitClient = new GetSingleCommitClient(commitInfo).observable();
-    Observable<GithubStatusResponse> shaCombinedStatus =
-            new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha).observable()
+    Observable<GithubStatusResponse> shaCombinedStatus = new GetShaCombinedStatus(commitInfo.repoInfo, commitInfo.sha).observable()
         .onErrorResumeNext(throwable -> Observable.empty())
         .map(o -> o.first);
 
@@ -29,16 +28,12 @@ public class CommitInfoPresenter extends BaseRxPresenter<CommitInfo, Commit, Vie
       return commit;
     });
 
-    zip.subscribeOn(ioScheduler)
-            .observeOn(mainScheduler)
-            .doOnSubscribe(() -> getView().showLoading())
-            .subscribe(commit -> {
-                        getView().onDataReceived(commit, false);
-                        getView().hideLoading();
-                      },
-                      throwable -> {
-                        getView().showError(throwable);
-                        getView().hideLoading();
-                      });
+    zip.subscribeOn(ioScheduler).observeOn(mainScheduler).doOnSubscribe(() -> getView().showLoading()).subscribe(commit -> {
+      getView().onDataReceived(commit, false);
+      getView().hideLoading();
+    }, throwable -> {
+      getView().showError(throwable);
+      getView().hideLoading();
+    });
   }
 }

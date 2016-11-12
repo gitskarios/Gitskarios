@@ -8,6 +8,8 @@ import com.alorma.github.log.LogWrapper;
 import com.alorma.github.track.Tracker;
 import com.alorma.github.ui.activity.base.BaseActivity;
 import com.alorma.github.ui.fragment.base.BaseFragment;
+import com.alorma.github.ui.fragment.releases.ReleaseBottomSheetDialogFragment;
+import com.alorma.github.utils.GitskariosDownloadManager;
 import dagger.Component;
 import javax.inject.Singleton;
 
@@ -24,7 +26,11 @@ import javax.inject.Singleton;
 
   LogWrapper getLogWrapper();
 
+  GitskariosDownloadManager getDownloadManager();
+
   void inject(BaseActivity baseActivity);
 
   void inject(BaseFragment baseFragment);
+
+  void inject(ReleaseBottomSheetDialogFragment releaseBottomSheetDialogFragment);
 }

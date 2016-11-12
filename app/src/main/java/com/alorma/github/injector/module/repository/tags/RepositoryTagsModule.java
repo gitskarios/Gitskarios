@@ -8,7 +8,6 @@ import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.presenter.repos.releases.tags.TagsCacheDataSource;
-
 import core.ApiClient;
 import core.repositories.releases.tags.TagsCloudDataSource;
 import core.repositories.releases.tags.TagsRetrofitWrapper;
@@ -17,45 +16,37 @@ import dagger.Module;
 import dagger.Provides;
 import rx.Scheduler;
 
-@Module
-public class RepositoryTagsModule {
+@Module public class RepositoryTagsModule {
 
-    @Provides
-    @PerActivity
-    TagsCacheDataSource provideTagsCacheDataSource(){
-        return new TagsCacheDataSource();
-    }
+  @Provides
+  @PerActivity
+  TagsCacheDataSource provideTagsCacheDataSource() {
+    return new TagsCacheDataSource();
+  }
 
-    @Provides
-    @PerActivity
-    TagsRetrofitWrapper provideTagsRetrofitWrapper(ApiClient apiClient, @Token String token) {
-        return new TagsRetrofitWrapper(apiClient, token);
-    }
+  @Provides
+  @PerActivity
+  TagsRetrofitWrapper provideTagsRetrofitWrapper(ApiClient apiClient, @Token String token) {
+    return new TagsRetrofitWrapper(apiClient, token);
+  }
 
-    @Provides
-    @PerActivity
-    TagsCloudDataSource provideTagsCloudDataSource(
-            TagsRetrofitWrapper tagsRetrofitWrapper,
-            @SortOrder String sortOrder){
-        return new TagsCloudDataSource(tagsRetrofitWrapper, sortOrder);
-    }
+  @Provides
+  @PerActivity
+  TagsCloudDataSource provideTagsCloudDataSource(TagsRetrofitWrapper tagsRetrofitWrapper, @SortOrder String sortOrder) {
+    return new TagsCloudDataSource(tagsRetrofitWrapper, sortOrder);
+  }
 
-    @Provides
-    @PerActivity
-    RepositoryTagsPresenter provideRepositoryTagsPresenter(
-            @MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-            TagsCacheDataSource tagsCacheDataSource,
-            TagsCloudDataSource tagsCloudDataSource){
+  @Provides
+  @PerActivity
+  RepositoryTagsPresenter provideRepositoryTagsPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
+      TagsCacheDataSource tagsCacheDataSource, TagsCloudDataSource tagsCloudDataSource) {
 
-        return new RepositoryTagsPresenter(
-                mainScheduler, ioScheduler,
-                new GenericRepository<>(tagsCacheDataSource, tagsCloudDataSource));
-    }
+    return new RepositoryTagsPresenter(mainScheduler, ioScheduler, new GenericRepository<>(tagsCacheDataSource, tagsCloudDataSource));
+  }
 
-    @Provides
-    @PerActivity
-    CommitInfoPresenter provideCommitInfoPresenter(
-            @MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler) {
-        return new CommitInfoPresenter(mainScheduler, ioScheduler);
-    }
+  @Provides
+  @PerActivity
+  CommitInfoPresenter provideCommitInfoPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler) {
+    return new CommitInfoPresenter(mainScheduler, ioScheduler);
+  }
 }

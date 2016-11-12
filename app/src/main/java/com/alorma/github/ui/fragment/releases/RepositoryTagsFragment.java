@@ -3,34 +3,31 @@ package com.alorma.github.ui.fragment.releases;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.repository.tags.RepositoryTagsModule;
-import com.alorma.github.presenter.CommitInfoPresenter;
 import com.alorma.github.presenter.View;
 import com.alorma.github.presenter.repos.releases.tags.RepositoryTagsPresenter;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.adapter.TagsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-
+import core.repositories.releases.Release;
+import core.repositories.releases.tags.Tag;
 import java.util.List;
-
 import javax.inject.Inject;
 
-import core.repositories.releases.tags.Tag;
-
-public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> implements View<List<Tag>> {
+public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> implements View<List<Tag>>, TagsAdapter.TagsCallback {
 
   private static final String REPO_INFO = "REPO_INFO";
-  private static final String REPO_PERMISSIONS = "REPO_PERMISSIONS";
 
   @Inject RepositoryTagsPresenter tagsPresenter;
-  @Inject CommitInfoPresenter commitPresenter;
+
+  private ReleasesCallback releasesCallback;
+
   private RepoInfo repoInfo;
 
   public static RepositoryTagsFragment newInstance(RepoInfo info) {
@@ -47,27 +44,45 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
 
   @Override
   protected void injectComponents(ApplicationComponent applicationComponent) {
-    ApiComponent apiComponent =
-            DaggerApiComponent.builder()
-                    .applicationComponent(applicationComponent)
-                    .apiModule(new ApiModule())
-                    .build();
-    apiComponent
-            .plus(new RepositoryTagsModule())
-            .inject(this);
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+    apiComponent.plus(new RepositoryTagsModule()).inject(this);
     tagsPresenter.attachView(this);
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+
+    if (context instanceof ReleasesCallback) {
+      releasesCallback = (ReleasesCallback) context;
+    }
+  }
+
+  @Override
+  public void onDetach() {
+    releasesCallback = new ReleasesCallback() {
+      @Override
+      public void showTagDialog(Tag tag) {
+
+      }
+
+      @Override
+      public void showReleaseDialog(Release release) {
+
+      }
+    };
+    super.onDetach();
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
     tagsPresenter.detachView();
-    commitPresenter.detachView();
   }
 
   @Override
   protected void loadArguments() {
-    repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+    repoInfo = getArguments().getParcelable(REPO_INFO);
   }
 
   @Override
@@ -94,12 +109,13 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
 
   @Override
   public void onDataReceived(List<Tag> tags, boolean isFromPaginated) {
-    if(getActivity() == null) return;
+    if (getActivity() == null) return;
 
     if (tags.size() > 0) {
       hideEmpty();
       if (refreshing || getAdapter() == null) {
-        TagsAdapter adapter = new TagsAdapter(LayoutInflater.from(getActivity()), repoInfo, commitPresenter);
+        TagsAdapter adapter = new TagsAdapter(LayoutInflater.from(getActivity()), repoInfo);
+        adapter.setTagsCallback(this);
         adapter.addAll(tags);
         setAdapter(adapter);
       } else {
@@ -145,5 +161,20 @@ public class RepositoryTagsFragment extends LoadingListFragment<TagsAdapter> imp
   @Override
   protected int getNoDataText() {
     return R.string.no_tags;
+  }
+
+  @Override
+  public void onTagSelected(Tag tag) {
+    releasesCallback.showTagDialog(tag);
+  }
+
+  @Override
+  public void onReleaseSelected(Release release) {
+    releasesCallback.showReleaseDialog(release);
+  }
+
+  public interface ReleasesCallback {
+    void showTagDialog(Tag tag);
+    void showReleaseDialog(Release release);
   }
 }

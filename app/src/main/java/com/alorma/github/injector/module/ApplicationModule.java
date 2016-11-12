@@ -7,6 +7,7 @@ import com.alorma.github.account.AccountNameProvider;
 import com.alorma.github.injector.named.SortOrder;
 import com.alorma.github.log.LogWrapper;
 import com.alorma.github.track.Tracker;
+import com.alorma.github.utils.GitskariosDownloadManager;
 import com.alorma.github.utils.RepoUtils;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
@@ -73,5 +74,10 @@ import io.fabric.sdk.android.Fabric;
   @Singleton
   LogWrapper getLogWrapper() {
     return new AndroidLogWrapper();
+  }
+
+  @Provides
+  @Singleton GitskariosDownloadManager getDownloadManager() {
+    return new GitskariosDownloadManager();
   }
 }
