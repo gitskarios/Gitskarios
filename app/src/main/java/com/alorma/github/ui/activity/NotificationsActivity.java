@@ -94,4 +94,16 @@ public class NotificationsActivity extends BackActivity {
   protected int getAppLightTheme() {
     return R.style.AppTheme_Notifications;
   }
+
+  @Override
+  protected void close(boolean navigateUp) {
+    if (navigateUp) {
+      Intent intent = new Intent(this, MainActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      startActivity(intent);
+      finish();
+    } else {
+      finish();
+    }
+  }
 }
