@@ -12,13 +12,14 @@ import com.alorma.github.R;
 
 public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
+  @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     return new CustomWidthBottomSheetDialog(getActivity(), getTheme());
   }
 
-  static class CustomWidthBottomSheetDialog extends BottomSheetDialog {
-    public CustomWidthBottomSheetDialog(@NonNull Context context, @StyleRes int theme) {
+  private class CustomWidthBottomSheetDialog extends BottomSheetDialog {
+    CustomWidthBottomSheetDialog(@NonNull Context context, @StyleRes int theme) {
       super(context, theme);
     }
 
@@ -26,8 +27,9 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
     protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       int width = getContext().getResources().getDimensionPixelSize(R.dimen.bottom_sheet_width);
-      getWindow().setLayout(width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT,
-          ViewGroup.LayoutParams.MATCH_PARENT);
+      if (getWindow() != null) {
+        getWindow().setLayout(width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+      }
     }
   }
 }

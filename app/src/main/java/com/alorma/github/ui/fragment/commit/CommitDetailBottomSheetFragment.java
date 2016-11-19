@@ -17,12 +17,14 @@ import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.activity.ProfileActivity;
+import com.alorma.github.ui.fragment.BaseBottomSheetDialogFragment;
+import com.alorma.github.ui.utils.AvatarHelper;
 import com.alorma.github.ui.utils.UniversalImageLoaderUtils;
 import com.alorma.github.ui.view.ItemSingleLineAvatar;
 import core.User;
 import core.repositories.Commit;
 
-public class CommitDetailBottomSheetFragment extends BottomSheetDialogFragment {
+public class CommitDetailBottomSheetFragment extends BaseBottomSheetDialogFragment {
 
   private static final String REPOINFO = "REPOINFO";
   private static final String COMMIT = "COMMIT";
@@ -62,8 +64,8 @@ public class CommitDetailBottomSheetFragment extends BottomSheetDialogFragment {
       if (commit != null) {
         fillToolbar(repoInfo, commit);
 
-        fillUser(author, commit.author);
-        fillUser(committer, commit.committer);
+        fillUser(author, commit.author != null ? commit.author :  commit.commit.author);
+        fillUser(committer, commit.committer != null ? commit.committer :  commit.commit.committer);
 
         commitMessage.setText(commit.commit.getMessage());
       }
@@ -90,13 +92,16 @@ public class CommitDetailBottomSheetFragment extends BottomSheetDialogFragment {
   }
 
   private void fillUser(ItemSingleLineAvatar singleLineAvatar, User user) {
-    singleLineAvatar.getTextView().setText(user.getLogin());
-    UniversalImageLoaderUtils.loadUserAvatar(singleLineAvatar.getImageView(), user.getLogin(), user.getAvatar());
-    singleLineAvatar.setOnClickListener(view -> {
-      Intent intent = ProfileActivity.createLauncherIntent(getActivity(), user);
-      startActivity(intent);
-      dismiss();
-    });
+    singleLineAvatar.getTextView().setText(user.getLogin() != null ? user.getLogin() : user.getEmail());
+    UniversalImageLoaderUtils.loadUserAvatar(singleLineAvatar.getImageView(), user.getLogin(),
+        AvatarHelper.getAvatar(user));
+    if (user.getLogin() != null) {
+      singleLineAvatar.setOnClickListener(view -> {
+        Intent intent = ProfileActivity.createLauncherIntent(getActivity(), user);
+        startActivity(intent);
+        dismiss();
+      });
+    }
   }
 
   private void openCommit(RepoInfo repoInfo, Commit commit) {

@@ -27,9 +27,6 @@ import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import core.User;
 
-/**
- * Created by Bernat on 15/07/2014.
- */
 public class UniversalImageLoaderUtils {
 
   public static ImageLoaderConfiguration getImageLoaderConfiguration(Context context) {
@@ -117,7 +114,7 @@ public class UniversalImageLoaderUtils {
   }
 
   public static void loadUserAvatar(final ImageView imageView, User actor) {
-    loadUserAvatar(imageView, actor.getLogin(), actor.getAvatar());
+    loadUserAvatar(imageView, actor.getLogin(), AvatarHelper.getAvatar(actor));
   }
 
   public static void loadUserAvatarSquare(final ImageView imageView, String actor, String avatarUrl) {
@@ -165,12 +162,7 @@ public class UniversalImageLoaderUtils {
         Atelier.with(context, imageUri)
             .load(loadedImage)
             .swatch(new DarkVibrantSwatch(ColorType.BACKGROUND))
-            .listener(new Atelier.OnPaletteRenderedListener() {
-              @Override
-              public void onRendered(Palette palette) {
-                imageView.setTag(palette.getVibrantColor(defaultProfileColor));
-              }
-            });
+            .listener(palette -> imageView.setTag(palette.getVibrantColor(defaultProfileColor)));
       }
 
       @Override
@@ -181,6 +173,6 @@ public class UniversalImageLoaderUtils {
   }
 
   public static void loadUserAvatarSquare(final ImageView imageView, User actor) {
-    loadUserAvatarSquare(imageView, actor.getLogin(), actor.getAvatar());
+    loadUserAvatarSquare(imageView, actor.getLogin(), AvatarHelper.getAvatar(actor));
   }
 }
