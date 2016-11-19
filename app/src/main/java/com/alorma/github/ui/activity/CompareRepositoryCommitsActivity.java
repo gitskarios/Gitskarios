@@ -57,7 +57,10 @@ public class CompareRepositoryCommitsActivity extends RepositoryThemeActivity {
       setTitle(base + " ... " + head);
 
       CompareCommitsClient compareCommitsClient = new CompareCommitsClient(repoInfo, base, head);
-      compareCommitsClient.observable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(compareCommit -> {
+      compareCommitsClient.observable()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(compareCommit -> {
         if (commitsFragment != null) {
           commitsFragment.setCommits(compareCommit.commits);
         }

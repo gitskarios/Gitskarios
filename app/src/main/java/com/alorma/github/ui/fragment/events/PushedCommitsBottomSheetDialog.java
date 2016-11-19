@@ -1,5 +1,8 @@
 package com.alorma.github.ui.fragment.events;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.alorma.github.IntentsManager;
@@ -59,10 +63,22 @@ public class PushedCommitsBottomSheetDialog extends BaseBottomSheetDialogFragmen
 
       CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true);
       adapter.addAll(commits);
+      adapter.setCommitsAdapterListener(this::copyIdToClipboard);
       adapter.setCallback(item -> startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url))));
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-      recyclerView.setAdapter(adapter
-      );
+      recyclerView.setAdapter(adapter);
     }
+  }
+
+  private boolean copyIdToClipboard(Commit commit) {
+    copy(commit.shortSha());
+    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()), Toast.LENGTH_SHORT).show();
+    return true;
+  }
+
+  public void copy(String text) {
+    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipData clip = ClipData.newPlainText("Gitskarios", text);
+    clipboard.setPrimaryClip(clip);
   }
 }

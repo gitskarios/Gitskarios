@@ -1,30 +1,20 @@
 package com.alorma.github.ui.fragment.compare;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.ui.activity.CommitDetailActivity;
 import com.alorma.github.ui.adapter.commit.CommitFilesAdapter;
-import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import core.repositories.Commit;
 import core.repositories.CommitFile;
 import java.util.List;
 
-public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAdapter> implements CommitsAdapter.CommitsAdapterListener {
+public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAdapter> {
 
   private static final String REPO_INFO = "REPO_INFO";
-  private RepoInfo repoInfo;
 
   public static CompareFilesListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
@@ -60,47 +50,8 @@ public class CompareFilesListFragment extends LoadingListFragment<CommitFilesAda
 
   @Override
   protected void loadArguments() {
-    repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+    RepoInfo repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
   }
-
-  @Override
-  protected boolean useFAB() {
-    return false;
-  }
-
-  @Override
-  public void onRefresh() {
-
-  }
-
-  @Override
-  public void loadMoreItems() {
-
-  }
-
-  @Override
-  public void onCommitClick(Commit commit) {
-    CommitInfo info = new CommitInfo();
-    info.repoInfo = repoInfo;
-    info.sha = commit.sha;
-
-    Intent intent = CommitDetailActivity.launchIntent(getActivity(), info);
-    startActivity(intent);
-  }
-
-  @Override
-  public boolean onCommitLongClick(Commit commit) {
-    copy(commit.shortSha());
-    Toast.makeText(getActivity(), getString(R.string.sha_copied, commit.shortSha()), Toast.LENGTH_SHORT).show();
-    return true;
-  }
-
-  public void copy(String text) {
-    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-    ClipData clip = ClipData.newPlainText("Gitskarios", text);
-    clipboard.setPrimaryClip(clip);
-  }
-
 
   @Override
   protected int getLightTheme() {

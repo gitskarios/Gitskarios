@@ -150,8 +150,6 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
   }
 
   public interface CommitsAdapterListener {
-    void onCommitClick(Commit commit);
-
     boolean onCommitLongClick(Commit commit);
   }
 
@@ -177,9 +175,9 @@ public class CommitsAdapter extends RecyclerArrayAdapter<Commit, CommitsAdapter.
       verifiedCommit = (ImageView) itemView.findViewById(R.id.verifiedCommit);
 
       itemView.setOnClickListener(v -> {
-        if (commitsAdapterListener != null) {
+        if (getCallback() != null) {
           Commit commit = getItem(getAdapterPosition());
-          commitsAdapterListener.onCommitClick(commit);
+          getCallback().onItemSelected(commit);
         }
       });
 

@@ -158,6 +158,13 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
       if (refreshing || getAdapter() == null) {
         CommitsAdapter commitsAdapter = new CommitsAdapter(LayoutInflater.from(getActivity()), false);
         commitsAdapter.addAll(commits);
+        commitsAdapter.setCallback(item -> {
+          if (!isInCompareMode) {
+            commitSelectedCallback.onCommitSelected(item);
+          } else {
+            selectCommit(item);
+          }
+        });
         commitsAdapter.setCommitsAdapterListener(this);
         setAdapter(commitsAdapter);
       } else {
@@ -173,6 +180,25 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
     } else {
       getAdapter().clear();
       setEmpty();
+    }
+  }
+
+  private void selectCommit(Commit item) {
+    if (baseCompare == null) {
+      baseCompare = item.shortSha();
+    } else {
+      headCompare = item.shortSha();
+    }
+
+    if (extraToolbar != null) {
+      if (baseCompare != null ) {
+        MenuItem menuItem = extraToolbar.getMenu().findItem(R.id.action_compare_commits);
+        if (menuItem != null) {
+          menuItem.setEnabled(baseCompare != null && headCompare != null);
+        }
+      }
+
+      extraToolbar.setTitle(baseCompare + " ... " + (headCompare != null ? headCompare : ":head"));
     }
   }
 
@@ -308,32 +334,6 @@ public class CommitsListFragment extends LoadingListFragment<CommitsAdapter>
       refreshing = true;
       executeRequest();
     }
-  }
-
-  @Override
-  public void onCommitClick(Commit commit) {
-    if (!isInCompareMode) {
-      openCommit(commit);
-    } else if (headCompare == null) {
-      checkFAB();
-      headCompare = commit.shortSha();
-      extraToolbar.setTitle(headCompare + " ... :head");
-    } else if (baseCompare == null) {
-      checkFAB();
-      baseCompare = commit.shortSha();
-      extraToolbar.setTitle(headCompare + " ... " + baseCompare);
-      if (extraToolbar.getMenu() != null) {
-        MenuItem itemCompare = extraToolbar.getMenu().findItem(R.id.action_compare_commits);
-
-        if (itemCompare != null) {
-          itemCompare.setEnabled(true);
-        }
-      }
-    }
-  }
-
-  private void openCommit(Commit commit) {
-    commitSelectedCallback.onCommitSelected(commit);
   }
 
   @Override

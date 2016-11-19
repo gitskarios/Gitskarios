@@ -66,6 +66,7 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
 
     CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true);
     adapter.addAll(commits);
+    adapter.setCallback(this::onCommitClick);
     adapter.setCommitsAdapterListener(this);
     setAdapter(adapter);
     stopRefresh();
@@ -102,7 +103,6 @@ public class CompareCommitsListFragment extends LoadingListFragment<CommitsAdapt
 
   }
 
-  @Override
   public void onCommitClick(Commit commit) {
     CommitInfo info = new CommitInfo();
     info.repoInfo = repoInfo;
