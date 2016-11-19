@@ -27,19 +27,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         style="@style/repo_detail_button_bar"
         android:layout_margin="8dp"
         android:id="@+id/repoDetailNumbersLayout"
+        android:divider="@drawable/divider_vertical"
+        android:showDividers="middle"
         >
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="48dp"
-          android:orientation="horizontal"
-          android:divider="@drawable/divider_vertical"
-          android:showDividers="middle"
-          >
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,14 +57,6 @@
             style="@style/repo_detail_button"
             />
 
-      </LinearLayout>
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:divider="@drawable/divider_vertical"
-          android:showDividers="middle"
-          >
 
         <Button
             android:layout_width="match_parent"
@@ -90,7 +77,6 @@
             tools:text="MIT"
             style="@style/repo_detail_button"
             />
-      </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

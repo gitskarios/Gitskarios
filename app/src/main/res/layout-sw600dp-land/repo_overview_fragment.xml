@@ -1,0 +1,266 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:fitsSystemWindows="true"
+    >
+
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="@style/repo_detail_button_bar"
+        android:layout_margin="8dp"
+        android:id="@+id/repoDetailNumbersLayout"
+        android:divider="@drawable/divider_vertical"
+        android:showDividers="middle"
+        >
+
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/repoDetailNumbersStar"
+          android:layout_weight="1"
+          android:drawableLeft="@drawable/ic_star_vector"
+          tools:text="@string/repo_detail_no_starred"
+          android:textAllCaps="false"
+          style="@style/repo_detail_button"
+          />
+
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/repoDetailNumbersWatch"
+          android:layout_weight="1"
+          android:drawableLeft="@drawable/ic_eye"
+          tools:text="@string/repo_detail_no_watched"
+          android:textAllCaps="false"
+          style="@style/repo_detail_button"
+          />
+
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_weight="1"
+          android:id="@+id/repoDetailTagsCount"
+          android:drawableLeft="@drawable/ic_tag"
+          tools:text="@string/repo_detail_tags"
+          style="@style/repo_detail_button"
+          android:textAllCaps="false"
+          />
+      <Button
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_weight="1"
+          android:id="@+id/repoDetailLicense"
+          android:drawableLeft="@drawable/ic_law"
+          tools:text="MIT"
+          style="@style/repo_detail_button"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_weight="1"
+          >
+        <TextView
+            android:id="@+id/repoDescriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Repo description"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:autoLink="all"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repoDetailBranchesLayout"
+            android:orientation="vertical"
+            android:divider="@drawable/divider_horizontal"
+            android:background="@drawable/countorn"
+            android:showDividers="middle"
+            android:layout_margin="8dp"
+            >
+
+          <RelativeLayout
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              android:background="@drawable/rounded_grey"
+              android:paddingLeft="8dp"
+              android:paddingStart="8dp"
+              android:paddingRight="8dp"
+              android:paddingEnd="8dp"
+              android:layout_margin="1dp"
+              >
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_git_branch"
+                tools:src="@mipmap/ic_launcher"
+                android:tint="#666666"
+                />
+
+            <TextView
+                android:id="@+id/repoDefaultBranchTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="56dp"
+                android:layout_marginStart="56dp"
+                android:textStyle="bold"
+                android:layout_toLeftOf="@+id/repoDefaultBranchExpandableIcon"
+                android:layout_toStartOf="@+id/repoDefaultBranchExpandableIcon"
+                tools:text="Repo default branch"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                />
+
+            <ImageView
+                android:id="@+id/repoDefaultBranchExpandableIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="8dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/chevron_down"
+                />
+
+          </RelativeLayout>
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              android:id="@+id/repoDefaultBranchInfo"
+              tools:text="Last commit on "
+              android:gravity="center_vertical"
+              android:paddingLeft="22dp"
+              android:paddingRight="22dp"
+              />
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              android:divider="@drawable/divider_vertical"
+              android:showDividers="middle"
+              >
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/repoDefaultBranchCodeButton"
+                android:drawableLeft="@drawable/ic_file_directory"
+                android:text="View code"
+                style="@style/repo_detail_button"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/ic_git_commit"
+                android:text="Commits"
+                android:id="@+id/repoDefaultBranchCommits"
+                style="@style/repo_detail_button"
+                />
+
+
+          </LinearLayout>
+        </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:divider="@drawable/divider_horizontal"
+          android:background="@drawable/countorn"
+          android:showDividers="middle"
+          android:layout_margin="8dp"
+          android:layout_weight="1"
+          >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/rounded_grey"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            android:layout_margin="1dp"
+            >
+
+          <ImageView
+              android:layout_width="48dp"
+              android:layout_height="48dp"
+              android:padding="12dp"
+              android:layout_centerVertical="true"
+              app:srcCompat="@drawable/ic_file"
+              tools:src="@mipmap/ic_launcher"
+              android:tint="#666666"
+              />
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical"
+              android:layout_alignParentLeft="true"
+              android:layout_alignParentStart="true"
+              android:layout_centerVertical="true"
+              android:layout_marginLeft="56dp"
+              android:layout_marginStart="56dp"
+              android:textStyle="bold"
+              android:text="Readme"
+              android:textColor="?android:textColorPrimary"
+              android:textSize="16sp"
+              />
+
+        </RelativeLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:id="@+id/repoDetailReadmeContent"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/repoDefaultOpenReadme"
+            android:text="Show README"
+            android:textAllCaps="false"
+            style="@style/repo_detail_button"
+            />
+      </LinearLayout>
+    </LinearLayout>
+  </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
