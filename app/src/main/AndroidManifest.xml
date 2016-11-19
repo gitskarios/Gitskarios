@@ -25,11 +25,15 @@
       android:sharedUserLabel="@string/app_name"
       android:theme="@style/AppTheme"
       >
-    <activity android:name=".ui.activity.MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
+    <activity android:name=".ui.activity.MainActivity" />
 
-        <category android:name="android.intent.category.LAUNCHER"/>
+    <activity
+        android:name=".ui.activity.SplashActivity"
+        android:theme="@style/SplashTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>

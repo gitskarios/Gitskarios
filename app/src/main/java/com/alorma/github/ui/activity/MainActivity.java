@@ -78,16 +78,6 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    AccountsManager accountsFragment = new AccountsManager();
-    List<Account> accounts = accountsFragment.getAccounts(this);
-
-    if (accounts.isEmpty()) {
-      Intent intent = new Intent(this, WelcomeActivity.class);
-      startActivity(intent);
-      finish();
-    }
-
     setContentView(R.layout.generic_toolbar_responsive);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
