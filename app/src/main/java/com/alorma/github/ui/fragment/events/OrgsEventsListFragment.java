@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +28,6 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.orgs.GetOrgEventsClient;
 import com.alorma.github.ui.activity.repo.RepoDetailActivity;
 import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
-import com.alorma.github.ui.adapter.commit.CommitsAdapter;
 import com.alorma.github.ui.adapter.events.EventViewHolderFactory;
 import com.alorma.github.ui.adapter.events.EventsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
@@ -371,13 +369,8 @@ public class OrgsEventsListFragment extends LoadingListFragment<EventsAdapter> i
   }
 
   private void showCommitsDialog(List<Commit> commits) {
-    CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true);
-    adapter.addAll(commits);
-    adapter.setCallback(item -> startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url))));
-    MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
-    builder.title(R.string.event_select_commit);
-    builder.adapter(adapter, new LinearLayoutManager(getActivity()));
-    builder.show();
+    PushedCommitsBottomSheetDialog pushedCommitsBottomSheetDialog = PushedCommitsBottomSheetDialog.newInstance(commits);
+    pushedCommitsBottomSheetDialog.show(getChildFragmentManager(), "");
   }
 
   private void showReposDialogDialog(final String... repos) {

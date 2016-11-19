@@ -425,13 +425,8 @@ public class EventsListFragment extends LoadingListFragment<EventsAdapter> imple
   }
 
   private void showCommitsDialog(List<Commit> commits) {
-    CommitsAdapter adapter = new CommitsAdapter(LayoutInflater.from(getActivity()), true);
-    adapter.addAll(commits);
-    adapter.setCallback(item -> startActivity(new IntentsManager(getActivity()).checkUri(Uri.parse(item.url))));
-    MaterialDialog.Builder builder = new DialogUtils().builder(getActivity());
-    builder.title(R.string.event_select_commit);
-    builder.adapter(adapter, new LinearLayoutManager(getActivity()));
-    builder.show();
+    PushedCommitsBottomSheetDialog pushedCommitsBottomSheetDialog = PushedCommitsBottomSheetDialog.newInstance(commits);
+    pushedCommitsBottomSheetDialog.show(getChildFragmentManager(), "");
   }
 
   private void showReposDialogDialog(final String... repos) {
