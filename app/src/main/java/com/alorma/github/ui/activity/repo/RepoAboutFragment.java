@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -300,7 +298,10 @@ public class RepoAboutFragment extends BaseFragment implements RepositoryPresent
     if (defaultBranch != null) {
       repoDefaultBranchTextView.setText(defaultBranch.name);
 
-      String timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
+      String timeAgoString = "";
+      if (!TextUtils.isEmpty(defaultBranch.commit.getCommit().getAuthor().getDate())) {
+        timeAgoString = TimeUtils.getLongTimeAgoString(defaultBranch.commit.getCommit().getAuthor().getDate());
+      }
       String login = defaultBranch.commit.author != null ? defaultBranch.commit.author.getLogin() : "";
       String time = getResources().getString(R.string.commit_time_ago, login, timeAgoString);
 

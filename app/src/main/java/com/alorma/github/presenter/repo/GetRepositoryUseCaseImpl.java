@@ -7,6 +7,7 @@ import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
 import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Commit;
+import core.repositories.GitCommit;
 import core.repositories.Repo;
 import core.repository.GenericRepository;
 import java.util.List;
@@ -53,7 +54,14 @@ public class GetRepositoryUseCaseImpl implements GetRepositoryUseCase {
           return commitGenericRepository.execute(new SdkItem<>(info)).map(SdkItem::getK);
         }, (branch, commit) -> {
           if (branch.commit.sha.equals(commit.sha)) {
-            branch.commit = commit;
+            branch.commit = new Commit();
+            branch.commit.sha = commit.sha;
+            branch.commit.author = commit.author;
+            if (commit.commit != null) {
+              branch.commit.commit = new GitCommit();
+              branch.commit.commit.author = commit.commit.author;
+              branch.commit.sha = commit.commit.sha;
+            }
           }
           return branch;
         }).toList();
