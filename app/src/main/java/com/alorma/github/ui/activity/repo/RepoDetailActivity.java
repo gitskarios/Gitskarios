@@ -43,6 +43,11 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
   private RepoContributorsFragment repoContributorsFragment;
   private RepositoryPullRequestsListFragment repositoryPullRequestsListFragment;
 
+  private TabLayout.Tab codeTab;
+  private TabLayout.Tab issuesTab;
+  private TabLayout.Tab pullrequestsTab;
+  private TabLayout.Tab contributorsTab;
+
   public static Intent createLauncherIntent(Context context, RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
@@ -90,6 +95,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
         listFragments();
         setupTabs();
+        setupContent();
       } else {
         finish();
       }
@@ -128,16 +134,16 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
   private void setupTabs() {
 
-    TabLayout.Tab codeTab = getTab(R.drawable.ic_home, R.string.repo_detail_home);
+    codeTab = getTab(R.drawable.ic_home, R.string.repo_detail_home);
     tabLayout.addTab(codeTab, true);
 
-    TabLayout.Tab issuesTab = getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues);
+    issuesTab = getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues);
     tabLayout.addTab(issuesTab, false);
 
-    TabLayout.Tab pullrequestsTab = getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls);
+    pullrequestsTab = getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls);
     tabLayout.addTab(pullrequestsTab, false);
 
-    TabLayout.Tab contributorsTab = getTab(R.drawable.ic_person, R.string.repo_detail_contributors);
+    contributorsTab = getTab(R.drawable.ic_person, R.string.repo_detail_contributors);
     tabLayout.addTab(contributorsTab, false);
 
     tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -169,7 +175,9 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
       }
     });
+  }
 
+  private void setupContent() {
     GitskariosSettings gitskariosSettings = new GitskariosSettings(this);
 
     String repoDefaulTab = gitskariosSettings.getRepoDefaulTab();
