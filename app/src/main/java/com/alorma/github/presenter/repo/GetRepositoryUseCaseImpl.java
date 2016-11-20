@@ -2,14 +2,14 @@ package com.alorma.github.presenter.repo;
 
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.repo.actions.CheckRepoStarredClient;
-import com.alorma.github.sdk.services.repo.actions.CheckRepoWatchedClient;
 import core.datasource.SdkItem;
 import core.repositories.Branch;
 import core.repositories.Commit;
 import core.repositories.GitCommit;
 import core.repositories.Repo;
 import core.repository.GenericRepository;
+import core.repository.GetRepositoryStarRepository;
+import core.repository.GetRepositoryWatchRepository;
 import java.util.List;
 import rx.Observable;
 
@@ -17,13 +17,18 @@ public class GetRepositoryUseCaseImpl implements GetRepositoryUseCase {
   private final GenericRepository<RepoInfo, Repo> repoGenericRepository;
   private final GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository;
   private final GenericRepository<CommitInfo, Commit> commitGenericRepository;
+  private final GetRepositoryStarRepository repoStarredRepository;
+  private GetRepositoryWatchRepository repoWatchedRepository;
 
   public GetRepositoryUseCaseImpl(GenericRepository<RepoInfo, Repo> repoGenericRepository,
-      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository) {
+      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository,
+      GetRepositoryStarRepository repoStarredRepository, GetRepositoryWatchRepository getWatchUseCase) {
 
     this.repoGenericRepository = repoGenericRepository;
     this.branchesGenericRepository = branchesGenericRepository;
     this.commitGenericRepository = commitGenericRepository;
+    this.repoStarredRepository = repoStarredRepository;
+    this.repoWatchedRepository = getWatchUseCase;
   }
 
   @Override
@@ -36,10 +41,8 @@ public class GetRepositoryUseCaseImpl implements GetRepositoryUseCase {
     SdkItem<RepoInfo> repoInfoSdkItem = new SdkItem<>(repoInfo);
     Observable<Repo> repoObservable = repoGenericRepository.execute(repoInfoSdkItem, refresh).map(SdkItem::getK);
 
-    // TODO move star & watch to Repository pattern
-
-    Observable<Boolean> starredObservable = new CheckRepoStarredClient(repoInfo.owner, repoInfo.name).observable();
-    Observable<Boolean> watchedObservable = new CheckRepoWatchedClient(repoInfo.owner, repoInfo.name).observable();
+    Observable<Boolean> starredObservable = repoStarredRepository.check(repoInfo);
+    Observable<Boolean> watchedObservable = repoWatchedRepository.check(repoInfo);
 
     Observable<Repo> observable = Observable.zip(repoObservable, starredObservable, watchedObservable, (repo, starred, watched) -> {
       repo.setStarred(starred);

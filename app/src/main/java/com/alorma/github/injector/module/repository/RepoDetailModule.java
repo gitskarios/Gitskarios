@@ -2,14 +2,16 @@ package com.alorma.github.injector.module.repository;
 
 import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
+import com.alorma.github.injector.named.Starred;
 import com.alorma.github.injector.named.Token;
+import com.alorma.github.injector.named.Watched;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.AbstractCacheDataSource;
 import com.alorma.github.presenter.repo.GetRepositoryUseCase;
 import com.alorma.github.presenter.repo.GetRepositoryUseCaseImpl;
+import com.alorma.github.presenter.repo.RepositoryPresenter;
 import com.alorma.github.presenter.repo.tags.GetTagsCountUseCase;
 import com.alorma.github.presenter.repo.tags.GetTagsCountUseCaseImpl;
-import com.alorma.github.presenter.repo.RepositoryPresenter;
 import com.alorma.github.presenter.repo.tags.TagsCountDatasource;
 import com.alorma.github.sdk.bean.info.CommitInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
@@ -28,9 +30,13 @@ import core.repositories.releases.tags.TagsRetrofitWrapper;
 import core.repository.ChangeRepositoryStarUseCase;
 import core.repository.ChangeRepositoryWatchUseCase;
 import core.repository.GenericRepository;
+import core.repository.GetRepositoryStarRepository;
+import core.repository.GetRepositoryWatchRepository;
+import core.repository.RepositoryRetrofitWrapper;
 import dagger.Module;
 import dagger.Provides;
 import java.util.List;
+import javax.inject.Singleton;
 import rx.Observable;
 import rx.Scheduler;
 
@@ -100,6 +106,38 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
+  @Starred
+  CloudDataSource<RepoInfo, Boolean> getStarredDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
+    return new RepoStarDatasource(repositoryRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  GetRepositoryStarRepository getGetRepositoryStar(@Starred CloudDataSource<RepoInfo, Boolean> dataSource) {
+    return new GetRepositoryStarRepository(dataSource);
+  }
+
+  @Provides
+  @PerActivity
+  RepositoryRetrofitWrapper getRepoWrapper(ApiClient apiClient, @Token String token) {
+    return new RepositoryRetrofitWrapper(apiClient, token);
+  }
+
+  @Provides
+  @PerActivity
+  @Watched
+  CloudDataSource<RepoInfo, Boolean> getWatchedDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
+    return new RepoWatchDatasource(repositoryRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  GetRepositoryWatchRepository getGetRepositoryWatch(@Watched CloudDataSource<RepoInfo, Boolean> dataSource) {
+    return new GetRepositoryWatchRepository(dataSource);
+  }
+
+  @Provides
+  @PerActivity
   ChangeRepositoryStarUseCase provideChangeRepositoryStarRepository() {
     return new ChangeRepositoryStarUseCase();
   }
@@ -113,8 +151,10 @@ import rx.Scheduler;
   @Provides
   @PerActivity
   GetRepositoryUseCase providesGetRepositoryUseCase(GenericRepository<RepoInfo, Repo> repoGenericRepository,
-      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository) {
-    return new GetRepositoryUseCaseImpl(repoGenericRepository, branchesGenericRepository, commitGenericRepository);
+      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository,
+      GetRepositoryStarRepository getStarUseCase, GetRepositoryWatchRepository getWatchUseCase) {
+    return new GetRepositoryUseCaseImpl(repoGenericRepository, branchesGenericRepository, commitGenericRepository, getStarUseCase,
+        getWatchUseCase);
   }
 
   @Provides
