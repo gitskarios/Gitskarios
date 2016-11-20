@@ -26,7 +26,7 @@ public class IssuesSearchRequest {
     if (isOpen) {
       builder.append("open");
     } else {
-      builder.append("close");
+      builder.append("closed");
     }
 
     if (isPullRequest != null) {

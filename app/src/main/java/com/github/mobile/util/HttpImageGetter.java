@@ -27,17 +27,16 @@ import android.text.TextUtils;
 import android.widget.TextView;
 import com.alorma.github.emoji.EmojiBitmapLoader;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.gh4a.utils.FileUtils;
+import com.bumptech.glide.Glide;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -163,7 +162,7 @@ public class HttpImageGetter implements ImageGetter {
     this.repoInfo = repoInfo;
   }
 
-  private InputStream fetch(String urlString) throws IOException {
+  private String fetch(String urlString) throws IOException {
     if (!urlString.contains("http")) {
       Uri.Builder builder = Uri.parse("https://github.com/").buildUpon();
 
@@ -179,59 +178,28 @@ public class HttpImageGetter implements ImageGetter {
       builder.appendPath(urlString);
       urlString = builder.build().toString();
     }
-    URL url = new URL(urlString);
-    return url.openStream();
+    return urlString;
   }
 
   @Override
   public Drawable getDrawable(String source) {
-        /*
-        try {
-            Bitmap bitmap = ImageUtils.getBitmap(context, dir.getAbsolutePath(), width, height);
-
-            loadedBitmaps.add(new WeakReference<>(bitmap));
-
-            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-            drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            return drawable;
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-        */
-
     if (loading != null) {
-      File output = null;
       if (destroyed) {
         return loading.getDrawable(source);
       }
       try {
-
-        output = File.createTempFile("image", ".jpg", dir);
-        InputStream is = fetch(source);
-        if (is != null) {
-          boolean success = FileUtils.save(output, is);
-          if (success) {
-            Bitmap bitmap = ImageUtils.getBitmap(output, width, Integer.MAX_VALUE);
-            if (bitmap == null) {
-              return loading.getDrawable(source);
-            }
-            loadedBitmaps.add(new WeakReference<Bitmap>(bitmap));
-            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-            drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            return drawable;
-          } else {
-            return loading.getDrawable(source);
-          }
-        } else {
-          return loading.getDrawable(source);
-        }
-      } catch (IOException e) {
+        Bitmap bitmap = ImageUtils.getBitmap(context, source, width, height);
+        loadedBitmaps.add(new WeakReference<>(bitmap));
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
+        bitmapDrawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        return bitmapDrawable;
+      } catch (InterruptedException e) {
         return loading.getDrawable(source);
-      } finally {
-        if (output != null) output.delete();
+      } catch (ExecutionException e) {
+        return loading.getDrawable(source);
       }
     }
+
     return null;
   }
 

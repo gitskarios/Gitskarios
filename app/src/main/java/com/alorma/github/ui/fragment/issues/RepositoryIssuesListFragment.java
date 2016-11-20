@@ -62,7 +62,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   private RepoInfo repoInfo;
 
-  private int currentFilter = 0;
+  private Integer currentFilter = null;
 
   @BindView(R.id.showPullRequest) CompoundButton showPullRequest;
   @BindView(R.id.revealView) View revealView;
@@ -95,7 +95,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     spinner.setOnItemSelectedListener(new SimpleItemSelectedItemListener() {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (currentFilter != position) {
+        if (currentFilter == null || currentFilter != position) {
           currentFilter = position;
           IssuesSearchRequest request = getIssueSearchRequest(position);
           presenter.execute(request);
@@ -106,9 +106,8 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     showPullRequest.setOnCheckedChangeListener((compoundButton, b) -> {
       IssuesSearchRequest request = getIssueSearchRequest(currentFilter);
       presenter.execute(request);
+      checkFAB();
     });
-
-    presenter.execute(getIssueSearchRequest(0));
   }
 
   @Override
@@ -201,9 +200,9 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   }
 
   @NonNull
-  private IssuesSearchRequest getIssueSearchRequest(int status) {
+  private IssuesSearchRequest getIssueSearchRequest(Integer status) {
     IssuesSearchRequest.Builder builder = new IssuesSearchRequest.Builder();
-    builder.setIsOpen(status == 0);
+    builder.setIsOpen(status == null || status == 0);
     builder.setAuthor(repoInfo.owner);
     builder.setRepo(repoInfo.name);
     builder.setIsPullRequest(showPullRequest.isChecked());
@@ -241,7 +240,11 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @Override
   protected boolean useFAB() {
-    return repoInfo.permissions != null && repoInfo.permissions.pull;
+    if (showPullRequest == null) {
+      return repoInfo.permissions != null && repoInfo.permissions.pull;
+    } else {
+      return !showPullRequest.isChecked() || repoInfo.permissions != null && repoInfo.permissions.pull;
+    }
   }
 
   @Override
