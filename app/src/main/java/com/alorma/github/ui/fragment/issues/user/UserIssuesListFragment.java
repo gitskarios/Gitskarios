@@ -1,6 +1,7 @@
 package com.alorma.github.ui.fragment.issues.user;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,8 @@ import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.typeface.IIcon;
 import core.issue.IssuesSearchRequest;
 import core.issues.Issue;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -94,8 +97,7 @@ public abstract class UserIssuesListFragment extends BaseFragment
   }
 
   private IssuesSearchRequest buildIssueSearchRequest() {
-    return new IssuesSearchRequest.Builder()
-        .setAction(getAction()).setAuthor(accountNameProvider.getName()).setIsOpen(true).build();
+    return new IssuesSearchRequest.Builder().setAction(getAction()).setAuthor(accountNameProvider.getName()).setIsOpen(true).build();
   }
 
   @Override
@@ -145,15 +147,30 @@ public abstract class UserIssuesListFragment extends BaseFragment
     IssueInfo info = new IssueInfo();
     info.num = item.getNumber();
     info.repoInfo = new RepoInfo();
-    info.repoInfo.owner = item.getRepository().getOwner().getLogin();
-    info.repoInfo.name = item.getRepository().getName();
+    if (item.getRepository() != null) {
+      info.repoInfo = new RepoInfo();
+      info.repoInfo.owner = item.getRepository().getOwner().getLogin();
+      info.repoInfo.name = item.getRepository().getName();
+    } else if (item.getRepositoryUrl() != null) {
+      info.repoInfo = new RepoInfo();
+      Uri parse = Uri.parse(item.getRepositoryUrl());
+      List<String> pathSegments = parse.getPathSegments();
+      if (pathSegments != null && pathSegments.size() > 1) {
+        pathSegments = new ArrayList<>(pathSegments);
+        Collections.reverse(pathSegments);
+        info.repoInfo.name = pathSegments.get(0);
+        info.repoInfo.owner = pathSegments.get(1);
+      }
+    }
 
-    if (item.getPullRequest() != null) {
-      Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
-      startActivity(intent);
-    } else {
-      Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-      startActivity(intent);
+    if (info.repoInfo != null) {
+      if (item.getPullRequest() != null) {
+        Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
+        startActivity(intent);
+      } else {
+        Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
+        startActivity(intent);
+      }
     }
   }
 
