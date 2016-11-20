@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +41,7 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import core.issue.IssuesRequest;
+import core.issue.IssuesSearchRequest;
 import core.issues.Issue;
 import core.issues.IssueState;
 import core.repositories.Permissions;
@@ -104,16 +106,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
           clear();
 
-          IssueState issueInfo;
-          if (position == 0) {
-            issueInfo = IssueState.open;
-          } else {
-            issueInfo = IssueState.closed;
-          }
-          HashMap<String, String> map = new HashMap<>();
-          map.put("state", issueInfo.name());
-
-          IssuesRequest request = new IssuesRequest(repoInfo, map);
+          IssuesSearchRequest request = getIssueSearchRequest(position);
           presenter.execute(request);
         }
       }
@@ -194,38 +187,30 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     }
   }
 
+  @Override
   protected void executeRequest() {
     if (currentFilter == 0 || currentFilter == 1) {
-      IssueState issueInfo;
-      if (currentFilter == 0) {
-        issueInfo = IssueState.open;
-      } else {
-        issueInfo = IssueState.closed;
-      }
-      HashMap<String, String> map = new HashMap<>();
-      map.put("state", issueInfo.name());
-
-      IssuesRequest request = new IssuesRequest(repoInfo, map);
-      presenter.execute(request);
+      IssuesSearchRequest builder = getIssueSearchRequest(currentFilter);
+      presenter.execute(builder);
     }
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
-    super.executePaginatedRequest(page);
     if (currentFilter == 0 || currentFilter == 1) {
-      IssueState issueInfo;
-      if (currentFilter == 0) {
-        issueInfo = IssueState.open;
-      } else {
-        issueInfo = IssueState.closed;
-      }
-      HashMap<String, String> map = new HashMap<>();
-      map.put("state", issueInfo.name());
-
-      IssuesRequest request = new IssuesRequest(repoInfo, map);
-      presenter.executePaginated(request);
+      IssuesSearchRequest builder = getIssueSearchRequest(currentFilter);
+      presenter.executePaginated(builder);
     }
+  }
+
+  @NonNull
+  private IssuesSearchRequest getIssueSearchRequest(int status) {
+    IssuesSearchRequest.Builder builder = new IssuesSearchRequest.Builder();
+    builder.setIsOpen(status == 0);
+    builder.setAuthor(repoInfo.owner);
+    builder.setRepo(repoInfo.name);
+    builder.setIsPullRequest(false);
+    return builder.build();
   }
 
   protected void onResponse(List<Issue> issues) {

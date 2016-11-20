@@ -21,25 +21,22 @@ public class CloudMembershipRepositoriesDataSource extends CloudDataSource<Strin
   @Override
   protected Observable<SdkItem<List<Repo>>> execute(final SdkItem<String> data,
       final RestWrapper service) {
-    return Observable.fromCallable(new Callable<SdkItem<List<Repo>>>() {
-      @Override
-      public SdkItem<List<Repo>> call() throws Exception {
-        ReposService reposService = service.get();
-        Call<List<Repo>> call;
-        if (data.getPage() != null) {
-          call = reposService.userMemberRepos(data.getPage(), sortOrder);
-        } else {
-          call = reposService.userMemberRepos(sortOrder);
-        }
-
-        Response<List<Repo>> listResponse = call.execute();
-        Integer page = null;
-        if (service.isPaginated(listResponse)) {
-          page = service.getPage(listResponse);
-        }
-
-        return new SdkItem<>(page, listResponse.body());
+    return Observable.fromCallable(() -> {
+      ReposService reposService = service.get();
+      Call<List<Repo>> call;
+      if (data.getPage() != null) {
+        call = reposService.userMemberRepos(data.getPage(), sortOrder);
+      } else {
+        call = reposService.userMemberRepos(sortOrder);
       }
+
+      Response<List<Repo>> listResponse = call.execute();
+      Integer page = null;
+      if (service.isPaginated(listResponse)) {
+        page = service.getPage(listResponse);
+      }
+
+      return new SdkItem<>(page, listResponse.body());
     });
   }
 }

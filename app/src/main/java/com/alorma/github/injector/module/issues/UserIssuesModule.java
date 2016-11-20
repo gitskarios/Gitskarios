@@ -7,7 +7,7 @@ import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.issue.UserIssuesBaseRxPresenter;
 import core.ApiClient;
 import core.datasource.EmptyCacheDataSource;
-import core.issues.CloudUsersIssuesDataSource;
+import core.issues.CloudIssuesDataSource;
 import core.issues.IssuesSearchRetrofitWrapper;
 import core.repository.GenericRepository;
 import dagger.Module;
@@ -24,14 +24,14 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
-  CloudUsersIssuesDataSource provideCloudUsersIssuesDataSource(IssuesSearchRetrofitWrapper retrofitWrapper) {
-    return new CloudUsersIssuesDataSource(retrofitWrapper);
+  CloudIssuesDataSource provideCloudUsersIssuesDataSource(IssuesSearchRetrofitWrapper retrofitWrapper) {
+    return new CloudIssuesDataSource(retrofitWrapper);
   }
 
   @Provides
   @PerActivity
   UserIssuesBaseRxPresenter provideUserIssuesBaseRxPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-      CloudUsersIssuesDataSource cloudUsersIssuesDataSource) {
+      CloudIssuesDataSource cloudUsersIssuesDataSource) {
 
     return new UserIssuesBaseRxPresenter(mainScheduler, ioScheduler,
         new GenericRepository<>(new EmptyCacheDataSource<>(), cloudUsersIssuesDataSource));

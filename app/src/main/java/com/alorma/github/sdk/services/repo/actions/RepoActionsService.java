@@ -16,7 +16,7 @@ import rx.Observable;
 public interface RepoActionsService {
 
   @Headers("Content-Length: 0")
-  @PUT("/user/starred/{owner}/{repo}")
+  @PUT("/issues/starred/{owner}/{repo}")
   Observable<Response> starRepo(@Path("owner") String owner, @Path("repo") String repo,
       @Body String empty);
 
@@ -24,10 +24,10 @@ public interface RepoActionsService {
   Observable<Response> watchRepo(@Path("owner") String owner, @Path("repo") String repo,
       @Body WatchBodyRequest bodyRequest);
 
-  @GET("/user/starred/{owner}/{repo}")
+  @GET("/issues/starred/{owner}/{repo}")
   Observable<Response> checkIfRepoIsStarred(@Path("owner") String owner, @Path("repo") String repo);
 
-  @DELETE("/user/starred/{owner}/{repo}")
+  @DELETE("/issues/starred/{owner}/{repo}")
   Observable<Response> unstarRepo(@Path("owner") String owner, @Path("repo") String repo);
 
   @GET("/repos/{owner}/{repo}/subscription")

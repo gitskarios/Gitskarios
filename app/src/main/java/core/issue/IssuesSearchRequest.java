@@ -6,11 +6,10 @@ public class IssuesSearchRequest {
   private Boolean isPublic;
   private String action;
   private String author;
+  private String repo;
 
-  private IssuesSearchRequest(boolean isOpen, Boolean isPullRequest, Boolean isPublic, String action, String author) {
-    if (action == null || author == null) {
-      throw new NullPointerException("Action or Author could not be null");
-    }
+  private IssuesSearchRequest(boolean isOpen, Boolean isPullRequest, Boolean isPublic, String action, String author, String repo) {
+    this.repo = repo;
     this.isOpen = isOpen;
     this.isPullRequest = isPullRequest;
     this.isPublic = isPublic;
@@ -48,7 +47,21 @@ public class IssuesSearchRequest {
     }
 
     builder.append(" ");
-    builder.append(action).append(":").append(author);
+    if (action != null && author != null) {
+      builder.append(action).append(":").append(author);
+    }
+
+    if (repo != null) {
+      builder.append(" ");
+      builder.append("repo:");
+      builder.append(author);
+      builder.append("/");
+      builder.append(repo);
+    } else {
+      builder.append(" ");
+      builder.append("issues:");
+      builder.append(author);
+    }
     return builder.toString();
   }
 
@@ -58,6 +71,7 @@ public class IssuesSearchRequest {
     private Boolean isPublic;
     private String author;
     public String action;
+    private String repo;
 
     public Builder setIsOpen(boolean isOpen) {
       this.isOpen = isOpen;
@@ -84,8 +98,13 @@ public class IssuesSearchRequest {
       return this;
     }
 
+    public Builder setRepo(String repo) {
+      this.repo = repo;
+      return this;
+    }
+
     public IssuesSearchRequest build() {
-      return new IssuesSearchRequest(isOpen, ispullRequest, isPublic, action, author);
+      return new IssuesSearchRequest(isOpen, ispullRequest, isPublic, action, author, repo);
     }
   }
 }

@@ -8,7 +8,7 @@ import com.alorma.github.presenter.issue.IssuesPresenter;
 import core.ApiClient;
 import core.datasource.EmptyCacheDataSource;
 import core.issues.CloudIssuesDataSource;
-import core.issues.IssuesRetrofitWrapper;
+import core.issues.IssuesSearchRetrofitWrapper;
 import core.repository.GenericRepository;
 import dagger.Module;
 import dagger.Provides;
@@ -18,13 +18,13 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
-  IssuesRetrofitWrapper provideIssuesRetrofitWrapper(ApiClient apiClient, @Token String token) {
-    return new IssuesRetrofitWrapper(apiClient, token);
+  IssuesSearchRetrofitWrapper provideIssuesRetrofitWrapper(ApiClient apiClient, @Token String token) {
+    return new IssuesSearchRetrofitWrapper(apiClient, token);
   }
 
   @Provides
   @PerActivity
-  CloudIssuesDataSource provideCloudUsersIssuesDataSource(IssuesRetrofitWrapper retrofitWrapper) {
+  CloudIssuesDataSource provideCloudUsersIssuesDataSource(IssuesSearchRetrofitWrapper retrofitWrapper) {
     return new CloudIssuesDataSource(retrofitWrapper);
   }
 

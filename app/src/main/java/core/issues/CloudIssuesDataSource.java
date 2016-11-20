@@ -1,44 +1,40 @@
 package core.issues;
 
-import com.alorma.github.sdk.bean.info.RepoInfo;
 import core.datasource.CloudDataSource;
 import core.datasource.RestWrapper;
 import core.datasource.SdkItem;
-import core.issue.IssuesRequest;
-import core.issue.IssuesService;
+import core.issue.IssuesSearchRequest;
+import core.issue.IssuesSearchService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
 
-public class CloudIssuesDataSource extends CloudDataSource<IssuesRequest, List<Issue>> {
+public class CloudIssuesDataSource extends CloudDataSource<IssuesSearchRequest, List<Issue>> {
 
   public CloudIssuesDataSource(RestWrapper restWrapper) {
     super(restWrapper);
   }
 
   @Override
-  protected Observable<SdkItem<List<Issue>>> execute(SdkItem<IssuesRequest> request, RestWrapper service) {
+  protected Observable<SdkItem<List<Issue>>> execute(SdkItem<IssuesSearchRequest> request, RestWrapper service) {
 
-    IssuesService issuesService = service.get();
+    IssuesSearchService issuesService = service.get();
 
     Observable<List<Issue>> observable = Observable.defer(() -> {
 
-      IssuesRequest k = request.getK();
-      RepoInfo repoInfo = k.getRepoInfo();
-      Map<String, String> filters = k.getFilters();
+      IssuesSearchRequest k = request.getK();
 
-      Call<List<Issue>> call;
+      Call<IssueSearchResponse> call;
       if (request.getPage() != null && request.getPage() > 0) {
-        call = issuesService.issues(repoInfo.owner, repoInfo.name, filters, request.getPage());
+        call = issuesService.issues(k.build(), request.getPage());
       } else {
-        call = issuesService.issues(repoInfo.owner, repoInfo.name, filters);
+        call = issuesService.issues(k.build());
       }
 
       try {
-        Response<List<Issue>> response = call.execute();
+        Response<IssueSearchResponse> response = call.execute();
         if (response.isSuccessful()) {
           return Observable.just(response.body());
         } else {
@@ -47,7 +43,7 @@ public class CloudIssuesDataSource extends CloudDataSource<IssuesRequest, List<I
       } catch (IOException e) {
         return Observable.error(e);
       }
-    });
+    }).map(IssueSearchResponse::getIssues);
 
     return observable.map(SdkItem::new);
   }
