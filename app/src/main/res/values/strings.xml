@@ -331,4 +331,5 @@
   <string name="repo_settings_defalut_tab_title">Default tab</string>
   <string name="expand">Expand</string>
   <string name="collapse">Collapse</string>
+  <string name="show_pull_request">Show pull request</string>
 </resources>

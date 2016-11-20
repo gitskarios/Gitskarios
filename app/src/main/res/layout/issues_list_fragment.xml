@@ -14,6 +14,19 @@
       android:showDividers="middle"
       >
 
+    <android.support.v7.widget.SwitchCompat
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/showPullRequest"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/show_pull_request"
+        android:background="?colorPrimary"
+        android:textColor="@color/white"
+        />
+
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"

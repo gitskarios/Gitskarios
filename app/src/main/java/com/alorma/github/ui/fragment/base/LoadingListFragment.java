@@ -30,7 +30,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   protected Toolbar extraToolbar;
   protected boolean fromRetry = false;
   protected boolean refreshing;
-  private SwipeRefreshLayout swipe;
+  protected SwipeRefreshLayout swipe;
   private ErrorView error_view;
   private Adapter adapter;
   protected View loadingView;

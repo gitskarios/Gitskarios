@@ -23,7 +23,6 @@ import com.alorma.github.ui.activity.base.RepositoryThemeActivity;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.RepoContributorsFragment;
 import com.alorma.github.ui.fragment.issues.RepositoryIssuesListFragment;
-import com.alorma.github.ui.fragment.issues.RepositoryPullRequestsListFragment;
 import java.util.ArrayList;
 
 public class RepoDetailActivity extends RepositoryThemeActivity {
@@ -41,7 +40,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
   private RepoAboutFragment repoAboutFragment;
   private RepositoryIssuesListFragment repositoryIssuesListFragment;
   private RepoContributorsFragment repoContributorsFragment;
-  private RepositoryPullRequestsListFragment repositoryPullRequestsListFragment;
 
   private TabLayout.Tab codeTab;
   private TabLayout.Tab issuesTab;
@@ -122,10 +120,7 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
     repoAboutFragment = RepoAboutFragment.newInstance(requestRepoInfo);
     fragments.add(repoAboutFragment);
 
-    repositoryPullRequestsListFragment = RepositoryPullRequestsListFragment.newInstance(requestRepoInfo);
-    fragments.add(repositoryPullRequestsListFragment);
-
-    repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo, false);
+    repositoryIssuesListFragment = RepositoryIssuesListFragment.newInstance(requestRepoInfo);
     fragments.add(repositoryIssuesListFragment);
 
     repoContributorsFragment = RepoContributorsFragment.newInstance(requestRepoInfo);
@@ -139,9 +134,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
 
     issuesTab = getTab(R.drawable.ic_issue_opened, R.string.repo_detail_issues);
     tabLayout.addTab(issuesTab, false);
-
-    pullrequestsTab = getTab(R.drawable.ic_git_pull_request, R.string.repo_detail_pulls);
-    tabLayout.addTab(pullrequestsTab, false);
 
     contributorsTab = getTab(R.drawable.ic_person, R.string.repo_detail_contributors);
     tabLayout.addTab(contributorsTab, false);
@@ -157,9 +149,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
             setFragment(repositoryIssuesListFragment);
             break;
           case 2:
-            setFragment(repositoryPullRequestsListFragment);
-            break;
-          case 3:
             setFragment(repoContributorsFragment);
             break;
         }
@@ -185,9 +174,6 @@ public class RepoDetailActivity extends RepositoryThemeActivity {
     if (getString(R.string.repo_settings_defalut_tab_items_issues_value).equals(repoDefaulTab)) {
       setFragment(repositoryIssuesListFragment);
       issuesTab.select();
-    } else if (getString(R.string.repo_settings_defalut_tab_items_pullrequest_value).equals(repoDefaulTab)) {
-      setFragment(repositoryPullRequestsListFragment);
-      pullrequestsTab.select();
     } else if (getString(R.string.repo_settings_defalut_tab_items_contributors_value).equals(repoDefaulTab)) {
       setFragment(repoContributorsFragment);
       contributorsTab.select();

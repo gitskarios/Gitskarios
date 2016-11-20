@@ -18,7 +18,11 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
+import butterknife.BindArray;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.alorma.github.R;
 import com.alorma.github.injector.component.ApiComponent;
 import com.alorma.github.injector.component.ApplicationComponent;
@@ -37,15 +41,13 @@ import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
 import com.alorma.github.ui.fragment.issues.user.IssuesAdapter;
+import com.alorma.github.ui.utils.SimpleItemSelectedItemListener;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import core.issue.IssuesRequest;
 import core.issue.IssuesSearchRequest;
 import core.issues.Issue;
-import core.issues.IssueState;
 import core.repositories.Permissions;
-import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -55,31 +57,25 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   @Inject IssuesPresenter presenter;
 
   private static final String REPO_INFO = "REPO_INFO";
-  private static final String FROM_SEARCH = "FROM_SEARCH";
 
   private static final int ISSUE_REQUEST = 1234;
 
   private RepoInfo repoInfo;
 
-  private boolean fromSearch = false;
-
   private int currentFilter = 0;
-  private View revealView;
 
-  public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
+  @BindView(R.id.showPullRequest) CompoundButton showPullRequest;
+  @BindView(R.id.revealView) View revealView;
+  @BindView(R.id.spinner) Spinner spinner;
+  @BindArray(R.array.issues_filter) String[] issueFilters;
+
+  public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo) {
     Bundle bundle = new Bundle();
     bundle.putParcelable(REPO_INFO, repoInfo);
-    bundle.putBoolean(FROM_SEARCH, fromSearch);
 
     RepositoryIssuesListFragment fragment = new RepositoryIssuesListFragment();
     fragment.setArguments(bundle);
     return fragment;
-  }
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(!fromSearch);
   }
 
   @Override
@@ -91,31 +87,28 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    revealView = view.findViewById(R.id.revealView);
+    ButterKnife.bind(this, view);
 
-    Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
-    String[] items = getResources().getStringArray(R.array.issues_filter);
-    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, issueFilters);
     spinner.setAdapter(adapter);
 
-    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    spinner.setOnItemSelectedListener(new SimpleItemSelectedItemListener() {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (currentFilter != position) {
           currentFilter = position;
-
-          clear();
-
           IssuesSearchRequest request = getIssueSearchRequest(position);
           presenter.execute(request);
         }
       }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-
-      }
     });
+
+    showPullRequest.setOnCheckedChangeListener((compoundButton, b) -> {
+      IssuesSearchRequest request = getIssueSearchRequest(currentFilter);
+      presenter.execute(request);
+    });
+
+    presenter.execute(getIssueSearchRequest(0));
   }
 
   @Override
@@ -183,7 +176,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   protected void loadArguments() {
     if (getArguments() != null) {
       repoInfo = getArguments().getParcelable(REPO_INFO);
-      fromSearch = getArguments().getBoolean(FROM_SEARCH, false);
     }
   }
 
@@ -193,6 +185,11 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
       IssuesSearchRequest builder = getIssueSearchRequest(currentFilter);
       presenter.execute(builder);
     }
+  }
+
+  @Override
+  protected boolean autoStart() {
+    return false;
   }
 
   @Override
@@ -209,7 +206,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     builder.setIsOpen(status == 0);
     builder.setAuthor(repoInfo.owner);
     builder.setRepo(repoInfo.name);
-    builder.setIsPullRequest(false);
+    builder.setIsPullRequest(showPullRequest.isChecked());
     return builder.build();
   }
 
@@ -244,7 +241,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @Override
   protected boolean useFAB() {
-    return !fromSearch && (repoInfo.permissions == null || repoInfo.permissions.pull);
+    return repoInfo.permissions != null && repoInfo.permissions.pull;
   }
 
   @Override
@@ -344,11 +341,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   }
 
   @Override
-  protected boolean autoStart() {
-    return !fromSearch;
-  }
-
-  @Override
   public void setRefreshing() {
     super.setRefreshing();
     executeRequest();
@@ -356,17 +348,20 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @Override
   public void showLoading() {
-    loadingView.setVisibility(View.VISIBLE);
+    swipe.setRefreshing(true);
   }
 
   @Override
   public void hideLoading() {
-    loadingView.setVisibility(View.GONE);
+    swipe.setRefreshing(false);
   }
 
   @Override
   public void onDataReceived(List<Issue> data, boolean isFromPaginated) {
     hideEmpty();
+    if (!isFromPaginated) {
+      clear();
+    }
     onResponse(data);
   }
 

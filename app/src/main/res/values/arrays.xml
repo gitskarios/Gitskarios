@@ -41,8 +41,8 @@
   </string-array>
 
   <string-array name="issues_filter">
-    <item>Open issues</item>
-    <item>Closed issues</item>
+    <item>Open</item>
+    <item>Closed</item>
   </string-array>
 
   <string-array name="pullrequest_filter">
