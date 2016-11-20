@@ -20,11 +20,23 @@ public class SearchBase implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeInt(this.totalCount);
-    dest.writeByte(incompleteResults ? (byte) 1 : (byte) 0);
+    dest.writeByte(this.incompleteResults ? (byte) 1 : (byte) 0);
   }
 
   protected SearchBase(Parcel in) {
     this.totalCount = in.readInt();
     this.incompleteResults = in.readByte() != 0;
   }
+
+  public static final Creator<SearchBase> CREATOR = new Creator<SearchBase>() {
+    @Override
+    public SearchBase createFromParcel(Parcel source) {
+      return new SearchBase(source);
+    }
+
+    @Override
+    public SearchBase[] newArray(int size) {
+      return new SearchBase[size];
+    }
+  };
 }

@@ -4,7 +4,6 @@ import core.datasource.CloudDataSource;
 import core.datasource.RestWrapper;
 import core.datasource.SdkItem;
 import java.util.List;
-import java.util.concurrent.Callable;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
@@ -19,35 +18,31 @@ public class CloudStarredRepositoriesDataSource extends CloudDataSource<String, 
   }
 
   @Override
-  protected Observable<SdkItem<List<Repo>>> execute(final SdkItem<String> data,
-      final RestWrapper service) {
-    return Observable.fromCallable(new Callable<SdkItem<List<Repo>>>() {
-      @Override
-      public SdkItem<List<Repo>> call() throws Exception {
-        ReposService reposService = service.get();
-        Call<List<Repo>> call;
-        if (data.getPage() != null) {
-          if (data.getK() != null) {
-            call = reposService.userStarredReposList(data.getK(), data.getPage(), sortOrder);
-          } else {
-            call = reposService.userStarredReposList(data.getPage(), sortOrder);
-          }
+  protected Observable<SdkItem<List<Repo>>> execute(final SdkItem<String> data, final RestWrapper service) {
+    return Observable.fromCallable(() -> {
+      ReposService reposService = service.get();
+      Call<List<Repo>> call;
+      if (data.getPage() != null) {
+        if (data.getK() != null) {
+          call = reposService.userStarredReposList(data.getK(), data.getPage(), sortOrder);
         } else {
-          if (data.getK() != null) {
-            call = reposService.userStarredReposList(data.getK(), sortOrder);
-          } else {
-            call = reposService.userStarredReposList(sortOrder);
-          }
+          call = reposService.userStarredReposList(data.getPage(), sortOrder);
         }
-
-        Response<List<Repo>> listResponse = call.execute();
-        Integer page = null;
-        if (service.isPaginated(listResponse)) {
-          page = service.getPage(listResponse);
+      } else {
+        if (data.getK() != null) {
+          call = reposService.userStarredReposList(data.getK(), sortOrder);
+        } else {
+          call = reposService.userStarredReposList(sortOrder);
         }
-
-        return new SdkItem<>(page, listResponse.body());
       }
+
+      Response<List<Repo>> listResponse = call.execute();
+      Integer page = null;
+      if (service.isPaginated(listResponse)) {
+        page = service.getPage(listResponse);
+      }
+
+      return new SdkItem<>(page, listResponse.body());
     });
   }
 }

@@ -21,11 +21,12 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wefika.flowlayout.FlowLayout;
 import core.issues.Label;
 
-public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.ViewHolder> {
+@Deprecated
+public class OldIssuesAdapter extends RecyclerArrayAdapter<Issue, OldIssuesAdapter.ViewHolder> {
 
   private IssuesAdapterListener issuesAdapterListener;
 
-  public IssuesAdapter(LayoutInflater inflater) {
+  public OldIssuesAdapter(LayoutInflater inflater) {
     super(inflater);
   }
 

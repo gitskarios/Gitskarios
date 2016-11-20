@@ -33,7 +33,7 @@ public abstract class LoadingListFragment<Adapter extends RecyclerArrayAdapter> 
   private SwipeRefreshLayout swipe;
   private ErrorView error_view;
   private Adapter adapter;
-  private View loadingView;
+  protected View loadingView;
   private boolean fromPaginated;
   private Integer page;
   private List<RecyclerView.ItemDecoration> listDecorators;

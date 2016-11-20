@@ -3,6 +3,7 @@ package com.alorma.github.ui.fragment.issues.user;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +36,16 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
 
   @Override
   protected void onBindViewHolder(ViewHolder holder, Issue issue) {
-    holder.title.setText("[" + issue.getRepository().getName() + "] " +  issue.getTitle());
+    if (issue.getRepository() != null) {
+      holder.title.setText("[" + issue.getRepository().getName() + "] " + "#" + issue.getNumber() + " - " + issue.getTitle());
+    } else {
+      holder.title.setText("[" + issue.getNumber() + "] " + issue.getTitle());
+    }
 
     String timeAgo = TimeUtils.getTimeAgoString(issue.getCreatedAt());
     Resources resources = holder.info.getContext().getResources();
-    String info = resources.getString(R.string.issue_info, issue.getNumber(), timeAgo, issue.getUser().getLogin());
-    holder.info.setText(info);
+    String info = resources.getString(R.string.issue_info, timeAgo, issue.getUser().getLogin());
+    holder.info.setText(Html.fromHtml(info));
 
     int colorState = getColorState(issue);
 
@@ -126,7 +131,11 @@ public class IssuesAdapter extends RecyclerArrayAdapter<Issue, IssuesAdapter.Vie
       labelsLayout = (FlowLayout) itemView.findViewById(R.id.labelsLayout);
       milestoneLy = (ViewGroup) itemView.findViewById(R.id.milestoneLy);
 
-      itemView.setOnClickListener(v -> getCallback().onItemSelected(getItem(getAdapterPosition())));
+      itemView.setOnClickListener(v -> {
+        if (getCallback() != null) {
+          getCallback().onItemSelected(getItem(getAdapterPosition()));
+        }
+      });
     }
   }
 }

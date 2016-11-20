@@ -2,6 +2,7 @@ package com.alorma.github.injector.component;
 
 import com.alorma.github.injector.component.issues.IssueDetailComponent;
 import com.alorma.github.injector.component.issues.IssueLabelsComponent;
+import com.alorma.github.injector.component.issues.IssuesComponent;
 import com.alorma.github.injector.component.issues.UserIssuesComponent;
 import com.alorma.github.injector.component.repository.AuthOrgsRepositoriesComponent;
 import com.alorma.github.injector.component.repository.CurrentAccountRepositoriesComponent;
@@ -21,6 +22,7 @@ import com.alorma.github.injector.module.RepositorySourceModule;
 import com.alorma.github.injector.module.UserNotificationsModule;
 import com.alorma.github.injector.module.issues.IssueDetailModule;
 import com.alorma.github.injector.module.issues.IssueLabelsModule;
+import com.alorma.github.injector.module.issues.IssuesModule;
 import com.alorma.github.injector.module.issues.UserIssuesModule;
 import com.alorma.github.injector.module.repository.AuthOrgsRepositoriesModule;
 import com.alorma.github.injector.module.repository.CurrentAccountRepositoriesModule;
@@ -55,6 +57,8 @@ import rx.Scheduler;
 
   // next components with its own tree
   UserIssuesComponent plus(UserIssuesModule module);
+
+  IssuesComponent plus(IssuesModule module);
 
   RepositoryTagsComponent plus(RepositoryTagsModule module);
 

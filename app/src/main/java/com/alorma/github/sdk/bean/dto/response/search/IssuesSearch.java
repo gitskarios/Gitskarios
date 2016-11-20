@@ -2,7 +2,8 @@ package com.alorma.github.sdk.bean.dto.response.search;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.alorma.github.sdk.bean.dto.response.Issue;
+import core.issues.Issue;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IssuesSearch extends SearchBase implements Parcelable {
@@ -19,12 +20,13 @@ public class IssuesSearch extends SearchBase implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     super.writeToParcel(dest, flags);
-    dest.writeTypedList(this.items);
+    dest.writeList(this.items);
   }
 
   protected IssuesSearch(Parcel in) {
     super(in);
-    this.items = in.createTypedArrayList(Issue.CREATOR);
+    this.items = new ArrayList<Issue>();
+    in.readList(this.items, Issue.class.getClassLoader());
   }
 
   public static final Creator<IssuesSearch> CREATOR = new Creator<IssuesSearch>() {

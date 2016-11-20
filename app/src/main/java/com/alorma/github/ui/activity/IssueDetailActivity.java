@@ -30,7 +30,7 @@ import com.alorma.github.injector.component.ApplicationComponent;
 import com.alorma.github.injector.component.DaggerApiComponent;
 import com.alorma.github.injector.module.ApiModule;
 import com.alorma.github.injector.module.issues.IssueDetailModule;
-import com.alorma.github.presenter.issue.IssueCommentBaseRxPresenter;
+import com.alorma.github.presenter.issue.IssueCommentPresenter;
 import com.alorma.github.sdk.bean.dto.request.CreateMilestoneRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueBodyRequestDTO;
 import com.alorma.github.sdk.bean.dto.request.EditIssueLabelsRequestDTO;
@@ -84,7 +84,7 @@ public class IssueDetailActivity extends BackActivity
     implements View.OnClickListener, IssueDetailRequestListener, SwipeRefreshLayout.OnRefreshListener, IssueCommentRequestListener,
     com.alorma.github.presenter.View<GithubComment> {
 
-  @Inject IssueCommentBaseRxPresenter issueCommentPresenter;
+  @Inject IssueCommentPresenter issueCommentPresenter;
 
   public static final String ISSUE_INFO_REPO_NAME = "ISSUE_INFO_REPO_NAME";
   public static final String ISSUE_INFO_REPO_OWNER = "ISSUE_INFO_REPO_OWNER";

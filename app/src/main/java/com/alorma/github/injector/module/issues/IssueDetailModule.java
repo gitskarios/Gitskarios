@@ -5,7 +5,7 @@ import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.issue.EditIssueCommentDataSource;
-import com.alorma.github.presenter.issue.IssueCommentBaseRxPresenter;
+import com.alorma.github.presenter.issue.IssueCommentPresenter;
 
 import core.ApiClient;
 import core.GithubComment;
@@ -28,14 +28,14 @@ public class IssueDetailModule {
 
     @Provides
     @PerActivity
-    IssueCommentBaseRxPresenter provideIssueCommentBaseRxPresenter(
+    IssueCommentPresenter provideIssueCommentBaseRxPresenter(
             @MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
             IssuesCommentsRetrofitWrapper retrofitWrapper) {
 
         CloudDataSource<EditIssueCommentBodyRequest, GithubComment> api =
                 new EditIssueCommentDataSource(retrofitWrapper);
 
-        return new IssueCommentBaseRxPresenter(
+        return new IssueCommentPresenter(
                 mainScheduler, ioScheduler, new GenericRepository<>(null, api));
     }
 

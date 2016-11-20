@@ -4,9 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.alorma.github.sdk.bean.dto.response.IssueState;
 
-/**
- * Created by Bernat on 23/08/2014.
- */
 public class IssueRequest extends EditIssueRequestDTO implements Parcelable {
   public static final Creator<IssueRequest> CREATOR = new Creator<IssueRequest>() {
     public IssueRequest createFromParcel(Parcel source) {

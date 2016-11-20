@@ -1,66 +1,68 @@
 package com.alorma.github.ui.fragment.issues;
 
+import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import com.alorma.github.R;
-import com.alorma.github.sdk.bean.dto.response.Issue;
-import com.alorma.github.sdk.bean.dto.response.IssueState;
-import com.alorma.github.sdk.bean.dto.response.Milestone;
-import com.alorma.github.sdk.bean.dto.response.MilestoneState;
+import com.alorma.github.injector.component.ApiComponent;
+import com.alorma.github.injector.component.ApplicationComponent;
+import com.alorma.github.injector.component.DaggerApiComponent;
+import com.alorma.github.injector.module.ApiModule;
+import com.alorma.github.injector.module.issues.IssuesModule;
+import com.alorma.github.presenter.issue.IssuesPresenter;
 import com.alorma.github.sdk.bean.info.IssueInfo;
 import com.alorma.github.sdk.bean.info.RepoInfo;
-import com.alorma.github.sdk.services.client.GithubListClient;
-import com.alorma.github.sdk.services.issues.GetIssuesClient;
-import com.alorma.github.sdk.services.search.IssuesSearchClient;
 import com.alorma.github.ui.activity.IssueDetailActivity;
-import com.alorma.github.ui.activity.MilestoneIssuesActivity;
 import com.alorma.github.ui.activity.NewIssueActivity;
+import com.alorma.github.ui.activity.PullRequestDetailActivity;
 import com.alorma.github.ui.activity.SearchIssuesActivity;
-import com.alorma.github.ui.activity.issue.RepositoryMilestonesActivity;
-import com.alorma.github.ui.adapter.issues.IssuesAdapter;
+import com.alorma.github.ui.adapter.base.RecyclerArrayAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
 import com.alorma.github.ui.fragment.detail.repo.PermissionsManager;
-import com.alorma.gitskarios.core.Pair;
+import com.alorma.github.ui.fragment.issues.user.IssuesAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import core.issue.IssuesRequest;
+import core.issues.Issue;
+import core.issues.IssueState;
 import core.repositories.Permissions;
 import java.util.HashMap;
 import java.util.List;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import javax.inject.Inject;
 
 public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdapter>
-    implements View.OnClickListener, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener {
+    implements PermissionsManager, BackManager, com.alorma.github.presenter.View<List<Issue>>, RecyclerArrayAdapter.ItemCallback<Issue> {
+
+  @Inject IssuesPresenter presenter;
 
   private static final String REPO_INFO = "REPO_INFO";
   private static final String FROM_SEARCH = "FROM_SEARCH";
 
-  private static final int NEW_ISSUE_REQUEST = 1234;
-  private static final int MILESTONES_REQUEST = 1212;
+  private static final int ISSUE_REQUEST = 1234;
 
   private RepoInfo repoInfo;
 
   private boolean fromSearch = false;
-  private SearchClientRequest searchClientRequest;
 
   private int currentFilter = 0;
+  private View revealView;
 
   public static RepositoryIssuesListFragment newInstance(RepoInfo repoInfo, boolean fromSearch) {
     Bundle bundle = new Bundle();
@@ -80,12 +82,14 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.repository_issues_list_fragment, null, false);
+    return inflater.inflate(R.layout.issues_list_fragment, null, false);
   }
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    revealView = view.findViewById(R.id.revealView);
 
     Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
     String[] items = getResources().getStringArray(R.array.issues_filter);
@@ -99,7 +103,18 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
           currentFilter = position;
 
           clear();
-          onRefresh();
+
+          IssueState issueInfo;
+          if (position == 0) {
+            issueInfo = IssueState.open;
+          } else {
+            issueInfo = IssueState.closed;
+          }
+          HashMap<String, String> map = new HashMap<>();
+          map.put("state", issueInfo.name());
+
+          IssuesRequest request = new IssuesRequest(repoInfo, map);
+          presenter.execute(request);
         }
       }
 
@@ -108,8 +123,22 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
       }
     });
+  }
 
-    view.findViewById(R.id.milestones).setOnClickListener(v -> showMilestones());
+  @Override
+  protected void injectComponents(ApplicationComponent applicationComponent) {
+    super.injectComponents(applicationComponent);
+
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
+
+    apiComponent.plus(new IssuesModule()).inject(this);
+    presenter.attachView(this);
+  }
+
+  @Override
+  public void onStop() {
+    presenter.detachView();
+    super.onStop();
   }
 
   @Override
@@ -122,9 +151,13 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     return R.style.AppTheme_Dark_Repository;
   }
 
-  private void showMilestones() {
-    Intent intent = RepositoryMilestonesActivity.createLauncher(getActivity(), repoInfo, MilestoneState.all, true);
-    startActivityForResult(intent, MILESTONES_REQUEST);
+  @Override
+  public void onStart() {
+    super.onStart();
+
+    if (revealView != null) {
+      revealView.setVisibility(View.INVISIBLE);
+    }
   }
 
   @Override
@@ -156,114 +189,42 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   @Override
   protected void loadArguments() {
     if (getArguments() != null) {
-      repoInfo = (RepoInfo) getArguments().getParcelable(REPO_INFO);
+      repoInfo = getArguments().getParcelable(REPO_INFO);
       fromSearch = getArguments().getBoolean(FROM_SEARCH, false);
     }
   }
 
   protected void executeRequest() {
-    super.executeRequest();
-    if (repoInfo != null) {
-      if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
-        if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo();
-          issueInfo.repoInfo = repoInfo;
-          if (currentFilter == 0) {
-            issueInfo.state = IssueState.open;
-          } else if (currentFilter == 1) {
-            issueInfo.state = IssueState.closed;
-          }
-
-          setAction(new IssuesSearchClient(searchClientRequest.request()));
-        }
+    if (currentFilter == 0 || currentFilter == 1) {
+      IssueState issueInfo;
+      if (currentFilter == 0) {
+        issueInfo = IssueState.open;
       } else {
-        if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo();
-          issueInfo.repoInfo = repoInfo;
-          if (currentFilter == 0) {
-            issueInfo.state = IssueState.open;
-          } else if (currentFilter == 1) {
-            issueInfo.state = IssueState.closed;
-          }
-          HashMap<String, String> map = new HashMap<>();
-          map.put("state", issueInfo.state.name());
-
-          setAction(new GetIssuesClient(issueInfo, map));
-        }
+        issueInfo = IssueState.closed;
       }
+      HashMap<String, String> map = new HashMap<>();
+      map.put("state", issueInfo.name());
+
+      IssuesRequest request = new IssuesRequest(repoInfo, map);
+      presenter.execute(request);
     }
-  }
-
-  private void setAction(GithubListClient<List<Issue>> client) {
-    client.observable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnNext(new Action1<Pair<List<Issue>, Integer>>() {
-          @Override
-          public void call(Pair<List<Issue>, Integer> listIntegerPair) {
-            setPage(listIntegerPair.second);
-          }
-        })
-        .flatMap(new Func1<Pair<List<Issue>, Integer>, Observable<Issue>>() {
-          @Override
-          public Observable<Issue> call(Pair<List<Issue>, Integer> listIntegerPair) {
-            return Observable.from(listIntegerPair.first);
-          }
-        })
-        .filter(issue -> issue.pullRequest == null)
-        .toList()
-        .subscribe(new Subscriber<List<Issue>>() {
-          @Override
-          public void onCompleted() {
-            stopRefresh();
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            if (getAdapter() == null || getAdapter().getItemCount() == 0) {
-              setEmpty();
-            }
-          }
-
-          @Override
-          public void onNext(List<Issue> issues) {
-            onResponse(issues);
-          }
-        });
   }
 
   @Override
   protected void executePaginatedRequest(int page) {
     super.executePaginatedRequest(page);
-
-    if (repoInfo != null) {
-      if (fromSearch && searchClientRequest != null && searchClientRequest.request() != null) {
-        if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo();
-          issueInfo.repoInfo = repoInfo;
-          if (currentFilter == 0) {
-            issueInfo.state = IssueState.open;
-          } else if (currentFilter == 1) {
-            issueInfo.state = IssueState.closed;
-          }
-
-          setAction(new IssuesSearchClient(searchClientRequest.request(), page));
-        }
+    if (currentFilter == 0 || currentFilter == 1) {
+      IssueState issueInfo;
+      if (currentFilter == 0) {
+        issueInfo = IssueState.open;
       } else {
-        if (currentFilter == 0 || currentFilter == 1) {
-          IssueInfo issueInfo = new IssueInfo();
-          issueInfo.repoInfo = repoInfo;
-          if (currentFilter == 0) {
-            issueInfo.state = IssueState.open;
-          } else if (currentFilter == 1) {
-            issueInfo.state = IssueState.closed;
-          }
-          HashMap<String, String> map = new HashMap<>();
-          map.put("state", issueInfo.state.name());
-
-          setAction(new GetIssuesClient(issueInfo, map, page));
-        }
+        issueInfo = IssueState.closed;
       }
+      HashMap<String, String> map = new HashMap<>();
+      map.put("state", issueInfo.name());
+
+      IssuesRequest request = new IssuesRequest(repoInfo, map);
+      presenter.executePaginated(request);
     }
   }
 
@@ -272,8 +233,8 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
       hideEmpty();
       if (refreshing || getAdapter() == null) {
         IssuesAdapter issuesAdapter = new IssuesAdapter(LayoutInflater.from(getActivity()));
-        issuesAdapter.setIssuesAdapterListener(this);
         issuesAdapter.addAll(issues);
+        issuesAdapter.setCallback(this);
         setAdapter(issuesAdapter);
       } else {
         getAdapter().addAll(issues);
@@ -305,46 +266,60 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   protected void fabClick() {
     super.fabClick();
     if (repoInfo.permissions != null) {
-      openNewIssueActivity();
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fab != null) {
+        animateRevealFab();
+      } else {
+        openNewIssueActivity();
+      }
     }
   }
 
   private void openNewIssueActivity() {
     Intent intent = NewIssueActivity.createLauncherIntent(getActivity(), repoInfo);
-    startActivityForResult(intent, NEW_ISSUE_REQUEST);
+    startActivityForResult(intent, ISSUE_REQUEST);
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  private void animateRevealFab() {
+    float x = fab.getX() + (fab.getWidth() / 2);
+    float y = fab.getY() + (fab.getHeight() / 2);
+
+    int finalRadius = Math.max(revealView.getWidth(), revealView.getHeight());
+    Animator anim = ViewAnimationUtils.createCircularReveal(revealView, (int) x, (int) y, fab.getWidth() / 2, finalRadius);
+    revealView.setVisibility(View.VISIBLE);
+    anim.setDuration(600);
+    anim.setInterpolator(new AccelerateInterpolator());
+    anim.addListener(new Animator.AnimatorListener() {
+      @Override
+      public void onAnimationStart(Animator animator) {
+
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animator) {
+        openNewIssueActivity();
+      }
+
+      @Override
+      public void onAnimationCancel(Animator animator) {
+
+      }
+
+      @Override
+      public void onAnimationRepeat(Animator animator) {
+
+      }
+    });
+    anim.start();
   }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == Activity.RESULT_FIRST_USER) {
-      invalidate();
-    } else if (resultCode == Activity.RESULT_OK) {
-      if (requestCode == NEW_ISSUE_REQUEST) {
-        invalidate();
-      } else if (requestCode == MILESTONES_REQUEST) {
-        Milestone milestone = data.getParcelableExtra(Milestone.class.getSimpleName());
-        Intent intent = MilestoneIssuesActivity.launchIntent(getActivity(), repoInfo, milestone);
-        startActivity(intent);
-      }
-    }
-  }
-
-  public void invalidate() {
-    onRefresh();
-  }
-
-  @Override
-  public void onIssueOpenRequest(Issue item) {
-    if (item != null) {
-      IssueInfo info = new IssueInfo();
-      info.repoInfo = repoInfo;
-      info.num = item.number;
-
-      if (item.pullRequest == null) {
-        Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
-        startActivity(intent);
-      }
+      executeRequest();
+    } else if (requestCode == ISSUE_REQUEST && resultCode == Activity.RESULT_OK) {
+      executeRequest();
     }
   }
 
@@ -383,10 +358,6 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
     return true;
   }
 
-  public void executeSearch() {
-    onRefresh();
-  }
-
   @Override
   protected boolean autoStart() {
     return !fromSearch;
@@ -395,10 +366,44 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   @Override
   public void setRefreshing() {
     super.setRefreshing();
-    startRefresh();
+    executeRequest();
   }
 
-  public interface SearchClientRequest {
-    String request();
+  @Override
+  public void showLoading() {
+    loadingView.setVisibility(View.VISIBLE);
+  }
+
+  @Override
+  public void hideLoading() {
+    loadingView.setVisibility(View.GONE);
+  }
+
+  @Override
+  public void onDataReceived(List<Issue> data, boolean isFromPaginated) {
+    hideEmpty();
+    onResponse(data);
+  }
+
+  @Override
+  public void showError(Throwable throwable) {
+    setEmpty();
+  }
+
+  @Override
+  public void onItemSelected(Issue item) {
+    if (item != null) {
+      IssueInfo info = new IssueInfo();
+      info.repoInfo = repoInfo;
+      info.num = item.getNumber();
+
+      if (item.getPullRequest() == null) {
+        Intent intent = IssueDetailActivity.createLauncherIntent(getActivity(), info);
+        startActivityForResult(intent, ISSUE_REQUEST);
+      } else {
+        Intent intent = PullRequestDetailActivity.createLauncherIntent(getActivity(), info);
+        startActivityForResult(intent, ISSUE_REQUEST);
+      }
+    }
   }
 }

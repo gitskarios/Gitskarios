@@ -9,7 +9,7 @@ import com.alorma.github.sdk.bean.dto.response.PullRequest;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
-public class PullRequestsAdapter extends IssuesAdapter {
+public class PullRequestsAdapter extends OldIssuesAdapter {
   public PullRequestsAdapter(LayoutInflater inflater) {
     super(inflater);
   }

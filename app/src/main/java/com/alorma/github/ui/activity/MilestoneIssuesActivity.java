@@ -49,7 +49,7 @@ public class MilestoneIssuesActivity extends RepositoryThemeActivity implements 
       }
 
       issuesListFragment = IssuesListFragment.newInstance(repoInfo, true);
-      issuesListFragment.setSearchClientRequest(this);
+      //issuesListFragment.setSearchClientRequest(this);
 
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.replace(R.id.content, issuesListFragment);

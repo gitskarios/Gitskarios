@@ -19,7 +19,7 @@ import com.alorma.github.sdk.services.client.GithubListClient;
 import com.alorma.github.sdk.services.pullrequest.GetPullsClient;
 import com.alorma.github.ui.activity.NewIssueActivity;
 import com.alorma.github.ui.activity.PullRequestDetailActivity;
-import com.alorma.github.ui.adapter.issues.IssuesAdapter;
+import com.alorma.github.ui.adapter.issues.OldIssuesAdapter;
 import com.alorma.github.ui.adapter.issues.PullRequestsAdapter;
 import com.alorma.github.ui.fragment.base.LoadingListFragment;
 import com.alorma.github.ui.fragment.detail.repo.BackManager;
@@ -34,7 +34,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class RepositoryPullRequestsListFragment extends LoadingListFragment<PullRequestsAdapter>
-    implements View.OnClickListener, PermissionsManager, BackManager, IssuesAdapter.IssuesAdapterListener,
+    implements View.OnClickListener, PermissionsManager, BackManager, OldIssuesAdapter.IssuesAdapterListener,
     Observer<List<PullRequest>> {
 
   private static final String REPO_INFO = "REPO_INFO";

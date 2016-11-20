@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import retrofit.RestAdapter;
 
-/**
- * Created by Bernat on 22/08/2014.
- */
 public class GetIssuesClient extends GithubListClient<List<Issue>> {
 
   private final Map<String, String> filter;

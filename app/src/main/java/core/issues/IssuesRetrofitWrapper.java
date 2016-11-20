@@ -3,6 +3,7 @@ package core.issues;
 import core.ApiClient;
 import core.datasource.RetrofitWrapper;
 import core.issue.IssuesSearchService;
+import core.issue.IssuesService;
 import retrofit2.Retrofit;
 
 public class IssuesRetrofitWrapper extends RetrofitWrapper {
@@ -11,7 +12,7 @@ public class IssuesRetrofitWrapper extends RetrofitWrapper {
   }
 
   @Override
-  protected IssuesSearchService get(Retrofit retrofit) {
-    return retrofit.create(IssuesSearchService.class);
+  protected IssuesService get(Retrofit retrofit) {
+    return retrofit.create(IssuesService.class);
   }
 }

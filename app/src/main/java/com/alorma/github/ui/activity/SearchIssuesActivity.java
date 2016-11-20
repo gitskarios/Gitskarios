@@ -42,7 +42,7 @@ public class SearchIssuesActivity extends BackActivity
       repoInfo = getIntent().getExtras().getParcelable(REPO_INFO);
 
       issuesListFragment = IssuesListFragment.newInstance(repoInfo, true);
-      issuesListFragment.setSearchClientRequest(this);
+      //issuesListFragment.setSearchClientRequest(this);
 
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.replace(R.id.content, issuesListFragment);

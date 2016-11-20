@@ -239,7 +239,7 @@
   <string name="language">Language</string>
   <string name="gist_file_created_removed">Remove</string>
   <string name="gist_creator_remove_file">Remove file %s from current gist?</string>
-  <string name="issue_info">#%1$d opened %2$s by %3$s</string>
+  <string name="issue_info">opened by <b>%2$s</b> %1$s</string>
   <string name="loading_collaborators">Loading collaborators</string>
   <string name="changing_assignee">Changing assignee</string>
   <string name="share_intent_title">Share via…</string>
