@@ -60,7 +60,7 @@ public class GetRepositoryUseCaseImpl implements GetRepositoryUseCase {
             if (commit.commit != null) {
               branch.commit.commit = new GitCommit();
               branch.commit.commit.author = commit.commit.author;
-              branch.commit.sha = commit.commit.sha;
+              branch.commit.commit.sha = commit.commit.sha;
             }
           }
           return branch;

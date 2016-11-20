@@ -2,6 +2,7 @@ package com.alorma.github;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UsernameProvider;
 import com.crashlytics.android.Crashlytics;
+import com.frogermcs.activityframemetrics.ActivityFrameMetrics;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +53,11 @@ public class GitskariosApplication extends MultiDexApplication {
     }
 
     if (!BuildConfig.DEBUG) {
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+      }
+
       CustomActivityOnCrash.install(this);
       CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
       CustomActivityOnCrash.setEnableAppRestart(true);
@@ -71,7 +78,7 @@ public class GitskariosApplication extends MultiDexApplication {
 
     LogProvider.setTokenProviderInstance(message -> {
       if (BuildConfig.DEBUG) {
-        Log.v("RETROFIT_LOG", message);
+        //Log.v("RETROFIT_LOG", message);
       }
     });
 

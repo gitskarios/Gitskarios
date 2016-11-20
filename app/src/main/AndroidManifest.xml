@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.alorma.github"
     >
 
@@ -14,6 +15,8 @@
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
   <uses-permission android:name="com.android.vending.BILLING"/>
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+
+  <uses-sdk tools:overrideLibrary="com.frogermcs.activityframemetrics" />
 
   <application
       android:name=".GitskariosApplication"
