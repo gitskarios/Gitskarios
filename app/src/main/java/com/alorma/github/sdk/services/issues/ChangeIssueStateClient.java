@@ -8,9 +8,6 @@ import com.alorma.github.sdk.services.client.GithubClient;
 import retrofit.RestAdapter;
 import rx.Observable;
 
-/**
- * Created by Bernat on 01/09/2014.
- */
 public class ChangeIssueStateClient extends GithubClient<Issue> {
 
   private final IssueRequest issueRequest;

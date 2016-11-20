@@ -12,20 +12,12 @@ import retrofit.RestAdapter;
 import rx.Observable;
 import rx.functions.Func1;
 
-/**
- * Created by Bernat on 14/04/2015.
- */
 public class GetMilestonesClient extends GithubClient<List<Milestone>> {
 
   private RepoInfo repoInfo;
   private MilestoneState state;
   private boolean sortAlphabetic = false;
-  private Comparator<? super Milestone> NAME_SORT = new Comparator<Milestone>() {
-    @Override
-    public int compare(Milestone lhs, Milestone rhs) {
-      return lhs.title.compareTo(rhs.title);
-    }
-  };
+  private Comparator<? super Milestone> NAME_SORT = (Comparator<Milestone>) (lhs, rhs) -> lhs.title.compareTo(rhs.title);
 
   public GetMilestonesClient(RepoInfo repoInfo, MilestoneState state) {
     super();
