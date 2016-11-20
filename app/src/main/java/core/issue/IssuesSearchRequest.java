@@ -6,15 +6,18 @@ public class IssuesSearchRequest {
   private Boolean isPublic;
   private String action;
   private String author;
+  private String user;
   private String repo;
 
-  private IssuesSearchRequest(boolean isOpen, Boolean isPullRequest, Boolean isPublic, String action, String author, String repo) {
+  private IssuesSearchRequest(boolean isOpen, Boolean isPullRequest, Boolean isPublic, String action, String author, String repo,
+      String user) {
     this.repo = repo;
     this.isOpen = isOpen;
     this.isPullRequest = isPullRequest;
     this.isPublic = isPublic;
     this.action = action;
     this.author = author;
+    this.user = user;
   }
 
   public String build() {
@@ -34,6 +37,10 @@ public class IssuesSearchRequest {
       } else {
         builder.append("issue");
       }
+    } else {
+      builder.append(" ");
+      builder.append("is:");
+      builder.append("issue");
     }
 
     if (isPublic != null) {
@@ -46,8 +53,8 @@ public class IssuesSearchRequest {
       }
     }
 
-    builder.append(" ");
     if (action != null && author != null) {
+      builder.append(" ");
       builder.append(action).append(":").append(author);
     }
 
@@ -57,9 +64,9 @@ public class IssuesSearchRequest {
       builder.append(author);
       builder.append("/");
       builder.append(repo);
-    } else {
+    } else if (user != null) {
       builder.append(" ");
-      builder.append("issues:");
+      builder.append("user:");
       builder.append(author);
     }
     return builder.toString();
@@ -72,6 +79,7 @@ public class IssuesSearchRequest {
     private String author;
     public String action;
     private String repo;
+    private String user;
 
     public Builder setIsOpen(boolean isOpen) {
       this.isOpen = isOpen;
@@ -103,8 +111,13 @@ public class IssuesSearchRequest {
       return this;
     }
 
+    public Builder setUser(String user) {
+      this.user = user;
+      return this;
+    }
+
     public IssuesSearchRequest build() {
-      return new IssuesSearchRequest(isOpen, ispullRequest, isPublic, action, author, repo);
+      return new IssuesSearchRequest(isOpen, ispullRequest, isPublic, action, author, repo, user);
     }
   }
 }
