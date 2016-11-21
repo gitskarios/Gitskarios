@@ -203,8 +203,7 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
   private IssuesSearchRequest getIssueSearchRequest(Integer status) {
     IssuesSearchRequest builder = new IssuesSearchRequest();
     builder.setIsOpen(status == null || status == 0);
-    builder.setAuthor(repoInfo.owner);
-    builder.setRepo(repoInfo.name);
+    builder.setRepo(repoInfo.name, repoInfo.owner);
     builder.setIsPullRequest(showPullRequest.isChecked());
     return builder;
   }

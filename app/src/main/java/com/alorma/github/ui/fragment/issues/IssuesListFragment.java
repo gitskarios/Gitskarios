@@ -191,8 +191,7 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
   private IssuesSearchRequest getIssueSearchRequest(int status) {
     IssuesSearchRequest builder = new IssuesSearchRequest();
     builder.setIsOpen(status == 0);
-    builder.setUser(repoInfo.owner);
-    builder.setRepo(repoInfo.name);
+    builder.setRepo(repoInfo.name, repoInfo.owner);
     builder.setIsPullRequest(false);
     return builder;
   }

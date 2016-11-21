@@ -273,7 +273,7 @@ public class RepositorySourceListFragment extends LoadingListFragment<RepoSource
         currentRepo.name + "_" + currentRepo.getDefaultBranch() + "." + getExtensionFromFileType(fileType), text -> {
           Snackbar snackbar = Snackbar.make(recyclerView, getString(text), Snackbar.LENGTH_LONG);
 
-          snackbar.setAction(getString(R.string.external_storage_permission_request_action),
+          snackbar.setActionAndAuthor(getString(R.string.external_storage_permission_request_action),
               v -> gitskariosDownloadManager.openSettings(getContext()));
 
           snackbar.show();

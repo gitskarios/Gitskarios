@@ -97,7 +97,7 @@ public abstract class UserIssuesListFragment extends BaseFragment
   }
 
   private IssuesSearchRequest buildIssueSearchRequest() {
-    return new IssuesSearchRequest().setAction(getAction()).setAuthor(accountNameProvider.getName()).setIsOpen(true);
+    return new IssuesSearchRequest().setActionAndAuthor(getAction(), accountNameProvider.getName()).setIsOpen(true);
   }
 
   @Override
