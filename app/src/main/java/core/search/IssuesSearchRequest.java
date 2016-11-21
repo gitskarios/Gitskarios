@@ -1,4 +1,4 @@
-package core.issue;
+package core.search;
 
 import java.security.InvalidParameterException;
 

@@ -28,7 +28,7 @@ import com.alorma.github.ui.fragment.base.BaseFragment;
 import com.alorma.github.ui.listeners.TitleProvider;
 import com.alorma.github.utils.AttributesUtils;
 import com.mikepenz.iconics.typeface.IIcon;
-import core.issue.IssuesSearchRequest;
+import core.search.IssuesSearchRequest;
 import core.issues.Issue;
 import java.util.ArrayList;
 import java.util.Collections;

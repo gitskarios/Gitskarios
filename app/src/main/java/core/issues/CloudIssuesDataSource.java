@@ -3,7 +3,7 @@ package core.issues;
 import core.datasource.CloudDataSource;
 import core.datasource.RestWrapper;
 import core.datasource.SdkItem;
-import core.issue.IssuesSearchRequest;
+import core.search.IssuesSearchRequest;
 import core.issue.IssuesSearchService;
 import java.io.IOException;
 import java.util.List;

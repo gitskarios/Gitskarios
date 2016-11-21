@@ -42,12 +42,9 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import core.issue.IssuesRequest;
-import core.issue.IssuesSearchRequest;
+import core.search.IssuesSearchRequest;
 import core.issues.Issue;
-import core.issues.IssueState;
 import core.repositories.Permissions;
-import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 

@@ -45,7 +45,7 @@ import com.alorma.github.ui.utils.SimpleItemSelectedItemListener;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import core.issue.IssuesSearchRequest;
+import core.search.IssuesSearchRequest;
 import core.issues.Issue;
 import core.repositories.Permissions;
 import java.util.List;
