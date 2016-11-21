@@ -1,5 +1,7 @@
 package core.issue;
 
+import java.security.InvalidParameterException;
+
 public class IssuesSearchRequest {
   private boolean isOpen;
   private Boolean isPullRequest;
@@ -9,15 +11,8 @@ public class IssuesSearchRequest {
   private String user;
   private String repo;
 
-  private IssuesSearchRequest(boolean isOpen, Boolean isPullRequest, Boolean isPublic, String action, String author, String repo,
-      String user) {
-    this.repo = repo;
-    this.isOpen = isOpen;
-    this.isPullRequest = isPullRequest;
-    this.isPublic = isPublic;
-    this.action = action;
-    this.author = author;
-    this.user = user;
+  public IssuesSearchRequest() {
+
   }
 
   public String build() {
@@ -59,65 +54,54 @@ public class IssuesSearchRequest {
     }
 
     if (repo != null) {
+      if (user == null) {
+        throw new InvalidParameterException("User parameter must not be null");
+      }
       builder.append(" ");
       builder.append("repo:");
-      builder.append(author);
+      builder.append(user);
       builder.append("/");
       builder.append(repo);
     } else if (user != null) {
       builder.append(" ");
       builder.append("user:");
-      builder.append(author);
+      builder.append(user);
     }
     return builder.toString();
   }
 
-  public static class Builder {
-    private boolean isOpen;
-    private Boolean ispullRequest;
-    private Boolean isPublic;
-    private String author;
-    public String action;
-    private String repo;
-    private String user;
+  public IssuesSearchRequest setIsOpen(boolean isOpen) {
+    this.isOpen = isOpen;
+    return this;
+  }
 
-    public Builder setIsOpen(boolean isOpen) {
-      this.isOpen = isOpen;
-      return this;
-    }
+  public IssuesSearchRequest setIsPullRequest(Boolean ispullRequest) {
+    this.isPullRequest = ispullRequest;
+    return this;
+  }
 
-    public Builder setIsPullRequest(Boolean ispullRequest) {
-      this.ispullRequest = ispullRequest;
-      return this;
-    }
+  public IssuesSearchRequest setIsPublic(Boolean isPublic) {
+    this.isPublic = isPublic;
+    return this;
+  }
 
-    public Builder setIsPublic(Boolean isPublic) {
-      this.isPublic = isPublic;
-      return this;
-    }
+  public IssuesSearchRequest setAuthor(String author) {
+    this.author = author;
+    return this;
+  }
 
-    public Builder setAuthor(String author) {
-      this.author = author;
-      return this;
-    }
+  public IssuesSearchRequest setAction(String action) {
+    this.action = action;
+    return this;
+  }
 
-    public Builder setAction(String action) {
-      this.action = action;
-      return this;
-    }
+  public IssuesSearchRequest setRepo(String repo) {
+    this.repo = repo;
+    return this;
+  }
 
-    public Builder setRepo(String repo) {
-      this.repo = repo;
-      return this;
-    }
-
-    public Builder setUser(String user) {
-      this.user = user;
-      return this;
-    }
-
-    public IssuesSearchRequest build() {
-      return new IssuesSearchRequest(isOpen, ispullRequest, isPublic, action, author, repo, user);
-    }
+  public IssuesSearchRequest setUser(String user) {
+    this.user = user;
+    return this;
   }
 }

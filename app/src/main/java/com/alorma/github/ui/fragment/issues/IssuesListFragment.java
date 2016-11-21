@@ -192,12 +192,12 @@ public class IssuesListFragment extends LoadingListFragment<IssuesAdapter>
 
   @NonNull
   private IssuesSearchRequest getIssueSearchRequest(int status) {
-    IssuesSearchRequest.Builder builder = new IssuesSearchRequest.Builder();
+    IssuesSearchRequest builder = new IssuesSearchRequest();
     builder.setIsOpen(status == 0);
-    builder.setAuthor(repoInfo.owner);
+    builder.setUser(repoInfo.owner);
     builder.setRepo(repoInfo.name);
     builder.setIsPullRequest(false);
-    return builder.build();
+    return builder;
   }
 
   protected void executeRequest() {

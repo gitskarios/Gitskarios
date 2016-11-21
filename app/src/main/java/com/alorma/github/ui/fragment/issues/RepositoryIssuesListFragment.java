@@ -201,12 +201,12 @@ public class RepositoryIssuesListFragment extends LoadingListFragment<IssuesAdap
 
   @NonNull
   private IssuesSearchRequest getIssueSearchRequest(Integer status) {
-    IssuesSearchRequest.Builder builder = new IssuesSearchRequest.Builder();
+    IssuesSearchRequest builder = new IssuesSearchRequest();
     builder.setIsOpen(status == null || status == 0);
     builder.setAuthor(repoInfo.owner);
     builder.setRepo(repoInfo.name);
     builder.setIsPullRequest(showPullRequest.isChecked());
-    return builder.build();
+    return builder;
   }
 
   protected void onResponse(List<Issue> issues) {
