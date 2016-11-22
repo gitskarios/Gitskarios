@@ -54,7 +54,7 @@ deploy:
   on:
     tags: true
 - provider: script
-  script: ./gradlew publishListingRelease publishApkRelease
+  script: ./gradlew bootstrapReleasePlayResources publishListingRelease publishApkRelease
   skip_cleanup: true
   on:
     tags: true
