@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="oval">
+      <solid android:color="@color/md_grey_200" />
+      <size android:height="48dp" android:width="48dp"/>
+    </shape>
+  </item>
+  <item>
+    <inset android:drawable="@drawable/shortcut_list_unordered"
+           android:insetLeft="12dp"
+           android:insetRight="12dp"
+           android:insetTop="12dp"
+           android:insetBottom="12dp"/>
+  </item>
+</layer-list>

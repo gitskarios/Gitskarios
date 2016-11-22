@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+  <shortcut
+      android:shortcutId="events"
+      android:enabled="true"
+      android:icon="@drawable/round_shortcut_list_unordered"
+      android:shortcutShortLabel="@string/shortcut_short_label_events"
+      android:shortcutLongLabel="@string/shortcut_long_label_events"
+      android:shortcutDisabledMessage="@string/shortcut_message_events">
+    <intent
+        android:action="android.intent.action.VIEW"
+        android:targetPackage="com.alorma.github.debug"
+        android:targetClass="com.alorma.github.ui.activity.shortcut.ShortcutEventsActivity" />
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+  <shortcut
+      android:shortcutId="repositories"
+      android:enabled="true"
+      android:icon="@drawable/round_shortcut_repositories"
+      android:shortcutShortLabel="@string/shortcut_short_label_repositories"
+      android:shortcutLongLabel="@string/shortcut_long_label_repositories"
+      android:shortcutDisabledMessage="@string/shortcut_message_repositories">
+    <intent
+        android:action="android.intent.action.VIEW"
+        android:targetPackage="com.alorma.github.debug"
+        android:targetClass="com.alorma.github.ui.activity.shortcut.ShortcutRepositoriesActivity" />
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+  <shortcut
+      android:shortcutId="people"
+      android:enabled="true"
+      android:icon="@drawable/round_shortcut_person"
+      android:shortcutShortLabel="@string/shortcut_short_label_people"
+      android:shortcutLongLabel="@string/shortcut_long_label_people"
+      android:shortcutDisabledMessage="@string/shortcut_message_people">
+    <intent
+        android:action="android.intent.action.VIEW"
+        android:targetPackage="com.alorma.github.debug"
+        android:targetClass="com.alorma.github.ui.activity.shortcut.ShortcutPeopleActivity" />
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+  <shortcut
+      android:shortcutId="issues"
+      android:enabled="true"
+      android:icon="@drawable/round_shortcut_issue"
+      android:shortcutShortLabel="@string/shortcut_short_label_issues"
+      android:shortcutLongLabel="@string/shortcut_long_label_issues"
+      android:shortcutDisabledMessage="@string/shortcut_message_issues">
+    <intent
+        android:action="android.intent.action.VIEW"
+        android:targetPackage="com.alorma.github.debug"
+        android:targetClass="com.alorma.github.ui.activity.shortcut.ShortcutIssuesActivity" />
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+</shortcuts>
+

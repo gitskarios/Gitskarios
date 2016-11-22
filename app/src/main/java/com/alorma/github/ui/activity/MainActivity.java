@@ -1,12 +1,16 @@
 package com.alorma.github.ui.activity;
 
 import android.accounts.Account;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -62,6 +66,8 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements NavigationFragment.NavigationCallback {
 
+  public static final String NAVIGATION = "NAVIGATION";
+
   private Account selectedAccount;
   private Fragment lastUsedFragment;
   private Drawer resultDrawer;
@@ -94,7 +100,25 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         selectedAccount = accounts.get(0);
         createDrawer();
         selectAccount(selectedAccount);
-        onUserEventsSelected();
+
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey(NAVIGATION)) {
+          String navigation = getIntent().getStringExtra(NAVIGATION);
+          if (navigation != null) {
+            if (navigation.equals(getString(R.string.shortcut_id_events))) {
+              onUserEventsSelected();
+            } else if (navigation.equals(getString(R.string.shortcut_id_repositories))) {
+              onReposSelected();
+            } else if (navigation.equals(getString(R.string.shortcut_id_people))) {
+              onPeopleSelected();
+            } else if (navigation.equals(getString(R.string.shortcut_id_issues))) {
+              onIssuesSelected();
+            }
+          } else {
+            onUserEventsSelected();
+          }
+        } else {
+          onUserEventsSelected();
+        }
       }
     }
 
@@ -472,6 +496,15 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     startActivity(intent);
   }
 
+  @TargetApi(Build.VERSION_CODES.M)
+  private void tagShortcut(@StringRes int shortcutId) {
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N_MR1) {
+      String id = getString(shortcutId);
+      ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+      shortcutManager.reportShortcutUsed(id);
+    }
+  }
+
   private void setFragment(Fragment fragment) {
     setFragment(fragment, true);
   }
@@ -501,16 +534,19 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
 
   public boolean onReposSelected() {
     setFragment(GeneralReposFragment.newInstance(), false);
+    tagShortcut(R.string.shortcut_id_repositories);
     return true;
   }
 
   public boolean onPeopleSelected() {
     setFragment(GeneralPeopleFragment.newInstance(), false);
+    tagShortcut(R.string.shortcut_id_people);
     return false;
   }
 
   public boolean onIssuesSelected() {
     setFragment(GeneralIssuesListFragment.newInstance(), false);
+    tagShortcut(R.string.shortcut_id_issues);
     return false;
   }
 
@@ -531,6 +567,7 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
     if (user != null) {
       setFragment(EventsListFragment.newInstance(user), false);
     }
+    tagShortcut(R.string.shortcut_id_events);
     return true;
   }
 

@@ -332,4 +332,28 @@
   <string name="expand">Expand</string>
   <string name="collapse">Collapse</string>
   <string name="show_pull_request">Show pull request</string>
+
+
+  <!-- SHORTCUTS -->
+
+  <string name="shortcut_id_events">events</string>
+  <string name="shortcut_short_label_events">Events</string>
+  <string name="shortcut_long_label_events">Events</string>
+  <string name="shortcut_message_events">Events disabled</string>
+
+  <string name="shortcut_id_repositories">repositories</string>
+  <string name="shortcut_short_label_repositories">Repositories</string>
+  <string name="shortcut_long_label_repositories">Repositories</string>
+  <string name="shortcut_message_repositories">Repositories disabled</string>
+
+  <string name="shortcut_id_people">people</string>
+  <string name="shortcut_short_label_people">People</string>
+  <string name="shortcut_long_label_people">People</string>
+  <string name="shortcut_message_people">People disabled</string>
+
+  <string name="shortcut_id_issues">issues</string>
+  <string name="shortcut_short_label_issues">Issues</string>
+  <string name="shortcut_long_label_issues">Issues</string>
+  <string name="shortcut_message_issues">Issues disabled</string>
+
 </resources>

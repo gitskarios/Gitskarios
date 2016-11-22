@@ -39,7 +39,21 @@
         <category android:name="android.intent.category.LAUNCHER" />
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
+      <meta-data android:name="android.app.shortcuts"
+                 android:resource="@xml/shortcuts" />
     </activity>
+
+    <activity android:name=".ui.activity.shortcut.ShortcutEventsActivity"
+              android:theme="@style/SplashTheme" />
+
+    <activity android:name=".ui.activity.shortcut.ShortcutRepositoriesActivity"
+              android:theme="@style/SplashTheme" />
+
+    <activity android:name=".ui.activity.shortcut.ShortcutPeopleActivity"
+              android:theme="@style/SplashTheme" />
+
+    <activity android:name=".ui.activity.shortcut.ShortcutIssuesActivity"
+              android:theme="@style/SplashTheme" />
 
     <activity
         android:name="com.alorma.github.ui.activity.WelcomeActivity"
