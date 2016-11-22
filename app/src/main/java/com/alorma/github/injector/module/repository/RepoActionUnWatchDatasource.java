@@ -11,8 +11,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
 
-public class RepoStarDatasource extends CloudDataSource<RepoInfo, Boolean> {
-  public RepoStarDatasource(RestWrapper restWrapper) {
+public class RepoActionUnWatchDatasource extends CloudDataSource<RepoInfo, Boolean> {
+  public RepoActionUnWatchDatasource(RestWrapper restWrapper) {
     super(restWrapper);
   }
 
@@ -22,7 +22,7 @@ public class RepoStarDatasource extends CloudDataSource<RepoInfo, Boolean> {
 
     return Observable.defer(() -> {
 
-      Call<ResponseBody> call = actionsService.checkIfRepoIsStarred(request.getK().owner, request.getK().name);
+      Call<ResponseBody> call = actionsService.unwatchRepo(request.getK().owner, request.getK().name);
 
       try {
         Response<ResponseBody> response = call.execute();

@@ -6,11 +6,11 @@ import core.datasource.CloudDataSource;
 import core.datasource.SdkItem;
 import rx.Observable;
 
-public class GetRepositoryStarRepository {
+public class CheckStarRepository {
 
   private CloudDataSource<RepoInfo, Boolean> dataSource;
 
-  public GetRepositoryStarRepository(@Starred CloudDataSource<RepoInfo, Boolean> dataSource) {
+  public CheckStarRepository(@Starred CloudDataSource<RepoInfo, Boolean> dataSource) {
     this.dataSource = dataSource;
   }
 

@@ -11,21 +11,20 @@ import com.alorma.github.sdk.bean.info.RepoInfo;
 import com.alorma.github.sdk.services.webhooks.AddWebHookClient;
 import core.datasource.SdkItem;
 import core.repositories.Repo;
-import core.repository.ChangeRepositoryStarUseCase;
-import core.repository.ChangeRepositoryWatchUseCase;
+import core.repository.ActionRepository;
 import rx.Observable;
 import rx.Scheduler;
 
 public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Repo>> {
 
   private final GetRepositoryUseCase getRepositoryUseCase;
-  private final ChangeRepositoryStarUseCase changeRepositoryStarUseCase;
-  private final ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase;
+  private final ActionRepository changeRepositoryStarUseCase;
+  private final ActionRepository changeRepositoryWatchUseCase;
   private final GetTagsCountUseCase getTagsCountUseCase;
   private Repo currentRepo;
 
   public RepositoryPresenter(Scheduler mainScheduler, Scheduler ioScheduler, GetRepositoryUseCase getRepositoryUseCase,
-      ChangeRepositoryStarUseCase changeRepositoryStarUseCase, ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase,
+      ActionRepository changeRepositoryStarUseCase, ActionRepository changeRepositoryWatchUseCase,
       GetTagsCountUseCase getTagsCountUseCase) {
     super(mainScheduler, ioScheduler, null);
     this.getRepositoryUseCase = getRepositoryUseCase;
@@ -64,11 +63,11 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
         String owner = currentRepo.getOwner().getLogin();
         String name = currentRepo.getName();
 
-        if (isStarred != null && isStarred) {
-          return changeRepositoryStarUseCase.unstar(owner, name);
-        } else {
-          return changeRepositoryStarUseCase.star(owner, name);
-        }
+        RepoInfo info = new RepoInfo();
+        info.owner = owner;
+        info.name = name;
+
+        return changeRepositoryStarUseCase.execute(info, isStarred);
       }
       return Observable.empty();
     }).flatMap(aBoolean -> {
@@ -88,11 +87,11 @@ public class RepositoryPresenter extends BaseRxPresenter<RepoInfo, Repo, View<Re
         String owner = currentRepo.getOwner().getLogin();
         String name = currentRepo.getName();
 
-        if (isWatched != null && isWatched) {
-          return changeRepositoryWatchUseCase.unwatch(owner, name);
-        } else {
-          return changeRepositoryWatchUseCase.watch(owner, name);
-        }
+        RepoInfo info = new RepoInfo();
+        info.owner = owner;
+        info.name = name;
+
+        return changeRepositoryWatchUseCase.execute(info, isWatched);
       }
       return Observable.empty();
     }).flatMap(aBoolean -> {

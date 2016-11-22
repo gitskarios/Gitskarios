@@ -3,8 +3,12 @@ package com.alorma.github.injector.module.repository;
 import com.alorma.github.injector.named.IOScheduler;
 import com.alorma.github.injector.named.MainScheduler;
 import com.alorma.github.injector.named.Starred;
+import com.alorma.github.injector.named.StarredNegative;
+import com.alorma.github.injector.named.StarredPositive;
 import com.alorma.github.injector.named.Token;
 import com.alorma.github.injector.named.Watched;
+import com.alorma.github.injector.named.WatchedNegative;
+import com.alorma.github.injector.named.WatchedPositive;
 import com.alorma.github.injector.scope.PerActivity;
 import com.alorma.github.presenter.AbstractCacheDataSource;
 import com.alorma.github.presenter.repo.GetRepositoryUseCase;
@@ -27,16 +31,14 @@ import core.repositories.Branch;
 import core.repositories.Commit;
 import core.repositories.Repo;
 import core.repositories.releases.tags.TagsRetrofitWrapper;
-import core.repository.ChangeRepositoryStarUseCase;
-import core.repository.ChangeRepositoryWatchUseCase;
+import core.repository.ActionRepository;
+import core.repository.CheckStarRepository;
 import core.repository.GenericRepository;
-import core.repository.GetRepositoryStarRepository;
 import core.repository.GetRepositoryWatchRepository;
 import core.repository.RepositoryRetrofitWrapper;
 import dagger.Module;
 import dagger.Provides;
 import java.util.List;
-import javax.inject.Singleton;
 import rx.Observable;
 import rx.Scheduler;
 
@@ -108,13 +110,27 @@ import rx.Scheduler;
   @PerActivity
   @Starred
   CloudDataSource<RepoInfo, Boolean> getStarredDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
-    return new RepoStarDatasource(repositoryRetrofitWrapper);
+    return new RepoCheckStarDatasource(repositoryRetrofitWrapper);
   }
 
   @Provides
   @PerActivity
-  GetRepositoryStarRepository getGetRepositoryStar(@Starred CloudDataSource<RepoInfo, Boolean> dataSource) {
-    return new GetRepositoryStarRepository(dataSource);
+  @StarredPositive
+  CloudDataSource<RepoInfo, Boolean> getStarDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
+    return new RepoActionStarDatasource(repositoryRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  @StarredNegative
+  CloudDataSource<RepoInfo, Boolean> getUnStarDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
+    return new RepoActionUnStarDatasource(repositoryRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  CheckStarRepository getGetRepositoryStar(@Starred CloudDataSource<RepoInfo, Boolean> dataSource) {
+    return new CheckStarRepository(dataSource);
   }
 
   @Provides
@@ -127,7 +143,21 @@ import rx.Scheduler;
   @PerActivity
   @Watched
   CloudDataSource<RepoInfo, Boolean> getWatchedDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
-    return new RepoWatchDatasource(repositoryRetrofitWrapper);
+    return new RepoCheckWatchDatasource(repositoryRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  @WatchedPositive
+  CloudDataSource<RepoInfo, Boolean> getWatchDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
+    return new RepoActionWatchDatasource(repositoryRetrofitWrapper);
+  }
+
+  @Provides
+  @PerActivity
+  @WatchedNegative
+  CloudDataSource<RepoInfo, Boolean> getUnWatchDataSource(RepositoryRetrofitWrapper repositoryRetrofitWrapper) {
+    return new RepoActionUnWatchDatasource(repositoryRetrofitWrapper);
   }
 
   @Provides
@@ -138,21 +168,25 @@ import rx.Scheduler;
 
   @Provides
   @PerActivity
-  ChangeRepositoryStarUseCase provideChangeRepositoryStarRepository() {
-    return new ChangeRepositoryStarUseCase();
+  @Starred
+  ActionRepository provideChangeRepositoryStarRepository(@StarredPositive CloudDataSource<RepoInfo, Boolean> positive,
+      @StarredNegative CloudDataSource<RepoInfo, Boolean> negative) {
+    return new ActionRepository(positive, negative);
   }
 
   @Provides
   @PerActivity
-  ChangeRepositoryWatchUseCase provideChangeRepositoryWatchRepository() {
-    return new ChangeRepositoryWatchUseCase();
+  @Watched
+  ActionRepository provideChangeRepositoryWatchRepository(@WatchedPositive CloudDataSource<RepoInfo, Boolean> positive,
+      @WatchedNegative CloudDataSource<RepoInfo, Boolean> negative) {
+    return new ActionRepository(positive, negative);
   }
 
   @Provides
   @PerActivity
   GetRepositoryUseCase providesGetRepositoryUseCase(GenericRepository<RepoInfo, Repo> repoGenericRepository,
       GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository,
-      GetRepositoryStarRepository getStarUseCase, GetRepositoryWatchRepository getWatchUseCase) {
+      CheckStarRepository getStarUseCase, GetRepositoryWatchRepository getWatchUseCase) {
     return new GetRepositoryUseCaseImpl(repoGenericRepository, branchesGenericRepository, commitGenericRepository, getStarUseCase,
         getWatchUseCase);
   }
@@ -184,9 +218,9 @@ import rx.Scheduler;
   @Provides
   @PerActivity
   RepositoryPresenter provideRepositoryPresenter(@MainScheduler Scheduler mainScheduler, @IOScheduler Scheduler ioScheduler,
-      ChangeRepositoryStarUseCase changeRepositoryStarUseCase, ChangeRepositoryWatchUseCase changeRepositoryWatchUseCase,
+      @Starred ActionRepository starRepository, @Watched ActionRepository watchRepository,
       GetRepositoryUseCase getRepositoryUseCase, GetTagsCountUseCase getTagsCountUseCase) {
-    return new RepositoryPresenter(mainScheduler, ioScheduler, getRepositoryUseCase, changeRepositoryStarUseCase,
-        changeRepositoryWatchUseCase, getTagsCountUseCase);
+    return new RepositoryPresenter(mainScheduler, ioScheduler, getRepositoryUseCase, starRepository,
+        watchRepository, getTagsCountUseCase);
   }
 }

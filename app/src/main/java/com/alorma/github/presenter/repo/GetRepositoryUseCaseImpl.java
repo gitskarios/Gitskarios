@@ -7,8 +7,8 @@ import core.repositories.Branch;
 import core.repositories.Commit;
 import core.repositories.GitCommit;
 import core.repositories.Repo;
+import core.repository.CheckStarRepository;
 import core.repository.GenericRepository;
-import core.repository.GetRepositoryStarRepository;
 import core.repository.GetRepositoryWatchRepository;
 import java.util.List;
 import rx.Observable;
@@ -17,12 +17,14 @@ public class GetRepositoryUseCaseImpl implements GetRepositoryUseCase {
   private final GenericRepository<RepoInfo, Repo> repoGenericRepository;
   private final GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository;
   private final GenericRepository<CommitInfo, Commit> commitGenericRepository;
-  private final GetRepositoryStarRepository repoStarredRepository;
+  private final CheckStarRepository repoStarredRepository;
   private GetRepositoryWatchRepository repoWatchedRepository;
 
   public GetRepositoryUseCaseImpl(GenericRepository<RepoInfo, Repo> repoGenericRepository,
-      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository, GenericRepository<CommitInfo, Commit> commitGenericRepository,
-      GetRepositoryStarRepository repoStarredRepository, GetRepositoryWatchRepository getWatchUseCase) {
+      GenericRepository<RepoInfo, List<Branch>> branchesGenericRepository,
+      GenericRepository<CommitInfo, Commit> commitGenericRepository,
+      CheckStarRepository repoStarredRepository,
+      GetRepositoryWatchRepository getWatchUseCase) {
 
     this.repoGenericRepository = repoGenericRepository;
     this.branchesGenericRepository = branchesGenericRepository;
