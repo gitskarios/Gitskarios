@@ -64,7 +64,7 @@ android {
   }
 
   lintOptions {
-    abortOnError true
+    abortOnError false
     disable 'InvalidPackage'
   }
 
