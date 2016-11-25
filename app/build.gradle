@@ -40,9 +40,9 @@ android {
     unitTests.returnDefaultValues = true
   }
 
-  def versionMajor=getVersionMajor()
-  def versionMinor=getVersionMinor()
-  def versionPatch=getVersionPatch()
+  def versionMajor = getVersionMajor()
+  def versionMinor = getVersionMinor()
+  def versionPatch = getVersionPatch()
 
   defaultConfig {
     minSdkVersion 15
@@ -245,7 +245,7 @@ dependencies {
   compile 'com.fewlaps.quitnowcache:quitnow-cache:1.4'
   compile 'io.reactivex:rxandroid:1.0.1'
   compile 'com.github.Musenkishi:Atelier:1.3.1'
-  compile 'com.github.bumptech.glide:glide:3.6.1'
+  compile 'com.github.bumptech.glide:glide:3.7.0'
   compile 'jp.wasabeef:glide-transformations:1.3.1'
   compile 'com.github.florent37:glidepalette:1.0.4@aar'
   compile 'cat.ereza:customactivityoncrash:1.4.0'
@@ -274,6 +274,8 @@ dependencies {
   compile 'com.squareup.okhttp:okhttp:2.5.0'
   compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
 
+  testCompile 'com.squareup.okhttp3:okhttp:3.4.2'
+
   compile 'io.reactivex:rxjava:1.1.7'
 
   compile 'net.danlew:android.joda:2.8.2'
@@ -285,7 +287,6 @@ dependencies {
 
   compile 'io.reactivex:rxjava-string:1.1.0'
   compile 'com.frogermcs.activityframemetrics:activityframemetrics:0.1.0'
-
 
   compile 'io.flowup:android-sdk:0.1.9'
   testCompile 'io.flowup:android-sdk-no-op:0.1.9'
