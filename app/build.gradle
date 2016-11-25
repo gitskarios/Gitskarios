@@ -51,6 +51,7 @@ android {
     versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch
     resValue "string", "app_git_hash", getCurrentGitHash()
     resValue "string", "app_version_number", versionName
+    resValue "string", "flowup_api_key", getFlowUp()
 
     multiDexEnabled true
     vectorDrawables.useSupportLibrary = true
@@ -63,8 +64,8 @@ android {
   }
 
   lintOptions {
-    abortOnError false
-    warning 'InvalidPackage'
+    abortOnError true
+    disable 'InvalidPackage'
   }
 
   signingConfigs {
@@ -83,6 +84,7 @@ android {
     exclude 'META-INF/LICENSE.txt'
     exclude 'META-INF/services/javax.annotation.processing.Processor'
     exclude 'META-INF/services/com.fasterxml.jackson.core.JsonFactory'
+    exclude 'com/google/android/gms/internal/zzafz.class'
   }
 
   buildTypes {
@@ -150,6 +152,10 @@ def getGHSecret(pro) {
   }
 }
 
+def getFlowUp() {
+  return hasProperty('FLOW_UP_API_KEY') ? FLOW_UP_API_KEY : System.getenv('FLOW_UP_API_KEY')
+}
+
 def getImgurClient() {
   return hasProperty('IMGUR_CLIENT') ? IMGUR_CLIENT : System.getenv('IMGUR_CLIENT')
 }
@@ -213,7 +219,7 @@ dependencies {
   compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
   compile 'com.github.xiprox.errorview:library:2.2.0'
 
-  def supportLibVersion = '25.0.0'
+  def supportLibVersion = '25.0.1'
   compile "com.android.support:design:$supportLibVersion"
   compile "com.android.support:appcompat-v7:$supportLibVersion"
   compile "com.android.support:palette-v7:$supportLibVersion"
@@ -255,7 +261,7 @@ dependencies {
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
 
-  def firebaseVersion = '9.2.0'
+  def firebaseVersion = '10.0.0'
   compile "com.google.firebase:firebase-core:$firebaseVersion"
   compile "com.google.firebase:firebase-database:$firebaseVersion"
   compile "com.google.firebase:firebase-ads:$firebaseVersion"
@@ -279,6 +285,10 @@ dependencies {
 
   compile 'io.reactivex:rxjava-string:1.1.0'
   compile 'com.frogermcs.activityframemetrics:activityframemetrics:0.1.0'
+
+
+  compile 'io.flowup:android-sdk:0.1.9'
+  testCompile 'io.flowup:android-sdk-no-op:0.1.9'
 }
 
 play {

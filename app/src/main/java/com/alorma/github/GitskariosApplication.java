@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import io.fabric.sdk.android.Fabric;
+import io.flowup.FlowUp;
 import javax.inject.Inject;
 
 public class GitskariosApplication extends MultiDexApplication {
@@ -62,6 +63,11 @@ public class GitskariosApplication extends MultiDexApplication {
       CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);
       CustomActivityOnCrash.setEnableAppRestart(true);
     }
+
+    FlowUp.Builder.with(this)
+        .apiKey(getString(R.string.flowup_api_key))
+        .forceReports(BuildConfig.DEBUG)
+        .start();
 
     Fabric.with(this, new Crashlytics());
 

@@ -69,4 +69,7 @@ notifications:
     secure: EzftlFYHtgFuBpRsSleKtsA1PngiK/tKHw8WrFfFU69ehXvvdA1Bi5t+TBn9eFo4E5cRolrPuyMGn8HyMLYn1RFAvr3YcSPIll++92OeyV0C9Opx68aK3iCoIXuasZ0Id3By1mnjefRuQvMQShfHBe/7lbtPvip254H9QX57fl4=
 env:
   global:
-    secure: Y5at0dEcUFFZ2+6NUu64HCh8wEdyY8lkIE8LHfqiSbqudgJmePvPMJ/lFdZ/Yh4eXm7dnS7ZkQQbCdVkEoL9bLEHLN74t4X4ICWZhLu7i6hvOpYWEPHOj8rtdtibP3xa0Z3x3RoVSkGBlEv+ME94it9gGboloFl7CscWsNGZEXs=
+    #GH_TOKEN
+    - secure: Y5at0dEcUFFZ2+6NUu64HCh8wEdyY8lkIE8LHfqiSbqudgJmePvPMJ/lFdZ/Yh4eXm7dnS7ZkQQbCdVkEoL9bLEHLN74t4X4ICWZhLu7i6hvOpYWEPHOj8rtdtibP3xa0Z3x3RoVSkGBlEv+ME94it9gGboloFl7CscWsNGZEXs=
+    #FlowUp v
+    - secure: "D6QtEzKqX1WtWD+CKIPhdjaKTVH/PjmLwQZLNKsPH/ryIOW+ZdsCRY32ih/fbPtVdEG4Pr6MKwaZsvb06hZvZPjTegZjGOhFADJ+BEoX1RvXYK7zjpK7PgdeMjDCTvGfvjqvxQeqo3uyNF+MoGMMQBi1cNXUA/WCOlRehnh29Xc="
