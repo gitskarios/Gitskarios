@@ -62,14 +62,15 @@ public class WelcomePresenter {
     }
 
     Observable<GithubAuthorization> observable = createAuthorizationClient.observable();
-    observable.subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
+    observable
         .doOnSubscribe(() -> welcomePresenterViewInterface.willLogin())
         .doOnError(this::checkErrorFromAuthorization)
         .flatMap(githubAuthorization -> new GetAuthUserClient(githubAuthorization.token).observable())
         .doOnError(throwable -> welcomePresenterViewInterface.didLogin())
         .doOnCompleted(() -> welcomePresenterViewInterface.didLogin())
-        .subscribe(new UserSubscription());
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(userStringPair -> addAccount(userStringPair.first, userStringPair.second), this::checkError);
   }
 
   private void checkError(Throwable e) {

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
 import com.alorma.github.ui.activity.login.AlternateLoginActivity;
 import com.alorma.github.ui.activity.login.OtpCodeActivity;
@@ -94,8 +95,16 @@ public class WelcomeActivity extends AccountAuthenticatorActivity implements Wel
   }
 
   private void show2faRequest(@StringRes int message) {
-    Intent intent = OtpCodeActivity.createLauncherIntent(this, getString(message));
-    startActivityForResult(intent, OTP_REQUEST);
+
+    new MaterialDialog.Builder(this).input("Otp code", null, true, (dialog, input) -> {
+
+    }).positiveText("Ok").negativeText("Cancel").onPositive((dialog, which) -> {
+      if (dialog.getInputEditText() != null && dialog.getInputEditText().getText() != null) {
+        String otpCode = dialog.getInputEditText().getText().toString();
+        welcomePresenter.setOtpCode(otpCode);
+      }
+    }).title(message).show();
+
   }
 
   @Override
