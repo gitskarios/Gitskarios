@@ -29,7 +29,7 @@
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
       />
 
-  <com.roughike.bottombar.BottomBar
+  <com.alorma.github.ui.view.HackBottomBar
       android:id="@+id/bottomBar"
       android:layout_width="match_parent"
       android:layout_height="60dp"

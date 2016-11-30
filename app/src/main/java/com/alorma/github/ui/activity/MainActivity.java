@@ -122,8 +122,6 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         }
       }
     }
-
-    navigationFragment.setNavigationCallback(this);
   }
 
   @Override
