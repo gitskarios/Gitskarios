@@ -8,16 +8,12 @@ import com.alorma.github.injector.module.NavigationModule;
 import com.alorma.github.presenter.NavigationProfilesPresenter;
 import com.alorma.github.presenter.View;
 import com.alorma.github.ui.fragment.base.BaseFragment;
-
+import core.User;
 import java.util.List;
-
 import javax.inject.Inject;
 
-import core.User;
-
 public class NavigationFragment extends BaseFragment implements View<List<User>> {
-  @Inject
-  NavigationProfilesPresenter navigationProfilesPresenter;
+  @Inject NavigationProfilesPresenter navigationProfilesPresenter;
 
   private NavigationCallback navigationCallbackNull = organizations -> {
   };
@@ -42,19 +38,13 @@ public class NavigationFragment extends BaseFragment implements View<List<User>>
 
     applicationComponent.inject(this);
 
-    ApiComponent apiComponent =
-            DaggerApiComponent.builder()
-                    .applicationComponent(applicationComponent)
-                    .apiModule(new ApiModule())
-                    .build();
+    ApiComponent apiComponent = DaggerApiComponent.builder().applicationComponent(applicationComponent).apiModule(new ApiModule()).build();
 
     initInjectors(apiComponent);
   }
 
   protected void initInjectors(ApiComponent apiComponent) {
-    apiComponent
-            .plus(new NavigationModule())
-            .inject(this);
+    apiComponent.plus(new NavigationModule()).inject(this);
   }
 
   @Override

@@ -356,4 +356,6 @@
   <string name="shortcut_long_label_issues">Issues</string>
   <string name="shortcut_message_issues">Issues disabled</string>
 
+    <string name="com.appsee.apikey" translatable="false">370b69b041e045e58bb3c56147838764</string>
+    <string name="com.appsee.test.apikey" translatable="false">7ae44cd0c3344142bc18bad4e52cb08a</string>
 </resources>

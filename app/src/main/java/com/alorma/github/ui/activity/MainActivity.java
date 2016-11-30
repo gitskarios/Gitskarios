@@ -37,6 +37,7 @@ import com.alorma.github.ui.fragment.orgs.OrgsReposFragment;
 import com.alorma.github.ui.fragment.repos.GeneralReposFragment;
 import com.alorma.github.ui.utils.DrawerImage;
 import com.alorma.github.utils.AccountUtils;
+import com.appsee.Appsee;
 import com.mikepenz.actionitembadge.library.ActionItemBadge;
 import com.mikepenz.actionitembadge.library.utils.BadgeStyle;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -389,6 +390,8 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
   private void selectAccount(final Account account) {
     boolean changingUser = selectedAccount != null && !getNameFromAccount(selectedAccount).equals(getNameFromAccount(account));
     this.selectedAccount = account;
+
+    Appsee.setUserId(getNameFromAccount(account));
 
     accountNameProvider.setName(getNameFromAccount(account));
 
