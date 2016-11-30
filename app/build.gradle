@@ -288,8 +288,8 @@ dependencies {
   compile 'io.reactivex:rxjava-string:1.1.0'
   compile 'com.frogermcs.activityframemetrics:activityframemetrics:0.1.0'
 
-  compile 'io.flowup:android-sdk:0.1.9'
-  testCompile 'io.flowup:android-sdk-no-op:0.1.9'
+  compile 'io.flowup:android-sdk:0.2.4'
+  testCompile 'io.flowup:android-sdk-no-op:0.2.4'
 }
 
 play {

@@ -601,8 +601,8 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
         StoreCredentials storeCredentials = new StoreCredentials(MainActivity.this);
         storeCredentials.clear();
 
-        Intent intent = new Intent(MainActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = new Intent(MainActivity.this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
       });

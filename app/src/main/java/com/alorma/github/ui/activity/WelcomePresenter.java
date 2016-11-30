@@ -67,8 +67,8 @@ public class WelcomePresenter {
         .doOnSubscribe(() -> welcomePresenterViewInterface.willLogin())
         .doOnError(this::checkErrorFromAuthorization)
         .flatMap(githubAuthorization -> new GetAuthUserClient(githubAuthorization.token).observable())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+        //.subscribeOn(Schedulers.io())
+        //.observeOn(AndroidSchedulers.mainThread())
         .doOnError(throwable -> welcomePresenterViewInterface.didLogin())
         .doOnCompleted(() -> welcomePresenterViewInterface.didLogin())
         .subscribe(userStringPair -> addAccount(userStringPair.first, userStringPair.second), this::checkError);
