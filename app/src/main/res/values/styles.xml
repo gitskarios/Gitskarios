@@ -209,10 +209,17 @@
     <item name="android:textSize">12sp</item>
   </style>
 
-  <style name="repo_detail_button_bar">
-    <item name="android:background">@drawable/countorn</item>
+  <style name="repoDetailBox">
     <item name="android:divider">@drawable/divider_horizontal</item>
     <item name="android:showDividers">middle</item>
+  </style>
+
+  <style name="repoDetailBox.light">
+    <item name="android:background">@drawable/countorn_light</item>
+  </style>
+
+  <style name="repoDetailBox.dark">
+    <item name="android:background">@drawable/countorn_dark</item>
   </style>
 
 </resources>

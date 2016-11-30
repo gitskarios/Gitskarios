@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        style="@style/repo_detail_button_bar"
+        style="@style/repoDetailBox"
         android:layout_margin="8dp"
         android:id="@+id/repoDetailNumbersLayout"
         android:divider="@drawable/divider_vertical"
@@ -85,7 +85,7 @@
         android:id="@+id/repoDetailBranchesLayout"
         android:orientation="vertical"
         android:divider="@drawable/divider_horizontal"
-        android:background="@drawable/countorn"
+        android:background="@drawable/countorn_light"
         android:showDividers="middle"
         android:layout_margin="8dp"
         >
@@ -93,7 +93,7 @@
       <RelativeLayout
           android:layout_width="match_parent"
           android:layout_height="48dp"
-          android:background="@drawable/rounded_grey"
+          android:background="?theme_rounded_grey"
           android:paddingLeft="8dp"
           android:paddingStart="8dp"
           android:paddingRight="8dp"
@@ -192,14 +192,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:divider="@drawable/divider_horizontal"
-        android:background="@drawable/countorn"
+        android:background="@drawable/countorn_light"
         android:showDividers="middle"
         android:layout_margin="8dp"
         >
       <RelativeLayout
           android:layout_width="match_parent"
           android:layout_height="48dp"
-          android:background="@drawable/rounded_grey"
+          android:background="?theme_rounded_grey"
           android:paddingLeft="8dp"
           android:paddingStart="8dp"
           android:paddingRight="8dp"

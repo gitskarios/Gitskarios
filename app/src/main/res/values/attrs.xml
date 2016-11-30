@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+  <!-- Custom styles -->
+
+
+  <attr name="gitskarios_divider" format="color"/>
+  <attr name="gitskarios_primary_light" format="color"/>
+  <attr name="gitskarios_primary_text" format="color"/>
+  <attr name="gitskarios_secondary_text" format="color"/>
+  <attr name="gitskarios_icons" format="color"/>
+  <attr name="gitskarios_title" format="color"/>
+  <attr name="gitskarios_card_background" format="color"/>
+  <attr name="gitskarios_webview" format="color"/>
+
+
+  <!-- REPO SCREEN -->
+
+  <attr name="repoDetailBox" format="reference"/>
+  <attr name="theme_rounded_grey" format="reference"/>
+
+
   <!-- CircularImageView for custom shape -->
   <declare-styleable name="CircularImageView">
 
@@ -117,36 +137,27 @@
           format="boolean"/>
   </declare-styleable>
 
-  <attr name="gitskarios_divider"
-        format="color"/>
-  <attr name="gitskarios_primary_light"
-        format="color"/>
-  <attr name="gitskarios_primary_text"
-        format="color"/>
-  <attr name="gitskarios_secondary_text"
-        format="color"/>
-  <attr name="gitskarios_icons"
-        format="color"/>
-  <attr name="gitskarios_title"
-        format="color"/>
-  <attr name="gitskarios_card_background"
-        format="color"/>
-  <attr name="gitskarios_webview"
-        format="color"/>
-
   <declare-styleable name="DiffTextStyle">
-    <attr name="diff_theme" format="reference"/>
+    <attr name="diff_theme"
+          format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="DiffTextViewStyle">
 
-    <attr name="diff_addition_color" format="color"/>
-    <attr name="diff_deletion_color" format="color"/>
-    <attr name="diff_info_color" format="color" />
-    <attr name="diff_addition_text_color" format="color"/>
-    <attr name="diff_deletion_text_color" format="color"/>
-    <attr name="diff_info_text_color" format="color" />
-    <attr name="diff_show_diff_info" format="boolean"/>
+    <attr name="diff_addition_color"
+          format="color"/>
+    <attr name="diff_deletion_color"
+          format="color"/>
+    <attr name="diff_info_color"
+          format="color"/>
+    <attr name="diff_addition_text_color"
+          format="color"/>
+    <attr name="diff_deletion_text_color"
+          format="color"/>
+    <attr name="diff_info_text_color"
+          format="color"/>
+    <attr name="diff_show_diff_info"
+          format="boolean"/>
 
   </declare-styleable>
 </resources>
