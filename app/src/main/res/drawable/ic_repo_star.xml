@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-  <bitmap
-      android:src="@drawable/ic_star_vector"
-      app:srcCompat="@drawable/ic_star_vector"
-      />
+  <item>
+    <shape>
+      <size android:height="16dp" android:width="16dp"/>
+    </shape>
+  </item>
 
+  <item android:drawable="@drawable/ic_star" />
 </layer-list>

@@ -61,15 +61,16 @@ public class WelcomePresenter {
       createAuthorizationClient.setOtpCode(otpCode);
     }
 
-    Observable<GithubAuthorization> observable = createAuthorizationClient.observable();
-    observable
+    createAuthorizationClient.observable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(() -> welcomePresenterViewInterface.willLogin())
         .doOnError(this::checkErrorFromAuthorization)
         .flatMap(githubAuthorization -> new GetAuthUserClient(githubAuthorization.token).observable())
-        .doOnError(throwable -> welcomePresenterViewInterface.didLogin())
-        .doOnCompleted(() -> welcomePresenterViewInterface.didLogin())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+        .doOnError(throwable -> welcomePresenterViewInterface.didLogin())
+        .doOnCompleted(() -> welcomePresenterViewInterface.didLogin())
         .subscribe(userStringPair -> addAccount(userStringPair.first, userStringPair.second), this::checkError);
   }
 
@@ -122,23 +123,6 @@ public class WelcomePresenter {
       result.putString(AccountManager.KEY_AUTHTOKEN, accessToken);
       accountAuthenticatorActivity.get().setAccountAuthenticatorResult(result);
       welcomePresenterViewInterface.finishAccess(user);
-    }
-  }
-
-  private class UserSubscription extends rx.Subscriber<Pair<User, String>> {
-    @Override
-    public void onCompleted() {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      checkError(e);
-    }
-
-    @Override
-    public void onNext(Pair<User, String> userStringPair) {
-      addAccount(userStringPair.first, userStringPair.second);
     }
   }
 }

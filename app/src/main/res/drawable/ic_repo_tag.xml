@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-  <bitmap
-      android:src="@drawable/ic_tag"
-      app:srcCompat="@drawable/ic_tag"
-      />
+  <item>
+    <shape>
+      <size android:height="24dp" android:width="24dp"/>
+    </shape>
+  </item>
 
+  <item android:drawable="@drawable/ic_tag" />
 </layer-list>
