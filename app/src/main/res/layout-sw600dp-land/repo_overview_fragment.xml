@@ -18,11 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        style="@style/repoDetailBox"
         android:layout_margin="8dp"
         android:id="@+id/repoDetailNumbersLayout"
-        android:divider="@drawable/divider_vertical"
-        android:showDividers="middle"
+        style="?repoDetailBox"
         >
 
       <Button
@@ -30,7 +28,7 @@
           android:layout_height="match_parent"
           android:id="@+id/repoDetailNumbersStar"
           android:layout_weight="1"
-          android:drawableLeft="@drawable/ic_star_vector"
+          android:drawableLeft="@drawable/ic_repo_star"
           tools:text="@string/repo_detail_no_starred"
           android:textAllCaps="false"
           style="@style/repo_detail_button"
@@ -41,7 +39,7 @@
           android:layout_height="match_parent"
           android:id="@+id/repoDetailNumbersWatch"
           android:layout_weight="1"
-          android:drawableLeft="@drawable/ic_eye"
+          android:drawableLeft="@drawable/ic_repo_eye"
           tools:text="@string/repo_detail_no_watched"
           android:textAllCaps="false"
           style="@style/repo_detail_button"
@@ -52,7 +50,7 @@
           android:layout_height="48dp"
           android:layout_weight="1"
           android:id="@+id/repoDetailTagsCount"
-          android:drawableLeft="@drawable/ic_tag"
+          android:drawableLeft="@drawable/ic_repo_tag"
           tools:text="@string/repo_detail_tags"
           style="@style/repo_detail_button"
           android:textAllCaps="false"
@@ -62,7 +60,7 @@
           android:layout_height="48dp"
           android:layout_weight="1"
           android:id="@+id/repoDetailLicense"
-          android:drawableLeft="@drawable/ic_law"
+          android:drawableLeft="@drawable/ic_repo_law"
           tools:text="MIT"
           style="@style/repo_detail_button"
           />
@@ -94,9 +92,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/repoDetailBranchesLayout"
             android:orientation="vertical"
-            android:divider="@drawable/divider_horizontal"
-            android:background="@drawable/countorn_light"
-            android:showDividers="middle"
+            style="?repoDetailBox"
             android:layout_margin="8dp"
             >
 
@@ -178,7 +174,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/repoDefaultBranchCodeButton"
-                android:drawableLeft="@drawable/ic_file_directory"
+                android:drawableLeft="@drawable/ic_repo_file_directory"
                 android:text="View code"
                 style="@style/repo_detail_button"
                 />
@@ -187,7 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_git_commit"
+                android:drawableLeft="@drawable/ic_repo_git_commit"
                 android:text="Commits"
                 android:id="@+id/repoDefaultBranchCommits"
                 style="@style/repo_detail_button"
@@ -202,9 +198,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:divider="@drawable/divider_horizontal"
-          android:background="@drawable/countorn_light"
-          android:showDividers="middle"
+          style="?repoDetailBox"
           android:layout_margin="8dp"
           android:layout_weight="1"
           >
