@@ -3,4 +3,7 @@
   <string name="account_name">Github account DEV</string>
   <string name="account_type">com.alorma.github.debug.account</string>
   <string name="app_name">GitSkarios DEV</string>
+
+  <string name="com.appsee.apikey"
+          translatable="false">7ae44cd0c3344142bc18bad4e52cb08a</string>
 </resources>

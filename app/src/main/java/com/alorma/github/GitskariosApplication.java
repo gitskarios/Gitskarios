@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import com.alorma.github.gcm.GitskariosInstanceIDListenerService;
 import com.alorma.github.injector.component.ApplicationComponent;
@@ -21,6 +20,7 @@ import com.alorma.gitskarios.core.client.LogProvider;
 import com.alorma.gitskarios.core.client.TokenProvider;
 import com.alorma.gitskarios.core.client.UrlProvider;
 import com.alorma.gitskarios.core.client.UsernameProvider;
+import com.appsee.Appsee;
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.activityframemetrics.ActivityFrameMetrics;
 import com.google.firebase.FirebaseApp;
@@ -70,6 +70,7 @@ public class GitskariosApplication extends MultiDexApplication {
         .start();
 
     Fabric.with(this, new Crashlytics());
+    Appsee.start(getString(R.string.com_appsee_apikey));
 
     FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     firebaseAnalytics.setAnalyticsCollectionEnabled(true);
