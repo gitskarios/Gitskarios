@@ -46,6 +46,7 @@ public class SimpleNotificationBuilder {
         .setLocalOnly(true)
         .setAutoCancel(true)
         .setGroup(fullName)
+        .setDefaults(Notification.DEFAULT_LIGHTS)
         .setDeleteIntent(getCancelIntent(notification))
         .setLargeIcon(getAvatar(context, notification));
 

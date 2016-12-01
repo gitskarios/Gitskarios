@@ -40,6 +40,7 @@ public class InboxStyleNotificationBuilder implements NotificationBuilder {
           .setLocalOnly(true)
           .setContentTitle(notifications.size() + " Notifications")
           .setOnlyAlertOnce(true)
+          .setDefaults(android.app.Notification.DEFAULT_LIGHTS)
           .setContentIntent(pendingIntent);
 
       builder.setContentText(notifications.size() + " notifications");

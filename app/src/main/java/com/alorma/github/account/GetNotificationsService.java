@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import com.alorma.github.AccountsHelper;
+import com.alorma.github.BuildConfig;
 import com.alorma.github.R;
 import com.alorma.github.account.view.BundledNotificationsBuilder;
 import com.alorma.github.account.view.InboxStyleByRepositoryNotificationBuilder;
@@ -84,7 +85,7 @@ public class GetNotificationsService extends Service {
 
       for (Notification notification : notifications) {
         boolean showNotification = NotificationsHelper.checkNotFireNotification(this, notification.id);
-        if (showNotification) {
+        if (BuildConfig.DEBUG || showNotification) {
           newNotifications.add(notification);
         }
       }

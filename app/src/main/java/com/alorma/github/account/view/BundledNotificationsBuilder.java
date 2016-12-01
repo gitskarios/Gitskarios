@@ -47,6 +47,7 @@ public class BundledNotificationsBuilder implements NotificationBuilder {
         .setGroup(repoName)
         .setGroupSummary(true)
         .setOnlyAlertOnce(true)
+        .setDefaults(Notification.DEFAULT_LIGHTS)
         .setContentIntent(pendingIntent);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
