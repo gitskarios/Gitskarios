@@ -355,4 +355,23 @@
   <string name="shortcut_short_label_issues">Issues</string>
   <string name="shortcut_long_label_issues">Issues</string>
   <string name="shortcut_message_issues">Issues disabled</string>
+  <string name="good_bye_title">Good night Gitskarios</string>
+  <string name="good_bye_text"><![CDATA[This is not a changelog post, not a feature post… This is a goodbye post.
+  \n\n
+  Gitskarios has been up for 2 years, and get more than 25K downloads, with about 4K active installs on this time. Thank you!!!
+\n\n
+  I’ve learned a lot with this app, learned Java, Android, learned Dependency Injection with dagger, Material Design from google, etc…
+\n\n
+  I’ve learned a lot from users, you always surprised me with new cool features to add, and making the app OpenSource was one of the best decisions i ever had.
+\n\n
+  But, apart from learn, this project has been growning and had many many features, and gained in complexity. I tried to make the best and updated the app as fast as i could, but i can’t do it as i used to.
+\n\n
+  So i decided to stop gitskarios how it is, a big application to get GitHub on your Android device. That doesn’t mean i’m going to remove it from playstore, it’s still available for you all to download.
+\n\n
+  As Gitskarios is OpenSource, under MIT licens, you are allowed to download ad compile code for your own, or create a new distribution and publish by yourself.
+\n\n
+  Gitskarios will be OpenSource forever, and open to contributions.
+\n\n
+  Thanks for thoose years, i will miss you!]]>
+  </string>
 </resources>

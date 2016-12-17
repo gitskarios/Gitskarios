@@ -173,12 +173,6 @@ dependencies {
     transitive = true;
   }
 
-  compile 'com.mikepenz:actionitembadge:3.2.6@aar'
-  compile 'com.mikepenz:octicons-typeface:3.2.0.2@aar'
-  compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
-  compile 'com.mikepenz:google-material-typeface:2.2.0.2.original@aar'
-  compile "com.mikepenz:iconics-core:2.6.7@aar"
-  compile "com.mikepenz:materialize:0.9.0@aar"
   compile('com.mikepenz:fastadapter:1.6.0@aar') {
     transitive = true
   }
@@ -190,34 +184,19 @@ dependencies {
     transitive = true
     exclude group: 'com.mikepenz', module: 'iconics-core'
   }
-  compile 'com.afollestad.material-dialogs:core:0.9.0.1'
-  compile 'com.afollestad.material-dialogs:commons:0.9.0.1'
 
   compile('com.crashlytics.sdk.android:answers:1.3.10@aar') {
     transitive = true;
   }
 
-  compile 'com.github.varunest:sparkbutton:1.0.0'
 
-  testCompile 'junit:junit:4.12'
-  testCompile 'org.assertj:assertj-core:1.7.0'
-  testCompile "org.mockito:mockito-core:1.10.19"
-  testCompile 'com.squareup.retrofit2:retrofit-mock:2.0.0'
-  testCompile 'com.google.dagger:dagger-compiler:2.4'
-  androidTestApt 'com.google.dagger:dagger-compiler:2.4'
 
-  compile 'com.maksim88:PasswordEditText:v0.8'
 
-  apt "com.google.dagger:dagger-compiler:2.4"
-  compile "com.google.dagger:dagger:2.4"
 
-  compile 'com.pddstudio:highlightjs-android:1.2.0'
 
   compile('com.github.ZieIony:NaturalDateFormat:master-SNAPSHOT') {
     exclude group: "joda-time"
   }
-  compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
-  compile 'com.github.xiprox.errorview:library:2.2.0'
 
   def supportLibVersion = '25.0.1'
   compile "com.android.support:design:$supportLibVersion"
@@ -226,8 +205,51 @@ dependencies {
   compile "com.android.support:recyclerview-v7:$supportLibVersion"
   compile "com.android.support:cardview-v7:$supportLibVersion"
 
-  compile 'com.android.support:multidex:1.0.1'
 
+  compile('com.afollestad:material-cab:0.1.11@aar') {
+    transitive = true
+  }
+
+
+
+  def firebaseVersion = '10.0.0'
+  compile "com.google.firebase:firebase-core:$firebaseVersion"
+  compile "com.google.firebase:firebase-database:$firebaseVersion"
+  compile "com.google.firebase:firebase-ads:$firebaseVersion"
+  compile "com.google.firebase:firebase-auth:$firebaseVersion"
+  compile "com.google.firebase:firebase-invites:$firebaseVersion"
+  compile "com.google.firebase:firebase-messaging:$firebaseVersion"
+  compile "com.google.firebase:firebase-crash:$firebaseVersion"
+
+
+
+
+
+  compile 'nl.littlerobots.rxlint:rxlint:1.0'
+
+
+
+  compile('com.appsee:appsee-android:2.3@aar') {
+    transitive = true;
+  }
+  compile('io.fabric.sdk.android:fabric:1.3.6@aar') {
+    transitive = true;
+  }
+  compile 'com.mikepenz:actionitembadge:3.2.6@aar'
+  compile 'com.mikepenz:octicons-typeface:3.2.0.2@aar'
+  compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
+  compile 'com.mikepenz:google-material-typeface:2.2.0.2.original@aar'
+  compile 'com.mikepenz:iconics-core:2.6.7@aar'
+  compile 'com.mikepenz:materialize:0.9.0@aar'
+  compile 'com.afollestad.material-dialogs:core:0.9.0.1'
+  compile 'com.afollestad.material-dialogs:commons:0.9.0.1'
+  compile 'com.github.varunest:sparkbutton:1.0.0'
+  compile 'com.maksim88:PasswordEditText:v0.8'
+  compile 'com.google.dagger:dagger:2.4'
+  compile 'com.pddstudio:highlightjs-android:1.2.0'
+  compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+  compile 'com.github.xiprox.errorview:library:2.2.0'
+  compile 'com.android.support:multidex:1.0.1'
   compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
   compile 'se.emilsjolander:stickylistheaders:2.7.0'
   compile 'com.nineoldandroids:library:2.4.0'
@@ -236,11 +258,7 @@ dependencies {
   compile 'com.wefika:flowlayout:0.4.0'
   compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
   compile 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
-  compile('com.afollestad:material-cab:0.1.11@aar') {
-    transitive = true
-  }
   compile 'com.jakewharton:butterknife:8.2.1'
-  apt 'com.jakewharton:butterknife-compiler:8.2.1'
   compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
   compile 'com.fewlaps.quitnowcache:quitnow-cache:1.4'
   compile 'io.reactivex:rxandroid:1.0.1'
@@ -255,47 +273,29 @@ dependencies {
   compile 'com.jakewharton:process-phoenix:1.0.2'
   compile 'com.github.alorma:timelineview:2.2.1'
   compile 'com.roughike:bottom-bar:2.0.2'
-
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
-
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
   compile 'nl.littlerobots.rxlint:rxlint:1.0'
-
-  def firebaseVersion = '10.0.0'
-  compile "com.google.firebase:firebase-core:$firebaseVersion"
-  compile "com.google.firebase:firebase-database:$firebaseVersion"
-  compile "com.google.firebase:firebase-ads:$firebaseVersion"
-  compile "com.google.firebase:firebase-auth:$firebaseVersion"
-  compile "com.google.firebase:firebase-invites:$firebaseVersion"
-  compile "com.google.firebase:firebase-messaging:$firebaseVersion"
-  compile "com.google.firebase:firebase-crash:$firebaseVersion"
-
   compile 'com.squareup.retrofit:retrofit:1.9.0'
   compile 'com.squareup.okhttp:okhttp:2.5.0'
   compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
-
-  testCompile 'com.squareup.okhttp3:okhttp:3.4.2'
-
   compile 'io.reactivex:rxjava:1.1.7'
-
   compile 'net.danlew:android.joda:2.8.2'
-
-  compile 'nl.littlerobots.rxlint:rxlint:1.0'
-
   compile 'com.github.chrisbanes:PhotoView:1.2.6'
   compile 'com.github.javierugarte:githubcontributionsview:1.2.1'
-
   compile 'io.reactivex:rxjava-string:1.1.0'
   compile 'com.frogermcs.activityframemetrics:activityframemetrics:0.1.0'
-
   compile 'io.flowup:android-sdk:0.2.4'
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.assertj:assertj-core:1.7.0'
+  testCompile 'org.mockito:mockito-core:1.10.19'
+  testCompile 'com.squareup.retrofit2:retrofit-mock:2.0.0'
+  testCompile 'com.google.dagger:dagger-compiler:2.4'
+  testCompile 'com.squareup.okhttp3:okhttp:3.4.2'
   testCompile 'io.flowup:android-sdk-no-op:0.2.4'
-  compile('com.appsee:appsee-android:2.3@aar') {
-    transitive = true;
-  }
-  compile('io.fabric.sdk.android:fabric:1.3.6@aar') {
-    transitive = true;
-  }
+  androidTestApt 'com.google.dagger:dagger-compiler:2.4'
+  apt 'com.google.dagger:dagger-compiler:2.4'
+  apt 'com.jakewharton:butterknife-compiler:8.2.1'
 }
 
 play {

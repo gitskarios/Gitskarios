@@ -13,7 +13,6 @@ public class SplashActivity extends AppCompatActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-
     AccountsManager accountsFragment = new AccountsManager();
     List<Account> accounts = accountsFragment.getAccounts(this);
 

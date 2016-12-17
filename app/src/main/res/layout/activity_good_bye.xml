@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_good_bye"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alorma.github.ui.activity.GoodByeActivity"
+    >
+
+  <android.support.v7.widget.Toolbar
+      android:layout_width="match_parent"
+      android:layout_height="?actionBarSize"
+      android:background="?colorPrimary"
+      android:id="@+id/toolbar"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      />
+  <android.support.v4.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="?actionBarSize"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:padding="16dp"
+          android:text="@string/good_bye_text"
+          />
+
+      <ImageView
+          android:layout_width="64dp"
+          android:layout_height="64dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_gravity="center_horizontal"
+          app:srcCompat="@drawable/ic_mark_github"
+          android:id="@+id/github_logo"/>
+    </LinearLayout>
+  </android.support.v4.widget.NestedScrollView>
+</FrameLayout>

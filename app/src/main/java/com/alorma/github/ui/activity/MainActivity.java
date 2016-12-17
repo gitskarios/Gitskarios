@@ -4,11 +4,13 @@ import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -90,6 +92,19 @@ public class MainActivity extends BaseActivity implements NavigationFragment.Nav
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    checkGoodBye();
+  }
+
+  private void checkGoodBye() {
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+    if (preferences.getBoolean("GOOD_BYE", true)) {
+
+      Intent intent = new Intent(this, GoodByeActivity.class);
+      startActivity(intent);
+
+      preferences.edit().putBoolean("GOOD_BYE", false).apply();
+    }
   }
 
   @Override
