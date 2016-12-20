@@ -14,6 +14,10 @@ Join the beta here: https://play.google.com/apps/testing/com.alorma.github
 
 Gitskarios is an Android Application that allows you to access GitHub, see your profile, search people, star repositories, and more!
 
+## NOTE ##
+
+The Repository Primary Owner, [@alorma](https://github.com/alorma) leaved the project.
+
 ## TOKEN
 
 ```
