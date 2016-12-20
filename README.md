@@ -16,7 +16,7 @@ Gitskarios is an Android Application that allows you to access GitHub, see your 
 
 ## NOTE ##
 
-The Repository Primary Owner, [@alorma](https://github.com/alorma) is soon to leave the project.
+The Repository Primary Owner, [@alorma](https://github.com/alorma) leaved the project.
 
 ## TOKEN
 
