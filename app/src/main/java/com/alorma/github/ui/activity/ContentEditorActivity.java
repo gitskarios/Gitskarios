@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alorma.github.R;
@@ -513,8 +514,9 @@ public class ContentEditorActivity extends RepositoryThemeActivity
   @Override
   public void appendText(String text) {
     runOnUiThread(() -> {
-      MentionsEditable mentionsEditable = editText.getText();
-      mentionsEditable.append(text);
+      Editable mentionsEditable = editText.getText();
+      EditText editTextInner = (EditText) editText.findViewById(R.id.text_editor);
+      mentionsEditable.insert(editTextInner.getSelectionStart(), text);
     });
   }
 
