@@ -13,7 +13,7 @@ Gitskarios is an Android Application that allows you to access GitHub, see your 
 Unfortunately, after the repository's Primary Owner, [@alorma](https://github.com/alorma), left the project, the development slowed to a hold. If someone has the necessary skill and time, write an email to [@alorma](https://github.com/alorma), he will give you necessary permissions.
 
 ## Contribution
-We encourage you to contribute to this project. You can do this by making Pull Requests and/or Issues. Please read CONTRIBUTE.md in order to do so. You can also fork the project. Please read FORK.md.
+We encourage you to contribute to this project. You can do this by making Pull Requests and/or Issues. Please read [CONTRIBUTING.md](https://github.com/gitskarios/Gitskarios/blob/develop/CONTRIBUTING.md) in order to do so. You can also fork the project. Please read [FORK.md](https://github.com/gitskarios/Gitskarios/blob/develop/FORK.md).
 
 ## Token
 
