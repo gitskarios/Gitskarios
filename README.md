@@ -26,5 +26,5 @@ TokenProvider.setTokenProviderInstance(new TokenProviderInterface() {
     });
 ```
 
-## LICENSE
+## License
 The project is licensed under MIT License, you can find the LICENSE file in the projects root.
