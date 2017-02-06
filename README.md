@@ -27,4 +27,4 @@ TokenProvider.setTokenProviderInstance(new TokenProviderInterface() {
 ```
 
 ## License
-The project is licensed under MIT License, you can find the LICENSE file in the projects root.
+The project is licensed under MIT License, you can find the [`LICENSE`](https://raw.githubusercontent.com/gitskarios/Gitskarios/develop/LICENSE.md) file in the projects' root.
