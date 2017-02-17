@@ -74,3 +74,4 @@ Here you should be ready to develop new Awesome features!
 
 If you can not compile Gitskarios, please open an issue explaining what is the problem.
 
+Thanks
